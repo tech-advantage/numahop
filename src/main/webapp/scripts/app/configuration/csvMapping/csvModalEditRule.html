@@ -1,0 +1,26 @@
+<div class="modal-header">
+    <h3 class="modal-title">{{::mainCtrl.title}}</h3>
+</div>
+<div class="modal-body">
+    <div class="row">
+        <h4 class="col-xs-12" translate>Champs</h4>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 col-md-4">
+            <sem-field sem-type="text" sem-label-class="col-xs-5" sem-field-class="col-xs-7"
+                       sem-label="{{::'Propriété' | translate}}" sem-model="mainCtrl.rule.csvField"
+                       sem-select-options="option.label group by option.superType for option in optionData | orderBy:['superType', 'rank'] track by option.identifier"
+                       sem-option-data="mainCtrl.config.properties"></sem-field>
+        </div>
+        <div class="col-xs-12 col-md-4">
+            <sem-field sem-type="select" sem-label-class="col-xs-5" sem-field-class="col-xs-7"
+                       sem-label="{{::'Unité doc.' | translate}}" sem-model="mainCtrl.rule.docUnitField"
+                       sem-select-options="option.code as option.label for option in optionData | orderBy:'rank'"
+                       sem-option-data="mainCtrl.config.docUnitFields"></sem-field>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-sem4" ng-click="mainCtrl.cancel()" translate>Annuler</button>
+    <button type="button" class="btn btn-sem2" ng-click="mainCtrl.ok(mainCtrl.rule)" translate>Ok</button>
+</div>

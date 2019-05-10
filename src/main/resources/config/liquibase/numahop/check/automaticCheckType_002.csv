@@ -1,0 +1,4 @@
+identifier;label;type;active;version
+automatic_file_sequence;Validation Automatique de séquence;FILE_SEQUENCE;true;0
+automatic_file_format;Validation Automatique de format;FILE_FORMAT;true;0
+automatic_file_total_number;Validation Automatique du nombre total de fichiers;FILE_TOTAL_NUMBER;true;0

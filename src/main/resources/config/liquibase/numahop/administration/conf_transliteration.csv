@@ -1,0 +1,141 @@
+type,code,value
+FUNCTION,005,Acteur
+FUNCTION,010,Adaptateur
+FUNCTION,018,Auteur de l'animation
+FUNCTION,020,Annotateur
+FUNCTION,030,Arrangeur
+FUNCTION,040,Artiste
+FUNCTION,050,Autre détenteur du privilège
+FUNCTION,060,Nom associé à l'exemplaire
+FUNCTION,065,Commissaire-priseur
+FUNCTION,070,Auteur
+FUNCTION,072,Auteur des citations ou des fragments textuels
+FUNCTION,075,"Auteur de la postface, du colophon, etc."
+FUNCTION,080,"Préfacier, etc."
+FUNCTION,090,Dialoguiste
+FUNCTION,100,Auteur d'oeuvre adaptée ou continuée
+FUNCTION,110,Relieur
+FUNCTION,120,Maquettiste de la reliure
+FUNCTION,130,Maquettiste
+FUNCTION,140,Concepteur de la jaquette
+FUNCTION,150,Concepteur de l'ex-libris
+FUNCTION,160,Libraire
+FUNCTION,170,Calligraphe
+FUNCTION,180,Cartographe
+FUNCTION,190,Censeur
+FUNCTION,195,Chef de choeur
+FUNCTION,200,Chorégraphe
+FUNCTION,202,Artiste de cirque
+FUNCTION,205,Collaborateur
+FUNCTION,206,Collecteur
+FUNCTION,207,Humoriste
+FUNCTION,210,Commentateur
+FUNCTION,212,Auteur du commentaire
+FUNCTION,220,Compilateur
+FUNCTION,230,Compositeur
+FUNCTION,233,Compositeur de l’oeuvre adaptée
+FUNCTION,236,Compositeur de l’oeuvre principale
+FUNCTION,240,Compositeur d'imprimerie
+FUNCTION,245,Concepteur de l'idée originale
+FUNCTION,250,Chef d'orchestre
+FUNCTION,255,Consultant de projet
+FUNCTION,257,Auteur (continuateur)
+FUNCTION,260,Détenteur du copyright
+FUNCTION,270,Correcteur (manuscrits)
+FUNCTION,273,Commissaire d'exposition
+FUNCTION,275,Danseur
+FUNCTION,280,Dédicataire
+FUNCTION,290,Dédicateur
+FUNCTION,295,Organisme de soutenance
+FUNCTION,300,Metteur en scène ou réalisateur
+FUNCTION,303,Disc jockey
+FUNCTION,305,Candidat
+FUNCTION,310,Distributeur
+FUNCTION,320,Donateur
+FUNCTION,330,Auteur présumé
+FUNCTION,340,Éditeur scientifique
+FUNCTION,350,Graveur
+FUNCTION,360,Aquafortiste
+FUNCTION,365,Expert
+FUNCTION,370,Monteur
+FUNCTION,380,Faussaire
+FUNCTION,390,Ancien possesseur
+FUNCTION,395,Fondateur
+FUNCTION,400,Bailleur de fonds
+FUNCTION,410,Technicien graphique
+FUNCTION,420,Personne honorée
+FUNCTION,430,Enlumineur
+FUNCTION,440,Illustrateur
+FUNCTION,445,Impresario
+FUNCTION,450,Auteur de l'envoi
+FUNCTION,460,Personne interviewée
+FUNCTION,470,Intervieweur
+FUNCTION,475,Collectivité éditrice
+FUNCTION,480,Librettiste
+FUNCTION,490,Détenteur de licence
+FUNCTION,500,Concédant de licence
+FUNCTION,510,Lithographe
+FUNCTION,520,Parolier
+FUNCTION,530,Graveur sur métal
+FUNCTION,535,Mime
+FUNCTION,540,Moniteur
+FUNCTION,545,Musicien
+FUNCTION,550,Narrateur
+FUNCTION,555,Membre du jury
+FUNCTION,557,Organisateur de réunion
+FUNCTION,560,Instigateur
+FUNCTION,570,Autre
+FUNCTION,580,Fabricant du papier
+FUNCTION,582,Demandeur de brevet
+FUNCTION,584,Inventeur de brevet
+FUNCTION,587,Titulaire de brevet
+FUNCTION,590,Interprète
+FUNCTION,595,Directeur de la recherche
+FUNCTION,600,Photographe
+FUNCTION,605,Présentateur
+FUNCTION,610,Imprimeur
+FUNCTION,620,Imprimeur de gravures
+FUNCTION,630,Producteur
+FUNCTION,632,Directeur artistique
+FUNCTION,633,Membre de l'équipe de production
+FUNCTION,635,Programmeur
+FUNCTION,637,Gestionnaire de projet
+FUNCTION,640,Correcteur sur épreuves
+FUNCTION,650,Éditeur commercial
+FUNCTION,651,Directeur de publication
+FUNCTION,655,Marionnettiste
+FUNCTION,660,Destinataire de lettres
+FUNCTION,665,Producteur de phonogramme
+FUNCTION,670,Ingénieur du son
+FUNCTION,672,Remixeur
+FUNCTION,673,Responsable de l'équipe de recherche
+FUNCTION,675,Responsable du compte-rendu critique
+FUNCTION,677,Membre de l'équipe de recherche
+FUNCTION,680,Rubricateur
+FUNCTION,690,Scénariste
+FUNCTION,695,Conseiller scientifique
+FUNCTION,700,Copiste
+FUNCTION,705,Sculpteur
+FUNCTION,710,Secrétaire
+FUNCTION,720,Signataire
+FUNCTION,721,Chanteur
+FUNCTION,723,Mécène
+FUNCTION,725,Organisme de normalisation
+FUNCTION,726,Cascadeur
+FUNCTION,727,Directeur de thèse
+FUNCTION,730,Traducteur
+FUNCTION,740,Concepteur de caractères
+FUNCTION,750,Typographe
+FUNCTION,753,Vendeur
+FUNCTION,755,Exécutant vocal
+FUNCTION,760,Graveur sur bois
+FUNCTION,770,Auteur du matériel d'accompagnement
+FUNCTION,956,Président du jury de soutenance
+FUNCTION,958,Rapporteur de la thèse
+FUNCTION,981,Laboratoire associé à la thèse
+FUNCTION,982,Entreprise associée à la thèse
+FUNCTION,983,Fondation associée à la thèse
+FUNCTION,984,Equipe de recherche associée à la thèse
+FUNCTION,985,Autre partenaire associé à la thèse
+FUNCTION,995,Organisme de cotutelle
+FUNCTION,996,Ecole doctorale associée à la thèse

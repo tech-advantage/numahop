@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Chargement des données du module Library -->
+    <changeSet id="pgcn-load-data-library" author="progilone">
+        
+        <validCheckSum>7:dea69bf06c524c3ae5cd2e59eff7bb42</validCheckSum>
+        
+        <loadData encoding="UTF-8" separator=";"
+            file="config/liquibase/numahop/library/library.csv"
+            tableName="lib_library">
+            <!-- specify that values in my_boolean_column should be interpreted as Boolean values -->
+            <column name="active" type="BOOLEAN" />
+        </loadData>
+    </changeSet>
+</databaseChangeLog>

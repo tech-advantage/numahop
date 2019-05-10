@@ -1,0 +1,152 @@
+$icon-font-path: "/assets/fonts/";
+$sid-font-path: "/assets/fonts/";
+
+/* $sid-main-color: #ec7404; */
+
+
+/* $sid-sec-color:  #FB9C5A; */
+
+$sid-main-color: #5C2E42;
+$sid-sec-color: #722E42;
+$sid-third-color: #9D6D7B;
+$sid-fourth-color: #C7ABB3;
+$sid-green-color: #8DC63F;
+$sid-red-color: #DB0000;
+$sid-selection: #ebe8e3;
+$sid-text: #58585a;
+$sid-text-light: white;
+$sid-text-danger: #a94442;
+$sid-menu-font-size: 14px;
+$sid-menu-font-color: white;
+$sid-min-height-field: 28px;
+$sem-footer-height: 75px;
+$sid-state-available: #70b431;
+$sid-state-available-in-situ: #e17720;
+$sid-state-not-available: #ca031e;
+$sid-state-warn: #e17720;
+
+/* overwrite bootstrap variables */
+
+$brand-primary: $sid-main-color !default;
+@charset "UTF-8";
+@import 'angular-bootstrap-switch';
+@import 'animate';
+@import 'bootstrap';
+@import 'calendar';
+@import 'carousel';
+@import 'cataloging';
+@import "circleStatus";
+@import 'communication-rules';
+@import 'directive';
+@import 'fonts';
+@import 'form-component';
+@import 'graphe';
+@import 'layout-columns';
+@import 'menu-top';
+@import 'modal';
+@import 'notification';
+@import 'pagination';
+@import 'panel';
+@import 'print';
+@import 'search';
+@import 'select2';
+@import 'sid-mobile-menu';
+@import 'subscription-alert';
+@import 'syrtis';
+@import 'tab';
+@import 'table';
+@import 'timeline';
+@import 'tree';
+@import 'tree-controls';
+@import 'xeditable';
+@import 'widgets';
+@import 'utils';
+@import 'pdf';
+@import 'canvas';
+
+/* make sure browsers use the pointer cursor for anchors, even with no href */
+.nav, .pagination, .carousel, .panel-title a, a {
+    cursor: pointer;
+}
+
+
+/* start Password strength bar style */
+
+ul#strength {
+    display: inline;
+    list-style: none;
+    margin: 0;
+    margin-left: 15px;
+    padding: 0;
+    vertical-align: 2px;
+}
+
+.point:last {
+    margin: 0 !important;
+}
+
+.point {
+    background: #DDD;
+    border-radius: 2px;
+    display: inline-block;
+    height: 5px;
+    margin-right: 1px;
+    width: 20px;
+}
+
+.my-modal-popup {
+    @media (min-width: 1400px) {
+        .modal-lg {
+            width: 1308px;
+        }
+    }
+}
+
+
+/* end Password strength bar style */
+
+.w30px {
+    width: 30px !important;
+}
+
+.inlineBlock {
+    display: inline-block;
+}
+
+
+/* float right */
+
+.float-r {
+    float: right;
+}
+
+
+/* margin bottom */
+
+.mb-10 {
+    margin-bottom: 10px;
+}
+
+.textIndent {
+    text-indent: 5px;
+}
+
+
+/* Add ng-cloak manually to avoid element blinking */
+
+[ng\:cloak],
+[ng-cloak],
+.ng-cloak {
+    display: none !important;
+}
+
+.preserve-line-breaks {
+	white-space: pre-line;
+}
+
+ height-40 {
+    height: 40px;
+ }
+.height-100 {
+	height: 100%;
+}

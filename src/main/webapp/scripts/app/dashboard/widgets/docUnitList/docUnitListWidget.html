@@ -1,0 +1,35 @@
+<div class="alert alert-warning margin-10" ng-if="!mainCtrl.isConfigured()" translate>
+    Veuillez configurer le widget via le bouton de configuration à droite du titre de ce widget.
+</div>
+<div class="table-responsive" ng-if="mainCtrl.isConfigured()">
+    <table class="table table-striped table-hover margin-b5">
+        <thead>
+            <tr>
+                <th class="text-left" translate>PGCN Id</th>
+                <th class="text-left" translate>Archivée</th>
+                <th class="text-left" translate>Diffusée</th>
+                <th class="text-left" translate>Nb pages</th>
+                <th class="text-left" translate>Taille</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="doc in mainCtrl.pagination.items">
+                <td class="text-left">{{::doc.pgcnId}}</td>
+                <td class="text-left">{{::doc.ia | boolean}}</td>
+                <td class="text-left">{{::doc.cines | boolean}}</td>
+                <td class="text-left">{{::doc.totalPage | number}}</td>
+                <td class="text-left">{{::doc.totalLength | filesize}}</td>
+                <td class="text-right">
+                    <numa-custom-link numa-link-type="docunit" numa-link-parameters="{id: doc.identifier}"></numa-custom-link>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <div class="text-center" ng-show="mainCtrl.pagination.size && mainCtrl.pagination.totalItems > mainCtrl.pagination.size">
+        <ul uib-pagination num-pages="mainCtrl.pagination.totalPages" total-items="mainCtrl.pagination.totalItems" items-per-page="mainCtrl.pagination.size"
+            ng-change="mainCtrl.getPage()" ng-model="mainCtrl.pagination.page" class="pagination-sm"></ul>
+    </div>
+</div>

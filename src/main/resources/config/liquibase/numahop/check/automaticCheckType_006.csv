@@ -1,0 +1,2 @@
+identifier;label;type;active;version;configurable;order
+automatic_file_integrity;Contrôle d'intégrité des fichiers;FILE_INTEGRITY;true;0;false;3

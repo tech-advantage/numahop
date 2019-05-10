@@ -1,0 +1,21 @@
+<div class="alert alert-warning" ng-if="!mainCtrl.isConfigured()" translate>
+    Veuillez configurer le widget via le bouton de configuration à droite du titre de ce widget.
+</div>
+<div class="alert alert-info" ng-if="mainCtrl.isConfigured() && !mainCtrl.isDelayValid()">Aucune donnée</div>
+<div class="col-xs-12" ng-show="mainCtrl.isConfigured()">
+    <div class="text-center">
+        <div class="dashboard-progress-wrapper" ng-if="mainCtrl.isDelayValid()">
+            <div round-progress max="mainCtrl.maxSize" current="mainCtrl.size" color="{{mainCtrl.progressBar.color}}" bgcolor="#eaeaea"
+                radius="50" stroke="15" semi="false" rounded="true" clockwise="false" animation="easeOutCubic"></div>
+            <div>
+                <span ng-if="mainCtrl.minRemainingCheckDelay === 0" translate>0 jour restant</span>
+                <span ng-if="mainCtrl.minRemainingCheckDelay > 0" translate translate-n="mainCtrl.minRemainingCheckDelay" translate-plural="{{$count}} jours restants">1 jour restant</span>
+                &nbsp;/&nbsp;{{ ::mainCtrl.maxSize }}
+            </div>
+        </div>
+        <div ng-repeat="link in mainCtrl.links" class="margin-t10 bold">
+            {{::link.label}}&nbsp;
+            <numa-custom-link numa-link-type="{{::link.type}}" numa-link-parameters="{id: link.identifier}"></numa-custom-link>
+        </div>
+    </div>
+</div>

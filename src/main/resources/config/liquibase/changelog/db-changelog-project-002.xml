@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="pgcn-project-2" author="progilone">
+        <!-- Title de la notice -->
+        <createTable tableName="del_delivery">
+            <column name="identifier" type="varchar(191)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="project_identifier" type="varchar(191)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="label" type="varchar(191)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="document_count" type="integer"/>
+            <column name="description" type="varchar(191)"/>
+            <column name="delivery_payment" type="integer"/>
+            <column name="delivery_status" type="integer"/>
+            <column name="delivery_method" type="integer"/>
+            <column name="reception_date" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="deposit_date" type="timestamp"/>
+            <column name="folder_path" type="varchar(191)">
+                    <constraints nullable="false"/>
+            </column>
+            <column name="image_format" type="varchar(191)"/>
+            <column name="digitizing_notes" type="varchar(191)"/>
+
+            <column name="major_error_rate" type="DOUBLE"/>
+            <column name="minor_error_rate" type="DOUBLE"/>
+            <column name="file_format_ok" type="BOOLEAN"/>
+            <column name="number_of_files_ok" type="BOOLEAN"/>
+            <column name="number_of_files_matching" type="BOOLEAN"/>
+            <column name="mire_present" type="BOOLEAN"/>
+            <column name="mire_ok" type="BOOLEAN"/>
+            <column name="table_of_contents_present" type="BOOLEAN"/>
+            <column name="table_of_contents_ok" type="BOOLEAN"/>
+            <column name="alto_present" type="BOOLEAN"/>
+            <column name="control_notes" type="varchar(191)"/>
+
+            <column name="version" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="project_identifier"
+                                 baseTableName="del_delivery" constraintName="fk_delivery_project"
+                                 referencedColumnNames="identifier" referencedTableName="proj_project" />
+
+    </changeSet>
+
+</databaseChangeLog>

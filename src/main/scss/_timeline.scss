@@ -1,0 +1,86 @@
+.sem-timeline {
+    @include user-select(none);
+    cursor: move;
+    
+    .sem-timeline-contents {
+        border-top: 1px solid #CCC;
+        border-bottom: 1px solid #CCC;
+        background: rgba(233, 233, 233, 0.3);
+        
+        > div {
+            position: absolute;
+            top: 5px;
+            
+            > .sem-timeline-content {
+                height: 53px; 
+                width: 153px;
+                background-image: url('/images/timeline/timeline.png');
+                background-position: 0px 0px;
+                background-repeat: no-repeat;
+                border: none;
+                position: absolute;
+                overflow: hidden;
+                cursor: pointer;
+                
+                > .sem-timeline-headline {
+                    height: 36px;
+                    font-weight: bold;
+                    margin: 5px;
+                    overflow: hidden;
+                }
+                &.highlight {
+                    background-position: 0px -53px;
+                    z-index: 100;
+                }
+                a {
+                    color: $sid-text;
+                    text-decoration: none;
+                }
+                img.status {
+                	height: 16px;
+                	width: 16px;
+                	margin: 4px;
+                }
+            }
+        }
+    }
+    .sem-timeline-tickers {
+        height: 20px;
+        
+        > div {
+            position: absolute;
+            top: 0px;
+            
+            > .sem-timeline-ticker {
+                position: absolute; 
+                height: 30px;
+                
+                > .sem-timeline-ticker-text {
+                    margin-left: -12px;
+                    margin-top: 3px;
+                }
+            }
+            > .sem-timeline-ticker-highlight {
+                position: absolute; 
+                left: -5px;
+
+                > .dot {
+                    position: absolute;
+                    width: 6px; 
+                    height: 6px; 
+                    border-radius: 3px; 
+                    background: $sid-text;
+                }
+            }
+        }
+    }
+    .controls {
+        position: absolute;
+        top: 32px;
+        z-index: 200;
+        
+        .btn {
+        	font-size: 20px;
+        }
+    }
+}

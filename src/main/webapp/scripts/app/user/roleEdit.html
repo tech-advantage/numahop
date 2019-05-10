@@ -1,0 +1,134 @@
+<div class="col-sm-8 col-sm-offset-4 col-layout-columns" ng-controller="UserRoleEditCtrl">
+    <div class="panel panel-column-3">
+        <div class="panel-heading">
+            <div class="pull-right">
+                <button type="button" class="btn btn-sem2 btn-xs"
+                        ng-click="roleForm.$show()" ng-disabled="!role || !role.identifier"
+                        uib-tooltip="{{::'Modifier' | translate}}" ng-show="!roleForm.$visible && loaded"
+                        sem-roles-allowed="ROLE_HAB2">
+                    <span class="glyphicon-regular edit"></span>
+                </button>
+                <button type="button" class="btn btn-sem2 btn-xs"
+                        ng-click="delete(role)" ng-disabled="!role || !role.identifier || !loaded"
+                        uib-tooltip="{{::'Supprimer' | translate}}"
+                        sem-roles-allowed="ROLE_HAB3">
+                    <span class="glyphicon-halflings glyphicon-trash"></span>
+                </button>
+            </div>
+            <h5 translate>Fiche Profil&nbsp;
+                <span class="glyphicon-halflings glyphicon-question-sign cursor-help"
+                              uib-tooltip="{{::'Les valeurs sont communes à toutes les bibliothèques' | translate}}"></span>
+            </h5>
+        </div>
+
+        <div class="panel-body" ng-show="loaded">
+            <!-- Formulaire -->
+                <form editable-form name="roleForm" onaftersave="saveRole(role)" 
+                ng-init="formRO = !isAuthorized([userRoles.ROLE_HAB1,userRoles.ROLE_HAB2])" ng-show="loaded">
+
+                <numa-editable-field title="{{::'Code' | translate}}" placeholder="{{::'Code' | translate}}" mandatory="true"
+                form="roleForm" model="role.code" numa-readonly="formRO || role.id" errors="{{ errors.code }}"
+                onbeforesave="validation.required($data)"> </numa-editable-field>
+
+                <numa-editable-field title="{{::'Libellé' | translate}}" placeholder="{{::'Libellé' | translate}}" mandatory="true"
+                form="roleForm" model="role.label" numa-readonly="formRO" errors="{{ errors.label }}"
+                onbeforesave="validation.required($data)"> </numa-editable-field>
+
+                <numa-editable-field title="{{::'Description' | translate}}" placeholder="{{::'Description' | translate}}" type="textarea"
+                form="roleForm" model="role.description" numa-readonly="formRO" errors="{{ errors.description }}"> </numa-editable-field>
+
+            <!-- Habilitations -->
+            <div class="row">
+                <label class="col-sm-4 text-right form-control-static" translate>Habilitations</label>
+                <div class="col-sm-8 col-lg-4">
+                    <select class="form-control" ng-model="filterBy.module"
+                            ng-options="module.code as module.label for module in modules | orderBy:'label'">
+                        <option value translate>Tous les modules</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row margin-t20">
+                <div class="table-responsive col-sm-12" ng-show="roleForm.$visible">
+                    <table class="table table-condensed table-hover" 
+                           ng-init="updAllowed = isAuthorized([userRoles.ROLE_HAB1,userRoles.ROLE_HAB2])">
+                        <thead>
+                        <tr>
+                            <th ng-if="isAuthorized([userRoles.ROLE_HAB1,userRoles.ROLE_HAB2])" translate>Activé</th>
+                            <th translate>Module</th>
+                            <th translate>Code</th>
+                            <th translate>Libellé</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="auth in authorizations | filter:(filterBy.module ? filterBy : {}) | orderBy:orderBy">
+                            <td ng-if="roleForm.$visible && isAuthorized([userRoles.ROLE_HAB1,userRoles.ROLE_HAB2])" class="text-center">
+                                <div class="btn-group btn-group-sm">
+                                    <input bs-switch
+                                           ng-model="auth._activated"
+                                           type="checkbox"
+                                           ng-change="updateAuth(auth)"
+                                           switch-readonly="{{ auth._readOnly }}"
+                                           switch-on-text="{{ onLabel }}"
+                                           switch-off-text="{{ offLabel }}"
+                                           switch-label-width="0px"/>
+                                </div>
+                            </td>
+                            <td>{{::code[auth.module]}}</td>
+                            <td class="nowrap">
+                                <span>{{::auth.code}}</span>
+                                <span class="glyphicon-regular circle-question-mark"
+                                      ng-if="auth._readOnly && !auth._activated && auth.requirements.length > 0"
+                                      uib-tooltip="{{::('Cette autorisation ne peut pas être activée
+tant que les autorisations suivantes ne sont pas activées: ' | translate) + auth.requirements.join(', ') }}"></span>
+                                <span class="glyphicon-regular circle-question-mark"
+                                      ng-if="auth._readOnly && auth._activated && auth.dependencies.length > 0"
+                                      uib-tooltip="{{::('Cette autorisation ne peut pas être désactivée
+tant que les autorisations suivantes ne sont pas désactivées: ' | translate) + auth.dependencies.join(', ') }}"></span>
+                            </td>
+                            <td><span uib-tooltip={{::auth.description}}>{{::auth.label}}</span></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Habilitations sans édition -->
+                <div class="table-responsive col-sm-12" ng-show="!roleForm.$visible">
+                    <table class="table table-condensed table-hover" 
+                           ng-init="updAllowed = false">
+                        <thead>
+                        <tr>
+                            <th translate>Module</th>
+                            <th translate>Code</th>
+                            <th translate>Libellé</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="auth in displayedAuthorizations | filter:(filterBy.module ? filterBy : {}) | orderBy:orderBy">
+                            <td>{{::code[auth.module]}}</td>
+                            <td class="nowrap">
+                                <span>{{::auth.code}}</span>
+                            </td>
+                            <td><span uib-tooltip={{::auth.description}}>{{::auth.label}}</span></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="text-center column-bottom column-6 margin-t10" ng-if="roleForm.$visible">
+                <div class="column-bottom-button">
+                    <!-- Création / Modification complète -->
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-sem4" ng-click="cancel()">
+                            <span class="glyphicon-regular unshare"></span> {{::'Annuler' | translate}}
+                        </button>
+                        <button type="submit" class="btn btn-sem2" sem-roles-allowed="ROLE_HAB1,ROLE_HAB2">
+                            <span class="glyphicon-regular floppy-save"></span> {{::'Enregistrer' | translate}}
+                        </button>
+                    </div>
+                </div>
+            </div>
+                </form>
+        </div>
+    </div>
+</div>

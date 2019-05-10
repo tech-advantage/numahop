@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="pgcn-help-1" author="progilone">
+        <createTable tableName="hlp_page">
+            <column name="identifier" type="varchar(191)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false" />
+            </column>
+            <column name="last_modified_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+            <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+            <column name="content" type="longvarchar" />
+            <column name="module" type="varchar(5000)">
+                <constraints nullable="false" />
+            </column>
+            <column name="rank" type="integer">
+                <constraints nullable="false" />
+            </column>
+            <column name="tag" type="varchar(191)" />
+            <column name="title" type="varchar(191)">
+                <constraints nullable="false" />
+            </column>
+            <column name="type" type="varchar(191)">
+                <constraints nullable="false" />
+            </column>
+            <column name="parent" type="varchar(191)"/>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="parent" baseTableName="hlp_page" constraintName="fk_page_parent"
+            referencedColumnNames="identifier" referencedTableName="hlp_page" />
+    </changeSet>
+</databaseChangeLog>

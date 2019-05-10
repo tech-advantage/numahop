@@ -1,0 +1,101 @@
+<div class="modal-header">
+    <h3 class="modal-title" translate>Recherche Z39.50</h3>
+</div>
+<div class="modal-body">
+    <!-- Formulaire -->
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="formBlock">
+                <div class="formBlockTitle">
+                    <span translate>Critères de recherche</span>
+                </div>
+                <div class="formBlockContent" ng-switch="!mainCtrl.servers || mainCtrl.servers.length === 0">
+                    <sem-field sem-type="text" sem-label="{{::'Titre' | translate}}" sem-model="mainCtrl.searchParameters.title"
+                               ng-keypress="mainCtrl.newSearch(mainCtrl.searchParameters, $event)"></sem-field>
+                    <sem-field sem-type="text" sem-label="{{::'ISBN' | translate}}" sem-model="mainCtrl.searchParameters.isbn"
+                               ng-keypress="mainCtrl.newSearch(mainCtrl.searchParameters, $event)"></sem-field>
+                    <sem-field sem-type="text" sem-label="{{::'ISSN' | translate}}" sem-model="mainCtrl.searchParameters.issn"
+                               ng-keypress="mainCtrl.newSearch(mainCtrl.searchParameters, $event)"></sem-field>
+                    <sem-field sem-type="text" sem-label="{{::'Auteur' | translate}}" sem-model="mainCtrl.searchParameters.author"
+                               ng-keypress="mainCtrl.newSearch(mainCtrl.searchParameters, $event)"></sem-field>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6">
+            <div class="formBlock">
+                <div class="formBlockTitle">
+                    <span translate>Cibles de recherche</span>
+                </div>
+                <div class="formBlockContent" ng-switch="!mainCtrl.searchParameters.targets || mainCtrl.searchParameters.targets.length === 0">
+                    <sem-field ng-repeat="target in mainCtrl.searchParameters.targets"
+                               sem-type="checkbox" sem-label="{{::target.name}}"
+                               sem-model="target.active" sem-onchange="mainCtrl.onchangeTarget()"></sem-field>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- searchResults -->
+    <div class="row">
+        <!-- En cours de chargement -->
+        <div ng-hide="mainCtrl.pagination.loaded" class="col-xs-12 padding-t20">
+            <div class="well" translate>Chargement en cours...</div>
+        </div>
+
+        <!-- Liste de résultats -->
+        <div ng-if="mainCtrl.pagination.loaded && mainCtrl.searchResults.length > 0" class="col-xs-12 padding-t20">
+            <div class="panel">
+                <table class="table table-striped table-hover">
+                    <thead>
+                    <tr>
+                        <th translate>Serveur</th>
+                        <th translate>Titre</th>
+                        <th translate>Auteur</th>
+                        <th translate>ISBN</th>
+                        <th translate>ISSN</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="searchResult" ng-repeat="result in mainCtrl.pageResults">
+                        <td>{{result.z3950Server.name}}</td>
+                        <td>{{result.title}}</td>
+                        <td>{{result.author}}</td>
+                        <td>{{result.isbn}}</td>
+                        <td>{{result.issn}}</td>
+                        <td>
+                            <button type="button" class="btn btn-sem2 btn-xs" ng-click="mainCtrl.importZ3950(result)" translate>Importer</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Aucun résultat -->
+        <div ng-if="mainCtrl.searchResults.length === 0" class="col-xs-12 padding-t20">
+            <div class="well text-center" translate>Aucun résultat</div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="row" ng-if="mainCtrl.pagination.totalPages > 1">
+            <div class="col-sm-12">
+                <div class="text-center">
+                    <ul uib-pagination class="pagination-sm"
+                        ng-disabled="!mainCtrl.pagination.loaded"
+                        num-pages="mainCtrl.pagination.totalPages"
+                        total-items="mainCtrl.pagination.totalItems"
+                        items-per-page="mainCtrl.pagination.itemsPerPage"
+                        ng-change="mainCtrl.search(mainCtrl.searchParameters)"
+                        ng-model="mainCtrl.pagination.currentPage"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-sem4" ng-click="mainCtrl.cancel()" translate>Annuler</button>
+        <button type="button" class="btn btn-sem2" ng-click="mainCtrl.newSearch(mainCtrl.searchParameters)"
+                ng-disabled="!mainCtrl.isValidSearch(mainCtrl.searchParameters)" translate>Rechercher
+        </button>
+    </div>
+</div>

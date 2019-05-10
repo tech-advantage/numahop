@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Gestion des fratries de notice -->
+    <changeSet id="pgcn-document-15" author="progilone">
+
+        <addColumn tableName="doc_unit">
+            <column name="ark_url" type="varchar(255)"/>
+        </addColumn>
+
+    </changeSet>
+</databaseChangeLog>

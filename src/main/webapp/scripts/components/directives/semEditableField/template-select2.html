@@ -1,0 +1,24 @@
+<div class="row vertical-align" ng-hide="hideIfEmpty && !model && !refForm.$visible">
+	<div ng-class="labelclass || 'col-xs-4'" class="text-right" ng-if="label || removable">
+        <label ng-if="label">{{::label}}</label>
+        <!-- Mandatory -->
+        <span class="text-danger cursor-help" 
+              uib-tooltip="{{ ::'Ce champ est obligatoire' | translate }}" ng-if="mandatory">*</span>
+        <span class="btn-group-xs pull-left" ng-hide="readonly" ng-if="removable">
+            <button type="button" class="btn btn-sem1 btn-removable" uib-tooltip="{{ ::'Supprimer' | translate }}" ng-click="ondelete()"
+                    ng-show="showdelete">
+                   <span class="glyphicon-halflings glyphicon-trash"></span>
+            </button>
+            <button type="button" class="btn btn-sem1 btn-removable" uib-tooltip="{{ ::'Ajouter' | translate }}" ng-click="onadd()"
+                    ng-show="showadd">
+                <span class="glyphicon-halflings glyphicon-plus"></span>
+            </button>
+        </span>
+    </div>
+	<div ng-class="fieldclass || 'col-xs-8'">
+		<span main-field ng-hide="hideIfEmpty && !model">
+			<span ng-show="transcluding"></span>
+			<span ng-show="!transcluding">{{displaySelect2Model()}}</span>
+		</span>
+	</div>
+</div>

@@ -1,0 +1,271 @@
+<div id="sem-filters-toggle" class="button-toggle" sem-auto-hide-filters>
+	<a ng-click="$semFilters.toggle()" class="link-toggle">
+        <span class="glyphicon-regular filter"></span>
+    </a>
+</div>
+<div id="sem-filters" sem-auto-hide-filters>
+	<div class="panel no-print" ng-controller="FiltersController as FilterCtrl">
+		<div class="panel-heading">
+			<span translate>Filtres</span>
+		</div>
+		<div class="panel-body">
+			<div ng-include="'scripts/components/templates/common/initialFilter.html'" ng-show="FilterCtrl.isAvailable(listFilters.initial_filter)"></div>
+
+			<!-- Tri -->
+			<div class="filter-block" ng-show="FilterCtrl.isAvailable(listFilters.sort_criterion)">
+				<div class="filter-title">{{::'Tri' | translate}}</div>
+				<div class="filter-element">
+						<label class="radio-inline"><input type="radio" value="pgcnId" ng-model="filters.sortModel" ng-change="doFilter()">Identifiant PGCN</label>
+						<label class="radio-inline"><input type="radio" value="label" ng-model="filters.sortModel" ng-change="doFilter()">Libellé</label>
+				</div>
+			</div>
+			<!-- Bibliothèque  -->
+			<div class="filter-block" ng-show="FilterCtrl.isAvailable(listFilters.library_filter)">
+				<div class="filter-title">{{::'Bibliothèque' | translate}}</div>
+				<div class="filter-element">
+					<ui-select multiple ng-model="filters.libraries" theme="select2" on-select="doFilterLibrary()" on-remove="doFilterLibrary()"
+					 class="form-control">
+						<ui-select-match placeholder="{{::'Bibliothèque' | translate}}">{{$item.name}}</ui-select-match>
+						<ui-select-choices repeat="option in options.libraries | filter: $select.search track by option.identifier">
+							<div ng-bind-html="option.name | highlight: $select.search"></div>
+						</ui-select-choices>
+					</ui-select>
+				</div>
+			</div>
+			<!-- Projet -->
+			<div class="filter-block" ng-show="FilterCtrl.isAvailable(listFilters.project_filter)">
+				<div class="filter-title">{{::'Projet' | translate}}</div>
+				<div class="filter-element">
+					<ui-select multiple ng-model="filters.projects" theme="select2" on-select="doFilterProject()" on-remove="doFilterProject()"
+					 class="form-control">
+						<ui-select-match placeholder="{{::'Projet' | translate}}">{{$item.name}}</ui-select-match>
+						<ui-select-choices repeat="option in options.projects | filter: $select.search track by option.identifier">
+							<div ng-bind-html="option.name | highlight: $select.search"></div>
+						</ui-select-choices>
+					</ui-select>
+				</div>
+			</div>
+			<!-- Lot -->
+			<div class="filter-block" ng-show="FilterCtrl.isAvailable(listFilters.lot_filter)">
+				<div class="filter-title">{{::'Lot' | translate}}</div>
+				<div class="filter-element">
+					<ui-select multiple ng-model="filters.lots" theme="select2" on-select="doFilter()" on-remove="doFilter()" class="form-control">
+						<ui-select-match placeholder="{{::'Lot' | translate}}">{{$item.label}}</ui-select-match>
+						<ui-select-choices repeat="option in options.lots | filter: $select.search track by option.identifier">
+							<div ng-bind-html="option.label | highlight: $select.search"></div>
+						</ui-select-choices>
+					</ui-select>
+				</div>
+			</div>
+			<!-- Catégorie -->
+			<div class="filter-block" ng-show="FilterCtrl.isAvailable(listFilters.category_filter)">
+				<div class="filter-title">{{::'Catégorie' | translate}}</div>
+				<div class="filter-element">
+					<ui-select multiple ng-model="filters.categories" theme="select2" on-select="doFilter()" on-remove="doFilter()" class="form-control">
+						<ui-select-match placeholder="{{::'Catégories' | translate}}">{{$item.label}}</ui-select-match>
+						<ui-select-choices repeat="category in options.categories | filter: $select.search track by category.identifier">
+							<div ng-bind-html="category.label | highlight: $select.search"></div>
+						</ui-select-choices>
+					</ui-select>
+				</div>
+			</div>
+			<!-- Prestataire -->
+			<div class="filter-block" ng-show="FilterCtrl.isAvailable(listFilters.provider_filter)">
+				<div class="filter-title">{{::'Prestataire' | translate}}</div>
+				<div class="filter-element">
+					<ui-select multiple ng-model="filters.providers" theme="select2" on-select="doFilter()" on-remove="doFilter()" class="form-control">
+						<ui-select-match placeholder="{{::'Prestataires' | translate}}">{{$item.fullName}}</ui-select-match>
+						<ui-select-choices repeat="provider in options.providers | filter: $select.search track by provider.identifier">
+							<div ng-bind-html="provider.fullName | highlight: $select.search"></div>
+						</ui-select-choices>
+					</ui-select>
+				</div>
+			</div>
+			<!-- Statut -->
+			<div class="filter-block" ng-show="FilterCtrl.isAvailable(listFilters.wkf_status_filter)">
+				<div class="filter-title">{{::'Statut' | translate}}</div>
+				<div class="filter-element">
+					<ui-select multiple ng-model="filters.wkf_statuses" theme="select2" on-select="doFilter()" on-remove="doFilter()" class="form-control">
+						<ui-select-match placeholder="{{::'Statuts' | translate}}">{{$item.label}}</ui-select-match>
+						<ui-select-choices repeat="status in options.statuses | filter: $select.search track by status.identifier">
+							<div ng-bind-html="status.label | highlight: $select.search"></div>
+						</ui-select-choices>
+					</ui-select>
+				</div>
+			</div>
+			<!-- Statut -->
+            <div class="filter-block" ng-show="FilterCtrl.isAvailable(listFilters.status_filter)">
+                <div class="filter-title">{{::'Statut' | translate}}</div>
+                <div class="filter-element">
+                    <ui-select multiple ng-model="filters.statuses" theme="select2" on-select="doFilter()" on-remove="doFilter()" class="form-control">
+                        <ui-select-match placeholder="{{::'Statuts' | translate}}">{{$item.label}}</ui-select-match>
+                        <ui-select-choices repeat="status in options.statuses | filter: $select.search track by status.identifier">
+                            <div ng-bind-html="status.label | highlight: $select.search"></div>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+            </div>
+			<!-- Rôle -->
+			<div class="filter-block" ng-show="FilterCtrl.isAvailable(listFilters.role_filter)">
+				<div class="filter-title">{{::'Rôle' | translate}}</div>
+				<div class="filter-element">
+					<ui-select multiple ng-model="filters.roles" theme="select2" on-select="doFilter()" on-remove="doFilter()" class="form-control">
+						<ui-select-match placeholder="{{::'Rôle' | translate}}">{{$item.label}}</ui-select-match>
+						<ui-select-choices repeat="role in options.roles | filter: $select.search track by role.identifier">
+							<div ng-bind-html="role.label | highlight: $select.search"></div>
+						</ui-select-choices>
+					</ui-select>
+				</div>
+			</div>
+			<!-- Format de fichier -->
+			<div class="filter-block" ng-show="FilterCtrl.isAvailable(listFilters.file_format_filter)">
+				<div class="filter-title">{{::'Format de fichier' | translate}}</div>
+				<div class="filter-element">
+					<ui-select multiple ng-model="filters.fileFormat" theme="select2" on-select="doFilter()" on-remove="doFilter()" class="form-control">
+						<ui-select-match placeholder="{{::'Format de fichier' | translate}}">{{$item.label}}</ui-select-match>
+						<ui-select-choices repeat="fileFormat in options.fileFormat | filter: $select.search track by fileFormat.identifier">
+							<div ng-bind-html="fileFormat.label | highlight: $select.search"></div>
+						</ui-select-choices>
+					</ui-select>
+				</div>
+			</div>
+			<!-- Date dernière modification -->
+			<div class="filter-block" ng-show="FilterCtrl.isAvailable(listFilters.last_modified_date_filter)">
+				<div class="filter-title">{{::'Date de dernière modification' | translate}}</div>
+				<div class="filter-element">
+					<div class="form-inline margin-b10">
+						<label translate>du</label>
+						<sem-datepicker filter="true" ng-change="doFilter(false, $data, 'lastModifiedDateFrom')" ng-model="filters.lastModifiedDateFrom"></sem-datepicker>
+					</div>
+					<div class="form-inline">
+						<label translate>au</label>
+						<sem-datepicker filter="true" ng-change="doFilter(false, $data, 'lastModifiedDateTo')" ng-model="filters.lastModifiedDateTo"></sem-datepicker>
+					</div>
+				</div>
+			</div>
+			<!-- Date de création -->
+			<div class="filter-block" ng-show="FilterCtrl.isAvailable(listFilters.created_date_filter)">
+				<div class="filter-title">{{::'Date de création' | translate}}</div>
+				<div class="filter-element">
+					<div class="form-inline margin-b10">
+						<label translate>du</label>
+						<sem-datepicker filter="true" ng-change="doFilter(false, $data, 'createdDateFrom')" ng-model="filters.createdDateFrom"></sem-datepicker>
+					</div>
+					<div class="form-inline">
+						<label translate>au</label>
+						<sem-datepicker filter="true" ng-change="doFilter(false, $data, 'createdDateTo')" ng-model="filters.createdDateTo"></sem-datepicker>
+					</div>
+				</div>
+			</div>
+			<!-- Date livraison -->
+			<div class="filter-block" ng-show="FilterCtrl.isAvailable(listFilters.delivery_date_filter)">
+				<div class="filter-title">{{::'Date de livraison' | translate}}</div>
+				<div class="filter-element">
+					<div class="form-inline margin-b10">
+						<label translate>du</label>
+						<sem-datepicker filter="true" ng-change="doFilter(false, $data, 'deliveryDateFrom')" ng-model="filters.deliveryDateFrom"></sem-datepicker>
+					</div>
+					<div class="form-inline">
+						<label translate>au</label>
+						<sem-datepicker filter="true" ng-change="doFilter(false, $data, 'deliveryDateTo')" ng-model="filters.deliveryDateTo"></sem-datepicker>
+					</div>
+				</div>
+			</div>
+			<!-- Date envoi au prestataire-->
+			<div class="filter-block" ng-show="FilterCtrl.isAvailable(listFilters.provider_sending_date_filter)">
+				<div class="filter-title">{{::'Date d\'envoi au prestataire' | translate}}</div>
+				<div class="filter-element">
+					<div class="form-inline margin-b10">
+						<label translate>du</label>
+						<sem-datepicker filter="true" ng-change="doFilter(false, $data, 'providerSendingDateFrom')" ng-model="filters.providerSendingDateFrom"></sem-datepicker>
+					</div>
+					<div class="form-inline">
+						<label translate>au</label>
+						<sem-datepicker filter="true" ng-change="doFilter(false, $data, 'providerSendingDateTo')" ng-model="filters.providerSendingDateTo"></sem-datepicker>
+					</div>
+				</div>
+			</div>
+			<!-- Date retour -->
+			<div class="filter-block" ng-show="FilterCtrl.isAvailable(listFilters.return_date_filter)">
+				<div class="filter-title">{{::'Date de retour' | translate}}</div>
+				<div class="filter-element">
+					<div class="form-inline margin-b10">
+						<label translate>du</label>
+						<sem-datepicker filter="true" ng-change="doFilter(false, $data, 'returnDateFrom')" ng-model="filters.returnDateFrom"></sem-datepicker>
+					</div>
+					<div class="form-inline">
+						<label translate>au</label>
+						<sem-datepicker filter="true" ng-change="doFilter(false, $data, 'returnDateTo')" ng-model="filters.returnDateTo"></sem-datepicker>
+					</div>
+				</div>
+			</div>
+			<!-- Nombre de documents -->
+			<div class="filter-block" ng-show="FilterCtrl.isAvailable(listFilters.doc_number_filter)">
+				<div class="filter-element">
+				<div class="filter-title">{{::'Nombre de documents' | translate}}</div>
+					<input min="0" step="1" class="form-control" id="filterDocNumber" type="number" ng-model="filters.docNumber" ng-change="doFilter()">
+				</div>
+			</div>
+			<!-- Documents à ranger -->
+			<div class="filter-block" ng-show="FilterCtrl.isAvailable(listFilters.available_filter)">
+				<div class="checkbox checkbox-sid-main">
+					<input id="filterAvailable" type="checkbox" ng-model="filters.available" ng-change="doFilter()" />
+					<label for="filterAvailable" translate>Voir uniquement les Unités Documentaires non rattachées</label>
+				</div>
+			</div>
+			<!-- Avec documents numériques -->
+			<div class="filter-block" ng-show="FilterCtrl.isAvailable(listFilters.has_digital_documents_filter)">
+				<div class="checkbox checkbox-sid-main">
+					<input id="filterHasDigitalDocuments" type="checkbox" ng-model="filters.hasDigitalDocuments" ng-change="doFilter()" />
+					<label for="filterHasDigitalDocuments" translate>Voir uniquement les Unités Documentaires avec des documents numériques</label>
+				</div>
+			</div>
+			<!-- Avec unité documentaire -->
+			<div class="filter-block" ng-show="FilterCtrl.isAvailable(listFilters.has_docunit_filter)">
+				<div class="checkbox checkbox-sid-main">
+					<input id="filterHasDocunit" type="checkbox" ng-model="filters.orphan" ng-change="doFilter()" />
+					<label for="filterHasDocunit" translate>Voir uniquement les Notices non attachées à des Unités Documentaires</label>
+				</div>
+			</div>
+			<!-- Inactifs -->
+			<div class="filter-block" ng-show="FilterCtrl.isAvailable(listFilters.inactive_filter)">
+				<div class="checkbox checkbox-sid-main">
+					<input id="filterInactive" type="checkbox" ng-model="filters.inactive" ng-change="doFilter()" />
+					<label for="filterInactive" translate>{{filterLabels.inactive}}</label>
+				</div>
+			</div>
+			<!-- Statut d'archivage -->
+            <div class="filter-block" ng-show="FilterCtrl.isAvailable(listFilters.archive_filter)">
+                <div class="filter-title">{{::'Statut d\'archivage' | translate}}</div>
+                <div class="checkbox checkbox-sid-main">
+                    <input id="filterArchive" type="checkbox" ng-model="filters.archived" ng-change="doFilter()" />
+                    <label for="filterArchive" style="min-width: 80px;" class="margin-r40" translate>Archivés</label>
+                    <input id="filterNonArchive" type="checkbox" ng-model="filters.nonArchived" ng-change="doFilter()" />
+                    <label for="filterNonArchive" translate>Non archivés</label>
+                </div>
+                <div class="checkbox checkbox-sid-main">
+                    <input id="filterArchivable" type="checkbox" ng-model="filters.archivable" ng-change="doFilter()" />
+                    <label for="filterArchivable" style="min-width: 80px;" class="margin-r40" translate>Archivables</label>
+                    <input id="filterNonArchivable" type="checkbox" ng-model="filters.nonArchivable" ng-change="doFilter()" />
+                    <label for="filterNonArchivable" translate>Non archivables</label>
+                </div>
+            </div>
+            <!-- Statut de diffusion -->
+            <div class="filter-block" ng-show="FilterCtrl.isAvailable(listFilters.distribution_filter)">
+                <div class="filter-title">{{::'Statut de diffusion' | translate}}</div>
+                <div class="checkbox checkbox-sid-main">
+                    <input id="filterDistributed" type="checkbox" ng-model="filters.distributed" ng-change="doFilter()" />
+                    <label for="filterDistributed" style="min-width: 80px;" class="margin-r40" translate>Diffusés</label>
+                    <input id="filterNonDistributed" type="checkbox" ng-model="filters.nonDistributed" ng-change="doFilter()" />
+                    <label for="filterNonDistributed" translate>Non diffusés</label>
+                </div>
+                <div class="checkbox checkbox-sid-main">
+                    <input id="filterDistributable" type="checkbox" ng-model="filters.distributable" ng-change="doFilter()" />
+                    <label for="filterDistributable" style="min-width: 80px;" class="margin-r40" translate>Diffusables</label>
+                    <input id="filterNonDistributable" type="checkbox" ng-model="filters.nonDistributable" ng-change="doFilter()" />
+                    <label for="filterNonDistributable" translate>Non diffusables</label>
+                </div>
+            </div>
+		</div>
+	</div>
+</div>

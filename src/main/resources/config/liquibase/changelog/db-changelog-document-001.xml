@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Changeset du module Document -->
+    <changeSet id="pgcn-create-document" author="progilone">
+        <createTable tableName="doc_unit">
+            <column name="identifier" type="varchar(191)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+			<!-- Données -->
+			<column name="pgcn_id" type="varchar(191)">
+				<constraints unique="true" uniqueConstraintName="uniq_doc_unit_pgcn_id"/>
+			</column>
+			<column name="label" type="varchar(255)" />
+			<column name="type" type="varchar(255)" />
+			<column name="collection_ia" type="varchar(255)" />
+			<column name="archivable" type="boolean" />
+			<column name="distributable" type="boolean" />
+			<column name="rights" type="varchar(255)" />
+			<column name="embargo" type="date" />
+			<column name="check_delay" type="int" />
+			<column name="check_end_time" type="date" />
+			<column name="pac" type="varchar(255)" />
+			<!-- Lien technique -->
+            <column name="library" type="varchar(191)" />
+            <column name="project" type="varchar(191)" />
+			<!-- Données techniques auto -->
+            <column name="version" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+		<createTable tableName="doc_bibliographic_record">
+            <column name="identifier" type="varchar(191)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+			<!-- Données -->
+			<column name="sigb" type="varchar(255)" />
+			<column name="sudoc" type="varchar(255)" />
+			<column name="calames" type="varchar(255)" />
+			<!-- Lien technique -->
+            <column name="doc_unit" type="varchar(191)" />
+			<!-- Données techniques auto -->
+            <column name="version" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+		<createTable tableName="doc_property">
+            <column name="identifier" type="varchar(191)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+			<!-- Données -->
+			<column name="value" type="text" />
+			<column name="language" type="varchar(255)" />
+			<column name="rank" type="integer"/>
+			<!-- Lien technique -->
+			<column name="type" type="varchar(191)" />
+            <column name="record" type="varchar(191)" />
+			<!-- Données techniques auto -->
+            <column name="version" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+		<createTable tableName="doc_property_type">
+            <column name="identifier" type="varchar(191)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+			<!-- Données -->
+			<column name="label" type="varchar(255)" />
+			<column name="supertype" type="varchar(255)" />
+			<column name="rank" type="integer"/>
+			<!-- Lien technique -->
+			<!-- Données techniques auto -->
+            <column name="version" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+		<addForeignKeyConstraint baseColumnNames="library" baseTableName="doc_unit" constraintName="fk_doc_unit_library"
+            referencedColumnNames="identifier" referencedTableName="lib_library" />
+		<addForeignKeyConstraint baseColumnNames="doc_unit" baseTableName="doc_bibliographic_record"
+			constraintName="fk_doc_bibliographic_record_doc_unit"
+            referencedColumnNames="identifier" referencedTableName="doc_unit" />
+        <addForeignKeyConstraint baseColumnNames="type" baseTableName="doc_property"
+			constraintName="fk_doc_property_type"
+            referencedColumnNames="identifier" referencedTableName="doc_property_type" />
+		<addForeignKeyConstraint baseColumnNames="record" baseTableName="doc_property"
+			constraintName="fk_doc_property_record"
+            referencedColumnNames="identifier" referencedTableName="doc_bibliographic_record" />
+    </changeSet>
+</databaseChangeLog>

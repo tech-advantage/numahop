@@ -1,0 +1,5 @@
+module;identifier;code;label;description;version
+WORKFLOW;WORKFLOW-HAB1;WORKFLOW-HAB1;Gestion des workflows : création;Habilitation à la gestion des workflows : création;0
+WORKFLOW;WORKFLOW-HAB2;WORKFLOW-HAB2;Gestion des workflows : modification;Habilitation à la gestion des workflows : modification;0
+WORKFLOW;WORKFLOW-HAB3;WORKFLOW-HAB3;Gestion des workflows : suppression;Habilitation à la gestion des workflows : suppression;0
+WORKFLOW;WORKFLOW-HAB4;WORKFLOW-HAB4;Gestion des workflows : lecture;Habilitation à la gestion des workflows : lecture;0

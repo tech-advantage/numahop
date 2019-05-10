@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Changeset du module Workflow (Suppression state VALIDATION_REJET) -->
+    <changeSet id="pgcn-create-workflow-6" author="progilone">
+
+         <sql>SET FOREIGN_KEY_CHECKS = 0;</sql>
+         <sql>   
+            delete from workflow_model_state  where `key` = 'VALIDATION_REJET';
+        </sql>
+        <sql>   
+            delete from doc_workflow_state where `key` = 'VALIDATION_REJET';
+        </sql>
+        <sql>SET FOREIGN_KEY_CHECKS = 1;</sql>
+        
+            
+    </changeSet>
+</databaseChangeLog>

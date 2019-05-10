@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Changeset du module Document -->
+    <changeSet id="pgcn-document-18" author="progilone">
+
+        <addColumn tableName="doc_unit">
+            <column name="archive_item" type="varchar(191)"></column>
+        </addColumn>
+
+		<createTable tableName="doc_archive_item">
+            <column name="identifier" type="varchar(191)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+			<!-- Lien technique -->
+            <column name="doc_unit" type="varchar(191)" />
+
+            <column name="contributor" type="varchar(255)" />
+            <column name="coverage" type="varchar(255)" />
+            <column name="creator" type="varchar(255)" />
+            <column name="credits" type="varchar(255)" />
+            <column name="date" type="varchar(255)" />
+            <column name="description" type="varchar(2047)" />
+            <column name="language" type="varchar(255)" />
+            <column name="license_url" type="varchar(255)" />
+            <column name="mediatype" type="varchar(255)" />
+            <column name="custom_mediatype" type="varchar(255)" />
+            <column name="notes" type="varchar(255)" />
+            <column name="publisher" type="varchar(255)" />
+            <column name="rights" type="varchar(255)" />
+            <column name="title" type="varchar(255)" />
+
+			<!-- Données techniques auto -->
+            <column name="version" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="doc_archive_collection">
+            <column name="identifier" type="varchar(191)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <!-- Données -->
+            <column name="value" type="text" />
+            <!-- Lien technique -->
+            <column name="item" type="varchar(191)" />
+            <!-- Données techniques auto -->
+            <column name="version" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="doc_archive_subject">
+            <column name="identifier" type="varchar(191)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <!-- Données -->
+            <column name="value" type="text" />
+            <!-- Lien technique -->
+            <column name="item" type="varchar(191)" />
+            <!-- Données techniques auto -->
+            <column name="version" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="doc_archive_header">
+            <column name="identifier" type="varchar(191)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <!-- Données -->
+            <column name="value" type="text" />
+            <column name="type" type="varchar(191)" />
+            <!-- Lien technique -->
+            <column name="item" type="varchar(191)" />
+            <!-- Données techniques auto -->
+            <column name="version" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+		<addForeignKeyConstraint baseColumnNames="archive_item" baseTableName="doc_unit" constraintName="fk_doc_unit_ia_item"
+            referencedColumnNames="identifier" referencedTableName="doc_archive_item" />
+        <addForeignKeyConstraint baseColumnNames="item" baseTableName="doc_archive_collection"
+                                 constraintName="fk_doc_archive_collection"
+                                 referencedColumnNames="identifier" referencedTableName="doc_archive_item" />
+        <addForeignKeyConstraint baseColumnNames="item" baseTableName="doc_archive_subject"
+                                 constraintName="fk_doc_archive_subject"
+                                 referencedColumnNames="identifier" referencedTableName="doc_archive_item" />
+        <addForeignKeyConstraint baseColumnNames="item" baseTableName="doc_archive_header"
+                                 constraintName="fk_doc_archive_header"
+                                 referencedColumnNames="identifier" referencedTableName="doc_archive_item" />
+    </changeSet>
+</databaseChangeLog>

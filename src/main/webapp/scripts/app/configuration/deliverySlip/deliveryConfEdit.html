@@ -1,0 +1,64 @@
+<div class="col-sm-8 col-lg-9 col-sm-offset-4 col-lg-offset-3 col-layout-columns" 
+     ng-controller="DeliveryConfEditCtrl as editCtrl" 
+     ng-init="editCtrl.init(mainCtrl.editedLibrary)">
+
+    <div class="panel panel-column-2 panel-column-end">
+        <div class="panel-heading">
+            <div class="pull-right">
+                <button type="button" class="btn btn-sem2 btn-xs"
+                        ng-click="editCtrl.openForm()" uib-tooltip="{{::'Modifier' | translate}}"
+                        ng-show="editCtrl.loaded && !valuesForm.$visible">
+                    <span class="glyphicon-regular edit"></span>
+                </button>
+            </div>
+        </div>
+        <div class="panel-body">
+
+            <form editable-form name="valuesForm" onaftersave="editCtrl.saveValues()" ng-show="editCtrl.loaded">
+                
+                    <numa-editable-field title="{{::'Cote' | translate}}" type="radiolist" form="valuesForm" id="rad-1"
+                    model="editCtrl.config.pgcnId" numa-readonly="formRO" errors="{{ errors.pgcnId }}"
+                    config="{ data: editCtrl.options.boolean, displayFn: editCtrl.displayBoolean, 
+                    query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }" > </numa-editable-field>
+                    <numa-editable-field title="{{::'Lot' | translate}}" type="radiolist" form="valuesForm" id="rad-2"
+                    model="editCtrl.config.lot" numa-readonly="formRO" errors="{{ errors.lot }}"
+                    config="{ data: editCtrl.options.boolean, displayFn: editCtrl.displayBoolean, 
+                    query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }" > </numa-editable-field>
+                    <numa-editable-field title="{{::'Train' | translate}}" type="radiolist" form="valuesForm" id="rad-3"
+                    model="editCtrl.config.train" numa-readonly="formRO" errors="{{ errors.train }}"
+                    config="{ data: editCtrl.options.boolean, displayFn: editCtrl.displayBoolean, 
+                    query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }" > </numa-editable-field>
+                    <numa-editable-field title="{{::'Radical' | translate}}" type="radiolist" form="valuesForm" id="rad-4"
+                    model="editCtrl.config.radical" numa-readonly="formRO" errors="{{ errors.radical }}"
+                    config="{ data: editCtrl.options.boolean, displayFn: editCtrl.displayBoolean, 
+                    query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }" > </numa-editable-field>
+                    <numa-editable-field title="{{::'Titre' | translate}}" type="radiolist" form="valuesForm" id="rad-5"
+                    model="editCtrl.config.title" numa-readonly="formRO" errors="{{ errors.title }}"
+                    config="{ data: editCtrl.options.boolean, displayFn: editCtrl.displayBoolean, 
+                    query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }" > </numa-editable-field>
+                    <numa-editable-field title="{{::'Nombre de pages' | translate}}" type="radiolist" form="valuesForm" id="rad-6"
+                    model="editCtrl.config.nbPages" numa-readonly="formRO" errors="{{ errors.nbPages }}"
+                    config="{ data: editCtrl.options.boolean, displayFn: editCtrl.displayBoolean, 
+                    query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }" > </numa-editable-field>
+                    <numa-editable-field title="{{::'Date' | translate}}" type="radiolist" form="valuesForm" id="rad-7"
+                    model="editCtrl.config.date" numa-readonly="formRO" errors="{{ errors.date }}"
+                    config="{ data: editCtrl.options.boolean, displayFn: editCtrl.displayBoolean, 
+                    query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }" > </numa-editable-field>
+
+                <!-- Contrôles -->
+                <div class="text-center column-bottom column-8 margin-t10" ng-show="valuesForm.$visible">
+                    <div class="column-bottom-button">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-sem4" ng-disabled="valuesForm.$waiting" ng-click="editCtrl.cancel()">
+                                <span class="glyphicon-regular unshare"></span> {{::'Annuler' | translate}}
+                            </button>
+                            <button type="submit" class="btn btn-sem2">
+                                <span class="glyphicon-regular floppy-save"></span> {{::'Enregistrer' | translate}}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

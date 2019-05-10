@@ -1,0 +1,154 @@
+<div ng-controller="ExportAllOperationsCtrl as exportCtrl" ng-init="exportCtrl.init(mainCtrl)">
+    <div class="panel-body" id="entityDetails">
+    
+        <!-- Début Export CINES -->
+        <uib-accordion>
+	        <div class="formBlock margin-t0">
+	            <div class="formBlockTitle">
+					<span translate>Export CINES</span>
+				</div>
+	            <!-- Infos cachées lorsque l'accordion est replié -->
+	            <!-- Unités documentaires importées -->
+	            <div class="formBlockContent margin-t0">
+					<div class="row" ng-if="exportCtrl.docUnit.cinesReports.length === 0">
+						<div class="col-xs-12 text-right">
+							<small translate>Aucun résultat</small>
+						</div>
+					</div>
+					<!-- Premier report -->
+					<div class="row" ng-if="exportCtrl.firstCines">
+						<div class="col-xs-12">
+							<table class="table table-hover table-import">
+							 <tbody>
+							 <tr ng-init="status = (exportCtrl.firstCines.status === 'ARCHIVED');" class="root" ng-class="{ true: 'sid-fourth', false: 'sid-third' }[status]">
+								 <td>
+									 <span class="label label-primary">{{::exportCtrl.code[exportCtrl.firstCines.status] || exportCtrl.firstCines.status}}</span>
+									 {{::impDoc.docUnit.label}}  
+									 <span class="label text-right" ng-click="exportCtrl.downloadSIP(exportCtrl.firstCines.status);"><span class="glyphicon-regular download"> </span>{{' Télécharger le fichier sip.xml' | translate}}</span>
+									 <table class="table table-hover table-import">
+									   <tbody>
+										   <tr ng-if="exportCtrl.firstCines.dateSent" class="sid-sec">
+											   <td>{{'Date d\'envoi' | translate}}
+											   </td>
+											   <td>{{::exportCtrl.firstCines.dateSent | date:'short'}}
+											   </td>
+										   </tr>
+										   <tr ng-if="exportCtrl.firstCines.dateAr" class="sid-sec">
+											   <td>{{'Date de réception par le Cines' | translate}}
+											   </td>
+											   <td>{{::exportCtrl.firstCines.dateAr | date:'short'}}
+											   </td>
+										   </tr>
+										   <tr ng-if="exportCtrl.firstCines.dateRejection" class="sid-sec">
+											   <td>{{'Date de rejet par le Cines' | translate}}
+											   </td>
+											   <td>{{::exportCtrl.firstCines.dateRejection | date:'short'}}
+											   </td>
+										   </tr>
+										   <tr ng-if="exportCtrl.firstCines.rejectionMotive" class="sid-sec">
+											   <td>{{'Motif du rejet' | translate}}
+											   </td>
+											   <td>{{::exportCtrl.firstCines.rejectionMotive}}
+											   </td>
+										   </tr>
+										   <tr ng-if="exportCtrl.firstCines.message" class="sid-sec">
+											   <td>{{'Message' | translate}}
+											   </td>
+											   <td>{{::exportCtrl.firstCines.message}}
+											   </td>
+										   </tr>
+										   <tr ng-if="exportCtrl.firstCines.dateArchived" class="sid-sec">
+											   <td>{{'Date d\'archivage' | translate}}
+											   </td>
+											   <td>{{::exportCtrl.firstCines.dateArchived | date:'short'}}
+											   </td>
+										   </tr>
+									   </tbody>
+									 </table>
+								 </td>
+							 </tr>
+							 </tbody>
+						 </table>
+						</div>
+					</div>
+					<!-- Reports suivants, repliés par défaut -->
+					<div class="row" ng-click="exportCtrl.accCines = !exportCtrl.accCines" ng-if="exportCtrl._cinesReports.length > 0">
+						<div class="col-xs-12">
+							<span class="glyphicon-halflings"
+								ng-class="{false: 'glyphicon-chevron-right',
+										   true: 'glyphicon-chevron-down'}[exportCtrl.accCines]"></span>
+							<span translate translate-n="exportCtrl._cinesReports.length" translate-plural="{{$count}} résultats supplémentaires">
+								1 résultat supplémentaire
+							</span>
+						</div>
+					</div>
+		            <div class="row" ng-if="exportCtrl.docUnit.cinesReports" uib-accordion-group is-open="exportCtrl.accCines">
+		                <div class="col-xs-12">
+		                    <table st-table="exportCtrl._cinesReports"
+		                           st-pagination-scroll="#scroll-import" class="table table-hover table-import">
+		                        <tbody>
+		                        <tr ng-repeat="report in exportCtrl._cinesReports"
+		                            ng-init="status = (report.status === 'ARCHIVED');" class="root" ng-class="{ true: 'sid-fourth', false: 'sid-third' }[status]">
+		                            <td>
+		                                <span class="label label-primary">{{::exportCtrl.code[report.status] || report.status}}</span>
+		                                {{::impDoc.docUnit.label}}
+		                                <table class="table table-hover table-import">
+		                                  <tbody>
+		                                      <tr ng-if="report.dateSent" class="sid-sec">
+		                                          <td>{{'Date d\'envoi' | translate}}
+		                                          </td>
+		                                          <td>{{::report.dateSent | date:'short'}}
+                                                  </td>
+		                                      </tr>
+		                                      <tr ng-if="report.dateAr" class="sid-sec">
+                                                  <td>{{'Date de réception par le Cines' | translate}}
+                                                  </td>
+                                                  <td>{{::report.dateAr | date:'short'}}
+                                                  </td>
+                                              </tr>
+                                              <tr ng-if="report.dateRejection" class="sid-sec">
+                                                  <td>{{'Date de rejet par le Cines' | translate}}
+                                                  </td>
+                                                  <td>{{::report.dateRejection | date:'short'}}
+                                                  </td>
+                                              </tr>
+                                              <tr ng-if="report.rejectionMotive" class="sid-sec">
+                                                  <td>{{'Motif du rejet' | translate}}
+                                                  </td>
+                                                  <td>{{::report.rejectionMotive}}
+                                                  </td>
+                                              </tr>
+                                              <tr ng-if="report.message" class="sid-sec">
+                                                  <td>{{'Message' | translate}}
+                                                  </td>
+                                                  <td>{{::report.message}}
+                                                  </td>
+                                              </tr>
+                                              <tr ng-if="report.dateArchived" class="sid-sec">
+                                                  <td>{{'Date d\'archivage' | translate}}
+                                                  </td>
+                                                  <td>{{::report.dateArchived | date:'short'}}
+                                                  </td>
+                                              </tr>
+		                                  </tbody>
+		                                </table>
+		                            </td>
+		                        </tr>
+		                        </tbody>
+		                    </table>
+		                </div>
+					</div>
+					<!-- Certificat -->
+					<div class="row margin-t20" ng-if="exportCtrl.certificate">
+						<div class="col-xs-12">
+							<span class="label label-primary">{{'Certificat' | translate}}</span>
+							<span ng-click="exportCtrl.downloadAIP();" class="label label-primary">{{'Téléchargement aip.xml' | translate}}</span>
+							<pre class="margin-t10">{{::exportCtrl.certificate}}</pre>
+						</div>
+					</div>
+		       </div>
+            </div>
+        </uib-accordion>
+        <!-- Fin Export CINES -->
+    </div>
+</div>

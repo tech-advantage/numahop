@@ -1,0 +1,9 @@
+<div class="row vertical-align" ng-hide="hideIfEmpty && !model">
+    <div ng-class="labelclass || 'col-xs-4'" class="text-right" ng-if="label">
+        <label uib-tooltip="{{tooltip}}">{{::label}}</label>
+    </div>
+	<div class="model-container" ng-class="{true: (fieldclass || defaultcolsm) + ' has-error', false: (fieldclass || defaultcolsm) }[!!errMsg]">
+		<sem-datepicker main-field ng-model="model" ng-disabled="readonly" sem-placeholder="{{placeholder || label}}"></sem-datepicker>
+		<div class="help-block" ng-show="errMsg" ng-bind-html="errMsg"></div>
+	</div>
+</div>

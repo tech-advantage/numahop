@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Changeset du module Import/Export -->
+    <changeSet id="pgcn-load-data-exchange-dc" author="progilone">
+        <dropNotNullConstraint
+            columnDataType="varchar(191)"
+            columnName="library"
+            tableName="exc_mapping"/>
+        <loadData encoding="UTF-8" separator="," file="config/liquibase/numahop/exchange/exc_mapping_dc.csv" tableName="exc_mapping"/>
+    </changeSet>
+</databaseChangeLog>

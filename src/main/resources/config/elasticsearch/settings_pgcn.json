@@ -1,0 +1,56 @@
+{
+    "analysis": {
+        "filter": {
+            "non_empty": {
+                "type": "length",
+                "min": "1"
+            },
+            "elision": {
+                "type": "elision",
+                "articles": [
+                    "c",
+                    "d",
+                    "j",
+                    "l",
+                    "m",
+                    "n",
+                    "qu",
+                    "s",
+                    "t"
+                ]
+            }
+        },
+        "analyzer": {
+            "ci_ai_phr": {
+                "type": "custom",
+                "filter": [
+                    "lowercase",
+                    "asciifolding"
+                ],
+                "tokenizer": "keyword"
+            },
+            "default": {
+                "type": "standard"
+            },
+            "ci_ai": {
+                "filter": [
+                    "standard",
+                    "lowercase",
+                    "elision",
+                    "asciifolding"
+                ],
+                "type": "custom",
+                "tokenizer": "standard"
+            },
+            "ci_as": {
+                "filter": [
+                    "standard",
+                    "lowercase",
+                    "elision"
+                ],
+                "type": "custom",
+                "tokenizer": "standard"
+            }
+        }
+    }
+}

@@ -1,0 +1,451 @@
+<div class="row layout-columns">
+    <div id="sem-filters-toggle" class="button-toggle" sem-auto-hide-filters>
+        <a ng-click="$semFilters.toggle()" class="link-toggle">
+        <span class="glyphicon-regular filter"></span>
+    </a>
+    </div>
+    <div id="sem-filters" sem-auto-hide-filters>
+        <div class="panel no-print" ng-controller="FiltersController as FilterCtrl">
+            <div class="panel-heading">
+                <div class="pull-right">
+                </div>
+                <span translate>Gestion des unités documentaires</span>
+            </div>
+            <div class="panel-body">
+                <!-- Validés -->
+                <div class="filter-block">
+                    <div class="checkbox checkbox-sid-main">
+                        <input id="filterValidation" type="checkbox" ng-model="mainCtrl.filters.validated" ng-change="mainCtrl.search()" />
+                        <label for="filterValidation" translate>Voir les documents validés</label>
+                    </div>
+                </div>
+                <!-- Statut  -->
+                <div class="filter-block">
+                    <div class="filter-title">{{::'Statut' | translate}}</div>
+                    <div class="filter-element">
+                        <ui-select multiple ng-model="mainCtrl.filters.statuses" theme="select2" on-select="mainCtrl.search()" on-remove="mainCtrl.search()"
+                            class="form-control">
+                            <ui-select-match placeholder="{{::'Statut' | translate}}">{{mainCtrl.codes['digitalDocument.'+$item]}}</ui-select-match>
+                            <ui-select-choices repeat="option in mainCtrl.options.statuses | filter: $select.search track by option">
+                                <div ng-bind-html="mainCtrl.codes['digitalDocument.'+option] | highlight: $select.search"></div>
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+                </div>
+                <!-- Bibliothèque  -->
+                <div class="filter-block" ng-show="mainCtrl.options.libraries.length > 1">
+                    <div class="filter-title">{{::'Bibliothèque' | translate}}</div>
+                    <div class="filter-element">
+                        <ui-select multiple ng-model="mainCtrl.filters.libraries" theme="select2" on-select="mainCtrl.search()" on-remove="mainCtrl.search()"
+                            class="form-control">
+                            <ui-select-match placeholder="{{::'Bibliothèque' | translate}}">{{$item.name}}</ui-select-match>
+                            <ui-select-choices repeat="option in mainCtrl.options.libraries | filter: $select.search track by option.identifier">
+                                <div ng-bind-html="option.name | highlight: $select.search"></div>
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+                </div>
+                <br/>
+                <!-- Accordeon recherche projet/lot/etc.. -->
+                <uib-accordion>
+                    <div class="formBlockTitle" ng-click="mainCtrl.accSearchObj = !mainCtrl.accSearchObj" uib-tooltip="{{::'Accéder à la recherche par Projet / Lot / ..' | translate}}">
+                        <span class="glyphicon-halflings" ng-class="{false: 'glyphicon-chevron-right',
+                                            true: 'glyphicon-chevron-down'}[mainCtrl.accSearchObj]"></span>
+                        <span class="filter-title" translate>Projets </span>
+                    </div>
+                    <!-- Infos cachées lorsque l'accordion est replié -->
+                    <div class="formBlockContent margin-t0" uib-accordion-group is-open="mainCtrl.accSearchObj">
+                        <!-- Projet  -->
+                        <div class="filter-block">
+                            <div class="filter-title">{{::'Projet' | translate}}</div>
+                            <div class="filter-element">
+                                <ui-select multiple ng-model="mainCtrl.filters.projects" theme="select2" on-select="mainCtrl.reloadDependencies(true)" on-remove="mainCtrl.reloadDependencies(true)"
+                                    class="form-control">
+                                    <ui-select-match placeholder="{{::'Projet' | translate}}">{{$item.name}}</ui-select-match>
+                                    <ui-select-choices repeat="option in mainCtrl.options.projects | filter: $select.search track by option.identifier">
+                                        <div ng-bind-html="option.name | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
+                            </div>
+                        </div>
+                        <!-- Lot  -->
+                        <div class="filter-block">
+                            <div class="filter-title">{{::'Lot' | translate}}</div>
+                            <div class="filter-element">
+                                <ui-select multiple ng-model="mainCtrl.filters.lots" theme="select2" on-select="mainCtrl.reloadLivraisons(true);" on-remove="mainCtrl.reloadLivraisons(true);"
+                                    class="form-control">
+                                    <ui-select-match placeholder="{{::'Lot' | translate}}">{{$item.label}}</ui-select-match>
+                                    <ui-select-choices repeat="option in mainCtrl.options.lots | filter: $select.search track by option.identifier">
+                                        <div ng-bind-html="option.label | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
+                            </div>
+                        </div>
+                        <!-- Train  -->
+                        <div class="filter-block">
+                            <div class="filter-title">{{::'Train' | translate}}</div>
+                            <div class="filter-element">
+                                <ui-select multiple ng-model="mainCtrl.filters.trains" theme="select2" on-select="mainCtrl.search()" on-remove="mainCtrl.search()"
+                                    class="form-control">
+                                    <ui-select-match placeholder="{{::'Train' | translate}}">{{$item.label}}</ui-select-match>
+                                    <ui-select-choices repeat="option in mainCtrl.options.trains | filter: $select.search track by option.identifier">
+                                        <div ng-bind-html="option.label | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
+                            </div>
+                        </div>
+                        <!-- Livraison  -->
+                        <div class="filter-block">
+                            <div class="filter-title">{{::'Livraison' | translate}}</div>
+                            <div class="filter-element">
+                                <ui-select multiple ng-model="mainCtrl.filters.livraisons" theme="select2" on-select="mainCtrl.search()" on-remove="mainCtrl.search()"
+                                    class="form-control">
+                                    <ui-select-match placeholder="{{::'Livraison' | translate}}">{{$item.label}}</ui-select-match>
+                                    <ui-select-choices repeat="option in mainCtrl.options.livraisons | filter: $select.search track by option.identifier">
+                                        <div ng-bind-html="option.label | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
+                            </div>
+                        </div>
+                    </div>
+                </uib-accordion>
+                <!-- Accordeon Recherches dates -->
+                <uib-accordion>
+                        <div class="formBlockTitle" ng-click="mainCtrl.accSearchDate = !mainCtrl.accSearchDate" uib-tooltip="{{::'Accéder à la recherche par Dates' | translate}}">
+                            <span class="glyphicon-halflings" ng-class="{false: 'glyphicon-chevron-right',
+                                             true: 'glyphicon-chevron-down'}[mainCtrl.accSearchDate]"></span>
+                            <span class="filter-title" translate>Dates </span>
+                        </div>
+                        <!-- Infos cachées lorsque l'accordion est replié -->
+                        <div class="formBlockContent margin-t0" uib-accordion-group is-open="mainCtrl.accSearchDate">
+                            <!-- Dates livraison -->
+                            <div class="filter-block">
+                                <div class="filter-title">{{::'Date de livraison' | translate}}</div>
+                                <div class="filter-element">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            du
+                                            <sem-datepicker filter="true" ng-change="mainCtrl.search(mainCtrl.sortModel, {dateFrom: $data})" ng-model="mainCtrl.filters.dateFrom"></sem-datepicker>
+                                        </div>
+                                        <div class="col-md-12">
+                                            au
+                                            <sem-datepicker filter="true" ng-change="mainCtrl.search(mainCtrl.sortModel, {dateTo: $data})" ng-model="mainCtrl.filters.dateTo"></sem-datepicker>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Dates limite controle -->
+                            <div class="filter-block">
+                                <div class="filter-title">{{::'Date limite controle' | translate}}</div>
+                                <div class="filter-element">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            du
+                                            <sem-datepicker filter="true" ng-change="mainCtrl.search(mainCtrl.sortModel, {dateLimitFrom: $data})" ng-model="mainCtrl.filters.dateLimitFrom"></sem-datepicker>
+                                        </div>
+                                        <div class="col-md-12">
+                                            au
+                                            <sem-datepicker filter="true" ng-change="mainCtrl.search(mainCtrl.sortModel, {dateLimitTo: $data})" ng-model="mainCtrl.filters.dateLimitTo"></sem-datepicker>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </uib-accordion>
+                <!-- Accordeon Recherches txt  -->
+                <uib-accordion>
+                        <div class="formBlockTitle" ng-click="mainCtrl.accSearchText = !mainCtrl.accSearchText" uib-tooltip="{{::'Accéder à la recherche de texte' | translate}}">
+                            <span class="glyphicon-halflings" ng-class="{false: 'glyphicon-chevron-right',
+                                             true: 'glyphicon-chevron-down'}[mainCtrl.accSearchText]"></span>
+                            <span class="filter-title" translate>Unité documentaire</span>
+                        </div>
+                        <!-- Infos cachées lorsque l'accordion est replié -->
+                        <div class="formBlockContent margin-t0" uib-accordion-group is-open="mainCtrl.accSearchText">
+                            <div class="filter-block">
+                                <div class="filter-title">{{::'Identifiant PGCN' | translate}}</div>
+                                <div class="filter-element input-group">
+                                    <input class="form-control sem-input-xs" type="text" id="searchPgcnId" ng-model="mainCtrl.filters.searchPgcnId" sem-enter-key="mainCtrl.search()"
+                                        placeholder="{{::'Saisissez votre recherche' | translate}}" />
+                                    <span class="input-group-btn">
+					                        <button type="button" class="btn btn-sem2 btn-xs" ng-click="mainCtrl.search()" uib-tooltip="{{::'Rechercher' | translate}}">
+					                            <span class="glyphicon syrtis-icon-loupe"></span>
+                                    </button>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="filter-block">
+                                <div class="filter-title">{{::'Titre' | translate}}</div>
+                                <div class="filter-element input-group">
+                                    <input class="form-control sem-input-xs" type="text" id="searchTitre" ng-model="mainCtrl.filters.searchTitre" sem-enter-key="mainCtrl.search()"
+                                        placeholder="{{::'Saisissez votre recherche' | translate}}" />
+                                    <span class="input-group-btn">
+				                        <button type="button" class="btn btn-sem2 btn-xs" ng-click="mainCtrl.search()" uib-tooltip="{{::'Rechercher' | translate}}">
+				                            <span class="glyphicon syrtis-icon-loupe"></span>
+                                    </button>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="filter-block">
+                                <div class="filter-title">{{::'Radical' | translate}}</div>
+                                <div class="filter-element input-group">
+                                    <input class="form-control sem-input-xs" type="text" id="searchRadical" ng-model="mainCtrl.filters.searchRadical" sem-enter-key="mainCtrl.search()"
+                                        placeholder="{{::'Saisissez votre recherche' | translate}}" />
+                                    <span class="input-group-btn">
+			                        <button type="button" class="btn btn-sem2 btn-xs" ng-click="mainCtrl.search()" uib-tooltip="{{::'Rechercher' | translate}}">
+			                            <span class="glyphicon syrtis-icon-loupe"></span>
+                                    </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                </uib-accordion>
+                <!-- Accordeon Pages  -->
+                <uib-accordion>
+                        <div class="formBlockTitle" ng-click="mainCtrl.accSearchPages = !mainCtrl.accSearchPages" uib-tooltip="{{::'Accéder à la recherche par pages' | translate}}">
+                            <span class="glyphicon-halflings" ng-class="{false: 'glyphicon-chevron-right',
+                                             true: 'glyphicon-chevron-down'}[mainCtrl.accSearchPages]"></span>
+                            <span class="filter-title" translate>Infos techniques</span>
+                        </div>
+                        <!-- Infos cachées lorsque l'accordion est replié -->
+                        <div class="formBlockContent margin-t0" uib-accordion-group is-open="mainCtrl.accSearchPages">
+                        
+                            <!-- Format -->
+                            <div class="filter-block">
+                                <div class="filter-title">{{::'Type de fichiers' | translate}}</div>
+                                <div class="filter-element">
+			                        <ui-select multiple ng-model="mainCtrl.filters.searchFormatDocument" theme="select2" 
+			                                     on-select="mainCtrl.search()" on-remove="mainCtrl.search()"
+			                                     class="form-control" theme="select2">
+			                            <ui-select-match placeholder="{{::'Format de fichiers' | translate}}">{{$item.label}}</ui-select-match>
+			                            <ui-select-choices repeat="option in mainCtrl.options.formatDocuments | filter: $select.search track by option.identifier">
+			                                <div ng-bind-html="option.label | highlight: $select.search"></div>
+			                            </ui-select-choices>
+			                        </ui-select>
+			                    </div>
+                            </div>
+                            
+                            <!-- Angle d'ouverture -->
+                            <div class="filter-block">
+                                <div class="filter-title">{{::'Angle d\'ouverture maximale' | translate}}</div>
+                                <div class="filter-element">
+                                    <ui-select multiple ng-model="mainCtrl.filters.searchMaxAngle" theme="select2" 
+                                                 on-select="mainCtrl.search()" on-remove="mainCtrl.search()"
+                                                 class="form-control" theme="select2">
+                                        <ui-select-match placeholder="{{::'Ouverture max' | translate}}">{{$item.label}}</ui-select-match>
+                                        <ui-select-choices repeat="option in mainCtrl.options.maxAngles | filter: $select.search track by option.identifier">
+                                            <div ng-bind-html="option.label | highlight: $select.search"></div>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                </div>
+                            </div>
+                            <!-- Nbre pages -->
+                            <div class="filter-block">
+                                <div class="filter-title">{{::'Pages totales' | translate}}</div>
+                                <div class="filter-element">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            de
+                                            <input class="form-control sem-input-xs" type="number" id="searchPageFrom" 
+                                                ng-model="mainCtrl.filters.searchPageFrom" sem-enter-key="mainCtrl.search()" />
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            à
+                                            <input class="form-control sem-input-xs" type="text" id="searchPageTo" 
+                                                ng-model="mainCtrl.filters.searchPageTo" sem-enter-key="mainCtrl.search()" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Nbre pages à controler -->
+                            <div class="filter-block">
+                                <div class="filter-title">{{::'Pages non controlées' | translate}}</div>
+                                <div class="filter-element">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            de
+                                            <input class="form-control sem-input-xs" type="number" id="searchPageCheckFrom" 
+                                                ng-model="mainCtrl.filters.searchPageCheckFrom" sem-enter-key="mainCtrl.search()" />
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            à
+                                            <input class="form-control sem-input-xs" type="text" id="searchPageCheckTo" 
+                                                ng-model="mainCtrl.filters.searchPageCheckTo" sem-enter-key="mainCtrl.search()" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Taille documents -->
+                            <div class="filter-block">
+                                <div class="filter-title">{{::'Taille du document' | translate}}</div>
+                                <div class="filter-element">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            de
+                                            <input class="form-control sem-input-xs" type="number" id="searchMinSize" ng-model="mainCtrl.filters.searchMinSize" sem-enter-key="mainCtrl.search()"
+                                                placeholder="{{::'min en Mo' | translate}}" />
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            à
+                                            <input class="form-control sem-input-xs" type="text" id="searchMaxSize" ng-model="mainCtrl.filters.searchMaxSize" sem-enter-key="mainCtrl.search()"
+                                                placeholder="{{::'max en Mo' | translate}}" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </uib-accordion>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-12 col-layout-columns">
+        <div class="panel panel-column-2 panel-column-first panel-column-end">
+            <div class="panel-heading">
+                <!-- Barre de recherche -->
+                <button type="button" class="btn btn-sem2 btn-xs pull-right" 
+                    ng-click="mainCtrl.reinitFilters()" 
+                    uib-tooltip="{{::'Réinitialiser les filtres de la recherche' | translate}}">
+                <span class="glyphicon-halflings glyphicon-refresh"></span>
+                </button>
+                <div class="input-group padding-r20">
+                    <input class="form-control sem-input-xs" type="text" id="searchInput" 
+                           ng-model="mainCtrl.searchRequest" sem-enter-key="mainCtrl.search()" />
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-sem2 btn-xs" ng-click="mainCtrl.search()" uib-tooltip="{{::'Rechercher' | translate}}">
+                            <span class="glyphicon syrtis-icon-loupe"></span>
+                    </button>
+                    </span>
+                </div>
+            </div>
+            <!-- Panneau principal -->
+            <div class="panel-body">
+                <div class="well well-sm">
+                    <div ng-show="!mainCtrl.pagination.busy && mainCtrl.pagination.items.length === 0" translate>
+                        Aucun document numérique trouvé
+                    </div>
+                    <div ng-show="!mainCtrl.pagination.busy && mainCtrl.pagination.items.length > 0"
+                            translate translate-n="mainCtrl.pagination.totalItems" translate-plural="{{$count}} documents numériques trouvés">
+                        1 document numérique trouvé
+                    </div>
+                    <div ng-show="mainCtrl.getSelectionLength() > 0" class="margin-t10">
+                        <span class="fa fa-arrow-right margin-r10"></span>
+                        <span class="nowrap margin-r25" translate translate-n="mainCtrl.getSelectionLength()" translate-plural="{{$count}} documents numériques sélectionnés">
+                            1 document numérique sélectionné
+                        </span>
+                        <span class="nowrap margin-r25"><strong translate>Valeur d'assurance (€)</strong>: {{ mainCtrl.getSelectionInsurance() | number:2 }}</span>
+                        <span class="nowrap margin-r25"><strong translate>Dimensions max</strong>: {{ mainCtrl.getSelectionDimensions() }}</span>
+                        <span class="nowrap"><strong translate>Nombre de pages</strong>: {{ mainCtrl.getSelectionPages() }}</span>
+                    </div>
+                </div>
+
+                <!-- Gestion de la sélection -->
+                <div ng-hide="mainCtrl.pagination.items.length === 0">
+                    <button type="button" class="btn btn-sem2 btn-xs" ng-click="mainCtrl.checkAll()">
+                        {{::"Tout cocher" | translate}}
+                    </button>
+                    <button type="button" class="btn btn-sem2 btn-xs" ng-disabled="mainCtrl.getSelectionLength() === 0" 
+                            ng-click="mainCtrl.uncheckAll()">
+                        {{::"Tout décocher" | translate}}
+                    </button>
+                    <select ng-hide="mainCtrl.pagination.items.length == 0" id="pageSize" name="pageSize" 
+                            ng-options="size.value as size.label for size in mainCtrl.sizeOptions"
+                            ng-model="mainCtrl.pageSize" ng-change="mainCtrl.changePageSize()">
+                    </select>
+                    <div class="pull-right">
+                        <div class="btn-group" uib-dropdown>
+                            <button type="button" class="btn btn-sem2 btn-xs" ng-disabled="mainCtrl.getSelectionLength() === 0" uib-dropdown-toggle>
+                                <b class="caret"></b>&nbsp;{{ ::'Actions sur la sélection' | translate }}
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-right" uib-dropdown-menu role="menu">
+                                <!-- Ajouter la sélection à un lot -->
+                                <li role="menuitem">
+                                    <a ng-click="mainCtrl.createLot()" class="btn-xs">
+                                        <span class="glyphicon-halflings glyphicon-plus"></span>
+                                        {{::'Créer un lot de renumérisation à partir des rejets' | translate}}
+                                    </a>
+                                </li>
+                                <!-- Ajouter la sélection à un train -->
+                                <li role="menuitem">
+                                    <a ng-click="mainCtrl.createTrain()" class="btn-xs">
+                                        <span class="glyphicon-halflings glyphicon-plus"></span>
+                                        {{::'Créer un train de renumérisation à partir des rejets' | translate}}
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Liste des entités  -->
+                <div class="table-responsive" ng-show="mainCtrl.pagination.items.length > 0 && !mainCtrl.pagination.busy">
+                    <table class="table table-hover sem-list" sem-table="mainCtrl.sortModel" sem-table-onsort="mainCtrl.search(mainCtrl.sortModel)">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th class="text-center" style="text-align:right;" sem-table-sorton="pgcnId">{{::"Identifiant PGCN" | translate }}</th>
+                                <th class="text-center" sem-table-sorton="label">{{::"Libellé" | translate }}</th>
+                                <th class="text-center" sem-table-sorton="label">{{::"Nb. pages" | translate }}</th>
+                                <th class="text-center" sem-table-sorton="status">{{::"Statut" | translate }}</th>
+                                <th class="text-center" sem-table-sorton="totalDelivery">{{::"Nombre de livraisons" | translate }}</th>
+                                <th class="text-center" sem-table-sorton="deliveryDate">{{::"Date de livraison" | translate }}</th>
+                                <th class="text-center">{{::"Actions" | translate }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in mainCtrl.pagination.items | orderBy:orderBy">
+                                <td class="select-col">
+                                    <div class="checkbox checkbox-sid-main no-margin">
+                                        <input type="checkbox" ng-model="item.checked" ng-change="mainCtrl.changeItem(item)"/>
+                                        <label></label>
+                                    </div>
+                                </td>
+                                <td class="text-right">
+                                    {{ ::item.pgcnId }}&nbsp;
+                                    <numa-custom-link numa-link-type="docunit"
+                                                      numa-tooltip="Voir l'unité documentaire"   
+                                                      numa-link-parameters="{id: item.docUnit.identifier}"
+                                                      ng-if="item.docUnit"></numa-custom-link>
+                                </td>
+                                <td class="text-center">
+                                    {{ ::item.reducedLabel }}
+                                </td>
+                                <td class="text-center">
+                                    {{ ::item.pageNumber}}
+                                </td>
+                                <td class="text-center">
+                                    {{ ::mainCtrl.codes["digitalDocument."+item.status]}}
+                                </td>
+                                <td class="text-center">
+                                    {{ ::item.totalDelivery }}
+                                </td>
+                                <td class="text-center">
+                                    {{ ::item.deliveryDate | moment }}
+                                </td>
+                                <td class="text-center">
+                                    <button ng_if="item.isCheckStarted.done" type="button" class="btn btn-sem2 btn-xs" 
+                                            ng-click="mainCtrl.goToCheck(item)" uib-tooltip="{{::'Contrôler' | translate}}">
+                                        <span class="glyphicon-halflings glyphicon-eye-open"></span>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row" ng-show="mainCtrl.pagination.size && mainCtrl.pagination.totalItems > mainCtrl.pagination.size">
+                    <div class="col-sm-12">
+                        <div class="text-center">
+                            <ul uib-pagination class="pagination-sm" 
+                                num-pages="mainCtrl.pagination.totalPages" 
+                                total-items="mainCtrl.pagination.totalItems" 
+                                items-per-page="mainCtrl.pagination.size"
+                                ng-change="mainCtrl.getPage()" 
+                                ng-model="mainCtrl.pagination.page"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

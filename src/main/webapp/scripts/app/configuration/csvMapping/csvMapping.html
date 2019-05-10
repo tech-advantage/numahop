@@ -1,0 +1,116 @@
+<div class="row layout-columns">
+    <div class="col-sm-3 col-lg-2 col-layout-columns">
+        <div class="panel panel-column-1">
+            <div class="panel-heading">
+                <button type="button" class="btn btn-sem2 btn-xs pull-right"
+                        ng-click="mainCtrl.create()" uib-tooltip="{{::'Créer' | translate}}"
+                        sem-roles-allowed="MAP_HAB1">
+                    <span class="glyphicon-halflings glyphicon-plus"></span>
+                </button>
+                <span translate>Mappings</span>
+            </div>
+            <div class="panel-body">
+                <div class="list padding-b20" ng-repeat="lib in mainCtrl.libraries | orderBy:'name'">
+                    <div class="filter-title">{{ ::lib.name }}</div>
+                    <div class="list"
+                         ng-repeat="mapping in mainCtrl.mappings | filter:{ library: { identifier : lib.identifier } } | orderBy:'label'">
+                        <a ng-click="mainCtrl.edit(mapping)" ng-class="{'active': mapping === mainCtrl.editedMapping}">
+                            <span>{{ mapping.label }}</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-9 col-lg-10 col-sm-offset-3 col-lg-offset-2 col-layout-columns">
+            <div class="panel panel-column-2 panel-column-end">
+                <div class="panel-heading">
+                    <div class="pull-right">
+                        <button type="button" class="btn btn-sem2 btn-xs"
+                                ng-click="mainCtrl.reload(mainCtrl.editedMapping)" ng-show="mainCtrl.loaded && mainCtrl.modified"
+                                uib-tooltip="{{::'Annuler les modifications' | translate}}"
+                                sem-roles-allowed="MAP_HAB1">
+                            <span class="glyphicon-regular undo"></span>
+                        </button>
+                        <button type="button" class="btn btn-sem2 btn-xs"
+                                ng-click="mainCtrl.save(mainCtrl.editedMapping)" ng-show="mainCtrl.loaded" ng-disabled="!mainCtrl.rw"
+                                uib-tooltip="{{::'Sauvegarder' | translate}}"
+                                sem-roles-allowed="MAP_HAB1">
+                            <span class="glyphicon-regular floppy-save"></span>
+                        </button>
+                        <button type="button" class="btn btn-sem2 btn-xs"
+                                ng-click="mainCtrl.duplicate(mainCtrl.editedMapping)"
+                                ng-show="mainCtrl.loaded" ng-disabled="!mainCtrl.editedMapping.identifier"
+                                uib-tooltip="{{::'Dupliquer' | translate}}"
+                                sem-roles-allowed="MAP_HAB1">
+                            <span class="glyphicon-halflings glyphicon-duplicate"></span>
+                        </button>
+                        <button type="button" class="btn btn-sem2 btn-xs"
+                                ng-click="mainCtrl.delete(mainCtrl.editedMapping)"
+                                ng-show="mainCtrl.loaded" ng-disabled="!mainCtrl.editedMapping.identifier || !mainCtrl.rw"
+                                uib-tooltip="{{::'Supprimer' | translate}}"
+                                sem-roles-allowed="MAP_HAB2">
+                            <span class="glyphicon-halflings glyphicon-trash"></span>
+                        </button>
+                    </div>
+                    <span>{{ mainCtrl.editedMapping.label }}</span>
+                    <span ng-show="mainCtrl.modified" translate>(modifications non sauvegardées)</span>
+                </div>
+                <div class="panel-body">
+                    <div ng-show="mainCtrl.loaded">
+                        <!-- Libellé -->
+                        <sem-field sem-type="text" sem-label="{{::'Libellé' | translate}}" sem-field-class="col-xs-4"
+                                   sem-placeholder="{{::'Libellé' | translate}}" ng-readonly="!mainCtrl.rw" mandatory="true" 
+                                   sem-model="mainCtrl.editedMapping.label" sem-onchange="mainCtrl.mappingModified()"></sem-field>
+                        <!-- Bibliothèque -->
+                        <sem-field sem-type="uiselect" sem-label="{{::'Bibliothèque' | translate}}" sem-field-class="col-xs-4"
+                                   sem-model="mainCtrl.editedMapping.library" sem-onchange="mainCtrl.mappingModified()" mandatory="true"
+                                   sem-option-data="mainCtrl.uioptions.libraries" ng-readonly="!mainCtrl.isSuperAdmin"></sem-field>
+                        <!-- Id du parent -->
+                        <sem-field sem-type="textarea" sem-label="{{::'Identifiant du parent' | translate}}" sem-field-class="col-xs-8 col-lg-4"
+                                   sem-model="mainCtrl.editedMapping.joinExpression" ng-readonly="!mainCtrl.rw" 
+                                   sem-onchange="mainCtrl.mappingModified()"></sem-field>
+
+                        <!-- Règles de mapping -->
+                        <div class="table-responsive mapping margin-t20">
+                            <table class="table table-striped table-bordered table-hover">
+                                <thead>
+                                <tr>
+                                    <td translate>Propriété</td>
+                                    <td translate>Unité doc.</td>
+                                    <td style="width: 110px">&nbsp;</td>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="rule in mainCtrl.editedMapping.rules | orderBy:mainCtrl.sortRule">
+                                    <td>{{ rule.csvField }}</td>
+                                    <td>{{ mainCtrl.getDocfieldLabel(rule.docUnitField) }}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-sem2 btn-xs" ng-click="mainCtrl.editRule(rule, mainCtrl.editedMapping)"
+                                                uib-tooltip="{{::'Éditer la règle' | translate}}" sem-roles-allowed="MAP_HAB1" ng-disabled="!mainCtrl.rw">
+                                            <span class="glyphicon-regular edit"></span>
+                                        </button>
+                                        <button type="button" class="btn btn-sem2 btn-xs" ng-click="mainCtrl.copyRule(rule, mainCtrl.editedMapping)"
+                                                uib-tooltip="{{::'Copier la règle' | translate}}" sem-roles-allowed="MAP_HAB1" ng-disabled="!mainCtrl.rw">
+                                            <span class="glyphicon-regular copy"></span>
+                                        </button>
+                                        <button type="button" class="btn btn-sem2 btn-xs" ng-click="mainCtrl.delRule(rule, mainCtrl.editedMapping)"
+                                                uib-tooltip="{{::'Supprimer la règle' | translate}}" sem-roles-allowed="MAP_HAB1" ng-disabled="!mainCtrl.rw">
+                                            <span class="glyphicon-halflings glyphicon-trash"></span>
+                                        </button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+
+                            <!-- Ajouter une règle -->
+                            <button type="button" class="btn btn-sem2 btn-xs pull-right" ng-disabled="!mainCtrl.rw" 
+                                    ng-click="mainCtrl.addRule(mainCtrl.editedMapping)" sem-roles-allowed="MAP_HAB1">
+                                <span class="glyphicon-halflings glyphicon-plus"></span> {{ ::'Ajouter une règle' | translate }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

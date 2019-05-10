@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="pgcn-create-administration-003" author="progilone">
+
+        <!-- Droit d'administration supplémentaires-->
+        <sql>
+            INSERT INTO user_authorization(module,identifier,code,label,description,version)
+            VALUES
+            ('ADMINISTRATION','FTP-HAB0','FTP-HAB0','Gestion des configuration FTP: lecture','Habilitation configuration FTP: lecture',0),
+            ('ADMINISTRATION','FTP-HAB1','FTP-HAB1','Gestion des configuration FTP: création / modification','Habilitation configuration FTP: création / modification',0),
+            ('ADMINISTRATION','FTP-HAB2','FTP-HAB2','Gestion des configuration FTP: suppression','Habilitation configuration FTP: suppression',0),
+            ('CHECK','CHECK-HAB0','CHECK-HAB0','Gestion des configuration des contrôles: lecture','Habilitation contrôle: lecture',0),
+            ('CHECK','CHECK-HAB1','CHECK-HAB1','Gestion des configuration des contrôles: création / modification','Habilitation configuration contrôles: création / modification',0),
+            ('CHECK','CHECK-HAB2','CHECK-HAB2','Gestion des configuration des contrôles: suppression','Habilitation configuration contrôles: suppression',0),
+            ('CHECK','CHECK-HAB3','CHECK-HAB3','Gestion des contrôles: visualisation','Habilitation contrôles: visualisation des documents contrôlés et du détail des contrôles effectués',0),
+            ('CHECK','CHECK-HAB4','CHECK-HAB4','Gestion des contrôles: contrôle','Habilitation contrôles: action de contrôler des documents',0)
+        </sql>
+
+        <sql>
+            UPDATE user_authorization
+            SET label='Gestion des livraisons : livraison', description='Habilitation à la gestion des livraisons : livraison'
+            WHERE identifier='DEL-HAB5'
+        </sql>
+
+    </changeSet>
+</databaseChangeLog>

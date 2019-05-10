@@ -1,0 +1,98 @@
+<div class="row layout-columns">
+    <!-- Filtres -->
+    <div>
+        <div id="sem-filters-toggle" class="button-toggle" sem-auto-hide-filters>
+            <a ng-click="$semFilters.toggle()" class="link-toggle">
+                <span class="glyphicon-regular filter"></span>
+            </a>
+        </div>
+        <div id="sem-filters" sem-auto-hide-filters>
+            <div class="panel no-print">
+                <div class="panel-heading">
+                    <span translate>Filtres</span>
+                </div>
+                <div class="panel-body">
+                    <!-- Prestataire -->
+                    <div class="filter-block">
+                        <div class="filter-title">{{::'Utilisateur' | translate}}</div>
+                        <div class="filter-element">
+                            <ui-select multiple ng-model="mainCtrl.filters.users" theme="select2" on-select="mainCtrl.doFilter()" on-remove="mainCtrl.doFilter()" class="form-control">
+                                <ui-select-match placeholder="{{::'Utilisateurs' | translate}}">{{$item.fullName}}</ui-select-match>
+                                <ui-select-choices repeat="user in mainCtrl.options.users | filter: $select.search track by user.identifier">
+                                    <div ng-bind-html="user.fullName | highlight: $select.search"></div>
+                                </ui-select-choices>
+                            </ui-select>
+                        </div>
+                    </div>
+                    <!-- Statut -->
+                    <div class="filter-block">
+                        <div class="filter-title">{{::'Statut' | translate}}</div>
+                        <div class="filter-element">
+                            <ui-select multiple ng-model="mainCtrl.filters.statuses" theme="select2" on-select="mainCtrl.doFilter()" on-remove="mainCtrl.doFilter()" class="form-control">
+                                <ui-select-match placeholder="{{::'Statuts' | translate}}">{{$item.label}}</ui-select-match>
+                                <ui-select-choices repeat="status in mainCtrl.options.statuses | filter: $select.search track by status.identifier">
+                                    <div ng-bind-html="status.label | highlight: $select.search"></div>
+                                </ui-select-choices>
+                            </ui-select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-3 col-layout-columns">
+        <div class="panel panel-column-2 panel-column-first">
+            <div class="panel-heading">
+                <div class="pull-right">
+                    <button type="button" class="btn btn-sem2 btn-xs" ng-click="mainCtrl.reinitFilters(true)"
+                            uib-tooltip="{{::'Réinitialiser les filtres de la recherche' | translate}}">
+                        <span class="glyphicon-halflings glyphicon-refresh"></span>
+                    </button>
+                    <button type="button" class="btn btn-sem2 btn-xs" uib-tooltip="{{::'Nouvel import de fichier' | translate}}" ng-click="mainCtrl.create()">
+                        <span class="fa fa-upload"></span>&nbsp;{{ ::'Fichier' | translate }}
+                    </button>
+                    <div class="btn-group" uib-dropdown>
+                        <button type="button" class="btn btn-sem2 btn-xs" uib-dropdown-toggle>
+                            <span class="glyphicon-regular database-search"></span>&nbsp;{{ 'Service' | translate }}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right" uib-dropdown-menu role="menu">
+                            <li role="menuitem"><a ng-click="mainCtrl.create('oaipmh')">Import OAI-PMH</a></li>
+                            <li role="menuitem"><a ng-click="mainCtrl.create('z3950')">Import Z39.50</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body col-infinite-scroll" when-scrolled="mainCtrl.getPage()">
+                <!-- Pas d'imports -->
+                <div class="well" ng-if="mainCtrl.loaded && !mainCtrl.reports.length" translate>Aucun import n'a été trouvé</div>
+
+                <!-- Imports existants -->
+                <div ng-repeat="report in mainCtrl.reports" ng-if="mainCtrl.loaded && mainCtrl.reports.length > 0" ng-init="lastValue = $first || mainCtrl.getGroupLabel(mainCtrl.reports[$index-1]);
+                             currentValue = mainCtrl.getGroupLabel(report)">
+                    <!-- Libellé de regroupement des imports -->
+                    <div class="filter-block" ng-class="{'margin-t20': !$first}" ng-if="($first || lastValue !== currentValue) && currentValue">
+                        <div class="filter-title">{{::currentValue}}</div>
+                    </div>
+                    <!-- Rapport -->
+                    <div class="list" ng-class="{active: report._selected}">
+                        <a ng-click="mainCtrl.edit(report)">
+                            <span ng-class="{'PENDING': 'text-info glyphicon-halflings glyphicon-hourglass',
+                                             'PRE_IMPORTING': 'text-info glyphicon-regular cogwheels',
+                                             'DEDUPLICATING': 'text-info glyphicon-regular cogwheels',
+                                             'USER_VALIDATION': 'text-info glyphicon-regular user-flag',
+                                             'IMPORTING': 'text-info glyphicon-regular cogwheels',
+                                             'INDEXING': 'text-info glyphicon-regular cogwheels',
+                                             'COMPLETED': 'text-success glyphicon-halflings glyphicon-ok-sign',
+                                             'FAILED': 'text-danger glyphicon-halflings glyphicon-exclamation-sign'}[report.status]"></span>
+                            <span ng-bind-html="mainCtrl.toString(report)"></span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- En cours de chargement -->
+                <div ng-hide="mainCtrl.loaded" translate>Chargement en cours...</div>
+            </div>
+        </div>
+    </div>
+    <ng-include src="mainCtrl.importInclude"></ng-include>
+</div>

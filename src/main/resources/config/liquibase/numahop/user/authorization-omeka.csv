@@ -1,0 +1,5 @@
+﻿module;identifier;code;label;description;version
+ADMINISTRATION;CONF-DIFFUSION-OMEKA-HAB0;CONF-DIFFUSION-OMEKA-HAB0;Administration - gestion des configurations Omeka: lecture;Habilitation Ã  la gestion des configurations Omeka: lecture;0
+ADMINISTRATION;CONF-DIFFUSION-OMEKA-HAB1;CONF-DIFFUSION-OMEKA-HAB1;Administration - gestion des configurations Internet  Omeka: crÃ©ation/modification;Habilitation Ã  la gestion des configurations Omeka: crÃ©ation/modification;0
+ADMINISTRATION;CONF-DIFFUSION-OMEKA-HAB2;CONF-DIFFUSION-OMEKA-HAB2;Administration - gestion des configurations  Omeka: suppression;Habilitation Ã  la gestion des configurations Omeka: suppression;0
+ADMINISTRATION;EXPORT-DIFFUSION-OMEKA-HAB0;EXPORT-DIFFUSION-OMEKA-HAB0;Autorisation des exports Omeka;Autorisation des exports Omeka;0

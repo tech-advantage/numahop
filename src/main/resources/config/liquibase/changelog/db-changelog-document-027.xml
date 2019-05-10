@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Changeset du module Document - doc_unit.pgcn_id : change collation for case sensitivity et not nullable  -->
+    <changeSet id="pgcn-document-27" author="progilone">
+        
+        <sql>
+            ALTER TABLE doc_unit MODIFY COLUMN pgcn_id varchar(191) COLLATE utf8_bin NOT NULL
+        </sql>
+        
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,7 @@
+module,identifier,code,label,description,version
+DOCUMENT,COND-REPORT-HAB0,COND-REPORT-HAB0,Gestion des constats d'état: lecture,Habilitation à la gestion des constats d'état: lecture,0
+DOCUMENT,COND-REPORT-HAB1,COND-REPORT-HAB1,Gestion des constats d'état: création,Habilitation à la gestion des constats d'état: création,0
+DOCUMENT,COND-REPORT-HAB2,COND-REPORT-HAB2,Gestion des constats d'état: modification,Habilitation à la gestion des constats d'état: modification,0
+DOCUMENT,COND-REPORT-HAB3,COND-REPORT-HAB3,Gestion des constats d'état: suppression,Habilitation à la gestion des constats d'état: suppression,0
+DOCUMENT,COND-REPORT-HAB4,COND-REPORT-HAB4,Gestion des constats d'état: export,Habilitation à la gestion des constats d'état: export,0
+DOCUMENT,COND-REPORT-HAB5,COND-REPORT-HAB5,Gestion des constats d'état: administration,Habilitation à la gestion des constats d'état: administration,0

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Changeset du module Library : default values for export CINES -->
+    <changeSet id="pgcn-create-library-parameter-2" author="progilone">
+    
+        <validCheckSum>7:71e3d623cfa8e700732e1ab9cf8531f5</validCheckSum>
+        
+        <sql>
+            INSERT INTO lib_parameter(identifier, type, library , version, created_by, last_modified_by, created_date, last_modified_date)
+            VALUES
+            ('40be0802-f7f9-4256-bad1-a5f391dabd97', 'CINES_EXPORT', 'library_bibliotheque', '0', 'system', 'system', '2019-07-01 14:00:00', '2019-07-01 14:00:00')
+        </sql>
+        
+        <sql>
+            INSERT INTO lib_parameter_value_cines(identifier, type, parameter, version, created_by, last_modified_by, created_date, last_modified_date)
+            VALUES
+            <!-- default values SP -->
+            ('41bd0322-f2g8-4354-bac5-a2f695dcba22', 'TITLE_DEFAULT_VALUE', '40be0802-f7f9-4256-bad1-a5f391dabd97', '0', 'system', 'system', '2018-07-01 14:00:00', '2018-07-01 14:00:00'),
+            ('41bd0322-f2g8-4354-bac5-a2f695dcba23', 'CREATOR_DEFAULT_VALUE', '40be0802-f7f9-4256-bad1-a5f391dabd97', '0', 'system', 'system', '2018-07-01 14:00:00', '2018-07-01 14:00:00'),
+            ('41bd0322-f2g8-4354-bac5-a2f695dcba24', 'SUBJECT_DEFAULT_VALUE', '40be0802-f7f9-4256-bad1-a5f391dabd97', '0', 'system', 'system', '2018-07-01 14:00:00', '2018-07-01 14:00:00'),
+            ('41bd0322-f2g8-4354-bac5-a2f695dcba25', 'PUBLISHER_DEFAULT_VALUE', '40be0802-f7f9-4256-bad1-a5f391dabd97', '0', 'system', 'system', '2018-07-01 14:00:00', '2018-07-01 14:00:00'),
+            ('41bd0322-f2g8-4354-bac5-a2f695dcba26', 'DESCRIPTION_DEFAULT_VALUE', '40be0802-f7f9-4256-bad1-a5f391dabd97', '0', 'system', 'system', '2018-07-01 14:00:00', '2018-07-01 14:00:00'),
+            ('41bd0322-f2g8-4354-bac5-a2f695dcba27', 'TYPE_DEFAULT_VALUE', '40be0802-f7f9-4256-bad1-a5f391dabd97', '0', 'system', 'system', '2018-07-01 14:00:00', '2018-07-01 14:00:00'),
+            ('41bd0322-f2g8-4354-bac5-a2f695dcba28', 'FORMAT_DEFAULT_VALUE', '40be0802-f7f9-4256-bad1-a5f391dabd97', '0', 'system', 'system', '2018-07-01 14:00:00', '2018-07-01 14:00:00'),
+            ('41bd0322-f2g8-4354-bac5-a2f695dcba29', 'LANGUAGE_DEFAULT_VALUE', '40be0802-f7f9-4256-bad1-a5f391dabd97', '0', 'system', 'system', '2018-07-01 14:00:00', '2018-07-01 14:00:00'),
+            ('41bd0322-f2g8-4354-bac5-a2f695dcba30', 'RIGHTS_DEFAULT_VALUE', '40be0802-f7f9-4256-bad1-a5f391dabd97', '0', 'system', 'system', '2018-07-01 14:00:00', '2018-07-01 14:00:00')
+        </sql>
+        
+    </changeSet>
+</databaseChangeLog>

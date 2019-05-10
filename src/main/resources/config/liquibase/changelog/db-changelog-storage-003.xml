@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="pgcn-addcolumn-storage3" author="progilone">
+<!--         Ajout colonnes de metadonnees -->
+        <addColumn tableName="sto_stored_file">
+            <column name="compression_type" type="varchar(255)" />
+            <column name="compression_rate" type="BIGINT" />
+            <column name="resolution" type="BIGINT" />
+            <column name="colorspace" type="varchar(255)" />
+        </addColumn>
+<!--         Ajout colonne stockant la taille totale des masters du cocument numerique -->
+         <addColumn tableName="doc_digital_document">
+             <column name="total_length" type="BIGINT" />
+         </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

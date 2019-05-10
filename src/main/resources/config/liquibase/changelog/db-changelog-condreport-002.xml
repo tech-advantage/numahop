@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="pgcn-condition-report-002" author="progilone">
+
+        <addColumn tableName="doc_condreport">
+            <column name="insurance" type="double"/>
+        </addColumn>
+
+        <sql>
+            INSERT INTO doc_condreport_desc_value(identifier, label, property, version, created_by, last_modified_by, created_date, last_modified_date)
+            VALUES
+                ('e4a23ff3-a4ae-453b-87b5-933ca746eb67', 'Avec', 'USE_PANE', '0', 'system', 'system', '2017-09-06 17:20:01', '2017-09-06 17:20:01'),
+                ('eb197f70-3609-410e-a97e-f77ab444dd3e', 'Sans', 'USE_PANE', '0', 'system', 'system', '2017-09-06 17:20:01', '2017-09-06 17:20:01')
+        </sql>
+
+    </changeSet>
+</databaseChangeLog>

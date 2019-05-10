@@ -1,0 +1,2 @@
+identifier;login;password;role;superuser;library;email;active;version
+SUPERUSER;superuser;$2a$10$MgcR8gcSsAtV8TTPcv7AtuDpwXy6qcJjB0ct8Sq3YvDlT.sk7MOu2;SUPERROLE;true;library_bibliotheque;;1;0

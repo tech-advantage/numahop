@@ -1,0 +1,122 @@
+<div class="modal-header">
+    <h3 class="modal-title">{{::mainCtrl.title}}</h3>
+</div>
+<div class="modal-body">
+    <div class="row">
+        <h4 class="col-xs-12" translate>Champs</h4>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 col-md-4">
+            <sem-field sem-type="select" sem-label-class="col-xs-5" sem-field-class="col-xs-7"
+                       sem-label="{{::'Dublin Core' | translate}}" sem-model="mainCtrl.rule.property"
+                       sem-select-options="option.label group by option.superType for option in optionData | orderBy:['superType', 'rank'] track by option.identifier"
+                       sem-option-data="mainCtrl.config.properties"></sem-field>
+        </div>
+        <div class="col-xs-12 col-md-4">
+            <sem-field sem-type="select" sem-label-class="col-xs-5" sem-field-class="col-xs-7"
+                       sem-label="{{::'Unité doc.' | translate}}" sem-model="mainCtrl.rule.docUnitField"
+                       sem-select-options="option.code as option.label for option in optionData | orderBy:'rank'"
+                       sem-option-data="mainCtrl.config.docUnitFields"></sem-field>
+        </div>
+        <div class="col-xs-12 col-md-4">
+            <sem-field sem-type="select" sem-label-class="col-xs-5" sem-field-class="col-xs-7"
+                       sem-label="{{::'Notice bibl.' | translate}}" sem-model="mainCtrl.rule.bibRecordField"
+                       sem-select-options="option.code as option.label for option in optionData | orderBy:'rank'"
+                       sem-option-data="mainCtrl.config.bibRecordFields"></sem-field>
+        </div>
+    </div>
+    <!-- Règle par défaut -->
+    <div class="row">
+        <h4 class="col-xs-12">
+            <div class="checkbox checkbox-sid-main">
+                <input type="checkbox" id="default_rule" ng-model="mainCtrl.rule.defaultRule">
+                <label for="default_rule" translate>Règle par défaut</label>
+            </div>
+        </h4>
+    </div>
+    <!-- Règle de mapping -->
+    <uib-accordion>
+        <div class="row">
+            <h4 class="col-xs-12">
+                <button type="button" class="btn btn-sem3 btn-xs pull-right"
+                        uib-tooltip="{{ ::'Initialisation de la règle' | translate }}"
+                        ng-click="mainCtrl.accordionExpression = !mainCtrl.accordionExpression">
+                    <span class="glyphicon syrtis-icon-prefs"></span>
+                </button>
+                {{ ::'Règle' | translate }}
+            </h4>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="row vertical-align">
+                    <div class="model-container col-xs-12 textarea100 code">
+                        <textarea class="form-control" placeholder="{{::'Règle de mapping' | translate}}"
+                                  ng-model="mainCtrl.rule.expression" ng-trim="false"
+                                  ng-change="mainCtrl.expressionFields = mainCtrl.getFields(mainCtrl.rule.expression)"
+                                  context-menu="mainCtrl.ctxExpression(mainCtrl.rule)"></textarea>
+                    </div>
+                </div>
+                <div ng-show="mainCtrl.expressionFields.length > 0">
+                    <span class="small" translate>Champs utilisés:</span>
+                    <span class="label label-primary margin-r5" ng-repeat="field in mainCtrl.expressionFields">{{ ::field }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="row" uib-accordion-group is-open="mainCtrl.accordionExpression">
+            <div class="col-xs-12 padding-b20">
+                <div class="row vertical-align">
+                    <div class="model-container col-xs-12 textarea100 code">
+                        <textarea class="form-control" placeholder="{{::'Initialisation de la règle de mapping' | translate}}"
+                                  ng-model="mainCtrl.rule.expressionConf" ng-trim="false"
+                                  context-menu="mainCtrl.ctxExpressionConf(mainCtrl.rule)"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </uib-accordion>
+    <!-- Condition d'application de la règle -->
+    <uib-accordion>
+        <div class="row">
+            <h4 class="col-xs-12">
+                <button type="button" class="btn btn-sem3 btn-xs pull-right"
+                        uib-tooltip="{{ ::'Initialisation de la condition' | translate }}"
+                        ng-click="mainCtrl.accordionCondition = !mainCtrl.accordionCondition">
+                    <span class="glyphicon syrtis-icon-prefs"></span>
+                </button>
+                {{ ::'Condition d\'application' | translate }}
+            </h4>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="row vertical-align">
+                    <div class="model-container col-xs-12 textarea100 code">
+                        <textarea class="form-control" placeholder="{{::'Condition d\'application de la règle' | translate}}"
+                                  ng-model="mainCtrl.rule.condition" ng-trim="false"
+                                  ng-change="mainCtrl.conditionFields = mainCtrl.getFields(mainCtrl.rule.condition)"
+                                  context-menu="mainCtrl.ctxCondition(mainCtrl.rule)"
+                                  ng-disabled="mainCtrl.rule.defaultRule"></textarea>
+                    </div>
+                </div>
+                <div ng-show="mainCtrl.conditionFields.length > 0">
+                    <span class="small" translate>Champs utilisés:</span>
+                    <span class="label label-primary margin-r5" ng-repeat="field in mainCtrl.conditionFields">{{ ::field }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="row" uib-accordion-group is-open="mainCtrl.accordionCondition">
+            <div class="col-xs-12 padding-b20">
+                <div class="row vertical-align">
+                    <div class="model-container col-xs-12 textarea100 code">
+                        <textarea class="form-control" placeholder="{{::'Initialisation de la condition d\'application de la règle' | translate}}"
+                                  ng-model="mainCtrl.rule.conditionConf" ng-trim="false"
+                                  context-menu="mainCtrl.ctxConditionConf(mainCtrl.rule)"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </uib-accordion>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-sem4" ng-click="mainCtrl.cancel()" translate>Annuler</button>
+    <button type="button" class="btn btn-sem2" ng-click="mainCtrl.ok(mainCtrl.rule)" translate>Ok</button>
+</div>

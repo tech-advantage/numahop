@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Chargement des données du module Check -->
+    <changeSet id="pgcn-load-data-check-002" author="progilone">
+        <loadData encoding="UTF-8" separator=";"
+            file="config/liquibase/numahop/check/automaticCheckType_002.csv"
+            tableName="check_automatic_type" >
+            <column name="active" type="BOOLEAN" />
+        </loadData>
+    </changeSet>
+</databaseChangeLog>

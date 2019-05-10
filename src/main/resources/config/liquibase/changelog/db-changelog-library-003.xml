@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Changeset du module Bibliothèque -->
+    <changeSet id="pgcn-library-3" author="progilone">
+        <addColumn tableName="lib_library">
+            <column name="active_configuration_ftp" type="varchar(191)"/>
+        </addColumn>
+        <dropColumn tableName="lib_library" columnName="addressFTP"/>
+        <dropColumn tableName="lib_library" columnName="loginFTP"/>
+        <dropColumn tableName="lib_library" columnName="passwordFTP"/>
+
+        <addForeignKeyConstraint constraintName="fk_library_configuration_ftp"
+                                 baseTableName="lib_library" baseColumnNames="active_configuration_ftp"
+                                 referencedTableName="conf_configuration_ftp" referencedColumnNames="identifier"/>
+    </changeSet>
+</databaseChangeLog>

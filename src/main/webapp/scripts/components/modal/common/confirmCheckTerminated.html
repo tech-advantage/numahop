@@ -1,0 +1,35 @@
+<div class="modal-header">
+	<h3 class="modal-title">Terminer le contrôle</h3>
+</div>
+<div class="modal-body">
+	<div class="row">
+		<div class="col-xs-1"></div>
+		<div class="col-xs-10">
+		    <div>
+		      <span ng_if="mainCtrl.nbMinErr > 0 || mainCtrl.nbMajErr > 0" translate>Des erreurs ont été reportées sur ce document.</span>
+		      <span ng_if="mainCtrl.nbMinErr + mainCtrl.nbMajErr === 0" translate>Aucune erreur n'a été reportée sur ce document.</span>
+		    </div>
+		    <div> 
+		      <span ng_if="mainCtrl.minErrRateExceeded" translate>Le taux d'erreurs mineures acceptable est dépassé.</span>
+		    </div>
+		    <div>
+		      <span ng_if="mainCtrl.majErrRateExceeded" translate>Le taux d'erreurs majeures acceptable est dépassé.</span>
+		    </div>
+		    <br/>
+		    <div>
+		      <span ng_if="mainCtrl.majErrRateExceeded || mainCtrl.minErrRateExceeded" translate>
+		          <label for="">Attention: </label> terminer le contrôle rejettera le document.
+		              <br> Etes-vous sûr de vouloir rejeter ce document ?</span>
+		      <span ng_if="!mainCtrl.majErrRateExceeded && !mainCtrl.minErrRateExceeded" translate>
+		      <label for="">Attention: </label> terminer le contrôle validera le document.
+		              <br> Etes-vous sûr de vouloir accepter ce document ?</span>
+		    </div>
+		</div>
+		
+		
+	</div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-sem4" ng-click="mainCtrl.cancel()" translate>Annuler</button>
+    <button type="button" class="btn btn-sem2" ng-click="mainCtrl.ok()" translate>Confirmer</button>
+</div>

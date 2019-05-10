@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Changeset du module Configuration / Storage -->
+    <changeSet id="pgcn-create-storage-6" author="progilone">
+    
+        <validCheckSum>7:74a18540883f71e2c8720bf5263c9f6d</validCheckSum>
+    
+        <!-- droppe l'ancienne contrainte  -->
+        <dropForeignKeyConstraint baseTableName="sto_stored_file" constraintName="fk_sto_stored_file_format" />
+    
+        <createTable tableName="conf_views_format_configuration">
+            <column name="identifier" type="varchar(191)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <!-- Données -->
+            <column name="label" type="varchar(255)" />
+            <column name="thumb_height" type="BIGINT" />
+            <column name="thumb_width" type="BIGINT" />
+            <column name="view_height" type="BIGINT" />
+            <column name="view_width" type="BIGINT" />
+            <column name="print_height" type="BIGINT" />
+            <column name="print_width" type="BIGINT" />
+            <column name="active" type="boolean" defaultValueBoolean="true">
+                <constraints nullable="false" />
+            </column>
+
+            <!-- Lien technique -->
+            <column name="library" type="varchar(191)" />
+            
+            <!-- Données techniques auto -->
+            <column name="version" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        
+        <addColumn tableName="sto_stored_file">
+            <column name="file_format" type="varchar(255)" />
+            <column name="format_configuration" type="varchar(191)" />
+        </addColumn>
+        
+        <addColumn tableName="lib_library">
+            <column name="active_format_configuration" type="varchar(191)" />
+        </addColumn>
+        
+        <addColumn tableName="lot_lot">
+            <column name="active_format_configuration" type="varchar(191)"></column>
+        </addColumn>
+
+        <addColumn tableName="proj_project">
+            <column name="active_format_configuration" type="varchar(191)"></column>
+        </addColumn>
+
+
+        <addForeignKeyConstraint constraintName="fk_configuration_viewsformat_library"
+                                 baseTableName="conf_views_format_configuration" baseColumnNames="library"
+                                 referencedTableName="lib_library" referencedColumnNames="identifier"/>
+
+        <addForeignKeyConstraint constraintName="fk_project_configuration_viewsformat"
+                                 baseTableName="proj_project" baseColumnNames="active_format_configuration"
+                                 referencedTableName="conf_views_format_configuration" referencedColumnNames="identifier"/>
+
+        <addForeignKeyConstraint constraintName="fk_lot_configuration_viewsformat"
+                                 baseTableName="lot_lot" baseColumnNames="active_format_configuration"
+                                 referencedTableName="conf_views_format_configuration" referencedColumnNames="identifier"/>    
+        
+        <addForeignKeyConstraint constraintName="fk_sto_stored_file_format_config"
+                                baseColumnNames="format_configuration" baseTableName="sto_stored_file"
+                                referencedColumnNames="identifier" referencedTableName="conf_views_format_configuration" />
+                                
+        <sql>
+            INSERT INTO conf_views_format_configuration(identifier,label,thumb_height,thumb_width,view_height,view_width,print_height,print_width,library,version)
+            VALUES  ('e4a23ff3-a2sc-453b-87b5-938ca746ef85','Configuration du format des images BIBLIOTHEQUE',0,0,0,0,0,0,'library_bibliotheque',0)
+        </sql>
+        
+        <sql>
+            UPDATE sto_stored_file SET file_format = 'MASTER' WHERE format = 'formatMaster';
+            UPDATE sto_stored_file SET file_format = 'VIEW' WHERE format = 'formatView';
+            UPDATE sto_stored_file SET file_format = 'THUMB' WHERE format = 'formatThumb';
+            UPDATE sto_stored_file SET file_format = 'PRINT' WHERE format = 'formatPrint';
+            UPDATE sto_stored_file SET file_format = 'ZOOM' WHERE format = 'formatZoom';
+            UPDATE sto_stored_file SET file_format = 'XTRAZOOM' WHERE format = 'formatXtraZoom';
+        </sql>
+        
+                                
+                                
+    </changeSet>
+</databaseChangeLog>

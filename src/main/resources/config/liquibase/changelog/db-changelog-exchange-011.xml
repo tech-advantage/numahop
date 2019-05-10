@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="pgcn-create-exchange-011" author="progilone">
+
+        <addColumn tableName="aud_exc_mapping">
+            <column name="join_expression" type="text"/>
+        </addColumn>
+
+        <addColumn tableName="exc_mapping">
+            <column name="join_expression" type="text"/>
+        </addColumn>
+
+        <addColumn tableName="exc_csv_mapping">
+            <column name="join_expression" type="text"/>
+        </addColumn>
+
+        <addColumn tableName="exc_doc_unit">
+            <column name="parent_doc_unit" type="varchar(191)"/>
+            <column name="parent_pgcn_id" type="varchar(191)"/>
+            <column name="parent_label" type="varchar(255)"/>
+        </addColumn>
+
+        <sql dbms="mysql">
+            UPDATE exc_doc_unit che
+                INNER JOIN doc_unit chd ON chd.identifier = che.doc_unit
+                INNER JOIN doc_unit pd ON pd.identifier = chd.parent
+            SET che.parent_doc_unit = pd.identifier,
+            che.parent_pgcn_id = pd.pgcn_id,
+            che.parent_label = pd.label
+        </sql>
+
+    </changeSet>
+</databaseChangeLog>

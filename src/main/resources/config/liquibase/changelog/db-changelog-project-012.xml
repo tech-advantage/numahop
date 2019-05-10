@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="pgcn-project-12" author="progilone">
+
+        <!-- Nouveau droit: modification des livraisons payées -->
+        <sql>
+            INSERT INTO user_authorization(module,identifier,code,label,description,version)
+            VALUES
+            ('DELIVERY','DEL-HAB8','DEL-HAB8','Gestion des livraisons : modification / suppression des livraisons payées',
+            'Habilitation à la gestion des livraisons : modification / suppression des livraisons payées',0)
+        </sql>
+        <!-- Assignation du nouveu droit sur tous les titulaires du droit DEL-HAB2, sauf les prestataires -->
+        <sql>
+            INSERT INTO user_role_authorization(user_authorization, role)
+            SELECT 'DEL-HAB8', role
+            FROM user_role_authorization
+            WHERE user_authorization = 'DEL-HAB2'
+            AND role NOT IN (SELECT identifier FROM user_role WHERE code = 'PRESTA')
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

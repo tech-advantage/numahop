@@ -1,0 +1,92 @@
+<div ng-controller="WorkflowAllOperationsCtrl as workflowCtrl" ng-init="workflowCtrl.init(mainCtrl)">
+    <div class="row" ng-if="!workflowCtrl.doesWorkflowExist()">
+	      <div class="col-xs-12 text-right">
+	          <small translate>Aucun workflow n'est encore rattaché</small>
+	      </div>
+	  </div>
+	  <div class="row" ng-if="workflowCtrl.doesWorkflowExist()">
+	      <!-- Liste des entités  -->
+          <div class="table-responsive col-sm-12">
+              <table class="table table-hover sem-list">
+                  <thead>
+                      <tr>
+                          <th class="text-center">{{::"Etape de workflow" | translate }}</th>
+                          <th class="text-center"></th>
+                          <th class="text-center">{{::"Statut" | translate }}</th>
+                          <th class="text-center">{{::"Date de début" | translate }}</th>
+                          <th class="text-center">{{::"Date d'échéance" | translate }}</th>
+                          <th class="text-center">{{::"Date de fin" | translate }}</th>
+                          <th class="text-center">{{::"Validé par" | translate }}</th>
+                          <th class="text-center">{{::"Actions" | translate }}</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr ng-repeat="state in workflowCtrl.sortedStates" ng-if="state != null">
+                          <td class="text-center">
+                              <span>
+                                {{ ::workflowCtrl.code['workflow.model.' + state.key] || state.key }}
+                              </span>
+                          </td>
+                          <td class="text-center">
+                              <span class="no-select cursor-help label" 
+                                    uib-tooltip="{{ ::workflowCtrl.code['workflow.status.' + state.status] || state.status }}" 
+                                    ng-class="::workflowCtrl.getStatusClass(state.status)" >
+                                 &nbsp;&nbsp;&nbsp;
+                              </span>
+                          </td>
+                          <td class="text-center">
+                              <span>
+                                {{ ::workflowCtrl.code['workflow.status.' + state.status] || state.status }}
+                              </span>
+                          </td>
+                          <td class="text-center">
+                              <span ng-if="state.startDate">
+                                {{ ::state.startDate | date:'medium' }}
+                              </span>
+                              <span ng-if="!state.startDate">
+                                {{ ::"Non commencée" | translate }}
+                              </span>
+                          </td>
+                          <td class="text-center">
+                              <span ng-if="state.dueDate">
+                                {{ ::state.dueDate | date:'medium' }}
+                              </span>
+                              <span ng-if="!state.dueDate">
+                                {{ ::"Aucune échéance précisée" | translate }}
+                              </span>
+                          </td>
+                          <td class="text-center">
+                              <span ng-if="state.endDate">
+                                {{ ::state.endDate | date:'medium' }}
+                              </span>
+                              <span ng-if="!state.endDate">
+                                {{ ::"Non terminée" | translate }}
+                              </span>
+                          </td>
+                          <td class="text-center">
+                              <span>
+                                {{ ::state.user }}
+                              </span>
+                          </td>
+                          <td class="text-center">
+                              <span>
+                                <button type="button" class="btn btn-sem2 btn-xs"
+			                            ng-show="state.authorized && state.canStateBeProcessed"
+			                            uib-tooltip="{{::'Réaliser l\'étape' | translate}}"
+			                            ng-click="workflowCtrl.validate(state)">
+			                        <span class="glyphicon-halflings glyphicon-check"></span>
+			                    </button>
+			                    <button type="button" class="btn btn-sem2 btn-xs"
+                                        ng-show="false"
+                                        uib-tooltip="{{::'Rejeter l\'étape' | translate}}"
+                                        ng-click="workflowCtrl.reject(state)">
+                                    <span class="glyphicon-halflings glyphicon-remove-sign"></span>
+                                </button>
+                              </span>
+                          </td>
+                      </tr>
+                  </tbody>
+              </table>
+          </div>
+	  </div>
+</div>

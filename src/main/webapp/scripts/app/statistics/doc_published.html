@@ -1,0 +1,140 @@
+<div class="row layout-columns">
+    <div class="col-sm-12 col-layout-columns">
+        <div class="panel panel-column-1 panel-column-end">
+            <!-- Filtrage du tableau -->
+            <numa-filter data-class="pull-left btn-filter">
+                <!-- Bibliothèques -->
+                <numa-filter-field data-title="{{ ::'Bibliothèque' | translate }}" ng-if="statCtrl.showLib">
+                    <sem-field sem-type="uiselect" sem-model="statCtrl.filters.library" sem-option-data="statCtrl.config.libraries"
+                                sem-onchange="statCtrl.search()"></sem-field>
+                </numa-filter-field>
+                <!-- Projets -->
+                <numa-filter-field data-title="{{ ::'Projet' | translate }}">
+                    <sem-field sem-type="uiselect" sem-model="statCtrl.filters.project" sem-option-data="statCtrl.config.projects" 
+                                sem-onchange="statCtrl.search()"></sem-field>
+                </numa-filter-field>
+                <!-- Type -->
+                <numa-filter-field data-title="{{ ::'Type' | translate }}">
+                    <sem-field sem-type="uiselect" sem-model="statCtrl.filters.type" sem-option-data="statCtrl.config.types" 
+                               sem-onchange="statCtrl.search()"></sem-field>
+                </numa-filter-field>
+                <!-- Collections -->
+                <numa-filter-field data-title="{{ ::'Regroupement' | translate }}">
+                    <sem-field sem-type="uiselect" sem-model="statCtrl.filters.collection" sem-option-data="statCtrl.config.collections" 
+                               sem-onchange="statCtrl.search()"></sem-field>
+                </numa-filter-field>
+                <!-- Date d'envoi du train -->
+                <numa-filter-field data-title="{{ ::'Date de publication' | translate }}">
+                    <div class="form-inline text-right margin-b10">
+                        <label translate>entre le</label>
+                        <sem-datepicker ng-model="statCtrl.filters.publishedFrom" sem-model-options="{ debounce: 300 }"
+                                        ng-change="statCtrl.searchValue('publishedFrom', $data)"></sem-datepicker>
+                    </div>
+                    <div class="form-inline text-right">
+                        <label translate>et le</label>
+                        <sem-datepicker ng-model="statCtrl.filters.publishedTo" sem-model-options="{ debounce: 300 }"
+                                        ng-change="statCtrl.searchValue('publishedTo', $data)"></sem-datepicker>
+                    </div>
+                </numa-filter-field>
+            </numa-filter>
+            <div class="panel-heading">
+                <div class="pull-right">
+                    <button type="button" class="btn btn-sem2 btn-xs" 
+                            ng-click="statCtrl.reinitFilters()" uib-tooltip="{{::'Réinitialiser les filtres de la recherche' | translate}}">
+                        <span class="glyphicon-halflings glyphicon-refresh"></span>
+                    </button>
+                    <a class="btn btn-sem2 btn-xs" 
+                            ng-href="{{statCtrl.getExportUrl()}}" uib-tooltip="{{::'Export CSV' | translate}}">
+                        <span class="fa fa-download"></span>
+                    </a>
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="row" ng-if="statCtrl.loaded">
+                    <div class="col-xs-12">
+                        <div class="well" ng-show="statCtrl.pagination.items.length === 0" translate>
+                            Aucune diffusion trouvée
+                        </div>
+                        <div ng-show="statCtrl.pagination.items.length > 0 && !statCtrl.pagination.busy" class="well well-sm" translate
+                            translate-n="statCtrl.pagination.totalItems"
+                            translate-plural="{{$count}} diffusions trouvées">
+                            1 diffusion trouvée
+                        </div>
+                        <div>
+                            <select ng-hide="statCtrl.pagination.items.length === 0" ng-options="size.value as size.label for size in statCtrl.sizeOptions" id="pageSize" name="pageSize" 
+                            ng-model="statCtrl.pageSize" ng-change="statCtrl.changePageSize()">
+                            </select>
+                        </div>
+                        <!-- Liste des entités  -->
+                        <div class="table-responsive" ng-show="statCtrl.pagination.items.length > 0 && !statCtrl.pagination.busy">
+                            <table class="table table-hover sem-list">
+                                <thead>
+                                <tr>
+                                    <th class="text-center h6 bold" ng-if="statCtrl.showLib" translate>Bibliothèque</th>
+                                    <th class="text-center h6 bold" translate>Projet</th>
+                                    <th class="text-center h6 bold" translate>Lot</th>
+                                    <th class="text-center h6 bold" translate>PgcnId</th>
+                                    <th class="text-center h6 bold" translate>Type</th>
+                                    <th class="text-center h6 bold" translate>Titre</th>
+                                    <th class="text-center h6 bold" translate>Notice parente</th>
+                                    <th class="text-center h6 bold" translate>Diffusion</th>
+                                    <th class="text-center h6 bold" translate>Regroupement</th>
+                                    <th class="text-center h6 bold" translate>Nb pages</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="item in statCtrl.pagination.items">
+                                    <td class="text-right vcenter nowrap" ng-if="statCtrl.showLib">
+                                        {{ ::item.libraryName }} 
+                                        <numa-custom-link numa-link-type="library"
+                                                          numa-link-parameters="{id: item.libraryIdentifier}"
+                                                          ng-if="item.libraryIdentifier"></numa-custom-link>
+                                    </td>
+                                    <td class="text-right vcenter nowrap">
+                                        {{ ::item.projectName }} 
+                                        <numa-custom-link numa-link-type="project"
+                                                          numa-link-parameters="{id: item.projectIdentifier}"
+                                                          ng-if="item.projectIdentifier"></numa-custom-link>
+                                    </td>
+                                    <td class="text-right vcenter nowrap">
+                                        {{ ::item.lotLabel }} 
+                                        <numa-custom-link numa-link-type="lot"
+                                                          numa-link-parameters="{id: item.lotIdentifier}"
+                                                          ng-if="item.lotIdentifier"></numa-custom-link>
+                                    </td>
+                                    <td class="text-right vcenter nowrap">
+                                        {{ ::item.docUnitPgcnId }}
+                                        <numa-custom-link numa-link-type="docunit"
+                                                          numa-link-parameters="{id: item.docUnitIdentifier}"
+                                                          ng-if="item.docUnitIdentifier"></numa-custom-link>
+                                    </td>
+                                    <td class="text-left vcenter">{{ ::item.docUnitType }}</td>
+                                    <td class="text-left vcenter">{{ ::item.docUnitLabel }}</td>
+                                    <td class="text-right vcenter nowrap">
+                                        {{ ::item.parentPgcnId }}
+                                        <numa-custom-link numa-link-type="docunit"
+                                                          numa-link-parameters="{id: item.parentIdentifier}"
+                                                          ng-if="item.parentIdentifier"></numa-custom-link>
+                                    </td>
+                                    <td class="text-left vcenter">{{ ::statCtrl.codes['workflow.'+item.workflowState] }}</td>
+                                    <td class="text-left vcenter">{{ ::item.collection }}</td>
+                                    <td class="text-right vcenter">{{ ::item.nbPages | number }}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row" ng-show="statCtrl.pagination.size && statCtrl.pagination.totalItems > statCtrl.pagination.size">
+                            <div class="col-sm-12">
+                                <div class="text-center">
+                                    <ul uib-pagination num-pages="statCtrl.pagination.totalPages" total-items="statCtrl.pagination.totalItems"
+                                        items-per-page="statCtrl.pagination.size" ng-change="statCtrl.getPage()" ng-model="statCtrl.pagination.page"
+                                        class="pagination-sm"></ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

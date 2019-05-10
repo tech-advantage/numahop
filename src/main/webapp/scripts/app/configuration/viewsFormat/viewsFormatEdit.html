@@ -1,0 +1,111 @@
+<div class="col-sm-6 col-sm-offset-6 col-layout-columns" ng-controller="ViewsFormatEditCtrl">
+    <div class="panel panel-column-3">
+        <div class="panel-heading">
+            <div class="pull-right">
+                <button type="button" class="btn btn-sem2 btn-xs"
+                        ng-click="showForm()" 
+                        uib-tooltip="{{::'Modifier' | translate}}"
+                        ng-disabled="formatConfigurationForm.$visible" ng-show="loaded"
+                        sem-roles-allowed="IMG_FORMAT_HAB1">
+                    <span class="glyphicon-regular edit"></span>
+                </button>
+                <button type="button" class="btn btn-sem2 btn-xs"
+                        ng-click="delete(configuration)" 
+                        uib-tooltip="{{::'Supprimer' | translate}}"
+                        ng-disabled="!configuration || !configuration.identifier" ng-show="loaded"
+                        sem-roles-allowed="IMG_FORMAT_HAB1">
+                    <span class="glyphicon-halflings glyphicon-trash"></span>
+                </button>
+            </div>
+            <h5 translate>Fiche</h5>
+        </div>
+        <div class="panel-body">
+            <form editable-form name="formatConfigurationForm" onaftersave="saveConfiguration()" ng-show="loaded"
+                  ng-init="formRO = !isAuthorized([userRoles.IMG_FORMAT_HAB1])">
+
+                <numa-editable-field title="{{::'Libellé' | translate}}" placeholder="{{::'Libellé' | translate}}" form="formatConfigurationForm" 
+                                     model="configuration.label" errors="{{ errors.label }}" mandatory="true"
+                                     onbeforesave="validation.required($data)" numa-readonly="formRO"></numa-editable-field>
+                
+                <div class="formBlock margin-b20">
+                    <div class="formBlockTitle text-center" translate>Dimensions des images (H x W, px.)</div>
+                    <div class="formBlockContent">
+		                <div class="row">
+		                    <div class="col-xs-4 text-right margin-t5">Vignettes</div>
+		                    <div class="col-xs-2">
+		                        <numa-editable-field title="" type="number"
+		                                     form="formatConfigurationForm" model="configuration.thumbHeight" 
+		                                     errors="{{ errors.thumbHeight }}" default-text="0"
+		                                     onbeforesave="validation.gte0($data)" numa-readonly="formRO"></numa-editable-field>
+		                    </div>
+		                    <div class="col-xs-1">x</div>
+		                    <div class="col-xs-2">                 
+		                        <numa-editable-field title="" type="number"
+		                                     form="formatConfigurationForm" model="configuration.thumbWidth" 
+		                                     errors="{{ errors.thumbWidth }}" default-text="0"
+		                                     onbeforesave="validation.gte0($data)" numa-readonly="formRO"></numa-editable-field>
+		                    </div>
+		                    <div>({{::configuration.thumbDefaultValue}} par défaut)</div>
+		                </div>
+		                <div class="row">
+		                    <div class="col-xs-4 text-right margin-t5">Views</div>
+		                    <div class="col-xs-2">
+		                        <numa-editable-field title="" type="number"
+		                                     form="formatConfigurationForm" model="configuration.viewHeight" 
+		                                     errors="{{ errors.viewHeight }}" default-text="0" 
+		                                     onbeforesave="validation.gte0($data)" numa-readonly="formRO"></numa-editable-field>
+		                    </div>
+		                    <div class="col-xs-1">x</div>
+		                    <div class="col-xs-2">                 
+		                        <numa-editable-field title="" type="number"
+		                                     form="formatConfigurationForm" model="configuration.viewWidth" 
+		                                     errors="{{ errors.viewWidth }}" default-text="0" 
+		                                     onbeforesave="validation.gte0($data)" numa-readonly="formRO"></numa-editable-field>
+		                    </div>
+		                    <div>({{::configuration.viewDefaultValue}} par défaut)</div>
+		                </div>
+		                <div class="row">
+		                    <div class="col-xs-4 text-right margin-t5">Prints</div>
+		                    <div class="col-xs-2">
+		                        <numa-editable-field title="" type="number"
+		                                     form="formatConfigurationForm" model="configuration.printHeight" 
+		                                     errors="{{ errors.printHeight }}" default-text="0" 
+		                                     onbeforesave="validation.gte0($data)" numa-readonly="formRO"></numa-editable-field>
+		                    </div>
+		                    <div class="col-xs-1">x</div>
+		                    <div class="col-xs-2">                 
+		                        <numa-editable-field title="" type="number"
+		                                     form="formatConfigurationForm" model="configuration.printWidth" 
+		                                     errors="{{ errors.printWidth }}"  default-text="0"
+		                                     onbeforesave="validation.gte0($data)" numa-readonly="formRO"></numa-editable-field>
+		                    </div>
+		                    <div>({{::configuration.printDefaultValue}} par défaut)</div>
+		                </div>
+                    </div>
+                </div>
+                                                    
+                <numa-editable-field title="{{::'Bibliothèque' | translate}}" type="select" placeholder="{{::'Bibliothèque' | translate}}" form="formatConfigurationForm" 
+                                    model="configuration.library" errors="{{ errors.library }}" mandatory="true"
+                                    onbeforesave="validation.required($data)" numa-readonly="formRO" 
+                                    config="{ data: options.libraries, 
+                                            display: 'name', 
+                                            query: 'o.name for o in $ctrl.config.data track by o.identifier' }"
+                                    link="{ type: 'library', parameters: {'id': configuration.library.identifier} }"></numa-editable-field>
+                                                    
+                <div class="text-center column-bottom column-6  margin-t10" ng-if="formatConfigurationForm.$visible">
+                    <div class="column-bottom-button">
+                        <!-- Création / Modification -->
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-sem4" ng-disabled="formatConfigurationForm.$waiting" ng-click="cancel()">
+                                <span class="glyphicon-regular unshare"></span> {{::'Annuler' | translate}}
+                            </button>
+                            <button type="submit" class="btn btn-sem2" sem-roles-allowed="CHECK_HAB1">
+                                <span class="glyphicon-regular floppy-save"></span> {{::'Enregistrer' | translate}}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

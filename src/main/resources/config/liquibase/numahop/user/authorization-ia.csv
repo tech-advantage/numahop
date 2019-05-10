@@ -1,0 +1,5 @@
+module;identifier;code;label;description;version
+ADMINISTRATION;CONF-INTERNET-ARCHIVE-HAB0;CONF-INTERNET-ARCHIVE-HAB0;Administration - gestion des configurations Internet Archive: lecture;Habilitation à la gestion des configurations Internet Archive: lecture;0
+ADMINISTRATION;CONF-INTERNET-ARCHIVE-HAB1;CONF-INTERNET-ARCHIVE-HAB1;Administration - gestion des configurations Internet Archive: création/modification;Habilitation à la gestion des configurations Internet Archive: création/modification;0
+ADMINISTRATION;CONF-INTERNET-ARCHIVE-HAB2;CONF-INTERNET-ARCHIVE-HAB2;Administration - gestion des configurations Internet Archive: suppression;Habilitation à la gestion des configurations Internet Archive: suppression;0
+ADMINISTRATION;EXPORT-INTERNET-ARCHIVE-HAB0;EXPORT-INTERNET-ARCHIVE-HAB0;Autorisation des exports Internet Archive;Autorisation des exports Internet Archive;0

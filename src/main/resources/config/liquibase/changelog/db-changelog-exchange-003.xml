@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Changeset du module Import/Export -->
+    <changeSet id="pgcn-create-exchange-003" author="progilone">
+
+        <!-- Suivi des exports Internet Archive -->
+        <createTable tableName="exc_internet_archive_report">
+            <column name="identifier" type="varchar(191)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="doc_unit" type="varchar(191)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="internet_archive_identifier" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="number" type="integer"/>
+            <column name="total" type="integer"/>
+            <column name="date_sent" type="timestamp"/>
+            <column name="date_archived" type="timestamp"/>
+            <column name="message" type="text"/>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="varchar(255)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(255)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- Clés étrangères exc_internet_archive_report -->
+        <addForeignKeyConstraint baseTableName="exc_internet_archive_report" baseColumnNames="doc_unit" 
+                                constraintName="fk_exc_internet_archive_report_doc_unit"
+                                 referencedTableName="doc_unit" referencedColumnNames="identifier"/>
+
+        <!-- Index exc_cines_report -->
+        <createIndex tableName="exc_internet_archive_report" indexName="idx_exc_internet_archive_report_doc_unit">
+            <column name="doc_unit"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>

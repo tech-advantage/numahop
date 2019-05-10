@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+
+    <changeSet id="pgcn-document-13" author="progilone">
+        <!-- ajout indicateur integrite masters -->
+        <addColumn tableName="del_delivery">
+            <column name="file_integrity_ok" type="BOOLEAN" defaultValueBoolean="false"/>
+        </addColumn>
+
+    </changeSet>
+</databaseChangeLog>

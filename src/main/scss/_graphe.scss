@@ -1,0 +1,146 @@
+/** Mixins */
+@mixin sid-graphe-general-by-type($color) {
+	&.icon {
+		.from {
+			stop-color: lighten($color, 60%);
+           	stop-opacity: 1;
+		}
+		.to {
+			stop-color: $color;
+            stop-opacity: 1;
+		}
+    }
+    svg &.bubble {
+    	.description > .fillwith {
+    		fill: $color;
+    	}
+    	.foreground {
+	    	>line, >circle {
+	        	stroke: $color;
+	    	}
+		}
+    }
+    svg &.path {
+   		stroke: $color;
+    }
+    svg .layout-tree &.bubble {
+    	&.entity, &.group, &.main {
+    		> circle {
+	    		fill: $color;
+	    		stroke: $color;
+    		}
+    	}
+    	&.entity > circle.nochild {
+   			fill: #FFF;
+   		}
+    	&.link > circle {
+    		stroke: $color;
+    	}
+	}
+}
+
+/** SVG **/
+svg {
+    .bubble {
+        cursor: pointer;
+        
+        a {
+        	fill: #fff;
+            text-decoration: none;
+        }
+        circle.state {
+        	fill: none;
+        	stroke: #FFF;
+        	stroke-width: 2px;
+        	
+        	&.available {
+        		fill: #C6D523;
+        	}
+        	&.not_available {
+        		fill: #D9534F;
+        	}
+        }
+        text.detail {
+            font-weight: normal;
+            font-size: 10pt;
+        }
+        .background > .fillwith {
+        	fill: #E6E6E6;
+        }
+        .description {
+       		fill: #fff;
+       		
+        	.fillwith {
+        		opacity: 0.6;
+        	}
+        }
+        .foreground {
+	    	>line {
+		        stroke-width: 6px;
+	    	}
+	    	>circle {
+	    		fill: none;
+		        stroke-width: 6px;
+	    	}
+	    }
+        .nothumb {
+        	>.backg {
+        		fill: $sid-main-color;
+	    	}
+	    	>text {
+	    		fill: #fff;
+		        font-weight: bold;
+		    }
+		}
+        .title {
+            font-weight: bold;
+            font-size: 12pt;
+            text-decoration: none;
+        }
+    }
+    path.path {
+		fill: none;
+		stroke: $sid-main-color;
+		stroke-width: 6px;
+    }
+    .layout-tree {
+    	text.title {
+    		font-size: 10pt;
+    		font-weight: normal;
+    	}
+    	.link > circle {
+    		fill: #FFF;
+    		stroke-width: 1.5px;
+    	}
+    	.group text.title {
+    		fill: #FFF;
+    	}
+    	.main text.title {
+    		fill: #FFF;
+    		font-size: 12pt;
+    		font-weight: bold;
+    	}
+    	path.path {
+    		opacity: 0.6;
+    		stroke-width: 1px;
+    	}
+    }
+}
+.agent {
+	@include sid-graphe-general-by-type(rgba(255, 0, 0, 0.7));
+}
+.concept {
+	@include sid-graphe-general-by-type(#ec7404);
+}
+.expression {
+	@include sid-graphe-general-by-type(#67608B);
+}
+.item {
+	@include sid-graphe-general-by-type(#2A6496);
+}
+.manifestation {
+	@include sid-graphe-general-by-type(#2FAF8E);
+}
+.work {
+	@include sid-graphe-general-by-type($sid-main-color);
+}

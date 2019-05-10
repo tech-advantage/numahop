@@ -1,0 +1,68 @@
+<div class="row layout-columns">
+    <!-- Filtres -->
+    <div ng-include="'scripts/components/templates/common/filters.html'"></div>    
+    <div class="col-sm-4 col-layout-columns" ng-keydown="navigate($event)" tabindex="0">
+        <div class="panel panel-column-2 panel-column-first">
+            <div class="panel-heading">
+                <div class="pull-right">
+                    <button type="button" class="btn btn-sem2 btn-xs" ng-click="reinitFilters(true)"
+                            uib-tooltip="{{::'Réinitialiser les filtres de la recherche' | translate}}">
+                        <span class="glyphicon-halflings glyphicon-refresh"></span>
+                    </button>
+                    <button type="button" class="btn btn-sem2 btn-xs"
+                            uib-tooltip="{{::'Créer' | translate}}"
+                            sem-roles-allowed="USER_HAB1"
+                            ng-click="create()">
+                        <span class="glyphicon-halflings glyphicon-plus"></span>
+                    </button>
+                </div>
+                <div class="input-group padding-r20">
+                    <input class="form-control sem-input-xs" type="text" id="nameSearchInput"
+                           ng-model="filterWith" ng-keypress="applyFilter(filterWith, $event)"/>
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-sem2 btn-xs" ng-click="doFilter()" uib-tooltip="{{::'Rechercher' | translate}}">
+                            <span class="glyphicon syrtis-icon-loupe"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+            <div class="panel-body" when-scrolled="nextPage()">
+
+                <div ng-show="pagination.totalItems + newUsers.length > 0 && !pagination.busy" class="well well-sm" translate
+                     translate-n="pagination.totalItems + newUsers.length" translate-plural="{{$count}} utilisateurs trouvés">1 utilisateur trouvé
+                </div>
+
+                <!-- Usagers récemment créés -->
+                <div ng-show="newUsers.length > 0" class="col-infinite-scroll">
+                    <div class="pagination-break" translate>Récemment créés</div>
+                    <div ng-repeat="user in newUsers">
+                        <div class="list" ng-class="{active: user._selected}">
+                            <a ng-click="edit(user, $index, true)">
+	    					  <span class="second">{{user.firstname}}</span>&nbsp;<span class="principal">{{user.surname}}</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="well" ng-show="pagination.totalItems === 0 && newUsers.length === 0 && !pagination.busy"
+                     translate>Aucun utilisateur n'a été trouvé
+                </div>
+
+                <div>
+                    <div ng-repeat="user in pagination.items" class="col-infinite-scroll">
+                        <div ng-show="$index === 0 || getFirstLetter(user) != getFirstLetter(pagination.items[$index-1])"
+                             class="pagination-break">{{user.surname|initial:'OTHER'}}
+                        </div>
+                        <div class="list" ng-class="{active: user._selected}">
+                            <a ng-click="edit(user, $index)">
+	    					  <span class="second">{{user.firstname}}</span>&nbsp;<span class="principal">{{user.surname}}</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div ng-show="pagination.busy" class="well well-sm" translate>Chargement en cours...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <ng-include src="userInclude"></ng-include>
+</div>

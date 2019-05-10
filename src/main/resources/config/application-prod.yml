@@ -1,0 +1,152 @@
+server:
+    port: 8080
+    session-timeout: 10800  # 3 heures
+
+spring:
+    profiles: prod
+
+    data:
+      elasticsearch:
+          cluster-nodes: localhost:9300
+          cluster-name: pgcn
+          properties:
+              node:
+                  name: Transport Client
+          repositories:
+              enabled: true
+
+    datasource:
+        driverClassName: org.mariadb.jdbc.Driver
+        url: jdbc:mariadb://localhost:3306/pgcn
+        username: 
+        password: 
+        maximumPoolSize: 20
+
+    jpa:
+        database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+        database: MYSQL
+        openInView: false
+        show_sql: false
+        generate-ddl: false
+        hibernate:
+            ddl-auto: validate
+            naming-strategy: org.hibernate.cfg.EJB3NamingStrategy
+        properties:
+            hibernate:
+                generate_statistics: false
+                default_batch_fetch_size: 64
+                cache:
+                    use_second_level_cache: true
+                    use_query_cache: false
+                    region.factory_class: fr.progilone.pgcn.config.jcache.NoDefaultJCacheRegionFactory
+
+cache: # Cache configuration
+    ehcache: # Ehcache configuration
+        time-to-live-seconds: 3600 # By default objects stay 1 hour in the cache
+        max-entries: 1000 # Number of objects in each cache entry
+
+logging:
+    file: /opt/pgcn/logs/numahop
+    warnDuration: 1500
+
+metrics:
+    jmx.enabled: true
+    graphite:
+        enabled: false
+        host: localhost
+        port: 2003
+
+elasticsearch:
+    bulk_size: 500
+
+storage:
+    binaries: /opt/pgcn/DAM/DAM_Repository
+    digest: MD5
+    depth: 3
+
+imageMagick: 
+    convert: /usr/bin/convert
+    identify: /usr/bin/identify
+    
+exifTool:
+    process: /usr/bin/exiftool
+    quot_char: ''
+    
+tesseract:    
+    process: /usr/bin/tesseract
+
+images:
+    format:
+        default:
+           thumbHeight: 150
+           thumbWidth:  150
+           viewHeight:  1417
+           viewWidth:   982
+           printHeight: 2835
+           printWidth:  1964
+
+messaging:
+    template:
+      path: /opt/pgcn/Messaging/MessagingTemplate
+
+nativeLibraries:
+    path: /opt/svcmgmt/lib
+
+uploadPath:
+    condition_report: /opt/pgcn/upload/condition_report
+    ead: /opt/pgcn/upload/ead
+    import: /opt/pgcn/upload/import
+    library: /opt/pgcn/upload/library
+    user: /opt/pgcn/upload/user
+    template: /opt/pgcn/upload/templates
+
+export:
+    rdf:
+        default_uri: http://numahop.fr/
+    ssh:
+        knownHosts: /opt/pgcn/config/known_hosts
+        strictHostKeyChecking: yes
+
+datawarehouse:
+    bulk_size: 1000
+
+crypto:
+    password: PhoOpJaiCwy3Jos
+    salt: POEvsixIf+LyzBkDpEsM5ngX8+mLNbGJDLpPlqhgrGw=
+    
+sshForwarding:
+    enabled: false
+    server: 
+    user: 
+    password: 
+    port: 22
+    knownHosts: /opt/pgcn/config/known_hosts
+    strictHostKeyChecking: yes
+    database:
+        remoteServer: localhost
+        localPort: 3306
+        remotePort: 3306
+    elasticsearch:
+        remoteServer: localhost
+        localPort: 9300
+        remotePort: 9300
+
+# Services externes
+services:
+    cines:
+        aip: /opt/pgcn/cines/aip
+        cache: /opt/pgcn/cines/cache
+        facile: https://facile.cines.fr/xml
+        xsd:
+           sip: /opt/pgcn/xsd/sip.xsd
+    archive:
+        alto: /opt/pgcn/archive/alto           
+    metaDatas:
+        path: /opt/pgcn/metadatas
+    deliveryreporting:
+        path: /opt/pgcn/deliveryReporting
+    omeka:
+        cache: /opt/pgcn/omeka/cache
+    ftpexport:
+        cache: /opt/pgcn/ftpexport/cache        
+

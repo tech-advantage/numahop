@@ -1,0 +1,500 @@
+<div class="col-sm-9 col-sm-offset-3 col-layout-columns" ng-controller="ImportEditCtrl as editCtrl">
+    <div class="panel panel-column-3 panel-column-end">
+        <div class="panel-heading">
+            <div class="pull-right">
+                <button type="button" class="btn btn-sem2 btn-xs" uib-tooltip="{{::'Importer les unités documentaires filles' | translate}}"
+                    ng-click="editCtrl.importChildren(editCtrl.report)" ng-if="editCtrl.report.identifier && editCtrl.report.type ==='HIERARCHY_IN_MULTIPLE_IMPORT' && editCtrl.report.status === 'COMPLETED'">
+                    <span class="fa fa-sitemap"></span>
+                </button>
+                <button type="button" class="btn btn-sem2 btn-xs" uib-tooltip="{{::'Supprimer l\'import (les unités documentaires non importées seront aussi supprimées)' | translate}}"
+                    ng-click="editCtrl.deleteImportReport(editCtrl.report)" ng-if="editCtrl.report.identifier">
+                    <span class="glyphicon-halflings glyphicon-trash"></span>
+                </button>
+            </div>
+            <h5 ng-if="editCtrl.isCreation">
+                <span translate>Import</span>
+                <span ng-if="!editCtrl.sourceSrvc" translate>de fichier</span>
+                <span ng-if="editCtrl.oaipmh" translate>OAI-PMH</span>
+                <span ng-if="editCtrl.z3950" translate>Z39.50</span>
+            </h5>
+            <h5 ng-if="!editCtrl.isCreation" ng-bind-html="mainCtrl.toString(editCtrl.report, 'LL LT')"></h5>
+        </div>
+        <div id="scroll-import" class="panel-body">
+            <div ng-if="editCtrl.loaded">
+                <!-- Fichier à importer -->
+                <uib-accordion>
+                    <div class="formBlock margin-t0">
+                        <div class="formBlockTitle" ng-click="editCtrl.accTitle = !editCtrl.accTitle">
+                            <span class="glyphicon-halflings" ng-class="{false: 'glyphicon-chevron-right',
+                                                                         true: 'glyphicon-chevron-down'}[editCtrl.accTitle]"></span>
+                            <span translate>Paramétrage</span>
+                        </div>
+                        <!-- Infos cachées lorsque l'accordion est replié -->
+                        <div class="formBlockContent margin-t0" uib-accordion-group is-open="editCtrl.accTitle">
+                            <!-- Type -->
+                            <sem-field sem-type="select" sem-label="{{::'Type d\'import' | translate}}" sem-field-class="col-xs-8 col-lg-4"
+                                sem-model="editCtrl.report.type" ng-readonly="!editCtrl.isCreation || editCtrl.parent"
+                                ng-if="!editCtrl.sourceSrvc" sem-select-options="t.code as t.label for t in optionData"
+                                sem-option-data="editCtrl.options.type"></sem-field>
+                            <!-- Format -->
+                            <sem-field sem-type="select" sem-label="{{::'Format de fichier' | translate}}"
+                                sem-field-class="col-xs-8 col-lg-4" sem-model="editCtrl.report.fileFormat" ng-readonly="!editCtrl.isCreation"
+                                ng-if="!editCtrl.sourceSrvc" sem-select-options="key as value disable when optionData.disabled(key) for (key, value) in optionData.data"
+                                sem-option-data="editCtrl.options.format" sem-onchange="editCtrl.changeFileFormat(value)"
+                                sem-errors="{{ editCtrl.errors.fileFormat }}"></sem-field>
+                            <!-- Encodage -->
+                            <sem-field sem-type="select" sem-label="{{::'Encodage des données' | translate}}"
+                                sem-field-class="col-xs-8 col-lg-4" sem-model="editCtrl.report.dataEncoding"
+                                ng-readonly="!editCtrl.isCreation" ng-if="!editCtrl.sourceSrvc" ng-show="editCtrl.report.fileFormat === 'MARC'"
+                                sem-select-options="key as value for (key, value) in optionData" sem-option-data="editCtrl.options.marc_encoding"
+                                sem-errors="{{ (editCtrl.report.errors | filter:{field: 'dataEncoding'}:true) }}"></sem-field>
+                            <!-- Mapping MARC principal -->
+                            <sem-field sem-type="uiselect" sem-label="{{::'Mapping MARC' | translate}}" ng-readonly="!editCtrl.isCreation"
+                                ng-show="editCtrl.report.fileFormat === 'MARC' || editCtrl.report.fileFormat === 'MARCJSON' || editCtrl.report.fileFormat === 'MARCXML' 
+                                                || editCtrl.z3950 || editCtrl.report.type === 'HIERARCHY_IN_SINGLE_NOTICE'"
+                                sem-model="editCtrl.report.mapping" sem-option-data="editCtrl.options.mappingMARC"
+                                sem-onchange="editCtrl.changeMapping(value)" sem-errors="{{ editCtrl.errors.mapping }}"></sem-field>
+                            <!-- Mapping MARC enfants -->
+                            <sem-field sem-type="uiselect" sem-label="{{::'Mapping des notices enfant' | translate}}"
+                                ng-readonly="!editCtrl.isCreation" ng-show="editCtrl.report.type === 'HIERARCHY_IN_SINGLE_NOTICE'"
+                                sem-model="editCtrl.report.mappingChildren" sem-option-data="editCtrl.options.mappingMARC"
+                                sem-errors="{{ editCtrl.errors.mappingChildren }}"></sem-field>
+                            <!-- Mapping EAD -->
+                            <sem-field sem-type="uiselect" sem-label="{{::'Mapping EAD' | translate}}" ng-readonly="!editCtrl.isCreation"
+                                ng-show="editCtrl.report.fileFormat === 'EAD'" sem-model="editCtrl.report.mapping"
+                                sem-option-data="editCtrl.options.mappingEAD" sem-errors="{{ editCtrl.errors.mapping }}"></sem-field>
+                            <!-- Mapping EAD enfants -->
+                            <sem-field sem-type="uiselect" sem-label="{{::'Mapping des composants EAD enfant' | translate}}" ng-readonly="!editCtrl.isCreation" 
+                                ng-show="editCtrl.report.type === 'SIMPLE_MULTI_NOTICE'"
+                                sem-model="editCtrl.report.mappingChildren" sem-option-data="editCtrl.options.mappingEAD"
+                                sem-errors="{{ editCtrl.errors.mappingChildren }}"></sem-field>
+                            <!-- Mapping CSV-->
+                            <sem-field sem-type="uiselect" sem-label="{{::'Mapping CSV' | translate}}" ng-readonly="!editCtrl.isCreation"
+                                ng-show="editCtrl.report.fileFormat === 'CSV'" sem-model="editCtrl.report.mapping"
+                                sem-option-data="editCtrl.options.mappingCSV" sem-onchange="editCtrl.changeMapping(value)"
+                                sem-errors="{{ editCtrl.errors.mapping }}"></sem-field>
+                            <!-- Bibliothèque si DC ou OAI-PMH -->
+                            <sem-field sem-type="select" sem-label="{{::'Bibliothèque' | translate}}" sem-field-class="col-xs-8 col-lg-4"
+                                sem-model="editCtrl.library" ng-readonly="!isAuthorized(userRoles.LIB_HAB1) || !editCtrl.isCreation"
+                                ng-show="editCtrl.report.fileFormat === 'DC' || editCtrl.sourceSrvc" sem-select-options="o.name for o in optionData track by o.identifier"
+                                sem-option-data="editCtrl.options.libraries"></sem-field>
+                            <!-- Mapping DC -->
+                            <sem-field sem-type="select" sem-label="{{::'Type d\'encodage DC' | translate}}"
+                                sem-field-class="col-xs-8 col-lg-4" sem-model="editCtrl.report.additionnalMapping"
+                                ng-readonly="!editCtrl.isCreation" ng-if="!editCtrl.sourceSrvc" ng-show="editCtrl.report.fileFormat === 'DC'"
+                                sem-select-options="key as value for (key, value) in optionData" sem-option-data="editCtrl.options.dc_encoding"
+                                sem-errors="{{ (editCtrl.report.errors | filter:{field: 'additionnalMapping'}:true) }}"></sem-field>
+                            <!-- Id du parent -->
+                            <sem-field sem-type="textarea" sem-label="{{::'Identifiant du parent' | translate}}"
+                                sem-field-class="col-xs-8 col-lg-4" sem-model="editCtrl.report.joinExpression"
+                                ng-readonly="!editCtrl.isCreation" ng-if="editCtrl.report.type === 'HIERARCHY_IN_MULTIPLE_IMPORT' || editCtrl.parent || (!editCtrl.isCreation && editCtrl.report.joinExpression)"></sem-field>
+                            <!-- Import parent -->
+                            <div class="row vertical-align" ng-if="editCtrl.report.parentReport">
+                                <div class="col-xs-4 text-right">
+                                    <label for="importFiles0" translate>Import des parents</label><br />
+                                </div>
+                                <div class="col-xs-8">
+                                    <span class="margin-r10" ng-bind-html="::mainCtrl.toString(editCtrl.report.parentReport, 'LL LT')"></span>
+                                    <button type="button" class="btn btn-sem2 btn-xs" uib-tooltip="{{ ::'Voir' | translate }}"
+                                        ng-click="editCtrl.openImport(editCtrl.report.parentReport)">
+                                        <span class="glyphicon-halflings glyphicon-share"></span>
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Options OAI-PMH -->
+                            <div ng-if="editCtrl.isCreation && editCtrl.oaipmh">
+                                <!-- URL -->
+                                <sem-field sem-type="text" sem-label="{{::'URL du service' | translate}}"
+                                    sem-field-class="col-xs-8 col-lg-4" sem-model="editCtrl.report.baseUrl"></sem-field>
+                                <div class="row vertical-align" style="margin-top: -15px; margin-bottom: 10px">
+                                    <div class="col-xs-8 col-xs-offset-4">
+                                        <button type="button" class="btn btn-sem2 btn-xs" uib-tooltip="{{ ::'Vérifier la connexion au service OAI-PMH' | translate }}"
+                                            ng-click="editCtrl.checkOaiPmhServer()" ng-disabled="!editCtrl.report.baseUrl || editCtrl._oaiPmhLoading">
+                                            <span class="fa fa-link"></span> <span translate>Vérifier l'URL</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <!-- Paramètres -->
+                                <sem-field sem-type="datepicker" sem-label="{{::'À partir du' | translate}}"
+                                    sem-field-class="col-xs-8 col-lg-4" sem-model="editCtrl.report.from"></sem-field>
+                                <sem-field sem-type="datepicker" sem-label="{{::'Jusqu\'au' | translate}}"
+                                    sem-field-class="col-xs-8 col-lg-4" sem-model="editCtrl.report.to"></sem-field>
+                                <sem-field sem-type="text" sem-label="{{::'Set' | translate}}" sem-field-class="col-xs-8 col-lg-4"
+                                    sem-model="editCtrl.report.set"></sem-field>
+
+                                <div class="row vertical-align" style="margin-top: -15px; margin-bottom: 10px">
+                                    <div class="col-xs-8 col-xs-offset-4">
+                                        <button type="button" class="btn btn-sem2 btn-xs" uib-tooltip="{{ ::'Vérifier la requête OAI-PMH, et le nombre de résultats récupérés' | translate }}"
+                                            ng-click="editCtrl.checkOaiPmhQuery()" ng-disabled="!editCtrl.report.baseUrl || editCtrl._oaiPmhLoading">
+                                            <span class="fa fa-link"></span> <span translate>Vérifier la requête</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Fichier depuis le formulaire -->
+                            <div class="row vertical-align" ng-if="editCtrl.isCreation && !editCtrl.sourceSrvc">
+                                <div class="col-xs-4 text-right">
+                                    <label for="importFiles0" translate>Fichier à téléverser</label>
+                                    <b ng-if="editCtrl.report.type === 'HIERARCHY_IN_MULTIPLE_IMPORT'" translate>(notices
+                                        mères)</b>
+                                    <b ng-if="editCtrl.parent" translate>(notices filles)</b>
+                                </div>
+                                <div class="col-xs-8 col-lg-4">
+                                    <input type="file" id="importFiles0" onchange="angular.element(this).controller().setFiles(this)" />
+                                </div>
+                            </div>
+                            <!-- Liste de fichiers -->
+                            <div class="row vertical-align" ng-if="!editCtrl.isCreation || !editCtrl.sourceSrvc"
+                                ng-show="editCtrl.files.length">
+                                <div class="col-xs-4 text-right">
+                                    <label translate>Fichiers sélectionnés</label>
+                                </div>
+                                <div class="col-xs-8">
+                                    <div ng-repeat="file in editCtrl.files" ng-switch="file.size > 1048576" style="margin-bottom: 3px">
+                                        {{ ::file.webkitRelativePath || file.name}}
+                                        <span ng-switch-when="true">({{ ::file.size / 1048576 | number:2 }} MB)</span>
+                                        <span ng-switch-default ng-if="file.size !== null">({{ ::file.size / 1024 |
+                                            number:2 }} kB)</span>
+                                        <a class="btn btn-syr-cataloging-action btn-xs" ng-if="!editCtrl.isCreation && editCtrl.hasImportFile(editCtrl.report, file.name)"
+                                            ng-href="/api/rest/importreport/{{::editCtrl.report.identifier}}?download=true&file={{::file.name}}"
+                                            uib-tooltip="{{ ::'Télécharger les fichiers importés' | translate }}"
+                                            download>
+                                            <span class="fa fa-download"></span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Début -->
+                            <div class="row vertical-align" ng-if="!editCtrl.isCreation">
+                                <div class="col-xs-4 text-right">
+                                    <label translate>Début de l'import</label>
+                                </div>
+                                <div class="col-xs-8">{{editCtrl.report.start | moment:'L HH:mm:ss'}}</div>
+                            </div>
+                            <!-- Fin -->
+                            <div class="row vertical-align" ng-if="!editCtrl.isCreation">
+                                <div class="col-xs-4 text-right">
+                                    <label translate>Fin de l'import</label>
+                                </div>
+                                <div class="col-xs-8">{{editCtrl.report.end | moment:'L HH:mm:ss'}}</div>
+                            </div>
+                            <!-- Par -->
+                            <div class="row vertical-align" ng-if="!editCtrl.isCreation">
+                                <div class="col-xs-4 text-right">
+                                    <label translate>Utilisateur</label>
+                                </div>
+                                <div class="col-xs-8">{{::editCtrl.report.runBy}}</div>
+                            </div>
+                        </div>
+                        <!-- Infos visibles même lorsque l'accordion est replié -->
+                        <div class="formBlockContent margin-t0">
+                            <!-- Liste de fichiers -->
+                            <div class="row vertical-align" ng-show="!editCtrl.accTitle" ng-if="!editCtrl.isCreation || !editCtrl.sourceSrvc">
+                                <div class="col-xs-4 text-right">
+                                    <label translate>Fichiers sélectionnés</label>
+                                </div>
+                                <div class="col-xs-8">
+                                    <div ng-repeat="file in editCtrl.files" ng-switch="file.size > 1048576" style="margin-bottom: 3px">
+                                        {{ ::file.name }}
+                                        <span ng-switch-when="true">({{ ::file.size / 1048576 | number:2 }} MB)</span>
+                                        <span ng-switch-default ng-if="file.size !== null">({{ ::file.size / 1024 |
+                                            number:2 }} kB)</span>
+                                        <a class="btn btn-syr-cataloging-action btn-xs" ng-if="!editCtrl.isCreation && editCtrl.hasImportFile(editCtrl.report, file.name)"
+                                            ng-href="/api/rest/importreport/{{::editCtrl.report.identifier}}?download=true&file={{::file.name}}"
+                                            uib-tooltip="{{ ::'Télécharger le fichier importé' | translate }}" download>
+                                            <span class="fa fa-download"></span>
+                                        </a>
+                                    </div>
+                                    <span ng-hide="editCtrl.files.length" translate>Aucun fichier sélectionné</span>
+                                </div>
+                            </div>
+                            <!-- Projet -->
+                            <div class="row vertical-align" ng-if="editCtrl.report.project.identifier && (editCtrl.report.status === 'COMPLETED' || editCtrl.report.status === 'FAILED')">
+                                <div class="col-xs-4 text-right">
+                                    <label translate>Projet</label>
+                                </div>
+                                <div class="col-xs-8">
+                                    {{::editCtrl.report.project.name}}&nbsp;
+                                    <a class="btn btn-syr-cataloging-action btn-xs" uib-tooltip="{{ ::'Voir le projet' | translate }}"
+                                        ng-href="/#/project/project?id={{::editCtrl.report.project.identifier}}" target="_blank">
+                                        <span class="glyphicon-halflings glyphicon-share"></span>
+                                    </a>
+                                </div>
+                            </div>
+                            <!-- Lot -->
+                            <div class="row vertical-align" ng-if="editCtrl.report.lot.identifier && (editCtrl.report.status === 'COMPLETED' || editCtrl.report.status === 'FAILED')">
+                                <div class="col-xs-4 text-right">
+                                    <label translate>Lot</label>
+                                </div>
+                                <div class="col-xs-8">
+                                    {{::editCtrl.report.lot.label}}&nbsp;
+                                    <a class="btn btn-syr-cataloging-action btn-xs" uib-tooltip="{{ ::'Voir le lot' | translate }}"
+                                        ng-href="/#/lot/lot?id={{::editCtrl.report.lot.identifier}}" target="_blank">
+                                        <span class="glyphicon-halflings glyphicon-share"></span>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- Statut -->
+                            <div class="row vertical-align" ng-if="!editCtrl.isCreation">
+                                <div class="col-xs-4 text-right">
+                                    <label translate>Statut</label>
+                                </div>
+                                <div class="col-xs-8" ng-class="{'PENDING': 'text-info',
+                                                                 'PRE_IMPORTING': 'text-info',
+                                                                 'DEDUPLICATING': 'text-info',
+                                                                 'USER_VALIDATION': 'text-info',
+                                                                 'IMPORTING': 'text-info',
+                                                                 'INDEXING': 'text-info',
+                                                                 'COMPLETED': 'text-success',
+                                                                 'FAILED': 'text-danger'}[editCtrl.report.status]">
+                                    <span ng-class="{'PENDING': 'glyphicon-halflings glyphicon-hourglass',
+                                             'PRE_IMPORTING': 'glyphicon-regular cogwheels',
+                                             'DEDUPLICATING': 'glyphicon-regular cogwheels',
+                                             'USER_VALIDATION': 'glyphicon-regular user-flag',
+                                             'IMPORTING': 'glyphicon-regular cogwheels',
+                                             'INDEXING': 'glyphicon-regular cogwheels',
+                                             'COMPLETED': 'glyphicon-halflings glyphicon-ok-sign',
+                                             'FAILED': 'glyphicon-halflings glyphicon-exclamation-sign'}[editCtrl.report.status]"></span>
+                                    {{editCtrl.options.status[editCtrl.report.status] || editCtrl.report.status}}
+                                    <span ng-if="editCtrl.report._nbProcessed" translate translate-n="editCtrl.report._nbProcessed"
+                                        translate-plural="({{$count}} traités)">(1 traité)</span>
+                                </div>
+                            </div>
+                            <!-- Message d'erreur -->
+                            <div class="row vertical-align" ng-if="editCtrl.report.message">
+                                <div class="col-xs-8 col-xs-offset-4" ng-class="{'PENDING': 'text-info',
+                                                'PRE_IMPORTING': 'text-info',
+                                                'DEDUPLICATING': 'text-info',
+                                                'USER_VALIDATION': 'text-info',
+                                                'IMPORTING': 'text-info',
+                                                'INDEXING': 'text-info',
+                                                'COMPLETED': 'text-success',
+                                                'FAILED': 'text-danger'}[editCtrl.report.status]">
+                                    <span ng-bind-html="editCtrl.report.message"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </uib-accordion>
+                <!-- Options d'exécution de l'import -->
+                <div class="formBlock" ng-if="editCtrl.loaded && editCtrl.isCreation">
+                    <div class="formBlockTitle">
+                        <span translate>Import</span>
+                    </div>
+                    <div class="formBlockContent">
+                        <!-- Projet -->
+                        <sem-field sem-type="uiselect" sem-label="{{::'Projet' | translate}}" sem-field-class="col-xs-4"
+                            sem-model="editCtrl.report.project" sem-option-data="editCtrl.options.projects"
+                            sem-onchange="editCtrl.changeProject(value)"></sem-field>
+                        <!-- Lot -->
+                        <sem-field sem-type="uiselect" sem-label="{{::'Lot' | translate}}" sem-field-class="col-xs-4"
+                            sem-model="editCtrl.report.lot" sem-option-data="editCtrl.options.lots" ng-if="editCtrl.report.project"></sem-field>
+                        <!-- Valider les unités documentaires avant de les importer -->
+                        <sem-field sem-type="checkbox" sem-label="{{::'Vérifier les unités documentaires' | translate}}"
+                            sem-model="editCtrl.import.validation" sem-tooltip="{{ ::'Vérifier les unités documentaires avant de les importer' | translate }}"></sem-field>
+                        <!-- Recherche de doublons -->
+                        <sem-field sem-type="checkbox" sem-label="{{::'Rechercher des doublons' | translate}}"
+                            sem-model="editCtrl.import.dedup" sem-tooltip="{{ ::'Rechercher des doublons parmi les unités documentaires existantes' | translate }}"></sem-field>
+                        <!-- Action par défaut en cas de traitement automatique des doublons -->
+                        <sem-field sem-type="select" sem-label="{{::'Traitement des doublons' | translate}}" ng-show="editCtrl.import.dedup && !editCtrl.import.validation"
+                            sem-model="editCtrl.import.dedupProcess" sem-tooltip="{{ ::'Action par défaut si un doublon est trouvé' | translate }}"
+                            sem-select-options="key as value for (key, value) in optionData" sem-option-data="editCtrl.options.dedupProcess"></sem-field>
+
+                        <!-- Importer -->
+                        <div class="row vertical-align" ng-if="!editCtrl.sourceSrvc">
+                            <div class="col-xs-offset-4 col-xs-8 margin-t10">
+                                <button type="button" class="btn btn-sem2" ng-click="editCtrl.importFiles()"
+                                    ng-disabled="editCtrl.isImportDisabled()">
+                                    <span translate>Importer</span>
+                                    <span class="glyphicon-halflings glyphicon-upload"></span>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- Import OAI-PMH -->
+                        <div class="row vertical-align" ng-if="editCtrl.oaipmh">
+                            <div class="col-xs-offset-4 col-xs-8 margin-t10">
+                                <button type="button" class="btn btn-sem2" ng-click="editCtrl.importOaiPmh()"
+                                    ng-disabled="!editCtrl.library || !editCtrl.report.baseUrl">
+                                    <span translate>Importer</span>
+                                    <span class="glyphicon-halflings glyphicon-upload"></span>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- Recherche Z39.50 -->
+                        <div class="row vertical-align" ng-if="editCtrl.z3950">
+                            <div class="col-xs-offset-4 col-xs-8 margin-t10">
+                                <button type="button" class="btn btn-sem2" ng-click="editCtrl.importZ3950()"
+                                    ng-disabled="editCtrl.isImportDisabled()">
+                                    <span translate>Recherche Z39.50</span>
+                                    <span class="glyphicon-regular database-search"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Import des unités documentaires après validation par l'utilisateur -->
+                <div class="formBlock" ng-if="editCtrl.loaded && editCtrl.report.status === 'USER_VALIDATION'">
+                    <div class="formBlockTitle">
+                        <span translate>Import</span>
+                    </div>
+                    <div class="formBlockContent">
+                        <!-- Projet -->
+                        <sem-field sem-type="uiselect" sem-label="{{::'Projet' | translate}}" sem-field-class="col-xs-4"
+                            sem-model="editCtrl.report.project" sem-option-data="editCtrl.options.projects"
+                            sem-onchange="editCtrl.report.lot=null"></sem-field>
+                        <!-- Lot -->
+                        <sem-field sem-type="uiselect" sem-label="{{::'Lot' | translate}}" sem-field-class="col-xs-4"
+                            sem-model="editCtrl.report.lot" sem-option-data="editCtrl.options.lots" ng-if="editCtrl.report.project"></sem-field>
+                        <!-- Action par défaut pour les doublons -->
+                        <sem-field sem-type="select" sem-label="{{::'Si un doublon est trouvé' | translate}}" sem-model="editCtrl.import.dedupProcess"
+                            sem-tooltip="{{ ::'Action par défaut si un doublon est trouvé' | translate }}"
+                            sem-select-options="key as value for (key, value) in optionData" sem-option-data="editCtrl.options.dedupProcess"></sem-field>
+                        <!-- Action par défaut si pas de doublon -->
+                        <sem-field sem-type="select" sem-label="{{::'Sinon' | translate}}" sem-model="editCtrl.import.defaultProcess"
+                            sem-tooltip="{{ ::'Action par défaut si aucun doublon n\'est trouvé' | translate }}"
+                            sem-select-options="key as value for (key, value) in optionData" sem-option-data="editCtrl.options.defaultProcess"></sem-field>
+
+                        <!-- Importer -->
+                        <div class="row vertical-align">
+                            <div class="col-xs-offset-4 col-xs-8 margin-t10">
+                                <button type="button" class="btn btn-sem2" ng-click="editCtrl.importDocUnits(editCtrl.report)">
+                                    <span translate>Importer</span>
+                                    <span class="glyphicon-halflings glyphicon-upload"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Filtrage des unités documentaires importées -->
+                <div class="formBlock margin-t20" ng-if="editCtrl.report.content">
+                    <div class="formBlockTitle">
+                        <span translate>Filtrer les éléments importés</span>
+                    </div>
+                    <div class="formBlockContent margin-t0">
+                        <div class="row vertical-align">
+                            <div class="col-xs-12 col-lg-8 col-lg-offset-4 form-inline padding-b10">
+                                <div class="checkbox checkbox-sid-main form-group no-padding">
+                                    <input id="showOnlyErrors" type="checkbox" ng-model="editCtrl.filter.errors"
+                                        ng-click="editCtrl.updateFilter(editCtrl.filter)" />
+                                    <label translate for="showOnlyErrors">Seulement les erreurs</label>
+                                </div>
+                                <div class="checkbox checkbox-sid-main form-group">
+                                    <input id="showOnlyDuplicates" type="checkbox" ng-model="editCtrl.filter.duplicates"
+                                        ng-click="editCtrl.updateFilter(editCtrl.filter)" />
+                                    <label translate for="showOnlyDuplicates">Seulement les doublons</label>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Filtrer par statut de ImportedDocUnit -->
+                        <sem-field sem-type="uiselect" sem-field-class="col-xs-12 col-lg-8 col-lg-offset-4" sem-model="editCtrl.filter.docStates"
+                            sem-option-data="editCtrl.options.docStates" sem-onchange="editCtrl.updateFilter(editCtrl.filter)"></sem-field>
+                    </div>
+                </div>
+                <!-- Nombre d'unités documentaires importées -->
+                <div class="row margin-t20" ng-if="editCtrl.loaded && editCtrl.report.content && !editCtrl.runningStatus[editCtrl.report.status]">
+                    <div class="col-xs-12 text-right" ng-switch="editCtrl.report.totalDocs === 0">
+                        <small ng-switch-when="true" translate>Aucun résultat</small>
+                        <small ng-switch-default translate translate-n="editCtrl.report.totalDocs" translate-plural="{{$count}} résultats">
+                            1 résultat
+                        </small>
+                    </div>
+                </div>
+                <!-- Détail des unités documentaires importées -->
+                <div class="row" ng-if="editCtrl.loaded && editCtrl.report.status && !editCtrl.runningStatus[editCtrl.report.status]">
+                    <div class="col-xs-12">
+                        <table st-table="editCtrl.report.content" st-pipe="editCtrl.getPage" st-pagination-scroll="#scroll-import"
+                            class="table table-hover table-import">
+                            <tbody>
+                                <!-- Unité documentaire importée -->
+                                <tr ng-repeat-start="impDoc in editCtrl.report.content" ng-init="preimported = (impDoc.docUnit && impDoc.docUnit.state === 'NOT_AVAILABLE'); 
+                                         imported = (impDoc.docUnit && impDoc.docUnit.state === 'AVAILABLE'); 
+                                         userValidation = preimported && editCtrl.report.status === 'USER_VALIDATION'"
+                                    class="root" ng-class="{ 'sid-fourth': preimported, 
+                                            'sid-third': imported, 
+                                            'active': !impDoc.docUnit, 
+                                            'child': impDoc.parentDocUnit,
+                                            'group': impDoc.groupCode,
+                                            'first': impDoc._first }">
+                                    <td colspan="{{ userValidation ? 1 : 2 }}">
+                                        <div class="pull-right height-40" ng-if="impDoc.docUnit && (impDoc.docUnit.state === 'AVAILABLE' || impDoc.docUnit.forcelink)">
+                                            <a class="btn btn-syr-cataloging-action btn-xs" target="_blank" uib-tooltip="{{::'Voir l\'unité documentaire' | translate}}"
+                                                ng-href="#/document/docunit?id={{::impDoc.docUnit.identifier}}">
+                                                <span class="glyphicon-halflings glyphicon-share"></span>
+                                            </a>
+                                        </div>
+                                        <span class="label label-primary" ng-if="impDoc.docUnit">{{::editCtrl.code['import.DocUnit.State.'
+                                            + impDoc.docUnit.state] || impDoc.docUnit.state}}</span>
+                                        <span class="label label-primary" ng-if="!impDoc.docUnit && !impDoc.divider"
+                                            translate>Ignoré</span>
+                                        {{::impDoc.docUnitPgcnId}}
+                                        <div>{{::impDoc.docUnitLabel}}</div>
+                                    </td>
+                                    <!-- Sélection d'une action l'import de cette unité documentaire (gestion des doublons) -->
+                                    <td ng-if="userValidation && impDoc.duplicatedUnits.length > 0">
+                                        <select ng-options="code as label for (code, label) in editCtrl.options.dedupProcess"
+                                            ng-model="impDoc.process" ng-change="editCtrl.updateProcess(impDoc)" class="form-control"
+                                            style="font-weight: normal">
+                                            <option value="" translate>[Action par défaut]</option>
+                                        </select>
+                                    </td>
+                                    <!-- Sélection d'une action l'import de cette unité documentaire (sans doublons) -->
+                                    <td ng-if="userValidation && impDoc.duplicatedUnits.length === 0">
+                                        <select ng-options="code as label for (code, label) in editCtrl.options.defaultProcess"
+                                            ng-model="impDoc.process" ng-change="editCtrl.updateProcess(impDoc)" class="form-control"
+                                            style="font-weight: normal">
+                                            <option value="" translate>[Action par défaut]</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <!-- Doublons -->
+                                <tr ng-if="userValidation && impDoc.duplicatedUnits.length > 0" ng-class="{ 'child': impDoc.parentDocUnit,
+                                            'group': impDoc.groupCode }">
+                                    <td colspan="2">
+                                        <ul class="list-group no-margin">
+                                            <li class="list-group-item list-group-item-warning">
+                                                <span class="label label-primary" translate translate-n="impDoc.duplicatedUnits.length"
+                                                    translate-plural="{{$count}} doublons">1 doublon</span>
+                                            </li>
+                                            <li class="list-group-item list-group-item-warning" ng-repeat="dup in impDoc.duplicatedUnits">
+                                                <div class="pull-right">
+                                                    <a class="btn btn-syr-cataloging-action btn-xs" target="_blank"
+                                                        uib-tooltip="{{::'Voir l\'unité documentaire' | translate}}"
+                                                        ng-href="#/document/docunit?id={{::dup.identifier}}">
+                                                        <span class="glyphicon-halflings glyphicon-share"></span>
+                                                    </a>
+                                                </div>
+                                                {{::dup.pgcnId}} {{::dup.label}}
+                                            </li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                                <!-- Messages d'erreurs -->
+                                <tr ng-repeat-end ng-if="impDoc.messages.length > 0" ng-class="{ 'child': impDoc.parentDocUnit,
+                                                'group': impDoc.groupCode }">
+                                    <td colspan="2">
+                                        <ul class="list-group no-margin">
+                                            <li class="list-group-item list-group-item-danger" ng-repeat="msg in impDoc.messages">
+                                                {{ ::editCtrl.getMessage(msg.code) }}
+                                                <div ng-if="::msg.complement">
+                                                    <span translate>Détails complémentaires: </span> <i>{{
+                                                        ::msg.complement }}</i>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row" ng-show="editCtrl.pagination.loading">
+                    <div class="col-xs-12">
+                        <span class="small text-muted" translate>Chargement en cours...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

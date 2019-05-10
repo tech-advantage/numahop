@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Droit spécifique pour la livraison avec création d'UD -->
+    <changeSet author="progilone" id="pgcn-create-user-8">
+        <sql>
+            INSERT INTO user_authorization(module,identifier,code,label,description,version)
+            VALUES ('DELIVERY','DEL-HAB5-2','DEL-HAB5-2','Gestion des livraisons : pré-livraisons, livraison avec création d''ud',
+            'Habilitation à la gestion des livraisons : pré-livraisons, livraison avec création d''ud',0)
+        </sql>
+        <sql>
+            INSERT INTO user_role_authorization(user_authorization, role)
+            SELECT 'DEL-HAB5-2', a.role
+            FROM user_role_authorization a
+            INNER JOIN user_role r ON r.identifier = a.role
+            WHERE a.user_authorization='DEL-HAB5'
+            AND r.code != 'PRESTA'
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

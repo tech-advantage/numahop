@@ -1,0 +1,96 @@
+.owl-theme img {
+    height: 200px;
+    max-width: 100%;
+}
+.owl-theme img.thumbnail, .owl-theme .thumbnail>img {
+    height: auto;
+}
+.owl-theme .item {
+    text-align: center;
+}
+
+.owl-carousel .imgCarousel img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.bestRated-carousel, .loans-carousel, .news-carousel{
+	.owl-item {
+		text-align: center;
+		padding-left:5px;
+		padding-right:5px;
+		
+	}
+	
+	.owl-controls {
+		margin-top: -10px;
+	}
+	
+	img {
+		padding-bottom:5px;
+		height:150px;
+	}	
+}
+#carousel-documents.owl-carousel {
+    margin-bottom: 20px;
+    padding: 0 65px 0 65px;
+    
+    .owl-item {
+        padding-right: 2px;
+    }
+    .searchDocuments {
+        padding: 0px 16px;
+        
+        .panel {
+            margin-bottom: 0px;
+        }
+    }
+    &.owl-theme .owl-controls .owl-buttons {
+        .owl-prev, .owl-next, .owl-prev:hover, .owl-next:hover {
+            position: absolute;
+            height: 200px;
+            width: 200px;
+            top: 60px;
+            margin: 0px;
+            padding: 0px;
+            border-radius: 50%;
+            background: none;
+            overflow: hidden;
+            opacity: 0.5 !important;
+
+            > div {
+                position: absolute;
+                height: 100%;
+                width: 80px;
+                margin: 0;
+                padding: 0;
+                border-radius: 0;
+                >i {
+                    top: 40%;
+                    font-size: 36px;
+                }
+            }
+        }
+        .owl-prev {
+            left: 0px;
+            > div {
+                left: 0;
+            }
+        }
+        .owl-next {
+            right: 0px;
+            > div {
+                right: 0;
+            }
+        }
+    }
+}
+
+.searchDocuments {
+    cursor: pointer;
+    
+    .panel {
+        overflow-y: auto;
+    }
+}

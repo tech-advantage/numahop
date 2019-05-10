@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="pgcn-project-9" author="progilone">
+
+        <createTable tableName="conf_configuration_check">
+            <column name="identifier" type="varchar(191)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="label" type="varchar(191)"/>
+            <column name="major_error_rate" type="double" />
+            <column name="minor_error_rate" type="double" />
+            <column name="sample_rate" type="double" />
+            <column name="library" type="varchar(191)" />
+            <column name="version" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addColumn tableName="lot_lot">
+            <column name="active_configuration_check" type="varchar(191)"></column>
+        </addColumn>
+
+        <addColumn tableName="proj_project">
+            <column name="active_configuration_check" type="varchar(191)"></column>
+        </addColumn>
+
+        <!--moving delivery folder to ftp configuration-->
+        <addColumn tableName="conf_configuration_ftp">
+            <column name="delivery_folder" type="varchar(255)"></column>
+        </addColumn>
+        <dropColumn tableName="proj_project" columnName="delivery_folder"/>
+        <dropColumn tableName="lot_lot" columnName="delivery_folder"/>
+
+        <addForeignKeyConstraint constraintName="fk_project_configuration_check"
+                                 baseTableName="proj_project" baseColumnNames="active_configuration_check"
+                                 referencedTableName="conf_configuration_check" referencedColumnNames="identifier"/>
+
+        <addForeignKeyConstraint constraintName="fk_lot_configuration_check"
+                                 baseTableName="lot_lot" baseColumnNames="active_configuration_check"
+                                 referencedTableName="conf_configuration_check" referencedColumnNames="identifier"/>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,9 @@
+<div ng-controller="NavigationCtrl" role="navigation">
+	<div ng-if="navigation.displayViews">
+		<a ng-repeat="view in navViews | filter:{displayed:true} | orderBy:'pos' track by view.id"
+		   id="{{view.id}}" class="btn btn-syr-cataloging" uib-tooltip="{{view.alt}}"
+		   ng-class="{active: view.active}" ng-click="openView(view)">
+			<span ng-class="view.icon"></span>
+		</a>
+	</div>
+</div>

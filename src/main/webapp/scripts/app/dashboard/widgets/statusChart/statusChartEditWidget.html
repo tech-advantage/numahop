@@ -1,0 +1,24 @@
+<!-- Choix des données -->
+<sem-field sem-type="select" sem-label="{{::'Données' | translate}}"
+           sem-model="config.dataType" sem-label-class="col-xs-3" sem-field-class="col-xs-9"
+           sem-select-options="t as t.label for t in optionData track by t.identifier"
+           sem-option-data="mainCtrl.config.dataTypes"></sem-field>
+<!-- Format de représentation -->
+<sem-field sem-type="select" sem-label="{{::'Format' | translate}}"
+           sem-model="config.format" sem-label-class="col-xs-3" sem-field-class="col-xs-9"
+           sem-select-options="t as t.label for t in optionData track by t.identifier"
+           sem-option-data="mainCtrl.config.dataFormats"></sem-field>
+<!-- Bibliothèques -->
+<sem-field sem-type="uiselect" sem-label="{{::'Bibliothèque' | translate}}" 
+           sem-model="config.libraries" sem-label-class="col-xs-3" sem-field-class="col-xs-9"
+           sem-option-data="mainCtrl.config.libraries"></sem-field>
+<!-- Projet -->
+<sem-field sem-type="uiselect" sem-label="{{::'Projet' | translate}}" 
+            sem-label-class="col-xs-3" sem-field-class="col-xs-9"
+            sem-model="config.project" sem-option-data="mainCtrl.config.projects"
+            ng-if="config.dataType && mainCtrl.controlConfig[config.dataType.identifier].project"></sem-field>
+<!-- Lot -->
+<sem-field sem-type="uiselect" sem-label="{{::'Lot' | translate}}" 
+            sem-label-class="col-xs-3" sem-field-class="col-xs-9"
+            sem-model="config.lot" sem-option-data="mainCtrl.config.lots"
+            ng-if="config.dataType && mainCtrl.controlConfig[config.dataType.identifier].lot"></sem-field>

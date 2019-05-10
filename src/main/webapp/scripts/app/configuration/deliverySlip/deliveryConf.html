@@ -1,0 +1,40 @@
+<div class="row layout-columns">
+    <div class="col-sm-4 col-lg-3 col-layout-columns">
+        <div class="panel panel-column-1">
+            <div class="panel-heading">
+                <span translate>Configuration des bordereaux</span>
+            </div>
+            <div class="panel-body">
+                <div class="list padding-b20">
+                    <div class="list" ng-repeat="library in mainCtrl.libraries | orderBy:'name'" ng-repeat-end>
+                        <a ng-class="{'active': library === mainCtrl.editedLibrary}">
+                            <span>{{ library.name }}</span>
+                            
+                            <div class="list padding-l20 padding-b20"  >
+                                <div>
+                                    <a ng-click="mainCtrl.edit(library, 'DELIVERY')" 
+                                        ng-class="{'active': library === mainCtrl.editedLibrary && 'DELIVERY' === mainCtrl.editedType}">
+                                        <span translate>- Bordereau de livraison</span>
+                                    </a>
+                                </div>
+		                        <div>
+                                    <a ng-click="mainCtrl.edit(library, 'CONTROL')" 
+                                        ng-class="{'active':  library === mainCtrl.editedLibrary && 'CONTROL' === mainCtrl.editedType}">
+                                        <span translate>- Bordereau de Controle</span>
+                                    </a>
+                                </div>
+                                <div>
+                                    <a ng-click="mainCtrl.edit(library, 'CONDREPORT')" 
+                                        ng-class="{'active':  library === mainCtrl.editedLibrary && 'CONDREPORT' === mainCtrl.editedType}">
+                                        <span translate>- Bordereau de Constat d'état</span>
+                                    </a>
+                                </div>
+		                    </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <ng-include src="mainCtrl.configurationInclude"></ng-include>
+</div>

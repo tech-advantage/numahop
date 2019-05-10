@@ -1,0 +1,45 @@
+﻿<div id="sem-login" class="sem-jumbotron">
+    <div class="container">
+        <h1 class="logo text-center">
+            <img src="assets/images/logos/numahop.png"/>
+        </h1>
+        <div class="alert alert-danger" ng-show="authenticationError" translate>
+            <strong>Erreur d'authentification&nbsp;:</strong> veuillez vérifier vos identifiants de connexion.
+        </div>
+        <div class="alert" ng-class="'alert-'+message.level" ng-show="message">{{ message.text }}</div>
+        <!-- Formulaire de connexion -->
+        <form class="form" role="form" ng-hide="forgotPassword">
+            <div class="form-group">
+                <input type="text" ng-model="username" class="form-control" 
+                       placeholder="{{::'Votre nom d\'utilisateur' | translate}}">
+            </div>
+            <div class="form-group text-right">
+                <input type="password" class="form-control" id="password"
+                    placeholder="{{::'Votre mot de passe' | translate}}"
+                    ng-model="password">
+                <a class="small" ng-click="setForgotPassword(true)" translate>Mot de passe oublié ?</a>
+            </div>
+            <div class="form-group">
+                <label for="rememberMe"> {{::"Garder la session ouverte" | translate}}
+                    <input type="checkbox" id="rememberMe" class="checkbox inline_class pull-left" ng-model="rememberMe" checked>
+                </label>
+            </div>
+            <button type="submit" class="btn btn-primary pull-right" ng-click="login()" translate>Connexion</button>
+        </form>
+        <!-- Formulaire de récupération du mot de passe -->
+        <form class="form" role="form" ng-show="forgotPassword">
+            <div class="form-group">
+                    <label for="username" translate>Nom d'utilisateur</label>
+                <input type="text" ng-model="username" class="form-control" 
+                       placeholder="{{::'Votre nom d\'utilisateur' | translate}}">
+            </div>
+            <div class="form-group">
+                <div class="pull-right">
+                    <button type="button" class="btn btn-sem4" ng-click="setForgotPassword(false)" translate>Annuler</button>
+                    <button type="submit" class="btn btn-primary" ng-click="resetPassword()" translate>Réinitialiser le mot de passe</button>
+                </div>
+            </div>
+        </form>
+        <div class="clearfix"></div>
+    </div>
+</div>

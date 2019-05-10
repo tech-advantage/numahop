@@ -1,0 +1,10 @@
+<!-- Projet -->
+<sem-field sem-type="uiselect" sem-label="{{::'Projet' | translate}}" 
+            sem-label-class="col-xs-3" sem-field-class="col-xs-9"
+            sem-model="config.project" sem-option-data="mainCtrl.options.projects"
+            sem-onchange="mainCtrl.changeProject(value)"></sem-field>
+<!-- Lot -->
+<sem-field sem-type="uiselect" sem-label="{{::'Lot' | translate}}" 
+            sem-label-class="col-xs-3" sem-field-class="col-xs-9"
+            sem-model="config.lot" sem-option-data="mainCtrl.options.lots"
+            ng-if="config.project"></sem-field>

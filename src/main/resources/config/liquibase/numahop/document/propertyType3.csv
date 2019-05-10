@@ -1,0 +1,4 @@
+identifier;label;supertype;rank;version
+source_language;Source Language;CUSTOM;9;0
+relation_language;Relation Language;CUSTOM;10;0
+coverage_language;Coverage Language;CUSTOM;11;0

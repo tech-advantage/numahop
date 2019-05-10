@@ -1,0 +1,110 @@
+<div class="col-sm-6 col-sm-offset-6 col-layout-columns" ng-controller="MailboxEditCtrl as editCtrl" ng-init="editCtrl.loadDto(mainCtrl.editedBox)">
+    <div class="panel panel-column-3">
+        <div class="panel-heading">
+            <div class="pull-right">
+                <button type="button" class="btn btn-sem2 btn-xs" uib-tooltip="{{::'Modifier' | translate}}"
+                        ng-click="mailboxForm.$show()" ng-disabled="mailboxForm.$visible" ng-show="editCtrl.loaded"
+                        sem-roles-allowed="MAIL_HAB1">
+                    <span class="glyphicon-regular edit"></span>
+                </button>
+                <button type="button" class="btn btn-sem2 btn-xs"
+                        ng-click="editCtrl.deleteMailbox()" 
+                        ng-disabled="!editCtrl.box || !editCtrl.box.identifier" ng-show="editCtrl.loaded"
+                        uib-tooltip="{{::'Supprimer' | translate}}"
+                        sem-roles-allowed="MAIL_HAB2">
+                    <span class="glyphicon-halflings glyphicon-trash"></span>
+                </button>
+            </div>
+            <h5>{{::'Fiche' | translate}} {{editCtrl.box.label}}
+                <span class="fa" ng-class="{true: 'fa-toggle-on', false: 'fa-toggle-off'}[editCtrl.box.active]"
+                      uib-tooltip="{{ {true: ('Configuration active' | translate), false: ('Configuration active' | translate)}[editCtrl.box.active] }}"></span>
+            </h5>
+        </div>
+        <div class="panel-body">
+            <form editable-form name="mailboxForm" onaftersave="editCtrl.saveMailbox()" ng-show="editCtrl.loaded"
+                  ng-init="formRo = !isAuthorized(userRoles.MAIL_HAB1)">
+                <!-- Activation / désactivation -->
+                <numa-editable-field title="{{::'Actif' | translate}}" type="radiolist" form="mailboxForm" model="editCtrl.box.active"
+                                     config="{ data: editCtrl.options.boolean, displayFn: editCtrl.displayBoolean, 
+                                               query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }"
+                                     numa-readonly="formRo"></numa-editable-field>
+                <numa-editable-field title="{{::'Libellé' | translate}}" placeholder="{{::'Libellé' | translate}}" form="mailboxForm" onbeforesave="editCtrl.validation.required($data)"
+                                     model="editCtrl.box.label" errors="{{ editCtrl.errors.label }}" numa-readonly="formRo" mandatory="true"></numa-editable-field>
+                <numa-editable-field title="{{::'Serveur' | translate}}" placeholder="{{::'Serveur' | translate}}" form="mailboxForm" 
+                                     model="editCtrl.box.host" numa-readonly="formRo"></numa-editable-field>
+                <numa-editable-field title="{{::'Port' | translate}}" type="number" placeholder="{{::'Port' | translate}}" form="mailboxForm" 
+                                     model="editCtrl.box.port" numa-readonly="formRo"></numa-editable-field>
+                <numa-editable-field title="{{::'Répertoire' | translate}}" placeholder="{{::'Répertoire de messagerie' | translate}}" form="mailboxForm" 
+                                     model="editCtrl.box.inbox" numa-readonly="formRo"></numa-editable-field>
+                <numa-editable-field title="{{::'Utilisateur' | translate}}" placeholder="{{::'Nom d\'utilisateur' | translate}}" form="mailboxForm" 
+                                     model="editCtrl.box.username" numa-readonly="formRo"></numa-editable-field>
+                <numa-editable-field title="{{::'Mot de passe' | translate}}" placeholder="{{::'Mot de passe' | translate}}" form="mailboxForm" 
+                                     default-text="{{ ::'Contenu masqué' | translate }}" model="editCtrl.box.password"
+                                     numa-readonly="formRo"></numa-editable-field>
+                <numa-editable-field title="{{::'Bibliothèque' | translate}}" type="select" placeholder="{{::'Bibliothèque' | translate}}" form="mailboxForm" mandatory="true"
+                                     model="editCtrl.box.library" errors="{{ editCtrl.errors.library }}" numa-readonly="formRo" onbeforesave="editCtrl.validation.required($data)"
+                                     config="{ data: mainCtrl.options.libraries, 
+                                               display: 'name', 
+                                               query: 'o.name for o in $ctrl.config.data track by o.identifier' }"
+                                     link="{ type: 'library', parameters: {'id': editCtrl.box.library.identifier} }"></numa-editable-field>
+                                     
+                <!-- Propriétés de la configuration -->
+                <div class="formBlock">
+                    <div class="formBlockTitle">
+                        <span translate>Configuration de JavaMail</span>
+                        <!-- Création d'une nouvelle propriété -->
+                        <button type="button" class="btn btn-syr-cataloging-action btn-xs margin-l10"
+                                uib-tooltip="{{ ::'Ajouter une propriété' | translate}}"
+                                ng-click="editCtrl.newProperty()" ng-show="mailboxForm.$visible"
+                                sem-roles-allowed="MAIL_HAB1">
+                            <span class="glyphicon-halflings glyphicon-plus"></span>
+                        </button>
+                    </div>
+                    <div class="formBlockContent">
+                        <table class="table table-condensed table-hover">
+                            <thead>
+                            <tr>
+                                <th translate>Propriété</th>
+                                <th translate>Valeur</th>
+                                <th ng-show="mailboxForm.$visible"></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="p in editCtrl.box.properties">
+                                    <td>
+                                        <numa-editable-field placeholder="Propriété" model="p.name" form="mailboxForm" class="full-width" numa-readonly="formRo"></numa-editable-field>
+                                    </td>
+                                    <td>
+                                        <numa-editable-field placeholder="Valeur" model="p.value" form="mailboxForm" class="full-width" numa-readonly="formRo"></numa-editable-field>
+                                    </td>
+                                    <td ng-show="mailboxForm.$visible">
+                                        <!-- Suppression du lien vers l'unité documentaire parente -->
+                                        <button type="button" class="btn btn-syr-cataloging-action btn-xs"
+                                                uib-tooltip="{{ 'Supprimer cette propriété' | translate}}"
+                                                ng-click="editCtrl.removeProperty(p)" sem-roles-allowed="MAIL_HAB1">
+                                            <span class="glyphicon-halflings glyphicon-trash"></span>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Contrôles -->
+                <div class="text-center column-bottom column-5 margin-t10" ng-show="mailboxForm.$visible">
+                    <div class="column-bottom-button">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-sem4" ng-disabled="mailboxForm.$waiting" ng-click="mailboxForm.$cancel()">
+                                <span class="glyphicon-regular unshare"></span> {{::'Annuler' | translate}}
+                            </button>
+                            <button type="submit" class="btn btn-sem2" sem-roles-allowed="MAIL_HAB1">
+                                <span class="glyphicon-regular floppy-save"></span> {{::'Enregistrer' | translate}}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

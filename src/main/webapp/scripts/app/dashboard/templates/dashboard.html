@@ -1,0 +1,89 @@
+<div class="row layout-columns">
+    <div class="col-sm-12 col-layout-columns">
+        <div class="panel panel-column-1 panel-column-end dashboard-container">
+            <div class="panel-heading" ng-include src="model.titleTemplateUrl"></div>
+            <div class="panel-body">
+                <!-- Alertes -->
+                <ng-include src="'scripts/app/dashboard/alerts/alertList.html'" ng-controller="AlertListCtrl as alertCtrl"></ng-include>
+                <!-- Actions -->
+                <ng-include src="'scripts/app/dashboard/actions/actionList.html'" ng-controller="ActionListCtrl as actionCtrl"></ng-include>
+                <!-- Tableau de bord -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <h1 translate>Tableau de bord</h1>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="dashboard" x-ng-class="{'edit' : editMode}">
+                            <div ng-if="editMode" class="alert alert-info">
+                                <span translate>Vous êtes actuellement en mode édition du tableau de bord. Pour ajouter un widget à votre tableau de bord, cliquez sur </span>
+                                <button type="button" class="btn btn-sem2 btn-xs" ng-if="editMode" uib-tooltip="{{::'Ajouter un widget' | translate}}"
+                                    ng-click="addWidgetDialog()">
+                                    <span class="glyphicon-halflings glyphicon-plus"></span>
+                                </button>
+                                <span translate>puis choisissez un type de widget parmi ceux proposés. </span><br/>
+                                <span style="font-weight: bold;">N'oubliez pas de sauvegarder vos modifications en cliquant sur </span>
+                                    <button type="button" class="btn btn-sem2 btn-xs" ng-if="options.editable"
+                                        uib-tooltip="{{::'Sauvegarder les modifications' | translate}}" ng-click="toggleEditMode()">
+                                        <i class="glyphicon-regular floppy-save"></i>
+                                    </button>
+                                <span translate>ou de les annuler </span>
+                                <button type="button" class="btn btn-sem2 btn-xs" ng-if="editMode"
+                                    uib-tooltip="{{::'Annuler les modifications' | translate}}" ng-click="cancelEditMode()">
+                                    <i class="glyphicon-regular unshare"></i>
+                                </button> 
+                                <span translate>quand vous aurez terminé.</span>
+                            </div>
+                            <div ng-if="!editMode && model.getNumberOfWidgets() === 0" class="row">
+                                <div class="col-xs-12 col-md-8">
+                                    <div class="widget panel panel-dashboard">
+                                        <div class="panel-heading" translate>Bienvenue !</div>
+                                        <div class="panel-body">
+                                            <p translate>Votre tableau de bord permet de regrouper les principales informations qui vous seront utiles au
+quotidien. Il est personnalisable en ajoutant des widgets et en les positionnant dans la grille prévue à cet effet.</p>
+                                            <p>
+                                                <span translate>Vous n'avez pas encore ajouté de widget à votre tableau de bord. Pour commencer, cliquez sur l'icône </span>
+                                                <i class="glyphicon-halflings glyphicon-edit"></i>.
+                                            </p>
+                                            <p>
+                                                <span translate>Pour ajouter un widget à votre tableau de bord, cliquez sur l'icône </span>
+                                                <i class="glyphicon-halflings glyphicon-plus"></i> 
+                                                <span translate>puis choisissez un type de widget parmi ceux proposés.</span>
+                                            </p>
+                                            <p>
+                                                <span translate>Pour configurer un widget, cliquez sur l'icône </span>
+                                                <i class="glyphicon-halflings glyphicon-cog"></i>.
+                                            </p>
+                                            <p>
+                                                <span translate>Pour supprimer un widget, cliquez sur l'icône </span>
+                                                <i class="glyphicon-halflings glyphicon-trash"></i>.
+                                            </p>
+                                            <p>
+                                                <span translate>Pour déplacer un widget, cliquez sur l'icône </span>
+                                                <i class="glyphicon-halflings glyphicon-move"></i> 
+                                                <span translate>et déposez le widget dans un des emplacements de la grille.</span>
+                                            </p>
+                                            <p translate>La grille est constituée de 3 lignes. La première et la troisième ligne possèdent 4 emplacements
+tandis que la seconde en possède 2. Il est possible de mettre plusieurs widgets dans chaque emplacement, ils se placeront alors les uns en dessous des autres.</p>
+                                            <p>
+                                                <span translate>Après avoir fait une modification dans les wigdets, 
+<u>il est impératif de sauvegarder votre tableau de bord</u> en cliquant sur l'icône 
+                                                </span>
+                                                <i class="glyphicon-regular floppy-save"></i>.
+                                            </p>
+                                            <p>
+                                                <span translate>Pour annuler les modifications effectuées sur le tableau de bord, cliquez sur l'icône </span>
+                                                <i class="glyphicon-regular unshare"></i>.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <adf-dashboard-row row="row" adf-model="model" options="options" ng-repeat="row in model.rows" edit-mode="editMode"
+                                continuous-edit-mode="continuousEditMode" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

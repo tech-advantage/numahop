@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Changeset du module Document -->
+    <changeSet id="pgcn-document-24" author="progilone">
+
+        <!-- Paramètres bordereau de controle -->
+		<createTable tableName="doc_check_slip_config">
+            <column name="identifier" type="varchar(191)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+			<!-- Lien technique -->
+            <column name="library" type="varchar(191)" />
+
+            <column name="pgcn_id" type="boolean" />
+            <column name="title" type="boolean" />
+            <column name="state" type="boolean" />
+            <column name="errors" type="boolean" />
+            <column name="nb_pages" type="boolean" />
+            <column name="nb_pages_tobill" type="boolean" />
+
+            <column name="separator" type="varchar(255)"/>
+            <column name="encoding" type="varchar(255)"/>
+
+			<!-- Données techniques auto -->
+            <column name="version" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+		<addForeignKeyConstraint baseColumnNames="library" baseTableName="doc_check_slip_config" constraintName="fk_doc_check_slip_config_library"
+            referencedColumnNames="identifier" referencedTableName="lib_library" />
+            
+            <!-- Paramètres bordereau de constat d'etat -->
+        <createTable tableName="doc_condreport_slip_config">
+            <column name="identifier" type="varchar(191)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <!-- Lien technique -->
+            <column name="library" type="varchar(191)" />
+
+            <column name="pgcn_id" type="boolean" />
+            <column name="title" type="boolean" />
+            <column name="nb_pages" type="boolean" />
+            <column name="global_report" type="boolean" />
+
+            <column name="separator" type="varchar(255)"/>
+            <column name="encoding" type="varchar(255)"/>
+
+            <!-- Données techniques auto -->
+            <column name="version" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="library" baseTableName="doc_condreport_slip_config" constraintName="fk_doc_condreport_slip_config_library"
+            referencedColumnNames="identifier" referencedTableName="lib_library" />
+    </changeSet>
+</databaseChangeLog>

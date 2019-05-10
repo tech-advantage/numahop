@@ -1,0 +1,598 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Titre:		schéma XML pour les métadonnées de la Plateforme d'Archivage du Cines
+Fonction:	descriptif du schéma de versement sip.xsd	
+Date:		2013/05/17
+Auteur:		Olivier Rouchon, équipe PAC
+Dernière modification: 
+	- LBD 2013/05/17 refonte majeure : ajout blocs "evaluation", "communicabilite", "planClassement", 
+	attribut "language", normalisation contenu "language", "structureDocument" en 0-n, maj définitions
+	- JPT 2014/06/11 ajout des formats GoTIFF et JPEG2000 dans la liste de controle des formats
+	- JPT 2015/09/04 suppression du format HTML dans la liste fermée des formats de fichiers
+	- AGR 2016/03/10 ajout de TEI et OGG/VORBIS
+-->
+<xsd:schema xmlns          ="http://www.cines.fr/pac/sip"
+			xmlns:xsd      ="http://www.w3.org/2001/XMLSchema"
+			xmlns:ISO-639-3="urn:un:unece:uncefact:codelist:draft:DAF:languageCode:2011-10-07"
+			xmlns:RA="urn:un:unece:uncefact:codelist:draft:DAF:accessRestrictionCode:2009-08-18" 
+			targetNamespace="http://www.cines.fr/pac/sip"
+			elementFormDefault="qualified"
+			attributeFormDefault="unqualified"
+			version="2.3">
+	
+	<xsd:import namespace="urn:un:unece:uncefact:codelist:draft:DAF:languageCode:2011-10-07" schemaLocation="seda_v1-0_language_code.xsd" />
+	<xsd:import namespace="urn:un:unece:uncefact:codelist:draft:DAF:accessRestrictionCode:2009-08-18" schemaLocation="seda_v1-0_accessrestriction_code.xsd" />
+	
+	<xsd:element name="pac" type="pacType" />
+
+	<xsd:complexType name="pacType"  >
+		<xsd:sequence>
+			<xsd:element ref="DocDC" minOccurs="1" maxOccurs="1"/>
+			<xsd:element ref="DocMeta" minOccurs="1" maxOccurs="1"/>
+			<xsd:element ref="FichMeta" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+<!-- 
+============================================
+Métadonnées Dublin Core de niveau Document
+============================================
+-->	
+	
+	<xsd:element name="DocDC" type="DocDCType"/>
+	
+	 <xsd:complexType name="DocDCType">
+	 	<xsd:annotation>
+	 		<xsd:documentation xml:lang="fr">Métadonnées descriptives du document sur une base Dublin Core</xsd:documentation>
+	 	</xsd:annotation>
+	 	<xsd:sequence>
+			<xsd:element ref="title" minOccurs="1" maxOccurs="unbounded"/>
+			<xsd:element ref="creator" minOccurs="1"  maxOccurs="unbounded"/>
+			<xsd:element ref="subject" minOccurs="1" maxOccurs="unbounded"/>
+			<xsd:element ref="description" minOccurs="1" maxOccurs="unbounded"/>
+			<xsd:element ref="publisher" minOccurs="1" maxOccurs="unbounded"/>
+			<xsd:element ref="contributor" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element ref="date" minOccurs="1" maxOccurs="1"/>
+			<xsd:element ref="type" minOccurs="1" maxOccurs="unbounded"/>
+			<xsd:element ref="format" minOccurs="1" maxOccurs="unbounded"/>
+			<xsd:element ref="source" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element ref="language" minOccurs="1" maxOccurs="unbounded"/>
+			<xsd:element ref="relation" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element ref="coverage" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element ref="rights" minOccurs="1" maxOccurs="unbounded"/> 
+		</xsd:sequence>
+	 </xsd:complexType>
+	
+	<xsd:element name="title" type="stringNotNULLtext">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="fr">
+				<description>titre du document</description>
+				<exemple>titre d’un ouvrage, d’une vidéo, d’un périodique, d’un dossier,…</exemple>
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	
+	<xsd:element name="creator" type="stringNotNULL">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="fr">
+				<description>entité (personne ou organisme) responsable de la création du contenu du document ; le nom doit apparaître sous sa forme développée (sous la forme "Nom, Prénom" de préférence)</description>
+				<exemple>nom, prénom de l’auteur, des co-auteurs, du concepteur,…</exemple>
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	
+	<xsd:element name="subject" type="stringNotNULLtext">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="fr">
+				<description>sujet du document (peut être défini par mots clés). Les références temporelles ou spatiales doivent être mises dans le champ coverage</description>
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	
+	<xsd:element name="description" type="stringNotNULLtext">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="fr">
+				<description>description du contenu du document</description>
+				<exemple>un résumé, une table des matières, du texte libre,…</exemple>
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	
+	<xsd:element name="publisher" type="stringNotNULL">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="fr">
+				<description>entité (personne ou organisme) responsable de la mise à disposition du document ; le nom doit apparaître sous sa forme développée (sous la forme "Nom, Prénom" de préférence)</description>
+				<exemple>nom de l’éditeur, du diffuseur, du producteur…</exemple>
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	
+	<xsd:element name="contributor" type="stringNotNULL">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="fr">
+				<description>entité (personne ou organisme) ayant contribué à la création du contenu du document ; le nom doit apparaître sous sa forme développée (sous la forme "Nom, Prénom" de préférence)</description>
+				<exemple>nom, prénom du contributeur suivis éventuellement du type de contribution (illustrateur, réalisateur,…)</exemple>
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	
+	<xsd:element name="date" type="stringNotNULL">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="fr">
+				<description>date (au format ISO-8601) associée à l’évènement le plus important du cycle de vie du document (sa création, sa publication,…). La date de numérisation de la ressource n’est pas retenue. Les différentes formes de date retenues sont les suivantes : aaaa pour l'année ; aaaa-mm pour l'année et le mois ; aaaa-mm-jj pour le jour mois et année ; aa pour le siècle ; date/date pour indiquer un intervalle de temps (toutes les combinaisons sont acceptées) ; s.d. lorsque la date du document n'est pas connue</description>
+				<exemple>2008-10-30 pour le 30 octobre de l'année 2008</exemple>
+				<exemple>2008-10 pour le mois d'octobre de l'année 2008</exemple>
+				<exemple>2008 pour l'année 2008</exemple>
+				<exemple>19 pour le 19ème siècle</exemple>
+				<exemple>2001/2008 pour un document écrit entre 2001 et 2008</exemple>
+				<exemple>s.d. pour un document sans date</exemple>
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	
+	<xsd:element name="type" type="stringNotNULLtext">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="fr">
+				<description>nature ou genre du contenu du document </description>
+				<exemple>photographie, périodique, monographie, enregistrement sonore, thèse électronique,… </exemple>
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	
+	<xsd:element name="format" type="stringNotNULLtext">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="fr">
+				<description>description du format du document au sens large. On peut utiliser également une liste de termes reconnus (liste des formats, de type MIME) ; éventuellement dimensions du document et matériel utilisé pour la lecture du document</description>
+				<exemple>un ou plusieurs fichiers SVG reliant les images numérisées des pages composant le fascicule</exemple>
+				<exemple>type/sous-type ; durée ; nombre de pages ;…</exemple>
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	
+	<xsd:element name="source" type="stringNotNULLtext">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="fr">
+				<description>référence aux ressources à partir desquelles sont dérivées le document. Il est recommandé d’utiliser l’identifiant d’un système formel d’identification</description>
+				<exemple>cote de la version papier d’un document numérisé</exemple>
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	
+	<xsd:element name="language" type="ISO-639-3:LanguageCodeType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="fr">
+				<description>langue (principale) du contenu du document au format ISO 639-3</description>
+				<exemple>fra, eng</exemple>
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	
+	<xsd:element name="relation" type="stringNotNULLtext">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="fr">
+				<description>relation au sens du DublinCore qui n'entre pas dans le cadre de la métadonnée docRelation</description>
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	
+	<xsd:element name="coverage" type="stringNotNULLtext">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="fr">
+				<description>période ou aire géographique recouverte par le document. Ne doit pas être utilisé pour indiquer la période ou le lieu de création du document</description>
+				<exemple>Moyen Age, XIXème siècle, Pyrénées, Europe,…</exemple>
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	
+	<xsd:element name="rights" type="stringNotNULLtext">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="fr">
+				<description>droits de propriété associés au document, notamment de propriété intellectuelle</description>
+				<exemple>copyright xxxxx, libre de droits,…</exemple>
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element> 
+	
+<!-- 
+============================================
+Métadonnées CINES de niveau Document
+============================================
+-->	
+
+	<xsd:element name="DocMeta" type="DocMetaType"/>
+
+	<xsd:complexType name="DocMetaType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="fr">Métadonnées de gestion du document</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>		
+			<xsd:element ref="identifiantDocProducteur" minOccurs="1" maxOccurs="1"/> 
+			<xsd:element ref="docRelation" minOccurs="0" maxOccurs="unbounded"/> 
+			<xsd:element ref="evaluation" minOccurs="0" maxOccurs="1"/> 
+			<xsd:element ref="communicabilite" minOccurs="0" maxOccurs="1"/> 
+			<xsd:element ref="noteDocument" minOccurs="0" maxOccurs="1"/>
+			<xsd:element ref="serviceVersant" minOccurs="1" maxOccurs="1"/>
+			<xsd:element ref="planClassement" minOccurs="0" maxOccurs="1"/>
+			<xsd:element ref="structureDocument" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element ref="version" minOccurs="0" maxOccurs="1"/>
+			<xsd:element ref="versionPrecedente" minOccurs="0" maxOccurs="1"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:element name="identifiantDocProducteur" type="stringNotNULL">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="fr">
+				<description>identifiant du document fourni par le producteur, dans le cas où le producteur possède un système d'information (plan de classement ou autre référentiel)</description>
+				<exemple>identifiant ou cote du document chez le producteur</exemple>
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	
+<!-- 
+		====================
+		Métadonnées pour les relations 
+		====================
+-->	
+	
+	<xsd:element name="docRelation" type="docRelationType"/>
+	
+	<xsd:complexType name="docRelationType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="fr">
+				<description>caractérise des relations entre les documents</description>
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="typeRelation" minOccurs="1" maxOccurs="1"/>
+			<xsd:element ref="sourceRelation" minOccurs="1" maxOccurs="1"/>
+			<xsd:element ref="identifiantSourceRelation" minOccurs="1" maxOccurs="1"/>
+		</xsd:sequence>
+	</xsd:complexType>
+		
+	<xsd:element name="typeRelation">
+	<xsd:simpleType>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="filiation"/>
+			<!-- indique une relation père-fils où le fils permet d'ajouter des éléments de compréhension sur le père-->
+			<xsd:enumeration value="version"/>
+			<!-- indique une nouvelle version d'un objet déjà archivé -->
+
+			<xsd:enumeration value="maj"/>
+			<!-- indique une mise à jour des métadonnées descriptives, déclarées dans le sip.xml ou dans les métadonnées métier -->
+		</xsd:restriction>
+	</xsd:simpleType>
+	</xsd:element>
+	
+	<xsd:element name="sourceRelation">
+	<xsd:simpleType>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="PAC"/>
+			<!-- identifie le service PAC d'archivage du CINES. Quel que soit le type de relation énoncé dans la métadonnée typeRelation, la valeur PAC est obligatoire pour la métadonnée sourceRelation. -->
+			<xsd:enumeration value="Producteur"/>
+			<!-- identifie le système d'information du producteur -->
+		</xsd:restriction>
+	</xsd:simpleType>
+	</xsd:element>
+	
+	<xsd:element name="identifiantSourceRelation" type="stringNotNULL">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="fr">identifiant de l'objet dans le système d'information référencé par la balise sourceRelation. Quel que soit le type de relation énoncé, l'identifiant dans PAC est obligatoire</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	
+	<!-- Les métadonnées sourceRelation et identifiantSourceRelation fonctionnent par couple. Pour chaque type de relation mentionné, on doit donc avoir obligatoirement le couple suivant :
+		sourceRelation= PAC
+		identifiantSourceRelation= identifiantDocPac de l'AIP objet de la relation
+	    Le lien indiquant la relation dans le système d'information du producteur est facultatif -->
+
+<!-- 
+		====================
+		Métadonnées pour l'évaluation 
+		====================
+-->	
+
+	<xsd:element name="evaluation" type="evaluationType"/>
+	
+	<xsd:complexType name="evaluationType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="fr">
+				<description>pour les archives intermédiaires, permet d'indiquer la durée d'utilité administrative du document et le traitement à appliquer à l'issue de cette durée</description>
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="DUA" minOccurs="1" maxOccurs="1"/>
+			<xsd:element ref="traitement" minOccurs="1" maxOccurs="1"/>
+			<xsd:element ref="dateDebut" minOccurs="1" maxOccurs="1"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:element name="DUA" type="xsd:duration">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="fr">
+				<description>Durée d'utilité administrative au format ISO 8601</description>
+				<exemple>P30Y (=30 ans)</exemple>
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+
+
+	<xsd:element name="traitement" type="traitementType"/>
+	
+	<xsd:complexType name="traitementType">
+		<xsd:simpleContent>
+			<xsd:extension base="traitementEnum">
+				<xsd:attribute name="language" use="required" type="ISO-639-3:LanguageCodeType" fixed="fra"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	
+	<xsd:simpleType name="traitementEnum">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="conservation définitive"/>
+			<xsd:enumeration value="élimination"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	
+	<xsd:element name="dateDebut" type="xsd:date">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="fr">
+				<description>Date de début du calcul de la règle</description>
+				<exemple>2010-08-02</exemple>
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	
+	<!-- 
+		====================
+		Métadonnées pour la communicabilité 
+		====================
+	-->	
+
+	<xsd:element name="communicabilite" type="communicabiliteType"/>
+	
+	<xsd:complexType name="communicabiliteType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="fr">
+				<description>pour les archives publiques, précise si le document est librement communicable ou soumis à un délai (cf. régime de communication prévu par le Code du Patrimoine, art. L213-1 à L213-8)</description>
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="code" minOccurs="1" maxOccurs="1"/>
+			<xsd:element ref="dateDebut" minOccurs="1" maxOccurs="1"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:element name="code" type="codeType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="fr">
+				<description>Code indiquant si le document est librement communicable ou soumis à un délai (durée + raison de la resctriction d'accès)</description>
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+
+	<xsd:complexType name="codeType">
+		<xsd:simpleContent>
+			<xsd:extension base="RA:AccessRestrictionCodeType">
+				<xsd:attribute name="type" use="required" fixed="SEDA"/>				
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	
+<!-- ========= -->
+
+	<xsd:element name="noteDocument" type="stringNotNULLtext">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="fr">
+				<description>note complémentaire relative au document</description>
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	
+	<xsd:element name="serviceVersant" type="stringNotNULL">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="fr">
+				<description>identification de l’organisme qui a versé le document</description>
+				<exemple>nom de l’organisme tel qu’enregistré à l’INSEE</exemple>
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	
+	<xsd:element name="planClassement" type="stringNotNULLtext">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="fr">
+				<description>Indique le niveau du plan de classement auquel le document est rattaché. Il faut mentionner l'arborescence complète jusqu'au niveau le plus bas auquel est rattaché le document</description>
+				<exemple>Administration générale/Ressources humaines/Dossiers de personnel</exemple>
+				<exemple>codes de classification de type Dewey</exemple>
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+		
+	<xsd:element name="structureDocument" type="stringNotNULL">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="fr">
+				<description>description de la structuration du document en fichiers</description>
+				<exemple>nom d’un fichier associé au document qui en décrit la structure, texte libre,… </exemple>
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	
+	<xsd:element name="version" type="stringNotNULL">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="fr">
+				<description>n° de version du document ; utilisé surtout s’il existe déjà une version précédente du document archivée dans le système</description>
+				<exemple>1.1</exemple>
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	
+	<xsd:element name="versionPrecedente" type="stringNotNULL">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="fr">
+				<description>référence de la version précédente archivée du document fournie par le producteur</description>
+				<exemple>1.0</exemple>
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	
+	
+<!-- 
+============================================
+Métadonnées CINES de niveau Fichier
+============================================
+-->	
+
+	
+	<xsd:element name="FichMeta" type="FichMetaType"/>
+	<xsd:complexType name="FichMetaType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="fr">Métadonnées des fichiers composant le document</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="compression" minOccurs="0" maxOccurs="1"/>
+			<xsd:element ref="encodage" minOccurs="0" maxOccurs="1"/>
+			<xsd:element ref="formatFichier" minOccurs="1" maxOccurs="1"/>
+			<xsd:element ref="nomFichier" minOccurs="1" maxOccurs="1"/>
+			<xsd:element ref="empreinteOri" minOccurs="1" maxOccurs="1"/>
+			<xsd:element ref="noteFichier" minOccurs="0" maxOccurs="1"/>
+			<xsd:element ref="structureFichier" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:element name="compression" type="stringNotNULL">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="fr">algorithme ou logiciel de compression / décompression du fichier (si compression externe au format)</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	
+	<xsd:element name="encodage">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="fr">type et version de l’encodage du fichier. Obligatoire dans le cas de fichiers aux formats texte et vidéo, sans objet dans les autres cas</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+				<xsd:enumeration value="ASCII"/>
+				<xsd:enumeration value="UTF-8"/>
+				<xsd:enumeration value="PCM"/>
+				<xsd:enumeration value="FLAC"/>			
+				<xsd:enumeration value="AVC/AAC"/>
+				<xsd:enumeration value="AVC/FLAC"/>
+				<xsd:enumeration value="AVC"/>
+				<xsd:enumeration value="AAC"/>						
+				<xsd:enumeration value="THEORA/VORBIS"/>
+				<xsd:enumeration value="VORBIS"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	
+	<xsd:element name="formatFichier">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="fr">nom du format du fichier</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+				<xsd:enumeration value="PDF"/>
+				<xsd:enumeration value="TXT"/>
+                <xsd:enumeration value="UTF-8"/>
+				<xsd:enumeration value="XML"/>
+				<xsd:enumeration value="GIF"/>
+				<xsd:enumeration value="JPEG"/>
+				<xsd:enumeration value="TIFF"/>
+				<xsd:enumeration value="PNG"/>
+				<xsd:enumeration value="SVG"/>
+				<xsd:enumeration value="WAV"/>
+				<xsd:enumeration value="ODT"/>
+				<xsd:enumeration value="MPEG-4"/>
+				<xsd:enumeration value="OGG"/>
+				<xsd:enumeration value="AIFF"/>
+				<xsd:enumeration value="FLAC"/>
+				<xsd:enumeration value="AAC"/>
+				<xsd:enumeration value="MKV"/>
+				<xsd:enumeration value="GeoTIFF"/>
+				<xsd:enumeration value="JPEG2000"/>
+				<xsd:enumeration value="TEI"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	
+	<xsd:element name="nomFichier" type="stringNotNULL">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="fr">nom (et chemin d'accès relatif) du fichier</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	
+	<xsd:element name="empreinteOri">
+	<xsd:complexType>
+		<xsd:annotation>
+			<xsd:documentation xml:lang="fr">empreinte numérique (fonction de hachage) du fichier calculée avec les algorithmes MD5, SHA-1 ou SHA-256 et fournie par le service versant</xsd:documentation>
+		</xsd:annotation>
+			<xsd:simpleContent>
+				<xsd:extension base="stringNotNULL">
+					<xsd:attribute name="type" use="required">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:enumeration value="MD5"/>
+								<xsd:enumeration value="SHA-1"/>
+								<xsd:enumeration value="SHA-256"/>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:attribute>
+				</xsd:extension>
+			</xsd:simpleContent>		
+	</xsd:complexType>	
+	</xsd:element>
+	
+	<xsd:element name="noteFichier" type="stringNotNULLtext">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="fr">note complémentaire relative au fichier (texte libre)</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	
+	<xsd:element name="structureFichier">
+		<xsd:complexType>
+		<xsd:annotation>
+			<xsd:documentation xml:lang="fr">
+				<description>description de la structure du fichier</description>
+				<exemple>nom d’un fichier associé qui en décrit la structure, texte libre, URI du schéma xsd</exemple>
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleContent>
+			<xsd:extension base="stringNotNULL">
+				<xsd:attribute name="type" use="optional">
+					<xsd:simpleType>
+						<xsd:restriction base="xsd:string">
+							<xsd:enumeration value="DTD"/>
+							<xsd:enumeration value="XSD"/>
+							<xsd:enumeration value="RNG"/>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:attribute>
+			</xsd:extension>
+		</xsd:simpleContent>		
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:simpleType name="stringNotNULL">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="fr">Chaine de caractères composée d'au moins 1 caractère imprimable ou non exclusivement composé d'espace et/ou de tabulations et/ou de nouvelle ligne et/ou de retour chariot</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+            <xsd:pattern value="[\s\S]*\S+[\s\S]*"/>
+        </xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:complexType name="stringNotNULLtext">
+		<xsd:simpleContent>
+			<xsd:extension base="stringNotNULL">
+				<xsd:attribute name="language" use="required" type="ISO-639-3:LanguageCodeType">
+					<xsd:annotation>
+						<xsd:documentation xml:lang="fr">Contenu textuel pour lequel il faut obligatoirement préciser la langue conformément à la norme ISO 639-3</xsd:documentation>
+					</xsd:annotation>
+				</xsd:attribute>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	
+
+
+</xsd:schema>

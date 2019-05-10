@@ -1,0 +1,38 @@
+<div ng-controller="ActionListCtrl as ctrl">
+	<div class="row">
+		<div class="col-xs-12">
+			<h1 class="margin-t0" translate>Actions</h1>
+		</div>
+	</div>
+	<div class="row" style="padding-bottom: 15px">
+		<div class="col-sm-5 col-md-offset-1 ">
+			<!-- Projet -->
+			<ui-select multiple ng-model="ctrl.filters.projects" theme="select2"
+				on-select="ctrl.doFilterProject()"
+				on-remove="ctrl.doFilterProject()" class="form-control">
+			<ui-select-match placeholder="{{::'Filtrer par projet' | translate}}">{{$item.name}}</ui-select-match>
+			<ui-select-choices
+				repeat="option in ctrl.options.projects | filter: $select.search track by option.identifier">
+			<div ng-bind-html="option.name | highlight: $select.search"></div>
+			</ui-select-choices> </ui-select>
+		</div>
+		<div class="col-sm-5">
+			<ui-select multiple ng-model="ctrl.filters.lots" theme="select2"
+				class="form-control"> <ui-select-match
+				placeholder="{{::'Filtrer par lot' | translate}}">{{$item.label}}</ui-select-match>
+			<ui-select-choices
+				repeat="option in ctrl.options.lots | filter: $select.search track by option.identifier">
+			<div ng-bind-html="option.label | highlight: $select.search"></div>
+			</ui-select-choices> </ui-select>
+		</div>
+		<button type="button" class="btn btn-sem2 btn-xs" ng-click="ctrl.resetFilters()" uib-tooltip="{{'Réinitialiser les filtres' | translate}}">
+                    <span class="glyphicon-halflings glyphicon-refresh"></span>
+        </button>
+	</div>
+	<div class="row">
+		<!-- Workflow: tâches à effectuer par statut de workflow -->
+		<numa-alert-workflow-todo top-class="col-xs-12 col-md-6 col-lg-6"
+            projects="ctrl.filters.projects"
+            lots="ctrl.filters.lots"></numa-alert-workflow-todo>
+	</div>
+</div>

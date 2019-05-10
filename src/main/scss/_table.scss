@@ -1,0 +1,128 @@
+@include table-row-variant('sid-main', $sid-main-color);
+@include table-row-variant('sid-sec', $sid-sec-color);
+@include table-row-variant('sid-third', $sid-third-color);
+@include table-row-variant('sid-fourth', $sid-fourth-color);
+
+.table .sid-main, .table .sid-sec, .table .sid-third, .table .sid-fourth {
+    color: $sid-text-light;
+}
+.table td.vcenter {
+    vertical-align: middle;
+
+    .progress {
+        margin-bottom: 0px;
+    }
+}
+.table.table-import {
+    > tbody {
+        > tr {
+            &.child > td:first-child {
+                border-left: 4px solid $sid-main-color;
+                padding-left: 30px;
+            }
+            &.group > td:first-child {
+                border-left: 4px solid $sid-main-color;
+            }
+            &.first {
+                border-top: 5px solid white;
+            }
+        }
+        > tr.root {
+            font-weight: bold;
+
+            > td {
+                height: 55px;
+                vertical-align: bottom;
+            }
+        }
+        > tr.sublvl {
+            > td:first-of-type {
+                padding-left: 20px;
+            }
+        }
+        > tr.success .badge {
+            background-color: $state-success-text;
+        }
+        > tr.info .badge {
+            background-color: $state-info-text;
+        }
+        > tr.warning .badge {
+            background-color: $state-warning-text;
+        }
+        > tr.danger .badge {
+            background-color: $state-danger-text;
+        }
+        > tr.sid-main .badge {
+            background-color: $sid-main-color;
+        }
+        > tr.sid-sec .badge {
+            background-color: $sid-sec-color;
+        }
+        > tr.sid-third .badge {
+            background-color: $sid-third-color;
+        }
+        > tr.sid-fourth .badge {
+            background-color: $sid-fourth-color;
+        }
+    }
+}
+
+/** Affichage des boutons à droite des tableaux */
+th.sem-btn-group {
+    width: 70px;
+    min-width: 70px;
+}
+
+.sem-list {
+    tbody > tr > td {
+        padding: 2px 5px;
+        vertical-align: baseline;
+    }
+
+    .select-col {
+        width : 35px;
+    }
+}
+
+.sem-list-sticky-tab {
+    tbody > tr {
+        height: 28px;
+
+        > td {
+            padding:2px;
+        }
+    }
+
+    .select-col {
+        width : 35px;
+    }
+}
+
+/** no border */
+.table.no-border {
+    > thead > tr > th,
+    > tbody > tr > th,
+    > tfoot > tr > th,
+    > thead > tr > td,
+    > tbody > tr > td,
+    > tfoot > tr > td {
+        border-top: none;
+    }
+}
+
+/** Tableau (mapping) */
+.mapping {
+    > .table {
+        > thead {
+            background-color: $sid-third-color;
+            color: $sid-text-light;
+            font-weight: bold;
+            text-align: center;
+        }
+        &.table-bordered {
+            > thead > tr > td {
+                border-color: $sid-text-light;
+            }
+        }
+    }
+}

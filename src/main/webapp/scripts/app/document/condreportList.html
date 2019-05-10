@@ -1,0 +1,232 @@
+<div class="row layout-columns">
+    <div class="col-sm-12 col-layout-columns">
+        <div class="panel panel-column-2 panel-column-first panel-column-end">
+            <!-- Filtrage du tableau -->
+            <numa-filter data-class="pull-left btn-filter" ng-if="!mainCtrl.isFilteredByIds">
+                <!-- Bibliothèque -->
+                <numa-filter-field data-title="{{ ::'Bibliothèque' | translate }}">
+                    <ui-select multiple ng-model="mainCtrl.filters.libraries" theme="select2" on-select="mainCtrl.search(mainCtrl.sortModel)" on-remove="mainCtrl.search(mainCtrl.sortModel)"
+                        class="form-control">
+                        <ui-select-match placeholder="{{::'Bibliothèque' | translate}}">{{$item.name}}</ui-select-match>
+                        <ui-select-choices repeat="option in mainCtrl.options.libraries | filter: $select.search track by option.identifier">
+                            <div ng-bind-html="option.name | highlight: $select.search"></div>
+                        </ui-select-choices>
+                    </ui-select>
+                </numa-filter-field>
+                <!-- Plage de dates -->
+                <numa-filter-field data-title="{{ ::'Date' | translate }}">
+                    <div class="form-inline margin-b10">
+                        <label translate>du</label>
+                        <sem-datepicker filter="true" ng-change="mainCtrl.search(mainCtrl.sortModel, {from: $data})" ng-model="mainCtrl.filters.from"></sem-datepicker>
+                    </div>
+                    <div class="form-inline">
+                        <label translate>au</label>
+                        <sem-datepicker filter="true" ng-change="mainCtrl.search(mainCtrl.sortModel, {to: $data})" ng-model="mainCtrl.filters.to"></sem-datepicker>
+                    </div>
+                </numa-filter-field>
+                <!-- Propriétés du constat d'état -->
+                <uib-accordion close-others="false">
+                    <!-- Dimensions du document -->
+                    <div class="filter-block" uib-accordion-group is-open="mainCtrl.accordions.dimensions">
+                        <uib-accordion-heading>
+                            <i class="pull-left glyphicon-halflings" ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[mainCtrl.accordions.dimensions]">&nbsp;</i>
+                            <div class="filter-title" translate>Dimensions</div>
+                        </uib-accordion-heading>
+                        <div class="filter-element">
+                            <sem-field sem-type="select" sem-model="mainCtrl.filters.dimop"
+                                        sem-select-options="option.code as option.label for option in optionData"
+                                        sem-option-data="mainCtrl.config.dim_ops.data"
+                                        sem-onchange="mainCtrl.search(mainCtrl.sortModel, {dimop: value})"></sem-field>
+                            <sem-field sem-type="semnumber" sem-model="mainCtrl.filters.dim1" sem-placeholder="{{ ::'Dimension #1' | translate }}"
+                                        sem-onchange="mainCtrl.search(mainCtrl.sortModel, {dim1: value})"></sem-field>
+                            <sem-field sem-type="semnumber" sem-model="mainCtrl.filters.dim2" sem-placeholder="{{ ::'Dimension #2' | translate }}"
+                                        sem-onchange="mainCtrl.search(mainCtrl.sortModel, {dim2: value})"></sem-field>
+                            <sem-field sem-type="semnumber" sem-model="mainCtrl.filters.dim3" sem-placeholder="{{ ::'Dimension #3' | translate }}"
+                                        sem-onchange="mainCtrl.search(mainCtrl.sortModel, {dim3: value})"></sem-field>
+                        </div>
+                    </div>
+
+                    <!-- Propriétés des constats d'état -->
+                    <div class="filter-block" ng-repeat="t in mainCtrl.propTypes | orderBy:'pos'" uib-accordion-group is-open="mainCtrl.accordions[t.code]">
+                        <uib-accordion-heading>
+                            <i class="pull-left glyphicon-halflings" ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[mainCtrl.accordions[t.code]]">&nbsp;</i>
+                            <div class="filter-title">{{::t.label | translate}}</div>
+                        </uib-accordion-heading>
+                        <div class="filter-element" ng-repeat="desc in mainCtrl.filters.descriptions | filter:{type: t.code}"
+                                ng-init="properties = mainCtrl.descPropertyConfig(t);
+                                        values = mainCtrl.descValueConfig(desc)">
+                            <span class="btn-group-xs pull-left sem-filter" style="margin-left: -25px; margin-top: 5px">
+                                <button type="button" class="btn btn-sem1 btn-removable" uib-tooltip="{{::'Supprimer le filtre' | translate}}"
+                                        ng-click="mainCtrl.removeFilter(desc, mainCtrl.filters.descriptions)">
+                                    <i class="glyphicon-halflings glyphicon-trash"></i>
+                                </button>
+                            </span>
+                            <sem-field sem-type="uiselect" sem-model="desc.property" sem-option-data="properties"
+                                        sem-onchange="desc.value=null"></sem-field>
+                            <sem-field sem-type="uiselect" sem-model="desc.value" sem-option-data="values"
+                                        sem-onchange="mainCtrl.search(mainCtrl.sortModel)"></sem-field>
+                        </div>
+                        <button type="button" class="btn btn-sem1 pull-right" style="margin-bottom: 3px"
+                                uib-tooltip="{{ ::'Ajouter un filtre' | translate }} ({{::t.label}})"
+                                ng-click="mainCtrl.addFilter(mainCtrl.filters.descriptions, t.code)"
+                                ng-if="mainCtrl.accordions[t.code]">
+                                <span translate>Ajouter un filtre</span>
+                            <span class="glyphicon-halflings glyphicon-plus"></span>
+                        </button>
+                    </div>
+                </uib-accordion>
+                <div class="filter-block">
+                <div class="checkbox checkbox-sid-main">
+                    <input id="filterHasDocunit" type="checkbox" value="true" ng-model="mainCtrl.filters.validateOnly" ng-change="mainCtrl.changeValidateOnly()" />
+                    <label for="filterHasDocunit" translate>Voir uniquement les constats d'état à valider</label>
+                </div>
+            </div>
+            </numa-filter>
+            <div class="panel-heading" ng-style="mainCtrl.isFilteredByIds ? {'margin-left': '0px'} : {}"></div>
+            <div class="panel-body">
+                <div class="well well-sm">
+                    <div ng-show="mainCtrl.loaded && mainCtrl.pagination.items.length === 0" translate>
+                        Aucun constat d'état n'a été trouvé
+                    </div>
+                    <div ng-show="mainCtrl.loaded && mainCtrl.pagination.items.length > 0"
+                            translate translate-n="mainCtrl.pagination.totalItems" translate-plural="{{$count}} constats d'état trouvés">
+                        1 constat d'état trouvé
+                    </div>
+                    <div ng-show="mainCtrl.getSelectionLength() > 0" class="margin-t10">
+                        <span class="fa fa-arrow-right margin-r10"></span>
+                        <span class="nowrap margin-r25" translate translate-n="mainCtrl.getSelectionLength()" translate-plural="{{$count}} constats d'état sélectionnés">
+                            1 constat d'état sélectionné
+                        </span>
+                        <span class="nowrap margin-r25" ng-if="!mainCtrl.isFilteredByIds"><strong translate>Valeur d'assurance (€)</strong>: {{ mainCtrl.getSelectionInsurance() | number:2 }}</span>
+                        <span class="nowrap" ng-if="!mainCtrl.isFilteredByIds"><strong translate>Dimensions max</strong>: {{ mainCtrl.getSelectionDimensions() }}</span>
+                    </div>
+                </div>
+
+                <div ng-hide="mainCtrl.pagination.items.length === 0" class="form-inline">
+                    <button type="button" class="btn btn-sem2 btn-xs" ng-click="mainCtrl.checkAll()">
+                        {{::"Tout cocher" | translate}}
+                    </button>
+                    <button type="button" class="btn btn-sem2 btn-xs" ng-disabled="mainCtrl.getSelectionLength() === 0"
+                            ng-click="mainCtrl.uncheckAll()">
+                        {{::"Tout décocher" | translate}}
+                    </button>
+                    <select ng-hide="mainCtrl.pagination.items.length == 0" ng-options="size.value as size.label for size in mainCtrl.sizeOptions"
+                            id="pageSize" name="pageSize" class="form-control input-sm"
+                            ng-model="mainCtrl.pageSize" ng-change="mainCtrl.changePageSize()">
+                    </select>
+                    <div class="pull-right">
+                        <div class="btn-group" uib-dropdown>
+                            <button type="button" class="btn btn-sem2 btn-xs" ng-disabled="mainCtrl.getSelectionLength() === 0" uib-dropdown-toggle>
+                                <b class="caret"></b>&nbsp;{{ ::'Actions sur la sélection' | translate }}
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-right" uib-dropdown-menu role="menu">
+                                <!-- Ajouter la sélection à un train -->
+                                <li role="menuitem">
+                                    <a ng-click="mainCtrl.addSelectionToProject()" class="btn-xs">
+                                        <span class="glyphicon-halflings glyphicon-plus"></span>
+                                        {{::'Ajouter à un projet' | translate}}
+                                    </a>
+                                </li>
+                                
+                                <li role="menuitem" ng_if="!mainCtrl.isUserPresta">
+                                    <a ng-click="mainCtrl.validSelection()" class="btn-xs">
+                                        <span class="glyphicon-halflings glyphicon-plus"></span>
+                                        {{::'Valider la sélection' | translate}}
+                                    </a>
+                                </li>
+                                <li role="menuitem">
+                                    <a ng-click="mainCtrl.downloadSlip('csv')" class="btn-xs">
+                                        <span class="glyphicon-halflings glyphicon-plus"></span>
+                                        {{::'Télécharger le bordereau CSV' | translate}}
+                                    </a>
+                                </li>
+                                <li role="menuitem">
+                                    <a ng-click="mainCtrl.downloadSlip('pdf')" class="btn-xs">
+                                        <span class="glyphicon-halflings glyphicon-plus"></span>
+                                        {{::'Télécharger le bordereau PDF' | translate}}
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Liste des entités  -->
+                <div class="table-responsive" ng-show="mainCtrl.pagination.items.length > 0">
+                    <table class="table table-hover sem-list" sem-table="mainCtrl.sortModel" sem-table-onsort="mainCtrl.search(mainCtrl.sortModel)">
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th class="text-center">{{::"Date" | translate }}</th>
+                            <th class="text-center" sem-table-sorton="docUnit.pgcnId">{{::"Identifiant" | translate }}</th>
+                            <th class="text-center" sem-table-sorton="docUnit.label">{{::"Nom" | translate }}</th>
+                            <th class="text-center">{{::"Valeur d'assurance (€)" | translate }}</th>
+                            <th class="text-center">{{::"Dimensions (HxLxP, mm)" | translate }}</th>
+                            <th class="text-center">{{::"Degré d'ouverture" | translate }}</th>
+                            <th class="text-right" sem-table-sorton="docUnit.project.name">{{::"Projet" | translate }}</th>
+                            <th class="text-right" sem-table-sorton="docUnit.train.label">{{::"Train" | translate }}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="item in mainCtrl.pagination.items">
+                            <td class="select-col">
+                                <div class="checkbox checkbox-sid-main no-margin">
+                                    <input type="checkbox" ng-model="item.checked" ng-change="mainCtrl.changeItem(item)"/>
+                                    <label></label>
+                                </div>
+                            </td>
+                            <td>{{ ::item.detail.date }}</td>
+                            <td>
+                                <a ng-href="/#/document/all_operations/{{ ::item.docUnit.identifier }}?tab=CONDREPORT">
+                                    {{ ::item.docUnit.pgcnId }}
+                                </a>
+                            </td>
+                            <td>
+                                <a ng-href="/#/document/all_operations/{{ ::item.docUnit.identifier }}?tab=CONDREPORT"
+                                   uib-tooltip="{{::item.docUnit.label}}" tooltip-enable="item.docUnit.label.length > 30">
+                                    {{ ::item.docUnit.label | characters:30 }}
+                                </a>
+                            </td>
+                            <td class="text-right">{{ ::item.detail.insurance }}</td>
+                            <td class="text-right">{{ ::item.detail.dim1 || 0 }} x {{ ::item.detail.dim2 || 0 }} x {{ ::item.detail.dim3 || 0 }}</td>
+                            <td class="text-right">{{ ::mainCtrl.getProperty("MAX_ANGLE", item.detail.vigilances, "value") }}</td>
+                            <td class="text-right">
+                                <div ng-if="item.docUnit.project">
+                                    <a ng-href="#/project/project?id={{ ::item.docUnit.project.identifier }}">
+                                        {{::item.docUnit.project.name}}
+                                    </a>
+                                    <button type="button" class="btn btn-sem2 btn-xs" ng-click="mainCtrl.removeProject(item.docUnit, mainCtrl.search)"
+                                            ng-if="mainCtrl.canRemoveProject(item.docUnit)"
+                                            uib-tooltip="{{::'Retirer du projet' | translate}}">
+                                        <i class="glyphicon-halflings glyphicon-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                            <td class="text-right">
+                                <div ng-if="item.docUnit.train">
+                                    <a ng-href="#/train/train?id={{ ::item.docUnit.train.identifier }}">
+                                        {{::item.docUnit.train.label}}
+                                    </a>
+                                    <button type="button" class="btn btn-sem2 btn-xs" ng-click="mainCtrl.removeTrain(item.docUnit, mainCtrl.search)"
+                                            ng-if="mainCtrl.canRemoveTrain(item.docUnit)"
+                                            uib-tooltip="{{::'Retirer du lot' | translate}}">
+                                        <i class="glyphicon-halflings glyphicon-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row" ng-show="mainCtrl.pagination.size && mainCtrl.pagination.totalItems > mainCtrl.pagination.size">
+                    <div class="col-sm-12">
+                        <div class="text-center">
+                            <ul uib-pagination num-pages="mainCtrl.pagination.totalPages" total-items="mainCtrl.pagination.totalItems" items-per-page="mainCtrl.pagination.size"
+                                ng-change="mainCtrl.getPage()" ng-model="mainCtrl.pagination.page" class="pagination-sm"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

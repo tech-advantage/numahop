@@ -1,0 +1,132 @@
+<!DOCTYPE html> 
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="stylesheet" type="text/css" href="/libs/mirador/css/mirador-combined.css">
+  </head>
+  <body>
+    <div id="viewer"></div>
+    
+    <script src="/libs/mirador/mirador.js" ></script>
+    <script src="/libs/mirador/plugins/keyboardNavigation/keyboardNavigation.js" ></script>
+    <script type="text/javascript">
+
+	    function getParamValue(paramName) {
+    		var url = window.location.search.substring(1); // vire "?" 
+    		var qArray = url.split('&'); // cle, valeur pour chacun des params
+   			for (var i = 0; i < qArray.length; i++) {
+        		var pArr = qArray[i].split('='); 
+        		if (pArr[0] == paramName) 
+        	    	return pArr[1];
+    		}
+		}
+   
+     var idDocument = null;
+     var idSample = null;
+     var manifestUri = '/api/rest/viewer/document/';
+     var availableViews = [];
+     var inChecking = getParamValue('checking');
+     
+     var typeView = getParamValue('typeView');
+
+     if (getParamValue('idDocument')) {         
+         idDocument = getParamValue('idDocument');         
+         manifestUri += idDocument + "/manifest";
+         availableViews = ['ThumbnailsView', 'ImageView', 'BookView'];
+                  
+     } else if (getParamValue('idSample')) {
+         idSample = getParamValue('idSample')
+         manifestUri += 'sample/' + idSample + "/manifest";
+         availableViews = ['ImageView'];
+         if (typeView === 'BookView' ) {
+             typeView = 'ImageView';    
+         } 
+     }
+     
+     var page = 1;
+     if (getParamValue('page')) {
+     	page = getParamValue('page');
+     }
+
+     $(function() {
+
+       myMiradorInstance = Mirador({
+         "id": "viewer",
+         "layout": "1x1",
+         "buildPath": "/libs/mirador",
+         "i18nPath": "/locales/",
+         "imagesPath": "/images/",
+		 "data": [{
+			"manifestUri":  manifestUri, "location": "Progilone Lyon"
+		 }],
+	'windowSettings' : {
+      //"viewType" : typeView, //one of [_'ThumbnailsView'_, 'ImageView', 'BookView']
+      "bottomPanel" : true,    
+      "bottomPanelVisible" : true,
+      "sidePanel" : true, 
+      //control what is available in the side panel. if "sidePanel" is false, these options won't be applied
+      "sidePanelOptions" : {
+        "toc" : !inChecking,  // TOC not available in checking mode
+        "annotations" : false,
+        "tocTabAvailable": !inChecking, // TOC not available in checking mode
+        "layersTabAvailable": false, 
+        "searchTabAvailable": false, 
+      },
+      "sidePanelVisible" : false, //whether or not to make the side panel visible in this window on load. This setting is dependent on sidePanel being true
+      "overlay" : true, //whether or not to make the metadata overlay available/visible in this window
+      "canvasControls": { // The types of controls available to be displayed on a canvas
+        "annotations" : {
+          "annotationLayer" : true, //whether or not to make annotation layer available in this window
+          "annotationCreation" : true, /*whether or not to make annotation creation available in this window,
+                       only valid if annotationLayer is set to True and an annotationEndpoint is defined.
+                       This setting does NOT affect whether or not a user can edit an individual annotation that has already been created.*/
+          "annotationState" : 'off', //[_'off'_, 'on'] whether or not to turn on the annotation layer on window load
+          "annotationRefresh" : false, //whether or not to display the refresh icon for annotations
+        },
+        "imageManipulation" : {
+          "manipulationLayer" : false,
+          "controls" : {
+            "rotate" : true,
+            "brightness" : true,
+            "contrast" : true,
+            "saturate" : true,
+            "grayscale" : true,
+            "invert" : true,
+            "mirror" : false
+          }
+        }
+      },
+      "fullScreen" : true, //whether or not to make the window's fullScreen button visible to user
+      "displayLayout" : false, //whether or not to display all layout options, removing individual menu options is separate
+      //control individual menu items in layout menu. if "displayLayout" is false, these options won't be applied
+      "layoutOptions" : {
+        "newObject" : true,
+        "close" : true,
+        "slotRight" : true,
+        "slotLeft" : true,
+        "slotAbove" : true,
+        "slotBelow" : true,
+      }
+    },
+	"mainMenuSettings": [{
+		"show" : true,
+		"buttons": {
+			"bookmark": true
+		}
+	}],
+     "windowObjects": [{ 
+		 "loadedManifest": manifestUri,
+		 "availableViews":  availableViews,
+		 "viewType" : typeView
+
+		 }],
+     "annotationEndpoint": { "name":"Local Storage", "module": "LocalStorageEndpoint" }
+         
+       });
+       
+     });
+     
+    </script>
+  </body>
+</html>

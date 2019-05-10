@@ -1,0 +1,72 @@
+.select2-container .select2-choice abbr {
+    background: url('../images/select2/select2.png') right top no-repeat;
+}
+
+.select2-container .select2-choice .select2-arrow b {
+    background: url('../images/select2/select2.png') no-repeat 0 1px;
+}
+
+.select2-search input {
+    background: #fff url('../images/select2/select2.png') no-repeat 100% -22px;
+    background: url('../images/select2/select2.png') no-repeat 100% -22px, -webkit-gradient(linear, left bottom, left top, color-stop(0.85, #fff), color-stop(0.99, #eee));
+    background: url('../images/select2/select2.png') no-repeat 100% -22px, -webkit-linear-gradient(center bottom, #fff 85%, #eee 99%);
+    background: url('../images/select2/select2.png') no-repeat 100% -22px, -moz-linear-gradient(center bottom, #fff 85%, #eee 99%);
+    background: url('../images/select2/select2.png') no-repeat 100% -22px, linear-gradient(to bottom, #fff 85%, #eee 99%) 0 0;
+}
+
+.select2-search-choice-close {
+    background: url('../images/select2/select2.png') right top no-repeat;
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio: 1.5),
+only screen and (min-resolution: 2dppx) {
+    .select2-search input,
+    .select2-search-choice-close,
+    .select2-container .select2-choice abbr,
+    .select2-container .select2-choice .select2-arrow b {
+        background-image: url('../images/select2/select2x2.png') !important;
+    }
+}
+
+.select2-search input.select2-active {
+    background: #fff url('../images/select2/select2-spinner.gif') no-repeat 100%;
+    background: url('../images/select2/select2-spinner.gif') no-repeat 100%, -webkit-gradient(linear, left bottom, left top, color-stop(0.85, #fff), color-stop(0.99, #eee));
+    background: url('../images/select2/select2-spinner.gif') no-repeat 100%, -webkit-linear-gradient(center bottom, #fff 85%, #eee 99%);
+    background: url('../images/select2/select2-spinner.gif') no-repeat 100%, -moz-linear-gradient(center bottom, #fff 85%, #eee 99%);
+    background: url('../images/select2/select2-spinner.gif') no-repeat 100%, linear-gradient(to bottom, #fff 85%, #eee 99%) 0 0;
+}
+
+.select2-more-results.select2-active {
+    background: #f4f4f4 url('../images/select2/select2-spinner.gif') no-repeat 100%;
+}
+
+.select2-container-multi .select2-choices .select2-search-field input.select2-active {
+    background: #fff url('../images/select2/select2-spinner.gif') no-repeat 100% !important;
+}
+
+.select2-container-multi .select2-choices .select2-search-field input {
+    height: 28px;
+}
+
+.editable-input.select2-container .select2-choice {
+    height: 28px;
+}
+
+.select2-container .select2-choice {
+    height: 28px;
+}
+
+.select2-chosen,
+.select2-choice > span:first-child,
+.select2-container .select2-choices .select2-search-field input {
+    padding: 4px 6px;
+}
+
+.select2-result-label {
+    word-wrap: break-word;
+}
+
+/** bug d'affichage de la liste déroulante quand les données saisies sont vides */
+.select2-drop-active {
+	opacity: 1 !important;
+}

@@ -1,0 +1,291 @@
+<div class="col-sm-8 col-sm-offset-4 col-layout-columns" ng-controller="WorkflowModelEditCtrl">
+    <div class="panel panel-column-3">
+        <div class="panel-heading">
+            <div class="pull-right">
+                <button type="button" class="btn btn-sem2 btn-xs" ng-click="entityForm.$show()" ng-disabled="!model || !model.identifier"
+                    uib-tooltip="{{::'Modifier' | translate}}" ng-show="!entityForm.$visible && loaded" sem-roles-allowed="WORKFLOW_HAB2">
+                    <span class="glyphicon-regular edit"></span>
+                </button>
+                <button type="button" class="btn btn-sem2 btn-xs" ng-click="cancel()" ng-disabled="!model || !model.identifier || !loaded"
+                    uib-tooltip="{{::'Annuler' | translate}}" ng-show="entityForm.$visible">
+                    <span class="glyphicon-regular unshare"></span>
+                </button>
+                <button type="button" class="btn btn-sem2 btn-xs" ng-click="!(!loaded || !model || !model.identifier) && delete(model)" 
+                    ng-disabled="!model || !model.identifier || !loaded" uib-tooltip="{{::'Supprimer' | translate}}" 
+                    ng-show="!entityForm.$visible" sem-roles-allowed="WORKFLOW_HAB3">
+                    <span class="glyphicon-halflings glyphicon-trash"></span>
+                </button>
+            </div>
+            <span translate>Modèle de workflow</span>
+            <span ng-show="modified"><strong translate>(modifications non sauvegardées)</strong></span>
+        </div>
+        <div class="panel-body" ng-show="loaded">
+            <div>
+                <form editable-form name="entityForm" onaftersave="saveEntity(model)" 
+                    ng-init="formRO = !isAuthorized([userRoles.WORKFLOW_HAB1, userRoles.WORKFLOW_HAB2])"
+                    ng-show="loaded">
+
+                    <numa-editable-field title="{{::'Nom' | translate}}" placeholder="{{::'Nom' | translate}}" onbeforesave="validation.required($data)"
+                        form="entityForm" model="model.name" numa-readonly="formRO" errors="{{ errors.name }}" mandatory="true"> </numa-editable-field>
+                        
+                    <numa-editable-field title="{{::'Description' | translate}}" type="textarea" placeholder="{{::'Description' | translate}}" 
+                        onbeforesave="validation.required($data)" form="entityForm" model="model.description" mandatory="true"
+                        numa-readonly="formRO" errors="{{ errors.description }}"> </numa-editable-field>
+                        
+                    <numa-editable-field title="{{::'Bibliothèque' | translate}}" type="select" placeholder="{{::'Bibliothèque' | translate}}" form="entityForm" 
+                                    model="model.library" errors="{{ errors.library }}" numa-onchange="onChangeLibrary($data)" mandatory="true"
+                                    onbeforesave="validation.required($data)" numa-readonly="formRO"
+                                    config="{ data: sel2Libraries, 
+                                            display: 'name', 
+                                            query: 'o.name for o in $ctrl.config.data track by o.identifier' }"
+                                    link="{ type: 'library', parameters: {'id': model.library.identifier} }"></numa-editable-field>
+                                        
+                    <numa-editable-field title="{{::'Actif' | translate}}" type="radiolist" form="entityForm" model="model.active" numa-readonly="formRO"
+                                errors="{{ errors.active }}" 
+                                config="{ data: options.booleanValue, displayFn: displayBoolean, 
+                                    query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }">
+                    </numa-editable-field>
+                
+                    <!-- States -->
+	                <div class="row" id="workflowModelEditStates">
+	                   <div class="col-sm-3">
+                           <button type="button" class="btn btn-sem2 btn-sm btn-model-green" >
+                               <div>{{codes["workflow.model.INITIALISATION_DOCUMENT"]}}</div>
+                           </button>
+                       </div>
+                       <div class="clearfix"></div>
+	                   <div class="col-sm-3">
+                           <button type="button" class="btn btn-sem2 btn-sm" ng-click="editState(model, 'GENERATION_BORDEREAU')" 
+                           ng-class="{'REQUIRED': 'btn-model-orange',
+                                        'TO_SKIP': 'btn-model-blue',
+                                        'TO_WAIT': 'btn-model-grey'}[getType(model, 'GENERATION_BORDEREAU')]">
+                               <div>{{codes["workflow.model.GENERATION_BORDEREAU"]}} 
+                               <span ng-class="{'STATE_OK': 'glyphicon-halflings glyphicon-ok',
+                                        'STATE_KO': 'glyphicon-halflings glyphicon-remove'}[getState(model, 'GENERATION_BORDEREAU')]"></span>
+                               </div>
+                           </button>
+                       </div>
+                       <div class="col-sm-3">
+                           <button type="button" class="btn btn-sem2 btn-sm" ng-click="editState(model, 'VALIDATION_CONSTAT_ETAT')" 
+                           ng-class="{'REQUIRED': 'btn-model-orange',
+                                        'TO_SKIP': 'btn-model-blue',
+                                        'TO_WAIT': 'btn-model-grey'}[getType(model, 'VALIDATION_CONSTAT_ETAT')]">
+                               <div>{{codes["workflow.model.VALIDATION_CONSTAT_ETAT"]}} 
+                               <span ng-class="{'STATE_OK': 'glyphicon-halflings glyphicon-ok',
+                                        'STATE_KO': 'glyphicon-halflings glyphicon-remove'}[getState(model, 'VALIDATION_CONSTAT_ETAT')]"></span>
+                               </div>
+                           </button>
+                       </div>
+                       <div class="clearfix"></div>
+                       <div class="col-sm-3">
+                           <button type="button" class="btn btn-sem2 btn-sm" ng-click="editState(model, 'VALIDATION_BORDEREAU_CONSTAT_ETAT')" 
+                           ng-class="{'REQUIRED': 'btn-model-orange',
+                                        'TO_SKIP': 'btn-model-blue',
+                                        'TO_WAIT': 'btn-model-grey'}[getType(model, 'VALIDATION_BORDEREAU_CONSTAT_ETAT')]">
+                               <div>{{codes["workflow.model.VALIDATION_BORDEREAU_CONSTAT_ETAT"]}} 
+                               <span ng-class="{'STATE_OK': 'glyphicon-halflings glyphicon-ok',
+                                        'STATE_KO': 'glyphicon-halflings glyphicon-remove'}[getState(model, 'VALIDATION_BORDEREAU_CONSTAT_ETAT')]"></span>
+                               </div>
+                           </button>
+                       </div>
+                       <div class="clearfix"></div>
+                       <div class="col-sm-3">
+                           <button type="button" class="btn btn-sem2 btn-sm" ng-click="editState(model, 'CONSTAT_ETAT_AVANT_NUMERISATION')" 
+                           ng-class="{'REQUIRED': 'btn-model-orange',
+                                        'TO_SKIP': 'btn-model-blue',
+                                        'TO_WAIT': 'btn-model-grey'}[getType(model, 'CONSTAT_ETAT_AVANT_NUMERISATION')]">
+                               <div>{{codes["workflow.model.CONSTAT_ETAT_AVANT_NUMERISATION"]}} 
+                               <span ng-class="{'STATE_OK': 'glyphicon-halflings glyphicon-ok',
+                                        'STATE_KO': 'glyphicon-halflings glyphicon-remove'}[getState(model, 'CONSTAT_ETAT_AVANT_NUMERISATION')]"></span>
+                               </div>
+                           </button>
+                       </div>
+                       <div class="clearfix"></div>
+                       <div class="col-sm-3">
+                           <button type="button" class="btn btn-sem2 btn-sm" ng-click="editState(model, 'NUMERISATION_EN_ATTENTE')" 
+                           ng-class="{'REQUIRED': 'btn-model-orange',
+                                        'TO_SKIP': 'btn-model-blue',
+                                        'TO_WAIT': 'btn-model-grey'}[getType(model, 'NUMERISATION_EN_ATTENTE')]">
+                               <div>{{codes["workflow.model.NUMERISATION_EN_ATTENTE"]}} 
+                               <span ng-class="{'STATE_OK': 'glyphicon-halflings glyphicon-ok',
+                                        'STATE_KO': 'glyphicon-halflings glyphicon-remove'}[getState(model, 'NUMERISATION_EN_ATTENTE')]"></span>
+                               </div>
+                           </button>
+                       </div>
+                       <div class="clearfix"></div>
+                       <div class="col-sm-3">
+                           <button type="button" class="btn btn-sem2 btn-sm" ng-click="editState(model, 'CONSTAT_ETAT_APRES_NUMERISATION')" 
+                           ng-class="{'REQUIRED': 'btn-model-orange',
+                                        'TO_SKIP': 'btn-model-blue',
+                                        'TO_WAIT': 'btn-model-grey'}[getType(model, 'CONSTAT_ETAT_APRES_NUMERISATION')]">
+                               <div>{{codes["workflow.model.CONSTAT_ETAT_APRES_NUMERISATION"]}} 
+                               <span ng-class="{'STATE_OK': 'glyphicon-halflings glyphicon-ok',
+                                        'STATE_KO': 'glyphicon-halflings glyphicon-remove'}[getState(model, 'CONSTAT_ETAT_APRES_NUMERISATION')]"></span>
+                               </div>
+                           </button>
+                       </div>
+                       <div class="clearfix"></div>
+                       <div class="col-sm-3">
+                           <button type="button" class="btn btn-sem2 btn-sm" ng-click="editState(model, 'LIVRAISON_DOCUMENT_EN_COURS')" 
+                           ng-class="{'REQUIRED': 'btn-model-orange',
+                                        'TO_SKIP': 'btn-model-blue',
+                                        'TO_WAIT': 'btn-model-grey'}[getType(model, 'LIVRAISON_DOCUMENT_EN_COURS')]">
+                               <div>{{codes["workflow.model.LIVRAISON_DOCUMENT_EN_COURS"]}} 
+                               <span ng-class="{'STATE_OK': 'glyphicon-halflings glyphicon-ok',
+                                        'STATE_KO': 'glyphicon-halflings glyphicon-remove'}[getState(model, 'LIVRAISON_DOCUMENT_EN_COURS')]"></span>
+                               </div>
+                           </button>
+                       </div>
+                       <div class="clearfix"></div>
+                       <div class="col-sm-3">
+                           <button type="button" class="btn btn-sem2 btn-sm" ng-click="editState(model, 'CONTROLES_AUTOMATIQUES_EN_COURS')" 
+                           ng-class="{'REQUIRED': 'btn-model-orange',
+                                        'TO_SKIP': 'btn-model-blue',
+                                        'TO_WAIT': 'btn-model-grey'}[getType(model, 'CONTROLES_AUTOMATIQUES_EN_COURS')]">
+                               <div>{{codes["workflow.model.CONTROLES_AUTOMATIQUES_EN_COURS"]}} 
+                               <span ng-class="{'STATE_OK': 'glyphicon-halflings glyphicon-ok',
+                                        'STATE_KO': 'glyphicon-halflings glyphicon-remove'}[getState(model, 'CONTROLES_AUTOMATIQUES_EN_COURS')]"></span>
+                               </div>
+                           </button>
+                       </div>
+                       <div class="clearfix"></div>
+                       <div class="col-sm-3 col-sm-offset-3">
+                           <button type="button" class="btn btn-sem2 btn-sm" ng-click="editState(model, 'CONTROLE_QUALITE_EN_COURS')" 
+                           ng-class="{'REQUIRED': 'btn-model-orange',
+                                        'TO_SKIP': 'btn-model-blue',
+                                        'TO_WAIT': 'btn-model-grey'}[getType(model, 'CONTROLE_QUALITE_EN_COURS')]">
+                               <div>{{codes["workflow.model.CONTROLE_QUALITE_EN_COURS"]}}
+                               <span ng-class="{'STATE_OK': 'glyphicon-halflings glyphicon-ok',
+                                        'STATE_KO': 'glyphicon-halflings glyphicon-remove'}[getState(model, 'CONTROLE_QUALITE_EN_COURS')]"></span>
+                               </div>
+                           </button>
+                       </div>
+                       <div class="clearfix"></div>
+                       <div class="col-sm-2 col-sm-offset-2">
+                           <button type="button" class="btn btn-sem2 btn-sm" ng-click="editState(model, 'PREREJET_DOCUMENT')" 
+                           ng-class="{'REQUIRED': 'btn-model-orange',
+                                        'TO_SKIP': 'btn-model-blue',
+                                        'TO_WAIT': 'btn-model-grey'}[getType(model, 'PREREJET_DOCUMENT')]">
+                               <div>{{codes["workflow.model.PREREJET_DOCUMENT"]}}
+                               <span ng-class="{'STATE_OK': 'glyphicon-halflings glyphicon-ok',
+                                        'STATE_KO': 'glyphicon-halflings glyphicon-remove'}[getState(model, 'PREREJET_DOCUMENT')]"></span>
+                               </div>
+                           </button>
+                       </div>
+                       <div class="col-sm-3">
+                           <button type="button" class="btn btn-sem2 btn-sm" ng-click="editState(model, 'PREVALIDATION_DOCUMENT')" 
+                           ng-class="{'REQUIRED': 'btn-model-orange',
+                                        'TO_SKIP': 'btn-model-blue',
+                                        'TO_WAIT': 'btn-model-grey'}[getType(model, 'PREVALIDATION_DOCUMENT')]">
+                               <div>{{codes["workflow.model.PREVALIDATION_DOCUMENT"]}}
+                               <span ng-class="{'STATE_OK': 'glyphicon-halflings glyphicon-ok',
+                                        'STATE_KO': 'glyphicon-halflings glyphicon-remove'}[getState(model, 'PREVALIDATION_DOCUMENT')]"></span>
+                               </div>
+                           </button>
+                       </div>
+                       <div class="clearfix"></div>
+                       <div class="col-sm-3 col-sm-offset-3">  <!--  style="padding-left:50px;"> -->
+                           <button type="button" class="btn btn-sem2 btn-sm" ng-click="editState(model, 'VALIDATION_DOCUMENT')" 
+                           ng-class="{'REQUIRED': 'btn-model-orange',
+                                        'TO_SKIP': 'btn-model-blue',
+                                        'TO_WAIT': 'btn-model-grey'}[getType(model, 'VALIDATION_DOCUMENT')]">
+                               <div>{{codes["workflow.model.VALIDATION_DOCUMENT"]}}
+                               <span ng-class="{'STATE_OK': 'glyphicon-halflings glyphicon-ok',
+                                        'STATE_KO': 'glyphicon-halflings glyphicon-remove'}[getState(model, 'VALIDATION_DOCUMENT')]"></span>
+                               </div>
+                           </button>
+                       </div>
+                       <div class="clearfix"></div>
+                       <div class="col-sm-3">
+                           <button type="button" class="btn btn-sem2 btn-sm" ng-click="editState(model, 'VALIDATION_NOTICES')" 
+                           ng-class="{'REQUIRED': 'btn-model-orange',
+                                        'TO_SKIP': 'btn-model-blue',
+                                        'TO_WAIT': 'btn-model-grey'}[getType(model, 'VALIDATION_NOTICES')]">
+                               <div>{{codes["workflow.model.VALIDATION_NOTICES"]}}
+                               <span ng-class="{'STATE_OK': 'glyphicon-halflings glyphicon-ok',
+                                        'STATE_KO': 'glyphicon-halflings glyphicon-remove'}[getState(model, 'VALIDATION_NOTICES')]"></span>
+                               </div>
+                           </button>
+                       </div>
+                       <div class="col-sm-3">
+                           <button type="button" class="btn btn-sem2 btn-sm" ng-click="editState(model, 'RAPPORT_CONTROLES')" 
+                           ng-class="{'REQUIRED': 'btn-model-orange',
+                                        'TO_SKIP': 'btn-model-blue',
+                                        'TO_WAIT': 'btn-model-grey'}[getType(model, 'RAPPORT_CONTROLES')]">
+                               <div>{{codes["workflow.model.RAPPORT_CONTROLES"]}}
+                               <span ng-class="{'STATE_OK': 'glyphicon-halflings glyphicon-ok',
+                                        'STATE_KO': 'glyphicon-halflings glyphicon-remove'}[getState(model, 'RAPPORT_CONTROLES')]"></span>
+                               </div>
+                           </button>
+                       </div>
+                       <div class="clearfix"></div>
+                       <div class="col-sm-2">
+                           <button type="button" class="btn btn-sem2 btn-sm" ng-click="editState(model, 'ARCHIVAGE_DOCUMENT')" 
+                           ng-class="{'REQUIRED': 'btn-model-orange',
+                                        'TO_SKIP': 'btn-model-blue',
+                                        'TO_WAIT': 'btn-model-grey'}[getType(model, 'ARCHIVAGE_DOCUMENT')]">
+                               <div>{{codes["workflow.model.ARCHIVAGE_DOCUMENT"]}}
+                               <span ng-class="{'STATE_OK': 'glyphicon-halflings glyphicon-ok',
+                                        'STATE_KO': 'glyphicon-halflings glyphicon-remove'}[getState(model, 'ARCHIVAGE_DOCUMENT')]"></span>
+                               </div>
+                           </button>
+                       </div>
+                       <div class="col-sm-2">
+                           <button type="button" class="btn btn-sem2 btn-sm" ng-click="editState(model, 'DIFFUSION_DOCUMENT')" 
+                           ng-class="{'REQUIRED': 'btn-model-orange',
+                                        'TO_SKIP': 'btn-model-blue',
+                                        'TO_WAIT': 'btn-model-grey'}[getType(model, 'DIFFUSION_DOCUMENT')]">
+                               <div>{{codes["workflow.model.DIFFUSION_DOCUMENT"]}}
+                               <span ng-class="{'STATE_OK': 'glyphicon-halflings glyphicon-ok',
+                                        'STATE_KO': 'glyphicon-halflings glyphicon-remove'}[getState(model, 'DIFFUSION_DOCUMENT')]"></span>
+                               </div>
+                           </button>
+                       </div>
+                       <div class="col-sm-2">
+                           <button type="button" class="btn btn-sem2 btn-sm" ng-click="editState(model, 'DIFFUSION_DOCUMENT_OMEKA')" 
+                           ng-class="{'REQUIRED': 'btn-model-orange',
+                                        'TO_SKIP': 'btn-model-blue',
+                                        'TO_WAIT': 'btn-model-grey'}[getType(model, 'DIFFUSION_DOCUMENT_OMEKA')]">
+                               <div>{{codes["workflow.model.DIFFUSION_DOCUMENT_OMEKA"]}}
+                               <span ng-class="{'STATE_OK': 'glyphicon-halflings glyphicon-ok',
+                                        'STATE_KO': 'glyphicon-halflings glyphicon-remove'}[getState(model, 'DIFFUSION_DOCUMENT_OMEKA')]"></span>
+                               </div>
+                           </button>
+                       </div>
+                       <div class="col-sm-2">
+                           <button type="button" class="btn btn-sem2 btn-sm" ng-click="editState(model, 'DIFFUSION_DOCUMENT_LOCALE')" 
+                           ng-class="{'REQUIRED': 'btn-model-orange',
+                                        'TO_SKIP': 'btn-model-blue',
+                                        'TO_WAIT': 'btn-model-grey'}[getType(model, 'DIFFUSION_DOCUMENT_LOCALE')]">
+                               <div>{{codes["workflow.model.DIFFUSION_DOCUMENT_LOCALE"]}}
+                               <span ng-class="{'STATE_OK': 'glyphicon-halflings glyphicon-ok',
+                                        'STATE_KO': 'glyphicon-halflings glyphicon-remove'}[getState(model, 'DIFFUSION_DOCUMENT_LOCALE')]"></span>
+                               </div>
+                           </button>
+                       </div>
+                       <div class="clearfix"></div>
+                       <div class="col-sm-3">
+                           <button type="button" class="btn btn-sem2 btn-sm btn-model-red" ng-click="editState(model, 'CLOTURE_DOCUMENT')" >
+                               <div>{{codes["workflow.model.CLOTURE_DOCUMENT"]}}</div>
+                           </button>
+                       </div>
+	                </div>
+                    
+                    <div class="text-center column-bottom column-5 margin-t10" ng-show="entityForm.$visible">
+                        <div class="column-bottom-button">
+                            <!-- Création / Modification -->
+                            <div class="btn-group">
+                                <button type="button" ng-disabled="entityForm.$waiting" class="btn btn-sem4" ng-click="cancel()">
+                                <span class="glyphicon-regular unshare"></span> {{::'Annuler' | translate}}
+                            </button>
+                                <button type="submit" class="btn btn-sem2" sem-roles-allowed="WORKFLOW_HAB1, WORKFLOW_HAB2">
+                                <span class="glyphicon-regular floppy-save"></span> {{::'Enregistrer' | translate}}
+                            </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

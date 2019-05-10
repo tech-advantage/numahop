@@ -1,0 +1,6 @@
+<a class="list-group-item padding-t10 padding-b5" 
+   ng-class="{ 'selected': $ctrl.isSelected({$item: item}) }"
+   ng-repeat="item in $ctrl.pagination.items" 
+   ng-href="#/lot/lot?id={{::item.identifier}}" ng-click="$ctrl.clickItem(item, $event)">
+    <h5 class="list-group-item-heading" ng-bind-html="item.label"></h5>
+</a>

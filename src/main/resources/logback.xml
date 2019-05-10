@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration scan="true">
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <property name="LOG_FILE" value="${LOG_FILE:-${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}/}numahop-sid.log}"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+
+    <appender name="ROLFILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_FILE}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_FILE}.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>90</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <charset>utf-8</charset>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+    
+
+    <appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+        <queueSize>512</queueSize>
+        <appender-ref ref="ROLFILE"/>
+    </appender>
+
+    <logger name="fr.progilone.pgcn" level="DEBUG"/>
+
+    <logger name="org.springframework.scheduling.support.TaskUtils.LoggingErrorHandler" level="OFF" />
+    <logger name="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping" level="WARN" />
+    <logger name="org.springframework.boot.actuate.endpoint.web.servlet.WebMvcEndpointHandlerMapping" level="WARN" />
+    <logger name="org.springframework.context.support.PostProcessorRegistrationDelegate$BeanPostProcessorChecker" level="WARN" />
+    <logger name="org.ehcache.jsr107.Eh107CacheManager" level="WARN" />
+    <logger name="org.hibernate.engine.internal.StatefulPersistenceContext" level="ERROR" />
+    <!-- Pour faire apparaître les requêtes hibernate, mettre à DEBUG -->
+    <logger name="org.hibernate.SQL" level="OFF"/>
+    <!-- Pour faire apparaître les valeurs des paramètres des requêtes, mettre à TRACE -->
+    <logger name="org.hibernate.type" level="OFF"/>
+    <!-- Elasticsearch -->
+    <logger name="org.elasticsearch" level="WARN"/>
+
+    <!-- Pour faire apparaître le trafic HTTP, mettre à DEBUG -->
+    <logger name="org.apache.http.wire" level="OFF"/>
+    <logger name="org.apache.http.impl.client" level="OFF"/>
+
+    <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
+        <resetJUL>true</resetJUL>
+    </contextListener>
+
+    <root level="WARN">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="ASYNC" />
+    </root>
+
+</configuration>

@@ -1,0 +1,53 @@
+<div class="modal-header">
+    <h3 class="modal-title" translate>Export</h3>
+</div>
+<div class="modal-body">
+    <div class="row">
+        
+        <div >
+            <h4  translate>Type d'export:</h4>
+            <div class="form-control">
+	            <label translate>Téléchargement</label>
+	            <input type="radio" ng-model="mainCtrl.ftpExport" value="false" ng-checked="true" />
+	            <label style="margin-left:15px;" translate>Export FTP</label>
+	            <input type="radio" ng-model="mainCtrl.ftpExport" value="true">
+            </div>
+        </div> 
+<!--           <div>&nbsp;</div> -->
+        <div>
+            <h4  translate>Types de fichier à exporter:</h4>
+        </div>
+        <div class="form-control">
+            <label translate>METS</label>
+            <input type="checkbox" ng-model="mainCtrl.mets">
+        </div>
+        <div class="form-control">
+            <label translate>AIP / SIP</label>
+            <input type="checkbox" ng-model="mainCtrl.aip">
+        </div>
+        <div class="form-control">
+            <label translate>EAD</label>
+            <input type="checkbox" ng-model="mainCtrl.metaEad">
+        </div>
+        <div class="form-control">
+            <label translate>Fichiers Master</label>
+            <input type="checkbox" ng-model="mainCtrl.master">
+        </div>
+        <div class="form-control">
+            <label translate>Fichiers View</label>
+            <input type="checkbox" ng-model="mainCtrl.view">
+        </div>
+        <div class="form-control">
+            <label translate>Vignettes</label>
+            <input type="checkbox" ng-model="mainCtrl.thumb">
+        </div>
+        <div class="form-control">
+            <label translate>Pdf</label>
+            <input type="checkbox" ng-model="mainCtrl.pdf">
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-sem4" ng-click="mainCtrl.cancel()" translate>Annuler</button>
+    <button type="button" class="btn btn-sem2" ng-click="mainCtrl.ok()" translate>Télécharger</button>
+</div>

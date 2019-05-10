@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="pgcn-create-exchange-008" author="progilone">
+
+        <addColumn tableName="exc_doc_unit">
+            <column name="doc_unit_pgcn_id" type="varchar(191)" afterColumn="doc_unit"/>
+            <column name="doc_unit_label" type="varchar(255)" afterColumn="doc_unit_pgcn_id"/>
+        </addColumn>
+
+        <sql dbms="mysql">
+            UPDATE exc_doc_unit r
+            INNER JOIN doc_unit d ON r.doc_unit = d.identifier
+            SET r.doc_unit_pgcn_id = d.pgcn_id,
+            r.doc_unit_label = d.label
+        </sql>
+
+    </changeSet>
+</databaseChangeLog>

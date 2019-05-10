@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="pgcn-condition-report-003" author="progilone">
+
+        <addColumn tableName="doc_condreport_desc">
+            <column name="comment" type="text"/>
+        </addColumn>
+
+        <sql>
+            INSERT INTO doc_condreport_desc_value(identifier, label, property, version, created_by, last_modified_by, created_date, last_modified_date)
+            VALUES
+            ('40be0401-f7f9-4006-bac1-a3f391daad97', 'Moyen', 'DOCUMENT_FORMAT', '0', 'system', 'system', '2017-09-07 15:41:46', '2017-09-07 15:41:46'),
+            ('6e081598-a788-4d27-a13a-92a8423adbdb', 'Max', 'DOCUMENT_FORMAT', '0', 'system', 'system', '2017-09-07 15:41:46', '2017-09-07 15:41:46'),
+            ('61bd86d6-5397-453e-b465-25313f2b7cc4', 'Nombre approximatif de pages à déplier', 'DOCUMENT_FORMAT', '0', 'system', 'system', '2017-09-07 15:41:46', '2017-09-07 15:41:46')
+        </sql>
+    </changeSet>
+</databaseChangeLog>

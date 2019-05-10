@@ -1,0 +1,139 @@
+<div id="sem-filters-toggle" class="button-toggle" sem-auto-hide-filters>
+	<a ng-click="$semFilters.toggle()" class="link-toggle">
+        <span class="glyphicon-regular filter"></span>
+    </a>
+</div>
+<div id="sem-filters" sem-auto-hide-filters>
+	<div class="panel no-print" ng-controller="FiltersController as FilterCtrl">
+		<div class="panel-heading">
+			<span translate>Filtres</span>
+		</div>
+		<div class="panel-body">
+			<div ng-include="'scripts/components/templates/common/initialFilter.html'" ng-show="FilterCtrl.isAvailable(mainCtrl.listFilters.initial_filter)"></div>
+			<!-- Bibliothèque  -->
+			<div class="filter-block" ng-show="FilterCtrl.isAvailable(mainCtrl.listFilters.library_filter)">
+				<div class="filter-title">{{::'Bibliothèque' | translate}}</div>
+				<div class="filter-element">
+					<ui-select multiple ng-model="mainCtrl.filters.libraries" theme="select2" on-select="mainCtrl.searchLibrary()" on-remove="mainCtrl.searchLibrary()"
+					 class="form-control">
+						<ui-select-match placeholder="{{::'Bibliothèque' | translate}}">{{$item.name}}</ui-select-match>
+						<ui-select-choices repeat="option in mainCtrl.options.libraries | filter: $select.search track by option.identifier">
+							<div ng-bind-html="option.name | highlight: $select.search"></div>
+						</ui-select-choices>
+					</ui-select>
+				</div>
+			</div>
+			<!-- Projet -->
+			<div class="filter-block" ng-show="FilterCtrl.isAvailable(mainCtrl.listFilters.project_filter)">
+				<div class="filter-title">{{::'Projet' | translate}}</div>
+				<div class="filter-element">
+					<ui-select multiple ng-model="mainCtrl.filters.projects" theme="select2" on-select="mainCtrl.searchProject()" on-remove="mainCtrl.searchProject()"
+					 class="form-control">
+						<ui-select-match placeholder="{{::'Projet' | translate}}">{{$item.name}}</ui-select-match>
+						<ui-select-choices repeat="option in mainCtrl.options.projects | filter: $select.search track by option.identifier">
+							<div ng-bind-html="option.name | highlight: $select.search"></div>
+						</ui-select-choices>
+					</ui-select>
+				</div>
+			</div>
+			<!-- Lot -->
+			<div class="filter-block" ng-show="FilterCtrl.isAvailable(mainCtrl.listFilters.lot_filter)">
+				<div class="filter-title">{{::'Lot' | translate}}</div>
+				<div class="filter-element">
+					<ui-select multiple ng-model="mainCtrl.filters.lots" theme="select2" on-select="mainCtrl.search()" on-remove="mainCtrl.search()" class="form-control">
+						<ui-select-match placeholder="{{::'Lot' | translate}}">{{$item.label}}</ui-select-match>
+						<ui-select-choices repeat="option in mainCtrl.options.lots | filter: $select.search track by option.identifier">
+							<div ng-bind-html="option.label | highlight: $select.search"></div>
+						</ui-select-choices>
+					</ui-select>
+				</div>
+			</div>
+			<!-- Statut wkf docUnit -->
+            <div class="filter-block" ng-show="FilterCtrl.isAvailable(mainCtrl.listFilters.wkf_status_filter)">
+                <div class="filter-title">{{::'Statut' | translate}}</div>
+                <div class="filter-element">
+                    <ui-select multiple ng-model="mainCtrl.filters.wkf_statuses" theme="select2" on-select="mainCtrl.search()" on-remove="mainCtrl.search()" class="form-control">
+                        <ui-select-match placeholder="{{::'Statut' | translate}}">{{$item.label}}</ui-select-match>
+                        <ui-select-choices repeat="option in mainCtrl.options.statuses | filter: $select.search track by option.identifier">
+                            <div ng-bind-html="option.label | highlight: $select.search"></div>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+            </div>
+			<!-- Date dernière modification -->
+			<div class="filter-block" ng-show="FilterCtrl.isAvailable(mainCtrl.listFilters.last_modified_date_filter)">
+				<div class="filter-title">{{::'Date de dernière modification' | translate}}</div>
+				<div class="filter-element">
+					<div class="form-inline margin-b10">
+                        <label translate>du</label>
+						<sem-datepicker filter="true" ng-change="mainCtrl.search(mainCtrl.sortModel, $data, 'lastModifiedDateFrom')" ng-model="mainCtrl.filters.lastModifiedDateFrom"></sem-datepicker>
+					</div>
+					<div class="form-inline">
+                        <label translate>au</label>
+						<sem-datepicker filter="true" ng-change="mainCtrl.search(mainCtrl.sortModel, $data, 'lastModifiedDateTo')" ng-model="mainCtrl.filters.lastModifiedDateTo"></sem-datepicker>
+					</div>
+				</div>
+			</div>
+			<!-- Date de création -->
+			<div class="filter-block" ng-show="FilterCtrl.isAvailable(mainCtrl.listFilters.created_date_filter)">
+				<div class="filter-title">{{::'Date de création' | translate}}</div>
+				<div class="filter-element">
+					<div class="form-inline margin-b10">
+                        <label translate>du</label>
+						<sem-datepicker filter="true" ng-change="mainCtrl.search(mainCtrl.sortModel, $data, 'createdDateFrom')" ng-model="mainCtrl.filters.createdDateFrom"></sem-datepicker>
+					</div>
+					<div class="form-inline">
+                        <label translate>au</label>
+					   <sem-datepicker filter="true" ng-change="mainCtrl.search(mainCtrl.sortModel, $data, 'createdDateTo')" ng-model="mainCtrl.filters.createdDateTo"></sem-datepicker>
+					</div>
+				</div>
+			</div>
+			<!-- Avec documents numériques -->
+			<div class="filter-block" ng-show="FilterCtrl.isAvailable(mainCtrl.listFilters.archive_filter)">
+				<div class="checkbox checkbox-sid-main">
+					<input id="filterHasDigitalDocuments" type="checkbox" ng-model="mainCtrl.filters.hasDigitalDocuments" ng-change="mainCtrl.search()" />
+					<label for="filterHasDigitalDocuments" translate>Voir uniquement les Unités Documentaires avec des documents numériques</label>
+				</div>
+			</div>
+			<!-- Inactifs -->
+            <div class="filter-block" ng-show="FilterCtrl.isAvailable(mainCtrl.listFilters.inactive_filter)">
+                <div class="checkbox checkbox-sid-main">
+                    <input id="filterInactive" type="checkbox" ng-model="mainCtrl.filters.inactive" ng-change="mainCtrl.search()" />
+                    <label for="filterInactive" translate>Voir les unités documentaires inactives</label>
+                </div>
+            </div>
+			<!-- Statut d'archivage -->
+            <div class="filter-block" ng-show="FilterCtrl.isAvailable(mainCtrl.listFilters.has_digital_documents_filter)">
+                <div class="filter-title">{{::'Statut d\'archivage' | translate}}</div>
+                <div class="checkbox checkbox-sid-main">
+                    <input id="filterArchived" type="checkbox" ng-model="mainCtrl.filters.archived" ng-change="mainCtrl.search()" />
+                    <label for="filterArchived" style="min-width: 80px;" class="margin-r40" translate>Archivés</label>
+                    <input id="filterNonArchived" type="checkbox" ng-model="mainCtrl.filters.nonArchived" ng-change="mainCtrl.search()" />
+                    <label for="filterNonArchived" translate>Non archivés</label>
+                </div>
+                <div class="checkbox checkbox-sid-main">
+                    <input id="filterArchivable" type="checkbox" ng-model="mainCtrl.filters.archivable" ng-change="mainCtrl.search()" />
+                    <label for="filterArchivable" style="min-width: 80px;" class="margin-r40" translate>Archivables</label>
+                    <input id="filterNonArchivable" type="checkbox" ng-model="mainCtrl.filters.nonArchivable" ng-change="mainCtrl.search()" />
+                    <label for="filterNonArchivable" translate>Non archivables</label>
+                </div>
+            </div>
+            <!-- Statut de diffusion -->
+            <div class="filter-block" ng-show="FilterCtrl.isAvailable(mainCtrl.listFilters.diffusion_filter)">
+                <div class="filter-title">{{::'Statut de diffusion' | translate}}</div>
+                <div class="checkbox checkbox-sid-main">
+                    <input id="filterDiffuse" type="checkbox" ng-model="mainCtrl.filters.distributed" ng-change="mainCtrl.search()" />
+                    <label for="filterDiffuse" style="min-width: 80px;" class="margin-r40" translate>Diffusés</label>
+                    <input id="filterNonDiffuse" type="checkbox" ng-model="mainCtrl.filters.nonDistributed" ng-change="mainCtrl.search()" />
+                    <label for="filterNonDiffuse" translate>Non diffusés</label>
+                </div>
+                <div class="checkbox checkbox-sid-main">
+                    <input id="filterDiffusable" type="checkbox" ng-model="mainCtrl.filters.diffusable" ng-change="mainCtrl.search()" />
+                    <label for="filterDiffusable" style="min-width: 80px;" class="margin-r40" translate>Diffusables</label>
+                    <input id="filterNonDiffusable" type="checkbox" ng-model="mainCtrl.filters.nonDiffusable" ng-change="mainCtrl.search()" />
+                    <label for="filterNonDiffusable" translate>Non diffusables</label>
+                </div>
+            </div>            
+		</div>
+	</div>
+</div>

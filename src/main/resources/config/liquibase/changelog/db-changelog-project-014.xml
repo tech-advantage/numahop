@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="pgcn-project-14" author="progilone">
+
+        <createTable tableName="del_delivered_document">
+            <column name="identifier" type="varchar(191)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="delivery" type="varchar(191)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="digital_document" type="varchar(191)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="varchar(255)"/>
+            <column name="delivery_date" type="date"/>
+            <column name="nb_pages" type="int"/>
+            <column name="total_length" type="BIGINT"/>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="del_delivered_document" baseColumnNames="delivery" constraintName="fk_del_delivered_document_delivery"
+                                 referencedTableName="del_delivery" referencedColumnNames="identifier"/>
+        <addForeignKeyConstraint baseTableName="del_delivered_document" baseColumnNames="digital_document"
+                                 constraintName="fk_del_delivered_document_digital"
+                                 referencedTableName="doc_digital_document" referencedColumnNames="identifier"/>
+
+        <createIndex tableName="del_delivered_document" indexName="idx_del_delivered_document_delivery">
+            <column name="delivery"/>
+        </createIndex>
+        <createIndex tableName="del_delivered_document" indexName="idx_del_delivered_document_digital">
+            <column name="digital_document"/>
+        </createIndex>
+
+        <sql>
+            INSERT INTO del_delivered_document (identifier, delivery, digital_document, status, delivery_date, total_length, version)
+            SELECT Concat(Substring(d.identifier, 1, 18), Substring(dig.identifier, -18)),
+                d.identifier, dig.identifier, dig.status, dig.delivery_date, dig.total_length, 0
+            FROM  del_delivery d
+                INNER JOIN lot_lot l ON l.identifier = d.lot_identifier
+                INNER JOIN doc_unit doc ON doc.lot = l.identifier
+                INNER JOIN doc_physical_document ph ON ph.doc_unit = doc.identifier
+                INNER JOIN doc_physical_document_digital phd ON phd.physical_document = ph.identifier
+                INNER JOIN doc_digital_document dig ON phd.digital_document = dig.identifier
+        </sql>
+        <sql>
+            UPDATE del_delivered_document d
+            SET nb_pages = (
+                SELECT Count(*)
+                FROM   doc_page p
+                WHERE  p.digital_document = d.digital_document
+            )
+        </sql>
+
+    </changeSet>
+
+</databaseChangeLog>

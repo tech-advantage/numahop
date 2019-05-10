@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Changeset du module Check -->
+    <changeSet id="pgcn-check-004" author="progilone">
+    
+    <createTable tableName="conf_automatic_check_rule">
+            <column name="identifier" type="varchar(191)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="active" type="boolean">
+                <constraints nullable="false" />
+            </column>
+            <column name="blocking" type="boolean">
+                <constraints nullable="false" />
+            </column>
+            <!-- Liens techniques -->
+            <column name="check_configuration" type="varchar(191)" />
+            <column name="check_type" type="varchar(191)" />
+            
+            <!-- Données techniques auto -->
+            <column name="version" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    
+        <addForeignKeyConstraint baseColumnNames="check_configuration" baseTableName="conf_automatic_check_rule"
+            constraintName="fk_conf_configuration_check_rule"
+            referencedColumnNames="identifier" referencedTableName="conf_configuration_check" />
+        <addForeignKeyConstraint baseColumnNames="check_type" baseTableName="conf_automatic_check_rule"
+            constraintName="fk_check_automatic_type_rule"
+            referencedColumnNames="identifier" referencedTableName="check_automatic_type" />    
+    
+    </changeSet>
+</databaseChangeLog>    

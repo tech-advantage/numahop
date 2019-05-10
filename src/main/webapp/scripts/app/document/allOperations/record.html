@@ -1,0 +1,208 @@
+<div ng-controller="RecordAllOperationsCtrl as recordCtrl" ng-init="recordCtrl.loadRecord(mainCtrl)">
+    <div class="panel-body" id="entityDetails">
+
+        <!-- Création d'un notice -->
+        <div class="row" ng-if="recordCtrl.records.length === 0">
+            <div class="col-xs-12">
+                <button type="button" class="btn btn-sem2 btn-xs" ng-click="recordCtrl.newRecord()"
+                        sem-roles-allowed="DOC_UNIT_HAB1, DOC_UNIT_HAB2">
+                    <span class="glyphicon-halflings glyphicon-plus"></span> {{::'Créer une notice' | translate}}
+                </button>
+                <button type="button" class="btn btn-sem2 btn-xs" ng-click="recordCtrl.browseRecord()"
+                        sem-roles-allowed="DOC_UNIT_HAB2">
+                    <span class="glyphicon-halflings glyphicon-option-horizontal margin-r5"></span> {{::'Sélectionner une notice' | translate}}
+                </button>
+            </div>
+        </div>
+
+        <!-- Sélection de la notice -->
+        <div class="row margin-b20" ng-if="recordCtrl.records.length > 1">
+            <div class="col-xs-4 text-right" style="margin-top: 5px">
+                <label translate>Sélection de la notice</label>
+            </div>
+            <div class="col-xs-8 text-left">
+                <ul uib-pagination class="pagination-sm no-margin"
+                    num-pages="recordCtrl.records.length"
+                    total-items="recordCtrl.records.length"
+                    items-per-page="1"
+                    ng-change="recordCtrl.selectRecord(recordCtrl.records[recordCtrl.recordIdx - 1].identifier)"
+                    ng-model="recordCtrl.recordIdx"
+                    direction-links="false" boundary-links="false"></ul>
+            </div>
+        </div>
+
+        <!-- Édition de la notice -->
+        <form editable-form name="entityForm" onaftersave="recordCtrl.saveEntity(recordCtrl.entity)" onshow="!formRO && recordCtrl.lock(recordCtrl.entity)" 
+              ng-init="formRO = !isAuthorized([userRoles.DOC_UNIT_HAB1, userRoles.DOC_UNIT_HAB2])" 
+              ng-show="recordCtrl.loaded && recordCtrl.records.length > 0"> 
+
+            <numa-editable-field title="{{::'Titre' | translate}}" placeholder="{{::'Titre' | translate}}" form="entityForm"
+                                    model="recordCtrl.entity.title"  numa-readonly="formRO" mandatory="true"
+                                    errors="{{ recordCtrl.errors.title }}" onbeforesave="validation.required($data)"></numa-editable-field>
+            <numa-editable-field title="{{::'URL sigb' | translate}}" type="url" placeholder="{{::'URL sigb' | translate}}" form="entityForm"
+                                    model="recordCtrl.entity.sigb" numa-readonly="formRO"
+                                    errors="{{ recordCtrl.errors.sigb }}"></numa-editable-field>
+            <numa-editable-field title="{{::'URL Sudoc' | translate}}" type="url" placeholder="{{::'URL Sudoc' | translate}}" form="entityForm"
+                                    model="recordCtrl.entity.sudoc" numa-readonly="formRO" 
+                                    errors="{{ recordCtrl.errors.sudoc }}"></numa-editable-field>
+            <numa-editable-field title="{{::'URL calames' | translate}}" type="url" placeholder="{{::'URL calames' | translate}}" form="entityForm"
+                                    model="recordCtrl.entity.calames" numa-readonly="formRO" 
+                                    errors="{{ recordCtrl.errors.calames }}"></numa-editable-field>
+            <numa-editable-field title="{{::'URL Document électronique' | translate}}" type="url" placeholder="{{::'URL Document électronique' | translate}}" form="entityForm"
+                                model="recordCtrl.entity.docElectronique" numa-readonly="formRO"
+                                errors="{{ recordCtrl.errors.docElectronique }}"></numa-editable-field>
+
+            <!-- Propriétés Dublin Core -->
+            <div class="formBlock" ng-show="recordCtrl.showType.dc">
+                <div class="formBlockTitle" translate>Dublin Core</div>
+                <div class="formBlockContent">
+                    <table class="table table-condensed no-border">
+                        <tbody>
+                            <tr ng-repeat="property in recordCtrl.entity.record.dc">
+                                <td style="width: 40px" ng-show="entityForm.$visible">
+                                    <span class="btn-group-xs margin-l15" ng-show="entityForm.$visible">
+                                        <button type="button" class="btn btn-sem1 btn-removable" uib-tooltip="{{::'Supprimer' | translate}}" 
+                                                ng-click="recordCtrl.deleteProperty(recordCtrl.entity, 'dc', property)" ng-disabled="formRO">
+                                            <span class="glyphicon-halflings glyphicon-trash"></span>
+                                        </button>
+                                    </span>
+                                </td>
+                                <td style="width: 30%">
+                                    <numa-editable-field type="select" form="entityForm" model="property.type" onbeforesave="validation.required($data)"
+                                                            numa-readonly="property.identifier || formRO"
+                                                            config="{ data: recordCtrl.sel2DocProperties.dc,  
+                                                                    display: 'label',
+                                                                    query: 'o.label for o in $ctrl.config.data track by o.identifier' }"></numa-editable-field>
+                                </td>
+                                <td>
+                                    <numa-editable-field type="texthtml" placeholder="{{::'Valeur' | translate}}" form="entityForm" 
+                                                         model="property.value" numa-readonly="formRO" 
+                                                         onbeforesave="validation.required($data)"></numa-editable-field>                   
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tfoot ng-show="entityForm.$visible">
+                            <tr>
+                                <td colspan="3">
+                                    <span class="btn-group-xs margin-l15">
+                                        <button type="button" class="btn btn-sem1" uib-tooltip="{{::'Ajouter' | translate}}"
+                                                ng-click="recordCtrl.addProperty(recordCtrl.entity,'dc')" ng-disabled="formRO">
+                                            <span class="glyphicon-halflings glyphicon-plus"></span>
+                                            <i translate>Ajouter une nouvelle propriété</i>
+                                        </button>
+                                    </span>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Propriétés Dublin Core Qualified -->
+            <div class="formBlock" ng-show="recordCtrl.showType.dcq">
+                <div class="formBlockTitle" translate>Dublin Core (qualified)</div>
+                <div class="formBlockContent">
+                    <table class="table table-condensed no-border">
+                        <tbody>
+                            <tr ng-repeat="property in recordCtrl.entity.record.dcq">
+                                <td style="width: 40px" ng-show="entityForm.$visible">
+                                    <span class="btn-group-xs margin-l15" ng-show="entityForm.$visible">
+                                        <button type="button" class="btn btn-sem1 btn-removable" uib-tooltip="{{::'Supprimer' | translate}}" 
+                                                ng-click="recordCtrl.deleteProperty(recordCtrl.entity, 'dcq', property)" ng-disabled="formRO">
+                                            <span class="glyphicon-halflings glyphicon-trash"></span>
+                                        </button>
+                                    </span>
+                                </td>
+                                <td style="width: 30%">
+                                    <numa-editable-field type="select" form="entityForm" model="property.type" onbeforesave="validation.required($data)"
+                                                            numa-readonly="property.identifier || formRO"
+                                                            config="{ data: recordCtrl.sel2DocProperties.dcq,  
+                                                                    display: 'label',
+                                                                    query: 'o.label for o in $ctrl.config.data track by o.identifier' }"></numa-editable-field>
+                                </td>
+                                <td>
+                                    <numa-editable-field placeholder="{{::'Valeur' | translate}}" form="entityForm" 
+                                                            model="property.value" numa-readonly="formRO" 
+                                                            onbeforesave="validation.required($data)"></numa-editable-field>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tfoot ng-show="entityForm.$visible">
+                            <tr>
+                                <td colspan="3">
+                                    <span class="btn-group-xs margin-l15">
+                                        <button type="button" class="btn btn-sem1" uib-tooltip="{{::'Ajouter' | translate}}"
+                                                ng-click="recordCtrl.addProperty(recordCtrl.entity,'dcq')" ng-disabled="formRO">
+                                            <span class="glyphicon-halflings glyphicon-plus"></span>
+                                            <i translate>Ajouter une nouvelle propriété</i>
+                                        </button>
+                                    </span>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Propriétés Personnalisées -->
+            <div class="formBlock" ng-show="recordCtrl.showType.custom">
+                <div class="formBlockTitle" translate>Champs personnalisés</div>
+                <div class="formBlockContent">
+                    <table class="table table-condensed no-border">
+                        <tbody>
+                            <tr ng-repeat="property in recordCtrl.entity.record.custom">
+                                <td style="width: 40px" ng-show="entityForm.$visible">
+                                    <span class="btn-group-xs margin-l15" ng-show="entityForm.$visible">
+                                        <button type="button" class="btn btn-sem1 btn-removable" uib-tooltip="{{::'Supprimer' | translate}}" 
+                                                ng-click="recordCtrl.deleteProperty(recordCtrl.entity, 'custom', property)" ng-disabled="formRO">
+                                            <span class="glyphicon-halflings glyphicon-trash"></span>
+                                        </button>
+                                    </span>
+                                </td>
+                                <td style="width: 30%">
+                                    <numa-editable-field type="select" form="entityForm" model="property.type" onbeforesave="validation.required($data)"
+                                                            numa-readonly="property.identifier || formRO"
+                                                            config="{ data: recordCtrl.sel2DocProperties.custom,  
+                                                                    display: 'label',
+                                                                    query: 'o.label for o in $ctrl.config.data track by o.identifier' }"></numa-editable-field>
+                                </td>
+                                <td>
+                                    <numa-editable-field placeholder="{{::'Valeur' | translate}}" form="entityForm" 
+                                                            model="property.value" numa-readonly="formRO" 
+                                                            onbeforesave="validation.required($data)"></numa-editable-field>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tfoot ng-show="entityForm.$visible">
+                            <tr>
+                                <td colspan="3">
+                                    <span class="btn-group-xs margin-l15">
+                                        <button type="button" class="btn btn-sem1" uib-tooltip="{{::'Ajouter' | translate}}"
+                                                ng-click="recordCtrl.addProperty(recordCtrl.entity,'custom')" ng-disabled="formRO">
+                                            <span class="glyphicon-halflings glyphicon-plus"></span>
+                                            <i translate>Ajouter une nouvelle propriété</i>
+                                        </button>
+                                    </span>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+
+            <div class="text-center column-bottom column-10 margin-t10" ng-show="entityForm.$visible">
+                <div class="column-bottom-button">
+                    <!-- Création / Modification -->
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-sem4" ng-click="recordCtrl.cancelRecord()">
+                            <span class="glyphicon-regular unshare"></span> {{::'Annuler' | translate}}
+                        </button>
+                        <button type="submit" class="btn btn-sem2" sem-roles-allowed="DOC_UNIT_HAB1, DOC_UNIT_HAB2" ng-disabled="formRO">
+                            <span class="glyphicon-regular floppy-save"></span> {{::'Enregistrer' | translate}}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Changeset du module Bibliothèque -->
+    <changeSet id="pgcn-library-4" author="progilone">
+        <addColumn tableName="lib_library">
+            <column name="cines_service" type="varchar(255)"/>
+            <column name="active_configuration_check" type="varchar(191)"/>
+        </addColumn>
+        <dropColumn tableName="lib_library" columnName="delivery_folder"/>
+
+        <addForeignKeyConstraint constraintName="fk_library_configuration_check"
+                                 baseTableName="lib_library" baseColumnNames="active_configuration_check"
+                                 referencedTableName="conf_configuration_check" referencedColumnNames="identifier"/>
+    </changeSet>
+</databaseChangeLog>

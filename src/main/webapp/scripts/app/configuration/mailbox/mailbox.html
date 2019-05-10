@@ -1,0 +1,92 @@
+<div class="row layout-columns">
+    <div class="col-sm-3 col-layout-columns">
+        <div class="panel panel-column-1">
+            <div class="panel-heading">
+                <div class="pull-right">
+                    <button type="button" class="btn btn-sem2 btn-xs" 
+                            ng-click="mainCtrl.reinitFilters()" uib-tooltip="{{::'Réinitialiser les filtres de la recherche' | translate}}">
+                        <span class="glyphicon-halflings glyphicon-refresh"></span>
+                    </button>
+                </div>
+                <span translate>Gestion des configurations des emails</span>
+            </div>
+            <div class="panel-body">
+                <div class="filter-block">
+                    <div class="filter-title">{{::'Bibliothèque' | translate}}</div>
+                    <div class="filter-element">
+                        <ui-select multiple ng-model="mainCtrl.filters.libraries" theme="select2" 
+                                   on-select="mainCtrl.search()" on-remove="mainCtrl.search()" class="form-control">
+                            <ui-select-match placeholder="{{::'Bibliothèque' | translate}}">{{$item.name}}</ui-select-match>
+                            <ui-select-choices repeat="library in mainCtrl.options.libraries | filter: $select.search track by library.identifier">
+                                <div ng-bind-html="library.name | highlight: $select.search"></div>
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+                </div>
+                <div class="filter-block">
+                    <div class="checkbox checkbox-sid-main">
+                        <input type="checkbox" id="filter_inactive" ng-model="mainCtrl.filters.inactive" ng-change="mainCtrl.search()">
+                        <label for="filter_inactive" translate>Voir les configurations inactives</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-3 col-sm-offset-3 col-layout-columns">
+        <div class="panel panel-column-2">
+            <div class="panel-heading">
+                <div class="btn-group pull-right" sem-roles-allowed="MAIL_HAB1">
+                    <button type="button" class="btn btn-sem2 btn-xs"
+                            uib-tooltip="{{::'Créer' | translate}}"
+                            ng-click="mainCtrl.create()">
+                        <span class="glyphicon-halflings glyphicon-plus"></span>
+                    </button>
+                </div>
+                <div class="input-group padding-r20">
+                    <input class="form-control sem-input-xs" type="text" 
+                           ng-model="mainCtrl.filters.search" ng-keypress="mainCtrl.search($event)"/>
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-sem2 btn-xs" ng-click="mainCtrl.search()" uib-tooltip="{{::'Rechercher' | translate}}">
+                            <span class="glyphicon syrtis-icon-loupe"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+            <div class="panel-body">
+                <div ng-show="mainCtrl.loaded && mainCtrl.mailboxes.length > 0" class="well well-sm" translate
+                     translate-n="mainCtrl.mailboxes.length + newBoxes.length" translate-plural="{{$count}} configurations trouvées">1 configuration trouvée
+                </div>
+                <div class="well" ng-show="mainCtrl.loaded && mainCtrl.mailboxes.length === 0"
+                     translate>Aucune configuration n'a été trouvée
+                </div>
+
+                <!-- Configurations récemment créés -->
+                <!-- <div ng-show="mainCtrl.newBoxes.length > 0">
+                    <div class="pagination-break" translate>Récemment créées</div>
+                    <div ng-repeat="box in mainCtrl.newBoxes">
+                        <div class="list" ng-class="{active: box.identifier === editedBox.identifier}">
+                            <a ng-click="mainCtrl.edit(box)">
+                                <span class="principal">{{box.label}}</span>
+                            </a>
+                        </div>
+                    </div>
+                </div> -->
+
+                <div ng-repeat="box in mainCtrl.mailboxes" class="col-infinite-scroll">
+                    <div ng-show="$index === 0 || mainCtrl.getFirstLetter(box) != mainCtrl.getFirstLetter(mainCtrl.mailboxes[$index-1])"
+                            class="pagination-break">{{box.label|initial:'OTHER'}}
+                    </div>
+                    <div class="list" ng-class="{active: box._selected}">
+                        <span class="fa" ng-class="{true: 'fa-toggle-on', false: 'fa-toggle-off'}[box.active]"
+                              uib-tooltip="{{ {true: ('Configuration active' | translate), false: ('Configuration active' | translate)}[box.active] }}"></span>
+                        <a ng-click="mainCtrl.edit(box)">
+                            <span class="principal">{{box.label}}</span>
+                        </a>
+                    </div>
+                </div>
+                <div ng-show="!mainCtrl.loaded" class="well well-sm" translate>Chargement en cours...</div>
+            </div>
+        </div>
+    </div>
+    <ng-include src="mainCtrl.configurationInclude"></ng-include>
+</div>

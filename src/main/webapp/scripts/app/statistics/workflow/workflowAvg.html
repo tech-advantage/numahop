@@ -1,0 +1,112 @@
+<div class="row layout-columns">
+    <div class="col-sm-12 col-layout-columns">
+        <div class="panel panel-column-1 panel-column-end">
+            <!-- Filtrage du tableau -->
+            <numa-filter data-class="pull-left btn-filter">
+                <!-- Bibliothèques -->
+                <numa-filter-field data-title="{{ ::'Bibliothèque' | translate }}">
+                    <sem-field sem-type="uiselect" sem-model="statCtrl.filters.library" sem-option-data="statCtrl.config.libraries"
+                               sem-onchange="statCtrl.search()"></sem-field>
+                </numa-filter-field>
+                <!-- Projet -->
+                <numa-filter-field data-title="{{ ::'Projet' | translate }}">
+                    <sem-field sem-type="uiselect" sem-model="statCtrl.filters.project" sem-option-data="statCtrl.config.projects" 
+                               sem-onchange="statCtrl.search()"></sem-field>
+                </numa-filter-field>
+                <!-- Lot -->
+                <numa-filter-field data-title="{{ ::'Lot' | translate }}">
+                    <sem-field sem-type="uiselect" sem-model="statCtrl.filters.lot" sem-option-data="statCtrl.config.lots" 
+                               sem-onchange="statCtrl.search()"></sem-field>
+                </numa-filter-field>
+                <!-- Livraison -->
+                <numa-filter-field data-title="{{ ::'Livraison' | translate }}">
+                    <sem-field sem-type="uiselect" sem-model="statCtrl.filters.delivery" sem-option-data="statCtrl.config.deliveries" 
+                               sem-onchange="statCtrl.search()"></sem-field>
+                </numa-filter-field>
+                <!-- Date des étapes de workflow -->
+                <numa-filter-field data-title="{{ ::'Date' | translate }}">
+                    <div class="form-inline text-right margin-b10">
+                        <label translate>entre le</label>
+                        <sem-datepicker ng-model="statCtrl.filters.from" sem-model-options="{ debounce: 300 }"
+                                        ng-change="statCtrl.searchValue('from', $data)"></sem-datepicker>
+                    </div>
+                    <div class="form-inline text-right">
+                        <label translate>et le</label>
+                        <sem-datepicker ng-model="statCtrl.filters.to" sem-model-options="{ debounce: 300 }"
+                                        ng-change="statCtrl.searchValue('to', $data)"></sem-datepicker>
+                    </div>
+                </numa-filter-field>
+            </numa-filter>
+            <!-- Entête -->
+            <div class="panel-heading">
+                <div class="pull-right">
+                    <button type="button" class="btn btn-sem2 btn-xs" 
+                            ng-click="statCtrl.reinitFilters()" uib-tooltip="{{::'Réinitialiser les filtres de la recherche' | translate}}">
+                        <span class="glyphicon-halflings glyphicon-refresh"></span>
+                    </button>
+                    <a class="btn btn-sem2 btn-xs" 
+                            ng-href="{{statCtrl.getExportUrl()}}" uib-tooltip="{{::'Export CSV' | translate}}">
+                        <span class="fa fa-download"></span>
+                    </a>
+                </div>
+            </div>
+            <div class="panel-body">
+                <div ng-if="statCtrl.loaded">
+                    <div class="well" ng-show="statCtrl.items.length == 0" translate>
+                        Aucun résultat trouvé
+                    </div>
+                    <div ng-show="statCtrl.items.length > 0" class="well well-sm" translate
+                        translate-n="statCtrl.items.length"
+                        translate-plural="{{$count}} résultats trouvés">
+                        1 résultat trouvé
+                    </div>
+                    <select ng-options="o.identifier as o.label for o in statCtrl.config.groupby" 
+                            ng-model="statCtrl.filters.groupby" ng-change="statCtrl.search()">
+                    </select>
+                </div>
+                <!-- Liste des entités  -->
+                <div class="table-responsive" ng-show="statCtrl.items.length > 0">
+                    <table class="table table-hover sem-list">
+                        <thead>
+                        <tr>
+                            <th class="text-center h6 bold" translate>Projet</th>
+                            <th class="text-center h6 bold" ng-if="statCtrl.filters.groupby === 'LOT' || statCtrl.filters.groupby === 'DELIVERY'" translate>Lot</th>
+                            <th class="text-center h6 bold" ng-if="statCtrl.filters.groupby === 'DELIVERY'" translate>Livraison</th>
+                            <th class="text-center h6 bold" translate>Nb total de pages</th>
+                            <th class="text-center h6 bold" translate>Temps moyen de contrôle</th>
+                            <th class="text-center h6 bold" translate>Temps moyen de (re)livraison</th>
+                            <th class="text-center h6 bold" translate>Durée moyenne d'un workflow</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="item in statCtrl.items | orderBy:['projectName', 'lotLabel', 'deliveryLabel']">
+                            <td class="text-right nowrap">
+                                {{ ::item.projectName }} 
+                                <numa-custom-link numa-link-type="project"
+                                                  numa-link-parameters="{id: item.projectIdentifier}"
+                                                  ng-if="item.projectIdentifier"></numa-custom-link>
+                            </td>
+                            <td class="text-right nowrap" ng-if="statCtrl.filters.groupby === 'LOT' || statCtrl.filters.groupby === 'DELIVERY'">
+                                {{ ::item.lotLabel }} 
+                                <numa-custom-link numa-link-type="lot"
+                                                    numa-link-parameters="{id: item.lotIdentifier}"
+                                                    ng-if="item.lotIdentifier"></numa-custom-link>
+                            </td>
+                            <td class="text-right nowrap" ng-if="statCtrl.filters.groupby === 'DELIVERY'" >
+                                {{ ::item.deliveryLabel }} 
+                                <numa-custom-link numa-link-type="delivery"
+                                                    numa-link-parameters="{id: item.deliveryIdentifier}"
+                                                    ng-if="item.deliveryIdentifier"></numa-custom-link>
+                            </td>
+                            <td class="text-center">{{ ::item.avgTotalPages | number }}</td>
+                            <td class="text-center">{{ ::item.avgDurControl | duration:'hour' }}</td>
+                            <td class="text-center">{{ ::item.avgDurDelivery | duration:'hour' }}</td>
+                            <td class="text-center">{{ ::item.avgDurWorkflow | duration:'hour' }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

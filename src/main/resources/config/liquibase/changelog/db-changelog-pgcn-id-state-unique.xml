@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+
+    <changeSet id="pgcn-id-state-unique" author="progilone">
+        <dropUniqueConstraint tableName="doc_unit" constraintName="uniq_doc_unit_pgcn_id"></dropUniqueConstraint>
+        <addUniqueConstraint tableName="doc_unit" columnNames="pgcn_id,state" constraintName="uniq_doc_unit_pgcn_id_state"></addUniqueConstraint>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,18 @@
+{
+  "generator-jhipster": {
+    "baseName": "numahop-sid",
+    "packageName": "fr.progilone.pgcn",
+    "packageFolder": "fr/progilone/pgcn",
+    "authenticationType": "cookie",
+    "hibernateCache": "hazelcast",
+    "clusteredHttpSession": "hazelcast",
+    "websocket": "no",
+    "databaseType": "sql",
+    "devDatabaseType": "h2Memory",
+    "prodDatabaseType": "postgresql",
+    "useCompass": true,
+    "buildTool": "maven",
+    "frontendBuilder": "grunt",
+    "javaVersion": "8"
+  }
+}

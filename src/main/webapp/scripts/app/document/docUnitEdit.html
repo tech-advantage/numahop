@@ -1,0 +1,491 @@
+<div class="col-sm-8 col-sm-offset-4 col-layout-columns" ng-controller="DocUnitEditCtrl">
+    <div class="panel panel-column-3">
+        <div class="panel-heading">
+            <div class="pull-right">
+                <button type="button" class="btn btn-sem2 btn-xs"
+                        ng-click="entityForm.$show()" ng-disabled="!docUnit || !docUnit.identifier"
+                        uib-tooltip="{{::'Modifier' | translate}}"
+                        ng-show="!entityForm.$visible && loaded"
+                        sem-roles-allowed="DOC_UNIT_HAB2">
+                    <span class="glyphicon-regular edit"></span>
+                </button>
+                <button type="button" class="btn btn-sem2 btn-xs"
+                        ng-click="cancel()" ng-disabled="!docUnit || !docUnit.identifier || !loaded"
+                        uib-tooltip="{{::'Annuler' | translate}}"
+                        ng-show="entityForm.$visible">
+                    <span class="glyphicon-regular unshare"></span>
+                </button>
+                <button type="button" class="btn btn-sem2 btn-xs"
+                        ng-click="goToAllOperations()"
+                        ng-disabled="!docUnit || !docUnit.identifier"
+                        uib-tooltip="{{::'Détails' | translate}}"
+                        ng-show="!entityForm.$visible && loaded">
+                    <span class="glyphicon-regular list-alt"></span>
+                </button>
+
+                <div class="btn-group" sem-roles-allowed="DOC_UNIT_HAB2,DOC_UNIT_HAB3,DOC_UNIT_HAB4"
+                     ng-show="!entityForm.$visible && loaded" uib-dropdown dropdown-append-to-body>
+                    <button type="button" class="btn btn-sem2 btn-xs dropdown-toggle pull-right"
+                            ng-disabled="!docUnit || !docUnit.identifier"
+                            uib-tooltip="{{::'Autres actions' | translate}}" uib-dropdown-toggle
+                            sem-roles-allowed="DOC_UNIT_HAB2">
+                        <span class="glyphicon-halflings glyphicon-align-justify"></span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-right" role="menu" uib-dropdown-menu ng-show="docUnit && docUnit.identifier">
+                        <li ng-class="{ 'disabled': !loaded || !docUnit || !docUnit.identifier }" 
+                            ng-show="!entityForm.$visible" sem-roles-allowed="DOC_UNIT_HAB3">
+                            <a ng-click="!(!loaded || !docUnit || !docUnit.identifier) && delete(docUnit)">
+                                <span class="glyphicon-halflings glyphicon-trash"></span> {{ ::'Supprimer' | translate }}
+                            </a>
+                        </li>
+                        <li ng-class="{ 'disabled': !loaded || !docUnit || !docUnit.identifier }" 
+                            ng-show="!entityForm.$visible && canInactiveDocUnit" sem-roles-allowed="DOC_UNIT_HAB2">
+                            <a ng-click="!(!loaded || !docUnit || !docUnit.identifier) && inactive(docUnit)">
+                                <span class="glyphicon-halflings glyphicon-remove"></span> {{ ::'Annuler l\'unité documentaire' | translate }}
+                            </a>
+                        </li>
+                        <li>
+                            <a ng-click="getRevisions()">
+                                <span class="fa fa-history"></span> {{ ::'Historique des changements de lot' | translate }}
+                            </a>
+                        </li>
+                        <li role="separator" class="divider" ng-show="!entityForm.$visible" sem-roles-allowed="DOC_UNIT_HAB3"></li>
+                        <li>
+                            <a ng-click="exportCSV()" translate><span class="glyphicon-halflings glyphicon-export"></span> Export CSV</a>
+                        </li>
+                        <li>
+                            <a ng-href="/api/rest/export/rdfxml?type=DC&docUnit={{::docUnit.identifier}}" download="{{::docUnit.identifier}}-dc.xml"
+                               translate><span class="glyphicon-halflings glyphicon-export"></span> Export DC</a>
+                        </li>
+                        <li>
+                            <a ng-href="/api/rest/export/rdfxml?type=DCQ&docUnit={{::docUnit.identifier}}" download="{{::docUnit.identifier}}-dcq.xml"
+                               translate><span class="glyphicon-halflings glyphicon-export"></span> Export DCQ</a>
+                        </li>
+                        <li ng-if="::docUnit.eadExport">
+                            <a ng-href="/api/rest/export/ead?docUnit={{::docUnit.identifier}}" download="{{::docUnit.identifier}}-ead.xml"
+                               translate><span class="glyphicon-halflings glyphicon-export"></span> Export EAD</a>
+                        </li>
+                        <li role="separator" class="divider"></li>
+                        <li ng-show="loaded && docUnit.records.length > 0 "> 
+                            <a ng-click="massExport()" translate>
+                                <span class="glyphicon-halflings glyphicon-download-alt"></span> Export Local</a>
+                        </li>
+                        <li ng-show="loaded && docUnit.digitalDocuments[0].status === 'VALIDATED' && canExportToCines && docUnit.records.length > 0 && docUnit.archivable">
+                            <a ng-click="export('cines', docUnit, docUnit.records[0])" translate><span class="glyphicon-halflings glyphicon-export"></span> Export Cines</a>
+                        </li>
+                        <li ng-show="loaded && docUnit.digitalDocuments[0].status === 'VALIDATED' && canExportToOmeka && docUnit.distributable">
+                            <a ng-click="export('omeka', docUnit)" translate><span class="glyphicon-halflings glyphicon-export"></span> Export Omeka</a>
+                        </li>
+                        <li ng-show="loaded && docUnit.digitalDocuments[0].status === 'VALIDATED' && canExportToInternetArchive && docUnit.distributable">
+                            <a ng-click="export('internetarchive', docUnit)" translate><span class="glyphicon-halflings glyphicon-export"></span> Export Internet Archive</a>
+                        </li>
+                        <li ng-show="loaded && docUnit.digitalDocuments[0].status === 'VALIDATED' && canExportToCines">
+                            <a ng-click="checkFacile()" translate>Validation FACILE (Cines)</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <h5 translate>Fiche</h5>
+        </div>
+        <div class="panel-body" id="docUnitDetails">
+            <form editable-form name="entityForm" onaftersave="saveEntity(docUnit)" onshow="!formRO && lock(docUnit)"
+                  ng-init="formRO = !isAuthorized([userRoles.DOC_UNIT_HAB1, userRoles.DOC_UNIT_HAB2])" ng-show="loaded">
+                <uib-accordion close-others="false">
+                    <!-- Configuration de l'unité doc -->
+                    <div uib-accordion-group is-open="accordions.docunit">
+                        <uib-accordion-heading>
+                            <span class="pull-left glyphicon-halflings"
+                                    ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordions.docunit]">&nbsp;</span>
+                            <h5>{{ ::'Unité documentaire' | translate }}</h5>
+                        </uib-accordion-heading>
+                        <!-- Fiche parente -->
+                        <div class="row vertical-align" ng-if="::docUnit.parentIdentifier">
+                            <div class="text-right col-xs-4">
+                                <label translate>Fiche parente</label>
+                            </div>
+                            <div class="col-xs-8">
+                                [{{ ::docUnit.parentPgcnId }}] {{ ::docUnit.parentLabel }}
+                                <!-- Lien vers l'unité documentaire parente -->
+                                <a class="btn btn-syr-cataloging-action btn-xs" 
+                                    ng-href="/#/document/all_operations/{{::docUnit.parentIdentifier}}"
+                                    ng-if="!entityForm.$visible">
+                                    <span class="glyphicon-halflings glyphicon-share"></span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <numa-editable-field title="{{::'Libellé' | translate}}" placeholder="{{::'Libellé' | translate}}" form="entityForm" 
+                                             model="docUnit.label" numa-readonly="formRO" mandatory="true"
+                                             errors="{{ errors.label }}" onbeforesave="validation.required($data)"></numa-editable-field>
+                        <numa-editable-field title="{{::'Identifiant PGCN' | translate}}" placeholder="{{::'Identifiant PGCN' | translate}}" 
+                                             form="entityForm" onbeforesave="validation.required($data)" mandatory="true"
+                                             model="docUnit.pgcnId" numa-readonly="formRO" errors="{{ errors.pgcnId }}"></numa-editable-field>
+                        <numa-editable-field title="{{::'Type' | translate}}" placeholder="{{::'Type' | translate}}" 
+                                             form="entityForm" model="docUnit.type" numa-readonly="formRO" errors="{{ errors.type }}"></numa-editable-field>
+
+                        <!-- Link   -->                                            
+                        <numa-editable-field title="{{::'Bibliothèque' | translate}}" type="select" form="entityForm"  ng-if="sel2Libraries.length > 1"
+                                             model="docUnit.library" errors="{{ errors.library }}" mandatory="true"
+                                             numa-readonly="formRO" onbeforesave="validation.required($data)" 
+                                             config="{ data: sel2Libraries, 
+                                                       display: 'name', 
+                                                       query: 'o.name for o in $ctrl.config.data track by o.identifier' }"
+                                            numa-onchange="onchangeLibrary($data)"
+                                             link="{ type: 'library', parameters: {'id': docUnit.library.identifier} }"></numa-editable-field>                     
+                      
+                                             
+                        <numa-editable-field title="{{::'Projet' | translate}}" type="select" form="entityForm" 
+                                             model="docUnit.project" numa-readonly="formRO" errors="{{ errors.project }}" 
+                                             config="{ data:sel2Projects, 
+                                                display: 'name', 
+                                                query: 'o.name for o in $ctrl.config.data track by o.identifier' }"
+                                            numa-onchange="onchangeProject($data)"
+                                             link="{ type: 'project', parameters: {'id': docUnit.project.identifier} }"></numa-editable-field>
+                        <numa-editable-field title="{{::'Lot' | translate}}" type="select" form="entityForm" model="docUnit.lot"                                              
+                                             numa-readonly="workflowState !== 'En attente de relivraison' && workflowState !== 'Non démarré' && workflowState !== 'Terminé'" errors="{{ errors.lot }}" 
+                                             config="{ data:  [{label: ''}].concat(sel2Lots), 
+                                                       display: 'label', 
+                                                       query: 'o.label for o in $ctrl.config.data track by o.identifier' }"
+                                             link="{ type: 'lot', parameters: {'id': docUnit.lot.identifier} }"></numa-editable-field>
+                        <numa-editable-field title="{{::'Train' | translate}}" type="select" form="entityForm" 
+                        model="docUnit.physicalDocuments[0].train" numa-readonly="formRO" errors="{{ errors.train }}" 
+                        config="{ data: [{label: ''}].concat(sel2Trains), 
+                                  display: 'label', 
+                                  query: 'o.label for o in $ctrl.config.data track by o.identifier' }"
+                        link="{ type: 'train', parameters: {'id': docUnit.physicalDocuments[0].train.identifier} }"></numa-editable-field>
+                        <numa-editable-field title="{{::'Radical' | translate}}" placeholder="{{::'Radical' | translate}}" form="entityForm"
+                                             model="docUnit.digitalId" numa-readonly="formRO" errors="{{ errors.digitalId }}"></numa-editable-field>
+                                             
+                        <numa-editable-field data-title="{{::'Langage OCR' | translate}}" type="select" form="entityForm" 
+                        model="docUnit.activeOcrLanguage" numa-readonly="formRO" errors="{{ errors.activeOcrLanguage }}"
+                        config="{ data: [{label: ''}].concat(options.languagesOcr),
+                        display: 'label',
+                        query: 'o.label for o in $ctrl.config.data track by o.identifier'}"> </numa-editable-field>                     
+                                             
+                        <!-- etat workflow -->
+                        <numa-editable-field title="{{::'État du workflow' | translate}}" 
+                                             type="readonly" value="{{workflowState | translate}}" ></numa-editable-field>                                                                
+                    </div>
+                    
+                    <!--  Liste des livraisons -->
+                    <uib-accordion ng-if="docUnit.digitalDocuments.length && docUnit.digitalDocuments[0].deliveries.length">
+                          <div>
+                            <div ng-click="extendDeliv = !extendDeliv">
+                                <span class="pull-left glyphicon-halflings"
+                                      ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[extendDeliv]">&nbsp;</span>
+                                <h5 translate>Livraisons &nbsp; </h5>
+                            </div>
+                            <!-- Infos toujours affichées -->                            
+                            <div >
+                                <table class="table table-condensed table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th class="text-center" width="30%" translate>Livraison</th>
+                                        <th class="text-center" width="5%" translate>&nbsp;</th>
+                                        <th class="text-center" width="5%" translate>Pages</th>
+                                        <th class="text-center" width="10%" translate>Poids</th>
+                                        <th class="text-center" width="10%" translate>Date</th>
+                                        <th class="text-center" width="15%" translate>Statut</th>
+                                        <th class="text-center" width="10%" translate>Résultat contrôle</th>
+                                        <th class="text-center" translate>Document</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td class="text-center">{{::docUnit.digitalDocuments[0].deliveries[0].delivery.label}}</td>
+                                        <td>
+                                            <numa-custom-link numa-link-type="delivery" 
+                                                            numa-link-parameters='{"id": docUnit.digitalDocuments[0].deliveries[0].delivery.identifier}'
+                                                            numa-tooltip="Voir la livraison"></numa-custom-link>
+                                        </td>
+                                        <td class="text-center">{{::docUnit.digitalDocuments[0].deliveries[0].nbPages}}</td>
+                                        <td class="text-center">{{::docUnit.digitalDocuments[0].deliveries[0].totalLength | filesize }}</td>
+                                        <td class="text-center">{{::docUnit.digitalDocuments[0].deliveries[0].deliveryDate | moment:'L'}}</td>
+                                        <td class="text-center">{{semCodes['digitalDocument.' + docUnit.digitalDocuments[0].deliveries[0].status]}}</td>
+                                        <td class="text-center" ng_if="finishedStatus.indexOf(docUnit.digitalDocuments[0].deliveries[0].status) > -1">
+                                            <a ng-click="downloadCheckSlip(docUnit.digitalDocuments[0].deliveries[0].delivery.identifier)"  
+                                                        uib-tooltip="{{::'Télécharger le résultat du contrôle' | translate}}">
+                                                <span class="glyphicon-halflings glyphicon-export"></span>
+                                            </a>
+                                        </td>
+                                        <td class="text-center" ng_if="finishedStatus.indexOf(docUnit.digitalDocuments[0].deliveries[0].status) === -1"> - </td>
+                                        <td class="text-center" 
+                                                ng-if="(docUnit.digitalDocuments[0].deliveries[0].status === 'TO_CHECK' 
+                                                        || docUnit.digitalDocuments[0].deliveries[0].status === 'PRE_REJECTED'
+                                                        || docUnit.digitalDocuments[0].deliveries[0].status === 'CHECKING') 
+                                                            && docUnit.isWorkflowStarted.done">
+                                            <numa-custom-link numa-link-type="viewer_document" 
+                                                                numa-link-parameters='{"id": docUnit.digitalDocuments[0].identifier, "deliveryId": docUnit.digitalDocuments[0].deliveries[0].delivery.identifier}' 
+                                                                numa-image-class="glyphicon-halflings glyphicon-eye-open"
+                                                                numa-tooltip="Contrôler le document"
+                                                                sem-roles-allowed="CHECK_HAB4"></numa-custom-link>           
+                                        </td>
+                                        <td class="text-center" 
+                                            ng-if="docUnit.digitalDocuments[0].deliveries[0].status !== 'TO_CHECK' && docUnit.digitalDocuments[0].deliveries[0].status !== 'PRE_REJECTED'
+                                                    && docUnit.digitalDocuments[0].deliveries[0].status !== 'CHECKING' || !docUnit.isWorkflowStarted.done">
+                                                <button type="button" class="btn btn-sem2 btn-xs"
+                                                    ng-click="goToAllOperations('CHECK')" 
+                                                    ng-disabled="!docUnit || !docUnit.identifier || !loaded"
+                                                    uib-tooltip="{{::'Voir le document' | translate}}"
+                                                    >
+                                                <span class="glyphicon-halflings glyphicon-share"></span>
+                                            </button>
+                                        </td>      
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>                            
+                            <!-- Infos cachées lorsque l'accordion est replié -->
+                            <div  uib-accordion-group is-open="extendDeliv">     
+                                <table class="table table-condensed table-hover">
+                                    <tbody>
+                                    <tr ng-repeat="deliv in docUnit.digitalDocuments[0].deliveries" ng-show="!$first">
+                                        <td class="text-center" width="30%">{{::deliv.delivery.label}}</td>
+                                        <td width="5%">
+                                                <numa-custom-link numa-link-type="delivery"
+                                                        numa-link-parameters='{"id": deliv.delivery.identifier}'></numa-custom-link>
+                                        </td>
+                                        <td class="text-center" width="5%">{{::deliv.nbPages}}</td>
+                                        <td class="text-center" width="10%">{{::deliv.totalLength | filesize }}</td>
+                                        <td class="text-center" width="15%">{{::deliv.deliveryDate}}</td>
+                                        <td class="text-center"  width="15%">{{semCodes['digitalDocument.' + deliv.status]}}</td>
+                                        <td class="text-center"  width="15%">
+                                            <a ng-click="downloadCheckSlip(deliv.delivery.identifier)" uib-tooltip="{{::'Télécharger le résultat du contrôle' | translate}}">
+                                                <span class="glyphicon-halflings glyphicon-export"></span>
+                                            </a>
+                                        </td>
+                                        <td class="text-center" width="10%"> - </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>           
+                    </uib-accordion>
+                    <!-- Absence de notices -->
+                    <div class="formBlock" ng-if="docUnit.records.length === 0">
+                        <div class="formBlockTitle">
+                            <span translate>Notice</span>
+                            <a type="button" class="btn btn-sem2 btn-xs ng-scope" uib-tooltip="{{::'Lier à une notice' | translate}}" 
+                               ng-href="/#/document/all_operations/{{::docUnit.identifier}}?tab=RECORD"
+                               sem-roles-allowed="DOC_UNIT_HAB2">
+                                <span class="glyphicon-halflings glyphicon-plus"></span>
+                            </a>
+                        </div>
+                        <div class="formBlockContent" translate>Cette unité documentaire ne définit pas de notices.</div>
+                    </div>
+                    <!-- Notices -->
+                    <div ng-repeat="record in docUnit.records">
+                        <div class="formBlock">
+                            <div class="formBlockTitle">
+                                <span translate>Notice</span>
+                                <numa-custom-link numa-link-type="record" numa-link-parameters='{"id": record.identifier}'></numa-custom-link>
+                            </div>
+                            <div class="formBlockContent">
+                                <!-- Notice : DC -->
+                                <div uib-accordion-group is-open="accordions.record[record.identifier].dc">
+                                    <uib-accordion-heading>
+                                        <span class="margin-l10">{{ ::'Notice : Dublin Core' | translate }}</span>
+                                        <span class="pull-left glyphicon-halflings"
+                                                ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordions.record[record.identifier].dc]"></span>
+                                    </uib-accordion-heading>
+                                    <div ng-repeat="property in record.dc | orderBy:'weightedRank'">
+                                        <div class="col-xs-4 text-right">
+                                            <span>{{ ::property.type.label }}</span>
+                                        </div>
+                                        <div class="col-xs-8">
+                                            <span ng-bind-html="property.value"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Notice : DC Qualified -->
+                                <div uib-accordion-group is-open="accordions.record[record.identifier].dcq">
+                                    <uib-accordion-heading>
+                                        <span class="margin-l10">{{ ::'Notice : Dublin Core Qualified' | translate }}</span>
+                                        <span class="pull-left glyphicon-halflings"
+                                                ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordions.record[record.identifier].dcq]"></span>
+                                    </uib-accordion-heading>
+                                    <div ng-repeat="property in record.dcq | orderBy:'weightedRank'">
+                                        <div class="col-xs-4 text-right">
+                                            <span>{{ property.type.label | translate }}</span>
+                                        </div>
+                                        <div class="col-xs-8">
+                                            <span ng-bind-html="property.value"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Notice : Custom -->
+                                <div uib-accordion-group is-open="accordions.record[record.identifier].custom">
+                                    <uib-accordion-heading>
+                                        <span class="margin-l10">{{ ::'Notice : Champs personnalisés' | translate }}</span>
+                                        <span class="pull-left glyphicon-halflings"
+                                                ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordions.record[record.identifier].custom]"></span>
+                                    </uib-accordion-heading>
+                                    <div ng-repeat="property in record.custom | orderBy:'weightedRank'">
+                                        <div class="col-xs-4 text-right">
+                                            <span>{{ property.type.label | translate }}</span>
+                                        </div>
+                                        <div class="col-xs-8">
+                                            <span ng-bind-html="property.value"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="margin-t20" uib-accordion-group is-open="accordions.archiv">
+                        <uib-accordion-heading>
+                            <span class="pull-left glyphicon-halflings"
+                                    ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordions.archiv]">&nbsp;</span>
+                            <h5>{{ ::'Archivage de l\'unité documentaire' | translate }}</h5>
+                        </uib-accordion-heading>
+
+                        <numa-editable-field title="{{::'Plan de classement PAC' | translate}}" type="select" form="entityForm" 
+                                    model="docUnit.planClassementPAC" numa-readonly="formRO" errors="{{ errors.planClassementPAC }}"
+                                    config="{ data: [{name: ''}].concat(options.pacs),
+                                    display: 'name',
+                                    query: 'o.name for o in $ctrl.config.data track by o.identifier'}"> </numa-editable-field>
+                        <span ng-if="dateFacileResults">
+                            <numa-editable-field title="{{::'Validation FACILE' | translate}}" type="readonly" tooltip="{{getFacileErrors()}}"
+                                             value="{{ facileResults | translate }} le {{:: dateFacileResults | moment:'L LT'}}"></numa-editable-field>
+                                             
+<!--                             <span ng-repeat="err in facileErrors"> -->
+<!--                                 <span ng-if="$first">[</span> -->
+<!--                                     {{err | translate}} -->
+<!--                                  <span ng-if="!$last"> - </span> -->
+<!--                                  <span ng-if="$last"> ] </span> -->
+<!--                             </span>                  -->
+                                             
+                        </span>
+                        <span ng-if="!dateFacileResults">
+                            <numa-editable-field title="{{::'Validation FACILE' | translate}}" type="readonly" 
+                                             value="{{ facileResults | translate }}"></numa-editable-field>
+                        </span>
+                        
+                        
+                        
+                        <numa-editable-field title="{{::'Archivable' | translate}}" type="radiolist" model="docUnit.archivable" form="entityForm"
+                                             config="{ data: options.booleanObj, displayFn: displayBoolean, 
+                                                       query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }" 
+                                             numa-readonly="formRO" errors="{{ errors.archivable }}"></numa-editable-field>
+                        <numa-editable-field title="{{::'Archivé au Cines' | translate}}" type="radiolist" model="cinesArchived"
+                                             config="{ data: options.booleanObj, displayFn: displayBoolean, 
+                                                       query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }" 
+                                             numa-readonly="true"></numa-editable-field>
+                    </div>
+
+                   <div class="margin-t20" uib-accordion-group is-open="accordions.distrib">
+                       <uib-accordion-heading>
+                           <span class="pull-left glyphicon-halflings"
+                                   ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordions.distrib]">&nbsp;</span>
+                           <h5>{{ ::'Diffusion de l\'unité documentaire' | translate }}</h5>
+                       </uib-accordion-heading>
+                       
+                       <numa-editable-field title="{{::'Collection Internet Archive' | translate}}" type="select" form="entityForm" 
+                       model="docUnit.collectionIA" numa-readonly="formRO" errors="{{ errors.collectionIA }}"
+                       config="{ data: [{name: ''}].concat(options.collections),
+                                 display: 'name',
+                                 query: 'o.name for o in $ctrl.config.data track by o.identifier'}"> </numa-editable-field>
+                       
+                       <numa-editable-field title="{{::'Collection Omeka' | translate}}" type="select" form="entityForm" 
+                        model="docUnit.omekaCollection" numa-readonly="formRO" errors="{{ errors.omekaCollection }}"
+                        config="{ data: [{name: ''}].concat(options.omekaCollections),
+                                  display: 'name',
+                                  query: 'o.name for o in $ctrl.config.data track by o.identifier'}"> </numa-editable-field>
+                            
+                        <numa-editable-field title="{{::'Type d\'item Omeka' | translate}}" type="select" form="entityForm" 
+                        model="docUnit.omekaItem" numa-readonly="formRO" errors="{{ errors.omekaItem }}"
+	                    config="{ data: [{name: ''}].concat(options.omekaItems),
+	                              display: 'name',
+	                              query: 'o.name for o in $ctrl.config.data track by o.identifier'}"> </numa-editable-field>          
+
+                       <numa-editable-field title="{{::'Diffusable' | translate}}" type="radiolist" 
+                                            model="docUnit.distributable" numa-readonly="formRO" form="entityForm"
+                                            config="{ data: options.booleanObj, displayFn: displayBoolean, 
+                                                      query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }" 
+                                            errors="{{ errors.distributable }}"></numa-editable-field>    
+                       <numa-editable-field title="{{::'Diffusé sur Internet Archive' | translate}}" type="radiolist" model="iaArchived" 
+                                            config="{ data: options.booleanObj, displayFn: displayBoolean, 
+                                                      query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }" 
+                                           numa-readonly="true"></numa-editable-field>
+                       <numa-editable-field title="{{::'Url ark' | translate}}" model="docUnit.arkUrl" ng-if="iaArchived"
+                                           numa-readonly="true"></numa-editable-field>                    
+                       <numa-editable-field title="{{::'Diffusé sur Omeka' | translate}}" type="text" model="omekaDistribStatus"  
+                                           numa-readonly="true"></numa-editable-field>                    
+                       <numa-editable-field title="{{::'Droits de diffusion' | translate}}" type="select" form="entityForm" 
+                                            model="docUnit.rights" numa-readonly="formRO" errors="{{ errors.rights }}"
+                                            config="{ data: options.rights, 
+                                                      displayFn: displayRight,
+                                                      query: 'key as value for (key, value) in $ctrl.config.data' }"></numa-editable-field>
+                       <numa-editable-field title="{{::'Référence auteur trouvée' | translate}}" type="radiolist" 
+                                            model="docUnit.foundRefAuthor" numa-readonly="formRO" form="entityForm"
+                                            config="{ data: options.booleanObj, displayFn: displayBoolean, 
+                                                      query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }" 
+                                            errors="{{ errors.distributable }}"></numa-editable-field>                               
+                       
+                       <numa-editable-field title="{{::'Etat de la demande' | translate}}" type="select" form="entityForm" 
+                                    model="docUnit.progressStatus" numa-readonly="formRO" errors="{{ errors.progressStatus }}"
+                                    config="{ data: options.progressStatuses,
+                                                    displayFn: displayProgressStatus,
+                                                    query: 'key as value for (key, value) in $ctrl.config.data'}"> </numa-editable-field>
+                       
+                       <numa-editable-field title="{{::'Date de la demande' | translate}}" type="datepicker" form="entityForm"
+                                            model="docUnit.requestDate" numa-readonly="formRO" errors="{{ errors.requestDate }}"></numa-editable-field>
+                       <numa-editable-field title="{{::'Date de réponse' | translate}}" type="datepicker" form="entityForm"
+                                            model="docUnit.answerDate" numa-readonly="formRO" errors="{{ errors.answerDate }}"></numa-editable-field>                                  
+                       <numa-editable-field title="{{::'Date d\'embargo' | translate}}" type="datepicker" form="entityForm"
+                                            model="docUnit.embargo" numa-readonly="formRO" errors="{{ errors.embargo }}"></numa-editable-field>
+                   </div>
+                   
+                   <div class="margin-t20" uib-accordion-group is-open="accordions.control">
+                       <uib-accordion-heading>
+                           <span class="pull-left glyphicon-halflings"
+                                   ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordions.control]">&nbsp;</span>
+                           <h5>{{ ::'Contrôle de l\'unité documentaire' | translate }}</h5>
+                       </uib-accordion-heading>
+
+                       <numa-editable-field title="{{::'Délai avant contrôle (jours)' | translate}}" type="number" form="entityForm" 
+                                            model="docUnit.checkDelay" numa-readonly="formRO" errors="{{ errors.checkDelay }}"></numa-editable-field>
+                       <numa-editable-field title="{{::'Date de fin de contrôle prévue' | translate}}" type="readonly" form="entityForm"
+                                            value="{{docUnit.checkEndTime | moment}}" tooltip="{{::'Date de fin de contrôle calculée' | translate}}"></numa-editable-field>
+                       <numa-editable-field title="{{::'Infos de contrôle' | translate}}" placeholder="{{::'Infos de contrôle' | translate}}"  form="entityForm"
+                                            model="docUnit.digitizingNotes" numa-readonly="formRO" errors="{{ errors.digitizingNotes }}"></numa-editable-field>
+                   </div>
+                   
+                   <div class="margin-t20" uib-accordion-group is-open="accordions.other">
+                       <uib-accordion-heading>
+                           <span class="pull-left glyphicon-halflings"
+                                   ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordions.other]">&nbsp;</span>
+                           <h5>{{ ::'Autres informations' | translate }}</h5>
+                       </uib-accordion-heading>
+                       
+                       <numa-editable-field title="{{::'Type de constat d\'état' | translate}}" type="select" form="entityForm" 
+                                            model="docUnit.condReportType" numa-readonly="formRO" errors="{{ errors.condReportType }}"
+                                            config="{ data: options.condreportTypes, 
+                                                      displayFn: displayCondreportType,
+                                                      query: 't.identifier as t.label for t in $ctrl.config.data' }"></numa-editable-field>
+                       
+                       <numa-editable-field title="{{::'Type de fichiers' | translate}}" type="readonly" 
+                                            value="{{semCodes['format.' + docUnit.lot.requiredFormat]}}"></numa-editable-field>
+                   </div>
+               </uib-accordion>
+
+                <div class="text-center column-bottom column-7 margin-t10" ng-show="entityForm.$visible">
+                    <div class="column-bottom-button">
+                        <!-- Création / Modification -->
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-sem4" ng-disabled="entityForm.$waiting" ng-click="cancel()">
+                                <span class="glyphicon-regular unshare"></span> {{::'Annuler' | translate}}
+                            </button>
+                            <button type="submit" class="btn btn-sem2" sem-roles-allowed="DOC_UNIT_HAB1, DOC_UNIT_HAB2" ng-disabled="formRO">
+                                <span class="glyphicon-regular floppy-save"></span> {{::'Enregistrer' | translate}}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

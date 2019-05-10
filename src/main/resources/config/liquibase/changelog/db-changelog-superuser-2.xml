@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Chargement des données du module Usager -->
+    <changeSet id="pgcn-superuser-2" author="progilone">
+
+        <addColumn tableName="lib_library">
+            <column name="superuser" type="boolean"></column>
+        </addColumn>
+
+        <loadData encoding="UTF-8" separator=";"
+                  file="config/liquibase/numahop/library/superlib.csv"
+                  tableName="lib_library">
+            <column name="active" type="BOOLEAN"/>
+            <column name="superuser" type="BOOLEAN"/>
+        </loadData>
+
+        <loadData encoding="UTF-8" separator=";"
+                  file="config/liquibase/numahop/user/superauth.csv"
+                  tableName="user_role_authorization">
+        </loadData>
+
+        <update tableName="user_user">
+            <column name="superuser" valueBoolean="false"/>
+            <where>superuser is null</where>
+        </update>
+        <update tableName="user_role">
+            <column name="superuser" valueBoolean="false"/>
+            <where>superuser is null</where>
+        </update>
+        <update tableName="lib_library">
+            <column name="superuser" valueBoolean="false"/>
+            <where>superuser is null</where>
+        </update>
+        <update tableName="user_user">
+            <column name="library" value="SUPERLIB"/>
+            <where>identifier = 'SUPERUSER'</where>
+        </update>
+    </changeSet>
+</databaseChangeLog>

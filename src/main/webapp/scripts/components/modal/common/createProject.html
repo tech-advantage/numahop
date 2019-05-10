@@ -1,0 +1,23 @@
+<div class="modal-header">
+    <h3 class="modal-title" translate>Créer un projet</h3>
+</div>
+<div class="modal-body">
+    <!-- Item  -->
+    <div ng-if="mainCtrl.loaded">
+    <form name="createForm">
+        <sem-field sem-type="text" sem-label="{{::'Nom' | translate}}"
+        sem-placeholder="{{::'Nom' | translate}}"
+        sem-model="mainCtrl.project.name"></sem-field>
+        <sem-field sem-type="select" sem-label="{{::'Bibliothèque' | translate}}"
+        sem-model="mainCtrl.project.library"
+        sem-select-options="option.name for option in optionData track by option.identifier"
+        sem-option-data="mainCtrl.options.sel2Libraries"></sem-field>
+    </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-sem2" ng-click="mainCtrl.close()" translate>Annuler et fermer la fenêtre</button>
+    <button type="button" class="btn btn-sem2" ng-click="mainCtrl.createProject()" ng-disabled="createForm.$invalid" sem-roles-allowed="PROJ_HAB0">
+        <span class="glyphicon-regular floppy-save"></span> {{::'Créer un nouveau projet' | translate}}
+    </button>
+</div>

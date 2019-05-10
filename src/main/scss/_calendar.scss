@@ -1,0 +1,305 @@
+div.calendar {
+    margin: 0 auto;
+    width: 288px;
+    * {
+        margin: 0;
+        line-height: normal;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+    }
+    .clndr {
+        overflow: hidden;
+        .controls {
+            background-color: #004B63;
+            color: white;
+        }
+        .controls .clndr-previous-button,
+        .controls .clndr-next-button {
+            width: 15%;
+            padding-top: 5px;
+            padding-bottom: 5px;
+            display: inline-block;
+            text-align: center;
+            cursor: pointer;
+            -webkit-user-select: none;
+            /* Chrome/Safari */
+            -moz-user-select: none;
+            /* Firefox */
+            -ms-user-select: none;
+            /* IE10+ */
+            -webkit-transition: background-color 0.5s;
+            -moz-transition: background-color 0.5s;
+            -ms-transition: background-color 0.5s;
+            -o-transition: background-color 0.5s;
+            transition: background-color 0.5s;
+        }
+        .controls .clndr-previous-button:hover,
+        .controls .clndr-next-button:hover {
+            /*background-color: #528b5e;*/
+        }
+        .controls .month {
+            width: 67%;
+            padding-top: 5px;
+            padding-bottom: 5px;
+            display: inline-block;
+            text-align: center;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .days-container {
+            position: relative;
+            width: 288px;
+            height: 225px;
+            display: inline-block;
+        }
+        .days-container .days {
+            position: absolute;
+            left: 0;
+            width: 288px;
+            height: 225px;
+            -webkit-transition: left 0.5s;
+            -moz-transition: left 0.5s;
+            -ms-transition: left 0.5s;
+            -o-transition: left 0.5s;
+            transition: left 0.5s;
+            /*background-color: #ebebeb;*/
+            font-weight: bold;
+        }
+        .days-container .days .day,
+        .days-container .days .empty {
+            width: 38px;
+            display: inline-block;
+            padding-top: 8px;
+            padding-bottom: 8px;
+            font-size: 12px;
+            text-align: center;
+            color: #004B63;
+            /*color: #212121;
+			border-right: 1px solid rgba(255, 255, 255, 0.5);
+			border-bottom: 1px solid rgba(255, 255, 255, 0.5);*/
+        }
+        .days-container .days .empty.event {
+            background-color: #fff;
+            color: #4D91FF;
+            -webkit-transition: background-color 0.5s;
+            -moz-transition: background-color 0.5s;
+            -ms-transition: background-color 0.5s;
+            -o-transition: background-color 0.5s;
+            transition: background-color 0.5s;
+            cursor: pointer;
+        }
+        .days-container .days .day.event {
+            color: #FFF;
+            -webkit-transition: background-color 0.5s;
+            -moz-transition: background-color 0.5s;
+            -ms-transition: background-color 0.5s;
+            -o-transition: background-color 0.5s;
+            transition: background-color 0.5s;
+            cursor: pointer;
+        }
+        .days-container .days .day.event.NORMAL_DAY {
+            background-color: #8ABD5D;
+            color: #FFF;
+            -webkit-transition: background-color 0.5s;
+            -moz-transition: background-color 0.5s;
+            -ms-transition: background-color 0.5s;
+            -o-transition: background-color 0.5s;
+            transition: background-color 0.5s;
+            cursor: pointer;
+        }
+        .days-container .day.today {
+            box-shadow: 0 0 12px 2px #009900 inset;
+        }
+        .days-container .day.currentDay {
+            box-shadow: 0 0 12px 2px #004B63 inset;
+        }
+        .days-container .days .day.event.SPECIAL_PERIOD {
+            background-color: #9C4D88;
+            color: #fff;
+            -webkit-transition: background-color 0.5s;
+            -moz-transition: background-color 0.5s;
+            -ms-transition: background-color 0.5s;
+            -o-transition: background-color 0.5s;
+            transition: background-color 0.5s;
+            cursor: pointer;
+        }
+        .days-container .days .day.event.SPECIAL_OPENING {
+            background-color: #E3A764;
+            color: #fff;
+            -webkit-transition: background-color 0.5s;
+            -moz-transition: background-color 0.5s;
+            -ms-transition: background-color 0.5s;
+            -o-transition: background-color 0.5s;
+            transition: background-color 0.5s;
+            cursor: pointer;
+        }
+        .days-container .days .day.event.SPECIAL_CLOSING {
+            background-color: #D36868;
+            color: #fff;
+            -webkit-transition: background-color 0.5s;
+            -moz-transition: background-color 0.5s;
+            -ms-transition: background-color 0.5s;
+            -o-transition: background-color 0.5s;
+            transition: background-color 0.5s;
+            cursor: pointer;
+        }
+        .days-container .days .day.event {}
+        .DATE_PARUTION {
+            background-color: #D36868;
+            color: #fff;
+            -webkit-transition: background-color 0.5s;
+            -moz-transition: background-color 0.5s;
+            -ms-transition: background-color 0.5s;
+            -o-transition: background-color 0.5s;
+            transition: background-color 0.5s;
+            cursor: pointer;
+        }
+        .days-container .days .day.event:hover,
+        .days-container .days .empty.event:hover {
+            background-color: #b8b8b8;
+        }
+        .days-container .days .day.adjacent-month,
+        .days-container .days .empty.adjacent-month {
+            color: rgba(0, 0, 0, 0.3);
+        }
+        .days-container .days .day.adjacent-month.event.NORMAL_DAY,
+        .days-container .days .day.adjacent-month.event.SPECIAL_PERIOD,
+        .days-container .days .day.adjacent-month.event.SPECIAL_OPENING,
+        .days-container .days .day.adjacent-month.event.SPECIAL_CLOSING {
+            background-color: rgba(0, 0, 0, 0.3);
+        }
+        .days-container .days .empty {
+            height: 31px;
+            vertical-align: bottom;
+        }
+        .days-container .days .headers {
+            background-color: #004B63;
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
+        .days-container .days .headers .day-header {
+            width: 38px;
+            display: inline-block;
+            text-align: center;
+            color: white;
+        }
+        .days-container .events {
+            position: absolute;
+            left: 288px;
+            width: 288px;
+            height: 225px;
+            -webkit-transition: left 0.5s;
+            -moz-transition: left 0.5s;
+            -ms-transition: left 0.5s;
+            -o-transition: left 0.5s;
+            transition: left 0.5s;
+            background-color: #ebebeb;
+        }
+        .days-container .events .headers {
+            position: relative;
+        }
+        .days-container .events .event-header {
+            width: 100%;
+            background-color: #97ce7f;
+            padding-top: 5px;
+            padding-bottom: 5px;
+            text-align: center;
+            color: white;
+        }
+        .days-container .events .x-button {
+            position: absolute;
+            font-size: 80%;
+            top: 7px;
+            left: 20px;
+            cursor: pointer;
+            -webkit-transition: color 0.25s;
+            -moz-transition: color 0.25s;
+            -ms-transition: color 0.25s;
+            -o-transition: color 0.25s;
+            transition: color 0.25s;
+        }
+        .days-container .events .x-button:hover {
+            color: white;
+        }
+        .days-container .events .events-list {
+            overflow: scroll;
+            height: 155px;
+        }
+        .days-container .events .events-list .event {
+            padding-top: 8px;
+            padding-bottom: 8px;
+            padding-left: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+            -webkit-transition: background-color 0.25s;
+            -moz-transition: background-color 0.25s;
+            -ms-transition: background-color 0.25s;
+            -o-transition: background-color 0.25s;
+            transition: background-color 0.25s;
+        }
+        .days-container .events .events-list .event:hover {
+            background-color: #f5f5f5;
+        }
+        .days-container .events .events-list .event a {
+            position: relative;
+            font-size: 12px;
+            letter-spacing: 1px;
+            background-color: transparent;
+            color: #212121;
+            text-decoration: none;
+            -webkit-transition: color 0.25s;
+            -moz-transition: color 0.25s;
+            -ms-transition: color 0.25s;
+            -o-transition: color 0.25s;
+            transition: color 0.25s;
+        }
+        .days-container .events .events-list .event a:hover {
+            background-color: transparent;
+            color: #69a776;
+        }
+        .days-container.show-events .days {
+            left: -288x;
+        }
+        .days-container.show-events .events {
+            left: 0;
+        }
+    }
+}
+
+.provisional-calendar {
+    .SPECIAL_RELEASE {
+        box-shadow: 0 0 12px 2px inset;
+    }
+    .NO_RELEASE_PERIOD {
+        box-shadow: 0 0 12px 2px inset;
+        background-color: #b3b3b3;
+    }
+    .FORTHCOMING {
+        background-color: $sid-fourth-color;
+    }
+    .WAITING {
+        background-color: $sid-state-warn;
+    }
+    .RECEIVED {
+        background-color: $brand-success;
+    }
+    .PARTIALLY_RECEIVED {
+        background-color: $brand-success;
+    }
+    .LATE {
+        background-color: $brand-danger;
+    }
+    .NO_RELEASE {
+        background-color: #b3b3b3;
+    }
+    .LACUNA {
+        background-color: #b3b3b3;
+    }
+    .MULTIPLE_STATES {
+        background-color: grey;
+    }
+    .provisional-list {
+        color: #FFF;
+    }
+}

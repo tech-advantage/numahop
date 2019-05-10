@@ -1,0 +1,35 @@
+<div class="modal-header">
+    <h3 class="modal-title" translate>Résultats du détachement d'entités</h3>
+</div>
+<div class="modal-body">
+    <!-- Liste des entités  -->
+    <div class="table-responsive" ng-show="mainCtrl.entities.length > 0">
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th></th>
+                <th>{{::"Unité documentaire" | translate }}</th>
+                <th>{{::"Message" | translate }}</th>
+            </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="entity in mainCtrl.entities">
+                    <td>
+                        <span class="glyphicon-halflings glyphicon-ok" ng-if="entity.deleted"></span>
+                        <span class="glyphicon-halflings glyphicon-trash" ng-if="!entity.deleted"></span>
+                    </td>
+                    <td>
+                        {{::entity.label}}
+                    </td>
+                    <td>
+                        {{entity.result}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-sem2" ng-click="mainCtrl.ok()" translate>Fermer la fenêtre</button>
+</div>

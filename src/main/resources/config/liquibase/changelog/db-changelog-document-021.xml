@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Changeset du module Document : deplacement de digitizingNotes vers l'uniteDoc -->
+    <changeSet id="pgcn-document-21" author="progilone">
+ 
+        <addColumn tableName="doc_unit">
+            <column name="digitizing_notes" type="varchar(255)"/>
+        </addColumn>
+ 
+        
+        <dropColumn tableName="doc_digital_document"
+            columnName="digitizing_notes" />
+        
+        
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,83 @@
+<div class="col-sm-9 col-lg-10 col-sm-offset-3 col-lg-offset-2 col-layout-columns" ng-controller="TemplateEditCtrl as editCtrl" ng-init="editCtrl.init(mainCtrl)">
+    <div class="panel panel-column-2 panel-column-end">
+        <div class="panel-heading">
+            <div class="pull-right">
+                <button type="button" class="btn btn-sem2 btn-xs" uib-tooltip="{{::'Modifier' | translate}}"
+                        ng-click="templateForm.$show()" ng-disabled="templateForm.$visible" ng-show="editCtrl.loaded">
+                    <span class="glyphicon-regular edit"></span>
+                </button>
+                <button type="button" class="btn btn-sem2 btn-xs"
+                        ng-click="editCtrl.deleteTemplate()" 
+                        ng-disabled="!editCtrl.template || !editCtrl.template.identifier" ng-show="editCtrl.loaded"
+                        uib-tooltip="{{::'Supprimer' | translate}}">
+                    <span class="glyphicon-halflings glyphicon-trash"></span>
+                </button>
+            </div>
+            <h5 ng-show="editCtrl.template">{{::'Template' | translate}} {{ mainCtrl.displayTemplateName(editCtrl.template.name) }}</h5>
+        </div>
+        <div class="panel-body">
+            <form editable-form name="templateForm" onaftersave="editCtrl.saveTemplate()" ng-show="editCtrl.loaded">
+                <numa-editable-field title="{{::'Nom' | translate}}" type="select" form="templateForm" onbeforesave="editCtrl.validation.required($data)"
+                                     model="editCtrl.template.name" errors="{{ editCtrl.errors.name }}"
+                                     numa-onchange="editCtrl.onchangeName($data)"
+                                     config="{ data: editCtrl.templateNames, 
+                                               displayFn: mainCtrl.displayTemplateName, 
+                                               query: 'o.code as o.label for o in $ctrl.config.data' }"></numa-editable-field>
+                <numa-editable-field title="{{::'Bibliothèque' | translate}}" type="select" form="templateForm" 
+                                     model="editCtrl.template.library" errors="{{ editCtrl.errors.library }}" onbeforesave="editCtrl.validation.required($data)"
+                                     config="{ data: mainCtrl.libraries, 
+                                               display: 'name', 
+                                               query: 'o.name for o in $ctrl.config.data track by o.identifier' }"
+                                     link="{ type: 'library', parameters: {'id': editCtrl.template.library.identifier} }"></numa-editable-field>
+                
+                <!-- Liste de fichiers -->
+                <div class="row vertical-align" ng-switch="!!editCtrl.template.originalFilename">
+                    <div class="col-xs-4 text-right">
+                        <label translate>Fichier</label>
+                    </div>
+                    <div class="col-xs-8" ng-switch-when="true" ng-switch="editCtrl.template.fileSize > 1048576">
+                        {{ ::editCtrl.template.originalFilename }}
+                        <span ng-switch-when="true">({{ ::editCtrl.template.fileSize / 1048576 | number:2 }} MB)</span>
+                        <span ng-switch-default>({{ ::editCtrl.template.fileSize / 1024 | number:2 }} kB)</span>
+                        <a class="btn btn-syr-cataloging-action btn-xs" 
+                            ng-if="editCtrl.template.originalFilename"
+                            ng-href="/api/rest/template/{{::editCtrl.template.identifier}}?download=true"
+                            uib-tooltip="{{ ::'Télécharger le template' | translate }}" download>
+                            <span class="fa fa-download"></span>
+                        </a>
+                    </div>
+                    <div class="col-xs-8" ng-switch-default translate>Aucun fichier</div>
+                </div>
+                <!-- Téléversement -->
+                <div class="row vertical-align" ng-if="templateForm.$visible">
+                    <div class="col-xs-4 text-right">
+                        <label for="importFiles0" translate>Téléverser un template</label><br/>
+                    </div>
+                    <div class="col-xs-12 col-lg-4">
+                        <input type="file" id="importFiles0" onchange="angular.element(this).controller().setFiles(this)"/>
+                    </div>
+                </div>
+                <div class="row vertical-align" ng-if="templateForm.$visible && editCtrl._engine">
+                    <div class="col-xs-4 text-right" translate><em>Format attendu</em></div>
+                    <div class="col-xs-12 col-lg-4">
+                        <span ng-class="editCtrl._engine.class"></span> <em>{{ editCtrl._engine.format }}</em>
+                    </div>
+                </div>
+
+                <!-- Contrôles -->
+                <div class="text-center column-bottom column-8 margin-t10" ng-show="templateForm.$visible">
+                    <div class="column-bottom-button">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-sem4" ng-disabled="templateForm.$waiting" ng-click="templateForm.$cancel()">
+                                <span class="glyphicon-regular unshare"></span> {{::'Annuler' | translate}}
+                            </button>
+                            <button type="submit" class="btn btn-sem2">
+                                <span class="glyphicon-regular floppy-save"></span> {{::'Enregistrer' | translate}}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

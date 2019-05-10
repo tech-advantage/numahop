@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Changeset du module Import/Export -->
+    <changeSet id="pgcn-csv-mapping-import-report" author="progilone">
+
+        <addColumn tableName="exc_import_report">
+            <column name="csv_mapping" type="varchar(191)"></column>
+        </addColumn>
+
+        <addForeignKeyConstraint baseTableName="exc_import_report" baseColumnNames="csv_mapping" constraintName="fk_exc_import_report_csv_mapping"
+                                 referencedTableName="exc_csv_mapping" referencedColumnNames="identifier"/>
+
+    </changeSet>
+</databaseChangeLog>

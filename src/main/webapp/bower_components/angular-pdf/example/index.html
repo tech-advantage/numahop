@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>AngularJS PDFJS Directive</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body ng-app="App">
+
+<div class="wrapper" ng-controller="DocCtrl">
+  <h1>{{pdfName}}</h1>
+  <ng-pdf template-url="partials/viewer.html" canvasid="pdf" scale="1.5"></ng-pdf>
+</div>
+
+<a href="https://github.com/sayanee/angularjs-pdf"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+
+<script src="js/lib/pdf.js"></script>
+
+<script src="js/lib/angular.min.js"></script>
+
+<script>
+  var app = angular.module('App', ['pdf']);
+</script>
+<script src="js/controllers/docCtrl.js"></script>
+<script src="js/directives/angular-pdf.js"></script>
+
+</body>
+</html>

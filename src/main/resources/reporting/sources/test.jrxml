@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
+<!-- 2016-09-21T11:04:50 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="budget" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1433b654-8eef-4c55-b81c-36736edab99e">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="PGCN - Test"/>
+	<style name="Valeur" hTextAlign="Left" vTextAlign="Middle" rotation="None" fontName="SansSerif" fontSize="10">
+		<box topPadding="2" leftPadding="5" bottomPadding="2" rightPadding="5"/>
+	</style>
+	<style name="Champ" hTextAlign="Right" vTextAlign="Middle" rotation="None" fontName="SansSerif" fontSize="10" isBold="true">
+		<box topPadding="2" leftPadding="5" bottomPadding="2" rightPadding="5"/>
+	</style>
+	<style name="Warning" forecolor="#FF0000" hTextAlign="Left" vTextAlign="Middle" rotation="None" fontName="SansSerif" fontSize="12" isBold="true">
+		<box topPadding="2" leftPadding="5" bottomPadding="2" rightPadding="5"/>
+	</style>
+	<parameter name="P_IMAGE_PATH" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["images"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="P_REPORT_PATH" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["."]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="label" class="java.lang.String">
+		<fieldDescription><![CDATA[label]]></fieldDescription>
+	</field>
+	<detail>
+		<band height="280">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<textField isBlankWhenNull="true">
+				<reportElement style="Valeur" x="180" y="0" width="375" height="30" uuid="1148eeee-c379-4dc3-874e-543e1675baab">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{label}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="35" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+			<textField>
+				<reportElement x="0" y="10" width="278" height="25" uuid="f65933ec-ca2e-488b-8d26-24a22e81a6b0">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="278" y="10" width="277" height="25" uuid="b0b31426-a93b-469d-8428-0c3b600e01bf">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Left">
+					<font fontName="SansSerif"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" / " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

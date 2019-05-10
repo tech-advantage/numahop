@@ -1,0 +1,191 @@
+<div class="row layout-columns">
+    <div class="col-sm-12 col-layout-columns">
+        <div class="panel panel-column-1 panel-column-end">
+            <div class="panel-heading">
+                <h5 translate>Administration</h5>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-xs-12 col-lg-6">
+                        <div class="administrationBlock" sem-roles-allowed="DOC_UNIT_HAB5,CHECK_HAB0,TPL_HAB0">
+                            <div class="administrationBlockTitle">
+                                <span translate>Configuration</span>
+                            </div>
+                            <div class="administrationBlockContent">
+                                <div class="administrationBlockContentTitle" sem-roles-allowed="COND_REPORT_HAB5">
+                                    <a href="#/administration/appconfiguration/condreportdesc" translate>Constats d'état</a>
+                                </div>
+                                <div class="administrationBlockContentDesc" sem-roles-allowed="COND_REPORT_HAB5">
+                                    <span translate>Gestion des propriétés et des listes de valeurs utilisées dans les constats d'état</span>
+                                </div>
+                                <div class="administrationBlockContentTitle" sem-roles-allowed="IMG_FORMAT_HAB0">
+                                    <a href="#/administration/appconfiguration/viewsformat" translate>Format des vues</a>
+                                </div>
+                                <div class="administrationBlockContentDesc" sem-roles-allowed="IMG_FORMAT_HAB0">
+                                    <span translate>Réglages des formats d'images</span>
+                                </div>
+                                <div class="administrationBlockContentTitle" sem-roles-allowed="CHECK_HAB0">
+                                    <a href="#/checkconfiguration/checkconfiguration" translate>Contrôles</a>
+                                </div>
+                                <div class="administrationBlockContentDesc" sem-roles-allowed="CHECK_HAB0">
+                                    <span translate>Réglages des contrôles </span>
+                                </div>
+                                <div class="administrationBlockContentTitle" sem-roles-allowed="OCR_LANG_HAB0">
+                                    <a href="#/ocrlangconfiguration/ocrlangconfiguration" translate>Langages OCR</a>
+                                </div>
+                                <div class="administrationBlockContentDesc" sem-roles-allowed="OCR_LANG_HAB0">
+                                    <span translate>Choix des langages pour l'OCRisation</span>
+                                </div>
+                                <div class="administrationBlockContentTitle" sem-roles-allowed="TPL_HAB0">
+                                    <a href="#/administration/appconfiguration/template" translate>Templates</a>
+                                </div>
+                                <div class="administrationBlockContentDesc" sem-roles-allowed="TPL_HAB0">
+                                    <span translate>Configuration des modèles utilisés dans la génération de documents</span>
+                                </div>
+                                <div class="administrationBlockContentTitle" sem-roles-allowed="DOC_UNIT_HAB5">
+                                    <a href="#/administration/appconfiguration/docpropertytype" translate>Types de propriété personnalisés</a>
+                                </div>
+                                <div class="administrationBlockContentDesc" sem-roles-allowed="DOC_UNIT_HAB5">
+                                    <span translate>Paramétrage des champs personnalisés des unités documentaires</span>
+                                </div>
+                                <div class="administrationBlockContentTitle" sem-roles-allowed="DEL_HAB4">
+                                    <a href="#/administration/appconfiguration/deliveryconf" translate>Paramétrage des bordereaux</a>
+                                </div>
+                                <div class="administrationBlockContentDesc" sem-roles-allowed="DEL_HAB4">
+                                    <span translate>Paramétrage des champs des bordereaux</span>
+                                </div>
+                                <div class="administrationBlockContentTitle" sem-roles-allowed="FILES_GEST_HAB0">
+                                    <a href="#/filesgestion/config" translate>Gestion des fichiers après archivage</a>
+                                </div>
+                                <div class="administrationBlockContentDesc" sem-roles-allowed="FILES_GEST_HAB0">
+                                    <span translate>Paramétrage des actions à effectuer sur les fichiers après archivage</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="administrationBlock" sem-roles-allowed="WORKFLOW_HAB4">
+                            <div class="administrationBlockTitle">
+                                <span translate>Workflow</span>
+                            </div>
+                            <div class="administrationBlockContent">
+                                <div class="administrationBlockContentTitle">
+                                    <a href="#/workflow/group" translate>Gestion des groupes</a>
+                                </div>
+                                <div class="administrationBlockContentDesc">
+                                    <span translate>Assignation des utilisateurs à un groupe de réalisation d'une tâche de workflow</span>
+                                </div>
+                                <div class="administrationBlockContentTitle">
+                                    <a href="#/workflow/model" translate>Modèles de Workflow</a>
+                                </div>
+                                <div class="administrationBlockContentDesc">
+                                    <span translate>Configuration des modèles de workflow</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="administrationBlock"  sem-roles-allowed="SUPER_ADMIN">
+                            <div class="administrationBlockTitle">
+                                <span translate>Monitoring</span>
+                            </div>
+                            <div class="administrationBlockContent">
+                                <div class="administrationBlockContentTitle">
+                                    <a href="#/admin/health" translate>Contrôle des services de l'application</a>
+                                </div>
+                                <div class="administrationBlockContentDesc">
+                                    <span translate>Vérification du fonctionnement des services nécessaires à l'application.</span>
+                                </div>
+                                <div class="administrationBlockContentTitle">
+                                    <a href="#/admin/metrics" translate>Métriques de l'application</a>
+                                </div>
+                                <div class="administrationBlockContentDesc">
+                                    <span translate>Accès à différentes métriques de l'application</span>
+                                </div>
+                                <div class="administrationBlockContentTitle">
+                                    <a href="#/admin/logs" translate>Traces applicatives</a>
+                                </div>
+                                <div class="administrationBlockContentDesc">
+                                    <span translate>Configuration à chaud du niveau de traces applicatives</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-lg-6">
+                        <div class="administrationBlock" sem-roles-allowed="EXC_HAB0,FTP_HAB0,CONF_INTERNET_ARCHIVE_HAB0,MAIL_HAB0,SFTP_HAB0,CONF_DIFFUSION_OMEKA_HAB0">
+                            <div class="administrationBlockTitle">
+                                <span translate>Services externes</span>
+                            </div>
+                            <div class="administrationBlockContent">
+                                <div class="administrationBlockContentTitle" sem-roles-allowed="SFTP_HAB0">
+                                    <a href="#/platformconfiguration/sftpconfiguration" translate>Configurations CINES</a>
+                                </div>
+                                <div class="administrationBlockContentDesc" sem-roles-allowed="SFTP_HAB0">
+                                    <span translate>Serveurs de dépôt des fichiers envoyés au CINES</span>
+                                </div>
+                                <div class="administrationBlockContentTitle" sem-roles-allowed="MAIL_HAB0">
+                                    <a href="#/administration/appconfiguration/mailbox" translate>Comptes courriels</a>
+                                </div>
+                                <div class="administrationBlockContentDesc" sem-roles-allowed="MAIL_HAB0">
+                                    <span translate>Comptes courriels servant à suivre l'avancement de l'archivage CINES</span>
+                                </div>
+                                <div class="administrationBlockContentTitle" sem-roles-allowed="FTP_HAB0">
+                                    <a href="#/platformconfiguration/ftpconfiguration" translate>Configurations FTP</a>
+                                </div>
+                                <div class="administrationBlockContentDesc" sem-roles-allowed="FTP_HAB0">
+                                    <div translate>Configuration des dépots FTP de livraison</div>
+                                </div>
+                                <div class="administrationBlockContentTitle" sem-roles-allowed="FTP_HAB0">
+                                    <a href="#/platformconfiguration/exportftpconfiguration" translate>Configurations exports FTP</a>
+                                </div>
+                                <div class="administrationBlockContentDesc" sem-roles-allowed="FTP_HAB0">
+                                    <div translate>Configuration des serveurs FTP pour l'exportation</div>
+                                </div>
+                                <div class="administrationBlockContentTitle" sem-roles-allowed="CONF_INTERNET_ARCHIVE_HAB0">
+                                    <a href="#/platformconfiguration/iaconfiguration" translate>Configurations Internet Archive</a>
+                                </div>
+                                <div class="administrationBlockContentDesc" sem-roles-allowed="CONF_INTERNET_ARCHIVE_HAB0">
+                                    <div translate>Configuration pour Internet Archive</div>
+                                    <div translate>Informations d'authentification pour les serveurs de dépot de fichiers</div>
+                                </div>
+                                <div class="administrationBlockContentTitle" sem-roles-allowed="CONF_DIFFUSION_OMEKA_HAB0">
+                                    <a href="#/platformconfiguration/omekaconfiguration" translate>Configurations OMEKA</a>
+                                </div>
+                                <div class="administrationBlockContentDesc" sem-roles-allowed="CONF_DIFFUSION_OMEKA_HAB0">
+                                    <div translate>Informations de configuration pour la diffusion OMEKA</div>
+                                </div>
+                                <div class="administrationBlockContentTitle" sem-roles-allowed="EXC_HAB0">
+                                    <a href="#/administration/appconfiguration/z3950Server" translate>Serveurs Z39.50</a>
+                                </div>
+                                <div class="administrationBlockContentDesc" sem-roles-allowed="EXC_HAB0">
+                                    <span translate>Gestion des serveurs Z39.50</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="administrationBlock" sem-roles-allowed="MAP_HAB0">
+                            <div class="administrationBlockTitle">
+                                <span translate>Mapping</span>
+                            </div>
+                            <div class="administrationBlockContent">
+                                <div class="administrationBlockContentTitle">
+                                    <a href="#/administration/appconfiguration/mapping/marc" translate>Mapping des notices MARC</a>
+                                </div>
+                                <div class="administrationBlockContentDesc">
+                                    <span translate>Configuration des correspondances entre les unités documentaires et les notices MARC</span>
+                                </div>
+                                <div class="administrationBlockContentTitle">
+                                    <a href="#/administration/appconfiguration/mapping/ead" translate>Mapping des notices EAD</a>
+                                </div>
+                                <div class="administrationBlockContentDesc">
+                                    <span translate>Configuration des correspondances entre les unités documentaires et les notices EAD</span>
+                                </div>
+                                <div class="administrationBlockContentTitle">
+                                    <a href="#/administration/appconfiguration/csvmapping" translate>Mapping des notices CSV</a>
+                                </div>
+                                <div class="administrationBlockContentDesc">
+                                    <span translate>Configuration des correspondances entre les unités documentaires et les notices CSV</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

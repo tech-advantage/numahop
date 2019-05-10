@@ -1,0 +1,2 @@
+identifier;label;type;active;version;configurable;order
+automatic_with_master;Présence de fichiers masters;WITH_MASTER;true;0;true;1

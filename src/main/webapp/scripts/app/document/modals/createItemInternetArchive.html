@@ -1,0 +1,184 @@
+<div class="modal-header">
+    <h3 class="modal-title" translate>Export Internet Archive</h3>
+</div>
+<div class="modal-body">
+    <!-- Item  -->
+    <div>
+        <div class="row">
+	        <div class="col-sm-8 text-right">
+	          <label>Nombre total de pages :</label>
+	        </div>
+	        <div class="col-sm-4">
+	          <span>{{mainCtrl.item.total}}</span>
+	        </div>
+	    </div>
+    </div>
+    <div>
+	    <sem-editable-form sem-name="mainCtrl.itemForm" sem-mode-edition="true"
+	                       sem-server-error="{{ (mainCtrl.item.errors | filter:{field: '_object'}:true) }}"
+	                       ng-readonly="!isAuthorized([userRoles.DOC_UNIT_HAB1, userRoles.EXPORT_INTERNET_ARCHIVE_HAB0])"
+	                       sem-on-key-pressed="mainCtrl.preventDefault(event, 'EDIT')">
+	                <sem-editable-field sem-label="{{::'Identifiant' | translate}}" sem-type="text" sem-model="mainCtrl.item.archiveIdentifier"
+	                                    onbeforesave="validation.required" onaftersave="onaftersave"
+	                                    sem-server-error="{{ (mainCtrl.item.errors | filter:{field: 'archiveIdentifier'}:true) }}"></sem-editable-field>
+                    <sem-editable-field sem-label="{{::'Titre' | translate}}" sem-type="text" sem-model="mainCtrl.item.title"
+                                        onbeforesave="validation.required" onaftersave="onaftersave"
+                                        sem-server-error="{{ (mainCtrl.item.errors | filter:{field: 'title'}:true) }}"></sem-editable-field>
+                    <sem-editable-field sem-label="{{::'Contributeur' | translate}}" sem-type="text" sem-model="mainCtrl.item.contributor"
+                                        onbeforesave="validation.required" onaftersave="onaftersave"
+                                        sem-server-error="{{ (mainCtrl.item.errors | filter:{field: 'contributor'}:true) }}"></sem-editable-field>
+                    <sem-editable-field sem-label="{{::'Coverage' | translate}}" sem-type="text" sem-model="mainCtrl.item.coverage"
+                                        onbeforesave="validation.required" onaftersave="onaftersave"
+                                        sem-server-error="{{ (mainCtrl.item.errors | filter:{field: 'coverage'}:true) }}"></sem-editable-field>
+                    <sem-editable-field sem-label="{{::'Créateur' | translate}}" sem-type="text" sem-model="mainCtrl.item.creator"
+                                        onbeforesave="validation.required" onaftersave="onaftersave"
+                                        sem-server-error="{{ (mainCtrl.item.errors | filter:{field: 'creator'}:true) }}"></sem-editable-field>
+                    <sem-editable-field sem-label="{{::'Date' | translate}}" sem-type="text"
+                                        sem-model="mainCtrl.item.date" onaftersave="onaftersave"
+                                        sem-server-error="{{ (docUnit.errors | filter:{field: 'date'}:true) }}"></sem-editable-field>
+                    <sem-editable-field sem-label="{{::'Crédits' | translate}}" sem-type="text" sem-model="mainCtrl.item.credits"
+                                        onbeforesave="validation.required" onaftersave="onaftersave"
+                                        sem-server-error="{{ (mainCtrl.item.errors | filter:{field: 'credits'}:true) }}"></sem-editable-field>    
+                    <sem-editable-field sem-label="{{::'Description' | translate}}" sem-type="textarea" sem-model="mainCtrl.item.description"
+                                        onbeforesave="validation.required" onaftersave="onaftersave"
+                                        sem-server-error="{{ (mainCtrl.item.errors | filter:{field: 'description'}:true) }}"></sem-editable-field>
+                    <sem-editable-field sem-label="{{::'Langage' | translate}}" sem-type="text" sem-model="mainCtrl.item.language"
+                                        onbeforesave="validation.required" onaftersave="onaftersave"
+                                        sem-server-error="{{ (mainCtrl.item.errors | filter:{field: 'language'}:true) }}"></sem-editable-field>   
+                    <sem-editable-field sem-label="{{::'URL de la licence' | translate}}" sem-type="text" sem-model="mainCtrl.item.licenseUrl"
+                                        onbeforesave="validation.required" onaftersave="onaftersave"
+                                        sem-server-error="{{ (mainCtrl.item.errors | filter:{field: 'licenseUrl'}:true) }}"></sem-editable-field>
+                    <sem-editable-field sem-label="{{::'Notes' | translate}}" sem-type="text" sem-model="mainCtrl.item.notes"
+                                        onbeforesave="validation.required" onaftersave="onaftersave"
+                                        sem-server-error="{{ (mainCtrl.item.errors | filter:{field: 'notes'}:true) }}"></sem-editable-field>
+                    <sem-editable-field sem-label="{{::'Editeur' | translate}}" sem-type="text" sem-model="mainCtrl.item.publisher"
+                                        onbeforesave="validation.required" onaftersave="onaftersave"
+                                        sem-server-error="{{ (mainCtrl.item.errors | filter:{field: 'publisher'}:true) }}"></sem-editable-field>
+                    
+                    <sem-editable-field sem-label="{{::'Droits' | translate}}" sem-type="text" sem-model="mainCtrl.item.rights"
+                                        onbeforesave="validation.required" onaftersave="onaftersave"
+                                        sem-server-error="{{ (mainCtrl.item.errors | filter:{field: 'rights'}:true) }}"></sem-editable-field>
+                    
+                    <sem-editable-field sem-label="{{::'Source' | translate}}" sem-type="text" sem-model="mainCtrl.item.source"
+                                        onbeforesave="validation.required" onaftersave="onaftersave"
+                                        sem-server-error="{{ (mainCtrl.item.errors | filter:{field: 'source'}:true) }}"></sem-editable-field>                    
+                                        
+                    <sem-editable-field sem-label="{{::'Type' | translate}}" sem-type="text" sem-model="mainCtrl.item.type"
+                                        onbeforesave="validation.required" onaftersave="onaftersave"
+                                        sem-server-error="{{ (mainCtrl.item.errors | filter:{field: 'type'}:true) }}"></sem-editable-field>
+	                
+	                <sem-editable-field sem-label="{{::'Type de média' | translate}}" sem-type="select" sem-model="mainCtrl.item._mediatype" 
+	                                    sem-select-options="mainCtrl.options.mediatypes" e-ng-options="o as o.name for o  in options track by o.id"
+	                                    onbeforesave="validation.required" onaftersave="onaftersave"></sem-editable-field>
+	                                    
+	                <sem-editable-field sem-label="{{::'Type de média (personnalisé)' | translate}}" sem-type="text" sem-model="mainCtrl.item.customMediatype"
+                                        onbeforesave="validation.required" onaftersave="onaftersave" 
+                                        sem-tooltip="{{::'Remplace le type de média si non vide' | translate}}"
+                                        sem-server-error="{{ (mainCtrl.item.errors | filter:{field: 'customMediatype'}:true) }}"></sem-editable-field>
+                                        
+	                <br/>
+	                <!-- Sujets répétables -->
+	                <div>
+	                    <div class="row">
+	                         <div class="col-sm-4 text-right">
+                               <label>{{::'Ajouter un sujet :' | translate}}</label>
+                             </div>
+	                         <div class="col-sm-4">
+	                           <input class="form-control" type="text" ng-model="mainCtrl.item.newSubject">
+	                         </div>
+	                         <div class="col-sm-4">
+	                           <span class="btn-group-xs pull-left">
+                                      <button type="button" class="btn btn-sem1" uib-tooltip="{{::'Ajouter un sujet' | translate}}"
+                                              ng-click="mainCtrl.addSubject(mainCtrl.item.newSubject)">
+                                          <span class="glyphicon-halflings glyphicon-plus"></span>
+                                      </button>
+                                 </span>
+	                         </div>
+	                     </div>
+	                     <div ng-repeat="subject in mainCtrl.item.subjects track by $index">
+	                       <sem-editable-field sem-label="{{::'Sujet' | translate}}" sem-type="text" sem-model="subject" 
+	                                   sem-removable="true" ondelete="mainCtrl.removeSubject(subject)" showdelete="true"
+                                        onbeforesave="validation.required" onaftersave="onaftersave"></sem-editable-field>
+	                     </div>
+	                </div>
+	                
+	                <!-- Collections répétables -->
+                    <div>
+                        <div class="row">
+                             <div class="col-sm-4 text-right">
+                               <label>{{::'Ajouter une collection :' | translate}}</label>
+                             </div>
+                             <div class="col-sm-4">
+                               <input class="form-control" type="text" ng-model="mainCtrl.item.newCollection">
+                             </div>
+                             <div class="col-sm-4">
+                               <span class="btn-group-xs pull-left">
+                                      <button type="button" class="btn btn-sem1" uib-tooltip="{{::'Ajouter une collection' | translate}}"
+                                              ng-click="mainCtrl.addCollection()">
+                                          <span class="glyphicon-halflings glyphicon-plus"></span>
+                                      </button>
+                                 </span>
+                             </div>
+                         </div>
+                         <div ng-repeat="collection in mainCtrl.item.collections track by $index">
+                           <sem-editable-field sem-label="{{::'Collection' | translate}}" sem-type="text" sem-model="collection" 
+                                       sem-removable="true" ondelete="mainCtrl.removeCollection(collection)" showdelete="true"
+                                        onbeforesave="validation.required" onaftersave="onaftersave"></sem-editable-field>
+                         </div>
+                    </div>
+                    
+                    <!-- Headers personnalisé -->
+                    <div>
+                        <div class="row">
+                             <div class="col-sm-4 text-right">
+                               <label>{{::'Ajouter un champ personnalisé :' | translate}}</label>
+                             </div>
+                             <div class="col-sm-3">
+                               <input class="form-control" type="text" ng-model="mainCtrl.item.newHeaderType">
+                             </div>
+                             <div class="col-sm-3">
+                               <input class="form-control" type="text" ng-model="mainCtrl.item.newHeaderValue">
+                             </div>
+                             <div class="col-sm-2">
+                               <span class="btn-group-xs pull-left">
+                                      <button type="button" class="btn btn-sem1" uib-tooltip="{{::'Ajouter un champ personnalisé' | translate}}"
+                                              ng-click="mainCtrl.addHeader()">
+                                          <span class="glyphicon-halflings glyphicon-plus"></span>
+                                      </button>
+                                 </span>
+                             </div>
+                         </div>
+                         <div ng-repeat="header in mainCtrl.item.customHeaders track by $index">
+                            <div class="row">
+	                            <div class="col-sm-4 text-right">
+	                               <input class="form-control" type="text" ng-model="header.type">
+	                             </div>
+	                             <div class="col-sm-4">
+	                               <input class="form-control" type="text" ng-model="header.value">
+	                             </div>
+	                             <div class="col-sm-4">
+	                               <span class="btn-group-xs pull-left">
+	                                      <button type="button" class="btn btn-sem1" uib-tooltip="{{::'Supprimer un champ personnalisé' | translate}}"
+	                                              ng-click="mainCtrl.removeHeader(header)">
+	                                          <span class="glyphicon-halflings glyphicon-trash"></span>
+	                                      </button>
+	                                 </span>
+	                             </div>
+	                         </div>
+	                     </div>
+                    </div>
+	    </sem-editable-form>
+	</div>
+</div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-sem2" ng-click="mainCtrl.close()" translate>Annuler et fermer la fenêtre</button>
+    <button type="button" class="btn btn-sem2" ng-click="mainCtrl.saveIA()" sem-roles-allowed="EXPORT_INTERNET_ARCHIVE_HAB0" 
+    ng-show="mainCtrl.item.total > 0">
+        <span class="glyphicon-regular floppy-save"></span> {{::'Enregistrer les données du formulaire' | translate}}
+    </button>
+    <button type="button" class="btn btn-sem2" ng-click="mainCtrl.exportIA()" sem-roles-allowed="EXPORT_INTERNET_ARCHIVE_HAB0" 
+    ng-show="mainCtrl.item.total > 0">
+        <span class="glyphicon-regular floppy-save"></span> {{::'Exporter vers Internet Archive' | translate}}
+    </button>
+</div>

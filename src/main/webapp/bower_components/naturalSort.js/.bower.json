@@ -1,0 +1,40 @@
+{
+  "name": "naturalSort.js",
+  "main": "dist/naturalSort.js",
+  "version": "0.7.0",
+  "homepage": "https://github.com/jarinudom/naturalSort.js",
+  "authors": [
+    "Jarin Udom <jarin@robotmodehq.com>"
+  ],
+  "description": "Natural order string sorting function for JavaScript",
+  "keywords": [
+    "sorting",
+    "util",
+    "functional",
+    "server",
+    "client",
+    "browser"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "jquery": "~2.1.1",
+    "mocha": "~1.20.1",
+    "expect": "~0.3.1"
+  },
+  "_release": "0.7.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.7.0",
+    "commit": "45f250fc60017c215101f3fc1d87527cb4fc5dba"
+  },
+  "_source": "https://github.com/jarinudom/naturalSort.js.git",
+  "_target": "0.7.0",
+  "_originalSource": "naturalSort.js"
+}

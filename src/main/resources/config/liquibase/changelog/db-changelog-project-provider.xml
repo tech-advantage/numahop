@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="pgcn-project-provider" author="progilone">
+
+        <addColumn tableName="proj_project">
+            <column name="provider" type="varchar(191)"></column>
+        </addColumn>
+
+        <addForeignKeyConstraint constraintName="fk_project_provider"
+                                 baseTableName="proj_project" baseColumnNames="provider"
+                                 referencedTableName="user_user" referencedColumnNames="identifier"/>
+    </changeSet>
+
+</databaseChangeLog>

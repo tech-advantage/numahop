@@ -1,0 +1,45 @@
+.alerts {
+    position: fixed;
+    right: 0;
+    bottom: 10px;
+    z-index: 30000;
+}
+
+.alert {
+    li {
+        list-style-type: none;
+    }
+}
+.alert-success {
+	background: rgba(128, 204, 40, 0.7);
+	color: $sid-text;
+}
+
+.alert-info {
+    color: $sid-text;
+}
+
+.alert-failure {
+    background: rgba(224, 20, 20, 0.7);
+    color: $sid-text-light;
+}
+
+.alert-warning {
+    background: rgba(204, 154, 20, 0.7);
+    color: $sid-text;
+}
+
+.alert-danger {
+    color: $sid-text;
+    span.glyphicon-exclamation-sign {
+        color: #a94442;
+    }
+}
+
+.notif-info-point {
+    width: 35px;
+}
+
+#notificationColumn .alert {
+    max-width: 220px;
+}

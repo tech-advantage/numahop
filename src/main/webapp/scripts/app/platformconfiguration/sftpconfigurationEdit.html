@@ -1,0 +1,256 @@
+<div class="col-sm-6 col-sm-offset-6 col-layout-columns"
+	ng-controller="SFTPConfigurationEditCtrl">
+	<div class="panel panel-column-3">
+		<div class="panel-heading">
+			<div class="pull-right">
+				<button type="button" class="btn btn-sem2 btn-xs"
+					ng-click="setViewMode(viewModes.EDIT)"
+					ng-disabled="!configuration || !configuration.identifier"
+					uib-tooltip="{{::'Modifier' | translate}}"
+					ng-show="viewMode === viewModes.VIEW && loaded"
+					sem-roles-allowed="SFTP_HAB1">
+					<span class="glyphicon-regular edit"></span>
+				</button>
+				<button type="button" class="btn btn-sem2 btn-xs"
+					ng-click="delete(configuration)"
+					ng-disabled="!configuration || !configuration.identifier || !loaded"
+					uib-tooltip="{{::'Supprimer' | translate}}"
+					sem-roles-allowed="SFTP_HAB2">
+					<span class="glyphicon-halflings glyphicon-trash"></span>
+				</button>
+			</div>
+			<h5 translate>Fiche</h5>
+		</div>
+		<div class="panel-body" ng-show="loaded">
+			<div>
+				<sem-editable-form sem-name="configurationForm"
+					sem-mode-edition="{{ viewMode == viewModes.EDIT }}"
+					sem-server-error="{{ (configuration.errors | filter:{field: '_object'}:true) }}"
+					ng-readonly="!isAuthorized([userRoles.SFTP_HAB1, userRoles.SFTP_HAB2])"
+					sem-on-key-pressed="preventDefault(event)"> 
+				<sem-editable-field
+					sem-label="{{::'Libellé' | translate}}" sem-type="text" mandatory="true" 
+					sem-model="configuration.label" onbeforesave="validation.required"
+					onaftersave="onaftersave"
+					sem-server-error="{{ (configuration.errors | filter:{field: 'label'}:true) }}"></sem-editable-field>
+				<sem-editable-field
+					sem-label="{{::'Nom d\'utilisateur' | translate}}" sem-type="text"
+					sem-model="configuration.username" onaftersave="onaftersave"
+					sem-server-error="{{ (configuration.errors | filter:{field: 'username'}:true) }}"></sem-editable-field>
+				<sem-editable-field sem-label="{{::'Mot de passe' | translate}}"
+					sem-type="text" sem-model="configuration.password"
+					onaftersave="onaftersave" sem-removable="true"
+					sem-server-error="{{ (configuration.errors | filter:{field: 'password'}:true) }}">{{
+				'Contenu masqué' | translate }}</sem-editable-field> <sem-editable-field
+					sem-label="{{::'Hôte' | translate}}" sem-type="text"
+					sem-model="configuration.host" onaftersave="onaftersave"
+					sem-server-error="{{ (configuration.errors | filter:{field: 'host'}:true) }}"></sem-editable-field>
+				<sem-editable-field sem-label="{{::'Port' | translate}}"
+					sem-type="text" sem-model="configuration.port"
+					onaftersave="onaftersave"
+					sem-server-error="{{ (configuration.errors | filter:{field: 'port'}:true) }}"></sem-editable-field>
+				<sem-editable-field
+					sem-label="{{::'Répertoire de destination' | translate}}"
+					sem-type="text" sem-model="configuration.targetDir"
+					onaftersave="onaftersave"
+					sem-server-error="{{ (configuration.errors | filter:{field: 'targetDir'}:true) }}"></sem-editable-field>
+				<sem-editable-field sem-label="{{::'Active' | translate}}"
+					sem-type="semradiolist" sem-model="configuration.active"
+					sem-form="configurationForm" onbeforesave="validation.required"
+					onaftersave="onaftersave"
+					e-ng-options="key as value for (key, value) in options"
+					sem-select-options="options.boolean"></sem-editable-field> 
+				<sem-editable-field
+					sem-label="{{::'Bibliothèque' | translate}}" sem-type="select" mandatory="true"
+					sem-model="configuration.library"
+					onbeforesave="validation.required"
+					sem-select-options="options.libraries"
+					e-ng-options="o.name for o in options track by o.identifier"
+					onaftersave="onaftersave" sem-display-property="name"
+					sem-link-type="library"
+					sem-link-parameters='{"id": configuration.library.identifier}'></sem-editable-field>
+
+				<div uib-accordion>
+					<div uib-accordion-group is-open="accordions.pacs">
+						<uib-accordion-heading> <span
+							class="pull-left glyphicon-halflings"
+							ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordions.pacs]" />
+						<span>{{::' Plans de classement PAC' | translate}}</span> </uib-accordion-heading>
+
+						<div class="row vertical-align"
+							ng-if="viewMode === viewModes.EDIT && loaded">
+							<div class="col-xs-4 text-right">
+								<label for="importPpdi" translate>Charger plans du ppdi</label><br />
+							</div>
+							<div class="col-xs-5">
+								<input type="file" id="importPpdi" accept="application/xml,text/xml"
+									onchange="angular.element(this).scope().setFile(this)" />
+							</div>
+							<div class="col-xs-3">
+							     <button type="button" class="btn btn-sem2 btn-xs"
+                                    ng-click="loadPacs()"
+                                    uib-tooltip="{{::'Importer plans' | translate}}"
+                                    ng-show="files.length > 0"
+                                    sem-roles-allowed="SFTP_HAB1">
+                                    <span class="fa fa-upload"></span>
+                                </button>
+							</div>
+						</div>
+                        <div class="row vertical-align" />
+						<div class="row vertical-align"
+							ng-if="viewMode === viewModes.EDIT && loaded">
+							<div class="col-xs-4 text-right">
+							     <label for="importFiles0" translate>Ajouter un plan</label><br />
+							</div>
+							<div class="col-xs-8">
+								<button type="button" class="btn btn-sem2 btn-xs"
+									ng-click="addPac()"
+									uib-tooltip="{{::'Ajouter un plan' | translate}}"
+									ng-show="viewMode === viewModes.EDIT && loaded"
+									sem-roles-allowed="SFTP_HAB1">
+									<span class="glyphicon-regular plus"></span>
+								</button>
+							</div>
+						</div>
+
+
+
+						<div class="pull-left"></div>
+						<table class="table table-condensed table-hover">
+							<thead>
+								<tr>
+									<th class="text-center" translate>Nom</th>
+									<th class="text-center" translate>Action</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="pac in configuration.pacs">
+									<td class="text-center"><sem-editable-field
+											sem-type="text" sem-model="pac.name"
+											onaftersave="onaftersave"
+											sem-server-error="{{ (configuration.errors | filter:{field: 'pacs'}:true) }}"></sem-editable-field>
+									</td>
+									<td class="text-center">
+										<button type="button" class="btn btn-sem2 btn-xs"
+											ng-click="deletePac($index)"
+											ng-show="viewMode === viewModes.EDIT"
+											uib-tooltip="{{::'Supprimer' | translate}}"
+											sem-roles-allowed="SFTP_HAB1">
+											<span class="glyphicon-regular remove"></span>
+										</button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+
+                <div uib-accordion>
+                    <div uib-accordion-group is-open="accordions.defaultValues">
+                        <uib-accordion-heading> <span
+                            class="pull-left glyphicon-halflings"
+                            ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordions.defaultValues]" />
+                        <span>{{::' Paramètres Cines: valeurs par défaut' | translate}}</span> </uib-accordion-heading>
+
+                        <div class="pull-left"></div>
+                        <table class="table table-condensed table-hover">
+                            <thead></thead>
+                            <tbody>
+                                <tr ng-repeat="val in configuration.cinesDefaultValues.values">
+                                    <td class="text-center">
+                                        {{::semCodes['libParam.value.type.' + val.type]}}
+                                    </td>
+                                    <td class="text-center padding-l10">
+                                        <sem-editable-field
+                                            sem-type="text" sem-model="val.value"
+                                            onaftersave="onaftersave" 
+                                            sem-server-error="{{ (configuration.errors | filter:{field: 'cinesDefaultValues.values'}:true) }}"></sem-editable-field>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div uib-accordion>
+                    <div uib-accordion-group is-open="accordions.langCodes">
+                        <uib-accordion-heading> <span
+                            class="pull-left glyphicon-halflings"
+                            ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordions.langCodes]" />
+                        <span>{{::' Codes langues à transposer (commun à l\'ensemble des bibliothèques)' | translate}}</span> </uib-accordion-heading>
+
+                            <div class="row vertical-align"
+	                            ng-if="viewMode === viewModes.EDIT && loaded">
+	                            <div class="col-xs-4 text-right">
+	                                 <label for="importFiles0" translate>Ajouter un code langue</label><br />
+	                            </div>
+	                            <div class="col-xs-8">
+	                                <button type="button" class="btn btn-sem2 btn-xs"
+	                                    ng-click="addCodeLang()"
+	                                    uib-tooltip="{{::'Ajouter un code langue à transposer pour export Cines' | translate}}"
+	                                    ng-show="viewMode === viewModes.EDIT && loaded"
+	                                    sem-roles-allowed="SFTP_HAB1">
+	                                    <span class="glyphicon-regular plus"></span>
+	                                </button>
+	                            </div>
+	                        </div>
+
+                        <div class="pull-left"></div>
+                        <table class="table table-condensed table-hover">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" translate>Language DC</th>
+                                    <th class="text-center" translate>Code CINES</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="lang in cinesLangCodes">
+                                    <td class="text-center">
+                                        <sem-editable-field
+                                            sem-type="text" sem-model="lang.identifier"
+                                            onaftersave="onaftersave" 
+                                            sem-server-error="{{ (configuration.errors | filter:{field: 'cinesLangCodes'}:true) }}"></sem-editable-field>
+                                    </td>
+                                    <td class="text-center">
+                                        <sem-editable-field
+                                            sem-type="text" sem-model="lang.label"
+                                            onaftersave="onaftersave"
+                                            sem-server-error="{{ (configuration.errors | filter:{field: 'cinesLangCodes'}:true) }}"></sem-editable-field>
+                                    </td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-sem2 btn-xs"
+                                            ng-click="deleteCodeLang($index)"
+                                            ng-show="viewMode === viewModes.EDIT"
+                                            uib-tooltip="{{::'Supprimer' | translate}}"
+                                            sem-roles-allowed="SFTP_HAB1">
+                                            <span class="glyphicon-regular remove"></span>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+				</sem-editable-form>
+				<div class="text-center column-bottom column-5 margin-t10"
+					ng-if="viewMode === viewModes.EDIT">
+					<div class="column-bottom-button">
+						<!-- Création / Modification -->
+						<div class="btn-group">
+							<button type="button" class="btn btn-sem4" ng-click="cancel()">
+								<span class="glyphicon-regular unshare"></span> {{::'Annuler' |
+								translate}}
+							</button>
+							<button type="button" class="btn btn-sem2" ng-click="save()"
+								sem-roles-allowed="SFTP_HAB1">
+								<span class="glyphicon-regular floppy-save"></span>
+								{{::'Enregistrer' | translate}}
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

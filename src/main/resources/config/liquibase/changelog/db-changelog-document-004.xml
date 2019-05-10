@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Changeset du module Document -->
+    <changeSet id="pgcn-create-document-4" author="progilone">
+        <createTable tableName="doc_digital_document">
+            <column name="identifier" type="varchar(191)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+			<!-- Données -->
+			<column name="total_delivery" type="integer"/>
+			<column name="status" type="varchar(255)" />
+			<!-- Lien technique -->
+            <column name="doc_unit" type="varchar(191)" />
+			<!-- Données techniques auto -->
+            <column name="version" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="doc_unit" baseTableName="doc_digital_document"
+            constraintName="fk_doc_digital_document_doc_unit"
+            referencedColumnNames="identifier" referencedTableName="doc_unit" />
+
+        <createTable tableName="doc_physical_document">
+            <column name="identifier" type="varchar(191)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <!-- Données -->
+            <column name="total_page" type="integer"/>
+            <column name="status" type="varchar(255)" />
+            <!-- Lien technique -->
+            <column name="doc_unit" type="varchar(191)" />
+            <!-- Données techniques auto -->
+            <column name="version" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="doc_unit" baseTableName="doc_physical_document"
+            constraintName="fk_doc_physical_document_doc_unit"
+            referencedColumnNames="identifier" referencedTableName="doc_unit" />
+		
+		<createTable tableName="doc_page">
+            <column name="identifier" type="varchar(191)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+			<!-- Données -->
+            <column name="number" type="integer"/>
+			<column name="description" type="text" />
+			<column name="check_notes" type="text" />
+			<column name="status" type="varchar(255)" />
+            <!-- Lien technique -->
+            <column name="digital_document" type="varchar(191)" />
+			<!-- Données techniques auto -->
+            <column name="version" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="digital_document" baseTableName="doc_page"
+            constraintName="fk_doc_page_digital_document"
+            referencedColumnNames="identifier" referencedTableName="doc_digital_document" />
+            
+        <createTable tableName="doc_physical_document_digital">
+            <column name="physical_document" type="varchar(191)">
+                <constraints nullable="false" />
+            </column>
+            <column name="digital_document" type="varchar(191)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <addPrimaryKey columnNames="physical_document, digital_document"
+            tableName="doc_physical_document_digital" />
+        <addForeignKeyConstraint baseColumnNames="physical_document"
+            baseTableName="doc_physical_document_digital" constraintName="fk_doc_physical_document_digital_digital"
+            referencedColumnNames="identifier" referencedTableName="doc_physical_document" />
+        <addForeignKeyConstraint baseColumnNames="digital_document"
+            baseTableName="doc_physical_document_digital" constraintName="fk_doc_physical_document_digital_physical"
+            referencedColumnNames="identifier" referencedTableName="doc_digital_document" />
+    </changeSet>
+</databaseChangeLog>

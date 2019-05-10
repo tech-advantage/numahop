@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Changeset du module Document -->
+    <changeSet id="pgcn-create-storage" author="progilone">
+        <createTable tableName="sto_stored_file_format">
+            <column name="identifier" type="varchar(191)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <!-- Données -->
+            <column name="label" type="varchar(255)" />
+            <column name="density_unit" type="varchar(255)"/>
+            <column name="height" type="BIGINT" />
+            <column name="width" type="BIGINT" />
+            <column name="density" type="BIGINT" />
+            <column name="active" type="boolean" />
+            <column name="removable" type="boolean" />
+            <!-- Lien technique -->
+            <!-- Données techniques auto -->
+            <column name="version" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        
+        <createTable tableName="sto_stored_file">
+            <column name="identifier" type="varchar(191)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+			<!-- Données -->
+			<column name="filename" type="varchar(255)" />
+            <column name="length" type="BIGINT"/>
+            <column name="page_digest" type="varchar(255)" />
+            <column name="mimetype" type="varchar(255)" />
+            <column name="type" type="varchar(255)" />
+			<!-- Lien technique -->
+            <column name="page" type="varchar(191)" />
+            <column name="format" type="varchar(191)" />
+			<!-- Données techniques auto -->
+            <column name="version" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="page" baseTableName="sto_stored_file"
+            constraintName="fk_sto_stored_file_page"
+            referencedColumnNames="identifier" referencedTableName="doc_page" />
+        <addForeignKeyConstraint baseColumnNames="format" baseTableName="sto_stored_file"
+            constraintName="fk_sto_stored_file_format"
+            referencedColumnNames="identifier" referencedTableName="sto_stored_file_format" />
+    </changeSet>
+</databaseChangeLog>

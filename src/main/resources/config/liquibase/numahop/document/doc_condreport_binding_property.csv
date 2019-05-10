@@ -1,0 +1,13 @@
+identifier,label,allow_comment,version
+ee179ec5-b09d-4202-8650-c31ec3ca14bc,Manques,false,0
+5ca1fa09-dcc6-42af-86e5-70644b61fc75,Lacunes,true,0
+4c585547-81d9-44f0-bc1d-e97b5ab5c3e8,Éléments mobiles,true,0
+02595554-4e3f-4089-9792-191d0f71d99b,Éléments détachés,true,0
+404a800a-a6c7-4814-9d10-e57e2912d994,Mors fendus,false,0
+9c574554-b342-4d60-b48f-8a554b010016,"Griffures, éraflures",false,0
+75371a44-188a-4ae1-aae8-6de2f43aec96,Déformations,false,0
+585c8c55-4609-4c05-b215-ff8281a14693,Charnières,false,0
+d4857855-1a34-4087-8288-101ad4337c11,Titrage des tranches,false,0
+3fb78836-a443-4210-a78a-c80b71c81f7c,Corps d’ouvrage,false,0
+201b847b-8061-4522-8366-14e94e7ceddd,Traces de réparations / restauration,true,0
+b39952c3-db2b-4737-85ca-3064222212b6,État général,false,0

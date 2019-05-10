@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+
+    <changeSet id="pgcn-document-checks" author="progilone">
+        <createTable tableName="doc_global_check">
+        <column name="identifier" type="varchar(191)">
+            <constraints primaryKey="true" nullable="false" />
+        </column>
+        <!-- Données -->
+        <column name="err_label" type="varchar(255)" />
+        <column name="err_type" type="varchar(255)" />
+        <column name="digital_document" type="varchar(191)"/>
+        <!-- Données techniques auto -->
+        <column name="version" type="BIGINT">
+            <constraints nullable="false" />
+        </column>
+        <column name="created_by" type="varchar(191)" defaultValue="system">
+            <constraints nullable="false"/>
+        </column>
+        <column name="last_modified_by" type="varchar(191)" defaultValue="system">
+            <constraints nullable="false"/>
+        </column>
+        <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+            <constraints nullable="false"/>
+        </column>
+        <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+            <constraints nullable="false"/>
+        </column>
+    </createTable>
+
+        <addForeignKeyConstraint baseTableName="doc_global_check" baseColumnNames="digital_document"
+                                 referencedTableName="doc_digital_document" referencedColumnNames="identifier"
+                                 constraintName="fk_doc_check_digital_document"/>
+    </changeSet>
+</databaseChangeLog>

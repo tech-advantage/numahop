@@ -1,0 +1,35 @@
+<div class="modal-header">
+    <h3 class="modal-title">{{::mainCtrl.title}}</h3>
+</div>
+<div class="modal-body">
+    <div class="row">
+        <h4 class="col-xs-12" translate>Configuration de l'étape</h4>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <sem-field sem-type="select" sem-label-class="col-xs-5" sem-field-class="col-xs-7"
+                       ng-show="mainCtrl.state.type != 'TO_WAIT'"
+                       sem-label="{{::'Groupe responsable' | translate}}" sem-model="mainCtrl.state.group"
+                       sem-select-options="option.name for option in optionData track by option.identifier"
+                       sem-option-data="mainCtrl.config.groups">
+            </sem-field>
+        </div>
+        <div class="col-xs-12">
+            <sem-field sem-type="select" sem-label-class="col-xs-5" sem-field-class="col-xs-7"
+                       sem-label="{{::'Type d\'étape' | translate}}" sem-model="mainCtrl.state.type"
+                       ng-readonly="mainCtrl.config.types.length == 1"
+                       sem-select-options="option.code as option.label for option in optionData"
+                       sem-option-data="mainCtrl.config.types">
+            </sem-field>
+        </div>
+        <div class="col-xs-12">
+            <sem-field sem-type="text" sem-label-class="col-xs-5" sem-field-class="col-xs-7" ng-readonly="true"
+                       sem-label="{{::'Durée limite d\'éxecution' | translate}}" sem-model="mainCtrl.state.duration">
+            </sem-field>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-sem4" ng-click="mainCtrl.cancel()" translate>Annuler</button>
+    <button type="button" class="btn btn-sem2" ng-click="mainCtrl.ok(mainCtrl.state)" translate>Ok</button>
+</div>

@@ -1,0 +1,73 @@
+<div class="row layout-columns">
+    <!-- Filtres -->
+    <div ng-include="'scripts/components/templates/common/filters.html'"></div>    
+    <div class="col-sm-4 col-layout-columns" ng-keydown="navigate($event)" tabindex="0">
+        <div class="panel panel-column-2 panel-column-first">
+            <div class="panel-heading">
+                <div class="pull-right">
+                    <button type="button" class="btn btn-sem2 btn-xs" ng-click="reinitFilters(true)"
+                            uib-tooltip="{{::'Réinitialiser les filtres de la recherche' | translate}}">
+                        <span class="glyphicon-halflings glyphicon-refresh"></span>
+                    </button>
+                    <button type="button" class="btn btn-sem2 btn-xs" ng-click="create()" 
+                            uib-tooltip="{{::'Créer' | translate}}"
+                            sem-roles-allowed="DOC_UNIT_HAB1">
+                        <span class="glyphicon-halflings glyphicon-plus"></span>
+                    </button>
+                </div>
+                <div class="input-group padding-r20">
+                    <input class="form-control sem-input-xs" type="text" id="nameSearchInput"
+                           ng-model="filterWith" ng-keypress="applyFilter(filterWith, $event)"/>
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-sem2 btn-xs" ng-click="doFilter()" uib-tooltip="{{::'Rechercher' | translate}}">
+                            <span class="glyphicon syrtis-icon-loupe"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+            <div class="panel-body" when-scrolled="nextPage()">
+
+                <div ng-show="pagination.totalItems + newEntities.length > 0 && !pagination.busy" class="well well-sm" translate
+                     translate-n="pagination.totalItems + newEntities.length" translate-plural="{{$count}} unités documentaires trouvées">1 unité documentaire trouvée
+                </div>
+
+                <!-- Unité doc récemment créés -->
+                <div ng-show="newEntities.length > 0" class="col-infinite-scroll">
+                    <div class="pagination-break" translate>Récemment créés</div>
+                    <div ng-repeat="docUnit in newEntities">
+                        <div class="list" ng-class="{active: docUnit._selected}">
+                            <a ng-click="edit(docUnit, $index, true)">
+                                <span class="second">[{{docUnit.pgcnId}}]</span>&nbsp;<span class="principal">{{docUnit.label}}</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="well" ng-show="pagination.items.length === 0 && newEntities.length === 0 && !pagination.busy"
+                     translate>Aucune unité documentaire n'a été trouvée
+                </div>
+                <div>
+                    <div ng-repeat="docUnit in pagination.items" class="col-infinite-scroll">
+                        <div ng-show="$index === 0 || getFirstLetter(docUnit) != getFirstLetter(pagination.items[$index-1])"
+                             class="pagination-break">{{docUnit[filters.sortModel]|initial:'OTHER'}}
+                        </div>
+                        <div class="list" ng-class="{active: docUnit._selected}" ng-show="docUnit.parentIdentifier === null">
+                            <a ng-click="edit(docUnit, $index)">
+                                <span class="second">[{{docUnit.pgcnId}}]</span>&nbsp;<span class="principal">{{docUnit.label}}</span>
+                            </a>
+                        </div>
+                        <div ng-repeat="child in docUnit.children" class="col-infinite-scroll margin-l15" ng-init="childIndex = $index">
+                            <div class="list" ng-class="{active: child._selected && !docUnit._slected, inactive: true}">
+                                <a ng-click="edit(child, childIndex)">
+                                   <span class="glyphicon-halflings glyphicon-option-horizontal"></span> <span class="second">[{{child.pgcnId}}]</span>&nbsp;<span class="principal">{{child.label}}</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div ng-show="pagination.busy" class="well well-sm" translate>Chargement en cours...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <ng-include src="docUnitInclude"></ng-include>
+</div>

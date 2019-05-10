@@ -1,0 +1,52 @@
+<div class="modal-header">
+    <h3 class="modal-title" translate>Associer l'unité documentaire</h3>
+</div>
+<div class="modal-body">
+    <div class="row">
+        <div class="col-xs-12">
+            <label>Projet</label>
+            <ui-select ng-model="mainCtrl.project" on-select="mainCtrl.onSelectProject($item)">
+                <ui-select-match>
+                    <span ng-bind="$select.selected.name"></span>
+                </ui-select-match>
+                <ui-select-choices repeat="project in mainCtrl.filteredProjects track by project.identifier">
+                    <span ng-bind="project.name"></span>
+                </ui-select-choices>
+            </ui-select>
+        </div>
+    </div>
+    <div class="row margin-t10">
+        <div class="col-xs-12">
+            <label>Lot</label>
+            <ui-select ng-model="mainCtrl.lot" ng-disabled="!mainCtrl.project">
+                <ui-select-match>
+                    <span ng-bind="$select.selected.label"></span>
+                </ui-select-match>
+                <ui-select-choices repeat="lot in mainCtrl.filteredLots track by lot.identifier">
+                    <span ng-bind="lot.label"></span>
+                </ui-select-choices>
+            </ui-select>
+        </div>
+    </div>
+    <div class="row margin-t10">
+        <div class="col-xs-12">
+            <label>Train</label>
+            <ui-select ng-model="mainCtrl.train" ng-disabled="!mainCtrl.project">
+                <ui-select-match>
+                    <span ng-bind="$select.selected.label"></span>
+                </ui-select-match>
+                <ui-select-choices repeat="train in mainCtrl.filteredTrains track by train.identifier">
+                    <span ng-bind="train.label"></span>
+                </ui-select-choices>
+            </ui-select>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-sem4" ng-click="mainCtrl.cancel()">
+        <span class="glyphicon-regular unshare"></span> {{::'Annuler' | translate}}
+    </button>
+    <button type="button" class="btn btn-sem2" ng-click="mainCtrl.confirm()" ng-disabled="!mainCtrl.project">
+        <span class="glyphicon-regular floppy-save"></span> {{::'Valider' | translate}}
+    </button>
+</div>

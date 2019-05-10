@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Changeset du module Usager -->
+    <changeSet id="pgcn-create-user" author="progilone">
+        <createTable tableName="user_authorization">
+            <column name="identifier" type="varchar(191)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="code" type="varchar(191)">
+                <constraints unique="true" uniqueConstraintName="uniq_user_authorization_code"/>
+            </column>
+            <column name="label" type="varchar(191)">
+                <constraints unique="true" uniqueConstraintName="uniq_user_authorization_label"/>
+            </column>
+            <column name="description" type="varchar(2000)" />
+            <column name="module" type="varchar(255)" />
+            <column name="version" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="user_role">
+            <column name="identifier" type="varchar(191)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="code" type="varchar(191)">
+                <constraints unique="true" uniqueConstraintName="uniq_user_role_code"/>
+            </column>
+            <column name="label" type="varchar(191)">
+                <constraints unique="true" uniqueConstraintName="uniq_user_role_label"/>
+            </column>
+            <column name="description" type="varchar(2000)" />
+            <column name="version" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="user_role_authorization">
+            <column name="user_authorization" type="varchar(191)">
+                <constraints nullable="false" />
+            </column>
+            <column name="role" type="varchar(191)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <addPrimaryKey columnNames="role, user_authorization"
+            tableName="user_role_authorization" />
+        <addForeignKeyConstraint baseColumnNames="user_authorization"
+            baseTableName="user_role_authorization" constraintName="fk_role_authorization_authorization"
+            referencedColumnNames="identifier" referencedTableName="user_authorization" />
+        <addForeignKeyConstraint baseColumnNames="role"
+            baseTableName="user_role_authorization" constraintName="fk_role_authorization_role"
+            referencedColumnNames="identifier" referencedTableName="user_role" />
+
+        <createTable tableName="user_user">
+            <column name="identifier" type="varchar(191)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="login" type="varchar(191)">
+                <constraints unique="true" uniqueConstraintName="uniq_user_user_login"/>
+            </column>
+            <column name="password" type="varchar(191)" />
+            <column name="firstname" type="varchar(255)" />
+            <column name="surname" type="varchar(255)" />
+            <column name="function" type="varchar(255)" />
+            <column name="category" type="varchar(255)" />
+            <!-- Lien technique -->
+            <column name="role" type="varchar(191)" />
+            <column name="library" type="varchar(191)" />
+            <column name="project" type="varchar(191)" />
+            <column name="dashboard" type="varchar(191)" />
+            <column name="address" type="varchar(191)" />
+            <!-- Fin lien technique -->
+            <column name="email" type="varchar(255)" />
+            <column name="phone_number" type="varchar(255)" />
+            <column name="active" type="boolean" />
+            <column name="lang" type="varchar(191)" />
+            <column name="company_name" type="varchar(255)" />
+            <column name="version" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="role"
+            baseTableName="user_user" constraintName="fk_user_role"
+            referencedColumnNames="identifier" referencedTableName="user_role" />
+        <createIndex indexName="idx_user_user_login"
+            tableName="user_user" unique="true">
+            <column name="login" type="varchar(191)" />
+        </createIndex>
+
+
+        <createTable tableName="user_address">
+            <column name="identifier" type="varchar(191)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="address1" type="varchar(255)" />
+            <column name="address2" type="varchar(255)" />
+            <column name="address3" type="varchar(255)" />
+            <column name="complement" type="varchar(255)" />
+            <column name="postcode" type="varchar(255)" />
+            <column name="city" type="varchar(255)" />
+            <column name="country" type="varchar(255)" />
+            <column name="label" type="varchar(255)" />
+            <column name="version" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="address"
+            baseTableName="user_user" constraintName="fk_user_address"
+            referencedColumnNames="identifier" referencedTableName="user_address" />
+
+        <!-- Sécurité / Audit -->
+        <createTable tableName="user_persistent_token">
+            <column name="series" type="varchar(191)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="user_identifier" type="varchar(191)" />
+            <column name="token_value" type="varchar(2000)">
+                <constraints nullable="false" />
+            </column>
+            <column name="token_date" type="date" />
+            <column name="ip_address" type="varchar(255)" />
+            <column name="user_agent" type="varchar(255)" />
+        </createTable>
+
+        <createTable tableName="user_persistent_audit_event">
+            <column name="event_id" type="varchar(191)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="principal" type="varchar(191)">
+                <constraints nullable="false" />
+            </column>
+            <column name="event_date" type="timestamp" />
+            <column name="event_type" type="varchar(255)" />
+        </createTable>
+
+        <createTable tableName="user_persistent_audit_event_data">
+            <column name="event_id" type="varchar(191)">
+                <constraints nullable="false" />
+            </column>
+            <column name="name" type="varchar(191)">
+                <constraints nullable="false" />
+            </column>
+            <column name="value" type="varchar(2000)" />
+        </createTable>
+        <addPrimaryKey columnNames="event_id, name"
+            tableName="user_persistent_audit_event_data" />
+
+        <createIndex indexName="idx_persistent_audit_event"
+            tableName="user_persistent_audit_event" unique="false">
+            <column name="principal" type="varchar(191)" />
+            <column name="event_date" type="timestamp" />
+        </createIndex>
+
+        <createIndex indexName="idx_persistent_audit_event_data"
+            tableName="user_persistent_audit_event_data" unique="false">
+            <column name="event_id" type="varchar(191)" />
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="event_id"
+            baseTableName="user_persistent_audit_event_data" constraintName="fk_event_persistent_audit_event_data"
+            referencedColumnNames="event_id" referencedTableName="user_persistent_audit_event" />
+        <createTable tableName="user_dashboard">
+            <column name="identifier" type="varchar(191)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false" />
+            </column>
+            <column name="last_modified_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+            <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+            <column name="dashboard" type="longvarchar" />
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="dashboard" baseTableName="user_user" constraintName="fk_user_dashboard"
+            referencedColumnNames="identifier" referencedTableName="user_dashboard" />
+    </changeSet>
+</databaseChangeLog>

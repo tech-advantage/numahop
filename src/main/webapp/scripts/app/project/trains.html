@@ -1,0 +1,26 @@
+<div class="panel-body" ng-controller="ProjectTrainsCtrl as trainCtrl" ng-init="trainCtrl.init(projectId)">
+    <div class="table-responsive col-sm-12">
+        <table class="table table-condensed table-hover" sem-table>
+            <thead>
+            <tr>
+                <th sem-table-sorton="label"><span translate>Nom du train</span></th>
+                <th sem-table-sorton="status"><span translate>Statut</span></th>
+                <th sem-table-sorton="providerSendingDate"><span translate>Date d'envoi</span></th>
+                <th sem-table-sorton="returnDate"><span translate>Date de retour</span></th>
+                <th style="width: 40px" translate>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="train in trainCtrl.trains">
+                <td>{{train.label}}</td>
+                <td>{{translate.trainStatus[train.status]}}</td>
+                <td>{{train.providerSendingDate | moment}}</td>
+                <td>{{train.returnDate | moment}}</td>
+                <td class="text-right">
+                    <numa-custom-link numa-link-type="train" numa-link-parameters='{"id": train.identifier}'></numa-custom-link>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

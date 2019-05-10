@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="pgcn-check-006" author="progilone">
+        <!-- Ajout de la colonne separators ds la config de controle -->
+        <addColumn tableName="conf_configuration_check">
+            <column name="separators" type="varchar(255)"></column>
+        </addColumn>
+        
+        <!-- Ajout de 2 nouveaux controles -->
+        <sql dbms="mysql">
+            INSERT INTO check_automatic_type 
+                (identifier, label, type, active, version, configurable, check_automatic_type.order)
+            VALUES 
+                ('automatic_file_bib_prefix', 
+                    'Contrôle nom de fichier préfixé par le préfixe de bibliothèque', 
+                    'FILE_BIB_PREFIX', 1, 0, 1, 37)
+        </sql>
+        <sql dbms="mysql">
+            INSERT INTO check_automatic_type 
+                (identifier, label, type, active, version, configurable, check_automatic_type.order)
+            VALUES 
+                ('automatic_file_case_sensitive', 
+                    'Contrôle de la casse du nom de fichier', 
+                    'FILE_CASE_SENSITIVE', 1, 0, 1, 38)
+        </sql>
+        
+    </changeSet>
+</databaseChangeLog>

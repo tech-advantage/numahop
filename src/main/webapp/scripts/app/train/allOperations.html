@@ -1,0 +1,25 @@
+<div class="row layout-columns">
+    <div class="col-sm-12 col-layout-columns">
+        <div class="panel panel-column-1 panel-column-end">
+            <div class="panel-heading">
+                <button type="button" class="btn btn-sem2 btn-xs pull-right"
+                        ng-click="getBack()" uib-tooltip="{{::'Revenir au Train' | translate}}">
+                    <span class="glyphicon-regular unshare"></span>
+                </button>
+                <header-bar ng-if="loaded" library="train.project.library" project="train.project" train="train"> </header-bar>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <uib-tabset active="currentTab">
+                            <uib-tab heading="{{::'Unités Documentaires' | translate}}" index="tabs.DOC"
+                                     select="changeTab(tabs.DOC, true, false)">
+                                <div ng-include="taburl.doc"></div>
+                            </uib-tab>
+                        </uib-tabset>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

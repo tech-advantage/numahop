@@ -1,0 +1,123 @@
+identifier;code;label;version
+ocrlang-1;afr;Afrikaans;0
+ocrlang-2;amh;Amharique;0
+ocrlang-3;ara;Arabe;0
+ocrlang-4;asm;Assamais;0
+ocrlang-5;aze;Azéri;0
+ocrlang-6;aze_cyrl;Azéri - Cyrillic;0
+ocrlang-7;bel;Biélorusse;0
+ocrlang-8;ben;Bengali;0
+ocrlang-9;bod;Tibetain;0
+ocrlang-10;bos;Bosniaque;0
+ocrlang-11;bre;Breton;0
+ocrlang-12;bul;Bulgare;0
+ocrlang-13;cat;Catalan - Valencien;0
+ocrlang-14;ceb;Cebuano;0
+ocrlang-15;ces;Tchèque;0
+ocrlang-16;chi_sim;Chinois - Simplifié;0
+ocrlang-17;chi_sim_vert;Chinois - Simplifié - Vertical;0
+ocrlang-18;chi_tra;Chinois - Traditionnel;0
+ocrlang-19;chi_tra_vert;Chinois - Traditionnel - Vertical;0
+ocrlang-20;chr;Cherokee;0
+ocrlang-21;cos;Corse;0
+ocrlang-22;cym;Gallois;0
+ocrlang-23;dan;Danois;0
+ocrlang-24;deu;Allemand;0
+ocrlang-25;div;Maldivien;0
+ocrlang-26;dzo;Dzongkha;0
+ocrlang-27;ell;grec moderne (1453-);0
+ocrlang-28;eng;Anglais;0
+ocrlang-29;enm;Anglais moyen (1100-1500);0
+ocrlang-30;epo;Espéranto;0
+ocrlang-31;est;Estonien;0
+ocrlang-32;eus;Basque;0
+ocrlang-33;fao;Féroien;0
+ocrlang-34;fas;Persan;0
+ocrlang-35;fil;filipino;0
+ocrlang-36;fin;Finnois;0
+ocrlang-37;fra;Français;0
+ocrlang-38;frk;Frankish;0
+ocrlang-39;frm;Français moyen (1400-1600);0
+ocrlang-40;fry;Frison occidental;0
+ocrlang-41;gle;Irlandais;0
+ocrlang-42;glg;Galicien;0
+ocrlang-43;grc;Grec ancien (-1453);0
+ocrlang-44;guj;Goudjrati;0
+ocrlang-45;hat;Créole haïtien;0
+ocrlang-46;heb;Hébreu;0
+ocrlang-47;hin;Hindi;0
+ocrlang-48;hrv;Croate;0
+ocrlang-49;hun;Hungrois;0
+ocrlang-50;hye;Arménien;0
+ocrlang-51;iku;Inuktitut;0
+ocrlang-52;ind;Indonesien;0
+ocrlang-53;isl;Islandais;0
+ocrlang-54;ita;Italien;0
+ocrlang-55;ita_old;Italian ancien;0
+ocrlang-56;jav;Javanais;0
+ocrlang-57;jpn;Japonais;0
+ocrlang-58;jpn_vert;Japonais - Vertical;0
+ocrlang-59;kan;Kannada;0
+ocrlang-60;kat;Géorgien;0
+ocrlang-61;kat_old;Géorgien ancien;0
+ocrlang-62;kaz;Kazakh;0
+ocrlang-63;khm;Khmer Central;0
+ocrlang-64;kir;Kirghiz;0
+ocrlang-65;kor;Coréen;0
+ocrlang-66;kor_vert;Coréen - Vertical;0
+ocrlang-67;kur;Kurde;0
+ocrlang-68;lao;Lao;0
+ocrlang-69;lat;Latin;0
+ocrlang-70;lav;Letton;0
+ocrlang-71;lit;Lithuanien;0
+ocrlang-72;ltz;Luxembourgeois;0
+ocrlang-73;mal;Malayalam;0
+ocrlang-74;mar;Marathe;0
+ocrlang-75;mkd;Macédonien;0
+ocrlang-76;mlt;Maltais;0
+ocrlang-77;mon;Mongol;0
+ocrlang-78;mri;Maori;0
+ocrlang-79;msa;Malais;0
+ocrlang-80;mya;Birman;0
+ocrlang-81;nep;Népalais;0
+ocrlang-82;nld;Flamand;0
+ocrlang-83;nor;Norvégien;0
+ocrlang-84;oci;Occitan;0
+ocrlang-85;ori;Oriya;0
+ocrlang-86;pan;Pendjabi;0
+ocrlang-87;pol;Polonais;0
+ocrlang-88;por;Portugais;0
+ocrlang-89;pus;Pashto;0
+ocrlang-90;que;Quechua;0
+ocrlang-91;ron;Roumain - Moldave;0
+ocrlang-92;rus;Russe;0
+ocrlang-93;san;Sanskrit;0
+ocrlang-94;sin;Singhalais;0
+ocrlang-95;slk;Slovaque;0
+ocrlang-96;slv;Slovène;0
+ocrlang-97;snd;Sindhi;0
+ocrlang-98;spa;Espagnol - Castillan;0
+ocrlang-99;spa_old;Espagnol - Castillan - Ancien;0
+ocrlang-100;sqi;Albanais;0
+ocrlang-101;srp;Serbe;0
+ocrlang-102;srp_latn;Serbe - Latin;0
+ocrlang-103;sun;Soundanais;0
+ocrlang-104;swa;Swahili;0
+ocrlang-105;swe;Suédois;0
+ocrlang-106;syr;Syriaque;0
+ocrlang-107;tam;Tamoul;0
+ocrlang-108;tat;Tatar;0
+ocrlang-109;tel;Télougou;0
+ocrlang-110;tgk;Tadjik;0
+ocrlang-111;tha;Thai;0
+ocrlang-112;tir;tigrigna;0
+ocrlang-113;ton;Les Tonga;0
+ocrlang-114;tur;Turc;0
+ocrlang-115;uig;ouïgour;0
+ocrlang-116;ukr;Ukrainien;0
+ocrlang-117;urd;Ourdou;0
+ocrlang-118;uzb;Ouszbek;0
+ocrlang-119;uzb_cyrl;Ouszbek - Cyrillic;0
+ocrlang-120;vie;Vietnamien;0
+ocrlang-121;yid;Yiddish;0
+ocrlang-122;yor;Yoruba;0

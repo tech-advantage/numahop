@@ -1,0 +1,10 @@
+<div class="alert alert-warning margin-10" ng-if="!mainCtrl.isConfigured()" translate>
+    Veuillez configurer le widget via le bouton de configuration à droite du titre de ce widget.
+</div>
+<numa-alert-audit-entity entity-type="lot" 
+                         columns="[{'name': 'Lot', 'field': 'label'}]"
+                         filter="mainCtrl.config"
+                         status-prefix="lot.status"
+                         set-count="mainCtrl.setTitleBadge(value)"
+                         ng-if="mainCtrl.isConfigured()"
+                         provider="mainCtrl.loadLots(params)"></numa-alert-audit-entity>

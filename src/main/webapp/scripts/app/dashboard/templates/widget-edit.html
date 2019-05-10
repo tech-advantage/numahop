@@ -1,0 +1,19 @@
+<form name="widgetEditForm" novalidate role="form" ng-submit="saveDialog()">
+    <div class="modal-header">
+        <button type="button" class="close" ng-click="closeDialog()" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">{{widget.title}}</h4>
+    </div>
+    <div class="modal-body">
+        <div class="alert alert-danger" role="alert" ng-show="validationError">{{validationError}}</div>
+        <sem-field sem-type="text" sem-model="definition.title"
+                   sem-label="{{::'Titre' | translate}}" sem-placeholder="{{::'Titre' | translate}}"
+                   sem-label-class="col-xs-3" sem-field-class="col-xs-9"></sem-field>
+        <div ng-if="widget.edit">
+            <adf-widget-content model="definition" content="widget.edit" />
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" ng-click="closeDialog()" translate>Annuler</button>
+        <input type="submit" class="btn btn-primary" ng-disabled="widgetEditForm.$invalid" value="{{::'Enregistrer' | translate}}" />
+    </div>
+</form>

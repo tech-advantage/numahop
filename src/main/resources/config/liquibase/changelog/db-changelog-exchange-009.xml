@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="pgcn-create-exchange-009" author="progilone">
+        <!-- Templates Velocity -->
+        <createTable tableName="exc_template">
+            <column name="identifier" type="varchar(191)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(191)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="library" type="varchar(191)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="original_filename" type="varchar(1024)"/>
+            <column name="file_size" type="BIGINT"/>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="varchar(255)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(255)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="exc_template" baseColumnNames="library" constraintName="fk_exc_template_library"
+                                 referencedTableName="lib_library" referencedColumnNames="identifier"/>
+
+        <createIndex tableName="exc_template" indexName="idx_exc_template_name_library">
+            <column name="name"/>
+            <column name="library"/>
+        </createIndex>
+        <createIndex tableName="exc_template" indexName="idx_exc_template_library">
+            <column name="library"/>
+        </createIndex>
+
+        <!-- Droit d'administration des templates -->
+        <sql>
+            INSERT INTO user_authorization(module,identifier,code,label,description,version)
+            VALUES ('ADMINISTRATION','TPL-HAB0','TPL-HAB0','Gestion des templates','Habilitation à la gestion des templates (gabarits de génération de documents)',0)
+        </sql>
+
+        <!-- Colonne library dans doc_condreport inutile -->
+        <dropForeignKeyConstraint baseTableName="doc_condreport" constraintName="fk_doc_condreport_library"/>
+        <dropIndex tableName="doc_condreport" indexName="idx_doc_condreport_library"/>
+        <dropColumn tableName="doc_condreport" columnName="library"/>
+
+    </changeSet>
+</databaseChangeLog>

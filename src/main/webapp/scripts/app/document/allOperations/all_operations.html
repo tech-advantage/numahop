@@ -1,0 +1,115 @@
+<div class="row layout-columns">
+    <div class="col-sm-12 col-layout-columns">
+        <div class="panel panel-column-1 panel-column-end">
+            <div class="panel-heading">
+                <div class="pull-right">
+                    <a class="btn btn-xs btn-sem2" ng-href="/#/document/docunit?id={{mainCtrl.docUnit.identifier}}" 
+                       uib-tooltip="{{ ::'Revenir à l\'unité documentaire' | translate }}">
+                        <span class="glyphicon-regular undo"></span>
+                    </a>
+                    <div class="btn-group" 
+                         ng-show="mainCtrl.currentTab.code === 'CONDREPORT' && mainCtrl._condreport_identifier" 
+                         sem-roles-allowed="COND_REPORT_HAB3,COND_REPORT_HAB4" uib-dropdown>
+                        <button type="button" class="btn btn-sem2 btn-xs dropdown-toggle" uib-tooltip="{{::'Constat d\'état' | translate}}" uib-dropdown-toggle>
+                            <span class="fa fa-file-text"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right" role="menu" uib-dropdown-menu ng-if="mainCtrl.docUnit">
+                            <li class="dropdown-header" translate>Constat d'état</li>
+                            <li>
+                                <a sem-roles-allowed="COND_REPORT_HAB3" 
+                                   ng-show="mainCtrl.isConstatNotLocked()"
+                                   ng-click="mainCtrl.deleteCondreport(mainCtrl._condreport_identifier)">
+                                    <span class="glyphicon-halflings glyphicon-trash"></span> {{ ::'Supprimer' | translate }}
+                                </a>
+                            </li>
+                            <li role="separator" class="divider" sem-roles-allowed="COND_REPORT_HAB3"></li>
+                            <li>
+                                <a sem-roles-allowed="COND_REPORT_HAB4" 
+                                   ng-href="/api/rest/condreport/{{::mainCtrl._condreport_identifier}}?exportto=PDF" 
+                                   download>
+                                    <span class="fa fa-download"></span> {{ ::'Télécharger (pdf)' | translate }}
+                                </a>
+                            </li>
+                            <li>
+                                <a sem-roles-allowed="COND_REPORT_HAB4" ng-show="!mainCtrl.isUserPresta"
+                                   ng-href="/api/rest/condreport/{{::mainCtrl._condreport_identifier}}?exportto=ODT" 
+                                   download>
+                                    <span class="fa fa-download"></span> {{ ::'Télécharger (odt)' | translate }}
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="btn-group" 
+                         ng-show="mainCtrl.currentTab.code === 'RECORD' && mainCtrl.canValidateRecord">
+	                    <button type="button" class="btn btn-sem2 btn-xs"
+	                        ng-click="mainCtrl.validateRecord()"
+	                        uib-tooltip="{{::'Valider la notice' | translate}}">
+		                    <span class="glyphicon-halflings glyphicon-check"></span>
+		                </button>
+		            </div>
+                    <div class="btn-group" ng-show="mainCtrl.binding.loaded" uib-dropdown>
+                        <button type="button" class="btn btn-sem2 btn-xs dropdown-toggle" uib-tooltip="{{::'Autres actions' | translate}}"
+                            uib-dropdown-toggle sem-roles-allowed="DOC_UNIT_HAB2">
+                            <span class="glyphicon-halflings glyphicon-align-justify"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right" role="menu" uib-dropdown-menu ng-if="mainCtrl.docUnit">
+                            <li class="dropdown-header" translate>Unité documentaire</li>
+                            <li ng-class="{ 'disabled': !mainCtrl.binding.loaded || !mainCtrl.docUnit }" sem-roles-allowed="DOC_UNIT_HAB3">
+                                <a ng-click="mainCtrl.delete(mainCtrl.docUnit)">
+                                <span class="glyphicon-halflings glyphicon-trash"></span> {{ ::'Supprimer' | translate }}
+                            </a>
+                            </li>
+                            <li role="separator" class="divider" sem-roles-allowed="DOC_UNIT_HAB3"></li>
+                            <li>
+                                <a ng-click="mainCtrl.exportCSV()" translate><span class="glyphicon-halflings glyphicon-export"></span> Export CSV</a>
+                            </li>
+                            <li>
+                                <a ng-href="/api/rest/export/rdfxml?type=DC&docUnit={{::mainCtrl.docUnit.identifier}}" download="{{::mainCtrl.docUnit.identifier}}-dc.xml"
+                                    translate><span class="glyphicon-halflings glyphicon-export"></span> Export DC</a>
+                            </li>
+                            <li>
+                                <a ng-href="/api/rest/export/rdfxml?type=DCQ&docUnit={{::mainCtrl.docUnit.identifier}}" download="{{::mainCtrl.docUnit.identifier}}-dcq.xml"
+                                    translate><span class="glyphicon-halflings glyphicon-export"></span> Export DCQ</a>
+                            </li>
+                            <li ng-if="::mainCtrl.docUnit.eadExport">
+                                <a ng-href="/api/rest/export/ead?docUnit={{::mainCtrl.docUnit.identifier}}" download="{{::mainCtrl.docUnit.identifier}}-ead.xml"
+                                    translate><span class="glyphicon-halflings glyphicon-export"></span> Export EAD</a>
+                            </li>
+                            <li role="separator" class="divider"></li>
+                            <li>
+                                <a ng-show="mainCtrl.binding.loaded && mainCtrl.docUnit.digitalDocuments[0].status === 'VALIDATED' && mainCtrl.docUnit.records.length > 0" 
+                                    ng-click="mainCtrl.exportLocal()" translate><span class="glyphicon-halflings glyphicon-export"></span> Export Local</a>
+                                    
+                                <a ng-show="mainCtrl.binding.loaded && mainCtrl.docUnit.digitalDocuments[0].status === 'VALIDATED' && mainCtrl.canExportToCines && mainCtrl.docUnit.records.length > 0 && mainCtrl.docUnit.archivable" 
+                                    ng-click="mainCtrl.export('cines', mainCtrl.docUnit, mainCtrl.docUnit.records[0])"
+                                    translate><span class="glyphicon-halflings glyphicon-export"></span> Export Cines</a>
+                                <a ng-show="mainCtrl.binding.loaded && mainCtrl.docUnit.digitalDocuments[0].status === 'VALIDATED' && mainCtrl.canExportToOmeka && mainCtrl.docUnit.records.length > 0 && mainCtrl.docUnit.distributable" 
+                                    ng-click="mainCtrl.export('omeka', mainCtrl.docUnit, mainCtrl.docUnit.records[0])"
+                                    translate><span class="glyphicon-halflings glyphicon-export"></span> Export Omeka</a>    
+                                <a ng-show="mainCtrl.binding.loaded && mainCtrl.docUnit.digitalDocuments[0].status === 'VALIDATED' && mainCtrl.canExportToInternetArchive && mainCtrl.docUnit.distributable" 
+                                    ng-click="mainCtrl.export('internetarchive', mainCtrl.docUnit)"
+                                    translate><span class="glyphicon-halflings glyphicon-export"></span> Export Internet Archive</a>
+                                <a ng-show="mainCtrl.docUnit.digitalDocuments[0].status !== 'CREATING' && mainCtrl.docUnit.digitalDocuments[0].status !== 'DELIVERING'" 
+                                    ng-click="mainCtrl.checkFacile()" translate>Validation FACILE (Cines)</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <header-bar ng-if="mainCtrl.binding.loaded" doc-unit="mainCtrl.docUnit" train="mainCtrl.docUnit.physicalDocuments[0].train"
+                    library="mainCtrl.docUnit.library" project="mainCtrl.docUnit.project" lot="mainCtrl.docUnit.lot" delivery="mainCtrl.delivery"> </header-bar>
+            </div>
+            <div class="panel-body">
+                <div class="row height-100">
+                    <div id="tab-container" class="col-xs-12 height-100" ng-if="mainCtrl.binding.loaded">
+                        <uib-tabset active="mainCtrl.currentTab.code">
+                            <uib-tab ng-repeat="(code, tab) in mainCtrl.tabs" ng-if="::!tab.role || isAuthorized(tab.role)" index="code" heading="{{::tab.label}}"
+                                select="mainCtrl.changeTab(tab)">
+                                <div ng-if="code === mainCtrl.currentTab.code" ng-include="tab.url"></div>
+                            </uib-tab>
+                        </uib-tabset>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

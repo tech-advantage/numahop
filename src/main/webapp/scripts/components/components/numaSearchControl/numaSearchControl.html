@@ -1,0 +1,206 @@
+<div class="search-input-group" ng-switch="$ctrl._index.type">
+    <div class="input-group-btn has-feedback">
+        <!-- Suppression du critère -->
+        <span ng-if="!$ctrl.isFirst" class="btn btn-sem3 btn-sem-sm" ng-click="$ctrl.onRemove({$search: $ctrl.controlModel})">
+            <span class="glyphicon-halflings glyphicon-trash"></span>
+        </span>
+        <!-- Opérateur -->
+        <div class="btn-group dropdown" ng-if="!$ctrl.isFirst">
+            <span class="btn btn-sem3 btn-sem-sm dropdown-toggle" data-toggle="dropdown">
+                {{$ctrl._operator.label}}&nbsp;<span class="caret"></span>
+            </span>
+            <ul class="dropdown-menu list-group search-menu" role="menu">
+                <li class="list-group-item" ng-class="{'active': $ctrl._operator === operator}"
+                    ng-repeat="operator in $ctrl.config.operators" 
+                    ng-click="$ctrl.setOperator(operator)">{{::operator.label}}</li>
+            </ul>
+        </div>
+        <!-- Index de recherche -->
+        <div class="btn-group dropdown">
+            <span class="btn btn-sem3 btn-sem-sm dropdown-toggle" data-toggle="dropdown">
+                {{$ctrl._index.label}}&nbsp;<span class="caret"></span>
+            </span>
+            <div class="dropdown-menu search-menu" role="menu">
+                <ul class="list-group search-group">
+                    <li class="list-group-item" ng-class="{'active': $ctrl._group === group}"
+                        ng-repeat="group in $ctrl.config.group" 
+                        ng-click="$ctrl.setGroup(group, $event)"
+                        ng-show="$ctrl.isGroupVisible(group)">{{::group.label}}</li>
+                </ul>
+                <ul class="list-group search-index">
+                    <li class="list-group-item" ng-class="{'active': $ctrl._index === index}"
+                        ng-repeat="index in $ctrl.config.index[$ctrl._group.identifier]" 
+                        ng-click="$ctrl.setIndex(index)"><small>{{::index.label}}</small></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- Champ de recherche: UD - collectionIA -->
+    <div ng-switch-when="select:collectionIA">
+        <select ng-options="o.name for o in $ctrl.uiconfig.collectionIA track by o.identifier"
+                class="form-control" ng-model="$ctrl._text" ng-change="$ctrl.setTextObj($ctrl._text)">
+        </select>
+    </div>
+    <!-- Champ de recherche: UD - planClassementPAC -->
+    <div ng-switch-when="select:planClassementPAC">
+        <select ng-options="o.name for o in $ctrl.uiconfig.planClassementPAC track by o.identifier"
+                class="form-control" ng-model="$ctrl._text" ng-change="$ctrl.setTextObj($ctrl._text)">
+        </select>
+    </div>
+    <!-- Champ de recherche: UD - droits -->
+    <div ng-switch-when="select:rights">
+        <select ng-options="key as value for (key, value) in $ctrl.uiconfig.rights"
+                class="form-control" ng-model="$ctrl._text" ng-change="$ctrl.setText($ctrl._text)">
+        </select>
+    </div>
+    <!-- Champ de recherche: livraison - méthode -->
+    <div ng-switch-when="select:deliveryMethod">
+        <select ng-options="key as value for (key, value) in $ctrl.uiconfig.delvMethod"
+                class="form-control" ng-model="$ctrl._text" ng-change="$ctrl.setText($ctrl._text)">
+        </select>
+    </div>
+    <!-- Champ de recherche: livraison - paiement -->
+    <div ng-switch-when="select:deliveryPayment">
+        <select ng-options="key as value for (key, value) in $ctrl.uiconfig.delvPayment"
+                class="form-control" ng-model="$ctrl._text" ng-change="$ctrl.setText($ctrl._text)">
+        </select>
+    </div>
+    <!-- Champ de recherche: livraison - statut -->
+    <div ng-switch-when="select:deliveryStatus">
+        <select ng-options="s.identifier as s.label for s in $ctrl.uiconfig.delvStatus"
+                class="form-control" ng-model="$ctrl._text" ng-change="$ctrl.setText($ctrl._text)">
+        </select>
+    </div>
+    <!-- Champ de recherche: lot - prestataire -->
+    <div ng-switch-when="select:provider">
+        <select ng-options="o.identifier as o.fullName for o in $ctrl.uiconfig.provider track by o.identifier"
+                class="form-control" ng-model="$ctrl._text" ng-change="$ctrl.setText($ctrl._text)">
+        </select>
+    </div>
+    <!-- Champ de recherche: lot - statut -->
+    <div ng-switch-when="select:lotStatus">
+        <select ng-options="s.identifier as s.label for s in $ctrl.uiconfig.lotStatus"
+                class="form-control" ng-model="$ctrl._text" ng-change="$ctrl.setText($ctrl._text)">
+        </select>
+    </div>
+    <!-- Champ de recherche: lot - format doc -->
+    <div ng-switch-when="select:fileFormat">
+        <select ng-options="s.identifier as s.label for s in $ctrl.uiconfig.fileFormat"
+                class="form-control" ng-model="$ctrl._text" ng-change="$ctrl.setText($ctrl._text)">
+        </select>
+    </div>
+    <!-- Champ de recherche: projet - statut -->
+    <div ng-switch-when="select:projectStatus">
+        <select ng-options="key as value for (key, value) in $ctrl.uiconfig.projectStatus"
+                class="form-control" ng-model="$ctrl._text" ng-change="$ctrl.setText($ctrl._text)">
+        </select>
+    </div>
+    <!-- Champ de recherche: train - statut -->
+    <div ng-switch-when="select:trainStatus">
+        <select ng-options="key as value for (key, value) in $ctrl.uiconfig.trainStatus"
+                class="form-control" ng-model="$ctrl._text" ng-change="$ctrl.setText($ctrl._text)">
+        </select>
+    </div>
+    <!-- Champ de recherche: bibliothèques -->
+    <div ng-switch-when="select:libraries">
+        <select ng-options="s.identifier as s.name for s in $ctrl.uiconfig.libraries"
+                class="form-control" ng-model="$ctrl._text" ng-change="$ctrl.setText($ctrl._text)">
+        </select>
+    </div>
+    <!-- Champ de recherche: projets -->
+    <div ng-switch-when="uiselect:project" ng-init="values = $ctrl.reportValueConfig($ctrl.getIndex, $ctrl.initText)">
+        <sem-field sem-type="uiselect" sem-model="$ctrl._text" sem-option-data="$ctrl.uiconfig.projects"
+                   sem-onchange="$ctrl.setTextObj($ctrl._text)"></sem-field>
+    </div>
+    <!-- Champ de recherche: lots -->
+    <div ng-switch-when="uiselect:lot" ng-init="values = $ctrl.reportValueConfig($ctrl.getIndex, $ctrl.initText)">
+        <sem-field sem-type="uiselect" sem-model="$ctrl._text" sem-option-data="$ctrl.uiconfig.lots"
+                   sem-onchange="$ctrl.setTextObj($ctrl._text)"></sem-field>
+    </div>
+    <!-- Champ de recherche: cines - statut -->
+    <div ng-switch-when="select:cinesStatus">
+        <select ng-options="s.identifier as s.label for s in $ctrl.uiconfig.cinesStatus"
+                class="form-control" ng-model="$ctrl._text" ng-change="$ctrl.setText($ctrl._text)">
+        </select>
+    </div>
+    <!-- Champ de recherche: ia - statut -->
+    <div ng-switch-when="select:iaStatus">
+        <select ng-options="s.identifier as s.label for s in $ctrl.uiconfig.iaStatus"
+                class="form-control" ng-model="$ctrl._text" ng-change="$ctrl.setText($ctrl._text)">
+        </select>
+    </div>
+    <!-- Champ de recherche: étape de workflow -->
+    <div ng-switch-when="select:workflowState">
+        <select ng-options="s.identifier as s.label for s in $ctrl.uiconfig.workflowState"
+                class="form-control" ng-model="$ctrl._text" ng-change="$ctrl.setText($ctrl._text)">
+        </select>
+    </div>
+    <!-- Champ de recherche: propriété du constat d'état -->
+    <div ng-switch-when="uiselect:descriptionValue" ng-init="values = $ctrl.reportValueConfig($ctrl.getIndex, $ctrl.initText)">
+        <sem-field sem-type="uiselect" sem-model="$ctrl._text" sem-option-data="values"
+                   sem-onchange="$ctrl.setTextObj($ctrl._text)"></sem-field>
+    </div>
+    <!-- Champ de recherche: boolean -->
+    <div ng-switch-when="boolean">
+        <select ng-options="key as value for (key, value) in $ctrl.uiconfig.boolean"
+                class="form-control" ng-model="$ctrl._text" ng-change="$ctrl.setText($ctrl._text)">
+        </select>
+    </div>
+    <!-- Champ de recherche: date -->
+    <div ng-switch-when="datepicker">
+        <div class="form-inline margin-l10">
+            <label translate>entre le</label>
+            <sem-datepicker ng-model="$ctrl._text_from" ng-change="$ctrl.setTextInterval($data, $ctrl._text_to)"></sem-datepicker>
+            <label class="margin-l10" translate>et le</label>
+            <sem-datepicker ng-model="$ctrl._text_to" ng-change="$ctrl.setTextInterval($ctrl._text_from, $data)"></sem-datepicker>
+        </div>
+    </div>
+    <!-- Intervalle -->
+    <div ng-switch-when="interval">
+        <div class="form-inline margin-l10">
+            <div class="form-group">
+                <label translate>entre</label>
+                <input type="text" class="form-control" ng-model="$ctrl._text_from" 
+                       ng-change="$ctrl.setTextInterval($ctrl._text_from, $ctrl._text_to)" sem-enter-key="$ctrl.onSearch()" />
+            </div>
+            <div class="form-group">
+                <label class="margin-l10" translate>et</label>
+                <input type="text" class="form-control" ng-model="$ctrl._text_to" 
+                       ng-change="$ctrl.setTextInterval($ctrl._text_from, $ctrl._text_to)" sem-enter-key="$ctrl.onSearch()" />
+            </div>
+        </div>
+    </div>
+    <!-- Taille de fichier -->
+    <div ng-switch-when="filesize">
+            <div class="form-inline margin-l10">
+                <div class="form-group">
+                    <label translate>entre</label>
+                    <input type="text" class="form-control" ng-model="$ctrl._text_from" 
+                           ng-change="$ctrl.setTextInterval($ctrl._text_from, $ctrl._text_to, $ctrl._filesize_unit)" 
+                           sem-enter-key="$ctrl.onSearch()" />
+                </div>
+                <div class="form-group">
+                    <label class="margin-l10" translate>et</label>
+                    <input type="text" class="form-control" ng-model="$ctrl._text_to" 
+                           ng-change="$ctrl.setTextInterval($ctrl._text_from, $ctrl._text_to, $ctrl._filesize_unit)" 
+                           sem-enter-key="$ctrl.onSearch()" />
+                </div>
+                <div class="form-group">
+                    <label class="margin-l10" translate>unité: </label>
+                    <select class="form-control" ng-model="$ctrl._filesize_unit" 
+                            ng-change="$ctrl.setTextInterval($ctrl._text_from, $ctrl._text_to, $ctrl._filesize_unit)">
+                        <option value="1">o</option>
+                        <option value="1024">ko</option>
+                        <option value="1048576">Mo</option>
+                        <option value="1073741824">Go</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    <!-- Champ de recherche: texte -->
+    <div ng-switch-default>
+        <span class="glyphicon-halflings glyphicon-remove clear-text" 
+            ng-click="$ctrl.clearText()"  ng-show="$ctrl._text" uib-tooltip="{{ ::'Effacer' | translate }}"></span>
+        <input type="text" class="form-control" ng-model="$ctrl._text" ng-change="$ctrl.setText($ctrl._text)" sem-enter-key="$ctrl.onSearch()" />
+    </div>
+</div>

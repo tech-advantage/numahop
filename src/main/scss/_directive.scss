@@ -1,0 +1,39 @@
+.calendrier-mois {
+    width: 322px;
+
+    .calendrier-header {
+        width: 100%;
+        height: 35px;
+        border: none;
+        padding: 0px 2px;
+
+        > span {
+        	width: 100%;
+        	font-size: 1.5em;
+        	bottom: 5px;
+        }
+        > .btn {
+            width: 42px;
+        }
+    }
+    .calendrier-jour {
+        float: left;
+        display: block;
+        height: 48px;
+        width: 42px;
+        margin: 2px;
+        line-height: 48px;
+        text-align: center;
+        background-color: #FFFF;
+        border: solid 1px $sid-main-color;
+        border-radius: 2px;
+        cursor: pointer;
+
+        &.calendrier-jour-selected {
+            background-color: #8ABD5D;
+            color: #FFF;
+            border: none;
+            font-weight: bold;
+        }
+    }
+}

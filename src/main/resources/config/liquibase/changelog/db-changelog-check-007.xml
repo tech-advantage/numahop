@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Ajout colonne mode d'échantillonnage 'sample_modes' -->
+    <changeSet id="pgcn-check-007" author="progilone">
+        <addColumn tableName="conf_configuration_check">
+            <column name="sample_mode" type="varchar(191)" defaultValue="NO_SAMPLE" />
+        </addColumn>
+
+    </changeSet>
+</databaseChangeLog>

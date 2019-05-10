@@ -1,0 +1,310 @@
+<div class="col-sm-8 col-sm-offset-4 col-layout-columns" ng-controller="LotEditCtrl">
+    <div class="panel panel-column-3">
+        <div class="panel-heading">
+            <div class="pull-right">
+                <button type="button" class="btn btn-sem2 btn-xs"
+                        ng-click="lotForm.$show()" ng-disabled="!lot || !lot.identifier"
+                        uib-tooltip="{{::'Modifier' | translate}}"
+                        ng-show="!lotForm.$visible && loaded"
+                        sem-roles-allowed="LOT_HAB1">
+                    <span class="glyphicon-regular edit"></span>
+                </button>
+                <button type="button" class="btn btn-sem2 btn-xs"
+                        ng-click="cancel()" ng-disabled="!lot || !lot.identifier || !loaded"
+                        uib-tooltip="{{::'Annuler' | translate}}"
+                        ng-show="lotForm.$visible">
+                    <span class="glyphicon-regular unshare"></span>
+                </button>
+                <button type="button" class="btn btn-sem2 btn-xs"
+                        ng-click="goToAllOperations()"
+                        ng-disabled="!lot || !lot.identifier || lot.registerType === 'PREREGISTERED'"
+                        uib-tooltip="{{::'Détails' | translate}}"
+                        ng-show="!lotForm.$visible && loaded">
+                    <span class="glyphicon-regular list-alt"></span>
+                </button>
+
+                <div class="btn-group" ng-show="!lotForm.$visible && loaded" uib-dropdown dropdown-append-to-body>
+                    <button type="button" class="btn btn-sem2 btn-xs dropdown-toggle pull-right"
+                            ng-disabled="!lot || !lot.identifier"
+                            uib-tooltip="{{::'Autres actions' | translate}}" uib-dropdown-toggle
+                            sem-roles-allowed="LOT_HAB1">
+                        <span class="glyphicon-halflings glyphicon-align-justify"></span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-right" role="menu" uib-dropdown-menu>
+                        <li ng-class="{ 'disabled': !loaded || !lot || !lot.identifier }" 
+                            ng-show="!lotForm.$visible" sem-roles-allowed="LOT_HAB2">
+                            <a ng-click="!(!loaded || !lot || !lot.identifier) && delete(lot)">
+                                <span class="glyphicon-halflings glyphicon-trash"></span> {{ ::'Supprimer' | translate }}
+                            </a>
+                        </li>
+                        <li role="separator" class="divider" ng-show="!lotForm.$visible" sem-roles-allowed="LOT_HAB2"></li>
+                        <li>
+                            <a ng-click="downloadSlip('pdf')">
+                               <span class="glyphicon-halflings glyphicon-export"></span> {{ ::'Liste des unités documentaires PDF' | translate }}
+                            </a>
+                        </li>
+                        <li>
+                            <a ng-click="downloadSlip('csv')">
+                               <span class="glyphicon-halflings glyphicon-export"></span> {{ ::'Liste des unités documentaires CSV' | translate }}
+                            </a>
+                        </li>
+                        <li>
+                            <a ng-click="downloadCheckSlip('pdf')">
+                                <span class="glyphicon-halflings glyphicon-export"></span> {{ ::'Bordereau de contrôle PDF' | translate }}
+                            </a>
+                        </li>
+                        <li>
+                            <a ng-click="downloadCheckSlip('csv')">
+                                <span class="glyphicon-halflings glyphicon-export"></span> {{ ::'Bordereau de contrôle CSV' | translate }}
+                            </a>
+                        </li>
+                        <li>
+                            <a ng-click="downloadDeliverySlip('pdf')">
+                                <span class="glyphicon-halflings glyphicon-export"></span> {{ ::'Bordereau de livraison PDF' | translate }}
+                            </a>
+                        </li>
+                        <li>
+                            <a ng-click="downloadDeliverySlip('csv')">
+                                <span class="glyphicon-halflings glyphicon-export"></span> {{ ::'Bordereau de livraison CSV' | translate }}
+                            </a>
+                        </li>
+                        <li><a ng-click="exportCSV()" translate><span class="glyphicon-halflings glyphicon-export"></span> Export CSV</a></li>
+                    </ul>
+                </div>
+            </div>
+            <h5 translate>Fiche</h5>
+        </div>
+        <div class="panel-body" ng-show="loaded" id="lotDetails">
+            
+            <form editable-form name="lotForm" onaftersave="saveLot(lot)" 
+                ng-init="formRO = !isAuthorized([userRoles.LOT_HAB0, userRoles.LOT_HAB1])" ng-show="loaded">
+
+                <uib-accordion close-others="false">
+                    <!-- Détail du lot -->
+                    <div uib-accordion-group is-open="accordions.lot">
+                        <uib-accordion-heading>
+                            <span class="pull-left glyphicon-halflings"
+                                ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordions.lot]">&nbsp;</span>
+                            <h4 translate>Lot</h4>
+                        </uib-accordion-heading>
+
+                        <numa-editable-field data-title="{{::'Libellé' | translate}}" placeholder="{{::'Libellé' | translate}}" mandatory="true"
+                        form="lotForm" model="lot.label" numa-readonly="formRO" errors="{{ errors.label }}" onbeforesave="validation.required($data)"> </numa-editable-field>
+
+                        <numa-editable-field data-title="{{::'Projet' | translate}}" type="select" form="lotForm" 
+                        onbeforesave="validation.required($data)" mandatory="true"
+                        model="lot.project" numa-readonly="formRO" errors="{{ errors.project }}"
+                        config="{ data: sel2Projects,
+                        display: 'name',
+                        query: 'o.name for o in $ctrl.config.data track by o.identifier'}"
+                        numa-onchange="reloadSelects($data)"
+                        link="{ type: 'project', parameters: {'id': lot.project.identifier} }"> </numa-editable-field>
+
+                        <numa-editable-field data-title="{{::'Prestataire' | translate}}" type="select" form="lotForm" 
+                        model="lot.provider" numa-readonly="formRO" errors="{{ errors.provider }}" default-text="Hérité du projet"
+                        config="{ data: [{fullName: ''}].concat(options.providers),
+                        display: 'fullName',
+                        query: 'o.fullName for o in $ctrl.config.data track by o.identifier'}"
+                        link="{ type: 'user', parameters: {'id': lot.provider.identifier} }"
+                        ng-if="currentUser.category !== 'PROVIDER'"> </numa-editable-field>
+
+                        <numa-editable-field data-title="{{::'Actif' | translate}}" type="radiolist" form="lotForm" 
+                        model="lot.active" numa-readonly="formRO" errors="{{ errors.active }}"
+                        config="{ data: options.boolean, displayFn: displayBoolean, 
+                        query: 'key as value for (key, value) in $ctrl.config.data'}" > </numa-editable-field>
+
+                        <numa-editable-field data-title="{{::'Type de lot' | translate}}" type="select" form="lotForm" 
+                        model="lot.type" numa-readonly="formRO" errors="{{ errors.type }}" tooltip-fn="getTypeTooltip(model)"
+                        config="{ data: options.type,
+                        displayFn: displayType,
+                        query: 'key as value for (key, value) in $ctrl.config.data'}"> </numa-editable-field>
+
+                        <numa-editable-field data-title="{{::'Description' | translate}}" numa-type="textarea" placeholder="{{::'Description' | translate}}"
+                        form="lotForm" model="lot.description" numa-readonly="formRO" errors="{{ errors.description }}"> </numa-editable-field>
+                        
+                        <div class="row" ng-if="lot.status">
+                            <div class="col-xs-4 text-right">
+                                <span translate>Statut</span>
+                            </div>
+                            <div class="col-xs-8 text-left">
+                                <span>{{semCodes['lot.status.' + lot.status]}}</span>
+                            </div>
+                        </div>
+
+                        <numa-editable-field data-title="{{::'Format demandé' | translate}}" type="select" form="lotForm" numa-onchange="loadTypeCompr($data)"
+                        model="lot.requiredFormat" numa-readonly="formRO" errors="{{ errors.requiredFormat }}" onbeforesave="validation.required($data)" mandatory="true"
+                        config="{ data: options.format,
+                        displayFn: displayFormat,
+                        query: 'key as value for (key, value) in $ctrl.config.data'}" > </numa-editable-field>
+                        
+                        <numa-editable-field data-title="{{::'Type de compression attendu' | translate}}" form="lotForm"
+                        model="lot.requiredTypeCompression" numa-readonly="true" errors="{{ errors.requiredTypeCompression }}" > </numa-editable-field>
+                        
+                        <numa-editable-field data-title="{{::'Compression attendue (bits depth)' | translate}}" placeholder="{{::'Compression maximale' | translate}}" 
+                        form="lotForm" model="lot.requiredTauxCompression" numa-readonly="formRO" errors="{{ errors.requiredTauxCompression }}" > </numa-editable-field>
+                        
+                        <numa-editable-field data-title="{{::'Résolution minimale attendue' | translate}}" placeholder="{{::'Résolution minimale attendue (dpi)' | translate}}" 
+                        form="lotForm" model="lot.requiredResolution" numa-readonly="formRO" errors="{{ errors.requiredResolution }}" > </numa-editable-field>
+                        
+                        <numa-editable-field data-title="{{::'Profil colorimétrique attendu' | translate}}" type="select" form="lotForm" 
+                        model="lot.requiredColorspace" numa-readonly="formRO" errors="{{ errors.requiredColorspace }}" 
+                        config="{ data: options.colorspace,
+                        displayFn: displayColorspace,
+                        query: 'key as value for (key, value) in $ctrl.config.data'}" > </numa-editable-field>
+                        
+                        <numa-editable-field data-title="{{::'Configuration FTP' | translate}}" type="select" form="lotForm" default-text="Hérité du projet"
+                        model="lot.activeFTPConfiguration" numa-readonly="formRO" errors="{{ errors.activeFTPConfiguration }}"
+                        config="{ data: [{label: ''}].concat(options.ftp),
+                        display: 'label',
+                        query: 'o.label for o in $ctrl.config.data track by o.identifier'}"
+                        link="{ type: 'ftpConfiguration', parameters: {'id': lot.activeFTPConfiguration.identifier} }"> </numa-editable-field>
+
+                        <numa-editable-field data-title="{{::'Configuration contrôles' | translate}}" type="select" form="lotForm" default-text="Hérité du projet"
+                        model="lot.activeCheckConfiguration" numa-readonly="formRO" errors="{{ errors.activeCheckConfiguration }}"
+                        config="{ data: [{label: ''}].concat(options.check),
+                        display: 'label',
+                        query: 'o.label for o in $ctrl.config.data track by o.identifier'}"
+                        link="{ type: 'checkConfiguration', parameters: {'id': lot.activeCheckConfiguration.identifier} }"> </numa-editable-field>
+                        
+                        <numa-editable-field data-title="{{::'Langage OCR' | translate}}" type="select" form="lotForm" 
+                        model="lot.activeOcrLanguage" numa-readonly="formRO" errors="{{ errors.activeOcrLanguage }}"
+                        config="{ data: [{label: ''}].concat(options.languagesOcr),
+                        display: 'label',
+                        query: 'o.label for o in $ctrl.config.data track by o.identifier'}"> </numa-editable-field>
+                        
+                        <numa-editable-field data-title="{{::'Configuration format images' | translate}}" type="select" form="lotForm" default-text="Hérité du projet"
+                        model="lot.activeFormatConfiguration" numa-readonly="formRO" errors="{{ errors.activeFormatConfiguration }}"
+                        config="{ data: [{label: ''}].concat(options.imgFormat),
+                        display: 'label',
+                        query: 'o.label for o in $ctrl.config.data track by o.identifier'}"
+                        link="{ type: 'formatConfiguration', parameters: {'id': lot.activeFormatConfiguration.identifier} }"> </numa-editable-field>
+                                                
+                        <numa-editable-field data-title="{{::'Workflow' | translate}}" type="select" form="lotForm" model="lot.workflowModel" 
+                                numa-readonly="lot.status!=='CREATED'" errors="{{ errors.workflowModel }}" default-text="Hérité du projet" 
+                                config="{ data: [{name: ''}].concat(options.workflowModels),
+                                display: 'name',
+                                query: 'o.name for o in $ctrl.config.data track by o.identifier'}" 
+                                link="{ type: 'workflowModel', parameters: {'id': lot.workflowModel.identifier} }">
+                        </numa-editable-field>
+                        
+                        <numa-editable-field data-title="{{::'Notes concernant le conditionnement' | translate}}" numa-type="textarea" placeholder="{{::'Notes concernant le conditionnement' | translate}}"
+                        form="lotForm" model="lot.condNotes" numa-readonly="formRO" errors="{{ errors.condNotes }}"> </numa-editable-field>
+
+                        <numa-editable-field data-title="{{::'Notes concernant la numérisation' | translate}}" numa-type="textarea" placeholder="{{::'Notes concernant la numérisation' | translate}}"
+                        form="lotForm" model="lot.numNotes" numa-readonly="formRO" errors="{{ errors.numNotes }}"> </numa-editable-field>
+
+
+                        <numa-editable-field title="{{::'Collection Internet Archive' | translate}}" type="select" form="lotForm" 
+                        model="lot.collectionIA" numa-readonly="formRO" errors="{{ errors.collectionIA }}" default-text="Hérité du projet"
+                        config="{ data: [{name: ''}].concat(options.collections),
+                        display: 'name',
+                        query: 'o.name for o in $ctrl.config.data track by o.identifier'}"> </numa-editable-field>
+
+                        <numa-editable-field title="{{::'Plan de classement PAC' | translate}}" type="select" form="lotForm" 
+                        model="lot.planClassementPAC" numa-readonly="formRO" errors="{{ errors.planClassementPAC }}" default-text="Hérité du projet"
+                        config="{ data: [{name: ''}].concat(options.pacs),
+                        display: 'name',
+                        query: 'o.name for o in $ctrl.config.data track by o.identifier'}"> </numa-editable-field>
+                        
+                        <numa-editable-field title="{{::'Collection Omeka' | translate}}" type="select" form="lotForm" 
+                            model="lot.omekaCollection" numa-readonly="formRO" errors="{{ errors.omekaCollection }}"
+                            config="{ data: [{name: ''}].concat(options.omekaCollections),
+                            display: 'name',
+                            query: 'o.name for o in $ctrl.config.data track by o.identifier'}"> </numa-editable-field>
+                            
+                        <numa-editable-field title="{{::'Type d\'item Omeka' | translate}}" type="select" form="lotForm" 
+                            model="lot.omekaItem" numa-readonly="formRO" errors="{{ errors.omekaItem }}"
+                            config="{ data: [{name: ''}].concat(options.omekaItems),
+                            display: 'name',
+                            query: 'o.name for o in $ctrl.config.data track by o.identifier'}"> </numa-editable-field>
+                    </div>
+                    
+                    
+                    <!-- Livraisons -->
+                    <div class="row" ng-if="lot.identifier">
+                        <div class="col-sm-12">
+                            <div uib-accordion-group is-open="accordions.delivery">
+                                <uib-accordion-heading>
+                                    <span class="pull-left glyphicon-halflings"
+                                            ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordions.delivery]">&nbsp;</span>
+                                    <h4>{{ 'Livraisons' | translate }} 
+                                        <span class="badge btn-sem2">{{ deliveries.length }}</span>
+                                    </h4>
+                                </uib-accordion-heading>
+                                <table class="table table-condensed table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th translate>Libellé</th>
+                                        <th translate>Statut</th>
+                                        <th class="text-left" style="width: 70px" translate>Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr ng-repeat="delivery in deliveries | orderBy:['label']">
+                                        <td>{{::delivery.label}}</td>
+                                        <td>{{::semCodes['delivery.' + delivery.status] || delivery.status}}</td>
+                                        <td>
+                                            <numa-custom-link numa-link-type="delivery"
+                                                            numa-link-parameters='{"id": delivery.identifier}'></numa-custom-link>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Unités documentaires -->
+                    <div class="row" ng-if="lot.identifier">
+                        <div class="col-sm-12">
+                            <div uib-accordion-group is-open="accordions.docUnit">
+                                <uib-accordion-heading>
+                                    <span class="pull-left glyphicon-halflings"
+                                            ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordions.docUnit]">&nbsp;</span>
+                                    <h4>{{ 'Unités documentaires' | translate }} 
+                                        <span class="badge btn-sem2">{{ docUnits.length }}</span>
+                                    </h4>
+                                </uib-accordion-heading>
+                                <table class="table table-condensed table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th translate>Libellé</th>
+                                        <th translate>Identifiant PGCN</th>
+                                        <th class="text-left" style="width: 70px" translate>Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr ng-repeat="docUnit in docUnits | orderBy:['label']">
+                                        <td>{{::docUnit.label}}</td>
+                                        <td>{{::docUnit.pgcnId}}</td>
+                                        <td>
+                                            <a class="btn btn-sem2 btn-xs" uib-tooltip="{{ ::'Voir' | translate }}" ng-href="/#/document/all_operations/{{::docUnit.identifier}}">
+                                                <span class="glyphicon-halflings glyphicon-share"></span>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </uib-accordion>
+
+                <div class="text-center column-bottom column-6 margin-t10" ng-if="lotForm.$visible">
+                    <div class="column-bottom-button">
+                        <!-- Création / Modification -->
+                        <div class="btn-group">
+                            <button type="button" ng-disabled="lotForm.$waiting" class="btn btn-sem4" ng-click="cancel()">
+                                <span class="glyphicon-regular unshare"></span> {{::'Annuler' | translate}}
+                            </button>
+                            <button type="submit" class="btn btn-sem2" sem-roles-allowed="LOT_HAB0, LOT_HAB1">
+                                <span class="glyphicon-regular floppy-save"></span> {{::'Enregistrer' | translate}}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

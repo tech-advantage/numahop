@@ -1,0 +1,3 @@
+identifier,label,type,version,created_by,last_modified_by,created_date,last_modified_date
+"DC_RDF_MAPPING","Mapping Dublin Core (RDF)",DC,0,admin,admin,"2016-06-10 14:44:44","2016-06-10 14:44:44"
+"DC_OAI_MAPPING","Mapping Dublin Core (OAI_DC)",DC,0,admin,admin,"2016-06-10 14:44:44","2016-06-10 14:44:44"

@@ -1,0 +1,95 @@
+<div class="row layout-columns">
+    <div class="col-sm-12 col-layout-columns">
+        <div class="panel panel-column-1 panel-column-end">
+            <!-- Filtrage du tableau -->
+            <numa-filter data-class="pull-left btn-filter">
+                <!-- Bibliothèques -->
+                <numa-filter-field data-title="{{ ::'Bibliothèque' | translate }}">
+                    <sem-field sem-type="uiselect" sem-model="statCtrl.filters.library" sem-option-data="statCtrl.config.libraries"
+                               sem-onchange="statCtrl.search()"></sem-field>
+                </numa-filter-field>
+                <!-- Workflow -->
+                <numa-filter-field data-title="{{ ::'Workflow' | translate }}">
+                    <sem-field sem-type="uiselect" sem-model="statCtrl.filters.workflow" sem-option-data="statCtrl.config.workflows" 
+                               sem-onchange="statCtrl.search()"></sem-field>
+                </numa-filter-field>
+                <!-- Étape de workflow -->
+                <numa-filter-field data-title="{{ ::'Étape' | translate }}">
+                    <sem-field sem-type="uiselect" sem-model="statCtrl.filters.state" sem-option-data="statCtrl.config.states" 
+                               sem-onchange="statCtrl.search()"></sem-field>
+                </numa-filter-field>
+                <!-- Date -->
+                <numa-filter-field data-title="{{ ::'Date de l\'étape' | translate }}">
+                    <div class="form-inline text-right margin-b10">
+                        <label translate>entre le</label>
+                        <sem-datepicker ng-model="statCtrl.filters.from" sem-model-options="{ debounce: 300 }"
+                                        ng-change="statCtrl.searchValue('from', $data)"></sem-datepicker>
+                    </div>
+                    <div class="form-inline text-right">
+                        <label translate>et le</label>
+                        <sem-datepicker ng-model="statCtrl.filters.to" sem-model-options="{ debounce: 300 }"
+                                        ng-change="statCtrl.searchValue('to', $data)"></sem-datepicker>
+                    </div>
+                </numa-filter-field>
+            </numa-filter>
+            <!-- Entête -->
+            <div class="panel-heading">
+                <div class="pull-right">
+                    <button type="button" class="btn btn-sem2 btn-xs" 
+                            ng-click="statCtrl.reinitFilters()" uib-tooltip="{{::'Réinitialiser les filtres de la recherche' | translate}}">
+                        <span class="glyphicon-halflings glyphicon-refresh"></span>
+                    </button>
+                    <a class="btn btn-sem2 btn-xs" 
+                            ng-href="{{statCtrl.getExportUrl()}}" uib-tooltip="{{::'Export CSV' | translate}}">
+                        <span class="fa fa-download"></span>
+                    </a>
+                </div>
+            </div>
+            <div class="panel-body">
+                <div ng-if="statCtrl.loaded">
+                    <div class="well" ng-show="statCtrl.items.length == 0" translate>
+                        Aucun élément trouvé
+                    </div>
+                    <div ng-show="statCtrl.items.length > 0" class="well well-sm" translate
+                        translate-n="statCtrl.items.length"
+                        translate-plural="{{$count}} éléments trouvés">
+                        1 élément trouvé
+                    </div>
+                </div>
+                <!-- Liste des entités  -->
+                <div class="table-responsive" ng-show="statCtrl.items.length > 0">
+                    <table class="table table-hover sem-list">
+                        <thead>
+                        <tr>
+                            <th class="text-center h6 bold" translate>Bibliothèque</th>
+                            <th class="text-center h6 bold" translate>Workflow</th>
+                            <th class="text-center h6 bold" translate>Étape</th>
+                            <th class="text-center h6 bold" translate>Durée moyenne</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="item in statCtrl.items | orderBy:['libraryName', 'workflowModelName']">
+                            <td class="text-right nowrap">
+                                {{ ::item.libraryName }} 
+                                <numa-custom-link numa-link-type="library"
+                                                  numa-link-parameters="{id: item.libraryIdentifier}"
+                                                  ng-if="item.libraryIdentifier"></numa-custom-link>
+                            </td>
+                            <td class="text-right nowrap">
+                                {{ ::item.workflowModelName }} 
+                                <numa-custom-link numa-link-type="workflowModel"
+                                                  numa-link-parameters="{id: item.workflowModelIdentifier}"
+                                                  ng-if="item.workflowModelIdentifier"></numa-custom-link>
+                            </td>
+                            <td class="text-right nowrap">
+                                {{ ::statCtrl.code['workflow.' + item.key] || item.key }}
+                            </td>
+                            <td class="text-center">{{ ::item.avgDuration | duration:'hour' }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

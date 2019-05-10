@@ -1,0 +1,77 @@
+<div class="row layout-columns">
+    <div class="col-sm-2 col-layout-columns">
+        <div class="panel panel-column-1">
+            <div class="panel-heading">
+                <h5 translate>Aide</h5>
+            </div>
+            <div class="panel-body">
+                <!-- Type -->
+                <div class="filter-block">
+                    <div class="filter-title" translate>Types</div>
+                    <div class="filter-element" ng-repeat="type in filtersAvailable.helpPageTypes">
+                        <span ng-click="filterOn('types', type.code)" ng-show="filter.types.indexOf(type.code) > -1"
+                              class="glyphicon syrtis-icon-champ-delete" style="margin-left: -17px"></span>
+                        <a ng-click="filterOn('types', type.code)">{{type.label}}</a>
+                    </div>
+                </div>
+                <!-- Module -->
+                <div class="filter-block">
+                    <div class="filter-title" translate>Modules</div>
+                    <div class="filter-element" ng-repeat="module in filtersAvailable.modules | orderBy: module">
+                        <span ng-click="filterOn('modules', module)" ng-show="filter.modules.indexOf(module) > -1"
+                              class="glyphicon syrtis-icon-champ-delete" style="margin-left: -17px"></span>
+                        <a ng-click="filterOn('modules', module)">{{module}}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-2 col-sm-offset-2 col-layout-columns">
+        <div class="panel panel-column-2">
+            <div class="panel-heading">
+                <div class="btn-group pull-right" sem-roles-allowed="SUPER_ADMIN,HELP">
+                    <button type="button" class="btn btn-sem2 btn-xs" uib-tooltip="{{::'Créer une page d\'aide' | translate}}" ng-click="create()">
+                        <span class="glyphicon-halflings glyphicon-plus"></span>
+                    </button>
+                </div>
+                <div class="input-group padding-r20">
+                    <input class="form-control sem-input-xs" type="text" id="nameSearchInput" ng-model="filter.search"
+                           ng-keypress="applyFilter(filterWith, $event)" />
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-sem2 btn-xs" ng-click="doFilter()" uib-tooltip="{{::'Rechercher' | translate}}">
+                            <span class="glyphicon syrtis-icon-loupe"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+            <div class="panel-body" ng-switch="modules.length == 0" ng-if="!busy">
+                <div class="well" ng-switch-when="true" translate>Aucune page d'aide n'a été trouvée</div>
+                <div ng-switch-default ng-switch="searchResult" class="col-infinite-scroll">
+                    <div ng-switch-when="true" ng-class="{active: helpPage._selected}">
+                        <a ng-click="edit(helpPage)">{{helpPage.title}}</a>
+                    </div>
+                    <div ng-switch-default ng-repeat="module in modules">
+                        <div ng-if="$index === 0 || module.type !== modules[$index-1].type" class="pagination-break">{{getHelpPageTypeLabel(module.type)}}</div>
+                        <div class="pagination-break">{{module.name}}</div>
+                        <div ui-tree data-drag-enabled="false" style="margin-left: -30px;">
+                            <ol ng-if="module.pages" style="list-style-type:none;" ui-tree-nodes="" ng-model="tree" id="tree-root">
+                                <li ng-repeat="page in module.pages | orderBy:'title'" ui-tree-node ng-include="'tree.html'"></li>
+                            </ol>
+                        </div>
+                    </div>
+                    <div class="well well-sm" ng-show="busy" translate>Chargement en cours...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <ng-include src="helpInclude"></ng-include>
+</div>
+<script type="text/ng-template" id="tree.html">
+    <div ui-tree-handle>
+        <div class="list" ng-class="{active: page._selected}" ng-click="edit(page)" style="margin-left: -2px; padding-left: 5px;" data-nodrag>{{page.title}}</div>
+    </div>
+    <ol ng-if="page.children" style="list-style-type:none;" ui-tree-nodes="" ng-model="page.children">
+        <li ng-repeat="page in page.children | orderBy:'title'" ui-tree-node ng-include="'tree.html'">
+        </li>
+    </ol>
+</script>

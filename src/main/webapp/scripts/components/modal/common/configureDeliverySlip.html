@@ -1,0 +1,125 @@
+<div class="modal-header">
+    <h3 class="modal-title" translate>Bordereau de livraison</h3>
+</div>
+<div class="modal-body">
+    <div ng-if="::mainCtrl.loaded">
+
+        <div class="row vertical-align">
+                <div class="text-right col-xs-4">
+                        <label translate>Cote</label>
+                </div>
+                <div class="col-xs-8 form-inline padding-b10">
+                        <div class="form-group no-padding">
+                        <label for="pgcnId" translate></label>
+                        <input id="pgcnId" type="checkbox" ng-model="mainCtrl.options.pgcnId">
+                        </div>
+                </div>
+        </div>
+
+        <div class="row vertical-align">
+                <div class="text-right col-xs-4">
+                        <label translate>Lot</label>
+                </div>
+                <div class="col-xs-8 form-inline padding-b10">
+                        <div class="form-group no-padding">
+                        <label for="lot" translate></label>
+                        <input id="lot" type="checkbox" ng-model="mainCtrl.options.lot">
+                        </div>
+                </div>
+        </div>
+        
+        <div class="row vertical-align">
+                <div class="text-right col-xs-4">
+                        <label translate>Train</label>
+                </div>
+                <div class="col-xs-8 form-inline padding-b10">
+                        <div class="form-group no-padding">
+                        <label for="train" translate></label>
+                        <input id="train" type="checkbox" ng-model="mainCtrl.options.train">
+                        </div>
+                </div>
+        </div>
+        
+        <div class="row vertical-align">
+                <div class="text-right col-xs-4">
+                        <label translate>Radical</label>
+                </div>
+                <div class="col-xs-8 form-inline padding-b10">
+                        <div class="form-group no-padding">
+                        <label for="radical" translate></label>
+                        <input id="radical" type="checkbox" ng-model="mainCtrl.options.radical">
+                        </div>
+                </div>
+        </div>
+
+        <div class="row vertical-align">
+                <div class="text-right col-xs-4">
+                        <label translate>Titre</label>
+                </div>
+                <div class="col-xs-8 form-inline padding-b10">
+                        <div class="form-group no-padding">
+                        <label for="title" translate></label>
+                        <input id="title" type="checkbox" ng-model="mainCtrl.options.title">
+                        </div>
+                </div>
+        </div>
+
+        <div class="row vertical-align">
+                <div class="text-right col-xs-4">
+                        <label translate>Nombre de pages</label>
+                </div>
+                <div class="col-xs-8 form-inline padding-b10">
+                        <div class="form-group no-padding">
+                        <label for="pageCount" translate></label>
+                        <input id="pageCount" type="checkbox" ng-model="mainCtrl.options.pageCount">
+                        </div>
+                </div>
+        </div>
+
+
+        <div class="row vertical-align">
+                <div class="text-right col-xs-4">
+                        <label translate>Date</label>
+                </div>
+                <div class="col-xs-8 form-inline padding-b10">
+                        <div class="form-group no-padding">
+                        <label for="date" translate></label>
+                        <input id="date" type="checkbox" ng-model="mainCtrl.options.date">
+                        </div>
+                </div>
+        </div>
+        <!-- Séparateur -->
+        <hr class="margin-t20" />
+        <div class="row margin-t10 margin-b10">
+            <div class="col-xs-5 text-right">
+                <label translate>Séparateur</label>
+            </div>
+            <div class="col-xs-7 text-left">
+                <div class="radio radio-sid-main radio-inline" style="margin-left: 0px; margin-right: 10px" 
+                     ng-repeat="o in mainCtrl.options.separator">
+                    <input type="radio" id="sep-{{::$index}}" ng-model="mainCtrl.export.separatorOpt" ng-value="o">
+                    <label for="sep-{{::$index}}">{{::o.label}}</label>
+                    <input type="text" class="form-control" style="height: 28px; width: 40px; display: inline" maxlength="1" 
+                           ng-model="mainCtrl.export.separator" ng-if="o.code === '__OTHER__'"
+                           ng-change="mainCtrl.selectSeparator('__OTHER__')" />
+                </div>
+            </div>
+        </div>
+        <!-- Encodage -->
+        <sem-field sem-type="select" sem-label="{{::'Encodage' | translate}}" 
+                   sem-label-class="col-xs-5" sem-field-class="col-xs-7" 
+                   sem-model="mainCtrl.export.encoding"
+                   sem-select-options="o.code as o.label for o in optionData"
+                   sem-option-data="mainCtrl.options.encoding"></sem-field>
+    </div>
+</div>
+<div class="modal-footer">
+    <div class="text-danger margin-b10" ng-show="mainCtrl.message">{{mainCtrl.message}}</div>
+
+    <button type="button" class="btn btn-sem4" ng-click="mainCtrl.cancel()">
+        <span class="glyphicon-regular unshare"></span> {{::'Annuler' | translate}}
+    </button>
+    <button type="button" class="btn btn-sem2" ng-click="mainCtrl.confirm()">
+        <span class="glyphicon-regular floppy-save"></span> {{::'Valider' | translate}}
+    </button>
+</div>

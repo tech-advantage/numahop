@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Changeset du module Bibliothèque -->
+    <changeSet id="pgcn-create-library" author="progilone">
+        <createTable tableName="lib_library">
+            <column name="identifier" type="varchar(191)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="institution" type="varchar(191)"/>
+            <column name="name" type="varchar(255)" />
+            <column name="address" type="varchar(191)" />
+            <column name="website" type="varchar(255)" />
+            <column name="phone_number" type="varchar(255)" />
+            <column name="email" type="varchar(255)" />
+            <column name="prefix" type="varchar(255)" />
+            <column name="number" type="varchar(255)" />
+            <column name="active" type="boolean" />
+            <column name="addressFTP" type="varchar(255)" />
+            <column name="loginFTP" type="varchar(255)" />
+            <column name="passwordFTP" type="varchar(255)" />
+            <column name="version" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- Table institution -->
+        <createTable tableName="lib_institution">
+            <column name="identifier" type="varchar(191)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="name" type="varchar(255)" />
+            <column name="active" type="boolean" />
+            <column name="version" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- Foreign keys Bibliothèque et institution -->
+        <addForeignKeyConstraint baseColumnNames="library"
+            baseTableName="user_user" constraintName="fk_user_library"
+            referencedColumnNames="identifier" referencedTableName="lib_library" />
+
+        <addForeignKeyConstraint baseColumnNames="institution"
+                                 baseTableName="lib_library" constraintName="fk_lib_institution"
+                                 referencedColumnNames="identifier" referencedTableName="lib_institution" />
+
+        <addForeignKeyConstraint baseColumnNames="address"
+                                 baseTableName="lib_library" constraintName="fk_lib_address"
+                                 referencedColumnNames="identifier" referencedTableName="user_address" />
+    </changeSet>
+</databaseChangeLog>

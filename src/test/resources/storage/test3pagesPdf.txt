@@ -1,0 +1,3 @@
+src/test/resources/storage/test3.png
+src/test/resources/storage/test2.jpg
+src/test/resources/storage/test.jpg

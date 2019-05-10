@@ -1,0 +1,7 @@
+module;identifier;code;label;description;version
+ADMINISTRATION;MAIL-HAB0;MAIL-HAB0;Administration - gestion des configurations email: lecture;Habilitation à la gestion des configurations email: lecture;0
+ADMINISTRATION;MAIL-HAB1;MAIL-HAB1;Administration - gestion des configurations email: création/modification;Habilitation à la gestion des configurations email: création/modification;0
+ADMINISTRATION;MAIL-HAB2;MAIL-HAB2;Administration - gestion des configurations email: suppression;Habilitation à la gestion des configurations email: suppression;0
+ADMINISTRATION;SFTP-HAB0;SFTP-HAB0;Administration - gestion des configurations SFTP: lecture;Habilitation à la gestion des configurations SFTP: lecture;0
+ADMINISTRATION;SFTP-HAB1;SFTP-HAB1;Administration - gestion des configurations SFTP: création/modification;Habilitation à la gestion des configurations SFTP: création/modification;0
+ADMINISTRATION;SFTP-HAB2;SFTP-HAB2;Administration - gestion des configurations SFTP: suppression;Habilitation à la gestion des configurations SFTP: suppression;0

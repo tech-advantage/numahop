@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ======================================================== -->
+<!-- ===== Code List: AccessRestriction                 ===== -->
+<!-- ======================================================== -->
+<!--
+    Schema agency: Service interministériel des archives de France (SIAF)
+    Schema version: 1.0
+    Schema date: 06 Juillet 2012
+    
+    Copyright (c) 2011 Service interministériel des archives de France
+    
+    Ce document est sous licence Creative Commons Paternité 2.0 France.
+    Pour accéder à une copie de cette licence, merci de vous rendre à l'adresse suivante
+    http://creativecommons.org/licenses/by/2.0/fr/ ou envoyez un courrier à
+    Creative Commons, 444 Castro Street, Suite 900,
+    Mountain View, California, 94041, USA.
+-->
+
+<xsd:schema version="1.0" 
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+    xmlns:ccts="urn:un:unece:uncefact:documentation:standard:CoreComponentsTechnicalSpecification:2" 
+    xmlns="urn:un:unece:uncefact:codelist:draft:DAF:accessRestrictionCode:2009-08-18" 
+    xmlns:clmDAFAccessRestrictionCode="urn:un:unece:uncefact:codelist:draft:DAF:accessRestrictionCode:2009-08-18"
+    targetNamespace="urn:un:unece:uncefact:codelist:draft:DAF:accessRestrictionCode:2009-08-18"  
+    elementFormDefault="qualified" attributeFormDefault="unqualified">
+    
+    
+    <!-- ====================================================================== -->
+    <!-- =====  Element Declarations				      ===== -->
+    <!-- ====================================================================== -->
+    <!-- =====  Root Element Declaration				      ===== -->
+    <!-- ====================================================================== -->
+    <xsd:element name="AccessRestrictionCode" type="clmDAFAccessRestrictionCode:AccessRestrictionCodeType"/>
+    <!-- ====================================================================== -->
+    <!-- ================ Type Definitions ============================= -->
+    <!-- =============================================================== -->
+    <!-- ===== Code List AccessRestriction: AccessRestriction Code ===== -->
+    <!-- =============================================================== -->
+    
+    <xsd:simpleType name="AccessRestrictionCodeType">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="fr">
+                <ccts:Name>Table des codes pour la restriction d'accès</ccts:Name>
+                <ccts:Description>Les différentes valeurs de cette table sont tirées de la loi archive.</ccts:Description>
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:token">
+            
+        </xsd:restriction>
+    </xsd:simpleType>
+</xsd:schema>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration scan="true">
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+    
+    <logger name="fr.progilone.pgcn" level="TRACE"/>
+
+    <logger name="org.hibernate.engine.internal.StatefulPersistenceContext" level="ERROR" />    
+    <!-- Pour faire apparaître les requêtes hibernate, mettre à DEBUG -->
+    <logger name="org.hibernate.SQL" level="DEBUG"/>
+    <!-- Pour faire apparaître les valeurs des paramètres des requêtes, mettre à TRACE -->
+    <logger name="org.hibernate.type" level="OFF"/>
+
+    <root level="WARN">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
+</configuration>

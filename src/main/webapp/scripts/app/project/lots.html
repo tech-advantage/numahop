@@ -1,0 +1,33 @@
+<div class="panel-body" ng-controller="ProjectLotsCtrl as lotCtrl" ng-init="lotCtrl.init(projectId)">
+    <div class="table-responsive col-sm-12">
+        <table class="table table-condensed table-hover" sem-table>
+            <thead>
+            <tr>
+                <th sem-table-sorton="label"><span translate>Nom du lot</span></th>
+                <th sem-table-sorton="type"><span translate>Type</span></th>
+                <th sem-table-sorton="status"><span translate>Statut</span></th>
+                <th sem-table-sorton="requiredFormat"><span translate>Format demandé</span></th>
+                <th style="width: 40px" translate>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="lot in lotCtrl.lots | orderBy:orderBy">
+                <td>{{lot.label}}</td>
+                <td>{{translate.lotType[lot.type]}}</td>
+                <td>{{translate.lotStatus[lot.status]}}</td>
+                <td>{{lot.requiredFormat}}</td>
+                <td class="text-right">
+                    <button type="button" class="btn btn-sem2 btn-xs"
+                            ng-show="!lotCtrl.isLotLocked(lot)"
+                            uib-tooltip="{{::'Démarrer le workflow' | translate}}"
+                            sem-roles-allowed="LOT_HAB4"
+                            ng-click="lotCtrl.validate(lot)">
+                        <span class="glyphicon-halflings glyphicon-check"></span>
+                    </button>
+                    <numa-custom-link numa-link-type="lot" numa-link-parameters='{"id": lot.identifier}'></numa-custom-link>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

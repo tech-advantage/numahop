@@ -1,0 +1,106 @@
+# Disable the spring security default configuration from spring-boot-actuator
+management.security.enabled: false
+security.basic.enabled: false
+management.context-path: /actuator
+management.health.mail.enabled: false
+
+# Disable Jolokia - An http/json bridge for remote JMX access
+endpoints:
+    jolokia.enabled: false
+    logfile.external-file: ${logging.file}.log
+
+# security configuration (this key should be unique for your application, and kept secret)
+jhipster.security.rememberme.key: $$$$_!!change_me!!_$$$$
+
+instance:
+    libraries: library_bibliotheque 
+    # library_identifier1, library_identifier2, etc..
+
+info:
+    app:
+        name: "@project.name@"
+        description: "@project.description@"
+        version: "@project.version@"
+    build:
+        artifact: "@project.artifactId@"
+        name: "@project.name@"
+        description: "@project.description@"
+        version: "@project.version@"
+
+async:
+    corePoolSize: 2
+    maxPoolSize: 10
+    queueCapacity: 10000
+
+server:
+    compression:
+        enabled: true
+
+spring:
+    mail:
+        host: localhost
+        port: 25
+        user:
+        password:
+        protocol: smtp
+        tls: false
+        auth: false
+        activated: false
+        from: contact-numahop@progilone.fr
+
+    messageSource:
+        cacheSeconds: 1
+
+    jackson:
+        serialization:
+            use_equality_for_object_id: true
+            write_dates_as_timestamps: false
+            write_empty_json_arrays: true
+
+    # Gestion des upload (taille max)
+    http:
+        multipart:
+            file-size-threshold: 10MB
+            maxFileSize: 100MB
+            maxRequestSize: 200MB
+images:
+    format:
+        default:
+           thumbHeight: 150
+           thumbWidth:  150
+           viewHeight:  1417
+           viewWidth:   982
+           printHeight: 2835
+           printWidth:  1964
+
+elasticsearch:
+    bulk_size: 1000
+    index:
+        name: pgcn
+
+report:
+    imagePath: images
+
+# Services externes
+services:
+    cines:
+        updating:
+            cronenabled: false
+
+cron:
+    removeOldTokens: 0 0 0 * * ?
+    cleanLocks: 0 30 0 * * *
+    rebuildIndex: 0 40 0 * * *
+    cleanDeliveryFiles: 0 0 1 * * ?
+    cinesExport: 0 30 1 * * ?
+    cleanTemporaryFiles: 0 0 2 * * ?
+    internetArchiveExport: 0 30 2 * * ?
+    gestDeliveredFiles: 0 30 3 * * ?
+    cinesUpdateStatus: 0 10 * * * *
+    omekaExport: 0 0 3 * * ?
+    cleanExportCaches: 0 30 6 * * ?
+ 
+admin:
+    login: admin
+    password: $2a$10$xsRQ/2khgr0sblEfy6SjTujCnI3jGxj6q.yNQkKKaz4.ZIsuBT05O
+    # default pwd = password - override on each server conf!!!

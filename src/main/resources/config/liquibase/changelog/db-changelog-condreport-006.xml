@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="pgcn-condition-report-006" author="progilone">
+
+        <!-- Nouvelle colonne type sur doc_condreport_binding_property -->
+        <addColumn tableName="doc_condreport_binding_property">
+            <column name="type" type="varchar(255)"/>
+            <column name="code" type="varchar(255)"/>
+        </addColumn>
+        <sql>UPDATE doc_condreport_binding_property SET type = 'BINDING'</sql>
+        <sql>UPDATE doc_condreport_binding_property SET type = 'DESCRIPTION', allow_comment = 1 WHERE identifier='3fb78836-a443-4210-a78a-c80b71c81f7c'</sql>
+        <addNotNullConstraint tableName="doc_condreport_binding_property" columnName="type" columnDataType="varchar(255)"/>
+
+        <!-- Copie des descriptions générales dans doc_condreport_binding_property -->
+        <sql>
+            INSERT INTO doc_condreport_binding_property(identifier, code, label, type, allow_comment, version) VALUES
+            ('READING_DIRECTION', 'READING_DIRECTION', 'Sens de lecture', 'DESCRIPTION', 0, 0),
+            ('PACKAGING', 'PACKAGING', 'Conditionnement de conservation', 'DESCRIPTION', 0, 0),
+            ('DOCUMENT_TYPE', 'DOCUMENT_TYPE', 'Type de documents', 'DESCRIPTION', 0, 0),
+            ('DOCUMENT_FORMAT', 'DOCUMENT_FORMAT', 'Format', 'DESCRIPTION', 0, 0),
+            ('NUMBERING', 'NUMBERING', 'Numérotation', 'NUMBERING', 0, 0),
+            ('NUMBERING_AUTRE', 'NUMBERING_AUTRE', 'Autres pièces', 'NUMBERING', 0, 0),
+            ('MAX_ANGLE', 'MAX_ANGLE', 'Angle d''ouverture maximale', 'VIGILANCE', 1, 0),
+            ('USE_PANE', 'USE_PANE', 'Usage de la vitre', 'VIGILANCE', 1, 0),
+            ('BODY', 'BODY', 'Corps d''ouvrage', 'VIGILANCE', 1, 0),
+            ('BODY_CONDITION', 'BODY_CONDITION', 'État général du corps d''ouvrage', 'VIGILANCE', 1, 0),
+            ('PAPER_QUALITY', 'PAPER_QUALITY', 'Qualité du papier', 'VIGILANCE', 1, 0),
+            ('STAIN', 'STAIN', 'Tâches et décolorations', 'VIGILANCE', 1, 0),
+            ('CONTENT', 'CONTENT', 'Contenu', 'VIGILANCE', 1, 0),
+            ('USE_CACHE', 'USE_CACHE', 'Utilisation d''un cache', 'VIGILANCE', 1, 0)
+        </sql>
+        <sql>
+            INSERT INTO doc_condreport_binding_value(identifier, label, property, version)
+            SELECT identifier, label, property, 0 FROM doc_condreport_desc_value
+        </sql>
+        <sql>
+            INSERT INTO doc_condreport_binding(identifier, property, value, comment, detail, version)
+            SELECT identifier, property, value, comment, detail, version FROM doc_condreport_desc
+        </sql>
+
+        <sql>
+            UPDATE doc_condreport_property_config SET bind_property = desc_property WHERE desc_property IS NOT NULL
+        </sql>
+
+        <!-- Suppression des ancienns tables -->
+        <dropTable tableName="doc_condreport_desc"/>
+        <dropTable tableName="doc_condreport_desc_value"/>
+        <dropColumn tableName="doc_condreport_property_config" columnName="desc_property"/>
+
+        <!-- Renommage -->
+        <renameTable oldTableName="doc_condreport_binding" newTableName="doc_condreport_desc"/>
+        <renameTable oldTableName="doc_condreport_binding_property" newTableName="doc_condreport_desc_property"/>
+        <renameTable oldTableName="doc_condreport_binding_value" newTableName="doc_condreport_desc_value"/>
+        <renameColumn tableName="doc_condreport_property_config" oldColumnName="bind_property" newColumnName="desc_property"
+                      columnDataType="varchar(191)"/>
+
+        <!-- Déplacement de la valeur d'assurance -->
+        <addColumn tableName="doc_condreport_detail">
+            <column name="insurance" type="double"/>
+        </addColumn>
+        <sql>
+            UPDATE doc_condreport_detail d
+            INNER JOIN doc_condreport r ON r.identifier = d.report
+            SET d.insurance = r.insurance
+        </sql>
+        <dropColumn tableName="doc_condreport" columnName="insurance"/>
+
+    </changeSet>
+</databaseChangeLog>

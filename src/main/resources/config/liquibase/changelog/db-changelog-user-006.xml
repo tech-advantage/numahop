@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Constats d'état: droit d'administration supplémentaire -->
+    <changeSet author="progilone" id="pgcn-create-user-6">
+        <sql>
+            UPDATE user_authorization
+            SET label='Gestion des constats d''état: configuration par bibliothèque',
+                description='Habilitation à la gestion des constats d''état: configuration par défaut pour chaque bibliothèque'
+            WHERE identifier='COND-REPORT-HAB5'
+        </sql>
+        <sql>
+            INSERT INTO user_authorization(module,identifier,code,label,description,version)
+            VALUES ('ADMINISTRATION','COND-REPORT-HAB6','COND-REPORT-HAB6','Gestion des constats d''état: Administration','Habilitation à la gestion des constats d''état: administration des valeurs',0)
+        </sql>
+        <sql>
+            INSERT INTO user_role_authorization(user_authorization, role)
+            SELECT 'COND-REPORT-HAB5', identifier FROM user_role WHERE code = 'RESP-PROJ'
+        </sql>
+        <sql>
+            INSERT INTO user_role_authorization(user_authorization, role)
+            SELECT 'COND-REPORT-HAB6', identifier FROM user_role WHERE code = 'SUPER-ADM'
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

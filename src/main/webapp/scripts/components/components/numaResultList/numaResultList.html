@@ -1,0 +1,40 @@
+<div class="panel panel-loan">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            <div class="form-inline pull-right">
+                <span class="label" ng-show="$ctrl.pagination.items.length === 0" translate>
+                    Aucun résultat
+                </span>
+                <span class="label" ng-show="$ctrl.pagination.items.length > 0" 
+                        translate translate-n="$ctrl.pagination.totalItems" translate-plural="{{$count}} résultats">
+                    {{$count}} résultat
+                </span>
+                <select class="form-control input-sm hidden-xs" style="height: 20px; font-family: sans-serif, FontAwesome" 
+                        ng-model="$ctrl.pagination.sort"
+                        ng-options="s.value as s.label group by s.group for s in $ctrl.sortOptions" 
+                        ng-change="$ctrl.reinitPage()">
+                </select>
+            </div>
+            <span ng-click="$ctrl.selectTitle()">{{ ::$ctrl.title }}</span>
+        </h3>
+    </div>
+    <!-- Sélection -->
+    <div ng-transclude="selection"></div>
+    <!-- Liste des résultats  -->
+    <div class="list-group" ng-show="$ctrl.pagination.items.length > 0" ng-transclude></div>
+    <!-- Pagination -->
+    <div class="panel-body" ng-show="$ctrl.pageSize && $ctrl.pagination.totalItems > $ctrl.pageSize">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="text-center">
+                    <ul class="pagination-sm no-margin" uib-pagination 
+                        ng-model="$ctrl.pagination.page" 
+                        num-pages="$ctrl.pagination.totalPages" 
+                        total-items="$ctrl.pagination.totalItems" 
+                        items-per-page="$ctrl.pageSize"  
+                        ng-change="$ctrl.getPage()"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

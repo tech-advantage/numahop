@@ -1,0 +1,71 @@
+.angular-ui-tree-empty {
+    border: 1px dashed #bbb;
+    min-height: 100px;
+    background-color: #e5e5e5;
+    background-image: -webkit-linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff), -webkit-linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff);
+    background-image: -moz-linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff), -moz-linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff);
+    background-image: linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff), linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff);
+    background-size: 60px 60px;
+    background-position: 0 0, 30px 30px;
+}
+
+.angular-ui-tree-handle {
+    color: $sid-text;
+    padding: 2px 2px;
+    font-weight: normal;
+    font-size: small;
+}
+
+.angular-ui-tree-entity-node {
+    font-weight: bold;
+}
+
+.angular-ui-tree-handle .row {
+    padding-bottom: 0px;
+}
+
+.angular-ui-tree-handle a {
+    font-weight: normal;
+}
+
+.angular-ui-tree-placeholder {
+    border: 1px dashed $sid-fourth-color;
+}
+
+.tree-placeholder {
+    background: #f0f9ff;
+    border: 2px dashed #bed2db;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.active-property {
+	    background-color: $sid-fourth-color;
+	    color: white;
+}
+
+.btn-tree {
+    font-size: 10px;
+}
+
+.tree-row {
+    min-height: $sid-min-height-field;
+}
+
+.tree-row-deleted {
+    color: gray;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

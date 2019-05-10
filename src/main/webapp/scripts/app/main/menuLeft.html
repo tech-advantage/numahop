@@ -1,0 +1,99 @@
+<div class="button-toggle">
+    <!--<a class="link-toggle">-->
+        <!--<span class="glyphicon-regular show-lines"></span>-->
+    <!--</a>-->
+</div>
+<ul id="menuRoot" class="nav nav-pills nav-stacked">
+    <li sem-roles-allowed="DOC_UNIT_HAB0">
+        <a data-toggle="dropdown" data-parent="#menuRoot" href="#menucataloging" onclick="event.preventDefault();">
+            <span class="menu-label" translate>Documents</span> <span class="glyphicon syrtis-icon-books-02 " tooltip-placement="auto right" uib-tooltip="{{::'Documents' | translate}}"></span>
+        </a>
+        <ul id="menucataloging" class="dropdown-menu dropright">
+            <li class="dropdown-header">Gestion unitaire</li>
+            <li><a href="#/document/docunit" translate>Unités documentaires</a></li>
+            <li><a href="#/document/record" translate>Notices</a></li>
+            <li class="divider" sem-roles-allowed="DOC_UNIT_HAB2"/>
+            <li class="dropdown-header" sem-roles-allowed="DOC_UNIT_HAB2">Opérations groupées</li>
+            <li><a href="#/document/docunit_list"  sem-roles-allowed="DOC_UNIT_HAB2" translate>Unités documentaires</a></li>
+            <li><a href="#/document/record_list"  sem-roles-allowed="DOC_UNIT_HAB2" translate>Notices</a></li>
+            <li><a href="#/document/condreport_list"  sem-roles-allowed="DOC_UNIT_HAB2" translate>Constats d'état</a></li>
+            <li class="divider" sem-roles-allowed="EXC_HAB0" />
+            <li><a href="#/document/import" sem-roles-allowed="EXC_HAB0" translate>Imports</a></li>
+        </ul>
+    </li>
+    <li sem-roles-allowed="DOC_UNIT_HAB0">
+        <a href="#/search/advanced">
+            <span class="menu-label" translate>Recherche avancée</span> <span class="glyphicon-halflings glyphicon-search" tooltip-placement="auto right" uib-tooltip="{{::'Recherche avancée' | translate}}"></span>
+        </a>
+    </li>
+    <li sem-roles-allowed="LIB_HAB5, USER_HAB0, ROLE_HAB0">
+        <a data-toggle="dropdown" data-parent="#menuRoot" href="#menuUsagers" onclick="event.preventDefault();">
+            <span class="menu-label" translate>Utilisateurs</span> <span class="glyphicon syrtis-icon-head-01" tooltip-placement="auto right" uib-tooltip="{{::'Utilisateurs' | translate}}"></span>
+        </a>
+        <ul id="menuUsagers" class="dropdown-menu dropright">
+            <li sem-roles-allowed="USER_HAB0"><a href="#/user/user" translate>Utilisateurs</a></li>
+            <li sem-roles-allowed="USER_HAB0,LIB_HAB5"><a href="#/library/library" translate>Bibliothèques</a></li>
+            <li sem-roles-allowed="ROLE_HAB0"><a href="#/user/role" translate>Profils</a></li>
+        </ul>
+    </li>
+    <li sem-roles-allowed="LOT_HAB3, PROJ_HAB7, PROJ_HAB0, TRA_HAB3, DEL_HAB0, DEL_HAB2">
+        <a data-toggle="dropdown" data-parent="#menuRoot" href="#menuProjets" onclick="event.preventDefault();">
+            <span class="menu-label" translate>Projets</span> <span class="glyphicon syrtis-icon-books-01" tooltip-placement="auto right" uib-tooltip="{{::'Projets' | translate}}"></span>
+        </a>
+        <ul id="menuProjets" class="dropdown-menu dropright">
+            <li class="dropdown-header">Gestion unitaire</li>
+            <li sem-roles-allowed="PROJ_HAB7,PROJ_HAB0"><a href="#/project/project" translate>Projets</a></li>
+            <li sem-roles-allowed="LOT_HAB3"><a href="#/lot/lot" translate>Lots</a></li>
+            <li sem-roles-allowed="TRA_HAB3"><a href="#/train/train" translate>Trains</a></li>
+            <li sem-roles-allowed="DEL_HAB0, DEL_HAB2"><a href="#/delivery/delivery" translate>Livraisons</a></li>
+            <li sem-roles-allowed="DEL_HAB0, DEL_HAB2"><a href="#/multilotsdelivery/multidelivery" translate>Livraisons multi-lots</a></li>
+            <li class="divider" sem-roles-allowed="LOT_HAB1"/>
+            <li class="dropdown-header" sem-roles-allowed="LOT_HAB1">Opérations groupées</li>
+            <li><a href="#/lot/lot_list" sem-roles-allowed="LOT_HAB1" translate>Lots</a></li>
+        </ul>
+    </li>
+    <li sem-roles-allowed="CHECK_HAB4">
+        <a data-toggle="dropdown" data-parent="#menuRoot" href="#menuAcquisitions" onclick="event.preventDefault();" >
+            <span class="menu-label sem-auto-hide" translate>Contrôles</span> <span class="glyphicon-halflings glyphicon-check" tooltip-placement="auto right" uib-tooltip="{{::'Contrôles' | translate}}"></span>
+        </a>
+        <ul id="menuAcquisitions" class="dropdown-menu dropright">
+            <li><a href="#/checks/checks/" translate>Contrôles</a></li>
+        </ul>
+    </li>
+    <li>
+        <a data-toggle="dropdown" data-parent="#menuRoot" href="#menuStats" onclick="event.preventDefault();">
+            <span class="menu-label" translate>Statistiques</span> <span class="fa fa-pie-chart" tooltip-placement="auto right" uib-tooltip="{{::'Statistiques' | translate}}"></span>
+        </a>
+        <ul id="menuStats" class="dropdown-menu dropright">
+            <li><a href="#/statistics/project/" sem-roles-allowed="PROJ_HAB0" translate>Projets</a></li>
+            <li><a href="#/statistics/doc_published/" sem-roles-allowed="DEL_HAB8" translate>Documents publiés</a></li>
+            <li><a href="#/statistics/doc_rejected/" sem-roles-allowed="DEL_HAB8" translate>Documents rejetés</a></li>
+            <li class="divider" sem-roles-allowed="WORKFLOW_HAB4"></li>
+            <li class="dropdown-header" sem-roles-allowed="WORKFLOW_HAB4" translate>États d'avancement</li>
+            <li><a href="#/statistics/workflow_dlv/" sem-roles-allowed="WORKFLOW_HAB4" translate>Livraisons</a></li>
+            <li><a href="#/statistics/workflow_doc/" sem-roles-allowed="WORKFLOW_HAB4" translate>Unités documentaires</a></li>
+            <li class="divider" sem-roles-allowed="PROJ_HAB0,DEL_HAB8"></li>
+            <li class="dropdown-header" sem-roles-allowed="DEL_HAB8" translate>Moyennes</li>
+            <li sem-roles-allowed="DEL_HAB8"><a href="#/statistics/workflow_average/" translate>Général</a></li>
+            <li sem-roles-allowed="DEL_HAB8"><a href="#/statistics/workflow_provider/" translate>Prestataires</a></li>
+            <li sem-roles-allowed="DEL_HAB8"><a href="#/statistics/workflow_state/" translate>Étapes de workflow</a></li>
+            <li sem-roles-allowed="DEL_HAB8"><a href="#/statistics/workflow_user/" translate>Utilisateurs</a></li>
+            <li class="divider" sem-roles-allowed="DEL_HAB8"></li>
+            <li class="dropdown-header" sem-roles-allowed="DEL_HAB8" translate>Tableaux de bord</li>
+            <li sem-roles-allowed="DEL_HAB8"><a href="#/statistics/dashboard_user/" translate>Utilisateurs</a></li>
+            <li sem-roles-allowed="DEL_HAB8"><a href="#/statistics/dashboard_profile/" translate>Profils</a></li>
+            <li sem-roles-allowed="DEL_HAB8"><a href="#/statistics/dashboard_train/" translate>Trains</a></li>
+            <li sem-roles-allowed="DEL_HAB8"><a href="#/statistics/dashboard_progress/" translate>Avancement des projets</a></li>
+        </ul>
+    </li>
+    <li sem-roles-allowed="DOC_UNIT_HAB5,CHECK_HAB0,TPL_HAB0,WORKFLOW_HAB4,SUPER_ADMIN,EXC_HAB0,FTP_HAB0,CONF_INTERNET_ARCHIVE_HAB0,MAIL_HAB0,SFTP_HAB0,MAP_HAB0">
+        <a href="#/administration/appconfiguration">
+            <span class="menu-label sem-auto-hide" translate>Administration</span> <span class="glyphicon syrtis-icon-prefs" tooltip-placement="auto right" uib-tooltip="{{::'Administration' | translate}}"></span>
+        </a>
+    </li>
+    <li>
+        <a ng-href="#/help?tag={{location.path()}}">
+            <span class="menu-label sem-auto-hide" translate>Aide</span> <span class="glyphicon-regular circle-question-mark" tooltip-placement="auto right" uib-tooltip="{{::'Aide' | translate}}"></span>
+        </a>
+    </li>
+</ul>

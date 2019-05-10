@@ -1,0 +1,28 @@
+<div class="table-responsive">
+    <table class="table table-striped table-hover margin-b5">
+    <thead>
+        <tr>
+            <th class="text-left" ng-repeat="col in $ctrl.columns">{{::col.name | translate}}</th>
+            <th class="text-left" ng_if="$ctrl.showState" translate>Statut</th>
+            <th class="text-left" translate>Date</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="rev in $ctrl.revisions | orderBy:['-timestamp']">
+            <td class="text-left" ng-repeat="col in $ctrl.columns">
+                {{ ::rev[col.field] }}
+            </td>
+            <td class="text-left nowrap" ng_if="$ctrl.showState">
+                {{ ::$ctrl.getStatusLabel(rev.status) }}
+            </td>
+            <td class="text-left nowrap">
+                {{ ::rev.timestamp | moment }}
+            </td>
+            <td class="text-right">
+                <numa-custom-link numa-link-type="{{::$ctrl.type}}" numa-link-parameters="{id: rev.identifier}"></numa-custom-link>
+            </td>
+        </tr>
+    </tbody>
+    </table>
+</div>

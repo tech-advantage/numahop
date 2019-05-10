@@ -1,0 +1,243 @@
+<div class="row layout-columns">
+    <!-- Filtres -->
+    <div ng-include="'scripts/components/templates/common/docUnitListFilters.html'" ng-if="!mainCtrl.isFilteredByIds"></div>
+    <div class="col-sm-12 col-layout-columns">
+        <div class="panel panel-column-2 panel-column-first panel-column-end">
+            <div class="panel-heading" style="margin-left: 0px" ng-if="mainCtrl.isFilteredByIds"></div>
+            <div class="panel-heading" ng-if="!mainCtrl.isFilteredByIds">
+                <!-- Barre de recherche -->
+                <button type="button" class="btn btn-sem2 btn-xs pull-right" ng-click="mainCtrl.reinitFilters()" uib-tooltip="{{::'Réinitialiser les filtres de la recherche' | translate}}">
+                    <span class="glyphicon-halflings glyphicon-refresh"></span>
+                </button>
+                <div class="input-group padding-r20">
+                    <input class="form-control sem-input-xs" type="text" id="searchInput" ng-model="mainCtrl.searchRequest" sem-enter-key="mainCtrl.search()"
+                    />
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-sem2 btn-xs" ng-click="mainCtrl.search()" uib-tooltip="{{::'Rechercher' | translate}}">
+                            <span class="glyphicon syrtis-icon-loupe"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="well well-sm" ng-show="mainCtrl.loaded && mainCtrl.pagination.items.length == 0" translate>
+                    Aucune unité documentaire trouvée
+                </div>
+                <div class="well well-sm" ng-show="mainCtrl.loaded && mainCtrl.pagination.items.length > 0" translate translate-n="mainCtrl.pagination.totalItems"
+                    translate-plural="{{$count}} unités documentaires trouvées">
+                    1 unité documentaire trouvée
+                </div>
+                <div class="form-inline">
+                    <button type="button" ng-hide="mainCtrl.pagination.items.length == 0" class="btn btn-sem2 btn-xs" ng-click="mainCtrl.checkAll()">
+                        {{::"Tout cocher" | translate}}
+                    </button>
+                    <button type="button" ng-hide="mainCtrl.pagination.items.length == 0" class="btn btn-sem2 btn-xs" ng-disabled="mainCtrl.selectedLength === 0"
+                        ng-click="mainCtrl.uncheckAll()">
+                        {{::"Tout décocher" | translate}}
+                    </button>
+                    <select id="pageSize" name="pageSize" class="form-control input-sm" ng-hide="mainCtrl.pagination.items.length == 0" ng-options="size.value as size.label for size in mainCtrl.sizeOptions"
+                        ng-model="mainCtrl.pageSize" ng-change="mainCtrl.changePageSize()">
+                    </select>
+                    <div class="btn-group pull-right" style="display: inline" uib-dropdown ng-if="!mainCtrl.action">
+                        <button type="button" class="btn btn-sem2 btn-xs" ng-disabled="mainCtrl.selectedLength === 0" uib-dropdown-toggle>
+                            <b class="caret"></b>&nbsp;{{ ::'Actions sur la sélection' | translate }}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right" uib-dropdown-menu role="menu">
+                            <!-- Ajouter la sélection à une projet / lot / train -->
+                            <li role="menuitem">
+                                <a ng-click="mainCtrl.addSelectionToProject()" class="btn-xs">
+                                    <span class="glyphicon-halflings glyphicon-plus"></span>
+                                    {{::'Modifier un projet / lot / train' | translate}}
+                                </a>
+                            </li>
+                            <!-- Ajouter la sélection à un nouveau projet -->
+                            <li role="menuitem">
+                                <a ng-click="mainCtrl.addSelectionToNewProject()" class="btn-xs">
+                                    <span class="glyphicon-halflings glyphicon-plus"></span>
+                                    {{::'Ajouter à un nouveau projet' | translate}}
+                                </a>
+                            </li>
+                            <!-- Ajouter la sélection à un nouveau lot -->
+                            <li role="menuitem">
+                                <a ng-click="mainCtrl.addSelectionToNewLot()" class="btn-xs">
+                                    <span class="glyphicon-halflings glyphicon-plus"></span>
+                                    {{::'Ajouter à un nouveau lot' | translate}}
+                                </a>
+                            </li>
+                            <!-- Ajouter la sélection à un nouveau train -->
+                            <li role="menuitem">
+                                <a ng-click="mainCtrl.addSelectionToNewTrain()" class="btn-xs">
+                                    <span class="glyphicon-halflings glyphicon-plus"></span>
+                                    {{::'Ajouter à un nouveau train' | translate}}
+                                </a>
+                            </li>
+                            <!-- Ajouter la sélection à une unité documentaire parente -->
+                            <li role="menuitem">
+                                <a ng-click="mainCtrl.addSelectionToDocUnit()" class="btn-xs">
+                                    <span class="glyphicon-halflings glyphicon-plus"></span>
+                                    {{::'Ajouter à une unité documentaire' | translate}}
+                                </a>
+                            </li>
+                            <li role="separator" class="divider" sem-roles-allowed="COND_REPORT_HAB1"></li>
+                            <li role="menuitem">
+                                <a ng-click="mainCtrl.unlink()" class="btn-xs">
+                                    <span class="glyphicon-halflings glyphicon-remove"></span>
+                                    {{::'Retirer du projet / lot / train' | translate}}
+                                </a>
+                            </li>
+                            <li role="separator" class="divider" sem-roles-allowed="COND_REPORT_HAB1"></li>
+                            <!-- Modèle d'import de constat d'état -->
+                            <li role="menuitem" sem-roles-allowed="COND_REPORT_HAB1">
+                                <a ng-click="mainCtrl.downloadCondReportTemplate()" class="btn-xs">
+                                    <span class="fa fa-download"></span>
+                                    {{::'Modèle d\'import de constats d\'état' | translate}}
+                                </a>
+                            </li>
+                            <li role="menuitem">
+                                <a ng-click="mainCtrl.massExport()" class="btn-xs">
+                                    <span class="glyphicon-halflings glyphicon-export"></span>
+                                    {{::'Export de masse' | translate}}
+                                </a>
+                            </li>
+                            <li role="menuitem">
+                                <a ng-click="mainCtrl.massCines()" class="btn-xs">
+                                    <span class="glyphicon-halflings glyphicon-export"></span>
+                                    {{::'Archivage CINES' | translate}}
+                                </a>
+                            </li>
+                            <li role="menuitem">
+                                <a ng-click="mainCtrl.massOmeka()" class="btn-xs">
+                                    <span class="glyphicon-halflings glyphicon-export"></span>
+                                     {{::'Export Omeka' | translate}}</a>
+                        </li>
+                            <li role="menuitem">
+                                <a ng-click="mainCtrl.massIA()" class="btn-xs">
+                                    <span class="glyphicon-halflings glyphicon-export"></span>
+                                    {{::'Diffusion Internet Archive' | translate}}
+                                </a>
+                            </li>
+                            <li role="separator" class="divider" sem-roles-allowed="DOC_UNIT_HAB2"></li>
+                            <!-- Modifier la sélection -->
+                            <li role="menuitem" sem-roles-allowed="DOC_UNIT_HAB2">
+                                <a ng-click="mainCtrl.updateSelection()" class="btn-xs">
+                                    <span class="glyphicon-halflings glyphicon-edit"></span>
+                                    {{::'Modifier la sélection' | translate}}
+                                </a>
+                            </li>
+                            <li role="separator" class="divider" sem-roles-allowed="DOC_UNIT_HAB3"></li>
+                            <!-- Suppression de la sélection -->
+                            <li role="menuitem" sem-roles-allowed="DOC_UNIT_HAB3">
+                                <a ng-click="mainCtrl.deleteSelection()" class="btn-xs">
+                                    <span class="glyphicon-halflings glyphicon-trash"></span>
+                                    {{::'Supprimer la sélection' | translate}}
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- Import de constat d'état -->
+                    <div class="pull-right margin-r5" style="display: inline" ng-if="!mainCtrl.action && isAuthorized(userRoles.COND_REPORT_HAB1)">
+                        <button type="button" class="btn btn-sem2 btn-xs" ng-click="mainCtrl.uploadCondReport()">
+                            <span class="fa fa-upload"></span>
+                            {{::'Importer des constats d\'état' | translate}}
+                        </button>
+                    </div>
+                    <!-- Callback -->
+                    <div class="pull-right" style="display: inline" ng-if="mainCtrl.action">
+                        <button type="button" class="btn btn-sem3 btn-xs" ng-click="mainCtrl.action.cancel()">
+                            <span class="glyphicon-regular unshare"></span>&nbsp;{{ mainCtrl.action.cancelLabel }}
+                        </button>
+                        <button type="button" class="btn btn-sem2 btn-xs" ng-disabled="mainCtrl.selectedLength === 0" ng-click="mainCtrl.action.callback()">
+                            <span class="glyphicon-halflings glyphicon-plus"></span>&nbsp;{{ mainCtrl.action.label }}
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Liste des entités  -->
+                <div class="table-responsive" ng-show="mainCtrl.pagination.items.length > 0">
+                    <table class="table table-hover sem-list" sem-table="mainCtrl.sortModel" sem-table-onsort="mainCtrl.search(mainCtrl.sortModel)">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th class="text-center" sem-table-sorton="pgcnId">{{::"Identifiant" | translate }}</th>
+                                <th class="text-center" sem-table-sorton="label">{{::"Nom" | translate }}</th>
+                                <th class="text-right" sem-table-sorton="project.name">{{::"Projet" | translate }}</th>
+                                <th class="text-right" sem-table-sorton="lot.label">{{::"Lot" | translate }}</th>
+                                <th class="text-right" sem-table-sorton="train.label">{{::"Train" | translate }}</th>
+                                <th class="text-right" sem-table-sorton="parent.pgcnId">{{::"Unité doc. mère" | translate }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in mainCtrl.pagination.items">
+                                <td class="select-col">
+                                    <div class="checkbox checkbox-sid-main no-margin">
+                                        <input type="checkbox" ng-model="item.checked" ng-change="mainCtrl.changeItem(item)" />
+                                        <label></label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <a ng-href="{{::mainCtrl.getUrl(item)}}">
+                                        {{ ::item.pgcnId }}
+                                    </a>
+                                </td>
+                                <td>
+                                    <a ng-href="{{::mainCtrl.getUrl(item)}}" uib-tooltip="{{::item.label}}" tooltip-enable="item.label.length > 30">
+                                        {{ ::item.label | characters:30 }}
+                                    </a>
+                                </td>
+                                <td class="text-right">
+                                    <div ng-if="item.project">
+                                        <a ng-href="#/project/project?id={{ ::item.project.identifier }}">
+                                            {{::item.project.name}}
+                                        </a>
+                                        <button type="button" class="btn btn-sem2 btn-xs" ng-click="mainCtrl.removeProject(item, mainCtrl.search)" ng-if="mainCtrl.canRemoveProject(item)"
+                                            uib-tooltip="{{::'Retirer du projet' | translate}}">
+                                            <span class="glyphicon-halflings glyphicon-trash"></span>
+                                        </button>
+                                    </div>
+                                </td>
+                                <td class="text-right">
+                                    <div ng-if="item.lot">
+                                        <a ng-href="#/lot/lot?id={{ ::item.lot.identifier }}">
+                                            {{::item.lot.label}} 
+                                        </a>
+                                        <button type="button" class="btn btn-sem2 btn-xs" ng-click="mainCtrl.removeLot(item, mainCtrl.search)" ng-if="mainCtrl.canRemoveLot(item)" 
+                                            uib-tooltip="{{::'Retirer du lot' | translate}}">
+                                            <span class="glyphicon-halflings glyphicon-trash"></span>
+                                        </button>
+                                    </div>
+                                </td>
+                                <td class="text-right">
+                                    <div ng-if="item.train">
+                                        <a ng-href="#/train/train?id={{ ::item.train.identifier }}">
+                                            {{::item.train.label}}
+                                        </a>
+                                        <button type="button" class="btn btn-sem2 btn-xs" ng-click="mainCtrl.removeTrain(item, mainCtrl.search)" ng-if="mainCtrl.canRemoveTrain(item)"
+                                            uib-tooltip="{{::'Retirer du train' | translate}}">
+                                            <span class="glyphicon-halflings glyphicon-trash"></span>
+                                        </button>
+                                    </div>
+                                </td>
+                                <td class="text-right">
+                                    <div ng-if="item.parentIdentifier">
+                                        <!-- Lien vers l'unité documentaire parente -->
+                                        <a ng-href="/#/document/all_operations/{{::item.parentIdentifier}}" uib-tooltip="{{::item.parentLabel}}">
+                                            {{ ::item.parentPgcnId }} {{ ::item.parentLabel | characters:30 }}
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row" ng-show="mainCtrl.pagination.size && mainCtrl.pagination.totalItems > mainCtrl.pagination.size">
+                    <div class="col-sm-12">
+                        <div class="text-center">
+                            <ul uib-pagination num-pages="mainCtrl.pagination.totalPages" total-items="mainCtrl.pagination.totalItems" items-per-page="mainCtrl.pagination.size"
+                                ng-change="mainCtrl.getPage()" ng-model="mainCtrl.pagination.page" class="pagination-sm"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

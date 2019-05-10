@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    
+    <!-- Mise en place configuration EXPORT FTP  -->
+    <changeSet id="pgcn-create-administration-009" author="progilone">
+    
+         <createTable tableName="conf_export_ftp">
+            <column name="identifier" type="varchar(191)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="label" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="library" type="varchar(191)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="address" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="login" type="varchar(255)" />
+            <column name="password" type="varchar(255)" />
+            
+            <column name="export_view" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="export_master" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="export_thumb" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="export_aip_sip" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="export_mets" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="export_pdf" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="varchar(255)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(255)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- Clés étrangères conf_export_ftp  -->
+        <addForeignKeyConstraint baseTableName="conf_export_ftp" baseColumnNames="library" constraintName="fk_conf_conf_export_library"
+                                 referencedTableName="lib_library" referencedColumnNames="identifier"/>
+
+        <!-- Index conf_export_ftp -->
+        <createIndex tableName="conf_export_ftp" indexName="idx_conf_export_ftp_library">
+            <column name="library"/>
+        </createIndex>
+        
+        <addColumn tableName="conf_omeka">
+            <column name="address" type="varchar(255)" />
+            <column name="login" type="varchar(255)" />
+            <column name="password" type="varchar(255)" />
+        </addColumn>
+        
+        <addColumn tableName="lib_library">
+            <column name="active_configuration_export_ftp" type="varchar(191)"></column>
+        </addColumn>
+        
+        <addColumn tableName="lot_lot">
+            <column name="active_configuration_export_ftp" type="varchar(191)"></column>
+        </addColumn>
+
+        <addColumn tableName="proj_project">
+            <column name="active_configuration_export_ftp" type="varchar(191)"></column>
+        </addColumn>
+        
+        <addForeignKeyConstraint constraintName="fk_library_configuration_export_ftp"
+                                 baseTableName="lib_library" baseColumnNames="active_configuration_export_ftp"
+                                 referencedTableName="conf_export_ftp" referencedColumnNames="identifier"/>
+        <addForeignKeyConstraint constraintName="fk_project_configuration_export_ftp"
+                                 baseTableName="proj_project" baseColumnNames="active_configuration_export_ftp"
+                                 referencedTableName="conf_export_ftp" referencedColumnNames="identifier"/>
+        <addForeignKeyConstraint constraintName="fk_lot_configuration_export_ftp"
+                                 baseTableName="lot_lot" baseColumnNames="active_configuration_export_ftp"
+                                 referencedTableName="conf_export_ftp" referencedColumnNames="identifier"/>
+                                                         
+        <!-- Droits supplémentaires EXPORT FTP -->
+        <loadData encoding="UTF-8" separator=";"
+                  file="config/liquibase/numahop/user/authorization-export-ftp.csv"
+                  tableName="user_authorization"/>
+    </changeSet>
+</databaseChangeLog>

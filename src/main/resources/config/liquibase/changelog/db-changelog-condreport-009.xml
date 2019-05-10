@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+
+    <changeSet id="pgcn-condition-report-009" author="progilone">
+
+        <addColumn tableName="doc_condreport_detail">
+            <column name="position" type="integer" defaultValueNumeric="0"/>
+        </addColumn>
+
+        <sql>UPDATE doc_condreport_detail SET position = 0 WHERE type = 'LIBRARY_LEAVING'</sql>
+        <sql>UPDATE doc_condreport_detail SET position = 1 WHERE type = 'PROVIDER_RECEPTION'</sql>
+        <sql>UPDATE doc_condreport_detail SET position = 2 WHERE type = 'DIGITALIZATION'</sql>
+        <sql>UPDATE doc_condreport_detail SET position = 3 WHERE type = 'LIBRARY_BACK'</sql>
+
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,86 @@
+<div class="row layout-columns">
+    <div class="col-sm-3 col-layout-columns">
+        <div class="panel panel-column-1">
+            <div class="panel-heading">
+                <div class="pull-right">
+                    <button type="button" class="btn btn-sem2 btn-xs" ng-click="reinitFilters(true)" 
+                            uib-tooltip="{{::'Réinitialiser les filtres de la recherche' | translate}}">
+                        <span class="glyphicon-halflings glyphicon-refresh"></span>
+                    </button>
+                </div>
+                <span translate>Gestion des configurations pour Internet Archive</span>
+            </div>
+            <div class="panel-body">
+                <!-- IsActive -->
+                <div class="filter-block">
+                    <div class="filter-title">{{::'Bibliothèque' | translate}}</div>
+                    <div class="filter-element">
+                        <ui-select multiple ng-model="filters.libraries" theme="select2" on-select="doFilter()" on-remove="doFilter()" class="form-control">
+                            <ui-select-match placeholder="{{::'Bibliothèque' | translate}}">{{$item.name}}</ui-select-match>
+                            <ui-select-choices repeat="library in options.libraries | filter: $select.search track by library.identifier">
+                                <div ng-bind-html="library.name | highlight: $select.search"></div>
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-3 col-sm-offset-3 col-layout-columns">
+        <div class="panel panel-column-2">
+            <div class="panel-heading">
+                <div class="btn-group pull-right" sem-roles-allowed="CONF_INTERNET_ARCHIVE_HAB1">
+                    <button type="button" class="btn btn-sem2 btn-xs" uib-tooltip="{{::'Créer' | translate}}" ng-click="create()">
+                        <span class="glyphicon-halflings glyphicon-plus"></span>
+                    </button>
+                </div>
+                <div class="input-group padding-r20">
+                    <input class="form-control sem-input-xs" type="text" id="nameSearchInput"
+                           ng-model="filterWith" ng-keypress="applyFilter(filterWith, $event)"/>
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-sem2 btn-xs" ng-click="doFilter()" uib-tooltip="{{::'Rechercher' | translate}}">
+                            <span class="glyphicon syrtis-icon-loupe"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+            <div class="panel-body" when-scrolled="nextPage()">
+
+                <div ng-show="pagination.totalItems + newConfigurations.length > 0 && !pagination.busy" class="well well-sm" translate
+                     translate-n="pagination.totalItems + newConfigurations.length" translate-plural="{{$count}} configurations pour Internet Archive trouvées">1 configuration pour Internet Archive trouvée
+                </div>
+
+                <!-- Bibliothèques récemment créés -->
+                <div ng-show="newConfigurations.length > 0" class="col-infinite-scroll">
+                    <div class="pagination-break" translate>Récemment créées</div>
+                    <div ng-repeat="configuration in newConfigurations">
+                        <div class="list" ng-class="{active: configuration._selected}">
+                            <a ng-click="edit(configuration)">
+                                <span class="principal">{{configuration.label}}</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="well" ng-show="pagination.totalItems === 0 && newConfigurations.length === 0 && !pagination.busy"
+                     translate>Aucune configuration pour Internet Archive n'a été trouvée
+                </div>
+
+                <div>
+                    <div ng-repeat="configuration in pagination.items" class="col-infinite-scroll">
+                        <div ng-show="$index === 0 || getFirstLetter(configuration) != getFirstLetter(pagination.items[$index-1])"
+                             class="pagination-break">{{configuration.label|initial:'OTHER'}}
+                        </div>
+                        <div class="list" ng-class="{active: configuration._selected}">
+                            <a ng-click="edit(configuration)">
+                                <span class="principal">{{configuration.label}}</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div ng-show="pagination.busy" class="well well-sm" translate>Chargement en cours...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <ng-include src="configurationInclude"></ng-include>
+</div>

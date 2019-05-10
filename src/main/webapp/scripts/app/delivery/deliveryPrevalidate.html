@@ -1,0 +1,142 @@
+<div class="col-sm-8 col-sm-offset-4 col-layout-columns" ng-controller="DeliveryPrevalidateCtrl">
+    <div class="panel panel-column-3">
+        <div class="panel-heading">
+            <h5 translate>Fiche</h5>
+        </div>
+        <div class="panel-body" ng-show="loaded" id="deliveryDetails">
+            <div>
+                <div ng-if="!_createDocs && (!authorizedDelivery || emptyDocs.length > 0)">
+                    <div class="formBlock ng-scope" aria-hidden="false" style="margin-bottom: 20px;">
+                        <div class="formBlockTitle">
+                            <span translate=""><span class="warn">Attention</span></span>
+                        </div>
+                        <div class="formBlockContent">
+	                        <div class="row ng-scope">
+	                            <div class="col-xs-12">
+	                                <div class="col-xs-4">
+	                                    <label ng-if="!authorizedDelivery"><span class="alert-warn" translate>Aucun document à livrer n'a été détecté</span></label>
+	                                    <label ng-if="emptyDocs.length > 0"><span class="warn" translate>Certains documents ne contiennent aucun livrable</span></label>
+	                                </div>
+	                                <div class="col-xs-6">
+	                                    <label><span translate>Veuillez vérifier :</span></label>
+		                                <ul>
+					                        <li><span translate>l'état du workflow des documents</span></li>
+					                        <li><span translate>la présence de fichiers sur le ftp</span></li>
+					                        <li><span translate>la cohérence entre le radical et le nom du dossier sur le ftp</span></li>
+					                        <li><span translate>etc..</span></li>
+					                    </ul>
+	                                </div>
+	                            </div>
+	                        </div>
+	                    </div>
+                    </div>
+                </div>
+                
+                <div uib-accordion>
+                    <div uib-accordion-group is-open="accordions.lockedDoc">
+                        <uib-accordion-heading>
+                            <span class="pull-left glyphicon-halflings" ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordions.lockedDoc]"/>
+                            <span>{{::'Documents qui ne peuvent pas être livrés' | translate}}</span>
+                        </uib-accordion-heading>
+                        <div class="pull-left">
+                        </div>
+                        <table class="table table-condensed table-hover">
+                            <thead>
+                            <tr>
+                                <th translate>Document</th>
+                                <th translate>Statut</th>
+                                <th translate>Commentaire</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="doc in predelivery.lockedDigitalDocuments">
+                                <td>{{doc.digitalId}}</td>
+                                <td>{{semCodes['digitalDocument.' + doc.status]}}</td>
+                                <td>{{getCommentForStatus(doc.status)}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                 </div>
+                 <div uib-accordion>
+                    <div uib-accordion-group is-open="accordions.digitalDoc">
+                        <uib-accordion-heading>
+                            <span class="pull-left glyphicon-halflings" ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordions.digitalDoc]"/>
+                            <span>{{::'Documents numériques trouvés pour la livraison' | translate}}</span>
+                        </uib-accordion-heading>
+                        <div class="pull-left">
+                        </div>
+                        <table class="table table-condensed table-hover">
+                            <thead>
+                            <tr>
+                                <th translate>Document</th>
+                                <th translate>Pages</th>
+                                <th translate>Fichiers autres (métadonnées, dérivés, ..)</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="doc in predelivery.documents">
+                                <td>{{::doc.digitalId}}
+                                    <br/>
+                                    <div class="padding-t20 text-center">
+			                                <div class="btn-group btn-group-sm">
+			                                    <input bs-switch 
+			                                           ng-model="doc.includeDoc"
+			                                           type="checkbox"
+			                                           ng-change="updateIncludeDoc(doc)"
+			                                           switch-on-text="{{ onLabelActiv | translate }}"
+			                                           switch-off-text="{{ offLabelActiv | translate }}"
+			                                           switch-label-width="0px"/>
+			                                </div>
+                                    </div>
+                                </td>
+                                <td>{{::doc.pageNumber}}</td>
+                                <td>
+                                    <table class="table table-condensed">
+                                        <thead>
+                                        <tr>
+                                            <th translate>Nom du fichier</th>
+                                            <th translate>Rôle</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody> 
+                                        <tr ng-repeat="file in doc.metaDataFiles">
+                                            <td>
+                                                <div>
+                                                    <span>{{file.name}}</span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div>
+                                                    <select name="selectType" id="selectType" ng-model="file.role" class="form-control input-sm full-width">
+                                                        <option ng-repeat="(key, option) in fileType" value="{{key}}">{{option}}</option>
+                                                    </select>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="text-center column-bottom" style="margin-top: 10px;">
+                    <div class="column-bottom-button">
+                        <!-- Création / Modification -->
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-sem4" ng-click="cancel()">
+                                <span class="glyphicon-regular unshare"></span> {{::'Annuler' | translate}}
+                            </button>
+                            <button type="button" class="btn btn-sem2" ng-click="save()" ng-disabled="!authorizedDelivery || prefixToExclude.length===predelivery.documents.length">
+                                <span class="glyphicon-regular upload"></span> {{::'Livrer' | translate}}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

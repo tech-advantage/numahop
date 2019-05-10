@@ -1,0 +1,5 @@
+identifier;label;type;active;version
+automatic_type_compression;Validation automatique du type de compression;FILE_TYPE_COMPR;true;0
+automatic_taux_compression;Validation automatique du taux de compression;FILE_TAUX_COMPR;true;0
+automatic_file_resolution;Validation automatique de la résolution;FILE_RESOLUTION;true;0
+automatic_file_colorspace;Validation automatique du profil de couleurs;FILE_COLORSPACE;true;0

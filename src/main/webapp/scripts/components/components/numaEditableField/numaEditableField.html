@@ -1,0 +1,83 @@
+<div class="row vertical-align">
+      <div class="text-right col-xs-4" ng-if="::$ctrl.title">
+            <label>{{::$ctrl.title}} 
+                  <span class="glyphicon-halflings glyphicon-question-sign cursor-help" uib-tooltip="{{ $ctrl.getTooltip() }}" tooltip-placement="top" ng-if="$ctrl.getTooltip()"></span>
+            </label>
+            <!-- Mandatory -->
+            <span class="text-danger cursor-help" 
+                  uib-tooltip="{{ ::'Ce champ est obligatoire' | translate }}" ng-if="$ctrl.form.$visible && !!$ctrl.mandatory">*</span>
+      </div>
+      <div class="model-container" 
+           ng-class="{'col-xs-8': !!$ctrl.title, 'col-xs-12': !$ctrl.title, 'has-error': !!$ctrl.errors}" 
+           ng-switch="$ctrl.type">
+
+           <!-- Datepicker -->
+            <div ng-switch-when="datepicker">
+                  <span editable-datepicker="$ctrl.model" e-ng-disabled="$ctrl.numaReadonly"
+                        class="editable editable-click" e-placeholder="{{::$ctrl.placeholder}}" e-datepicker-options="$ctrl.config"
+                        onbeforesave="$ctrl.onbeforesave({$data: $data})" 
+                        ng-click="$ctrl.form.$show()" e-ng-change="$ctrl.onchange($data)">
+                        {{ ($ctrl.model | moment) || $ctrl.defaultText }}</span> 
+            </div> 
+            <!-- Nombre -->
+            <span editable-semnumber="$ctrl.model" ng-switch-when="number"
+                  class="editable editable-click" e-placeholder="{{::$ctrl.placeholder}}" 
+                  e-ng-readonly="$ctrl.numaReadonly" onbeforesave="$ctrl.onbeforesave({$data: $data})" 
+                  ng-click="$ctrl.form.$show()" e-ng-change="$ctrl.onchange($data)">{{ ($ctrl.model | number) || $ctrl.defaultText }}</span>
+            <!-- Pourcentage -->
+            <span editable-sempercent="$ctrl.model" ng-switch-when="percent"
+                  class="editable editable-click" e-placeholder="{{::$ctrl.placeholder}}" 
+                  e-ng-readonly="$ctrl.numaReadonly" onbeforesave="$ctrl.onbeforesave({$data: $data})" 
+                  ng-click="$ctrl.form.$show()" e-ng-change="$ctrl.onchange($data)">{{ ($ctrl.model | percentage: 2) || $ctrl.defaultText }}</span>
+            <!-- Radiolist -->
+            <span editable-semradiolist="$ctrl.model" ng-switch-when="radiolist"
+                  class="editable editable-click" e-id="{{::$ctrl.id}}" e-ng-options="{{::$ctrl.config.query}}" 
+                  e-ng-readonly="$ctrl.numaReadonly" onbeforesave="$ctrl.onbeforesave({$data: $data})" 
+                  ng-click="$ctrl.form.$show()" e-ng-change="$ctrl.onchange($data)">{{ $ctrl.getDisplayModel() }}</span>
+            <!-- Readonly -->
+            <span ng-switch-when="readonly">{{$ctrl.value}}</span>
+            <!-- Select -->
+            <span editable-select="$ctrl.model" ng-switch-when="select"
+                  class="editable editable-click" e-ng-options="{{::$ctrl.config.query}}" 
+                  e-ng-disabled="$ctrl.numaReadonly" onbeforesave="$ctrl.onbeforesave({$data: $data})" 
+                  ng-click="$ctrl.form.$show()" e-ng-change="$ctrl.onchange($data)">{{ $ctrl.getDisplayModel() }}</span>
+            <!-- Textarea -->
+            <span editable-textarea="$ctrl.model" ng-switch-when="textarea" 
+                  class="editable editable-click" e-placeholder="{{::$ctrl.placeholder}}" e-maxlength="{{::$ctrl.maxlength}}" 
+                  e-ng-readonly="$ctrl.numaReadonly" onbeforesave="$ctrl.onbeforesave({$data: $data})" 
+                  ng-click="$ctrl.form.$show()" e-ng-change="$ctrl.onchange($data)">{{ $ctrl.model || $ctrl.defaultText }}</span>
+            <!-- UiSelect -->
+            <span editable-uiselect="$ctrl.model" ng-switch-when="uiselect"
+                  class="editable editable-click" ng-click="$ctrl.form.$show()" 
+                  ng-init="options = $ctrl.config; 
+                           numaReadonly = $ctrl.numaReadonly;
+                           numaOnchange = $ctrl.onchangeUiselect">{{ $ctrl.getDisplayModel() }}</span>
+            <!-- Texte HTML -->
+            <span editable-text="$ctrl.model" ng-switch-when="texthtml" e-maxlength="{{::$ctrl.maxlength}}" 
+                  class="editable editable-click" e-placeholder="{{::$ctrl.placeholder}}" 
+                  e-ng-readonly="$ctrl.numaReadonly" onbeforesave="$ctrl.onbeforesave({$data: $data})" 
+                  ng-click="$ctrl.form.$show() + $event.preventDefault()" e-ng-change="$ctrl.onchange($data)" ng-bind-html="$ctrl.model"></span>
+            <!-- Défaut / Texte -->
+            <span editable-text="$ctrl.model" ng-switch-default e-maxlength="{{::$ctrl.maxlength}}" 
+                  class="editable editable-click" e-placeholder="{{::$ctrl.placeholder}}" 
+                  e-ng-readonly="$ctrl.numaReadonly" onbeforesave="$ctrl.onbeforesave({$data: $data})" 
+                  ng-click="$ctrl.form.$show()" e-ng-change="$ctrl.onchange($data)">{{ $ctrl.model || $ctrl.defaultText }}</span>
+            <!-- Mail -->
+            <a type="button" target="_blank" class="btn btn-sem2 btn-xs" uib-tooltip="{{ ::'Envoyer un mail' | translate }}" 
+                  ng-href="mailto:{{$ctrl.model}}" ng-if="$ctrl.type === 'mail' && $ctrl.model" ng-show="!$ctrl.form.$visible">
+                  <span class="glyphicon-halflings glyphicon-envelope"></span>
+            </a>
+            <!-- URL -->
+            <a type="button" class="btn btn-sem2 btn-xs" ng-href="{{$ctrl.model}}" target="_blank"
+               uib-tooltip="Voir cette adresse" ng-if="$ctrl.type === 'url' && $ctrl.model" ng-show="!$ctrl.form.$visible">
+                  <span class="glyphicon-halflings glyphicon-share"></span>
+            </a>
+            <!-- Lien -->
+            <numa-custom-link ng-if="$ctrl.link" class="margin-l5" ng-show="!$ctrl.form.$visible && ($ctrl.model || $ctrl.value)"
+                              numa-link-type="{{::$ctrl.link.type}}" numa-link-parameters="$ctrl.link.parameters"></numa-custom-link>
+            <!-- Tooltip si pas de titre -->
+            <span class="glyphicon-halflings glyphicon-question-sign cursor-help" uib-tooltip="{{ $ctrl.getTooltip() }}" ng-if="!$ctrl.title && !$ctrl.form.$visible && $ctrl.getTooltip()"></span>
+            <!-- Erreurs -->
+            <div class="help-block" ng-if="$ctrl.errors" ng-bind-html="$ctrl.getMessage()"></div>
+      </div>
+</div>

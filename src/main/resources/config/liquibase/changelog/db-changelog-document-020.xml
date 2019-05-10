@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Changeset du module Document -->
+    <changeSet id="pgcn-document-20" author="progilone">
+ 
+        <addColumn tableName="doc_page">
+            <column name="sample" type="varchar(191)"/>
+        </addColumn>
+ 
+        <createTable tableName="doc_sample">
+            <column name="identifier" type="varchar(191)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <!-- Données -->
+            <column name="sampling_mode" type="varchar(255)" >
+               <constraints nullable="false"/>
+            </column>
+            <!-- Lien technique -->
+            <column name="delivery" type="varchar(191)" />
+            <column name="digital_document" type="varchar(191)" />
+            <!-- Données techniques auto -->
+            <column name="version" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        
+
+        <addForeignKeyConstraint baseColumnNames="delivery" baseTableName="doc_sample" constraintName="fk_doc_sample_delivery"
+            referencedColumnNames="identifier" referencedTableName="del_delivery" />
+        <addForeignKeyConstraint baseColumnNames="digital_document" baseTableName="doc_sample" constraintName="fk_doc_sample_digital_document"
+            referencedColumnNames="identifier" referencedTableName="doc_digital_document" />
+        <addForeignKeyConstraint baseColumnNames="sample" baseTableName="doc_page" constraintName="fk_doc_page_sample"
+            referencedColumnNames="identifier" referencedTableName="doc_sample" />    
+        
+    </changeSet>
+</databaseChangeLog>

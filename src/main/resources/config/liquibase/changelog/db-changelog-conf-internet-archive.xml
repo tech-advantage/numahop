@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Changeset du module Administration -->
+    <changeSet id="pgcn-create-conf-internet-archive" author="progilone">
+    
+        <validCheckSum>7:b8a9919ad7ffae71fb44fd019be62028</validCheckSum>
+
+        <createTable tableName="conf_internet_archive">
+            <column name="identifier" type="varchar(191)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="label" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="library" type="varchar(191)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="access_key" type="varchar(255)"/>
+            <column name="secret_key" type="varchar(255)"/>
+            <column name="active" type="boolean" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="varchar(255)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(255)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- Clés étrangères conf_internet_archive -->
+        <addForeignKeyConstraint baseTableName="conf_internet_archive" baseColumnNames="library" constraintName="fk_conf_internet_archive_library"
+                                 referencedTableName="lib_library" referencedColumnNames="identifier"/>
+
+        <!-- Index conf_internet_archive -->
+        <createIndex tableName="conf_internet_archive" indexName="idx_conf_internet_archive_library">
+            <column name="library"/>
+        </createIndex>
+
+    </changeSet>
+</databaseChangeLog>

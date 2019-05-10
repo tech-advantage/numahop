@@ -1,0 +1,72 @@
+module;identifier;code;label;description;version
+USER;USER-HAB0;USER-HAB0;Gestion des utilisateurs : lecture;Habilitation à la gestion des utilisateurs : lecture;0
+USER;USER-HAB1;USER-HAB1;Gestion des utilisateurs : création;Habilitation à la gestion des utilisateurs : création;0
+USER;USER-HAB2;USER-HAB2;Gestion des utilisateurs : modification;Habilitation à la gestion des utilisateurs : modification d'un utilisateur;0
+USER;USER-HAB3;USER-HAB3;Gestion des utilisateurs : suppression;Habilitation à la gestion des utilisateurs : suppression;0
+USER;USER-HAB4;USER-HAB4;Gestion des utilisateurs : désactivation;Habilitation à la gestion des utilisateurs : désactivation;0
+USER;USER-HAB5;USER-HAB5;Gestion des utilisateurs : export CSV;Habilitation à la gestion des utilisateurs : export au format CSV;0
+USER;USER-HAB6;USER-HAB6;Gestion des utilisateurs : modification de son propre contenu;Habilitation à la gestion des utilisateurs : modification de son propre contenu;0
+ROLE;ROLE-HAB0;ROLE-HAB0;Gestion des profils : lecture;Habilitation à la gestion des profils : lecture;0
+ROLE;ROLE-HAB1;ROLE-HAB1;Gestion des profils : création;Habilitation à la gestion des profils : création;0
+ROLE;ROLE-HAB2;ROLE-HAB2;Gestion des profils : modification;Habilitation à la gestion des profils : modification d'un rôle;0
+ROLE;ROLE-HAB3;ROLE-HAB3;Gestion des profils : suppression;Habilitation à la gestion des profils : suppression;0
+ROLE;ROLE-HAB4;ROLE-HAB4;Gestion des profils : désactivation;Habilitation à la gestion des profils : désactivation;0
+ROLE;ROLE-HAB5;ROLE-HAB5;Gestion des profils : export CSV;Habilitation à la gestion des profils : export au format CSV;0
+PROJECT;PROJ-HAB0;PROJ-HAB0;Gestion des projets : créer;Habilitation à la gestion des projets: créer;0
+PROJECT;PROJ-HAB1;PROJ-HAB1;Gestion des projets : modifier;Habilitation à la gestion des projets : modifier;0
+PROJECT;PROJ-HAB2;PROJ-HAB2;Gestion des projets : ajouter des utilisateurs;Habilitation à la gestion des projets : ajouter des utilisateurs;0
+PROJECT;PROJ-HAB3;PROJ-HAB3;Gestion des projets : ajouter des bibliothèques;Habilitation à la gestion des projets : ajouter des bibliothèques;0
+PROJECT;PROJ-HAB4;PROJ-HAB4;Gestion des projets : supprimer;Habilitation à la gestion des projets : supprimer;0
+PROJECT;PROJ-HAB5;PROJ-HAB5;Gestion des projets : suspendre;Habilitation à la gestion des projets : suspendre;0
+PROJECT;PROJ-HAB6;PROJ-HAB6;Gestion des projets : annuler;Habilitation à la gestion des projets : annuler;0
+PROJECT;PROJ-HAB7;PROJ-HAB7;Gestion des projets : visualiser;Habilitation à la gestion des projets : visualiser;0
+PROJECT;PROJ-HAB8;PROJ-HAB8;Gestion des projets : exporter la liste / une fiche au format CSV;Habilitation à la gestion des projets : exporter la liste / une fiche au format CSV;0
+PROJECT;PROJ-HAB9;PROJ-HAB9;Gestion des projets : imprimer la liste / une fiche;Habilitation à la gestion des projets : imprimer la liste / une fiche;0
+PROJECT;PROJ-HAB10;PROJ-HAB10;Gestion des projets : scinder un projet en deux;Habilitation à la gestion des projets : scinder un projet en deux;0
+PROJECT;PROJ-HAB11;PROJ-HAB11;Gestion des projets : fusionner des projets;Habilitation à la gestion des projets : fusionner des projets;0
+LOT;LOT-HAB0;LOT-HAB0;Gestion des lots : créer;Habilitation à la gestion des lots: créer;0
+LOT;LOT-HAB1;LOT-HAB1;Gestion des lots : modifier;Habilitation à la gestion des lots : modifier;0
+LOT;LOT-HAB2;LOT-HAB2;Gestion des lots : supprimer;Habilitation à la gestion des lots : supprimer;0
+LOT;LOT-HAB3;LOT-HAB3;Gestion des lots : visualiser;Habilitation à la gestion des lots : visualiser;0
+LOT;LOT-HAB4;LOT-HAB4;Gestion des lots : Contrôler après réception et comptage (physique ou numérique) : valider, rejeter…;Habilitation à la gestion des lots : Contrôler après réception et comptage (physique ou numérique) : valider, rejeter…;0
+LOT;LOT-HAB5;LOT-HAB5;Gestion des lots : exporter la liste / une fiche au format CSV;Habilitation à la gestion des lots : exporter la liste / une fiche au format CSV;0
+LOT;LOT-HAB6;LOT-HAB6;Gestion des lots : imprimer la liste / une fiche;Habilitation à la gestion des lots : imprimer la liste / une fiche;0
+LIBRARY;LIB-HAB1;LIB-HAB1;Gestion des bibliothèques : création;Habilitation à la gestion des bibliothèque: création;0
+LIBRARY;LIB-HAB2;LIB-HAB2;Gestion des bibliothèques : modification;Habilitation à la gestion des bibliothèque: modification;0
+LIBRARY;LIB-HAB3;LIB-HAB3;Gestion des bibliothèques : suppression;Habilitation à la gestion des bibliothèque: suppression;0
+LIBRARY;LIB-HAB4;LIB-HAB4;Gestion des bibliothèques : désactivation;Habilitation à la gestion des bibliothèques: désactivation;0
+LIBRARY;LIB-HAB5;LIB-HAB5;Gestion des bibliothèques : visualisation (hors données de production);Habilitation à la gestion des bibliothèques: visualisation (hors données de production);0
+LIBRARY;LIB-HAB6;LIB-HAB6;Gestion des bibliothèques : visualisation des utilisateurs;Habilitation à la gestion des bibliothèques: visualisation des utilisateurs;0
+LIBRARY;LIB-HAB7;LIB-HAB7;Gestion des bibliothèques : visualisation des projets et des données de production;Habilitation à la gestion des bibliothèques: visualisation des projets et des données de production;0
+LIBRARY;LIB-HAB8;LIB-HAB8;Gestion des bibliothèques : Exportation de la liste / d'une fiche au format CSV;Habilitation à la gestion des bibliothèques: Exportation de la liste / d'une fiche au format CSV;0
+LIBRARY;LIB-HAB9;LIB-HAB9;Gestion des bibliothèques : Imprimer la liste / une fiche;Habilitation à la gestion des bibliothèque: Imprimer la liste / une fiche;0
+DOCUMENT;DOC-UNIT-HAB0;DOC-UNIT-HAB0;Gestion des unités documentaires : lecture;Habilitation à la gestion des unités documentaires : lecture;0
+DOCUMENT;DOC-UNIT-HAB1;DOC-UNIT-HAB1;Gestion des unités documentaires : création;Habilitation à la gestion des unités documentaires : création;0
+DOCUMENT;DOC-UNIT-HAB2;DOC-UNIT-HAB2;Gestion des unités documentaires : modification;Habilitation à la gestion des unités documentaires : modification d'un rôle;0
+DOCUMENT;DOC-UNIT-HAB3;DOC-UNIT-HAB3;Gestion des unités documentaires : suppression;Habilitation à la gestion des unités documentaires : suppression;0
+DOCUMENT;DOC-UNIT-HAB4;DOC-UNIT-HAB4;Gestion des unités documentaires : export CSV;Habilitation à la gestion des unités documentaires : export CSV;0
+DOCUMENT;EXC-HAB0;EXC-HAB0;Gestion des imports/exports: lecture;Habilitation à la gestion des imports/exports: lecture;0
+DOCUMENT;EXC-HAB1;EXC-HAB1;Gestion des imports/exports: suppression;Habilitation à la gestion des imports/exports: suppression;0
+DOCUMENT;EXC-HAB2;EXC-HAB2;Gestion des imports/exports: exécution;Habilitation à la gestion des imports/exports: exécution;0
+DOCUMENT;EXC-HAB3;EXC-HAB3;Gestion des imports/exports: recherche sur un serveur Z39.50;Habilitation à la gestion des imports/exports: recherche sur un serveur Z39.50;0
+ADMINISTRATION;MAP-HAB0;MAP-HAB0;Administration - gestion des mappings: lecture;Habilitation à la gestion des mappings: lecture;0
+ADMINISTRATION;MAP-HAB1;MAP-HAB1;Administration - gestion des mappings: création/modification;Habilitation à la gestion des mappings: création/modification;0
+ADMINISTRATION;MAP-HAB2;MAP-HAB2;Administration - gestion des mappings: suppression;Habilitation à la gestion des mappings: suppression;0
+ADMINISTRATION;Z3950-HAB0;Z3950-HAB0;Administration - gestion des serveurs Z39.50: lecture;Habilitation serveurs Z39.50: lecture;0
+ADMINISTRATION;Z3950-HAB1;Z3950-HAB1;Administration - gestion des serveurs Z39.50: création/modification;Habilitation serveurs Z39.50: création/modification;0
+ADMINISTRATION;Z3950-HAB2;Z3950-HAB2;Administration - gestion des serveurs Z39.50: suppression;Habilitation serveurs Z39.50: suppression;0
+DELIVERY;DEL-HAB0;DEL-HAB0;Gestion des livraisons : visualisation;Habilitation à la gestion des mappings: lecture;0
+DELIVERY;DEL-HAB1;DEL-HAB1;Gestion des livraisons : création;Habilitation à la gestion des livraisons : création;0
+DELIVERY;DEL-HAB2;DEL-HAB2;Gestion des livraisons : modification;Habilitation à la gestion des livraisons : modification;0
+DELIVERY;DEL-HAB3;DEL-HAB3;Gestion des livraisons : suppression;Habilitation à la gestion des livraisons : suppression;0
+DELIVERY;DEL-HAB4;DEL-HAB4;Gestion des livraisons : édition du bordereau de livraison;Habilitation à la gestion des livraisons : édition du bordereau de livraison;0
+DELIVERY;DEL-HAB5;DEL-HAB5;Gestion des livraisons : contrôle;Habilitation à la gestion des livraisons : contrôle;0
+DELIVERY;DEL-HAB6;DEL-HAB6;Gestion des livraisons : export CSV;Habilitation à la gestion des livraisons : export CSV;0
+DELIVERY;DEL-HAB7;DEL-HAB7;Gestion des livraisons : impression;Habilitation à la gestion des livraisons : impression;0
+TRAIN;TRA-HAB0;TRA-HAB0;Gestion des trains : créer;Habilitation à la gestion des trains: créer;0
+TRAIN;TRA-HAB1;TRA-HAB1;Gestion des trains : modifier;Habilitation à la gestion des trains : modifier;0
+TRAIN;TRA-HAB2;TRA-HAB2;Gestion des trains : supprimer;Habilitation à la gestion des trains : supprimer;0
+TRAIN;TRA-HAB3;TRA-HAB3;Gestion des trains : visualiser;Habilitation à la gestion des trains : visualiser;0
+TRAIN;TRA-HAB4;TRA-HAB4;Gestion des trains : Contrôler après réception et comptage (physique ou numérique) : valider, rejeter…;Habilitation à la gestion des trains : Contrôler après réception et comptage (physique ou numérique) : valider, rejeter…;0
+TRAIN;TRA-HAB5;TRA-HAB5;Gestion des trains : exporter la liste / une fiche au format CSV;Habilitation à la gestion des trains : exporter la liste / une fiche au format CSV;0
+TRAIN;TRA-HAB6;TRA-HAB6;Gestion des trains : imprimer la liste / une fiche;Habilitation à la gestion des trains : imprimer la liste / une fiche;0

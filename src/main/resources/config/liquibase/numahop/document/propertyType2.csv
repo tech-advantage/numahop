@@ -1,0 +1,7 @@
+identifier;label;supertype;rank;version
+title_language;Title Language;CUSTOM;3;0
+subject_language;Subject Language;CUSTOM;4;0
+description_language;Description Language;CUSTOM;5;0
+type_language;Type Language;CUSTOM;6;0
+format_language;Format Language;CUSTOM;7;0
+rights_language;Rights Language;CUSTOM;8;0

@@ -1,0 +1,217 @@
+<div class="col-sm-8 col-lg-9 col-sm-offset-4 col-lg-offset-3 col-layout-columns" 
+        ng-controller="FilesGestionConfigEditCtrl" ng-init="init()">
+        
+    <div class="panel panel-column-2 panel-column-end">
+        <div class="panel-heading">
+            <div class="pull-right">
+                <button type="button" class="btn btn-sem2 btn-xs"
+                        ng-if="loaded"
+                        ng-click="configTotoForm.$show()" 
+                        uib-tooltip="{{::'Modifier' | translate}}">
+                    <span class="glyphicon-regular edit"></span>
+                </button>
+            </div>
+            <h5 translate>Configuration</h5>
+        </div>
+        <div class="panel-body">
+            <div ng-if="!loaded">Veuillez sélectionner une bibliothèque</div>
+            <form editable-form name="configTotoForm" onaftersave="saveConfiguration()" ng-show="loaded">
+
+                <numa-editable-field title="{{::'Action à effectuer sur' | translate}}" type="select" form="configTotoForm" numa-onchange="changeTypeDeclench($data)"
+                         ng-model="trig" model="conf.triggerType" numa-readonly="formRO" errors="{{ errors.requiredTriggerType }}" onbeforesave="validation.required($data)" 
+                         config="{ data: options.typeDeclench, 
+                                    displayFn: displayTypeDeclench, 
+                                    query: 'key as value for (key, value) in $ctrl.config.data'}" > </numa-editable-field>
+                <numa-editable-field title="{{::'Délai (en jours)' | translate}}" placeholder="{{::'Délai à respecter avant déclenchement' | translate}}" form="configTotoForm" 
+                                     model="conf.delay" errors="{{ errors.label }}" type="number"
+                                      numa-readonly="formRO"></numa-editable-field>
+                <numa-editable-field title="{{::'Répertoire de sauvegarde' | translate}}" placeholder="{{::'Chemin complet du répertoire de sauvegarde' | translate}}" 
+                                     form="configTotoForm" model="conf.destinationDir" errors="{{ errors.destinationDir }}" 
+                                      numa-readonly="formRO"></numa-editable-field>                                           
+                <numa-editable-field title="{{::'Bibliothèque' | translate}}" type="select" placeholder="{{::'Bibliothèque' | translate}}" form="configTotoForm" 
+                                    model="conf.library" errors="{{ errors.library }}" 
+                                    onbeforesave="validation.required($data)" numa-readonly="true" 
+                                    config="{ data: options.libraries, 
+                                            display: 'name', 
+                                            query: 'o.name for o in $ctrl.config.data track by o.identifier' }" ></numa-editable-field>         
+                                    
+             <!-- Reglage des actions -->
+             <div class="row" ng-if="loaded">
+                <div class="table-responsive col-sm-12">
+                    <table class="table table-condensed table-hover" >
+                        <thead>
+                        <tr>
+                            <th translate>Actions</th>
+                            <th translate>Master</th>
+                            <th translate>Pdf</th>
+                            <th translate>Print</th>
+                            <th translate>View</th>
+                            <th translate>Thumbnail</th>
+                            <th translate>Aip/Sip</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td class="text-left">SUPPRESSION</td>
+                            <td class="text-left">
+                                <div class="btn-group btn-group-sm">
+                                    <input bs-switch 
+                                           ng-model="conf.deleteMaster"
+                                           type="checkbox"
+                                           ng-change="toggleChoice(conf, 'delMaster')"
+                                           switch-readonly="{{!configTotoForm.$visible}}"
+                                           switch-on-text="{{ onLabelActiv | translate }}"
+                                           switch-off-text="{{ offLabelActiv | translate }}"
+                                           switch-label-width="0px"/>
+                                </div>
+                            </td>
+                             <td class="text-left">
+                                <div class="btn-group btn-group-sm">
+                                    <input bs-switch 
+                                           ng-model="conf.deletePdf"
+                                           type="checkbox"
+                                           ng-change="toggleChoice(conf, 'delPdf')"
+                                           switch-readonly="{{!configTotoForm.$visible}}"
+                                           switch-on-text="{{ onLabelActiv | translate }}"
+                                           switch-off-text="{{ offLabelActiv | translate }}"
+                                           switch-label-width="0px"/>
+                                </div>
+                            </td>
+                            <td class="text-left">
+                                <div class="btn-group btn-group-sm">
+                                    <input bs-switch 
+                                           ng-model="conf.deletePrint"
+                                           type="checkbox"
+                                           ng-change="toggleChoice(conf, 'delPrint')"
+                                           switch-readonly="{{ !configTotoForm.$visible}}"
+                                           switch-on-text="{{ onLabelActiv | translate }}"
+                                           switch-off-text="{{ offLabelActiv | translate }}"
+                                           switch-label-width="0px"/>
+                                </div>
+                            </td>
+                            <td class="text-left">
+                                <div class="btn-group btn-group-sm">
+                                    <input bs-switch 
+                                           ng-model="conf.deleteView"
+                                           type="checkbox"
+                                           ng-change="toggleChoice(conf, 'delView')"
+                                           switch-readonly="{{ !configTotoForm.$visible }}"
+                                           switch-on-text="{{ onLabelActiv | translate }}"
+                                           switch-off-text="{{ offLabelActiv | translate }}"
+                                           switch-label-width="0px"/>
+                                </div>
+                            </td>
+                            <td class="text-left">
+                                <div class="btn-group btn-group-sm">
+                                    <input bs-switch 
+                                           ng-model="conf.deleteThumb"
+                                           type="checkbox"
+                                           ng-change="toggleChoice(conf, 'delThumb')"
+                                           switch-readonly="{{ !configTotoForm.$visible }}"
+                                           switch-on-text="{{ onLabelActiv | translate }}"
+                                           switch-off-text="{{ offLabelActiv | translate }}"
+                                           switch-label-width="0px"/>
+                                </div>
+                            </td>
+                            <td class="text-left">
+                                <div>-</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-left">SAUVEGARDE</td>
+                            <td class="text-left">
+                                <div class="btn-group btn-group-sm">
+                                    <input bs-switch 
+                                           ng-model="conf.saveMaster"
+                                           type="checkbox"
+                                           ng-change="toggleChoice(conf, 'savMaster')"
+                                           switch-readonly="{{ !configTotoForm.$visible }}"
+                                           switch-on-text="{{ onLabelActiv | translate }}"
+                                           switch-off-text="{{ offLabelActiv | translate }}"
+                                           switch-label-width="0px"/>
+                                </div>
+                            </td>
+                            <td class="text-left">
+                                <div class="btn-group btn-group-sm">
+                                    <input bs-switch 
+                                           ng-model="conf.savePdf"
+                                           type="checkbox"
+                                           ng-change="toggleChoice(conf, 'savPdf')"
+                                           switch-readonly="{{ !configTotoForm.$visible }}"
+                                           switch-on-text="{{ onLabelActiv | translate }}"
+                                           switch-off-text="{{ offLabelActiv | translate }}"
+                                           switch-label-width="0px"/>
+                                </div>
+                            </td>
+                            <td class="text-left">
+                                <div class="btn-group btn-group-sm">
+                                    <input bs-switch 
+                                           ng-model="conf.savePrint"
+                                           type="checkbox"
+                                           ng-change="toggleChoice(conf, 'savPrint')"
+                                           switch-readonly="{{ !configTotoForm.$visible }}"
+                                           switch-on-text="{{ onLabelActiv | translate }}"
+                                           switch-off-text="{{ offLabelActiv | translate }}"
+                                           switch-label-width="0px"/>
+                                </div>
+                            </td>
+                            <td class="text-left">
+                                <div class="btn-group btn-group-sm">
+                                    <input bs-switch 
+                                           ng-model="conf.saveView"
+                                           type="checkbox"
+                                           ng-change="toggleChoice(conf, 'savView')"
+                                           switch-readonly="{{ !configTotoForm.$visible }}"
+                                           switch-on-text="{{ onLabelActiv | translate }}"
+                                           switch-off-text="{{ offLabelActiv | translate }}"
+                                           switch-label-width="0px"/>
+                                </div>
+                            </td>
+                            <td class="text-left">
+                                <div class="btn-group btn-group-sm">
+                                    <input bs-switch 
+                                           ng-model="conf.saveThumb"
+                                           type="checkbox"
+                                           ng-change="toggleChoice(conf, 'savThumb')"
+                                           switch-readonly="{{ !configTotoForm.$visible }}"
+                                           switch-on-text="{{ onLabelActiv | translate }}"
+                                           switch-off-text="{{ offLabelActiv | translate }}"
+                                           switch-label-width="0px"/>
+                                </div>
+                            </td>
+                            <td class="text-left">
+                                <div class="btn-group btn-group-sm">
+                                    <input bs-switch 
+                                           ng-model="conf.saveAipSip"
+                                           type="checkbox"
+                                           ng-change="toggleChoice(conf, 'savAipSip')"
+                                           switch-readonly="{{ !configTotoForm.$visible }}"
+                                           switch-on-text="{{ onLabelActiv | translate }}"
+                                           switch-off-text="{{ offLabelActiv | translate }}"
+                                           switch-label-width="0px"/>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>                            
+
+                <div class="text-center column-bottom column-8  margin-t10" ng-if="configTotoForm.$visible">
+                    <div class="column-bottom-button">
+                        <!-- Création / Modification -->
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-sem4" ng-disabled="configTotoForm.$waiting" ng-click="configTotoForm.$cancel()">
+                                <span class="glyphicon-regular unshare"></span> {{::'Annuler' | translate}}
+                            </button>
+                            <button type="submit" class="btn btn-sem2" >
+                                <span class="glyphicon-regular floppy-save"></span> {{::'Enregistrer' | translate}}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+

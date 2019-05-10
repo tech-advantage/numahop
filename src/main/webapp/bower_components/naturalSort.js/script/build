@@ -1,0 +1,6 @@
+#!/bin/bash
+set -e
+
+# normal files
+coffee --compile --output dist/ src/
+

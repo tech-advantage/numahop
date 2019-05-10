@@ -1,0 +1,4 @@
+module;identifier;code;label;description;version
+ADMINISTRATION;EXP-FTP-HAB0;EXP-FTP-HAB0;Administration - gestion des configurations Export FTP: lecture;Habilitation à la gestion des configurations d'export FTP: lecture;0
+ADMINISTRATION;EXP-FTP-HAB1;EXP-FTP-HAB1;Administration - gestion des configurations Export FTP: création/modification;Habilitation à la gestion des configurations d'export FTP: création/modification;0
+ADMINISTRATION;EXP-FTP-HAB2;EXP-FTP-HAB2;Administration - gestion des configurations Export FTP: suppression;Habilitation à la gestion des configurations d'export FTP: suppression;0

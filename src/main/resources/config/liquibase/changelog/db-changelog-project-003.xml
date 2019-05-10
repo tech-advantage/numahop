@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="pgcn-project-3" author="progilone">
+
+        <dropForeignKeyConstraint baseTableName="del_delivery" constraintName="fk_delivery_project"/>
+        <dropColumn
+                    columnName="project_identifier"
+                    tableName="del_delivery"/>
+
+        <addColumn tableName="del_delivery">
+            <column name="lot_identifier" type="varchar(191)"></column>
+        </addColumn>
+        <addForeignKeyConstraint baseColumnNames="lot_identifier"
+                                 baseTableName="del_delivery" constraintName="fk_delivery_lot"
+                                 referencedColumnNames="identifier" referencedTableName="lot_lot" />
+    </changeSet>
+
+</databaseChangeLog>

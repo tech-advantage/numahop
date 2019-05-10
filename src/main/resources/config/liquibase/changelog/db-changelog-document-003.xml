@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Changeset du module lot -->
+    <changeSet id="pgcn-addColumn-docUnit" author="progilone">
+        <!-- Lien entre les unités documentaires et un lot -->
+        <addColumn tableName="doc_unit">
+            <column name="lot" type="varchar(191)"/>
+        </addColumn>
+        <addForeignKeyConstraint baseTableName="doc_unit" baseColumnNames="lot"
+                                 referencedTableName="lot_lot" referencedColumnNames="identifier"
+                                 constraintName="fk_doc_unit_lot_lot"/>
+    </changeSet>
+</databaseChangeLog>

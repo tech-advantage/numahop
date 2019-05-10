@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+
+    <changeSet id="pgcn-document-10" author="progilone">
+        <addColumn tableName="doc_bibliographic_record">
+            <column name="library" type="varchar(191)"/>
+        </addColumn>
+
+        <addForeignKeyConstraint baseTableName="doc_bibliographic_record" baseColumnNames="library"
+                                 referencedTableName="lib_library" referencedColumnNames="identifier"
+                                 constraintName="fk_doc_bibliographic_record_lib_library"/>
+        
+        <sql splitStatements="true" stripComments="true">
+            UPDATE `doc_bibliographic_record`, `doc_unit`
+            SET `doc_bibliographic_record`.`library` = `doc_unit`.`library`
+            WHERE `doc_bibliographic_record`.`doc_unit` = `doc_unit`.`identifier`
+        </sql>
+    </changeSet>
+</databaseChangeLog>

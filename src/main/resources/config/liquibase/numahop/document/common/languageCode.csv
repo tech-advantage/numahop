@@ -1,0 +1,538 @@
+identifier;name;all_names_french;all_names_english;iso_639_2_t;iso_639_2_b;iso_639_1;version
+language-1;abkhaze;abkhaze;Abkhazian;abk;;ab;0
+language-2;aceh;aceh;Achinese;ace;;;0
+language-3;acoli;acoli;Acoli;ach;;;0
+language-4;adangme;adangme;Adangme;ada;;;0
+language-5;adyghé;adyghé;"Adyghe; Adygei";ady;;;0
+language-6;afar;afar;Afar;aar;;aa;0
+language-7;afrihili;afrihili;Afrihili;afh;;;0
+language-8;afrikaans;afrikaans;Afrikaans;afr;;af;0
+language-9;afro-asiatiques, langues;afro-asiatiques, langues;Afro-Asiatic languages;afa;;;0
+language-10;aïnou;aïnou;Ainu;ain;;;0
+language-11;akan;akan;Akan;aka;;ak;0
+language-12;akkadien;akkadien;Akkadian;akk;;;0
+language-13;albanais;albanais;Albanian;sqi;alb;sq;0
+language-14;alémanique;"suisse alémanique; alémanique; alsacien";"Swiss German; Alemannic; Alsatian";gsw;;;0
+language-15;aléoute;aléoute;Aleut;ale;;;0
+language-16;algonquines, langues;algonquines, langues;Algonquian languages;alg;;;0
+language-17;allemand;allemand;German;deu;ger;de;0
+language-18;allemand, bas;"bas allemand; bas saxon; allemand, bas; saxon, bas";"Low German; Low Saxon; German, Low; Saxon, Low";nds;;;0
+language-19;allemand, moyen haut (ca. 1050-1500);allemand, moyen haut (ca. 1050-1500);German, Middle High (ca.1050-1500);gmh;;;0
+language-20;allemand, vieux haut (ca. 750-1050);allemand, vieux haut (ca. 750-1050);German, Old High (ca.750-1050);goh;;;0
+language-21;alsacien;"suisse alémanique; alémanique; alsacien";"Swiss German; Alemannic; Alsatian";gsw;;;0
+language-22;altai du Sud;altai du Sud;Southern Altai;alt;;;0
+language-23;altaïques, langues;altaïques, langues;Altaic languages;tut;;;0
+language-24;amazighe standard marocain;amazighe standard marocain;Standard Moroccan Tamazight;zgh;;;0
+language-25;amérindiennes de l'Amérique centrale, langues;amérindiennes de l'Amérique centrale, langues;Central American Indian languages;cai;;;0
+language-26;amharique;amharique;Amharic;amh;;am;0
+language-27;angika;angika;Angika;anp;;;0
+language-28;anglais;anglais;English;eng;;en;0
+language-29;anglais moyen (1100-1500);anglais moyen (1100-1500);English, Middle (1100-1500);enm;;;0
+language-30;anglo-saxon (ca.450-1100);anglo-saxon (ca.450-1100);English, Old (ca.450-1100);ang;;;0
+language-31;apaches, langues;apaches, langues;Apache languages;apa;;;0
+language-32;arabe;arabe;Arabic;ara;;ar;0
+language-33;aragonais;aragonais;Aragonese;arg;;an;0
+language-34;araméen d'empire (700-300 BCE);araméen d'empire (700-300 BCE);"Official Aramaic (700-300 BCE); Imperial Aramaic (700-300 BCE)";arc;;;0
+language-35;arapaho;arapaho;Arapaho;arp;;;0
+language-36;arawak;arawak;Arawak;arw;;;0
+language-37;arménien;arménien;Armenian;hye;arm;hy;0
+language-38;aroumain;"aroumain; macédo-roumain";"Aromanian; Arumanian; Macedo-Romanian";rup;;;0
+language-39;artificielles, langues;artificielles, langues;Artificial languages;art;;;0
+language-40;assamais;assamais;Assamese;asm;;as;0
+language-41;asturien;"asturien; bable; léonais; asturoléonais";"Asturian; Bable; Leonese; Asturleonese";ast;;;0
+language-42;asturoléonais;"asturien; bable; léonais; asturoléonais";"Asturian; Bable; Leonese; Asturleonese";ast;;;0
+language-43;athapascanes, langues;athapascanes, langues;Athapascan languages;ath;;;0
+language-44;australiennes, langues;australiennes, langues;Australian languages;aus;;;0
+language-45;austronésiennes, langues;austronésiennes, langues;Austronesian languages;map;;;0
+language-46;avar;avar;Avaric;ava;;av;0
+language-47;avestique;avestique;Avestan;ave;;ae;0
+language-48;awadhi;awadhi;Awadhi;awa;;;0
+language-49;aymara;aymara;Aymara;aym;;ay;0
+language-50;azéri;azéri;Azerbaijani;aze;;az;0
+language-51;bable;"asturien; bable; léonais; asturoléonais";"Asturian; Bable; Leonese; Asturleonese";ast;;;0
+language-52;bachkir;bachkir;Bashkir;bak;;ba;0
+language-53;balinais;balinais;Balinese;ban;;;0
+language-54;baloutchi;baloutchi;Baluchi;bal;;;0
+language-55;baltes, langues;baltes, langues;Baltic languages;bat;;;0
+language-56;bambara;bambara;Bambara;bam;;bm;0
+language-57;bamiléké, langues;bamiléké, langues;Bamileke languages;bai;;;0
+language-58;banda, langues;banda, langues;Banda languages;bad;;;0
+language-59;bantou, langues;bantou, langues;Bantu languages;bnt;;;0
+language-60;bas allemand;"bas allemand; bas saxon; allemand, bas; saxon, bas";"Low German; Low Saxon; German, Low; Saxon, Low";nds;;;0
+language-61;bas saxon;"bas allemand; bas saxon; allemand, bas; saxon, bas";"Low German; Low Saxon; German, Low; Saxon, Low";nds;;;0
+language-62;bas-sorabe;bas-sorabe;Lower Sorbian;dsb;;;0
+language-63;basa;basa;Basa;bas;;;0
+language-64;basque;basque;Basque;eus;baq;eu;0
+language-65;batak, langues;batak, langues;Batak languages;btk;;;0
+language-66;bedja;bedja;"Beja; Bedawiyet";bej;;;0
+language-67;bemba;bemba;Bemba;bem;;;0
+language-68;bengali;bengali;Bengali;ben;;bn;0
+language-69;berbères, langues;berbères, langues;Berber languages;ber;;;0
+language-70;bhojpuri;bhojpuri;Bhojpuri;bho;;;0
+language-71;bichlamar;bichlamar;Bislama;bis;;bi;0
+language-72;biélorusse;biélorusse;Belarusian;bel;;be;0
+language-73;bikol;bikol;Bikol;bik;;;0
+language-74;bilen;"blin; bilen";"Blin; Bilin";byn;;;0
+language-75;bini;"bini; edo";"Bini; Edo";bin;;;0
+language-76;birman;birman;Burmese;mya;bur;my;0
+language-77;blackfoot;blackfoot;Siksika;bla;;;0
+language-78;blin;"blin; bilen";"Blin; Bilin";byn;;;0
+language-79;Bliss;"symboles Bliss; Bliss";"Blissymbols; Blissymbolics; Bliss";zbl;;;0
+language-80;bokmål, norvégien;norvégien bokmål;"Bokmål, Norwegian; Norwegian Bokmål";nob;;nb;0
+language-81;bosniaque;bosniaque;Bosnian;bos;;bs;0
+language-82;bouriate;bouriate;Buriat;bua;;;0
+language-83;braj;braj;Braj;bra;;;0
+language-84;breton;breton;Breton;bre;;br;0
+language-85;bugi;bugi;Buginese;bug;;;0
+language-86;bulgare;bulgare;Bulgarian;bul;;bg;0
+language-87;caddo;caddo;Caddo;cad;;;0
+language-88;carélien;carélien;Karelian;krl;;;0
+language-89;carib;"karib; galibi; carib";Galibi Carib;car;;;0
+language-90;castillan;"espagnol; castillan";"Spanish; Castilian";spa;;es;0
+language-91;catalan;"catalan; valencien";"Catalan; Valencian";cat;;ca;0
+language-92;caucasiennes, langues;caucasiennes, langues;Caucasian languages;cau;;;0
+language-93;cebuano;cebuano;Cebuano;ceb;;;0
+language-94;celtes, langues;"celtiques, langues; celtes, langues";Celtic languages;cel;;;0
+language-95;celtiques, langues;"celtiques, langues; celtes, langues";Celtic languages;cel;;;0
+language-96;chames, langues;chames, langues;Chamic languages;cmc;;;0
+language-97;chamorro;chamorro;Chamorro;cha;;ch;0
+language-98;chan;chan;Shan;shn;;;0
+language-99;cherokee;cherokee;Cherokee;chr;;;0
+language-100;chewa;"chichewa; chewa; nyanja";"Chichewa; Chewa; Nyanja";nya;;ny;0
+language-101;cheyenne;cheyenne;Cheyenne;chy;;;0
+language-102;chibcha;chibcha;Chibcha;chb;;;0
+language-103;chichewa;"chichewa; chewa; nyanja";"Chichewa; Chewa; Nyanja";nya;;ny;0
+language-104;chinois;chinois;Chinese;zho;chi;zh;0
+language-105;chinook, jargon;chinook, jargon;Chinook jargon;chn;;;0
+language-106;chipewyan;chipewyan;"Chipewyan; Dene Suline";chp;;;0
+language-107;choctaw;choctaw;Choctaw;cho;;;0
+language-108;chuang;"zhuang; chuang";"Zhuang; Chuang";zha;;za;0
+language-109;chuuk;chuuk;Chuukese;chk;;;0
+language-110;copte;copte;Coptic;cop;;;0
+language-111;coréen;coréen;Korean;kor;;ko;0
+language-112;cornique;cornique;Cornish;cor;;kw;0
+language-113;corse;corse;Corsican;cos;;co;0
+language-114;couchitiques, langues;couchitiques, langues;Cushitic languages;cus;;;0
+language-115;cree;cree;Cree;cre;;cr;0
+language-116;créole haïtien;"haïtien; créole haïtien";"Haitian; Haitian Creole";hat;;ht;0
+language-117;créoles et pidgins;créoles et pidgins;Creoles and pidgins;crp;;;0
+language-118;créoles et pidgins basés sur l'anglais;créoles et pidgins basés sur l'anglais;Creoles and pidgins, English based;cpe;;;0
+language-119;créoles et pidgins basés sur le français;créoles et pidgins basés sur le français;Creoles and pidgins, French-based;cpf;;;0
+language-120;créoles et pidgins basés sur le portugais;créoles et pidgins basés sur le portugais;Creoles and pidgins, Portuguese-based;cpp;;;0
+language-121;croate;croate;Croatian;hrv;;hr;0
+language-122;dakota;dakota;Dakota;dak;;;0
+language-123;danois;danois;Danish;dan;;da;0
+language-124;dargwa;dargwa;Dargwa;dar;;;0
+language-125;dayak, langues;dayak, langues;Land Dayak languages;day;;;0
+language-126;delaware;delaware;Delaware;del;;;0
+language-127;dimili;"zaza; dimili; dimli; kirdki; kirmanjki; zazaki";"Zaza; Dimili; Dimli; Kirdki; Kirmanjki; Zazaki";zza;;;0
+language-128;dimli;"zaza; dimili; dimli; kirdki; kirmanjki; zazaki";"Zaza; Dimili; Dimli; Kirdki; Kirmanjki; Zazaki";zza;;;0
+language-129;dinka;dinka;Dinka;din;;;0
+language-130;dioula;dioula;Dyula;dyu;;;0
+language-131;djaghataï;djaghataï;Chagatai;chg;;;0
+language-132;dogri;dogri;Dogri;doi;;;0
+language-133;dogrib;dogrib;Dogrib;dgr;;;0
+language-134;douala;douala;Duala;dua;;;0
+language-135;dravidiennes, langues;dravidiennes, langues;Dravidian languages;dra;;;0
+language-136;dzongkha;dzongkha;Dzongkha;dzo;;dz;0
+language-137;écossais;écossais;Scots;sco;;;0
+language-138;edo;"bini; edo";"Bini; Edo";bin;;;0
+language-139;efik;efik;Efik;efi;;;0
+language-140;égyptien;égyptien;Egyptian (Ancient);egy;;;0
+language-141;ekajuk;ekajuk;Ekajuk;eka;;;0
+language-142;élamite;élamite;Elamite;elx;;;0
+language-143;erza;erza;Erzya;myv;;;0
+language-144;esclave (athapascan);esclave (athapascan);Slave (Athapascan);den;;;0
+language-145;espagnol;"espagnol; castillan";"Spanish; Castilian";spa;;es;0
+language-146;espéranto;espéranto;Esperanto;epo;;eo;0
+language-147;estonien;estonien;Estonian;est;;et;0
+language-148;éwé;éwé;Ewe;ewe;;ee;0
+language-149;éwondo;éwondo;Ewondo;ewo;;;0
+language-150;fang;fang;Fang;fan;;;0
+language-151;fanti;fanti;Fanti;fat;;;0
+language-152;féroïen;féroïen;Faroese;fao;;fo;0
+language-153;fidjien;fidjien;Fijian;fij;;fj;0
+language-154;filipino;"filipino; pilipino";"Filipino; Pilipino";fil;;;0
+language-155;finno-ougriennes, langues;finno-ougriennes, langues;Finno-Ugrian languages;fiu;;;0
+language-156;finnois;finnois;Finnish;fin;;fi;0
+language-157;flamand;"néerlandais; flamand";"Dutch; Flemish";nld;dut;nl;0
+language-158;fon;fon;Fon;fon;;;0
+language-159;français;français;French;fra;fre;fr;0
+language-160;français ancien (842-ca.1400);français ancien (842-ca.1400);French, Old (842-ca.1400);fro;;;0
+language-161;français moyen (1400-1600);français moyen (1400-1600);French, Middle (ca.1400-1600);frm;;;0
+language-162;frioulan;frioulan;Friulian;fur;;;0
+language-163;frison occidental;frison occidental;Western Frisian;fry;;fy;0
+language-164;frison oriental;frison oriental;Eastern Frisian;frs;;;0
+language-165;frison septentrional;frison septentrional;Northern Frisian;frr;;;0
+language-166;ga;ga;Ga;gaa;;;0
+language-167;gaélique;"gaélique; gaélique écossais";"Gaelic; Scottish Gaelic";gla;;gd;0
+language-168;gaélique écossais;"gaélique; gaélique écossais";"Gaelic; Scottish Gaelic";gla;;gd;0
+language-169;galibi;"karib; galibi; carib";Galibi Carib;car;;;0
+language-170;galicien;galicien;Galician;glg;;gl;0
+language-171;galla;galla;Oromo;orm;;om;0
+language-172;gallois;gallois;Welsh;cym;wel;cy;0
+language-173;ganda;ganda;Ganda;lug;;lg;0
+language-174;gayo;gayo;Gayo;gay;;;0
+language-175;gbaya;gbaya;Gbaya;gba;;;0
+language-176;géorgien;géorgien;Georgian;kat;geo;ka;0
+language-177;germaniques, langues;germaniques, langues;Germanic languages;gem;;;0
+language-178;gond;gond;Gondi;gon;;;0
+language-179;gorontalo;gorontalo;Gorontalo;gor;;;0
+language-180;gothique;gothique;Gothic;got;;;0
+language-181;goudjrati;goudjrati;Gujarati;guj;;gu;0
+language-182;grebo;grebo;Grebo;grb;;;0
+language-183;grec ancien (jusqu'… 1453);grec ancien (jusqu'… 1453);Greek, Ancient (to 1453);grc;;;0
+language-184;grec moderne (après 1453);grec moderne (après 1453);Greek, Modern (1453-);ell;gre;el;0
+language-185;groenlandais;groenlandais;"Kalaallisut; Greenlandic";kal;;kl;0
+language-186;guarani;guarani;Guarani;grn;;gn;0
+language-187;guèze;guèze;Geez;gez;;;0
+language-188;gwich'in;gwich'in;Gwich'in;gwi;;;0
+language-189;haida;haida;Haida;hai;;;0
+language-190;haïtien;"haïtien; créole haïtien";"Haitian; Haitian Creole";hat;;ht;0
+language-191;haoussa;haoussa;Hausa;hau;;ha;0
+language-192;haut-sorabe;haut-sorabe;Upper Sorbian;hsb;;;0
+language-193;hawaïen;hawaïen;Hawaiian;haw;;;0
+language-194;hébreu;hébreu;Hebrew;heb;;he;0
+language-195;herero;herero;Herero;her;;hz;0
+language-196;hiligaynon;hiligaynon;Hiligaynon;hil;;;0
+language-197;hindi;hindi;Hindi;hin;;hi;0
+language-198;hiri motu;hiri motu;Hiri Motu;hmo;;ho;0
+language-199;hittite;hittite;Hittite;hit;;;0
+language-200;hmong;hmong;"Hmong; Mong";hmn;;;0
+language-201;hongrois;hongrois;Hungarian;hun;;hu;0
+language-202;hupa;hupa;Hupa;hup;;;0
+language-203;iakoute;iakoute;Yakut;sah;;;0
+language-204;iban;iban;Iban;iba;;;0
+language-205;ido;ido;Ido;ido;;io;0
+language-206;igbo;igbo;Igbo;ibo;;ig;0
+language-207;ijo, langues;ijo, langues;Ijo languages;ijo;;;0
+language-208;ilocano;ilocano;Iloko;ilo;;;0
+language-209;indéterminée;indéterminée;Undetermined;und;;;0
+language-210;indo-aryennes, langues;indo-aryennes, langues;Indic languages;inc;;;0
+language-211;indo-européennes, langues;indo-européennes, langues;Indo-European languages;ine;;;0
+language-212;indonésien;indonésien;Indonesian;ind;;id;0
+language-213;ingouche;ingouche;Ingush;inh;;;0
+language-214;interlingua (langue auxiliaire internationale);interlingua (langue auxiliaire internationale);Interlingua (International Auxiliary Language Association);ina;;ia;0
+language-215;interlingue;interlingue;"Interlingue; Occidental";ile;;ie;0
+language-216;inuktitut;inuktitut;Inuktitut;iku;;iu;0
+language-217;inupiaq;inupiaq;Inupiaq;ipk;;ik;0
+language-218;iraniennes, langues;iraniennes, langues;Iranian languages;ira;;;0
+language-219;irlandais;irlandais;Irish;gle;;ga;0
+language-220;irlandais ancien (jusqu'… 900);irlandais ancien (jusqu'… 900);Irish, Old (to 900);sga;;;0
+language-221;irlandais moyen (900-1200);irlandais moyen (900-1200);Irish, Middle (900-1200);mga;;;0
+language-222;iroquoises, langues;iroquoises, langues;Iroquoian languages;iro;;;0
+language-223;islandais;islandais;Icelandic;isl;ice;is;0
+language-224;italien;italien;Italian;ita;;it;0
+language-225;japonais;japonais;Japanese;jpn;;ja;0
+language-226;javanais;javanais;Javanese;jav;;jv;0
+language-227;jingpho;"kachin; jingpho";"Kachin; Jingpho";kac;;;0
+language-228;judéo-arabe;judéo-arabe;Judeo-Arabic;jrb;;;0
+language-229;judéo-espagnol;judéo-espagnol;Ladino;lad;;;0
+language-230;judéo-persan;judéo-persan;Judeo-Persian;jpr;;;0
+language-231;kabardien;kabardien;Kabardian;kbd;;;0
+language-232;kabyle;kabyle;Kabyle;kab;;;0
+language-233;kachin;"kachin; jingpho";"Kachin; Jingpho";kac;;;0
+language-234;kachoube;kachoube;Kashubian;csb;;;0
+language-235;kalmouk;"kalmouk; oïrat";"Kalmyk; Oirat";xal;;;0
+language-236;kamba;kamba;Kamba;kam;;;0
+language-237;kannada;kannada;Kannada;kan;;kn;0
+language-238;kanouri;kanouri;Kanuri;kau;;kr;0
+language-239;karakalpak;karakalpak;Kara-Kalpak;kaa;;;0
+language-240;karatchai balkar;karatchai balkar;Karachay-Balkar;krc;;;0
+language-241;karen, langues;karen, langues;Karen languages;kar;;;0
+language-242;karib;"karib; galibi; carib";Galibi Carib;car;;;0
+language-243;kashmiri;kashmiri;Kashmiri;kas;;ks;0
+language-244;kawi;kawi;Kawi;kaw;;;0
+language-245;kazakh;kazakh;Kazakh;kaz;;kk;0
+language-246;khasi;khasi;Khasi;kha;;;0
+language-247;khmer central;khmer central;Central Khmer;khm;;km;0
+language-248;khoïsan, langues;khoïsan, langues;Khoisan languages;khi;;;0
+language-249;khotanais;"khotanais; sakan";"Khotanese; Sakan";kho;;;0
+language-250;kikuyu;kikuyu;"Kikuyu; Gikuyu";kik;;ki;0
+language-251;kimbundu;kimbundu;Kimbundu;kmb;;;0
+language-252;kirdki;"zaza; dimili; dimli; kirdki; kirmanjki; zazaki";"Zaza; Dimili; Dimli; Kirdki; Kirmanjki; Zazaki";zza;;;0
+language-253;kirghiz;kirghiz;"Kirghiz; Kyrgyz";kir;;ky;0
+language-254;kiribati;kiribati;Gilbertese;gil;;;0
+language-255;kirmanjki;"zaza; dimili; dimli; kirdki; kirmanjki; zazaki";"Zaza; Dimili; Dimli; Kirdki; Kirmanjki; Zazaki";zza;;;0
+language-256;klingon;klingon;"Klingon; tlhIngan-Hol";tlh;;;0
+language-257;kom;kom;Komi;kom;;kv;0
+language-258;kongo;kongo;Kongo;kon;;kg;0
+language-259;konkani;konkani;Konkani;kok;;;0
+language-260;kosrae;kosrae;Kosraean;kos;;;0
+language-261;koumyk;koumyk;Kumyk;kum;;;0
+language-262;kpellé;kpellé;Kpelle;kpe;;;0
+language-263;krou, langues;krou, langues;Kru languages;kro;;;0
+language-264;kuanyama;"kuanyama; kwanyama";"Kuanyama; Kwanyama";kua;;kj;0
+language-265;kurde;kurde;Kurdish;kur;;ku;0
+language-266;kurukh;kurukh;Kurukh;kru;;;0
+language-267;kutenai;kutenai;Kutenai;kut;;;0
+language-268;kwanyama;"kuanyama; kwanyama";"Kuanyama; Kwanyama";kua;;kj;0
+language-269;lahnda;lahnda;Lahnda;lah;;;0
+language-270;lamba;lamba;Lamba;lam;;;0
+language-271;langues biharis;langues biharis;Bihari languages;bih;;bh;0
+language-272;langues des signes;langues des signes;Sign Languages;sgn;;;0
+language-273;langues himachalis;"langues himachalis; langues paharis occidentales";"Himachali languages; Western Pahari languages";him;;;0
+language-274;langues non codées;langues non codées;Uncoded languages;mis;;;0
+language-275;langues paharis occidentales;"langues himachalis; langues paharis occidentales";"Himachali languages; Western Pahari languages";him;;;0
+language-276;lao;lao;Lao;lao;;lo;0
+language-277;latin;latin;Latin;lat;;la;0
+language-278;léonais;"asturien; bable; léonais; asturoléonais";"Asturian; Bable; Leonese; Asturleonese";ast;;;0
+language-279;letton;letton;Latvian;lav;;lv;0
+language-280;lezghien;lezghien;Lezghian;lez;;;0
+language-281;limbourgeois;limbourgeois;"Limburgan; Limburger; Limburgish";lim;;li;0
+language-282;lingala;lingala;Lingala;lin;;ln;0
+language-283;lituanien;lituanien;Lithuanian;lit;;lt;0
+language-284;lojban;lojban;Lojban;jbo;;;0
+language-285;lozi;lozi;Lozi;loz;;;0
+language-286;luba-katanga;luba-katanga;Luba-Katanga;lub;;lu;0
+language-287;luba-lulua;luba-lulua;Luba-Lulua;lua;;;0
+language-288;luiseno;luiseno;Luiseno;lui;;;0
+language-289;lunda;lunda;Lunda;lun;;;0
+language-290;luo (Kenya et Tanzanie);luo (Kenya et Tanzanie);Luo (Kenya and Tanzania);luo;;;0
+language-291;Lushai;lushai;Lushai;lus;;;0
+language-292;luxembourgeois;luxembourgeois;"Luxembourgish; Letzeburgesch";ltz;;lb;0
+language-293;macédo-roumain;"aroumain; macédo-roumain";"Aromanian; Arumanian; Macedo-Romanian";rup;;;0
+language-294;macédonien;macédonien;Macedonian;mkd;mac;mk;0
+language-295;madourais;madourais;Madurese;mad;;;0
+language-296;magahi;magahi;Magahi;mag;;;0
+language-297;maithili;maithili;Maithili;mai;;;0
+language-298;makassar;makassar;Makasar;mak;;;0
+language-299;malais;malais;Malay;msa;may;ms;0
+language-300;malayalam;malayalam;Malayalam;mal;;ml;0
+language-301;maldivien;maldivien;"Divehi; Dhivehi; Maldivian";div;;dv;0
+language-302;malgache;malgache;Malagasy;mlg;;mg;0
+language-303;maltais;maltais;Maltese;mlt;;mt;0
+language-304;mandar;mandar;Mandar;mdr;;;0
+language-305;mandchou;mandchou;Manchu;mnc;;;0
+language-306;mandingue;mandingue;Mandingo;man;;;0
+language-307;manipuri;manipuri;Manipuri;mni;;;0
+language-308;mannois;"manx; mannois";Manx;glv;;gv;0
+language-309;manobo, langues;manobo, langues;Manobo languages;mno;;;0
+language-310;manx;"manx; mannois";Manx;glv;;gv;0
+language-311;maori;maori;Maori;mri;mao;mi;0
+language-312;maori des îles Cook;"rarotonga; maori des îles Cook";"Rarotongan; Cook Islands Maori";rar;;;0
+language-313;mapuce;"mapudungun; mapuche; mapuce";"Mapudungun; Mapuche";arn;;;0
+language-314;mapuche;"mapudungun; mapuche; mapuce";"Mapudungun; Mapuche";arn;;;0
+language-315;mapudungun;"mapudungun; mapuche; mapuce";"Mapudungun; Mapuche";arn;;;0
+language-316;marathe;marathe;Marathi;mar;;mr;0
+language-317;mari;mari;Mari;chm;;;0
+language-318;marshall;marshall;Marshallese;mah;;mh;0
+language-319;marvari;marvari;Marwari;mwr;;;0
+language-320;massaï;massaï;Masai;mas;;;0
+language-321;maya, langues;maya, langues;Mayan languages;myn;;;0
+language-322;mendé;mendé;Mende;men;;;0
+language-323;mi'kmaq;"mi'kmaq; micmac";"Mi'kmaq; Micmac";mic;;;0
+language-324;micmac;"mi'kmaq; micmac";"Mi'kmaq; Micmac";mic;;;0
+language-325;minangkabau;minangkabau;Minangkabau;min;;;0
+language-326;mirandais;mirandais;Mirandese;mwl;;;0
+language-327;mohawk;mohawk;Mohawk;moh;;;0
+language-328;moksa;moksa;Moksha;mdf;;;0
+language-329;moldave;"roumain; moldave";"Romanian; Moldavian; Moldovan";ron;rum;ro;0
+language-330;môn-khmer, langues;môn-khmer, langues;Mon-Khmer languages;mkh;;;0
+language-331;mongo;mongo;Mongo;lol;;;0
+language-332;mongol;mongol;Mongolian;mon;;mn;0
+language-333;moré;moré;Mossi;mos;;;0
+language-334;mounda, langues;mounda, langues;Munda languages;mun;;;0
+language-335;multilingue;multilingue;Multiple languages;mul;;;0
+language-336;muskogee;muskogee;Creek;mus;;;0
+language-337;n'ko;n'ko;N'Ko;nqo;;;0
+language-338;nahuatl, langues;nahuatl, langues;Nahuatl languages;nah;;;0
+language-339;napolitain;napolitain;Neapolitan;nap;;;0
+language-340;nauruan;nauruan;Nauru;nau;;na;0
+language-341;navaho;navaho;"Navajo; Navaho";nav;;nv;0
+language-342;ndébélé du Nord;ndébélé du Nord;"Ndebele, North; North Ndebele";nde;;nd;0
+language-343;ndébélé du Sud;ndébélé du Sud;"Ndebele, South; South Ndebele";nbl;;nr;0
+language-344;ndonga;ndonga;Ndonga;ndo;;ng;0
+language-345;néerlandais;"néerlandais; flamand";"Dutch; Flemish";nld;dut;nl;0
+language-346;néerlandais moyen (ca. 1050-1350);néerlandais moyen (ca. 1050-1350);Dutch, Middle (ca.1050-1350);dum;;;0
+language-347;nepal bhasa;"nepal bhasa; newari";"Nepal Bhasa; Newari";new;;;0
+language-348;népalais;népalais;Nepali;nep;;ne;0
+language-349;newari;"nepal bhasa; newari";"Nepal Bhasa; Newari";new;;;0
+language-350;newari classique;newari classique;"Classical Newari; Old Newari; Classical Nepal Bhasa";nwc;;;0
+language-351;nias;nias;Nias;nia;;;0
+language-352;nigéro-kordofaniennes, langues;nigéro-kordofaniennes, langues;Niger-Kordofanian languages;nic;;;0
+language-353;nilo-sahariennes, langues;nilo-sahariennes, langues;Nilo-Saharan languages;ssa;;;0
+language-354;niué;niué;Niuean;niu;;;0
+language-355;nogaï;"nogaï; nogay";Nogai;nog;;;0
+language-356;nogay;"nogaï; nogay";Nogai;nog;;;0
+language-357;non applicable;"pas de contenu linguistique; non applicable";"No linguistic content; Not applicable";zxx;;;0
+language-358;nord-amérindiennes, langues;nord-amérindiennes, langues;North American Indian languages;nai;;;0
+language-359;norrois, vieux;norrois, vieux;Norse, Old;non;;;0
+language-360;norvégien;norvégien;Norwegian;nor;;no;0
+language-361;norvégien bokmål;norvégien bokmål;"Bokmål, Norwegian; Norwegian Bokmål";nob;;nb;0
+language-362;norvégien nynorsk;"norvégien nynorsk; nynorsk, norvégien";"Norwegian Nynorsk; Nynorsk, Norwegian";nno;;nn;0
+language-363;nubiennes, langues;nubiennes, langues;Nubian languages;nub;;;0
+language-364;nyamwezi;nyamwezi;Nyamwezi;nym;;;0
+language-365;nyanja;"chichewa; chewa; nyanja";"Chichewa; Chewa; Nyanja";nya;;ny;0
+language-366;nyankolé;nyankolé;Nyankole;nyn;;;0
+language-367;nynorsk, norvégien;"norvégien nynorsk; nynorsk, norvégien";"Norwegian Nynorsk; Nynorsk, Norwegian";nno;;nn;0
+language-368;nyoro;nyoro;Nyoro;nyo;;;0
+language-369;nzema;nzema;Nzima;nzi;;;0
+language-370;occitan (après 1500);occitan (après 1500);Occitan (post 1500);oci;;oc;0
+language-371;occitan ancien (jusqu'… 1500);"provençal ancien (jusqu'… 1500); occitan ancien (jusqu'… 1500)";"Provençal, Old (to 1500);Occitan, Old (to 1500)";pro;;;0
+language-372;oïrat;"kalmouk; oïrat";"Kalmyk; Oirat";xal;;;0
+language-373;ojibwa;ojibwa;Ojibwa;oji;;oj;0
+language-374;oriya;oriya;Oriya;ori;;or;0
+language-375;osage;osage;Osage;osa;;;0
+language-376;ossète;ossète;"Ossetian; Ossetic";oss;;os;0
+language-377;otomi, langues;otomi, langues;Otomian languages;oto;;;0
+language-378;oudmourte;oudmourte;Udmurt;udm;;;0
+language-379;ougaritique;ougaritique;Ugaritic;uga;;;0
+language-380;ouïgour;ouïgour;"Uighur; Uyghur";uig;;ug;0
+language-381;ourdou;ourdou;Urdu;urd;;ur;0
+language-382;ouszbek;ouszbek;Uzbek;uzb;;uz;0
+language-383;pachto;pachto;"Pushto; Pashto";pus;;ps;0
+language-384;pahlavi;pahlavi;Pahlavi;pal;;;0
+language-385;palau;palau;Palauan;pau;;;0
+language-386;pali;pali;Pali;pli;;pi;0
+language-387;pampangan;pampangan;"Pampanga; Kapampangan";pam;;;0
+language-388;pangasinan;pangasinan;Pangasinan;pag;;;0
+language-389;papiamento;papiamento;Papiamento;pap;;;0
+language-390;papoues, langues;papoues, langues;Papuan languages;paa;;;0
+language-391;pas de contenu linguistique;"pas de contenu linguistique; non applicable";"No linguistic content; Not applicable";zxx;;;0
+language-392;pedi;"pedi; sepedi; sotho du Nord";"Pedi; Sepedi; Northern Sotho";nso;;;0
+language-393;pendjabi;pendjabi;"Panjabi; Punjabi";pan;;pa;0
+language-394;persan;persan;Persian;fas;per;fa;0
+language-395;perse, vieux (ca. 600-400 av. J.-C.);perse, vieux (ca. 600-400 av. J.-C.);Persian, Old (ca.600-400 B.C.);peo;;;0
+language-396;peul;peul;Fulah;ful;;ff;0
+language-397;phénicien;phénicien;Phoenician;phn;;;0
+language-398;philippines, langues;philippines, langues;Philippine languages;phi;;;0
+language-399;pilipino;"filipino; pilipino";"Filipino; Pilipino";fil;;;0
+language-400;pohnpei;pohnpei;Pohnpeian;pon;;;0
+language-401;polonais;polonais;Polish;pol;;pl;0
+language-402;portugais;portugais;Portuguese;por;;pt;0
+language-403;prƒkrit, langues;prƒkrit, langues;Prakrit languages;pra;;;0
+language-404;provençal ancien (jusqu'… 1500);"provençal ancien (jusqu'… 1500); occitan ancien (jusqu'… 1500)";"Provençal, Old (to 1500);Occitan, Old (to 1500)";pro;;;0
+language-405;quechua;quechua;Quechua;que;;qu;0
+language-406;rajasthani;rajasthani;Rajasthani;raj;;;0
+language-407;rapanui;rapanui;Rapanui;rap;;;0
+language-408;rarotonga;"rarotonga; maori des îles Cook";"Rarotongan; Cook Islands Maori";rar;;;0
+language-410;romanche;romanche;Romansh;roh;;rm;0
+language-411;romanes, langues;romanes, langues;Romance languages;roa;;;0
+language-412;roumain;"roumain; moldave";"Romanian; Moldavian; Moldovan";ron;rum;ro;0
+language-413;rundi;rundi;Rundi;run;;rn;0
+language-414;russe;russe;Russian;rus;;ru;0
+language-415;rwanda;rwanda;Kinyarwanda;kin;;rw;0
+language-416;sakan;"khotanais; sakan";"Khotanese; Sakan";kho;;;0
+language-417;salishennes, langues;salishennes, langues;Salishan languages;sal;;;0
+language-418;samaritain;samaritain;Samaritan Aramaic;sam;;;0
+language-419;sames, langues;sames, langues;Sami languages;smi;;;0
+language-420;sami d'Inari;sami d'Inari;Inari Sami;smn;;;0
+language-421;sami de Lule;sami de Lule;Lule Sami;smj;;;0
+language-422;sami du Nord;sami du Nord;Northern Sami;sme;;se;0
+language-423;sami du Sud;sami du Sud;Southern Sami;sma;;;0
+language-424;sami skolt;sami skolt;Skolt Sami;sms;;;0
+language-425;samoan;samoan;Samoan;smo;;sm;0
+language-426;sandawe;sandawe;Sandawe;sad;;;0
+language-427;sango;sango;Sango;sag;;sg;0
+language-428;sanskrit;sanskrit;Sanskrit;san;;sa;0
+language-429;santal;santal;Santali;sat;;;0
+language-430;sarde;sarde;Sardinian;srd;;sc;0
+language-431;sasak;sasak;Sasak;sas;;;0
+language-432;saxon, bas;"bas allemand; bas saxon; allemand, bas; saxon, bas";"Low German; Low Saxon; German, Low; Saxon, Low";nds;;;0
+language-433;selkoupe;selkoupe;Selkup;sel;;;0
+language-434;sémitiques, langues;sémitiques, langues;Semitic languages;sem;;;0
+language-435;sepedi;"pedi; sepedi; sotho du Nord";"Pedi; Sepedi; Northern Sotho";nso;;;0
+language-436;serbe;serbe;Serbian;srp;;sr;0
+language-437;sérère;sérère;Serer;srr;;;0
+language-438;shona;shona;Shona;sna;;sn;0
+language-439;sicilien;sicilien;Sicilian;scn;;;0
+language-440;sidamo;sidamo;Sidamo;sid;;;0
+language-441;sindhi;sindhi;Sindhi;snd;;sd;0
+language-442;singhalais;singhalais;"Sinhala; Sinhalese";sin;;si;0
+language-443;sino-tibétaines, langues;sino-tibétaines, langues;Sino-Tibetan languages;sit;;;0
+language-444;sioux, langues;sioux, langues;Siouan languages;sio;;;0
+language-445;slaves, langues;slaves, langues;Slavic languages;sla;;;0
+language-446;slavon d'église;"slavon d'église; vieux slave; slavon liturgique; vieux bulgare";"Church Slavic; Old Slavonic; Church Slavonic; Old Bulgarian; Old Church Slavonic";chu;;cu;0
+language-447;slavon liturgique;"slavon d'église; vieux slave; slavon liturgique; vieux bulgare";"Church Slavic; Old Slavonic; Church Slavonic; Old Bulgarian; Old Church Slavonic";chu;;cu;0
+language-448;slovaque;slovaque;Slovak;slk;slo;sk;0
+language-449;slovène;slovène;Slovenian;slv;;sl;0
+language-450;sogdien;sogdien;Sogdian;sog;;;0
+language-451;somali;somali;Somali;som;;so;0
+language-452;songhai, langues;songhai, langues;Songhai languages;son;;;0
+language-453;soninké;soninké;Soninke;snk;;;0
+language-454;sorabes, langues;sorabes, langues;Sorbian languages;wen;;;0
+language-455;sotho du Nord;"pedi; sepedi; sotho du Nord";"Pedi; Sepedi; Northern Sotho";nso;;;0
+language-456;sotho du Sud;sotho du Sud;Sotho, Southern;sot;;st;0
+language-457;soundanais;soundanais;Sundanese;sun;;su;0
+language-458;soussou;soussou;Susu;sus;;;0
+language-459;sranan tongo;sranan tongo;Sranan Tongo;srn;;;0
+language-460;sud-amérindiennes, langues;sud-amérindiennes, langues;South American Indian languages;sai;;;0
+language-461;suédois;suédois;Swedish;swe;;sv;0
+language-462;suisse alémanique;"suisse alémanique; alémanique; alsacien";"Swiss German; Alemannic; Alsatian";gsw;;;0
+language-463;sukuma;sukuma;Sukuma;suk;;;0
+language-464;sumérien;sumérien;Sumerian;sux;;;0
+language-465;swahili;swahili;Swahili;swa;;sw;0
+language-466;swati;swati;Swati;ssw;;ss;0
+language-467;symboles Bliss;"symboles Bliss; Bliss";"Blissymbols; Blissymbolics; Bliss";zbl;;;0
+language-468;syriaque;syriaque;Syriac;syr;;;0
+language-469;syriaque classique;syriaque classique;Classical Syriac;syc;;;0
+language-470;tadjik;tadjik;Tajik;tgk;;tg;0
+language-471;tagalog;tagalog;Tagalog;tgl;;tl;0
+language-472;tahitien;tahitien;Tahitian;tah;;ty;0
+language-473;tai, langues;tai, langues;Tai languages;tai;;;0
+language-474;tamacheq;tamacheq;Tamashek;tmh;;;0
+language-475;tamoul;tamoul;Tamil;tam;;ta;0
+language-476;tatar;tatar;Tatar;tat;;tt;0
+language-477;tatar de Crimé;tatar de Crimé;"Crimean Tatar; Crimean Turkish";crh;;;0
+language-478;tchèque;tchèque;Czech;ces;cze;cs;0
+language-479;tchétchène;tchétchène;Chechen;che;;ce;0
+language-480;tchouvache;tchouvache;Chuvash;chv;;cv;0
+language-481;télougou;télougou;Telugu;tel;;te;0
+language-482;temne;temne;Timne;tem;;;0
+language-483;tereno;tereno;Tereno;ter;;;0
+language-484;tetum;tetum;Tetum;tet;;;0
+language-485;thaï;thaï;Thai;tha;;th;0
+language-486;tibétain;tibétain;Tibetan;bod;tib;bo;0
+language-487;tigré;tigré;Tigre;tig;;;0
+language-488;tigrigna;tigrigna;Tigrinya;tir;;ti;0
+language-489;tiv;tiv;Tiv;tiv;;;0
+language-490;tlingit;tlingit;Tlingit;tli;;;0
+language-491;tok pisin;tok pisin;Tok Pisin;tpi;;;0
+language-492;tokelau;tokelau;Tokelau;tkl;;;0
+language-493;tonga (Nyasa);tonga (Nyasa);Tonga (Nyasa);tog;;;0
+language-494;tongan (×les Tonga);tongan (×les Tonga);Tonga (Tonga Islands);ton;;to;0
+language-495;touva;touva;Tuvinian;tyv;;;0
+language-496;tsigane;tsigane;Romany;rom;;;0
+language-497;tsimshian;tsimshian;Tsimshian;tsi;;;0
+language-498;tsonga;tsonga;Tsonga;tso;;ts;0
+language-499;tswana;tswana;Tswana;tsn;;tn;0
+language-500;tumbuka;tumbuka;Tumbuka;tum;;;0
+language-501;tupi, langues;tupi, langues;Tupi languages;tup;;;0
+language-502;turc;turc;Turkish;tur;;tr;0
+language-503;turc ottoman (1500-1928);turc ottoman (1500-1928);Turkish, Ottoman (1500-1928);ota;;;0
+language-504;turkmène;turkmène;Turkmen;tuk;;tk;0
+language-505;tuvalu;tuvalu;Tuvalu;tvl;;;0
+language-506;twi;twi;Twi;twi;;tw;0
+language-507;ukrainien;ukrainien;Ukrainian;ukr;;uk;0
+language-508;umbundu;umbundu;Umbundu;umb;;;0
+language-509;vaï;vaï;Vai;vai;;;0
+language-510;valencien;"catalan; valencien";"Catalan; Valencian";cat;;ca;0
+language-511;venda;venda;Venda;ven;;ve;0
+language-512;vietnamien;vietnamien;Vietnamese;vie;;vi;0
+language-513;vieux bulgare;"slavon d'église; vieux slave; slavon liturgique; vieux bulgare";"Church Slavic; Old Slavonic; Church Slavonic; Old Bulgarian; Old Church Slavonic";chu;;cu;0
+language-514;vieux slave;"slavon d'église; vieux slave; slavon liturgique; vieux bulgare";"Church Slavic; Old Slavonic; Church Slavonic; Old Bulgarian; Old Church Slavonic";chu;;cu;0
+language-515;volapük;volapük;Volapük;vol;;vo;0
+language-516;vote;vote;Votic;vot;;;0
+language-517;wakashanes, langues;wakashanes, langues;Wakashan languages;wak;;;0
+language-518;wallon;wallon;Walloon;wln;;wa;0
+language-519;waray;waray;Waray;war;;;0
+language-520;washo;washo;Washo;was;;;0
+language-521;wolaitta;"wolaitta; wolaytta";"Wolaitta; Wolaytta";wal;;;0
+language-522;wolaytta;"wolaitta; wolaytta";"Wolaitta; Wolaytta";wal;;;0
+language-523;wolof;wolof;Wolof;wol;;wo;0
+language-524;xhosa;xhosa;Xhosa;xho;;xh;0
+language-525;yao;yao;Yao;yao;;;0
+language-526;yapois;yapois;Yapese;yap;;;0
+language-527;yi de Sichuan;yi de Sichuan;"Sichuan Yi; Nuosu";iii;;ii;0
+language-528;yiddish;yiddish;Yiddish;yid;;yi;0
+language-529;yoruba;yoruba;Yoruba;yor;;yo;0
+language-530;yupik, langues;yupik, langues;Yupik languages;ypk;;;0
+language-531;zandé, langues;zandé, langues;Zande languages;znd;;;0
+language-532;zapotèque;zapotèque;Zapotec;zap;;;0
+language-533;zaza;"zaza; dimili; dimli; kirdki; kirmanjki; zazaki";"Zaza; Dimili; Dimli; Kirdki; Kirmanjki; Zazaki";zza;;;0
+language-534;zazaki;"zaza; dimili; dimli; kirdki; kirmanjki; zazaki";"Zaza; Dimili; Dimli; Kirdki; Kirmanjki; Zazaki";zza;;;0
+language-535;zenaga;zenaga;Zenaga;zen;;;0
+language-536;zhuang;"zhuang; chuang";"Zhuang; Chuang";zha;;za;0
+language-537;zoulou;zoulou;Zulu;zul;;zu;0
+language-538;zuni;zuni;Zuni;zun;;;0

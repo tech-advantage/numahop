@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Changeset du module Automatic Check -->
+    <changeSet id="pgcn-check-005" author="progilone">
+<!--         Ajout flag configurable et order -->
+        <addColumn tableName="check_automatic_type">
+            <column name="configurable" type="BOOLEAN" defaultValueBoolean="true" />
+            <column name="order" type="integer"/>
+        </addColumn>
+<!--         Mise à jour des libelles et ordre -->
+        <update tableName="check_automatic_type">
+            <column name="label" type="varchar(255)" value="Contrôle du format" />
+            <column name="order" type="integer" value="5" />
+            <where>identifier = 'automatic_file_format'</where>
+        </update>
+        <update tableName="check_automatic_type">
+            <column name="label" type="varchar(255)" value="Contrôle de la séquence" />
+            <column name="order" type="integer" value="10" />
+            <where>identifier = 'automatic_file_sequence'</where>
+        </update>
+        <update tableName="check_automatic_type">
+            <column name="label" type="varchar(255)" value="Contrôle du nombre total de fichiers" />
+            <column name="order" type="integer" value="15" />
+            <where>identifier = 'automatic_file_total_number'</where>
+        </update>
+        <update tableName="check_automatic_type">
+            <column name="label" type="varchar(255)" value="Contrôle du type de compression" />
+            <column name="order" type="integer" value="20" />
+            <where>identifier = 'automatic_type_compression'</where>
+        </update>
+        <update tableName="check_automatic_type">
+            <column name="label" type="varchar(255)" value="Contrôle du taux de compression" />
+            <column name="order" type="integer" value="25" />
+            <where>identifier = 'automatic_taux_compression'</where>
+        </update>
+        <update tableName="check_automatic_type">
+            <column name="label" type="varchar(255)" value="Contrôle de la résolution" />
+            <column name="order" type="integer" value="30" />
+            <where>identifier = 'automatic_file_resolution'</where>
+        </update>
+        <update tableName="check_automatic_type">
+	        <column name="label" type="varchar(255)" value="Contrôle du profil de couleurs" />
+	        <column name="order" type="integer" value="35" />
+	        <where>identifier = 'automatic_file_colorspace'</where>
+	    </update>
+	    <update tableName="check_automatic_type">
+            <column name="label" type="varchar(255)" value="Contrôle de la table des matières" />
+            <column name="order" type="integer" value="40" />
+            <where>identifier = 'automatic_metadata_format'</where>
+        </update>
+        <update tableName="check_automatic_type">
+            <column name="order" type="integer" value="45" />
+            <where>identifier = 'cines_facile'</where>
+        </update>
+            
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Changeset du module Check -->
+    <changeSet id="pgcn-create-check" author="progilone">
+        <createTable tableName="check_automatic_type">
+            <column name="identifier" type="varchar(191)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="label" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="type" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="active" type="boolean">
+                <constraints nullable="false" />
+            </column>
+			<!-- Données techniques auto -->
+            <column name="version" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+		<createTable tableName="check_automatic_result">
+            <column name="identifier" type="varchar(191)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+			<!-- Données -->
+			<column name="message" type="text" />
+			<column name="result" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+			<!-- Lien technique -->
+            <column name="check" type="varchar(191)" />
+            <column name="digital_document" type="varchar(191)" />
+            <column name="doc_unit" type="varchar(191)" />
+            <column name="page" type="varchar(191)" />
+			<!-- Données techniques auto -->
+            <column name="version" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+		<addForeignKeyConstraint baseColumnNames="check" baseTableName="check_automatic_result" constraintName="fk_check_automatic_result_check"
+            referencedColumnNames="identifier" referencedTableName="check_automatic_type" />
+		<addForeignKeyConstraint baseColumnNames="digital_document" baseTableName="check_automatic_result"
+			constraintName="fk_check_automatic_result_digital_document"
+            referencedColumnNames="identifier" referencedTableName="doc_digital_document" />
+        <addForeignKeyConstraint baseColumnNames="doc_unit" baseTableName="check_automatic_result"
+			constraintName="fk_check_automatic_result_doc_unit"
+            referencedColumnNames="identifier" referencedTableName="doc_unit" />
+		<addForeignKeyConstraint baseColumnNames="page" baseTableName="check_automatic_result"
+			constraintName="fk_check_automatic_result_page"
+            referencedColumnNames="identifier" referencedTableName="doc_page" />
+    </changeSet>
+</databaseChangeLog>

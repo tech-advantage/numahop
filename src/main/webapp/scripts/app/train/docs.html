@@ -1,0 +1,75 @@
+<div ng-controller="TrainDocsCtrl as docCtrl" ng-init="docCtrl.init(trainId, train)">
+    <div class="panel-heading">
+        <div class="row margin-lr0">
+            <div class="col-xs-12">
+                <div class="pull-right">
+                    <button type="button" class="btn btn-sem2 btn-xs"
+                            uib-tooltip="{{::'Ajouter des Unités Documentaires au train' | translate}}"
+                            sem-roles-allowed="DOC_UNIT_HAB2" ng-click="docCtrl.addDocUnits()">
+                        <span class="glyphicon-halflings glyphicon-plus"></span>
+                    </button>
+                    <button type="button" class="btn btn-sem2 btn-xs"
+                            uib-tooltip="{{::'Retirer les unités documentaires sélectionnés du train' | translate}}"
+                            ng-disabled="docCtrl.selectedIds.length === 0" sem-roles-allowed="DOC_UNIT_HAB3"
+                            ng-click="docCtrl.removeMultipleItems()" >
+                        <span class="glyphicon-halflings glyphicon-trash"></span>
+                    </button>
+                </div>
+                <button type="button" class="btn btn-sem2 btn-xs" ng-click="docCtrl.checkAll()" ng-disabled="docCtrl.docUnits.length === 0">
+                    {{::"Tout cocher" | translate}}
+                </button>
+                <button type="button" class="btn btn-sem2 btn-xs" ng-click="docCtrl.uncheckAll()" ng-disabled="docCtrl.selectedIds.length === 0">
+                    {{::"Tout décocher" | translate}}
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body">
+        <div class="table-responsive col-sm-12">
+            <table class="table table-condensed table-hover" sem-table="orderBy">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th sem-table-sorton="docUnit.pgcnId"><span translate>Identifiant PGCN</span></th>
+                    <th sem-table-sorton="docUnit.label"><span translate>Libellé</span></th>
+                    <th sem-table-sorton="name"><span translate>Nom</span></th>
+                    <th sem-table-sorton="name"><span translate>Statut</span></th>
+                    <th sem-table-sorton="digitalId"><span translate>Identifiant numérique</span></th>
+                    <th style="width: 40px" translate>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="item in docCtrl.physDocs | orderBy:orderBy">
+                    <td ng_if="!$last" class="select-col">
+                        <div class="checkbox checkbox-sid-main no-margin">
+                            <input type="checkbox" ng-model="item.checked" ng-change="docCtrl.changeItem(item)"/>
+                        </div>
+                    </td>
+                    <td ng_if="!$last" uib-tooltip="{{::item.docUnit.pgcnId}}" tooltip-enable="item.docUnit.pgcnId.length > 20">
+                        {{ ::item.docUnit.pgcnId | characters:20 }}
+                    </td>
+                    <td ng_if="!$last" >
+                        <span uib-tooltip="{{::item.docUnit.label}}" tooltip-enable="item.docUnit.label.length > 50">
+                        {{ ::item.docUnit.label | characters:50 }}
+                        </span>
+                    </td>
+                    <td ng_if="!$last" >{{ ::item.name }}</td>
+                    <td ng_if="!$last" >{{ ::docCtrl.displayDocStatus(item.status) }}</td>
+                    <td ng_if="!$last" >{{ ::item.digitalId }}</td>
+                    <td ng_if="!$last"  class="text-right">
+                        <a class="btn btn-sem2 btn-xs" uib-tooltip="{{ ::'Voir' | translate }}" ng-href="/#/document/all_operations/{{::item.docUnit.identifier}}">
+                            <span class="glyphicon-halflings glyphicon-share"></span>
+                        </a>
+                        <button type="button" class="btn btn-sem2 btn-xs"
+                                ng-show="docCtrl.canRemoveFromTrain(item)" sem-roles-allowed="DOC_UNIT_HAB3"
+                                uib-tooltip="{{::'Retirer l\'unité documentaire du train' | translate}}"
+                                ng-click="docCtrl.removeItem(item)">
+                            <span class="glyphicon-halflings glyphicon-trash"></span>
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

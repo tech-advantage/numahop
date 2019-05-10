@@ -1,0 +1,190 @@
+<div class="row layout-columns">
+    <div class="col-sm-3 col-lg-2 col-layout-columns">
+        <div class="panel panel-column-1">
+            <div class="panel-heading">
+                <div class="pull-right">
+                    <button type="button" class="btn btn-sem2 btn-xs"
+                            ng-click="mainCtrl.create()" uib-tooltip="{{::'Créer' | translate}}"
+                            sem-roles-allowed="MAP_HAB1">
+                        <span class="glyphicon-halflings glyphicon-plus"></span>
+                    </button>
+                    <!-- Import de mapping -->
+                    <div class="btn-group" sem-roles-allowed="MAP_HAB1" uib-dropdown>
+                        <button type="button" class="btn btn-sem2 btn-xs" uib-dropdown-toggle
+                                uib-tooltip="{{::'Importer un mapping (JSON)' | translate}}">
+                            <span class="fa fa-upload"></span>&nbsp;<b class="caret"></b>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-left" uib-dropdown-menu role="menu">
+                            <li role="menuitem">
+                                <a ng-click="mainCtrl.importNewMapping()">Nouveau mapping</a>
+                            </li>
+                            <li role="menuitem" ng-show="mainCtrl.editedMapping.identifier">
+                                <a ng-click="mainCtrl.importMapping(mainCtrl.editedMapping)">Mapping {{mainCtrl.editedMapping.label}}</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <span translate>Mappings</span>
+            </div>
+            <div class="panel-body">
+                <div class="list padding-b20" ng-repeat="lib in mainCtrl.libraries | orderBy:'name'">
+                    <div class="filter-title">{{ ::lib.name }}</div>
+                    <div class="list"
+                         ng-repeat="mapping in mainCtrl.mappings | filter:{ library: { identifier : lib.identifier } } | orderBy:'label'">
+                        <a ng-click="mainCtrl.edit(mapping)" ng-class="{'active': mapping === mainCtrl.editedMapping}">
+                            <span>{{ mapping.label }}</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-9 col-lg-10 col-sm-offset-3 col-lg-offset-2 col-layout-columns">
+            <div class="panel panel-column-2 panel-column-end">
+                <div class="panel-heading">
+                    <div class="pull-right">
+                        <button type="button" class="btn btn-sem2 btn-xs"
+                                ng-click="mainCtrl.save(mainCtrl.editedMapping)" ng-show="mainCtrl.loaded" ng-disabled="!mainCtrl.rw"
+                                uib-tooltip="{{::'Sauvegarder' | translate}}"
+                                sem-roles-allowed="MAP_HAB1">
+                            <span class="glyphicon-regular floppy-save"></span>
+                        </button>
+                        <button type="button" class="btn btn-sem2 btn-xs"
+                                ng-click="mainCtrl.reload(mainCtrl.editedMapping)" ng-show="mainCtrl.loaded" ng-disabled="!mainCtrl.modified && !mainCtrl.restored"
+                                uib-tooltip="{{::'Annuler les modifications' | translate}}"
+                                sem-roles-allowed="MAP_HAB1">
+                            <span class="glyphicon-regular undo"></span>
+                        </button>
+                        <div class="btn-group" ng-show="mainCtrl.loaded" ng-disabled="mainCtrl.revisions.length <= 1" sem-roles-allowed="MAP_HAB1" uib-dropdown>
+                            <button type="button" class="btn btn-sem2 btn-xs" uib-dropdown-toggle ng-disabled="mainCtrl.revisions.length <= 1"
+                                    uib-tooltip="{{::'Restaurer une version antérieure' | translate}}">
+                                <span class="fa fa-history"></span>&nbsp;<b class="caret"></b>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-right" uib-dropdown-menu role="menu">
+                                <li ng-repeat="rev in mainCtrl.revisions | orderBy:'-timestamp' | limitTo:20:1" role="menuitem">
+                                    <a ng-click="mainCtrl.restore(mainCtrl.editedMapping, rev)">{{rev.timestamp | moment:'L LT'}}</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <a class="btn btn-sem2 btn-xs"
+                           ng-href="/api/rest/mapping/{{mainCtrl.editedMapping.identifier}}?export=true"
+                           ng-show="mainCtrl.loaded" ng-disabled="!mainCtrl.editedMapping.identifier"
+                           uib-tooltip="{{::'Exporter (JSON)' | translate}}" download>
+                            <span class="fa fa-download"></span>
+                        </a>
+                        <button type="button" class="btn btn-sem2 btn-xs"
+                                ng-click="mainCtrl.duplicate(mainCtrl.editedMapping)"
+                                ng-show="mainCtrl.loaded" ng-disabled="!mainCtrl.editedMapping.identifier"
+                                uib-tooltip="{{::'Dupliquer' | translate}}"
+                                sem-roles-allowed="MAP_HAB1">
+                            <span class="glyphicon-halflings glyphicon-duplicate"></span>
+                        </button>
+                        <button type="button" class="btn btn-sem2 btn-xs"
+                                ng-click="mainCtrl.delete(mainCtrl.editedMapping)"
+                                ng-show="mainCtrl.loaded" ng-disabled="!mainCtrl.editedMapping.identifier || !mainCtrl.rw"
+                                uib-tooltip="{{::'Supprimer' | translate}}"
+                                sem-roles-allowed="MAP_HAB2">
+                            <span class="glyphicon-halflings glyphicon-trash"></span>
+                        </button>
+                    </div>
+                    <span>{{ mainCtrl.editedMapping.label }}</span>
+                    <span ng-show="mainCtrl.modified || mainCtrl.restored"><strong translate>(modifications non sauvegardées)</strong></span>
+                </div>
+                <div class="panel-body">
+                    <div ng-show="mainCtrl.loaded">
+                        <!-- Libellé -->
+                        <sem-field sem-type="text" sem-label="{{::'Libellé' | translate}}" sem-field-class="col-xs-8 col-lg-4"
+                                   sem-placeholder="{{::'Libellé' | translate}}" ng-readonly="!mainCtrl.rw" mandatory="true" 
+                                   sem-model="mainCtrl.editedMapping.label" sem-onchange="mainCtrl.mappingModified()"></sem-field>
+                        <!-- Bibliothèque -->
+                        <sem-field sem-type="uiselect" sem-label="{{::'Bibliothèque' | translate}}" sem-field-class="col-xs-8 col-lg-4"
+                                   sem-model="mainCtrl.editedMapping.library" sem-onchange="mainCtrl.mappingModified()" mandatory="true"
+                                   sem-option-data="mainCtrl.uioptions.libraries" ng-readonly="!mainCtrl.isSuperAdmin"></sem-field>
+                        <!-- Id du parent -->
+                        <sem-field sem-type="textarea" sem-label="{{::'Identifiant du parent' | translate}}" sem-field-class="col-xs-8 col-lg-4"
+                                   sem-model="mainCtrl.editedMapping.joinExpression" ng-readonly="!mainCtrl.rw" ng-if="mainCtrl.type === 'MARC'"
+                                   sem-onchange="mainCtrl.mappingModified()"></sem-field>
+
+                        <!-- Règles de mapping -->
+                        <div class="table-responsive mapping margin-t20">
+                            <table class="table table-striped table-bordered table-hover">
+                                <thead>
+                                <tr>
+                                    <td colspan="4" translate>Champ</td>
+                                    <td colspan="2">
+                                        {{ ::'Mapping' | translate }}
+                                        <button type="button" class="btn btn-sem2 btn-xs"
+                                                ng-click="mainCtrl.setRuleFilters(mainCtrl.editedMapping)"
+                                                ng-show="mainCtrl.loaded" uib-tooltip="{{ mainCtrl.ruleFiltersTooltip }}">
+                                            <span class="fa fa-filter"></span>
+                                        </button>
+                                        <button type="button" class="btn btn-sem2 btn-xs"
+                                                ng-click="mainCtrl.deleteRuleFilters(mainCtrl.editedMapping)"
+                                                ng-show="mainCtrl.ruleFilters.length" uib-tooltip="{{ ::'Réinitialiser le filtre des règles de mapping' | translate }}">
+                                            <span class="glyphicon-halflings glyphicon-refresh"></span>
+                                        </button>
+                                    </td>
+                                    <td rowspan="2" style="width: 100px">&nbsp;</td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td translate>Dublin Core</td>
+                                    <td translate>Unité doc.</td>
+                                    <td translate>Notice bibl.</td>
+                                    <td translate>Règle</td>
+                                    <td translate>Condition d'application</td>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="rule in mainCtrl.editedMapping.rules | filter:mainCtrl.filterRule | orderBy:mainCtrl.sortRule" 
+                                    ng-class="{'warning': mainCtrl.activeRule === rule}">
+                                    <td>
+                                        <button type="button" class="btn btn-sem3 btn-xs" 
+                                                ng-click="mainCtrl.upRule(rule, mainCtrl.editedMapping.rules)"
+                                                ng-disabled="!mainCtrl.rw || rule.defaultRule">
+                                            <span class="fa fa-chevron-up"></span>
+                                        </button>
+                                        <button type="button" class="btn btn-sem3 btn-xs" 
+                                                ng-click="mainCtrl.downRule(rule, mainCtrl.editedMapping.rules)"
+                                                ng-disabled="!mainCtrl.rw || rule.defaultRule">
+                                            <span class="fa fa-chevron-down"></span>
+                                        </button>
+                                    </td>
+                                    <td>{{ rule.property ? rule.property.label : '' }}</td>
+                                    <td>{{ mainCtrl.getDocfieldLabel(rule.docUnitField) }}</td>
+                                    <td>{{ mainCtrl.getBibfieldLabel(rule.bibRecordField) }}</td>
+                                    <td>{{ rule.expression }}</td>
+                                    <td ng-switch="!!rule.defaultRule">
+                                        <span ng-switch-when="true"><em><strong translate>Règle par défaut</strong></em></span>
+                                        <span ng-switch-default>{{ rule.condition }}</span>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-sem2 btn-xs" ng-click="mainCtrl.editRule(rule, mainCtrl.editedMapping)"
+                                                uib-tooltip="{{::'Éditer la règle' | translate}}" sem-roles-allowed="MAP_HAB1" ng-disabled="!mainCtrl.rw">
+                                            <span class="glyphicon-regular edit"></span>
+                                        </button>
+                                        <button type="button" class="btn btn-sem2 btn-xs" ng-click="mainCtrl.copyRule(rule, mainCtrl.editedMapping)"
+                                                uib-tooltip="{{::'Copier la règle' | translate}}" sem-roles-allowed="MAP_HAB1" ng-disabled="!mainCtrl.rw">
+                                            <span class="glyphicon-regular copy"></span>
+                                        </button>
+                                        <button type="button" class="btn btn-sem2 btn-xs" ng-click="mainCtrl.delRule(rule, mainCtrl.editedMapping)"
+                                                uib-tooltip="{{::'Supprimer la règle' | translate}}" sem-roles-allowed="MAP_HAB1" ng-disabled="!mainCtrl.rw">
+                                            <span class="glyphicon-halflings glyphicon-trash"></span>
+                                        </button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+
+                            <!-- Ajouter une règle -->
+                            <button type="button" class="btn btn-sem2 btn-xs pull-right"
+                                    ng-click="mainCtrl.addRule(mainCtrl.editedMapping)" sem-roles-allowed="MAP_HAB1"
+                                    ng-disabled="!mainCtrl.rw">
+                                <span class="glyphicon-halflings glyphicon-plus"></span> {{ ::'Ajouter une règle' | translate }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

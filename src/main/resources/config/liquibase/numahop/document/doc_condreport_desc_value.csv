@@ -1,0 +1,75 @@
+identifier,label,property,version
+e7c50372-6cea-4609-aa38-51f05c1bd342,Occidental,READING_DIRECTION,0
+916f2b52-c626-4b86-b5c7-a2ca55db8316,Oriental,READING_DIRECTION,0
+95ec591c-1bba-45cd-b6fc-8ca1cc8deb81,Non conditionné,PACKAGING,0
+827e22e5-3769-4781-bd65-7b6176e3242a,Chemise,PACKAGING,0
+471f2000-2ef5-42e9-ad66-b5a6b0943b7e,Pochette,PACKAGING,0
+b4712351-163d-40cb-92e1-7dcc02a383c4,Boîte,PACKAGING,0
+bdf2542f-8bbe-4922-a538-6823c0c71c46,Liasse,DOCUMENT_TYPE,0
+82ee3160-197a-4e03-b777-aa19d0b00323,Feuillets non solidaires,DOCUMENT_TYPE,0
+0207a57e-d3e7-4320-9e4e-3397c1c491a1,Feuillets composites,DOCUMENT_TYPE,0
+d117d309-69df-48aa-a8e3-9fb2270bd793,Lettres,DOCUMENT_TYPE,0
+08bcf52d-7312-4fa4-a51c-4f4da0450ad7,Firmans,DOCUMENT_TYPE,0
+134155f4-215d-4d93-b175-6543e88921a1,RAS,DOCUMENT_TYPE,0
+57e1b738-dd33-4d41-87c4-e98a26bc6982,Sans reliure,DOCUMENT_TYPE,0
+52553a13-9d8b-45fb-853d-9b1ef417bb6e,Reliure arabe,DOCUMENT_TYPE,0
+7cd51742-8669-459f-a392-8c55029c4924,Reliure européenne,DOCUMENT_TYPE,0
+5c8b9529-1945-4be7-a6ed-5bb1b3f71abc,Étui,DOCUMENT_TYPE,0
+de7d0473-b1a8-49cf-8d3b-4495623cbfb9,Feuillets non foliotés,NUMBERING,0
+0262ee45-f713-491a-bbf5-5b2847a24a42,Paginé dans le sens occidental,NUMBERING,0
+cd86413a-a830-43a6-b2be-1aea0665e451,Paginé dans le sens oriental,NUMBERING,0
+6ba3aaf1-f954-427b-a709-e28e26df7e33,Numérotation à contresens su sens de lecture,NUMBERING,0
+c47b015c-0d3e-4109-b67c-9beb5c167f1b,Double numérotation,NUMBERING,0
+052dad72-d04f-4a69-8c09-164916004a16,Arabe,NUMBERING,0
+1fc480b5-6457-4afb-8c8f-c87457a97be3,Aucune,NUMBERING_AUTRE,0
+7b20b73f-0155-4c7e-965b-64f7be0e4765,Inserts,NUMBERING_AUTRE,0
+66e1676a-dcb5-4640-9a48-244d36463efc,Notes,NUMBERING_AUTRE,0
+355e4ade-ab26-4441-a421-8715eea05aa0,Défets,NUMBERING_AUTRE,0
+0e72e057-25e4-42bb-85d3-4a7953beda94,90°,MAX_ANGLE,0
+349d7dbf-79d9-4cef-a8ed-d123b17a8941,120°,MAX_ANGLE,0
+6093af33-81b8-4fa1-8b7b-4a77b0201a55,150°,MAX_ANGLE,0
+10edc631-808f-4d0a-91d8-90b9c600ac59,180°,MAX_ANGLE,0
+3787e115-3809-4308-b41e-becb824ea847,à plat,MAX_ANGLE,0
+4c8a9493-7c04-46d4-bb21-96316f179eb2,Couture fragile,BODY,0
+f28a910e-5b0a-490a-aa7f-2819091c2eec,Ordre des feuillets non solidaires,BODY,0
+22e37156-173b-49a3-9b1a-6beaa8b09633,Notes marginales très en bord des feuillets,BODY,0
+404e1806-b828-4748-a3d0-0d96a7d724db,Texte en fonds de cahier,BODY,0
+aa5c78b0-4a89-4ad3-b7bf-294074706636,Feuillets lacunaires,BODY,0
+44c3a9b5-b624-4d31-991b-6e8669bfbe60,Bords de feuillets endommagés,BODY,0
+a2c20247-a43d-408f-8ab6-f598e14fb4e4,Déchirures,BODY,0
+3d1b4119-a061-4ed0-b923-34258274dc91,Éléments à déplier,BODY,0
+01814da3-fe3d-4c3c-be61-c7795a98edc0,Coins cornés masquant le texte,BODY,0
+8fd67eae-8e4f-44f6-b96f-3ea501c91311,Gondolement limitant l’ouverture,BODY,0
+089ddd26-2ab2-4462-80d1-f35733e698bf,Bon,BODY_CONDITION,0
+be6a49f3-9dd5-4f30-a2b1-e00955a053e6,Moyen,BODY_CONDITION,0
+ce4394d9-1784-43b6-9d45-8fda5b824253,Mauvais,BODY_CONDITION,0
+6db88cb0-a21a-4d0c-926c-95a4128d6eed,Bon état,PAPER_QUALITY,0
+1b83baa0-7435-4e29-a452-4896239803ad,Lustré,PAPER_QUALITY,0
+f545246f-6ecb-4b88-965f-d0452934f71e,Cassant,PAPER_QUALITY,0
+fd82188a-c24e-4487-8dbf-b5f835beaecb,Fin,PAPER_QUALITY,0
+a0435b11-7bf8-4cf0-aa00-e9a04180746e,RAS,STAIN,0
+3784fd03-a2fe-4dc4-b076-3e0000eb246b,Fronts d’eau,STAIN,0
+c3b71eae-2051-4345-ba69-b44f8fa18b49,Micro organismes,STAIN,0
+9ed92cbc-6a40-4458-9597-42993235d762,Encre,STAIN,0
+1d050019-321b-4201-a220-8c579952adb4,Empoussièrement,STAIN,0
+8c50db70-ae5e-4a0a-bcaa-038817239d66,Encre métallogalique,CONTENT,0
+95f876e9-f288-4efe-841e-71af2df5679e,Encres colorées,CONTENT,0
+7742b995-2baa-40a1-b1a9-1ce687cdba16,Encre dorée,CONTENT,0
+c7162d90-a10f-4871-b4dd-dc3bd67a0b16,Encre pailletée,CONTENT,0
+5e0fa8d5-9ee6-466b-911a-4a2227e5e60e,Annotation au crayon,CONTENT,0
+988bff0f-c8e8-496b-8b16-aeb9a026977e,Fonds sablés d’or,CONTENT,0
+cea6b007-5874-419d-acb9-09f43ecdc42a,"Peintures : sarloh, illustrations",CONTENT,0
+e662ca9e-4581-4a9d-8fac-8c226892357c,Texte opacifié par un doublage au Japon,CONTENT,0
+7396603c-8d04-4ec2-a984-33b27b7f3992,Encre estompée,CONTENT,0
+070b073f-61e1-4c1d-9e0f-a4e40847e9d4,Encre visible au travers,CONTENT,0
+7ca9e09c-d824-413d-946a-49bcc7fd353c,Texte en fonds de cahier,CONTENT,0
+a1237209-a34d-4c9c-99c4-24217f0de618,Papiers de teintes différentes,CONTENT,0
+3d2ca09e-6809-4302-8fc1-643c5e900b49,Papiers colorés,CONTENT,0
+4d04ce38-1322-4d26-8ecb-de504254a486,Papiers marbrés,CONTENT,0
+1d1ee373-20bd-4837-b023-dcccec3e4741,Réglure visible,CONTENT,0
+45dfc05a-3ee0-41c6-a4c1-6bb5b76258ef,Filigrane,CONTENT,0
+abad8ebb-bb48-49f1-900d-bc653a58c336,RAS,USE_CACHE,0
+234d5ed1-f00d-4abc-86d1-2cfce69e1f42,Galeries / Trous d’envoi,USE_CACHE,0
+546a8621-f979-4aaa-84cd-435d04360fd0,Lacune / Manque,USE_CACHE,0
+55521ca9-68d6-49f1-a1cd-f44831d0c995,Formats de feuillets différents dans un volume relié,USE_CACHE,0
+1cb279ac-8923-447a-b3ee-195328e15731,Encre visible au travers à cause de la finesse du papier,USE_CACHE,0

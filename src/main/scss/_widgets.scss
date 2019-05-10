@@ -1,0 +1,18 @@
+.widget-number {
+    font-size: 1.3em;
+    font-weight: bolder;
+    color: $sid-sec-color;
+}
+
+.progress-wrapper{
+    position: relative;
+    margin:20px auto;
+    font-size: 40px;
+}
+
+.clock-progress {
+    position: absolute;
+    color: #bbb;
+    font-weight: 100;
+    line-height: 1;
+}

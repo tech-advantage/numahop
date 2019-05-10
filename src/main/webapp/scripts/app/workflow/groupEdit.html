@@ -1,0 +1,100 @@
+<div class="col-sm-8 col-sm-offset-4 col-layout-columns" ng-controller="WorkflowGroupEditCtrl">
+    <div class="panel panel-column-3">
+        <div class="panel-heading">
+            <div class="pull-right">
+                <button type="button" class="btn btn-sem2 btn-xs" ng-click="entityForm.$show()" ng-disabled="!group || !group.identifier"
+                    uib-tooltip="{{::'Modifier' | translate}}" ng-show="!entityForm.$visible && loaded" sem-roles-allowed="WORKFLOW_HAB2">
+                    <span class="glyphicon-regular edit"></span>
+                </button>
+                <button type="button" class="btn btn-sem2 btn-xs" ng-click="cancel()" ng-disabled="!group || !group.identifier || !loaded"
+                    uib-tooltip="{{::'Annuler' | translate}}" ng-show="entityForm.$visible">
+                    <span class="glyphicon-regular unshare"></span>
+                </button>
+                <button type="button" class="btn btn-sem2 btn-xs" ng-click="!(!loaded || !group || !group.identifier) && delete(group)" 
+                    ng-disabled="!group || !group.identifier || !loaded" uib-tooltip="{{::'Supprimer' | translate}}" 
+                    ng-show="!entityForm.$visible" sem-roles-allowed="WORKFLOW_HAB3">
+                    <span class="glyphicon-halflings glyphicon-trash"></span>
+                </button>
+            </div>
+            <h5 translate>Fiche</h5>
+        </div>
+        <div class="panel-body" ng-show="loaded">
+            <div>
+                <form editable-form name="entityForm" onaftersave="saveEntity(group)" ng-show="loaded" 
+                    ng-init="formRO = !isAuthorized([userRoles.WORKFLOW_HAB1, userRoles.WORKFLOW_HAB2])">
+                    <numa-editable-field title="{{::'Nom' | translate}}" placeholder="{{::'Nom' | translate}}" form="entityForm" model="group.name"
+                        numa-readonly="formRO" errors="{{ errors.name }}" onbeforesave="validation.required($data)" mandatory="true">
+                    </numa-editable-field>
+
+                    <numa-editable-field title="{{::'Description' | translate}}" placeholder="{{::'Description' | translate}}" form="entityForm" type="textarea"
+                        model="group.description" numa-readonly="formRO" errors="{{ errors.description }}"> </numa-editable-field>
+                        
+                    <numa-editable-field title="{{::'Bibliothèque' | translate}}" type="select" form="entityForm" model="group.library"
+                                numa-readonly="formRO" errors="{{ errors.library }}" onbeforesave="validation.required($data)" mandatory="true"
+                                config="{ data: sel2Libraries,
+                                    display: 'name',
+                                    query: 'o.name for o in $ctrl.config.data track by o.identifier'}"
+                                link="{ type: 'library', parameters: {'id': group.library.identifier} }" numa-onchange="onChangeLibrary($data)">
+                    </numa-editable-field>
+	                
+	                
+	                <!-- Utilisateurs du groupe -->
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <table class="table table-condensed table-hover">
+                                <thead>
+                                    <tr>
+                                        <th translate>Nom</th>
+                                        <th translate>Prénom</th>
+                                        <th class="text-left" style="width: 70px" translate>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="user in group.users | orderBy:['user.surname', 'user.firstname']">
+                                        <td>{{::user.surname}}</td>
+                                        <td>{{::user.firstname}}</td>
+                                        <td>
+                                            <div class="btn-group-xs">
+                                                <numa-custom-link numa-link-type="user" numa-link-parameters='{"id": user.identifier}'></numa-custom-link>
+                                                <button ng-if="projectForm.$visible" type="button" class="btn btn-sem2" 
+                                                        uib-tooltip="{{::'Supprimer l\'utilisateur du groupe' | translate}}"
+                                                        ng-click="deleteUser(group, user)" sem-roles-allowed="WORKFLOW_HAB1">
+                                                <span class="glyphicon-halflings glyphicon-trash"></span>
+                                            </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="row margin-b20" ng-if="entityForm.$visible && isAuthorized(userRoles.WORKFLOW_HAB1)">
+                                <div class="col-sm-7">
+                                    <ui-select class="form-control" ng-model="options.userAdded" multiple theme="select2" append-to-body="true" on-select="addUser(); options.userAdded=null;">
+                                        <ui-select-match placeholder="{{::'Commencez à taper...' | translate}}">{{$item.fullName}}
+                                        </ui-select-match>
+                                        <ui-select-choices repeat="user in sel2Users | filter:$select.search track by user.identifier">
+                                            <div ng-bind-html="fullName(user) | highlight: $select.search"></div>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div class="text-center column-bottom column-5 margin-t10" ng-show="entityForm.$visible">
+                        <div class="column-bottom-button">
+                            <!-- Création / Modification -->
+                            <div class="btn-group">
+                                <button type="button" ng-disabled="entityForm.$waiting" class="btn btn-sem4" ng-click="cancel()">
+                                <span class="glyphicon-regular unshare" ng-disabled="userForm.$waiting" ></span> {{::'Annuler' | translate}}
+                            </button>
+                                <button type="submit" class="btn btn-sem2" ng-if="!formRO">
+                                <span class="glyphicon-regular floppy-save"></span> {{::'Enregistrer' | translate}}
+                            </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

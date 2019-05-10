@@ -1,0 +1,81 @@
+spring:
+    profiles: dev
+
+    datasource:
+        dataSourceClassName: org.h2.jdbcx.JdbcDataSource
+        url: jdbc:h2:mem:semantheque-sid-test
+        databaseName:
+        serverName:
+        username:
+        password:
+        maximumPoolSize: 20
+
+    jpa:
+        database-platform: org.hibernate.dialect.H2Dialect
+        database: H2
+        openInView: false
+        show_sql: false
+        generate-ddl: false
+        hibernate:
+            ddl-auto: update
+            naming-strategy: org.hibernate.cfg.EJB3NamingStrategy
+        properties:
+            hibernate.cache.use_second_level_cache: false
+            hibernate.cache.use_query_cache: false
+            hibernate.generate_statistics: true
+            hibernate.cache.use_minimal_puts: true
+            hibernate.cache.hazelcast.use_lite_member: true
+            hibernate.default_batch_fetch_size: 20
+
+instance:
+    libraries: library_bsg, library_bulac, library_sciencespo
+
+elasticsearch:
+    config:
+    index:
+        cataloging: test-cataloging
+        concepts: test-concepts
+        general: test-general
+        import: test-import
+    embedded: true
+    bulk_size: 500
+
+borrower:
+    binaries: C://Temp/pgcn/borrowers/attachments
+    digest: MD5
+    depth: 2
+
+dam:
+    binaries: C://Temp/pgcn/DAM/DAM_Repository
+    digest: MD5
+    depth: 2
+    image_magick:
+    ffmpeg:
+
+nativeLibraries:
+    path: C://Program Files/YAZ/bin
+
+import:
+    cache: C://Temp/pgcn/import/cache
+    history: C://Temp/pgcn/import/history
+
+export:
+    rdf:
+        default_uri: http://numahop.fr/
+    ssh:
+        knownHosts:
+        strictHostKeyChecking: no
+
+datawarehouse:
+    bulk_size: 1000
+
+crypto:
+    password: FaijTu4frekGin@
+    salt: TSs37yJOHMigw++76raYjcd1PKFP+PAEOgqctdYhFcM=
+
+# Services externes
+services:
+    cines:
+        cache: C://Temp/pgcn/cines
+    wikipedia:
+        cache: C://Temp/pgcn/wiki

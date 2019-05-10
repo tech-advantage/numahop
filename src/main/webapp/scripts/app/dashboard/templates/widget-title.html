@@ -1,0 +1,29 @@
+<div class="pull-right btn-group">
+    <a class="btn btn-sem2 btn-xs" uib-tooltip="{{::'Rafraîchir le widget' | translate}}" ng-if="widget.reload" ng-click="reload()">
+        <span class="glyphicon-halflings glyphicon-refresh"></span>
+    </a>
+    <a class="adf-move btn btn-sem2 btn-xs" uib-tooltip="{{::'Déplacer le widget' | translate}}" ng-if="editMode">
+        <span class="glyphicon-halflings glyphicon-move"></span>
+    </a>
+    <a class="btn btn-sem2 btn-xs" uib-tooltip="{{::'Réduire le widget' | translate}}" ng-show="options.collapsible && !widgetState.isCollapsed"
+        ng-click="widgetState.isCollapsed = !widgetState.isCollapsed">
+        <span class="glyphicon-halflings glyphicon-minus"></span>
+    </a>
+    <a class="btn btn-sem2 btn-xs" uib-tooltip="{{::'Déplier le widget' | translate}}" ng-show="options.collapsible && widgetState.isCollapsed"
+        ng-click="widgetState.isCollapsed = !widgetState.isCollapsed">
+        <span class="glyphicon-halflings glyphicon-plus"></span>
+    </a>
+    <a class="btn btn-sem2 btn-xs" uib-tooltip="{{::'Configurer le widget' | translate}}" ng-click="edit()" ng-if="editMode">
+        <span class="glyphicon-halflings glyphicon-cog"></span>
+    </a>
+    <a class="btn btn-sem2 btn-xs" uib-tooltip="{{::'Agrandir le widget' | translate}}" ng-click="openFullScreen()" ng-show="options.maximizable">
+        <span class="glyphicon-halflings glyphicon-fullscreen"></span>
+    </a>
+    <a class="btn btn-sem2 btn-xs" uib-tooltip="{{::'Supprimer le widget' | translate}}" ng-click="remove()" ng-if="editMode">
+        <span class="glyphicon-halflings glyphicon-remove"></span>
+    </a>
+</div>
+<h3 class="panel-title" ng-click="widgetState.isCollapsed=!widgetState.isCollapsed">
+    <span class="badge badge-info pull-right" ng-show="!editMode && definition.titleBadge">{{ definition.titleBadge }}</span>
+    <span>{{definition.title}}</span>
+</h3>

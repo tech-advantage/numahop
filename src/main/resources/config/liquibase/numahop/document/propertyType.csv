@@ -1,0 +1,21 @@
+identifier;label;supertype;rank;version
+title;Title;DC;1;0
+creator;Creator;DC;2;0
+subject;Subject;DC;3;0
+description;Description;DC;4;0
+publisher;Publisher;DC;5;0
+contributor;Contributor;DC;6;0
+date;Date;DC;7;0
+type;Type;DC;8;0
+format;Format;DC;9;0
+identifier;Identifier;DC;10;0
+source;Source;DC;11;0
+language;Language;DC;12;0
+relation;Relation;DC;13;0
+coverage;Coverage;DC;14;0
+rights;Rights;DC;15;0
+alternative;Alternative;DCQ;1;0
+table_content;Table of Contents;DCQ;2;0
+abstract;Abstract;DCQ;3;0
+isbn;ISBN;CUSTOM;1;0
+issn;ISSN;CUSTOM;2;0

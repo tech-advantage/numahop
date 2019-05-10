@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Changeset du module Document -->
+    <changeSet id="pgcn-create-library-parameter-1" author="progilone">
+        <createTable tableName="lib_parameter">
+            <column name="identifier" type="varchar(191)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+			<!-- Données -->
+			<column name="type" type="varchar(255)">
+			 <constraints nullable="false" />
+			</column>
+			<!-- Lien technique -->
+            <column name="library" type="varchar(191)" />
+			<!-- Données techniques auto -->
+            <column name="version" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+		<createTable tableName="lib_parameter_value_cines">
+            <column name="identifier" type="varchar(191)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+			<!-- Données -->
+			<column name="value" type="text" />
+			<column name="type" type="varchar(255)">
+             <constraints nullable="false" />
+            </column>
+			<!-- Lien technique -->
+			<column name="parameter" type="varchar(191)" />
+			<!-- Données techniques auto -->
+            <column name="version" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+		<addForeignKeyConstraint baseColumnNames="library" baseTableName="lib_parameter" constraintName="fk_lib_parameter_library"
+            referencedColumnNames="identifier" referencedTableName="lib_library" />
+		<addForeignKeyConstraint baseColumnNames="parameter" baseTableName="lib_parameter_value_cines"
+			constraintName="fk_lib_parameter_value_cines_lib_parameter"
+            referencedColumnNames="identifier" referencedTableName="lib_parameter" />
+    </changeSet>
+</databaseChangeLog>

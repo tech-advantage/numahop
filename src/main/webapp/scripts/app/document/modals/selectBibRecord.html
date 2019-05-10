@@ -1,0 +1,56 @@
+<div class="modal-header">
+    <h3 class="modal-title" translate>Sélectionner une notice</h3>
+</div>
+<div class="modal-body">
+    <!-- Options de recherche -->
+    <div class="formBlock margin-t0 margin-b10">
+        <div class="formBlockTitle" translate>Rechercher</div>
+        <div class="formBlockContent">
+            <div class="row vertical-align">
+                <div class="col-xs-12">
+                    <div class="input-group">
+                        <input type="text" class="form-control" ng-model="mainCtrl.searchRequest" ng-keypress="mainCtrl.search($event)"
+                               placeholder="{{ ::'Préciser votre recherche...' | translate }}">
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-sem2" ng-click="mainCtrl.search()">
+                                <span class="glyphicon syrtis-icon-loupe"></span>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div ng-show="!mainCtrl.pagination.busy">
+        <!-- Aucun résultat -->
+        <div class="well" ng-show="mainCtrl.pagination.items.length == 0" translate>Aucune notice n'a été trouvée</div>
+
+        <!-- Liste de résultats -->
+        <div class="text-right small text-muted" ng-show="mainCtrl.pagination.totalItems > 0"
+             translate translate-n="mainCtrl.pagination.totalItems" translate-plural="{{$count}} résultats">1 résultat
+        </div>
+        <div class="list-group-item no-padding no-border no-select" ng-class="{active: bibRecord._selected, disabled: bibRecord._disabled}"
+             ng-repeat="bibRecord in mainCtrl.pagination.items"
+             ng-click="mainCtrl.select(bibRecord)">
+            <span class="second">[{{::bibRecord.docUnit.pgcnId}}]</span>&nbsp;<span class="principal">{{::bibRecord.title}}</span>
+        </div>
+        <!-- Pagination des résultat -->
+        <div class="row" ng-show="mainCtrl.pagination.totalItems > mainCtrl.pagination.size">
+            <div class="col-sm-12">
+                <div class="text-center">
+                    <ul uib-pagination num-pages="mainCtrl.pagination.totalPages" total-items="mainCtrl.pagination.totalItems"
+                        items-per-page="mainCtrl.pagination.size" ng-change="mainCtrl.getPage()" ng-model="mainCtrl.pagination.page"
+                        class="pagination-sm"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div ng-show="mainCtrl.pagination.busy" class="well well-sm" translate>Chargement en cours...</div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-sem4" ng-click="mainCtrl.close()" translate>Annuler et fermer la fenêtre</button>
+    <button type="button" class="btn btn-sem2" ng-click="mainCtrl.ok()" ng-disabled="!mainCtrl.selection.length">
+        <span class="glyphicon-regular floppy-save"></span> {{::'Valider la sélection' | translate}}
+    </button>
+</div>

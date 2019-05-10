@@ -1,0 +1,62 @@
+<!-- Fixed navbar -->
+<div class="navbar navbar-default navbar-fixed-top navbar-sem">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2 hidden-sm hidden-xs">
+                <a href="#/dashboard" ng-if="isAuthenticated()">
+                    <img src="assets/images/numahop-180.png" />
+                </a>
+            </div>
+            <div class="col-xs-12 col-sm-8 col-md-6 navbar-header">
+                <div class="input-group typeahead" ng-controller="GlobalSearchController as globalCtrl" ng-if="isAuthenticated()">
+					<input type="text" class="form-control" ng-model="globalCtrl.searchText"
+						   uib-typeahead="sugg.text for sugg in globalCtrl.suggestions($viewValue)"
+						   typeahead-wait-ms="300" typeahead-focus-first="false" 
+						   typeahead-on-select="globalCtrl.search($model)"
+						   typeahead-should-select="globalCtrl.onListSelection($event)"
+						   ng-keypress="globalCtrl.search(globalCtrl.searchText, $event)"
+						   placeholder="{{::'Lancer une recherche...' | translate}}" />
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="globalCtrl.search(globalCtrl.searchText)">
+                        	<span class="glyphicon-halflings glyphicon-search"></span>
+                       	</button>
+                    </span>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-4 col-md-4 navbar-bottom">
+            	<div class="row">
+	                <!-- <div ng-controller="LanguageController" class="header-lang">
+	                    <span ng-repeat="locale in ::locales"> <a href="javascript:;" ng-click="changeLocale(locale.code)">
+	                            <span uib-tooltip="{{::locale.label}}" ng-class="'famfamfam-flag-' + locale.flag"></span>
+	                        </a>
+	                    </span>
+	                </div> -->
+	                <div class="col-xs-7" ng-if="isAuthenticated()">
+		                <ul class="nav navbar-nav navbar-right">
+		                    <li class="dropdown pointer"><a class="dropdown-toggle" data-toggle="dropdown">
+		                            <span><small>{{account.firstname}}&nbsp;{{account.lastname}}</small>&nbsp;<b class="caret"></b></span>
+		                        </a>
+		                        <ul class="dropdown-menu" role="menu">
+		                            <li><a href="#/account">
+		                                    <span class="glyphicon-halflings glyphicon-glyph-wrench"></span> &#xA0;<span translate>Profil</span>
+		                                </a></li>
+		                            <li><a href="#/password">
+		                                    <span class="glyphicon-halflings glyphicon-glyph-lock"></span> &#xA0;<span translate>Mot de passe</span>
+		                                </a></li>
+		                            <li><a href="#/logout">
+		                                    <span class="glyphicon-halflings glyphicon-log-out"></span> &#xA0;<span translate>Déconnexion</span>
+		                                </a></li>
+		                        </ul>
+		                	</li>
+		                </ul>
+					</div>
+					<div class="col-xs-5" ng-if="isAuthenticated()">
+						<div class="text-right text-muted small ng-binding" style="margin-top: 18px">
+							<em>{{::version.name}} {{::version.version}}</em>
+						</div>
+					</div>
+	            </div>
+            </div>
+        </div>
+    </div>
+</div>

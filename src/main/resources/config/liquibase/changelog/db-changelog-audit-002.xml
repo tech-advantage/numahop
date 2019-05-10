@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Créations des tables d'audit -->
+    <changeSet id="pgcn-create-audit-002" author="progilone">
+
+        <createTable tableName="aud_doc_unit">
+            <column name="identifier" type="varchar(191)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rev" type="integer">
+                <constraints nullable="false"/>
+            </column>
+            <column name="revtype" type="tinyint"/>
+            <column name="lot" type="varchar(255)"/>
+        </createTable>
+        <addPrimaryKey tableName="aud_doc_unit" columnNames="identifier, rev"/>
+
+        <!-- insertion des données d'audit initiales -->
+        <sql dbms="mysql">
+            INSERT INTO aud_revision (id, timestamp, username)
+            SELECT IFNULL(MAX(id), 0) + 1, UNIX_TIMESTAMP() * 1000, 'system' FROM aud_revision
+        </sql>
+        <sql dbms="mysql">
+            INSERT INTO aud_doc_unit (identifier, rev, revtype, lot)
+            SELECT d.identifier, rev.id, 0, d.lot
+            FROM doc_unit d
+            CROSS JOIN (select ifnull(max(id), 0) 'id' FROM aud_revision) rev
+        </sql>
+
+    </changeSet>
+</databaseChangeLog>

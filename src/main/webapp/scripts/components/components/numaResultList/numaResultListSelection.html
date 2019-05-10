@@ -1,0 +1,30 @@
+<div class="panel-heading">
+    <div class="pull-right">
+        <a class="btn btn-xs btn-sem3 margin-r10" ng-href="{{ ::$ctrl.baseUrl }}"
+                uib-tooltip="{{::'Opérations groupées sur la sélection' | translate}}">
+            <span class="fa fa-cogs"></span>
+        </a>
+        <button type="button" class="btn btn-xs btn-sem3"
+                ng-click="$ctrl.selectPage()" ng-show="!$ctrl.isPageSelected()"
+                uib-tooltip="{{::'Sélectionner toute la page' | translate}}">
+            <span class="glyphicon-regular check"></span>
+        </button>
+        <button type="button" class="btn btn-xs btn-sem3"
+                ng-click="$ctrl.unselectPage()" ng-show="$ctrl.isPageSelected()"
+                uib-tooltip="{{::'Désélectionner toute la page' | translate}}">
+            <span class="glyphicon-regular unchecked"></span>
+        </button>
+        <button type="button" class="btn btn-xs btn-sem3"
+                ng-click="$ctrl.clearSelection()" 
+                uib-tooltip="{{::'Vider la sélection courante' | translate}}">
+            <span class="glyphicon-halflings glyphicon-remove"></span>
+        </button>
+    </div>
+    <span class="label" ng-show="$ctrl.selectionCount() === 0" translate>
+        Aucune sélection
+    </span>
+    <span class="label" ng-show="$ctrl.selectionCount() > 0" 
+            translate translate-n="$ctrl.selectionCount()" translate-plural="{{$count}} sélections">
+        {{$count}} sélection
+    </span>
+</div>

@@ -1,0 +1,129 @@
+<div class="col-sm-6 col-sm-offset-6 col-layout-columns" ng-controller="CheckConfigurationEditCtrl">
+    <div class="panel panel-column-3">
+        <div class="panel-heading">
+            <div class="pull-right">
+                <button type="button" class="btn btn-sem2 btn-xs"
+                        ng-click="showForm()" 
+                        uib-tooltip="{{::'Modifier' | translate}}"
+                        ng-disabled="checkConfigurationForm.$visible" ng-show="loaded"
+                        sem-roles-allowed="CHECK_HAB1">
+                    <span class="glyphicon-regular edit"></span>
+                </button>
+                <button type="button" class="btn btn-sem2 btn-xs"
+                        ng-click="duplicate(configuration)" 
+                        uib-tooltip="{{::'Dupliquer' | translate}}"
+                        ng-disabled="!configuration || !configuration.identifier" ng-show="loaded && configuration.identifier"
+                        sem-roles-allowed="CHECK_HAB2">
+                    <span class="glyphicon-halflings glyphicon-duplicate"></span>
+                </button>
+                <button type="button" class="btn btn-sem2 btn-xs"
+                        ng-click="delete(configuration)" 
+                        uib-tooltip="{{::'Supprimer' | translate}}"
+                        ng-disabled="!configuration || !configuration.identifier" ng-show="loaded"
+                        sem-roles-allowed="CHECK_HAB2">
+                    <span class="glyphicon-halflings glyphicon-trash"></span>
+                </button>
+            </div>
+            <h5 translate>Fiche</h5>
+        </div>
+        <div class="panel-body">
+            <form editable-form name="checkConfigurationForm" onaftersave="saveConfiguration()" ng-show="loaded"
+                  ng-init="formRO = !isAuthorized([userRoles.CHECK_HAB1])">
+
+                <numa-editable-field title="{{::'Libellé' | translate}}" placeholder="{{::'Libellé' | translate}}" form="checkConfigurationForm" 
+                                     model="configuration.label" errors="{{ errors.label }}" mandatory="true"
+                                     onbeforesave="validation.required($data)" numa-readonly="formRO"></numa-editable-field>
+                <numa-editable-field title="{{::'Taux d\'erreurs majeures' | translate}}" placeholder="{{::'Taux d\'erreurs majeures' | translate}}" 
+                                     form="checkConfigurationForm" model="configuration.majorErrorRate" mandatory="true"
+                                     type="percent" errors="{{ errors.majorErrorRate }}" 
+                                     onbeforesave="validation.required($data)" numa-readonly="formRO"></numa-editable-field>
+                <numa-editable-field title="{{::'Taux d\'erreurs mineures' | translate}}" placeholder="{{::'Taux d\'erreurs mineures' | translate}}" 
+                                     form="checkConfigurationForm" model="configuration.minorErrorRate" mandatory="true"
+                                     type="percent" errors="{{ errors.minorErrorRate }}" 
+                                     onbeforesave="validation.required($data)" numa-readonly="formRO"></numa-editable-field>
+                <numa-editable-field title="{{::'Taux d\'échantillonnage' | translate}}" placeholder="{{::'Taux d\'échantillonnage' | translate}}" 
+                                     form="checkConfigurationForm" model="configuration.sampleRate" mandatory="true"
+                                     type="percent" errors="{{ errors.sampleRate }}" 
+                                     onbeforesave="validation.required($data)" numa-readonly="formRO"></numa-editable-field>
+                
+                <numa-editable-field title="{{::'Méthode d\'échantillonnage' | translate}}" type="select" form="checkConfigurationForm" mandatory="true"
+                        model="configuration.sampleMode" numa-readonly="formRO" errors="{{ errors.requiredSampleMode }}" onbeforesave="validation.required($data)"
+                        config="{ data: options.sampleMode,
+                        displayFn: displaySampleMode,
+                        query: 'key as value for (key, value) in $ctrl.config.data'}" > </numa-editable-field>                     
+                                     
+                <numa-editable-field title="{{::'Séparateur de séquence' | translate}}" placeholder="{{::'Caractère de séparation de la séquence (\'_\' par défaut)' | translate}}" 
+                                     form="checkConfigurationForm" model="configuration.separators" mandatory="true"
+                                     errors="{{ errors.sampleRate }}" length="1"
+                                     onbeforesave="validation.required($data)" numa-readonly="formRO"></numa-editable-field>                     
+                <numa-editable-field title="{{::'Bibliothèque' | translate}}" type="select" placeholder="{{::'Bibliothèque' | translate}}" form="checkConfigurationForm" 
+                                    model="configuration.library" errors="{{ errors.library }}" mandatory="true"
+                                    onbeforesave="validation.required($data)" numa-readonly="formRO" 
+                                    config="{ data: options.libraries, 
+                                            display: 'name', 
+                                            query: 'o.name for o in $ctrl.config.data track by o.identifier' }"
+                                    link="{ type: 'library', parameters: {'id': configuration.library.identifier} }"></numa-editable-field>
+             <!-- Reglage des controles -->
+             <div class="row">
+                <div class="table-responsive col-sm-12">
+                    <table class="table table-condensed table-hover" 
+                           ng-init="updAllowed = (viewMode === viewModes.EDIT && isAuthorized([userRoles.CHECK_HAB1]))">
+                        <thead>
+                        <tr>
+                            <th translate>Activé</th>
+                            <th translate>Bloquant</th>
+                            <th translate>Contrôle</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="rule in configuration.automaticCheckRules">
+                            <td ng-if="updAllowed" class="text-left">
+                                <div class="btn-group btn-group-sm">
+                                    <input bs-switch 
+                                           ng-model="rule.active"
+                                           type="checkbox"
+                                           ng-change="updateActivRule(rule)"
+                                           switch-readonly="{{ !checkConfigurationForm.$visible || (readOnlyCheck && rule.readOnly) }}"
+                                           switch-on-text="{{ onLabelActiv | translate }}"
+                                           switch-off-text="{{ offLabelActiv | translate }}"
+                                           switch-label-width="0px"/>
+                                </div>
+                            </td>
+                            <td ng-if="updAllowed && rule.automaticCheckType.type === 'WITH_MASTER'" class="text-left"></td>
+                            <td ng-if="updAllowed && rule.automaticCheckType.type !== 'WITH_MASTER'" class="text-left">
+                                <div class="btn-group btn-group-sm">
+                                    <input bs-switch 
+                                           ng-model="rule.blocking"
+                                           type="checkbox"
+                                           ng-change="updateBlockRule(rule)"
+                                           switch-readonly="{{ !checkConfigurationForm.$visible || (readOnlyCheck && rule.readOnly) }}"
+                                           switch-on-text="{{ onLabelBlock | translate }}"
+                                           switch-off-text="{{ offLabelBlock | translate }}"
+                                           switch-label-width="0px"/>
+                                </div>
+                            </td>
+
+                            <td><span>{{::rule.automaticCheckType.label}}</span></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>                            
+
+                <div class="text-center column-bottom column-6  margin-t10" ng-if="checkConfigurationForm.$visible">
+                    <div class="column-bottom-button">
+                        <!-- Création / Modification -->
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-sem4" ng-disabled="checkConfigurationForm.$waiting" ng-click="cancel()">
+                                <span class="glyphicon-regular unshare"></span> {{::'Annuler' | translate}}
+                            </button>
+                            <button type="submit" class="btn btn-sem2" sem-roles-allowed="CHECK_HAB1">
+                                <span class="glyphicon-regular floppy-save"></span> {{::'Enregistrer' | translate}}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

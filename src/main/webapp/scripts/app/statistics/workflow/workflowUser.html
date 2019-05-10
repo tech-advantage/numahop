@@ -1,0 +1,100 @@
+<div class="row layout-columns">
+    <div class="col-sm-12 col-layout-columns">
+        <div class="panel panel-column-1 panel-column-end">
+            <!-- Filtrage du tableau -->
+            <numa-filter data-class="pull-left btn-filter">
+                <!-- Bibliothèques -->
+                <numa-filter-field data-title="{{ ::'Bibliothèque' | translate }}">
+                    <sem-field sem-type="uiselect" sem-model="statCtrl.filters.library" sem-option-data="statCtrl.config.libraries"
+                               sem-onchange="statCtrl.search()"></sem-field>
+                </numa-filter-field>
+                <!-- Projet -->
+                <numa-filter-field data-title="{{ ::'Projet' | translate }}">
+                    <sem-field sem-type="uiselect" sem-model="statCtrl.filters.project" sem-option-data="statCtrl.config.projects" 
+                               sem-onchange="statCtrl.search()"></sem-field>
+                </numa-filter-field>
+                <!-- Lot -->
+                <numa-filter-field data-title="{{ ::'Lot' | translate }}">
+                    <sem-field sem-type="uiselect" sem-model="statCtrl.filters.lot" sem-option-data="statCtrl.config.lots" 
+                               sem-onchange="statCtrl.search()"></sem-field>
+                </numa-filter-field>
+                <!-- Livraison -->
+                <numa-filter-field data-title="{{ ::'Livraison' | translate }}">
+                    <sem-field sem-type="uiselect" sem-model="statCtrl.filters.delivery" sem-option-data="statCtrl.config.deliveries" 
+                               sem-onchange="statCtrl.search()"></sem-field>
+                </numa-filter-field>
+                <!-- Date -->
+                <numa-filter-field data-title="{{ ::'Date' | translate }}">
+                    <div class="form-inline text-right margin-b10">
+                        <label translate>entre le</label>
+                        <sem-datepicker ng-model="statCtrl.filters.from" sem-model-options="{ debounce: 300 }"
+                                        ng-change="statCtrl.searchValue('from', $data)"></sem-datepicker>
+                    </div>
+                    <div class="form-inline text-right">
+                        <label translate>et le</label>
+                        <sem-datepicker ng-model="statCtrl.filters.to" sem-model-options="{ debounce: 300 }"
+                                        ng-change="statCtrl.searchValue('to', $data)"></sem-datepicker>
+                    </div>
+                </numa-filter-field>
+            </numa-filter>
+            <!-- Entête -->
+            <div class="panel-heading">
+                <div class="pull-right">
+                    <button type="button" class="btn btn-sem2 btn-xs" 
+                            ng-click="statCtrl.reinitFilters()" uib-tooltip="{{::'Réinitialiser les filtres de la recherche' | translate}}">
+                        <span class="glyphicon-halflings glyphicon-refresh"></span>
+                    </button>
+                    <a class="btn btn-sem2 btn-xs" 
+                            ng-href="{{statCtrl.getExportUrl()}}" uib-tooltip="{{::'Export CSV' | translate}}">
+                        <span class="fa fa-download"></span>
+                    </a>
+                </div>
+            </div>
+            <div class="panel-body">
+                <div ng-if="statCtrl.loaded">
+                    <div class="well" ng-show="statCtrl.items.length == 0" translate>
+                        Aucun utilisateur trouvé
+                    </div>
+                    <div ng-show="statCtrl.items.length > 0" class="well well-sm" translate
+                        translate-n="statCtrl.items.length"
+                        translate-plural="{{$count}} utilisateurs trouvés">
+                        1 utilisateur trouvé
+                    </div>
+                </div>
+                <!-- Liste des entités  -->
+                <div class="table-responsive" ng-show="statCtrl.items.length > 0">
+                    <table class="table table-hover sem-list">
+                        <thead>
+                        <tr>
+                            <th class="text-center h6 bold" translate>Bibliothèque</th>
+                            <th class="text-center h6 bold" translate>Utilisateur</th>
+                            <th class="text-center h6 bold" translate>Nb d'UD contrôlées</th>
+                            <th class="text-center h6 bold" translate>Nb moyen de pages</th>
+                            <th class="text-center h6 bold" translate>Délai moyen de contrôle</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="item in statCtrl.items | orderBy:['libraryName', 'userFullName']">
+                            <td class="text-right nowrap">
+                                {{ ::item.libraryName }} 
+                                <numa-custom-link numa-link-type="library"
+                                                  numa-link-parameters="{id: item.libraryIdentifier}"
+                                                  ng-if="item.libraryIdentifier"></numa-custom-link>
+                            </td>
+                            <td class="text-right nowrap">
+                                {{ ::item.userFullName || item.userLogin || ('Non renseigné' | translate) }} 
+                                <numa-custom-link numa-link-type="user"
+                                                    numa-link-parameters="{id: item.userIdentifier}"
+                                                    ng-if="item.userIdentifier"></numa-custom-link>
+                            </td>
+                            <td class="text-center">{{ ::item.nbDocUnit | number }}</td>
+                            <td class="text-center">{{ ::item.avgTotalPages | number }}</td>
+                            <td class="text-center">{{ ::item.avgDuration | duration:'hour' }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

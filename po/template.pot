@@ -1,0 +1,4133 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"X-Generator: Poedit 1.8.11\n"
+
+#: src/main/webapp/scripts/app/document/import/importEdit.html:205
+msgid "(1 traité)"
+msgid_plural "({{$count}} traités)"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/main/webapp/scripts/app/configuration/csvMapping/csvMapping.html:56
+#: src/main/webapp/scripts/app/configuration/mapping/mapping.html:67
+msgid "(modifications non sauvegardées)"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEdit.html:383
+#: src/main/webapp/scripts/app/document/import/importEdit.html:391
+msgid "[Action par défaut]"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/docAllOperationsCtrl.js:139
+msgid "{{pgcnId}} {{label}}"
+msgstr ""
+
+#: src/main/webapp/scripts/components/modal/common/newClosingDate.html:23
+msgid "&nbsp;au&nbsp;"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/messageInterceptor.js:113
+msgid "<div>Vous avez tenté de modifier un objet que quelqu'un d'autre a modifié en même temps que vous !</div><div><b>Vos modifications n'ont pas été enregistrées.</b></div><div>Rechargez la page pour mettre à jour les informations, vos saisie seront perdues.</div>"
+msgstr ""
+
+#: src/main/webapp/scripts/app/user/account.html:74
+msgid "<strong>Appartement, escalier, étage</strong>"
+msgstr ""
+
+#: src/main/webapp/scripts/app/user/account.html:78
+msgid "<strong>Bâtiment, résidence</strong>"
+msgstr ""
+
+#: src/main/webapp/scripts/app/user/account.html:51
+msgid "<strong>Bibliothèque</strong>"
+msgstr ""
+
+#: src/main/webapp/scripts/app/user/account.html:47
+msgid "<strong>Catégorie</strong>"
+msgstr ""
+
+#: src/main/webapp/scripts/app/user/account.html:90
+msgid "<strong>Code postal</strong>"
+msgstr ""
+
+#: src/main/webapp/scripts/app/user/account.html:86
+msgid "<strong>Complément d'adresse</strong>"
+msgstr ""
+
+#: src/main/webapp/scripts/app/user/account.html:43
+msgid "<strong>Courriel</strong>"
+msgstr ""
+
+#: src/main/webapp/scripts/app/account/login/login.html:6
+msgid "<strong>Erreur d'authentification&nbsp;:</strong> veuillez vérifier vos identifiants de connexion."
+msgstr ""
+
+#: src/main/webapp/scripts/app/user/account.html:35
+msgid "<strong>Fonction</strong>"
+msgstr ""
+
+#: src/main/webapp/scripts/app/user/account.html:23
+msgid "<strong>Login</strong>"
+msgstr ""
+
+#: src/main/webapp/scripts/app/user/account.html:27
+msgid "<strong>Nom</strong>"
+msgstr ""
+
+#: src/main/webapp/scripts/app/user/account.html:82
+msgid "<strong>Numéro et nom de la voie</strong>"
+msgstr ""
+
+#: src/main/webapp/scripts/app/user/account.html:98
+msgid "<strong>Pays</strong>"
+msgstr ""
+
+#: src/main/webapp/scripts/app/user/account.html:31
+msgid "<strong>Prénom</strong>"
+msgstr ""
+
+#: src/main/webapp/scripts/app/user/account.html:55
+msgid "<strong>Profil</strong>"
+msgstr ""
+
+#: src/main/webapp/scripts/app/user/account.html:61
+msgid "<strong>Société</strong>"
+msgstr ""
+
+#: src/main/webapp/scripts/app/user/account.html:39
+msgid "<strong>Téléphone</strong>"
+msgstr ""
+
+#: src/main/webapp/scripts/app/account/password/password.html:10
+#: src/main/webapp/scripts/app/main/password.html:10
+msgid "<strong>Une erreur est survenue!</strong> Le mot de passe n'a pas pu être modifié."
+msgstr ""
+
+#: src/main/webapp/scripts/app/user/account.html:94
+msgid "<strong>Ville</strong>"
+msgstr ""
+
+#: src/main/webapp/scripts/app/library/libraries.html:47
+msgid "1 bibliothèque trouvée"
+msgid_plural "{{$count}} bibliothèques trouvées"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/main/webapp/scripts/app/platformconfiguration/sftpconfigurations.html:51
+msgid "1 configuration CINES trouvée"
+msgid_plural "{{$count}} configurations CINES trouvées"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/main/webapp/scripts/app/platformconfiguration/ftpconfigurations.html:51
+msgid "1 configuration FTP trouvée"
+msgid_plural "{{$count}} configurations FTP trouvées"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/main/webapp/scripts/app/platformconfiguration/iaconfigurations.html:51
+msgid "1 configuration pour Internet Archive trouvée"
+msgid_plural "{{$count}} configurations pour Internet Archive trouvées"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/main/webapp/scripts/app/checkconfiguration/configurations.html:51
+#: src/main/webapp/scripts/app/configuration/mailbox/mailbox.html:57
+msgid "1 configuration trouvée"
+msgid_plural "{{$count}} configurations trouvées"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/main/webapp/scripts/app/dashboard/widgets/project/projectDetailsWidget.html:14
+msgid "1 document"
+msgid_plural "{{mainCtrl.maxSize}} documents"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/main/webapp/scripts/app/dashboard/widgets/project/projectDetailsWidget.html:11
+msgid "1 document contrôlé"
+msgid_plural "{{mainCtrl.size || 0}} documents contrôlés"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/main/webapp/scripts/app/checks/checks.html:78
+msgid "1 document numérique trouvé"
+msgid_plural "{{$count}} documents numériques trouvés"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/main/webapp/scripts/app/document/import/importEdit.html:400
+msgid "1 doublon"
+msgid_plural "{{$count}} doublons"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/main/webapp/scripts/app/delivery/deliveries.html:98
+msgid "1 livraison trouvée"
+msgid_plural "{{$count}} livraisons trouvées"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/main/webapp/scripts/app/lot/lots.html:99
+msgid "1 lot trouvé"
+msgid_plural "{{$count}} lots trouvés"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/main/webapp/scripts/app/document/records.html:53
+msgid "1 notice trouvée"
+msgid_plural "{{$count}} notices trouvées"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/main/webapp/scripts/app/project/projects.html:96
+#: src/main/webapp/scripts/app/statistics/projects.html:21
+msgid "1 projet trouvé"
+msgid_plural "{{$count}} projets trouvés"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/main/webapp/scripts/app/document/allOperations/export.html:115
+#: src/main/webapp/scripts/app/document/allOperations/export.html:19
+#: src/main/webapp/scripts/app/document/import/importEdit.html:348
+#: src/main/webapp/scripts/app/document/modals/selectDocUnit.html:30
+msgid "1 résultat"
+msgid_plural "{{$count}} résultats"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/main/webapp/scripts/app/train/trains.html:85
+msgid "1 train trouvé"
+msgid_plural "{{$count}} trains trouvés"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/main/webapp/scripts/app/document/docUnits.html:31
+#: src/main/webapp/scripts/app/document/docUnitsList.html:71
+msgid "1 unité documentaire trouvée"
+msgid_plural "{{$count}} unités documentaires trouvées"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/main/webapp/scripts/app/user/users.html:86
+msgid "1 utilisateur trouvé"
+msgid_plural "{{$count}} utilisateurs trouvés"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/main/webapp/scripts/components/message/codeSrvc.js:44
+#: src/main/webapp/scripts/components/message/codeSrvc.js:76
+msgid "A contrôler"
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveryCtrl.js:51
+#: src/main/webapp/scripts/app/delivery/deliveryEditCtrl.js:32
+msgid "À contrôler"
+msgstr ""
+
+#: src/main/webapp/scripts/app/numahop/common/initialFilterCtrl.js:12
+msgid "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/z3950/z3950ServerEdit.html:45
+#: src/main/webapp/scripts/app/library/libraryEdit.html:93
+#: src/main/webapp/scripts/app/lot/lotEdit.html:81
+#: src/main/webapp/scripts/app/project/projectEdit.html:91
+#: src/main/webapp/scripts/app/train/trainEdit.html:66
+#: src/main/webapp/scripts/app/user/userEdit.html:75
+msgid "Actif"
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveryEdit.html:104
+#: src/main/webapp/scripts/app/document/docUnitEdit.html:172
+#: src/main/webapp/scripts/app/lot/deliveries.html:8
+#: src/main/webapp/scripts/app/lot/lotEdit.html:145
+#: src/main/webapp/scripts/app/project/projectEdit.html:166
+#: src/main/webapp/scripts/app/project/projectEdit.html:227
+#: src/main/webapp/scripts/app/project/projectEdit.html:265
+#: src/main/webapp/scripts/components/modal/common/confirmAction.html:2
+msgid "Action"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEdit.html:300
+msgid "Action par défaut si aucun doublon n'est trouvé"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEdit.html:251
+#: src/main/webapp/scripts/app/document/import/importEdit.html:294
+msgid "Action par défaut si un doublon est trouvé"
+msgstr ""
+
+#: src/main/webapp/scripts/app/checks/checks.html:97
+#: src/main/webapp/scripts/app/lot/docs.html:38
+#: src/main/webapp/scripts/app/project/docs.html:37
+#: src/main/webapp/scripts/app/project/lots.html:10
+#: src/main/webapp/scripts/app/project/trains.html:10
+#: src/main/webapp/scripts/app/train/docs.html:10
+msgid "Actions"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/docUnitsList.html:86
+msgid "Actions sur la sélection"
+msgstr ""
+
+#: src/main/webapp/scripts/app/platformconfiguration/iaconfigurationEdit.html:39
+#: src/main/webapp/scripts/app/platformconfiguration/sftpconfigurationEdit.html:48
+msgid "Active"
+msgstr ""
+
+#: src/main/webapp/scripts/app/user/roleEdit.html:52
+#: src/main/webapp/scripts/app/user/userRoleEditCtrl.js:24
+msgid "Activé"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/appconfiguration.html:5
+#: src/main/webapp/scripts/app/main/menuLeft.html:62
+#: src/main/webapp/scripts/components/message/codeSrvc.js:14
+msgid "Administration"
+msgstr ""
+
+#: src/main/webapp/scripts/app/library/libraryEdit.html:109
+#: src/main/webapp/scripts/app/library/libraryEditCtrl.js:81
+#: src/main/webapp/scripts/app/platformconfiguration/ftpconfigurationEdit.html:32
+#: src/main/webapp/scripts/app/user/account.html:68
+#: src/main/webapp/scripts/app/user/userEdit.html:106
+#: src/main/webapp/scripts/app/user/userEditCtrl.js:100
+msgid "Adresse"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/z3950/z3950ServerEdit.html:25
+msgid "Adresse du serveur"
+msgstr ""
+
+#: src/main/webapp/scripts/app/dashboard/widgets/clock/clockWidget.js:8
+msgid "Affiche l'heure courante"
+msgstr ""
+
+#: src/main/webapp/scripts/app/dashboard/widgets/project/projectStateWidget.js:12
+msgid "Affiche la liste des projets dont le statut est un de ceux renseignés"
+msgstr ""
+
+#: src/main/webapp/scripts/app/dashboard/widgets/project/projectDetailsWidget.js:12
+msgid "Affiche le détail d'un projet"
+msgstr ""
+
+#: src/main/webapp/scripts/app/dashboard/templates/widget-title.html:19
+msgid "Agrandir le widget"
+msgstr ""
+
+#: src/main/webapp/scripts/app/help/help.js:6
+#: src/main/webapp/scripts/app/help/helpPageCtrl.js:34
+#: src/main/webapp/scripts/app/help/helpPages.html:5
+#: src/main/webapp/scripts/app/main/menuLeft.html:67
+msgid "Aide"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/codeSrvc.js:27
+msgid "Aide de PGCN"
+msgstr ""
+
+#: src/main/webapp/scripts/components/modal/common/addWarning.html:2
+msgid "Ajout"
+msgstr ""
+
+#: src/main/webapp/scripts/app/dashboard/templates/widget-add.html:3
+msgid "Ajout d'un widget"
+msgstr ""
+
+#: src/main/webapp/scripts/components/modal/common/newClosingDate.html:2
+msgid "Ajout d'une fermeture exceptionnelle"
+msgstr ""
+
+#: src/main/webapp/scripts/components/modal/common/newOpeningDate.html:2
+msgid "Ajout d'une ouverture exceptionnelle"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/record.html:111
+#: src/main/webapp/scripts/app/document/allOperations/record.html:132
+#: src/main/webapp/scripts/app/document/allOperations/record.html:182
+#: src/main/webapp/scripts/app/document/allOperations/record.html:203
+#: src/main/webapp/scripts/app/document/allOperations/record.html:255
+#: src/main/webapp/scripts/app/document/allOperations/record.html:61
+#: src/main/webapp/scripts/app/document/modals/exportCines.html:28
+#: src/main/webapp/scripts/app/document/recordEdit.html:140
+#: src/main/webapp/scripts/app/document/recordEdit.html:161
+#: src/main/webapp/scripts/app/document/recordEdit.html:209
+#: src/main/webapp/scripts/app/document/recordEdit.html:230
+#: src/main/webapp/scripts/app/document/recordEdit.html:279
+#: src/main/webapp/scripts/app/document/recordEdit.html:92
+#: src/main/webapp/scripts/components/directives/semEditableBlockHeader/template.html:10
+#: src/main/webapp/scripts/components/directives/semEditableField/template-checkbox.html:9
+#: src/main/webapp/scripts/components/directives/semEditableField/template-default.html:9
+#: src/main/webapp/scripts/components/directives/semEditableField/template-select.html:9
+#: src/main/webapp/scripts/components/directives/semEditableField/template-select2.html:9
+#: src/main/webapp/scripts/components/directives/semEditableField/template-uiselect.html:9
+#: src/main/webapp/scripts/components/modal/common/addWarning.html:9
+msgid "Ajouter"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/docUnitsList.html:93
+msgid "Ajouter à un projet"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/docUnitsList.html:100
+msgid "Ajouter à une unité documentaire"
+msgstr ""
+
+#: src/main/webapp/scripts/app/lot/docs.html:7
+msgid "Ajouter des unités documentaires au lot"
+msgstr ""
+
+#: src/main/webapp/scripts/app/project/docs.html:7
+msgid "Ajouter des Unités Documentaires au projet"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEditCtrl.js:36
+msgid "Ajouter l'unité documentaire provenant du fichier"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/modals/createItemInternetArchive.html:134
+msgid "Ajouter un champ personnalisé"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/modals/createItemInternetArchive.html:124
+msgid "Ajouter un champ personnalisé :"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/modals/createItemInternetArchive.html:81
+msgid "Ajouter un sujet"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/modals/createItemInternetArchive.html:74
+msgid "Ajouter un sujet :"
+msgstr ""
+
+#: src/main/webapp/scripts/app/dashboard/templates/dashboard-title.html:2
+#: src/main/webapp/scripts/app/dashboard/templates/dashboard.html:11
+msgid "Ajouter un widget"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/modals/createItemInternetArchive.html:106
+msgid "Ajouter une collection"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/modals/createItemInternetArchive.html:99
+msgid "Ajouter une collection :"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/record.html:118
+#: src/main/webapp/scripts/app/document/allOperations/record.html:189
+#: src/main/webapp/scripts/app/document/allOperations/record.html:262
+#: src/main/webapp/scripts/app/document/recordEdit.html:147
+#: src/main/webapp/scripts/app/document/recordEdit.html:216
+#: src/main/webapp/scripts/app/document/recordEdit.html:286
+msgid "Ajouter une nouvelle propriété"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/mailbox/mailboxEdit.html:49
+msgid "Ajouter une propriété"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/csvMapping/csvMapping.html:104
+#: src/main/webapp/scripts/app/configuration/mapping/mapping.html:137
+msgid "Ajouter une règle"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/relations.html:47
+msgid "Ajouter une unité documentaire fille existante"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/relations.html:8
+msgid "Ajouter une unité documentaire parente"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/codeSrvc.js:8
+msgid "Anglais"
+msgstr ""
+
+#: src/main/webapp/scripts/app/project/projects.html:63
+msgid "Année de début du projet"
+msgstr ""
+
+#: src/main/webapp/scripts/components/modal/common/cancelWithComment.html:2
+msgid "Annulation"
+msgstr ""
+
+#: src/main/webapp/scripts/app/lot/lotEditCtrl.js:37
+#: src/main/webapp/scripts/app/project/projectCtrl.js:43
+#: src/main/webapp/scripts/components/message/codeSrvc.js:55
+#: src/main/webapp/scripts/components/message/codeSrvc.js:62
+msgid "Annulé"
+msgstr ""
+
+#: src/main/webapp/scripts/app/account/login/login.html:40
+#: src/main/webapp/scripts/app/checkconfiguration/configurationEdit.html:66
+#: src/main/webapp/scripts/app/configuration/csvMapping/csvModalEditRule.html:24
+#: src/main/webapp/scripts/app/configuration/mailbox/mailboxEdit.html:90
+#: src/main/webapp/scripts/app/configuration/mapping/modalEditRule.html:110
+#: src/main/webapp/scripts/app/configuration/z3950/z3950ServerEdit.html:70
+#: src/main/webapp/scripts/app/dashboard/templates/widget-delete.html:12
+#: src/main/webapp/scripts/app/dashboard/templates/widget-edit.html:17
+#: src/main/webapp/scripts/app/delivery/deliveryEdit.html:132
+#: src/main/webapp/scripts/app/delivery/deliveryPrevalidate.html:91
+#: src/main/webapp/scripts/app/document/allOperations/docUnit.html:90
+#: src/main/webapp/scripts/app/document/allOperations/record.html:282
+#: src/main/webapp/scripts/app/document/docUnitEdit.html:14
+#: src/main/webapp/scripts/app/document/docUnitEdit.html:259
+#: src/main/webapp/scripts/app/document/recordEdit.html:14
+#: src/main/webapp/scripts/app/document/recordEdit.html:298
+#: src/main/webapp/scripts/app/document/z3950/modalZ3950Search.html:96
+#: src/main/webapp/scripts/app/help/helpPageEdit.html:44
+#: src/main/webapp/scripts/app/library/libraryEdit.html:154
+#: src/main/webapp/scripts/app/lot/lotEdit.html:14
+#: src/main/webapp/scripts/app/lot/lotEdit.html:171
+#: src/main/webapp/scripts/app/platformconfiguration/ftpconfigurationEdit.html:58
+#: src/main/webapp/scripts/app/platformconfiguration/iaconfigurationEdit.html:57
+#: src/main/webapp/scripts/app/platformconfiguration/sftpconfigurationEdit.html:65
+#: src/main/webapp/scripts/app/project/projectEdit.html:14
+#: src/main/webapp/scripts/app/project/projectEdit.html:291
+#: src/main/webapp/scripts/app/train/trainEdit.html:83
+#: src/main/webapp/scripts/app/user/roleEdit.html:96
+#: src/main/webapp/scripts/app/user/userEdit.html:14
+#: src/main/webapp/scripts/app/user/userEdit.html:148
+#: src/main/webapp/scripts/components/directives/semEditableBlockHeader/template.html:16
+#: src/main/webapp/scripts/components/modal/common/addWarning.html:8
+#: src/main/webapp/scripts/components/modal/common/cancelWithComment.html:15
+#: src/main/webapp/scripts/components/modal/common/confirmAction.html:8
+#: src/main/webapp/scripts/components/modal/common/confirmCancel.html:9
+#: src/main/webapp/scripts/components/modal/common/confirmModSub.html:8
+#: src/main/webapp/scripts/components/modal/common/currentSessionWarning.html:8
+#: src/main/webapp/scripts/components/modal/common/deleteWarning.html:8
+#: src/main/webapp/scripts/components/modal/common/integrateToProject.html:47
+#: src/main/webapp/scripts/components/modal/common/newClosingDate.html:32
+#: src/main/webapp/scripts/components/modal/common/newOpeningDate.html:54
+#: src/main/webapp/scripts/components/modal/common/selectFields.html:21
+msgid "Annuler"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/modals/createItemInternetArchive.html:165
+#: src/main/webapp/scripts/app/document/modals/exportCines.html:45
+#: src/main/webapp/scripts/app/document/modals/selectDocUnit.html:52
+msgid "Annuler et fermer la fenêtre"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/csvMapping/csvMapping.html:30
+#: src/main/webapp/scripts/app/configuration/mapping/mapping.html:30
+#: src/main/webapp/scripts/app/dashboard/templates/dashboard-title.html:9
+#: src/main/webapp/scripts/app/dashboard/templates/dashboard.html:23
+msgid "Annuler les modifications"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/z3950/z3950ServerEditCtrl.js:24
+#: src/main/webapp/scripts/app/document/import/importEditCtrl.js:62
+msgid "ANSEL (MARC-8)"
+msgstr ""
+
+#: src/main/webapp/scripts/app/library/libraryEdit.html:114
+#: src/main/webapp/scripts/app/library/libraryEdit.html:117
+#: src/main/webapp/scripts/app/user/userEdit.html:111
+#: src/main/webapp/scripts/app/user/userEdit.html:114
+msgid "Appartement, escalier, étage"
+msgstr ""
+
+#: src/main/webapp/scripts/app/dashboard/templates/dashboard.html:62
+msgid ""
+"Après avoir fait une modification dans les wigdets, \r\n"
+"<u>il est impératif de sauvegarder votre tableau de bord</u> en cliquant sur l'icône"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/docUnit.html:32
+#: src/main/webapp/scripts/app/document/docUnitEdit.html:116
+#: src/main/webapp/scripts/app/lot/docs.html:35
+#: src/main/webapp/scripts/app/project/docs.html:34
+msgid "Archivable"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/codeSrvc.js:36
+msgid "Archivé"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/exportAllOperationsCtrl.js:27
+#: src/main/webapp/scripts/app/document/docUnitEditCtrl.js:290
+msgid "Archivé au Cines"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/docUnitEditCtrl.js:311
+msgid "Archivé sur Internet Archive"
+msgstr ""
+
+#: src/main/webapp/scripts/components/modal/common/integrateToProject.html:2
+msgid "Associer l'unité documentaire"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/erreurSrvc.js:31
+msgid "Au moins un champs doit être renseigné par règle de mapping"
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveryPrevalidateCtrl.js:96
+msgid "Aucun commentaire pour ce statut."
+msgstr ""
+
+#: src/main/webapp/scripts/app/dashboard/widgets/project/projectDetailsWidget.html:20
+msgid "Aucun document dans ce projet"
+msgstr ""
+
+#: src/main/webapp/scripts/app/checks/checks.html:75
+msgid "Aucun document numérique trouvé"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEdit.html:153
+msgid "Aucun fichier sélectionné"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/import.html:20
+msgid "Aucun import n'a été trouvé"
+msgstr ""
+
+#: src/main/webapp/scripts/app/lot/lots.html:115
+msgid "Aucun lot n'a été trouvé"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEditCtrl.js:412
+msgid "Aucun mapping n'est défini pour le format sélectionné"
+msgstr ""
+
+#: src/main/webapp/scripts/app/user/roles.html:50
+msgid "Aucun profil n'a été trouvé"
+msgstr ""
+
+#: src/main/webapp/scripts/app/project/projects.html:112
+msgid "Aucun projet n'a été trouvé"
+msgstr ""
+
+#: src/main/webapp/scripts/app/dashboard/widgets/project/projectStateWidget.html:4
+msgid "Aucun projet trouvé"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/export.html:114
+#: src/main/webapp/scripts/app/document/allOperations/export.html:18
+#: src/main/webapp/scripts/app/document/import/importEdit.html:347
+#: src/main/webapp/scripts/app/document/z3950/modalZ3950Search.html:77
+msgid "Aucun résultat"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/z3950/z3950Server.html:43
+msgid "Aucun serveur Z39.50 n'a été trouvé"
+msgstr ""
+
+#: src/main/webapp/scripts/app/train/trains.html:101
+msgid "Aucun train n'a été trouvé"
+msgstr ""
+
+#: src/main/webapp/scripts/app/user/users.html:102
+msgid "Aucun utilisateur n'a été trouvé"
+msgstr ""
+
+#: src/main/webapp/scripts/app/library/libraries.html:63
+msgid "Aucune bibliothèque n'a été trouvée"
+msgstr ""
+
+#: src/main/webapp/scripts/app/platformconfiguration/sftpconfigurations.html:67
+msgid "Aucune configuration CINES n'a été trouvée"
+msgstr ""
+
+#: src/main/webapp/scripts/app/platformconfiguration/ftpconfigurations.html:67
+msgid "Aucune configuration FTP n'a été trouvée"
+msgstr ""
+
+#: src/main/webapp/scripts/app/checkconfiguration/configurations.html:67
+#: src/main/webapp/scripts/app/configuration/mailbox/mailbox.html:60
+msgid "Aucune configuration n'a été trouvée"
+msgstr ""
+
+#: src/main/webapp/scripts/app/platformconfiguration/iaconfigurations.html:67
+msgid "Aucune configuration pour Internet Archive n'a été trouvée"
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveries.html:114
+msgid "Aucune livraison n'a été trouvée"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/records.html:69
+msgid "Aucune notice n'a été trouvée"
+msgstr ""
+
+#: src/main/webapp/scripts/app/help/helpPages.html:48
+msgid "Aucune page d'aide n'a été trouvée"
+msgstr ""
+
+#: src/main/webapp/scripts/app/statistics/projects.html:18
+msgid "Aucune projet trouvé"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/record.html:139
+#: src/main/webapp/scripts/app/document/allOperations/record.html:210
+#: src/main/webapp/scripts/app/document/allOperations/record.html:68
+#: src/main/webapp/scripts/app/document/recordEdit.html:168
+#: src/main/webapp/scripts/app/document/recordEdit.html:237
+#: src/main/webapp/scripts/app/document/recordEdit.html:99
+msgid "Aucune propriété renseignée"
+msgstr ""
+
+#: src/main/webapp/scripts/app/checks/checkCtrl.js:245
+#: src/main/webapp/scripts/app/document/docUnitListCtrl.js:280
+msgid "Aucune unité documentaire n'a été supprimée"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/docUnits.html:47
+#: src/main/webapp/scripts/app/document/modals/selectDocUnit.html:27
+msgid "Aucune unité documentaire n'a été trouvée"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/docUnitsList.html:68
+msgid "Aucune unité documentaire trouvée"
+msgstr ""
+
+#: src/main/webapp/scripts/components/directives/semDatepicker/semDatepickerDirective.js:26
+msgid "Aujourd'hui"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/z3950/modalZ3950Search.html:19
+#: src/main/webapp/scripts/app/document/z3950/modalZ3950Search.html:53
+msgid "Auteur"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/z3950/z3950ServerEditCtrl.js:32
+msgid "Autorité"
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveryEditCtrl.js:42
+#: src/main/webapp/scripts/app/delivery/deliveryPrevalidateCtrl.js:34
+#: src/main/webapp/scripts/app/lot/lotCtrl.js:39
+#: src/main/webapp/scripts/app/project/projectCtrl.js:38
+#: src/main/webapp/scripts/app/train/trainCtrl.js:40
+#: src/main/webapp/scripts/app/user/userCtrl.js:33
+#: src/main/webapp/scripts/components/templates/common/initialFilter.html:8
+msgid "Autre"
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveryEdit.html:19
+#: src/main/webapp/scripts/app/document/docUnitEdit.html:30
+#: src/main/webapp/scripts/app/document/recordEdit.html:23
+#: src/main/webapp/scripts/app/library/libraryEdit.html:31
+#: src/main/webapp/scripts/app/lot/lotEdit.html:29
+#: src/main/webapp/scripts/app/project/projectEdit.html:31
+#: src/main/webapp/scripts/app/train/trainEdit.html:24
+#: src/main/webapp/scripts/app/user/userEdit.html:29
+msgid "Autres actions"
+msgstr ""
+
+#: src/main/webapp/scripts/app/project/projectEdit.html:117
+msgid "Autres prestataires"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/z3950/z3950ServerEdit.html:33
+msgid "Base de donnée"
+msgstr ""
+
+#: src/main/webapp/scripts/app/library/libraryEdit.html:118
+#: src/main/webapp/scripts/app/library/libraryEdit.html:121
+#: src/main/webapp/scripts/app/user/userEdit.html:115
+#: src/main/webapp/scripts/app/user/userEdit.html:118
+msgid "Bâtiment, résidence"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/z3950/z3950ServerEditCtrl.js:31
+msgid "Bibliographique"
+msgstr ""
+
+#: src/main/webapp/scripts/app/checkconfiguration/configurationEdit.html:52
+#: src/main/webapp/scripts/app/checkconfiguration/configurations.html:15
+#: src/main/webapp/scripts/app/checkconfiguration/configurations.html:18
+#: src/main/webapp/scripts/app/checks/checks.html:44
+#: src/main/webapp/scripts/app/checks/checks.html:49
+#: src/main/webapp/scripts/app/configuration/csvMapping/csvMapping.html:65
+#: src/main/webapp/scripts/app/configuration/csvMapping/csvMappingCtrl.js:28
+#: src/main/webapp/scripts/app/configuration/mailbox/mailbox.html:15
+#: src/main/webapp/scripts/app/configuration/mailbox/mailbox.html:19
+#: src/main/webapp/scripts/app/configuration/mapping/mapping.html:76
+#: src/main/webapp/scripts/app/configuration/mapping/mappingCtrl.js:33
+#: src/main/webapp/scripts/app/document/allOperations/docUnit.html:63
+#: src/main/webapp/scripts/app/document/docUnitEdit.html:141
+#: src/main/webapp/scripts/app/document/docUnitsList.html:30
+#: src/main/webapp/scripts/app/document/docUnitsList.html:35
+#: src/main/webapp/scripts/app/document/import/importEdit.html:71
+#: src/main/webapp/scripts/app/document/recordEdit.html:79
+#: src/main/webapp/scripts/app/document/records.html:16
+#: src/main/webapp/scripts/app/document/records.html:20
+#: src/main/webapp/scripts/app/lot/docs.html:37
+#: src/main/webapp/scripts/app/platformconfiguration/ftpconfigurationEdit.html:45
+#: src/main/webapp/scripts/app/platformconfiguration/ftpconfigurations.html:15
+#: src/main/webapp/scripts/app/platformconfiguration/ftpconfigurations.html:18
+#: src/main/webapp/scripts/app/platformconfiguration/iaconfigurationEdit.html:46
+#: src/main/webapp/scripts/app/platformconfiguration/iaconfigurations.html:15
+#: src/main/webapp/scripts/app/platformconfiguration/iaconfigurations.html:18
+#: src/main/webapp/scripts/app/platformconfiguration/sftpconfigurationEdit.html:54
+#: src/main/webapp/scripts/app/platformconfiguration/sftpconfigurations.html:15
+#: src/main/webapp/scripts/app/platformconfiguration/sftpconfigurations.html:18
+#: src/main/webapp/scripts/app/project/docs.html:36
+#: src/main/webapp/scripts/app/project/projects.html:24
+#: src/main/webapp/scripts/app/project/projects.html:28
+#: src/main/webapp/scripts/app/user/userEdit.html:89
+#: src/main/webapp/scripts/app/user/users.html:26
+#: src/main/webapp/scripts/app/user/users.html:29
+#: src/main/webapp/scripts/components/message/codeSrvc.js:16
+#: src/main/webapp/scripts/components/templates/common/filters.html:15
+#: src/main/webapp/scripts/components/templates/common/filters.html:19
+msgid "Bibliothèque"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/all_operations.html:27
+msgid "Bibliothèque :"
+msgstr ""
+
+#: src/main/webapp/scripts/app/library/libraryEditCtrl.js:220
+msgid "Bibliothèque {{name}}"
+msgstr ""
+
+#: src/main/webapp/scripts/app/project/projectEdit.html:98
+msgid "Bibliothèque principale"
+msgstr ""
+
+#: src/main/webapp/scripts/app/library/library.js:9
+#: src/main/webapp/scripts/app/library/libraryCtrl.js:50
+#: src/main/webapp/scripts/app/main/menuLeft.html:29
+msgid "Bibliothèques"
+msgstr ""
+
+#: src/main/webapp/scripts/app/project/projectEdit.html:158
+msgid "Bibliothèques partenaires"
+msgstr ""
+
+#: src/main/webapp/scripts/app/dashboard/templates/dashboard.html:33
+msgid "Bienvenue !"
+msgstr ""
+
+#: src/main/webapp/scripts/app/checks/checkCtrl.js:88
+#: src/main/webapp/scripts/app/document/docUnitListCtrl.js:100
+msgid "Catalogue toutes opérations"
+msgstr ""
+
+#: src/main/webapp/scripts/app/user/userEdit.html:86
+#: src/main/webapp/scripts/app/user/users.html:38
+msgid "Catégorie"
+msgstr ""
+
+#: src/main/webapp/scripts/app/user/users.html:41
+msgid "Catégories"
+msgstr ""
+
+#: src/main/webapp/scripts/app/numahop/common/validationSrvc.js:65
+msgid "Ce champ doit être renseigné"
+msgstr ""
+
+#: src/main/webapp/scripts/app/numahop/common/validationSrvc.js:43
+msgid "Ce champ est de type numérique"
+msgstr ""
+
+#: src/main/webapp/scripts/app/numahop/common/validationSrvc.js:58
+msgid "Ce champ est obligatoire"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/erreurSrvc.js:46
+msgid "Ce code est déjà utilisé par un autre profil"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/erreurSrvc.js:13
+msgid "Ce libellé est déjà utilisé"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/erreurSrvc.js:28
+msgid "Ce libellé est déjà utilisé par un autre lot de ce projet"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/erreurSrvc.js:47
+msgid "Ce libellé est déjà utilisé par un autre profil"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/erreurSrvc.js:37
+msgid "Ce login est déjà utilisé"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/erreurSrvc.js:27
+#: src/main/webapp/scripts/components/message/erreurSrvc.js:35
+#: src/main/webapp/scripts/components/message/erreurSrvc.js:50
+msgid "Ce nom est déjà utilisé"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/erreurSrvc.js:33
+msgid "Ce projet a des bibliothèques partenaires"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/erreurSrvc.js:34
+msgid "Ce projet contient des lots"
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveryPrevalidateCtrl.js:82
+msgid "Certains documents ne peuvent pas être livrés"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/erreurSrvc.js:15
+msgid "Certains dossiers ne correspondent à aucun document"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/export.html:78
+msgid "Certificat"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/messageInterceptor.js:83
+msgid "Cet objet est lié à d'autres objets, il est donc impossible de le supprimer."
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/messageInterceptor.js:85
+msgid "Cet objet n'existe pas."
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/csvMapping/csvModalEditRule.html:6
+#: src/main/webapp/scripts/app/configuration/mapping/modalEditRule.html:6
+msgid "Champs"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/record.html:197
+#: src/main/webapp/scripts/app/document/recordEdit.html:224
+msgid "Champs personnalisés"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/mapping/modalEditRule.html:51
+#: src/main/webapp/scripts/app/configuration/mapping/modalEditRule.html:91
+msgid "Champs utilisés:"
+msgstr ""
+
+#: src/main/webapp/scripts/app/account/password/password.html:5
+#: src/main/webapp/scripts/app/main/password.html:5
+msgid "Changer le mot de passe pour [<b>{{username}}</b>]"
+msgstr ""
+
+#: src/main/webapp/scripts/app/checkconfiguration/configurations.html:82
+#: src/main/webapp/scripts/app/configuration/mailbox/mailbox.html:88
+#: src/main/webapp/scripts/app/configuration/z3950/z3950Server.html:55
+#: src/main/webapp/scripts/app/delivery/deliveries.html:129
+#: src/main/webapp/scripts/app/document/docUnits.html:62
+#: src/main/webapp/scripts/app/document/import/import.html:46
+#: src/main/webapp/scripts/app/document/import/importEdit.html:436
+#: src/main/webapp/scripts/app/document/modals/selectDocUnit.html:49
+#: src/main/webapp/scripts/app/document/records.html:84
+#: src/main/webapp/scripts/app/document/z3950/modalZ3950Search.html:42
+#: src/main/webapp/scripts/app/help/helpPages.html:62
+#: src/main/webapp/scripts/app/library/libraries.html:78
+#: src/main/webapp/scripts/app/lot/lots.html:130
+#: src/main/webapp/scripts/app/platformconfiguration/ftpconfigurations.html:82
+#: src/main/webapp/scripts/app/platformconfiguration/iaconfigurations.html:82
+#: src/main/webapp/scripts/app/platformconfiguration/sftpconfigurations.html:82
+#: src/main/webapp/scripts/app/project/projects.html:127
+#: src/main/webapp/scripts/app/train/trains.html:116
+#: src/main/webapp/scripts/app/user/roles.html:63
+#: src/main/webapp/scripts/app/user/users.html:117
+msgid "Chargement en cours..."
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/z3950/modalZ3950Search.html:28
+msgid "Cibles de recherche"
+msgstr ""
+
+#: src/main/webapp/scripts/app/platformconfiguration/iaconfigurationEdit.html:32
+msgid "Clé d'accès S3"
+msgstr ""
+
+#: src/main/webapp/scripts/app/platformconfiguration/iaconfigurationEdit.html:35
+msgid "Clé secrète S3"
+msgstr ""
+
+#: src/main/webapp/scripts/app/lot/lotEditCtrl.js:38
+#: src/main/webapp/scripts/app/project/projectCtrl.js:44
+#: src/main/webapp/scripts/components/message/codeSrvc.js:56
+#: src/main/webapp/scripts/components/message/codeSrvc.js:63
+#: src/main/webapp/scripts/components/message/codeSrvc.js:70
+msgid "Clôturé"
+msgstr ""
+
+#: src/main/webapp/scripts/app/user/roleEdit.html:26
+#: src/main/webapp/scripts/app/user/roleEdit.html:54
+msgid "Code"
+msgstr ""
+
+#: src/main/webapp/scripts/app/library/libraryEdit.html:132
+#: src/main/webapp/scripts/app/library/libraryEdit.html:135
+#: src/main/webapp/scripts/app/user/userEdit.html:127
+#: src/main/webapp/scripts/app/user/userEdit.html:130
+msgid "Code postal"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/modals/createItemInternetArchive.html:114
+msgid "Collection"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/docUnit.html:22
+#: src/main/webapp/scripts/app/document/docUnitEdit.html:108
+#: src/main/webapp/scripts/app/lot/lotEdit.html:119
+#: src/main/webapp/scripts/app/project/projectEdit.html:140
+msgid "Collection Internet Archive"
+msgstr ""
+
+#: src/main/webapp/scripts/app/project/projectEdit.html:190
+#: src/main/webapp/scripts/app/user/roles.html:11
+msgid "Commencez à taper..."
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveryPrevalidate.html:21
+msgid "Commentaire"
+msgstr ""
+
+#: src/main/webapp/scripts/app/library/libraryEdit.html:126
+#: src/main/webapp/scripts/app/library/libraryEdit.html:129
+#: src/main/webapp/scripts/app/user/userEdit.html:123
+#: src/main/webapp/scripts/app/user/userEdit.html:126
+msgid "Complément d'adresse"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/mapping/mapping.html:95
+#: src/main/webapp/scripts/app/configuration/mapping/modalEditRule.html:77
+msgid "Condition d'application"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/mapping/modalEditRule.html:84
+msgid "Condition d'application de la règle"
+msgstr ""
+
+#: src/main/webapp/scripts/app/checkconfiguration/configurationEditCtrl.js:171
+#: src/main/webapp/scripts/app/platformconfiguration/ftpconfigurationEditCtrl.js:202
+#: src/main/webapp/scripts/app/platformconfiguration/iaconfigurationEditCtrl.js:162
+#: src/main/webapp/scripts/app/platformconfiguration/sftpconfigurationEditCtrl.js:162
+msgid "Configuration {{label}}"
+msgstr ""
+
+#: src/main/webapp/scripts/app/library/libraryEdit.html:86
+#: src/main/webapp/scripts/app/lot/lotEdit.html:101
+#: src/main/webapp/scripts/app/project/projectEdit.html:133
+msgid "Configuration contrôles"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/mailbox/mailboxEdit.html:46
+msgid "Configuration de JavaMail"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/appconfiguration.js:9
+msgid "Configuration de l'application"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/mailbox/mailbox.js:11
+msgid "Configuration des comptes email"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/appconfiguration.html:31
+msgid "Configuration des correspondances entre les unités documentaires et les notices CSV"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/appconfiguration.html:25
+msgid "Configuration des correspondances entre les unités documentaires et les notices EAD"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/appconfiguration.html:19
+msgid "Configuration des correspondances entre les unités documentaires et les notices MARC"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/csvMapping/csvMappingCtrl.js:50
+#: src/main/webapp/scripts/app/configuration/mapping/mapping.js:11
+#: src/main/webapp/scripts/app/configuration/mapping/mappingCtrl.js:55
+msgid "Configuration des mappings"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/csvMapping/csvMapping.js:11
+msgid "Configuration des mappings CSV"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/docPropertyType/docPropertyType.js:11
+msgid "Configuration des types de propriété"
+msgstr ""
+
+#: src/main/webapp/scripts/app/dashboard/templates/dashboard-edit.html:3
+msgid "Configuration du tableau de bord"
+msgstr ""
+
+#: src/main/webapp/scripts/app/library/libraryEdit.html:74
+#: src/main/webapp/scripts/app/lot/lotEdit.html:95
+#: src/main/webapp/scripts/app/project/projectEdit.html:126
+msgid "Configuration FTP"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/appconfiguration.html:55
+msgid "Configuration pour Internet Archive"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/appconfiguration.html:49
+#: src/main/webapp/scripts/app/platformconfiguration/configuration.js:16
+msgid "Configurations CINES"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/appconfiguration.html:43
+msgid "Configurations des comptes email"
+msgstr ""
+
+#: src/main/webapp/scripts/app/checkconfiguration/configuration.js:9
+#: src/main/webapp/scripts/app/configuration/appconfiguration.html:61
+msgid "Configurations des contrôles"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/appconfiguration.html:40
+msgid "Configurations des types de propriété personnalisés"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/appconfiguration.html:46
+#: src/main/webapp/scripts/app/platformconfiguration/configuration.js:9
+msgid "Configurations FTP"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/appconfiguration.html:52
+#: src/main/webapp/scripts/app/platformconfiguration/configuration.js:23
+msgid "Configurations Internet Archive"
+msgstr ""
+
+#: src/main/webapp/scripts/app/dashboard/templates/widget-title.html:16
+msgid "Configurer le widget"
+msgstr ""
+
+#: src/main/webapp/scripts/components/modal/common/confirmModSub.html:2
+msgid "Confirmation"
+msgstr ""
+
+#: src/main/webapp/scripts/components/modal/common/confirmCancel.html:2
+msgid "Confirmation d'annulation"
+msgstr ""
+
+#: src/main/webapp/scripts/app/account/password/password.html:44
+#: src/main/webapp/scripts/app/account/password/password.html:45
+#: src/main/webapp/scripts/app/main/password.html:44
+#: src/main/webapp/scripts/app/main/password.html:45
+msgid "Confirmation du nouveau mot de passe"
+msgstr ""
+
+#: src/main/webapp/scripts/components/modal/common/confirmAction.html:9
+msgid "Confirmer"
+msgstr ""
+
+#: src/main/webapp/scripts/app/account/login/login.html:28
+msgid "Connexion"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/mapping/mappingCtrl.js:125
+#: src/main/webapp/scripts/app/configuration/mapping/mappingCtrl.js:99
+msgid "continuer alors que vous avez des modifications non sauvegardées"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/modals/createItemInternetArchive.html:27
+msgid "Contributeur"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/modals/modalExportCinesCtrl.js:22
+msgid "Contributor"
+msgstr ""
+
+#: src/main/webapp/scripts/components/document/numahopAutoCheckService.js:16
+msgid "Contrôle non reconnu"
+msgstr ""
+
+#: src/main/webapp/scripts/app/checks/checks.html:134
+msgid "Contrôler"
+msgstr ""
+
+#: src/main/webapp/scripts/app/checks/check.js:9
+#: src/main/webapp/scripts/app/delivery/deliveryEdit.html:103
+#: src/main/webapp/scripts/app/main/menuLeft.html:46
+#: src/main/webapp/scripts/app/main/menuLeft.html:49
+msgid "Contrôles"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/digitalDocumentCtrl.js:168
+msgid "Contrôles automatiques validés, en attente des contrôles manuels"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/pageCheck.html:19
+msgid "Contrôles du document numérique"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/document.js:49
+msgid "Contrôles visuels"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/csvMapping/csvMapping.html:89
+#: src/main/webapp/scripts/app/configuration/mapping/mapping.html:122
+msgid "Copier la règle"
+msgstr ""
+
+#: src/main/webapp/scripts/app/checks/checks.html:90
+msgid "Cote"
+msgstr ""
+
+#: src/main/webapp/scripts/app/library/libraryEdit.html:67
+#: src/main/webapp/scripts/app/user/userEdit.html:83
+msgid "Courriel"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/modals/createItemInternetArchive.html:30
+#: src/main/webapp/scripts/app/document/modals/modalExportCinesCtrl.js:30
+msgid "Coverage"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/modals/createItemInternetArchive.html:33
+msgid "Créateur"
+msgstr ""
+
+#: src/main/webapp/scripts/app/project/project.js:16
+msgid "Création d'un projet"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/modals/modalExportCinesCtrl.js:18
+msgid "Creator"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/modals/createItemInternetArchive.html:39
+msgid "Crédits"
+msgstr ""
+
+#: src/main/webapp/scripts/app/lot/lotEditCtrl.js:34
+#: src/main/webapp/scripts/app/project/projectCtrl.js:40
+#: src/main/webapp/scripts/components/message/codeSrvc.js:52
+msgid "Crée"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/codeSrvc.js:30
+#: src/main/webapp/scripts/components/message/codeSrvc.js:59
+#: src/main/webapp/scripts/components/message/codeSrvc.js:66
+msgid "Créé"
+msgstr ""
+
+#: src/main/webapp/scripts/app/checkconfiguration/configurations.html:33
+#: src/main/webapp/scripts/app/configuration/csvMapping/csvMapping.html:6
+#: src/main/webapp/scripts/app/configuration/docPropertyType/docPropertyType.html:6
+#: src/main/webapp/scripts/app/configuration/mailbox/mailbox.html:40
+#: src/main/webapp/scripts/app/configuration/mapping/mapping.html:6
+#: src/main/webapp/scripts/app/configuration/z3950/z3950Server.html:16
+#: src/main/webapp/scripts/app/delivery/deliveries.html:81
+#: src/main/webapp/scripts/app/document/docUnits.html:14
+#: src/main/webapp/scripts/app/document/records.html:35
+#: src/main/webapp/scripts/app/library/libraries.html:29
+#: src/main/webapp/scripts/app/lot/lots.html:82
+#: src/main/webapp/scripts/app/platformconfiguration/ftpconfigurations.html:33
+#: src/main/webapp/scripts/app/platformconfiguration/iaconfigurations.html:33
+#: src/main/webapp/scripts/app/platformconfiguration/sftpconfigurations.html:33
+#: src/main/webapp/scripts/app/project/projects.html:78
+#: src/main/webapp/scripts/app/train/trains.html:68
+#: src/main/webapp/scripts/app/user/roles.html:23
+#: src/main/webapp/scripts/app/user/users.html:68
+#: src/main/webapp/scripts/components/modal/common/newClosingDate.html:33
+#: src/main/webapp/scripts/components/modal/common/newOpeningDate.html:55
+msgid "Créer"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/record.html:9
+msgid "Créer une notice"
+msgstr ""
+
+#: src/main/webapp/scripts/app/help/helpPages.html:33
+msgid "Créer une page d'aide"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/relations.html:41
+msgid "Créer une unité documentaire fille"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/z3950/modalZ3950Search.html:10
+msgid "Critères de recherche"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEditCtrl.js:56
+msgid "CSV"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/modals/createItemInternetArchive.html:36
+#: src/main/webapp/scripts/app/document/modals/modalExportCinesCtrl.js:23
+msgid "Date"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/export.html:148
+#: src/main/webapp/scripts/app/document/allOperations/export.html:67
+msgid "Date d'archivage"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/docUnit.html:50
+#: src/main/webapp/scripts/app/document/docUnitEdit.html:131
+msgid "Date d'embargo"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/export.html:136
+#: src/main/webapp/scripts/app/document/allOperations/export.html:37
+#: src/main/webapp/scripts/app/project/projectEdit.html:263
+#: src/main/webapp/scripts/app/project/trains.html:8
+msgid "Date d'envoi"
+msgstr ""
+
+#: src/main/webapp/scripts/app/train/trainEdit.html:72
+msgid "Date d'envoi au prestataire"
+msgstr ""
+
+#: src/main/webapp/scripts/app/project/projectEdit.html:72
+msgid "Date de commencement"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/docUnit.html:60
+#: src/main/webapp/scripts/app/document/docUnitEdit.html:139
+msgid "Date de fin de contrôle calculée"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/docUnit.html:58
+#: src/main/webapp/scripts/app/document/docUnitEdit.html:137
+msgid "Date de fin de contrôle prévue"
+msgstr ""
+
+#: src/main/webapp/scripts/app/project/projectEdit.html:77
+msgid "Date de fin prévue"
+msgstr ""
+
+#: src/main/webapp/scripts/app/project/projectEdit.html:82
+msgid "Date de fin réelle"
+msgstr ""
+
+#: src/main/webapp/scripts/app/checks/checks.html:96
+#: src/main/webapp/scripts/app/delivery/deliveries.html:58
+msgid "Date de livraison"
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveryEdit.html:71
+msgid "Date de réception"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/export.html:43
+msgid "Date de réception par le Cines"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/export.html:49
+msgid "Date de rejet par le Cines"
+msgstr ""
+
+#: src/main/webapp/scripts/app/project/projectEdit.html:264
+#: src/main/webapp/scripts/app/project/trains.html:9
+#: src/main/webapp/scripts/app/train/trainEdit.html:75
+msgid "Date de retour"
+msgstr ""
+
+#: src/main/webapp/scripts/app/numahop/common/validationSrvc.js:110
+msgid "Date en collision avec {{start}} - {{end}}"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEdit.html:115
+msgid "Début de l'import"
+msgstr ""
+
+#: src/main/webapp/scripts/app/main/menuTop.html:45
+msgid "Déconnexion"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/docUnit.html:54
+#: src/main/webapp/scripts/app/document/docUnitEdit.html:134
+msgid "Délai avant contrôle (jours)"
+msgstr ""
+
+#: src/main/webapp/scripts/app/dashboard/templates/widget-title.html:5
+msgid "Déplacer le widget"
+msgstr ""
+
+#: src/main/webapp/scripts/app/dashboard/templates/widget-title.html:12
+msgid "Déplier le widget"
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveryPrevalidateCtrl.js:36
+msgid "Dérivé"
+msgstr ""
+
+#: src/main/webapp/scripts/components/modal/common/confirmCancel.html:5
+msgid ""
+"Des éléments sont en cours d'édition. Ces modifications seront perdues.<br>\r\n"
+"\tVoulez-vous continuer ?"
+msgstr ""
+
+#: src/main/webapp/scripts/components/modal/common/currentSessionWarning.html:5
+msgid "Des modifications sont en cours, êtes-vous sûr de vouloir annuler l'édition en cours ?"
+msgstr ""
+
+#: src/main/webapp/scripts/app/user/userRoleEditCtrl.js:25
+msgid "Désactivé"
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveryEdit.html:63
+#: src/main/webapp/scripts/app/document/modals/createItemInternetArchive.html:42
+#: src/main/webapp/scripts/app/document/modals/modalExportCinesCtrl.js:20
+#: src/main/webapp/scripts/app/lot/lotEdit.html:87
+#: src/main/webapp/scripts/app/project/projectEdit.html:68
+#: src/main/webapp/scripts/app/train/trainEdit.html:69
+#: src/main/webapp/scripts/app/user/roleEdit.html:32
+msgid "Description"
+msgstr ""
+
+#: src/main/webapp/scripts/app/dashboard/widgets/project/projectDetailsWidget.js:10
+msgid "Détail d'un projet"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/document.js:26
+msgid "Détail d'une unité documentaire"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEdit.html:424
+msgid "Détails complémentaires:"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/docAllOperationsCtrl.js:37
+msgid "Détails du document"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/docUnit.html:39
+#: src/main/webapp/scripts/app/document/docUnitEdit.html:122
+#: src/main/webapp/scripts/app/lot/docs.html:36
+#: src/main/webapp/scripts/app/project/docs.html:35
+msgid "Diffusable"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/docAllOperationsCtrl.js:42
+msgid "Diffusion & Archivage"
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveryEditCtrl.js:41
+msgid "Disque"
+msgstr ""
+
+#: src/main/webapp/scripts/app/dashboard/widgets/clock/clockWidget.js:7
+msgid "Divers"
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveryPrevalidate.html:19
+#: src/main/webapp/scripts/app/delivery/deliveryPrevalidate.html:45
+msgid "Document"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/docAllOperationsCtrl.js:32
+msgid "Document numérique"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/digitalDocumentCtrl.js:145
+msgid "Document numérique validé"
+msgstr ""
+
+#: src/main/webapp/scripts/app/main/menuLeft.html:9
+#: src/main/webapp/scripts/components/message/codeSrvc.js:15
+msgid "Documents"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/document.js:41
+msgid "Documents numériques"
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveryEdit.html:93
+#: src/main/webapp/scripts/app/document/docUnitEdit.html:162
+msgid "Documents numériques rattachés"
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveryPrevalidate.html:38
+msgid "Documents numériques trouvés pour la livraison"
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveryPrevalidate.html:12
+msgid "Documents qui ne peuvent pas être livrés"
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveryEdit.html:74
+#: src/main/webapp/scripts/app/platformconfiguration/ftpconfigurationEdit.html:42
+msgid "Dossier de livraison"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/modals/createItemInternetArchive.html:58
+msgid "Droits"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/util/docUnitBaseService.js:16
+msgid "Droits à vérifier"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/docUnit.html:46
+#: src/main/webapp/scripts/app/document/docUnitEdit.html:128
+msgid "Droits de diffusion"
+msgstr ""
+
+#: src/main/webapp/scripts/components/modal/common/newClosingDate.html:21
+msgid "Du&nbsp;"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/record.html:55
+#: src/main/webapp/scripts/app/document/import/importEditCtrl.js:50
+#: src/main/webapp/scripts/app/document/modals/exportCines.html:13
+#: src/main/webapp/scripts/app/document/recordEdit.html:86
+msgid "Dublin Core"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/record.html:126
+#: src/main/webapp/scripts/app/document/recordEdit.html:155
+msgid "Dublin Core (qualified)"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/csvMapping/csvMapping.html:43
+#: src/main/webapp/scripts/app/configuration/mapping/mapping.html:54
+#: src/main/webapp/scripts/app/project/projectEdit.html:43
+#: src/main/webapp/scripts/app/train/trainEdit.html:36
+#: src/main/webapp/scripts/app/user/userEdit.html:42
+msgid "Dupliquer"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEditCtrl.js:52
+#: src/main/webapp/scripts/app/document/modals/exportCines.html:17
+msgid "EAD"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEditCtrl.js:162
+msgid "Échec"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/erreurSrvc.js:24
+msgid "Échec du traitement"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEditCtrl.js:585
+msgid "Échec lors du téléversement du fichier"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/docUnit.html:84
+#: src/main/webapp/scripts/app/document/allOperations/record.html:276
+msgid "Éditer"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/csvMapping/csvMapping.html:85
+#: src/main/webapp/scripts/app/configuration/mapping/mapping.html:118
+msgid "Éditer la règle"
+msgstr ""
+
+#: src/main/webapp/scripts/app/user/account.html:11
+msgid "Éditer mon profil"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/modals/createItemInternetArchive.html:54
+msgid "Editeur"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/csvMapping/csvModalEditRuleCtrl.js:53
+#: src/main/webapp/scripts/app/configuration/mapping/modalEditRuleCtrl.js:67
+msgid "Édition de la règle"
+msgstr ""
+
+#: src/main/webapp/scripts/components/directives/semDatepicker/semDatepickerDirective.js:27
+msgid "Effacer"
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveryPrevalidateCtrl.js:52
+msgid "effectuer la livraison incomplète"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEditCtrl.js:156
+#: src/main/webapp/scripts/app/lot/lotEditCtrl.js:36
+#: src/main/webapp/scripts/app/project/projectCtrl.js:42
+#: src/main/webapp/scripts/components/message/codeSrvc.js:54
+#: src/main/webapp/scripts/components/message/codeSrvc.js:61
+msgid "En attente"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/codeSrvc.js:49
+msgid "En attente de réfection"
+msgstr ""
+
+#: src/main/webapp/scripts/app/lot/lotEditCtrl.js:35
+#: src/main/webapp/scripts/app/project/projectCtrl.js:41
+#: src/main/webapp/scripts/components/message/codeSrvc.js:53
+#: src/main/webapp/scripts/components/message/codeSrvc.js:60
+msgid "En cours"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/codeSrvc.js:45
+msgid "En cours de contrôle"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/codeSrvc.js:42
+msgid "En cours de création"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/codeSrvc.js:74
+msgid "En cours de livraison"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/codeSrvc.js:68
+msgid "En cours de numérisation"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/codeSrvc.js:67
+msgid "En cours de préparation"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/codeSrvc.js:43
+msgid "En cours de relivraison"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/z3950/z3950ServerEdit.html:54
+#: src/main/webapp/scripts/app/document/import/importEdit.html:64
+msgid "Encodage des données"
+msgstr ""
+
+#: src/main/webapp/scripts/app/checkconfiguration/configurationEdit.html:69
+#: src/main/webapp/scripts/app/configuration/mailbox/mailboxEdit.html:93
+#: src/main/webapp/scripts/app/configuration/z3950/z3950ServerEdit.html:73
+#: src/main/webapp/scripts/app/dashboard/templates/widget-edit.html:18
+#: src/main/webapp/scripts/app/delivery/deliveryEdit.html:135
+#: src/main/webapp/scripts/app/document/allOperations/docUnit.html:94
+#: src/main/webapp/scripts/app/document/allOperations/record.html:286
+#: src/main/webapp/scripts/app/document/docUnitEdit.html:262
+#: src/main/webapp/scripts/app/document/recordEdit.html:301
+#: src/main/webapp/scripts/app/help/helpPageEdit.html:47
+#: src/main/webapp/scripts/app/library/libraryEdit.html:157
+#: src/main/webapp/scripts/app/lot/lotEdit.html:174
+#: src/main/webapp/scripts/app/platformconfiguration/ftpconfigurationEdit.html:61
+#: src/main/webapp/scripts/app/platformconfiguration/iaconfigurationEdit.html:60
+#: src/main/webapp/scripts/app/platformconfiguration/sftpconfigurationEdit.html:68
+#: src/main/webapp/scripts/app/project/projectEdit.html:294
+#: src/main/webapp/scripts/app/train/trainEdit.html:86
+#: src/main/webapp/scripts/app/user/roleEdit.html:99
+#: src/main/webapp/scripts/app/user/userEdit.html:151
+msgid "Enregistrer"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/codeSrvc.js:34
+msgid "Envoi en cours"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/codeSrvc.js:35
+msgid "Envoyé"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/exportAllOperationsCtrl.js:36
+msgid "Envoyé sur Internet Archive"
+msgstr ""
+
+#: src/main/webapp/scripts/components/directives/semEditableField/template-default.html:24
+msgid "Envoyer un mail"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/erreurSrvc.js:51
+msgid "Erreur de connexion au serveur Z39.50"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/erreurSrvc.js:52
+msgid "Erreur lors de la recherche Z39.50"
+msgstr ""
+
+#: src/main/webapp/scripts/controllers.js:113
+msgid "Erreur lors de la réinitialisation du mot de passe."
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/digitalDocument.html:55
+#: src/main/webapp/scripts/app/document/pageCheck.html:69
+msgid "Erreurs"
+msgstr ""
+
+#: src/main/webapp/scripts/app/dashboard/templates/dashboard.html:57
+msgid "et déposez le widget dans un des emplacements de la grille."
+msgstr ""
+
+#: src/main/webapp/scripts/components/modal/common/confirmAction.html:5
+msgid "Êtes-vous sûr de vouloir {{label}} ?"
+msgstr ""
+
+#: src/main/webapp/scripts/components/modal/common/addWarning.html:5
+msgid "Êtes-vous sûr de vouloir ajouter {{label}} ?"
+msgstr ""
+
+#: src/main/webapp/scripts/components/modal/common/deleteWarning.html:5
+msgid "Êtes-vous sûr de vouloir supprimer {{label}} ?"
+msgstr ""
+
+#: src/main/webapp/scripts/app/dashboard/templates/widget-delete.html:7
+msgid "Êtes-vous sûr de vouloir supprimer ce widget ?"
+msgstr ""
+
+#: src/main/webapp/scripts/app/project/projects.html:66
+msgid "ex: 2016"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/docUnitEdit.html:59
+msgid "Export Cines"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/export.html:11
+#: src/main/webapp/scripts/app/document/modals/exportCines.html:2
+msgid "Export CINES"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/docUnitEditCtrl.js:298
+msgid "Export Cines en cours"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/docUnitEdit.html:43
+#: src/main/webapp/scripts/app/lot/lotEdit.html:41
+#: src/main/webapp/scripts/components/modal/common/selectFields.html:2
+msgid "Export CSV"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/docUnitEdit.html:46
+msgid "Export DC"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/docUnitEdit.html:50
+msgid "Export DCQ"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/docUnitEdit.html:54
+msgid "Export EAD"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/export.html:103
+#: src/main/webapp/scripts/app/document/docUnitEdit.html:61
+#: src/main/webapp/scripts/app/document/modals/createItemInternetArchive.html:2
+msgid "Export Internet Archive"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/docUnitEditCtrl.js:321
+msgid "Export Internet Archive en cours"
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveryEdit.html:31
+msgid "Exporter au format CSV"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/modals/exportCines.html:47
+msgid "Exporter vers CINES"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/modals/createItemInternetArchive.html:168
+msgid "Exporter vers Internet Archive"
+msgstr ""
+
+#: src/main/webapp/scripts/app/dashboard/templates/dashboard-edit.html:22
+#: src/main/webapp/scripts/app/dashboard/templates/widget-add.html:11
+#: src/main/webapp/scripts/app/dashboard/templates/widget-fullscreen.html:16
+#: src/main/webapp/scripts/app/dashboard/templates/widget-fullscreen.html:6
+#: src/main/webapp/scripts/components/directives/semDatepicker/semDatepickerDirective.js:28
+msgid "Fermer"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/modals/deleteDocUnitResults.html:34
+msgid "Fermer la fenêtre"
+msgstr ""
+
+#: src/main/webapp/scripts/app/checkconfiguration/configurationEdit.html:19
+#: src/main/webapp/scripts/app/configuration/mailbox/mailboxEdit.html:18
+#: src/main/webapp/scripts/app/configuration/z3950/z3950ServerEdit.html:16
+#: src/main/webapp/scripts/app/delivery/deliveryEdit.html:35
+#: src/main/webapp/scripts/app/delivery/deliveryPrevalidate.html:4
+#: src/main/webapp/scripts/app/document/docUnitEdit.html:67
+#: src/main/webapp/scripts/app/document/recordEdit.html:37
+#: src/main/webapp/scripts/app/library/libraryEdit.html:45
+#: src/main/webapp/scripts/app/lot/lotEdit.html:45
+#: src/main/webapp/scripts/app/platformconfiguration/ftpconfigurationEdit.html:19
+#: src/main/webapp/scripts/app/platformconfiguration/iaconfigurationEdit.html:19
+#: src/main/webapp/scripts/app/platformconfiguration/sftpconfigurationEdit.html:19
+#: src/main/webapp/scripts/app/project/projectEdit.html:47
+#: src/main/webapp/scripts/app/train/trainEdit.html:40
+#: src/main/webapp/scripts/app/user/roleEdit.html:18
+#: src/main/webapp/scripts/app/user/userEdit.html:47
+msgid "Fiche"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/docUnitEdit.html:87
+msgid "Fiche parente"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/import.html:9
+msgid "Fichier"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEdit.html:86
+msgid "Fichier à téléverser"
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveryPrevalidate.html:47
+msgid "Fichiers autres (métadonnées, dérivés, ..)"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEdit.html:139
+#: src/main/webapp/scripts/app/document/import/importEdit.html:95
+msgid "Fichiers sélectionnés"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEdit.html:318
+msgid "Filtrer les éléments importés"
+msgstr ""
+
+#: src/main/webapp/scripts/components/templates/common/filters.html:9
+msgid "Filtres"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEdit.html:122
+msgid "Fin de l'import"
+msgstr ""
+
+#: src/main/webapp/scripts/app/user/userEdit.html:78
+msgid "Fonction"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/modals/modalExportCinesCtrl.js:25
+msgid "Format"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEdit.html:37
+msgid "Format de fichier"
+msgstr ""
+
+#: src/main/webapp/scripts/app/lot/lotEdit.html:93
+#: src/main/webapp/scripts/app/project/lots.html:9
+#: src/main/webapp/scripts/app/project/projectEdit.html:226
+msgid "Format demandé"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/z3950/z3950ServerEdit.html:50
+msgid "Format des données"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/codeSrvc.js:9
+msgid "Français"
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveryEditCtrl.js:40
+msgid "FTP"
+msgstr ""
+
+#: src/main/webapp/scripts/app/account/login/login.html:24
+msgid "Garder la session ouverte"
+msgstr ""
+
+#: src/main/webapp/scripts/app/library/libraries.html:10
+msgid "Gestion des bibliothèques"
+msgstr ""
+
+#: src/main/webapp/scripts/app/platformconfiguration/sftpconfigurations.html:10
+msgid "Gestion des configurations CINES"
+msgstr ""
+
+#: src/main/webapp/scripts/app/checkconfiguration/configurations.html:10
+msgid "Gestion des configurations des contrôles"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/mailbox/mailbox.html:11
+msgid "Gestion des configurations des emails"
+msgstr ""
+
+#: src/main/webapp/scripts/app/platformconfiguration/ftpconfigurations.html:10
+msgid "Gestion des configurations FTP"
+msgstr ""
+
+#: src/main/webapp/scripts/app/platformconfiguration/iaconfigurations.html:10
+msgid "Gestion des configurations pour Internet Archive"
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveries.html:11
+msgid "Gestion des livraisons"
+msgstr ""
+
+#: src/main/webapp/scripts/app/lot/lots.html:11
+msgid "Gestion des lots"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/document.js:33
+#: src/main/webapp/scripts/app/document/records.html:10
+msgid "Gestion des notices"
+msgstr ""
+
+#: src/main/webapp/scripts/app/user/roles.html:5
+msgid "Gestion des profils"
+msgstr ""
+
+#: src/main/webapp/scripts/app/project/projects.html:11
+msgid "Gestion des projets"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/appconfiguration.html:37
+#: src/main/webapp/scripts/app/configuration/z3950/z3950Server.html:5
+msgid "Gestion des serveurs Z39.50"
+msgstr ""
+
+#: src/main/webapp/scripts/app/train/trains.html:11
+msgid "Gestion des trains"
+msgstr ""
+
+#: src/main/webapp/scripts/app/checks/checks.html:11
+#: src/main/webapp/scripts/app/document/document.js:18
+#: src/main/webapp/scripts/app/document/docUnitsList.html:11
+#: src/main/webapp/scripts/app/main/menuLeft.html:13
+msgid "Gestion des unités documentaires"
+msgstr ""
+
+#: src/main/webapp/scripts/app/user/users.html:10
+msgid "Gestion des utilisateurs"
+msgstr ""
+
+#: src/main/webapp/scripts/app/user/roleEdit.html:38
+#: src/main/webapp/scripts/app/user/roles.html:9
+#: src/main/webapp/scripts/app/user/user.js:17
+#: src/main/webapp/scripts/app/user/userAuthorizationCtrl.js:7
+msgid "Habilitations"
+msgstr ""
+
+#: src/main/webapp/scripts/app/numahop/history/historySrvc.js:61
+msgid "Historique"
+msgstr ""
+
+#: src/main/webapp/scripts/components/modal/common/newOpeningDate.html:10
+msgid "Horaires d'ouverture"
+msgstr ""
+
+#: src/main/webapp/scripts/app/dashboard/widgets/clock/clockWidget.js:6
+msgid "Horloge"
+msgstr ""
+
+#: src/main/webapp/scripts/app/platformconfiguration/sftpconfigurationEdit.html:38
+msgid "Hôte"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/z3950/z3950ServerEdit.html:37
+#: src/main/webapp/scripts/app/document/docUnitsList.html:114
+#: src/main/webapp/scripts/app/document/modals/createItemInternetArchive.html:21
+msgid "Identifiant"
+msgstr ""
+
+#: src/main/webapp/scripts/app/checks/checks.html:89
+#: src/main/webapp/scripts/app/train/docs.html:9
+msgid "Identifiant numérique"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/docUnit.html:14
+#: src/main/webapp/scripts/app/document/docUnitEdit.html:102
+#: src/main/webapp/scripts/app/lot/docs.html:33
+#: src/main/webapp/scripts/app/project/docs.html:32
+#: src/main/webapp/scripts/app/train/docs.html:6
+msgid "Identifiant PGCN"
+msgstr ""
+
+#: src/main/webapp/scripts/app/library/libraryEdit.html:81
+msgid "Identifiant service versant Cines"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/modals/modalExportCinesCtrl.js:26
+msgid "Identifier"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEdit.html:367
+msgid "Ignoré"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEditCtrl.js:33
+#: src/main/webapp/scripts/app/document/import/importEditCtrl.js:37
+msgid "Ignorer l'unité documentaire provenant du fichier"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEdit.html:13
+#: src/main/webapp/scripts/app/document/import/importEdit.html:229
+#: src/main/webapp/scripts/app/document/import/importEdit.html:280
+msgid "Import"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/import.js:12
+#: src/main/webapp/scripts/app/document/import/importCtrl.js:31
+msgid "Import d'unités documentaires"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEditCtrl.js:160
+msgid "Import des unités documentaires en cours"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/codeSrvc.js:24
+msgid "Importé"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEdit.html:260
+#: src/main/webapp/scripts/app/document/import/importEdit.html:308
+#: src/main/webapp/scripts/app/document/z3950/modalZ3950Search.html:67
+msgid "Importer"
+msgstr ""
+
+#: src/main/webapp/scripts/app/main/menuLeft.html:15
+msgid "Imports"
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveryEdit.html:30
+msgid "Imprimer la fiche de livraison"
+msgstr ""
+
+#: src/main/webapp/scripts/app/main/informationsRight.html:9
+msgid "Informations"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/appconfiguration.html:58
+msgid "Informations d'authentification pour les serveurs de dépot de fichiers"
+msgstr ""
+
+#: src/main/webapp/scripts/components/templates/common/initialFilter.html:2
+msgid "Initiales"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/codeSrvc.js:33
+msgid "Initialisation de l'envoi"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/mapping/modalEditRule.html:73
+msgid "Initialisation de la condition"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/mapping/modalEditRule.html:100
+msgid "Initialisation de la condition d'application de la règle"
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveryPrevalidateCtrl.js:61
+msgid "Initialisation de la livraison..."
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/mapping/modalEditRule.html:33
+msgid "Initialisation de la règle"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/mapping/modalEditRule.html:60
+msgid "Initialisation de la règle de mapping"
+msgstr ""
+
+#: src/main/webapp/scripts/app/library/libraryEdit.html:55
+msgid "Institution"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/z3950/z3950ServerEditCtrl.js:19
+msgid "Intermarc"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/z3950/modalZ3950Search.html:15
+#: src/main/webapp/scripts/app/document/z3950/modalZ3950Search.html:54
+msgid "ISBN"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/z3950/z3950ServerEditCtrl.js:25
+#: src/main/webapp/scripts/app/document/import/importEditCtrl.js:63
+msgid "ISO-5426"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/z3950/z3950ServerEditCtrl.js:26
+#: src/main/webapp/scripts/app/document/import/importEditCtrl.js:64
+msgid "ISO-6937"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/z3950/z3950ServerEditCtrl.js:27
+#: src/main/webapp/scripts/app/document/import/importEditCtrl.js:65
+msgid "ISO-8859-1"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/z3950/modalZ3950Search.html:17
+#: src/main/webapp/scripts/app/document/z3950/modalZ3950Search.html:55
+msgid "ISSN"
+msgstr ""
+
+#: src/main/webapp/scripts/components/modal/common/newClosingDate.html:9
+#: src/main/webapp/scripts/components/modal/common/newOpeningDate.html:9
+msgid "Jour"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/messageInterceptor.js:55
+#: src/main/webapp/scripts/components/message/messageInterceptor.js:78
+msgid "L'enregistrement n'a pas été effectué : {{details}}"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/messageInterceptor.js:59
+#: src/main/webapp/scripts/components/message/messageInterceptor.js:80
+msgid "L'enregistrement n'a pas été effectué. Veuillez corriger les erreurs du formulaire."
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/docUnitEditCtrl.js:419
+msgid "L'export est en cours"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/erreurSrvc.js:20
+msgid "L'identifiant PGCN est déjà utilisé"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/erreurSrvc.js:23
+msgid "L'identifiant PGCN est obligatoire"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEditCtrl.js:343
+msgid "l'import {{name}} du {{start}}"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEditCtrl.js:348
+msgid "L'import {{name}} du {{start}} a été correctement supprimé"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEditCtrl.js:576
+#: src/main/webapp/scripts/app/document/import/importEditCtrl.js:623
+#: src/main/webapp/scripts/app/document/import/importEditCtrl.js:642
+msgid "L'import est en cours d'exécution"
+msgstr ""
+
+#: src/main/webapp/scripts/app/project/docsCtrl.js:51
+msgid "l'unité documentaire {{doc}} a été retirée du projet."
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/docUnitEditCtrl.js:148
+msgid "L'unité documentaire {{id}} a été supprimée"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/modals/modalCreateItemInternetArchiveCtrl.js:138
+msgid "L'unité documentaire {{label}} va être envoyée vers Internet Archive"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/docUnitAllOperationsCtrl.js:83
+#: src/main/webapp/scripts/app/document/docUnitEditCtrl.js:202
+msgid "L'unité documentaire {{name}} a été sauvegardée"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/relationsAllOperationsCtrl.js:101
+#: src/main/webapp/scripts/app/document/allOperations/relationsAllOperationsCtrl.js:116
+#: src/main/webapp/scripts/app/document/allOperations/relationsAllOperationsCtrl.js:54
+#: src/main/webapp/scripts/app/document/allOperations/relationsAllOperationsCtrl.js:76
+msgid "L'unité documentaire {{pgcnId}} {{label}} a été sauvegardée"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/modals/modalDeleteDocUnitResultsCtrl.js:30
+#: src/main/webapp/scripts/components/message/erreurSrvc.js:22
+msgid "L'unité documentaire appartient à un projet"
+msgstr ""
+
+#: src/main/webapp/scripts/app/checks/checkCtrl.js:237
+#: src/main/webapp/scripts/app/document/docUnitListCtrl.js:272
+#: src/main/webapp/scripts/app/lot/docsCtrl.js:68
+#: src/main/webapp/scripts/app/train/allOperationsCtrl.js:93
+msgid "l'unité documentaire sélectionnée"
+msgid_plural "les {{n}} unités documentaires sélectionnées"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/main/webapp/scripts/app/user/userEditCtrl.js:208
+msgid "L'utilisateur {{fullname}} a été sauvegardé"
+msgstr ""
+
+#: src/main/webapp/scripts/app/user/userEditCtrl.js:145
+msgid "L'utilisateur {{fullname}} a été supprimé"
+msgstr ""
+
+#: src/main/webapp/scripts/app/library/libraryEditCtrl.js:168
+msgid "La bibliothèque {{name}} a été sauvegardée"
+msgstr ""
+
+#: src/main/webapp/scripts/app/library/libraryEditCtrl.js:112
+msgid "La bibliothèque {{name}} a été supprimée"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/erreurSrvc.js:11
+#: src/main/webapp/scripts/components/message/erreurSrvc.js:30
+#: src/main/webapp/scripts/components/message/erreurSrvc.js:41
+#: src/main/webapp/scripts/components/message/erreurSrvc.js:9
+msgid "La bibliothèque est obligatoire"
+msgstr ""
+
+#: src/main/webapp/scripts/app/checkconfiguration/configurationEditCtrl.js:82
+#: src/main/webapp/scripts/app/configuration/mailbox/mailboxEditCtrl.js:92
+msgid "la configuration {{label}}"
+msgstr ""
+
+#: src/main/webapp/scripts/app/checkconfiguration/configurationEditCtrl.js:85
+#: src/main/webapp/scripts/app/configuration/mailbox/mailboxEditCtrl.js:95
+msgid "La configuration {{label}} a été supprimée"
+msgstr ""
+
+#: src/main/webapp/scripts/app/checkconfiguration/configurationEditCtrl.js:135
+#: src/main/webapp/scripts/app/configuration/mailbox/mailboxEditCtrl.js:69
+#: src/main/webapp/scripts/app/platformconfiguration/ftpconfigurationEditCtrl.js:135
+#: src/main/webapp/scripts/app/platformconfiguration/iaconfigurationEditCtrl.js:126
+#: src/main/webapp/scripts/app/platformconfiguration/sftpconfigurationEditCtrl.js:126
+msgid "La configuration {{name}} a été sauvegardée"
+msgstr ""
+
+#: src/main/webapp/scripts/app/platformconfiguration/ftpconfigurationEditCtrl.js:86
+#: src/main/webapp/scripts/app/platformconfiguration/iaconfigurationEditCtrl.js:77
+#: src/main/webapp/scripts/app/platformconfiguration/sftpconfigurationEditCtrl.js:77
+msgid "La configuration {{name}} a été supprimée"
+msgstr ""
+
+#: src/main/webapp/scripts/app/dashboard/templates/dashboard.html:59
+msgid ""
+"La grille est constituée de 3 lignes. La première et la troisième ligne possèdent 4 emplacements\r\n"
+"tandis que la seconde en possède 2. Il est possible de mettre plusieurs widgets dans chaque emplacement, ils se placeront alors les uns en dessous des autres."
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveryEditCtrl.js:249
+msgid "La livraison {{label}} a été sauvegardée"
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveryEditCtrl.js:195
+msgid "La livraison {{label}} a été supprimée"
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveryPrevalidateCtrl.js:64
+msgid "La livraison a été effectuée"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/recordEditCtrl.js:145
+msgid "La notice {{id}} a été supprimée"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/recordAllOperationsCtrl.js:245
+#: src/main/webapp/scripts/app/document/recordEditCtrl.js:273
+msgid "La notice {{name}} a été sauvegardée"
+msgstr ""
+
+#: src/main/webapp/scripts/app/help/helpPageEditCtrl.js:132
+msgid "La page d'aide a été supprimée"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/recordAllOperationsCtrl.js:134
+#: src/main/webapp/scripts/app/document/recordEditCtrl.js:211
+msgid "la propriété {{property}}"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/docUnitListCtrl.js:292
+#: src/main/webapp/scripts/app/document/docUnitListCtrl.js:323
+msgid "La sélection est vide"
+msgstr ""
+
+#: src/main/webapp/scripts/app/main/menuTop.html:16
+msgid "Lancer une recherche..."
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/modals/createItemInternetArchive.html:45
+msgid "Langage"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/modals/modalExportCinesCtrl.js:28
+msgid "Language"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/erreurSrvc.js:43
+msgid "Le code est obligatoire"
+msgstr ""
+
+#: src/main/webapp/scripts/components/modal/common/cancelWithComment.html:11
+msgid "Le commentaire doit faire au minimum {{minCommentLength}} caractères."
+msgstr ""
+
+#: src/main/webapp/scripts/components/modal/common/cancelWithComment.html:10
+msgid "Le commentaire est obligatoire."
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveryEditCtrl.js:418
+msgid "Le contrôle {{label}} a échoué pour le document {{document}} avec l'erreur : {{message}}"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/erreurSrvc.js:39
+msgid "Le courriel est obligatoire"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/docDetailsAllOperationsCtrl.js:120
+msgid "Le document numérique a été sauvegardé"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/docDetailsAllOperationsCtrl.js:135
+msgid "Le document physique a été sauvegardé"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/erreurSrvc.js:16
+msgid "Le dossier de livraison n'existe pas"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/erreurSrvc.js:25
+msgid "Le format de fichier n'est pas renseigné"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/erreurSrvc.js:38
+msgid "Le format du courriel n'est pas valide"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/erreurSrvc.js:7
+msgid "Le label est obligatoire"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/erreurSrvc.js:10
+#: src/main/webapp/scripts/components/message/erreurSrvc.js:19
+#: src/main/webapp/scripts/components/message/erreurSrvc.js:29
+#: src/main/webapp/scripts/components/message/erreurSrvc.js:44
+#: src/main/webapp/scripts/components/message/erreurSrvc.js:8
+msgid "Le libellé est obligatoire"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/erreurSrvc.js:42
+msgid "Le login est obligatoire"
+msgstr ""
+
+#: src/main/webapp/scripts/app/lot/lotEditCtrl.js:252
+msgid "Le lot {{label}} a été sauvegardé"
+msgstr ""
+
+#: src/main/webapp/scripts/app/lot/lotEditCtrl.js:194
+msgid "Le lot {{label}} a été supprimé"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/erreurSrvc.js:14
+msgid "Le lot est obligatoire"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/csvMapping/csvMappingCtrl.js:113
+#: src/main/webapp/scripts/app/configuration/mapping/mappingCtrl.js:190
+msgid "Le mapping {{label}}"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/csvMapping/csvMappingCtrl.js:144
+#: src/main/webapp/scripts/app/configuration/mapping/mappingCtrl.js:265
+msgid "Le mapping {{label}} a été sauvegardé"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/csvMapping/csvMappingCtrl.js:118
+#: src/main/webapp/scripts/app/configuration/mapping/mappingCtrl.js:195
+msgid "Le mapping {{label}} a été supprimé"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/erreurSrvc.js:26
+msgid "Le mapping n'est pas renseigné"
+msgstr ""
+
+#: src/main/webapp/scripts/app/account/password/password.html:7
+#: src/main/webapp/scripts/app/main/password.html:7
+msgid "Le mot de passe a été modifié !"
+msgstr ""
+
+#: src/main/webapp/scripts/app/user/userEditCtrl.js:127
+msgid "Le mot de passe de l'utilisateur {{user}} est {{password}}"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/erreurSrvc.js:48
+#: src/main/webapp/scripts/components/message/erreurSrvc.js:49
+msgid "Le nom est obligatoire"
+msgstr ""
+
+#: src/main/webapp/scripts/controllers.js:107
+msgid "Le nouveau mot de passe a été envoyé sur votre adresse email."
+msgstr ""
+
+#: src/main/webapp/scripts/app/account/password/password.html:14
+#: src/main/webapp/scripts/app/main/password.html:14
+msgid "Le nouveau mot de passe et sa confirmation ne sont pas égaux !"
+msgstr ""
+
+#: src/main/webapp/scripts/app/user/userRoleEditCtrl.js:146
+msgid "Le profil [{{code}}] {{label}} a été sauvegardé"
+msgstr ""
+
+#: src/main/webapp/scripts/app/user/userRoleEditCtrl.js:163
+msgid "Le profil [{{code}}] {{label}} a été supprimé"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/erreurSrvc.js:45
+msgid "Le profil est obligatoire"
+msgstr ""
+
+#: src/main/webapp/scripts/app/project/projectEditCtrl.js:344
+msgid "Le projet {{name}} a été sauvegardé"
+msgstr ""
+
+#: src/main/webapp/scripts/app/project/projectEditCtrl.js:286
+msgid "Le projet {{name}} a été supprimé"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/z3950/z3950ServerEditCtrl.js:109
+msgid "Le serveur {{name}} a été sauvegardé"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/z3950/z3950ServerEditCtrl.js:127
+msgid "Le serveur {{name}} a été supprimé"
+msgstr ""
+
+#: src/main/webapp/scripts/app/train/trainEditCtrl.js:181
+msgid "Le train {{label}} a été sauvegardé"
+msgstr ""
+
+#: src/main/webapp/scripts/app/train/trainEditCtrl.js:124
+msgid "Le train {{label}} a été supprimé"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/docPropertyType/docPropertyTypeCtrl.js:92
+msgid "Le type {{label}} a été sauvegardé"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/docPropertyType/docPropertyTypeCtrl.js:71
+msgid "Le type {{label}} a été supprimé"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/docPropertyType/docPropertyTypeCtrl.js:66
+msgid "Le type de propriété {{label}}"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/erreurSrvc.js:17
+msgid "Le type de propriété est utilisé dans une règle de mapping"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/erreurSrvc.js:18
+msgid "Le type de propriété est utilisé sur une notice"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/erreurSrvc.js:32
+msgid "Le type est obligatoire"
+msgstr ""
+
+#: src/main/webapp/scripts/app/lot/docsCtrl.js:73
+#: src/main/webapp/scripts/app/train/allOperationsCtrl.js:98
+msgid "Les unités documentaires ont bien été retirées du lot"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/docUnitListCtrl.js:337
+msgid "Les unités documentaires sélectionnées ne peuvent pas être traitées car elles appartiennent déjà à un projet existant"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/docUnitListCtrl.js:313
+msgid "Les unités documentaires sélectionnées ont été rattachées à {{pgcnId}} {{label}}"
+msgstr ""
+
+#: src/main/webapp/scripts/app/checkconfiguration/configurationEdit.html:28
+#: src/main/webapp/scripts/app/checks/checks.html:91
+#: src/main/webapp/scripts/app/configuration/csvMapping/csvMapping.html:61
+#: src/main/webapp/scripts/app/configuration/csvMapping/csvMapping.html:62
+#: src/main/webapp/scripts/app/configuration/docPropertyType/docPropertyType.html:47
+#: src/main/webapp/scripts/app/configuration/docPropertyType/docPropertyType.html:48
+#: src/main/webapp/scripts/app/configuration/mapping/mapping.html:72
+#: src/main/webapp/scripts/app/configuration/mapping/mapping.html:73
+#: src/main/webapp/scripts/app/delivery/deliveryEdit.html:44
+#: src/main/webapp/scripts/app/document/allOperations/docUnit.html:10
+#: src/main/webapp/scripts/app/document/docUnitEdit.html:99
+#: src/main/webapp/scripts/app/lot/deliveries.html:6
+#: src/main/webapp/scripts/app/lot/docs.html:34
+#: src/main/webapp/scripts/app/lot/lotEdit.html:143
+#: src/main/webapp/scripts/app/lot/lotEdit.html:62
+#: src/main/webapp/scripts/app/platformconfiguration/ftpconfigurationEdit.html:28
+#: src/main/webapp/scripts/app/platformconfiguration/iaconfigurationEdit.html:28
+#: src/main/webapp/scripts/app/platformconfiguration/sftpconfigurationEdit.html:28
+#: src/main/webapp/scripts/app/project/docs.html:33
+#: src/main/webapp/scripts/app/train/docs.html:7
+#: src/main/webapp/scripts/app/train/trainEdit.html:48
+#: src/main/webapp/scripts/app/user/roleEdit.html:29
+#: src/main/webapp/scripts/app/user/roleEdit.html:55
+#: src/main/webapp/scripts/components/modal/common/newClosingDate.html:8
+#: src/main/webapp/scripts/components/modal/common/newOpeningDate.html:8
+msgid "Libellé"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/util/docUnitBaseService.js:17
+msgid "Libre de droits"
+msgstr ""
+
+#: src/main/webapp/scripts/app/statistics/projects.html:35
+msgid "Lien"
+msgstr ""
+
+#: src/main/webapp/scripts/app/dashboard/widgets/project/projectStateWidget.js:10
+msgid "Liste de projets par statut"
+msgstr ""
+
+#: src/main/webapp/scripts/app/main/menuLeft.html:41
+msgid "Liste des livraisons"
+msgstr ""
+
+#: src/main/webapp/scripts/app/main/menuLeft.html:39
+msgid "Liste des lots"
+msgstr ""
+
+#: src/main/webapp/scripts/app/main/menuLeft.html:38
+msgid "Liste des projets"
+msgstr ""
+
+#: src/main/webapp/scripts/app/main/menuLeft.html:40
+msgid "Liste des trains"
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveryEditCtrl.js:299
+msgid "Livraison {{label}}"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/digitalDocumentCtrl.js:180
+msgid "Livraison effectuée, en attente des contrôles"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/digitalDocumentCtrl.js:177
+msgid "Livraison validée"
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/delivery.js:9
+#: src/main/webapp/scripts/app/delivery/deliveryCtrl.js:70
+#: src/main/webapp/scripts/app/lot/allOperations.html:19
+#: src/main/webapp/scripts/app/lot/lotEdit.html:136
+#: src/main/webapp/scripts/components/message/codeSrvc.js:21
+msgid "Livraisons"
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveryCtrl.js:50
+#: src/main/webapp/scripts/app/delivery/deliveryEditCtrl.js:31
+#: src/main/webapp/scripts/components/message/codeSrvc.js:75
+msgid "Livré"
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveryEdit.html:7
+#: src/main/webapp/scripts/app/delivery/deliveryPrevalidate.html:94
+msgid "Livrer"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEditCtrl.js:168
+msgid "Livrets de partitions"
+msgstr ""
+
+#: src/main/webapp/scripts/app/platformconfiguration/ftpconfigurationEdit.html:35
+#: src/main/webapp/scripts/app/user/userEdit.html:64
+msgid "Login"
+msgstr ""
+
+#: src/main/webapp/scripts/app/checks/checks.html:94
+#: src/main/webapp/scripts/app/delivery/deliveryEdit.html:57
+#: src/main/webapp/scripts/app/document/docUnitsList.html:117
+#: src/main/webapp/scripts/app/document/import/importEdit.html:174
+#: src/main/webapp/scripts/app/document/import/importEdit.html:237
+#: src/main/webapp/scripts/app/document/import/importEdit.html:288
+#: src/main/webapp/scripts/app/document/import/importEditCtrl.js:119
+#: src/main/webapp/scripts/app/lot/allOperations.html:9
+#: src/main/webapp/scripts/app/lot/lotEdit.html:59
+#: src/main/webapp/scripts/components/message/codeSrvc.js:17
+msgid "Lot"
+msgstr ""
+
+#: src/main/webapp/scripts/app/lot/lotEditCtrl.js:274
+msgid "Lot {{label}}"
+msgstr ""
+
+#: src/main/webapp/scripts/app/lot/lot.js:16
+#: src/main/webapp/scripts/app/lot/lot.js:9
+#: src/main/webapp/scripts/app/lot/lotCtrl.js:65
+#: src/main/webapp/scripts/app/project/allOperations.html:19
+#: src/main/webapp/scripts/app/project/projectEdit.html:216
+msgid "Lots"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEdit.html:59
+#: src/main/webapp/scripts/app/document/import/importEditCtrl.js:114
+msgid "Mapping CSV"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEdit.html:49
+msgid "Mapping des exemplaires"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/appconfiguration.html:28
+msgid "Mapping des notices CSV"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/appconfiguration.html:22
+msgid "Mapping des notices EAD"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/appconfiguration.html:16
+msgid "Mapping des notices MARC"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEdit.html:54
+#: src/main/webapp/scripts/app/document/import/importEditCtrl.js:99
+msgid "Mapping EAD"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEdit.html:43
+#: src/main/webapp/scripts/app/document/import/importEditCtrl.js:84
+msgid "Mapping MARC"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/csvMapping/csvMapping.html:10
+#: src/main/webapp/scripts/app/configuration/mapping/mapping.html:10
+msgid "Mappings"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEditCtrl.js:53
+msgid "MARC: ISO-2709"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEditCtrl.js:54
+msgid "MARC: JSON"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEditCtrl.js:55
+msgid "MARC: XML"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/export.html:142
+#: src/main/webapp/scripts/app/document/allOperations/export.html:61
+msgid "Message"
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveryPrevalidateCtrl.js:37
+#: src/main/webapp/scripts/app/document/modals/exportCines.html:8
+msgid "Métadonnées"
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveryPrevalidateCtrl.js:35
+msgid "Mire"
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveryEdit.html:68
+msgid "Mode de livraison"
+msgstr ""
+
+#: src/main/webapp/scripts/components/modal/common/currentSessionWarning.html:2
+msgid "Modification en cours"
+msgstr ""
+
+#: src/main/webapp/scripts/app/checkconfiguration/configurationEdit.html:7
+#: src/main/webapp/scripts/app/configuration/mailbox/mailboxEdit.html:5
+#: src/main/webapp/scripts/app/configuration/z3950/z3950ServerEdit.html:8
+#: src/main/webapp/scripts/app/delivery/deliveryEdit.html:12
+#: src/main/webapp/scripts/app/document/docUnitEdit.html:7
+#: src/main/webapp/scripts/app/document/recordEdit.html:7
+#: src/main/webapp/scripts/app/help/helpPageEdit.html:5
+#: src/main/webapp/scripts/app/library/libraryEdit.html:7
+#: src/main/webapp/scripts/app/lot/lotEdit.html:7
+#: src/main/webapp/scripts/app/platformconfiguration/ftpconfigurationEdit.html:7
+#: src/main/webapp/scripts/app/platformconfiguration/iaconfigurationEdit.html:7
+#: src/main/webapp/scripts/app/platformconfiguration/sftpconfigurationEdit.html:7
+#: src/main/webapp/scripts/app/project/projectEdit.html:7
+#: src/main/webapp/scripts/app/train/trainEdit.html:7
+#: src/main/webapp/scripts/app/user/roleEdit.html:7
+#: src/main/webapp/scripts/app/user/userEdit.html:7
+msgid "Modifier"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/relations.html:22
+msgid "Modifier l'unité documentaire parente"
+msgstr ""
+
+#: src/main/webapp/scripts/app/help/helpPageEdit.html:27
+#: src/main/webapp/scripts/app/user/roleEdit.html:53
+msgid "Module"
+msgstr ""
+
+#: src/main/webapp/scripts/app/help/helpPages.html:19
+msgid "Modules"
+msgstr ""
+
+#: src/main/webapp/scripts/app/app.js:72
+msgid "Mon profil"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEditCtrl.js:165
+msgid "Monographies"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/z3950/z3950ServerEdit.html:41
+#: src/main/webapp/scripts/app/main/menuTop.html:42
+#: src/main/webapp/scripts/app/platformconfiguration/ftpconfigurationEdit.html:38
+#: src/main/webapp/scripts/app/platformconfiguration/sftpconfigurationEdit.html:35
+#: src/main/webapp/scripts/app/user/userEdit.html:72
+msgid "Mot de passe"
+msgstr ""
+
+#: src/main/webapp/scripts/app/account/login/login.html:21
+msgid "Mot de passe oublié ?"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/export.html:55
+msgid "Motif du rejet"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/z3950/z3950ServerEdit.html:21
+#: src/main/webapp/scripts/app/delivery/deliveryEdit.html:100
+#: src/main/webapp/scripts/app/document/allOperations/docDetails.html:15
+#: src/main/webapp/scripts/app/document/docUnitEdit.html:169
+#: src/main/webapp/scripts/app/document/docUnitsList.html:115
+#: src/main/webapp/scripts/app/library/libraryEdit.html:58
+#: src/main/webapp/scripts/app/project/projectEdit.html:165
+#: src/main/webapp/scripts/app/project/projectEdit.html:223
+#: src/main/webapp/scripts/app/project/projectEdit.html:64
+#: src/main/webapp/scripts/app/train/docs.html:8
+#: src/main/webapp/scripts/app/user/userEdit.html:67
+msgid "Nom"
+msgstr ""
+
+#: src/main/webapp/scripts/app/platformconfiguration/sftpconfigurationEdit.html:32
+msgid "Nom d'utilisateur"
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveryPrevalidate.html:58
+msgid "Nom du fichier"
+msgstr ""
+
+#: src/main/webapp/scripts/app/project/lots.html:6
+msgid "Nom du lot"
+msgstr ""
+
+#: src/main/webapp/scripts/app/statistics/projects.html:32
+msgid "Nom du projet"
+msgstr ""
+
+#: src/main/webapp/scripts/app/project/projectEdit.html:261
+#: src/main/webapp/scripts/app/project/trains.html:6
+msgid "Nom du train"
+msgstr ""
+
+#: src/main/webapp/scripts/app/dashboard/widgets/project/projectStateEditWidget.html:20
+msgid "Nombre à afficher"
+msgstr ""
+
+#: src/main/webapp/scripts/app/statistics/projects.html:34
+msgid "Nombre de documents"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/export.html:132
+msgid "Nombre de fichiers envoyés"
+msgstr ""
+
+#: src/main/webapp/scripts/app/checks/checks.html:95
+#: src/main/webapp/scripts/app/delivery/deliveryEdit.html:101
+#: src/main/webapp/scripts/app/document/docUnitEdit.html:171
+msgid "Nombre de livraisons"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/docDetails.html:18
+msgid "Nombre de pages"
+msgstr ""
+
+#: src/main/webapp/scripts/app/checkconfiguration/configurationEditCtrl.js:22
+#: src/main/webapp/scripts/app/configuration/z3950/z3950ServerEditCtrl.js:16
+#: src/main/webapp/scripts/app/delivery/deliveryEditCtrl.js:27
+#: src/main/webapp/scripts/app/document/util/docUnitBaseService.js:13
+#: src/main/webapp/scripts/app/library/libraryEditCtrl.js:24
+#: src/main/webapp/scripts/app/lot/lotEditCtrl.js:23
+#: src/main/webapp/scripts/app/platformconfiguration/ftpconfigurationEditCtrl.js:23
+#: src/main/webapp/scripts/app/platformconfiguration/iaconfigurationEditCtrl.js:20
+#: src/main/webapp/scripts/app/platformconfiguration/sftpconfigurationEditCtrl.js:20
+#: src/main/webapp/scripts/app/project/allOperationsCtrl.js:33
+#: src/main/webapp/scripts/app/project/projectEditCtrl.js:38
+#: src/main/webapp/scripts/app/project/projectEditCtrl.js:67
+#: src/main/webapp/scripts/app/train/trainEditCtrl.js:24
+#: src/main/webapp/scripts/app/user/accountCtrl.js:15
+#: src/main/webapp/scripts/app/user/userEditCtrl.js:22
+msgid "Non"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/codeSrvc.js:39
+msgid "Non effectué"
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveryEditCtrl.js:23
+msgid "Non payé"
+msgstr ""
+
+#: src/main/webapp/scripts/components/directives/semEditableField/semEditableFieldCtrl.js:139
+msgid "Non renseigné"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/modals/createItemInternetArchive.html:51
+msgid "Notes"
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveryEdit.html:78
+#: src/main/webapp/scripts/app/lot/lotEdit.html:111
+msgid "Notes concernant la numérisation"
+msgstr ""
+
+#: src/main/webapp/scripts/app/lot/lotEdit.html:107
+msgid "Notes concernant le conditionnement"
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveryEdit.html:83
+msgid "Notes concernant le contrôle"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/docDetails.html:49
+msgid "Notes de contrôle"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/docDetails.html:45
+msgid "Notes de numérisation"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/docAllOperationsCtrl.js:27
+#: src/main/webapp/scripts/app/document/docUnitEdit.html:194
+msgid "Notice"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/docUnitEdit.html:235
+msgid "Notice : Champs personnalisés"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/docUnitEdit.html:201
+msgid "Notice : Dublin Core"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/docUnitEdit.html:218
+msgid "Notice : Dublin Core Qualified"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/recordEditCtrl.js:296
+msgid "Notice {{value}}"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/mapping/mapping.html:93
+#: src/main/webapp/scripts/app/configuration/mapping/modalEditRule.html:23
+msgid "Notice bibl."
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/recordCtrl.js:46
+#: src/main/webapp/scripts/app/main/menuLeft.html:14
+msgid "Notices"
+msgstr ""
+
+#: src/main/webapp/scripts/app/lot/lotEditCtrl.js:83
+msgid "Nouveau lot"
+msgstr ""
+
+#: src/main/webapp/scripts/app/account/password/password.html:23
+#: src/main/webapp/scripts/app/account/password/password.html:24
+#: src/main/webapp/scripts/app/main/password.html:23
+#: src/main/webapp/scripts/app/main/password.html:24
+#: src/main/webapp/scripts/app/user/userEdit.html:43
+msgid "Nouveau mot de passe"
+msgstr ""
+
+#: src/main/webapp/scripts/app/user/userRoleEditCtrl.js:60
+msgid "Nouveau profil"
+msgstr ""
+
+#: src/main/webapp/scripts/app/project/projectEditCtrl.js:121
+msgid "Nouveau projet"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/z3950/z3950ServerEditCtrl.js:65
+msgid "Nouveau Serveur Z39.50"
+msgstr ""
+
+#: src/main/webapp/scripts/app/train/trainEditCtrl.js:324
+msgid "Nouveau train"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/import.html:7
+msgid "Nouvel import de fichier"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/import.html:12
+msgid "Nouvel import Z39.50"
+msgstr ""
+
+#: src/main/webapp/scripts/app/user/userEditCtrl.js:328
+msgid "Nouvel utilisateur"
+msgstr ""
+
+#: src/main/webapp/scripts/app/library/libraryEditCtrl.js:320
+msgid "Nouvelle bibliothèque"
+msgstr ""
+
+#: src/main/webapp/scripts/app/checkconfiguration/configurationEditCtrl.js:247
+#: src/main/webapp/scripts/app/platformconfiguration/ftpconfigurationEditCtrl.js:276
+#: src/main/webapp/scripts/app/platformconfiguration/iaconfigurationEditCtrl.js:209
+#: src/main/webapp/scripts/app/platformconfiguration/sftpconfigurationEditCtrl.js:209
+msgid "Nouvelle configuration"
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveryEditCtrl.js:89
+msgid "Nouvelle livraison"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/recordEditCtrl.js:68
+msgid "Nouvelle notice"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/recordAllOperationsCtrl.js:164
+#: src/main/webapp/scripts/app/document/recordEditCtrl.js:238
+msgid "Nouvelle propriété"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/csvMapping/csvModalEditRuleCtrl.js:53
+#: src/main/webapp/scripts/app/configuration/mapping/modalEditRuleCtrl.js:67
+msgid "Nouvelle règle"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/docUnitEditCtrl.js:59
+msgid "Nouvelle unité documentaire"
+msgstr ""
+
+#: src/main/webapp/index.html:6 src/main/webapp/scripts/controllers.js:85
+msgid "NumaHOP"
+msgstr ""
+
+#: src/main/webapp/scripts/app/lot/lotEditCtrl.js:31
+#: src/main/webapp/scripts/app/project/allOperationsCtrl.js:29
+#: src/main/webapp/scripts/app/project/projectEditCtrl.js:63
+msgid "Numérique"
+msgstr ""
+
+#: src/main/webapp/scripts/app/library/libraryEdit.html:122
+#: src/main/webapp/scripts/app/library/libraryEdit.html:125
+#: src/main/webapp/scripts/app/user/userEdit.html:119
+#: src/main/webapp/scripts/app/user/userEdit.html:122
+msgid "Numéro et nom de la voie"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEditCtrl.js:69
+msgid "OAI_DC"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/csvMapping/csvModalEditRule.html:25
+#: src/main/webapp/scripts/app/configuration/mapping/modalEditRule.html:111
+#: src/main/webapp/scripts/components/modal/common/confirmCancel.html:10
+#: src/main/webapp/scripts/components/modal/common/confirmModSub.html:9
+#: src/main/webapp/scripts/components/modal/common/currentSessionWarning.html:9
+msgid "Ok"
+msgstr ""
+
+#: src/main/webapp/scripts/app/dashboard/templates/dashboard.html:21
+msgid "ou de les annuler"
+msgstr ""
+
+#: src/main/webapp/scripts/app/checkconfiguration/configurationEditCtrl.js:21
+#: src/main/webapp/scripts/app/configuration/z3950/z3950ServerEditCtrl.js:15
+#: src/main/webapp/scripts/app/delivery/deliveryEditCtrl.js:26
+#: src/main/webapp/scripts/app/document/util/docUnitBaseService.js:12
+#: src/main/webapp/scripts/app/library/libraryEditCtrl.js:23
+#: src/main/webapp/scripts/app/lot/lotEditCtrl.js:22
+#: src/main/webapp/scripts/app/platformconfiguration/ftpconfigurationEditCtrl.js:22
+#: src/main/webapp/scripts/app/platformconfiguration/iaconfigurationEditCtrl.js:19
+#: src/main/webapp/scripts/app/platformconfiguration/sftpconfigurationEditCtrl.js:19
+#: src/main/webapp/scripts/app/project/allOperationsCtrl.js:32
+#: src/main/webapp/scripts/app/project/projectEditCtrl.js:37
+#: src/main/webapp/scripts/app/project/projectEditCtrl.js:66
+#: src/main/webapp/scripts/app/train/trainEditCtrl.js:23
+#: src/main/webapp/scripts/app/user/accountCtrl.js:14
+#: src/main/webapp/scripts/app/user/userEditCtrl.js:21
+msgid "Oui"
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveryPrevalidate.html:46
+msgid "Pages"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/codeSrvc.js:28
+msgid "Pages d'aide personnalisées"
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveryEdit.html:65
+msgid "Paiement"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEdit.html:27
+msgid "Paramétrage"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/appconfiguration.html:12
+msgid "Paramétrages"
+msgstr ""
+
+#: src/main/webapp/scripts/app/help/helpPageEdit.html:17
+msgid "Parent"
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveryEditCtrl.js:22
+msgid "Payé"
+msgstr ""
+
+#: src/main/webapp/scripts/app/library/libraryEdit.html:141
+#: src/main/webapp/scripts/app/library/libraryEdit.html:142
+#: src/main/webapp/scripts/app/user/userEdit.html:134
+#: src/main/webapp/scripts/app/user/userEdit.html:135
+msgid "Pays"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEditCtrl.js:166
+msgid "Périodiques / publications en série"
+msgstr ""
+
+#: src/main/webapp/scripts/app/lot/lotEditCtrl.js:30
+#: src/main/webapp/scripts/app/project/allOperationsCtrl.js:28
+#: src/main/webapp/scripts/app/project/projectEditCtrl.js:62
+msgid "Physique"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/docUnit.html:27
+#: src/main/webapp/scripts/app/document/docUnitEdit.html:112
+#: src/main/webapp/scripts/app/lot/lotEdit.html:123
+#: src/main/webapp/scripts/app/project/projectEdit.html:145
+msgid "Plan de classement PAC"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/z3950/z3950ServerEdit.html:29
+#: src/main/webapp/scripts/app/platformconfiguration/sftpconfigurationEdit.html:41
+msgid "Port"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/docPropertyType/docPropertyType.html:51
+#: src/main/webapp/scripts/app/configuration/docPropertyType/docPropertyType.html:52
+msgid "Position"
+msgstr ""
+
+#: src/main/webapp/scripts/app/dashboard/templates/dashboard.html:42
+msgid "Pour ajouter un widget à votre tableau de bord, cliquez sur l'icône"
+msgstr ""
+
+#: src/main/webapp/scripts/app/dashboard/templates/dashboard.html:68
+msgid "Pour annuler les modifications effectuées sur le tableau de bord, cliquez sur l'icône"
+msgstr ""
+
+#: src/main/webapp/scripts/app/dashboard/templates/dashboard.html:47
+msgid "Pour configurer un widget, cliquez sur l'icône"
+msgstr ""
+
+#: src/main/webapp/scripts/app/dashboard/templates/dashboard.html:55
+msgid "Pour déplacer un widget, cliquez sur l'icône"
+msgstr ""
+
+#: src/main/webapp/scripts/app/dashboard/templates/dashboard.html:51
+msgid "Pour supprimer un widget, cliquez sur l'icône"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEditCtrl.js:157
+msgid "Pré-import des unités documentaires"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/codeSrvc.js:25
+msgid "Pré-importé"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/codeSrvc.js:47
+msgid "Pré-rejeté"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/modals/selectDocUnit.html:13
+msgid "Préciser votre recherche..."
+msgstr ""
+
+#: src/main/webapp/scripts/app/library/libraryEdit.html:70
+msgid "Préfixe"
+msgstr ""
+
+#: src/main/webapp/scripts/app/user/userEdit.html:70
+msgid "Prénom"
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveries.html:30
+#: src/main/webapp/scripts/app/delivery/deliveries.html:34
+#: src/main/webapp/scripts/app/lot/lotCtrl.js:38
+#: src/main/webapp/scripts/app/lot/lotEdit.html:71
+#: src/main/webapp/scripts/app/lot/lotEditCtrl.js:26
+#: src/main/webapp/scripts/app/project/projectCtrl.js:37
+#: src/main/webapp/scripts/app/project/projectEdit.html:105
+#: src/main/webapp/scripts/app/train/trainCtrl.js:39
+#: src/main/webapp/scripts/app/user/accountCtrl.js:18
+#: src/main/webapp/scripts/app/user/userCtrl.js:32
+#: src/main/webapp/scripts/app/user/userEditCtrl.js:25
+msgid "Prestataire"
+msgstr ""
+
+#: src/main/webapp/scripts/app/lot/lots.html:63
+#: src/main/webapp/scripts/app/lot/lots.html:67
+msgid "Prestataire de numérisation"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/digitalDocument.html:25
+msgid "Prévisualisation du document numérique"
+msgstr ""
+
+#: src/main/webapp/scripts/app/main/menuTop.html:39
+#: src/main/webapp/scripts/app/user/userEdit.html:94
+msgid "Profil"
+msgstr ""
+
+#: src/main/webapp/scripts/app/library/libraryEdit.html:100
+msgid "Profil par défaut"
+msgstr ""
+
+#: src/main/webapp/scripts/app/user/userRoleEditCtrl.js:203
+msgid "Profil: {{role}}"
+msgstr ""
+
+#: src/main/webapp/scripts/app/main/menuLeft.html:30
+#: src/main/webapp/scripts/components/message/codeSrvc.js:19
+msgid "Profils"
+msgstr ""
+
+#: src/main/webapp/scripts/app/checks/checks.html:30
+#: src/main/webapp/scripts/app/checks/checks.html:35
+#: src/main/webapp/scripts/app/checks/checks.html:93
+#: src/main/webapp/scripts/app/dashboard/widgets/project/projectDetailsEditWidget.html:4
+#: src/main/webapp/scripts/app/dashboard/widgets/project/projectStateWidget.html:11
+#: src/main/webapp/scripts/app/delivery/deliveries.html:17
+#: src/main/webapp/scripts/app/document/allOperations/docUnit.html:69
+#: src/main/webapp/scripts/app/document/docUnitEdit.html:146
+#: src/main/webapp/scripts/app/document/docUnitsList.html:116
+#: src/main/webapp/scripts/app/document/docUnitsList.html:16
+#: src/main/webapp/scripts/app/document/docUnitsList.html:21
+#: src/main/webapp/scripts/app/document/import/importEdit.html:160
+#: src/main/webapp/scripts/app/document/import/importEdit.html:233
+#: src/main/webapp/scripts/app/document/import/importEdit.html:284
+#: src/main/webapp/scripts/app/document/import/importEditCtrl.js:142
+#: src/main/webapp/scripts/app/lot/lotEdit.html:65
+#: src/main/webapp/scripts/app/project/allOperations.html:9
+#: src/main/webapp/scripts/app/project/project.js:9
+#: src/main/webapp/scripts/app/project/projectEdit.html:61
+#: src/main/webapp/scripts/app/train/trainEdit.html:51
+#: src/main/webapp/scripts/components/message/codeSrvc.js:18
+msgid "Projet"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/all_operations.html:19
+msgid "Projet :"
+msgstr ""
+
+#: src/main/webapp/scripts/app/project/projectEditCtrl.js:410
+msgid "Projet {{name}}"
+msgstr ""
+
+#: src/main/webapp/scripts/app/dashboard/widgets/project/projectDetailsWidget.js:11
+#: src/main/webapp/scripts/app/dashboard/widgets/project/projectStateWidget.js:11
+#: src/main/webapp/scripts/app/delivery/deliveries.html:21
+#: src/main/webapp/scripts/app/lot/lots.html:24
+#: src/main/webapp/scripts/app/lot/lots.html:28
+#: src/main/webapp/scripts/app/main/menuLeft.html:35
+#: src/main/webapp/scripts/app/main/menuLeft.html:57
+#: src/main/webapp/scripts/app/project/projectCtrl.js:58
+#: src/main/webapp/scripts/app/train/trains.html:24
+#: src/main/webapp/scripts/app/train/trains.html:28
+msgid "Projets"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/csvMapping/csvMapping.html:74
+#: src/main/webapp/scripts/app/configuration/csvMapping/csvModalEditRule.html:11
+#: src/main/webapp/scripts/app/configuration/mailbox/mailboxEdit.html:58
+#: src/main/webapp/scripts/app/configuration/mapping/mapping.html:91
+#: src/main/webapp/scripts/app/configuration/mapping/modalEditRule.html:11
+msgid "Propriété"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/modals/modalExportCinesCtrl.js:21
+msgid "Publisher"
+msgstr ""
+
+#: src/main/webapp/scripts/app/dashboard/templates/dashboard.html:15
+#: src/main/webapp/scripts/app/dashboard/templates/dashboard.html:44
+msgid "puis choisissez un type de widget parmi ceux proposés."
+msgstr ""
+
+#: src/main/webapp/scripts/app/dashboard/templates/dashboard.html:26
+msgid "quand vous aurez terminé."
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/docDetails.html:22
+#: src/main/webapp/scripts/app/document/docUnitEdit.html:151
+msgid "Radical"
+msgstr ""
+
+#: src/main/webapp/scripts/app/dashboard/templates/widget-fullscreen.html:3
+#: src/main/webapp/scripts/app/dashboard/templates/widget-title.html:2
+msgid "Rafraîchir le widget"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEditCtrl.js:70
+msgid "RDF"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/codeSrvc.js:81
+msgid "Re-livré"
+msgstr ""
+
+#: src/main/webapp/scripts/app/checkconfiguration/configurations.html:57
+#: src/main/webapp/scripts/app/delivery/deliveries.html:104
+#: src/main/webapp/scripts/app/platformconfiguration/ftpconfigurations.html:57
+#: src/main/webapp/scripts/app/platformconfiguration/iaconfigurations.html:57
+#: src/main/webapp/scripts/app/platformconfiguration/sftpconfigurations.html:57
+msgid "Récemment créées"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/z3950/z3950Server.html:33
+#: src/main/webapp/scripts/app/document/docUnits.html:37
+#: src/main/webapp/scripts/app/document/records.html:59
+#: src/main/webapp/scripts/app/library/libraries.html:53
+#: src/main/webapp/scripts/app/lot/lots.html:105
+#: src/main/webapp/scripts/app/project/projects.html:102
+#: src/main/webapp/scripts/app/train/trains.html:91
+#: src/main/webapp/scripts/app/user/roles.html:40
+#: src/main/webapp/scripts/app/user/users.html:92
+msgid "Récemment créés"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/codeSrvc.js:69
+msgid "Réception des documents physiques"
+msgstr ""
+
+#: src/main/webapp/scripts/app/main/menuLeft.html:20
+msgid "Recherche avancée"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEditCtrl.js:158
+msgid "Recherche de doublons"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEdit.html:270
+#: src/main/webapp/scripts/app/document/z3950/modalZ3950Search.html:2
+msgid "Recherche Z39.50"
+msgstr ""
+
+#: src/main/webapp/scripts/app/checkconfiguration/configurations.html:43
+#: src/main/webapp/scripts/app/checks/checks.html:68
+#: src/main/webapp/scripts/app/configuration/mailbox/mailbox.html:50
+#: src/main/webapp/scripts/app/configuration/z3950/z3950Server.html:23
+#: src/main/webapp/scripts/app/delivery/deliveries.html:90
+#: src/main/webapp/scripts/app/document/docUnits.html:23
+#: src/main/webapp/scripts/app/document/docUnitsList.html:61
+#: src/main/webapp/scripts/app/document/modals/selectDocUnit.html:7
+#: src/main/webapp/scripts/app/document/records.html:45
+#: src/main/webapp/scripts/app/document/z3950/modalZ3950Search.html:97
+#: src/main/webapp/scripts/app/help/helpPages.html:41
+#: src/main/webapp/scripts/app/library/libraries.html:39
+#: src/main/webapp/scripts/app/lot/lots.html:91
+#: src/main/webapp/scripts/app/platformconfiguration/ftpconfigurations.html:43
+#: src/main/webapp/scripts/app/platformconfiguration/iaconfigurations.html:43
+#: src/main/webapp/scripts/app/platformconfiguration/sftpconfigurations.html:43
+#: src/main/webapp/scripts/app/project/projects.html:88
+#: src/main/webapp/scripts/app/statistics/projects.html:11
+#: src/main/webapp/scripts/app/train/trains.html:77
+#: src/main/webapp/scripts/app/user/roles.html:29
+#: src/main/webapp/scripts/app/user/users.html:78
+msgid "Rechercher"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEdit.html:245
+msgid "Rechercher des doublons"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEdit.html:246
+msgid "Rechercher des doublons parmi les unités documentaires existantes"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEditCtrl.js:167
+msgid "Recueils factices"
+msgstr ""
+
+#: src/main/webapp/scripts/app/dashboard/templates/widget-title.html:8
+msgid "Réduire le widget"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/appconfiguration.html:64
+msgid "Réglages des contrôles visuels"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/mapping/mapping.html:94
+#: src/main/webapp/scripts/app/configuration/mapping/modalEditRule.html:37
+msgid "Règle"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/mapping/modalEditRule.html:44
+msgid "Règle de mapping"
+msgstr ""
+
+#: src/main/webapp/scripts/app/account/login/login.html:43
+msgid "Réinitialiser le mot de passe"
+msgstr ""
+
+#: src/main/webapp/scripts/app/checkconfiguration/configurations.html:6
+#: src/main/webapp/scripts/app/checks/checks.html:7
+#: src/main/webapp/scripts/app/configuration/mailbox/mailbox.html:7
+#: src/main/webapp/scripts/app/delivery/deliveries.html:7
+#: src/main/webapp/scripts/app/document/docUnits.html:9
+#: src/main/webapp/scripts/app/document/docUnitsList.html:7
+#: src/main/webapp/scripts/app/document/records.html:6
+#: src/main/webapp/scripts/app/library/libraries.html:6
+#: src/main/webapp/scripts/app/lot/lots.html:7
+#: src/main/webapp/scripts/app/platformconfiguration/ftpconfigurations.html:6
+#: src/main/webapp/scripts/app/platformconfiguration/iaconfigurations.html:6
+#: src/main/webapp/scripts/app/platformconfiguration/sftpconfigurations.html:6
+#: src/main/webapp/scripts/app/project/projects.html:7
+#: src/main/webapp/scripts/app/train/trains.html:7
+#: src/main/webapp/scripts/app/user/users.html:6
+msgid "Réinitialiser les filtres de la recherche"
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveryCtrl.js:53
+#: src/main/webapp/scripts/app/delivery/deliveryEditCtrl.js:34
+#: src/main/webapp/scripts/components/message/codeSrvc.js:37
+#: src/main/webapp/scripts/components/message/codeSrvc.js:48
+#: src/main/webapp/scripts/components/message/codeSrvc.js:78
+msgid "Rejeté"
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveryCtrl.js:55
+#: src/main/webapp/scripts/app/delivery/deliveryEditCtrl.js:36
+#: src/main/webapp/scripts/components/message/codeSrvc.js:80
+msgid "Rejeté automatiquement"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/modals/modalExportCinesCtrl.js:29
+msgid "Relation"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/docAllOperationsCtrl.js:47
+msgid "Relations"
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveryCtrl.js:56
+#: src/main/webapp/scripts/app/delivery/deliveryEditCtrl.js:37
+msgid "Relivré"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/modals/createItemInternetArchive.html:66
+msgid "Remplace le type de média si non vide"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEditCtrl.js:31
+msgid "Remplacer l'unité documentaire trouvée par celle du fichier"
+msgstr ""
+
+#: src/main/webapp/scripts/app/platformconfiguration/sftpconfigurationEdit.html:44
+msgid "Répertoire de destination"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/mapping/mapping.html:36
+msgid "Restaurer une version antérieure"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/modals/deleteDocUnitResults.html:12
+msgid "Résultat de la suppression"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/modals/deleteDocUnitResults.html:2
+msgid "Résultats de la suppression"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/docUnitsList.html:160
+#: src/main/webapp/scripts/app/document/docUnitsList.html:172
+msgid "Retirer du lot"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/docUnitsList.html:148
+msgid "Retirer du projet"
+msgstr ""
+
+#: src/main/webapp/scripts/app/project/docs.html:63
+msgid "Retirer l'unité documentaire du projet"
+msgstr ""
+
+#: src/main/webapp/scripts/app/project/docsCtrl.js:43
+msgid "retirer l'unité documentaire sélectionnée du projet"
+msgid_plural "retirer les {{n}} unités documentaires sélectionnées du projet"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/main/webapp/scripts/app/project/docs.html:12
+msgid "Retirer les unités documentaires sélectionnés du projet"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/pageCheck.html:49
+msgid "Retour au document"
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveryCtrl.js:54
+#: src/main/webapp/scripts/app/delivery/deliveryEditCtrl.js:35
+#: src/main/webapp/scripts/components/message/codeSrvc.js:79
+msgid "Retour au prestataire"
+msgstr ""
+
+#: src/main/webapp/scripts/app/project/allOperations.html:6
+msgid "Revenir au lot"
+msgstr ""
+
+#: src/main/webapp/scripts/app/lot/allOperations.html:6
+msgid "Revenir au projet"
+msgstr ""
+
+#: src/main/webapp/scripts/app/train/allOperations.html:6
+msgid "Revenir au Train"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/modals/modalExportCinesCtrl.js:31
+msgid "Rights"
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveryPrevalidate.html:59
+#: src/main/webapp/scripts/app/user/users.html:50
+#: src/main/webapp/scripts/app/user/users.html:53
+msgid "Rôle"
+msgstr ""
+
+#: src/main/webapp/scripts/app/user/user.js:25
+#: src/main/webapp/scripts/app/user/userRoleCtrl.js:7
+msgid "Rôles"
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveryCtrl.js:49
+#: src/main/webapp/scripts/app/delivery/deliveryEditCtrl.js:30
+#: src/main/webapp/scripts/components/message/codeSrvc.js:73
+msgid "Sauvegardé"
+msgstr ""
+
+#: src/main/webapp/scripts/app/account/password/password.html:64
+#: src/main/webapp/scripts/app/configuration/csvMapping/csvMapping.html:36
+#: src/main/webapp/scripts/app/configuration/docPropertyType/docPropertyType.html:29
+#: src/main/webapp/scripts/app/configuration/mapping/mapping.html:47
+#: src/main/webapp/scripts/app/main/password.html:64
+#: src/main/webapp/scripts/components/directives/semEditableBlockHeader/template.html:20
+msgid "Sauvegarder"
+msgstr ""
+
+#: src/main/webapp/scripts/app/dashboard/templates/dashboard.html:18
+msgid "Sauvegarder les modifications"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/record.html:17
+msgid "Sélection de la notice"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/modals/selectDocUnit.html:2
+msgid "Sélectionner une unité documentaire"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/z3950/modalZ3950Search.html:51
+msgid "Serveur"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/z3950/z3950Server.js:18
+msgid "Serveur Z39.50"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/z3950/z3950ServerEditCtrl.js:163
+msgid "Serveur: {{server}}"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/appconfiguration.html:34
+#: src/main/webapp/scripts/app/configuration/z3950/z3950Server.js:9
+#: src/main/webapp/scripts/app/configuration/z3950/z3950ServerCtrl.js:7
+msgid "Serveurs Z39.50"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEdit.html:333
+msgid "Seulement les doublons"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEdit.html:327
+msgid "Seulement les erreurs"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEdit.html:292
+msgid "Si un doublon est trouvé"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEdit.html:298
+msgid "Sinon"
+msgstr ""
+
+#: src/main/webapp/scripts/app/lot/lotEdit.html:116
+#: src/main/webapp/scripts/app/user/userEdit.html:100
+msgid "Société"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/modals/modalExportCinesCtrl.js:27
+msgid "Source"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/util/docUnitBaseService.js:18
+msgid "Sous droits"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/util/docUnitBaseService.js:19
+msgid "Sous droits avec accord de l'auteur"
+msgstr ""
+
+#: src/main/webapp/scripts/app/main/menuLeft.html:54
+msgid "Statistiques"
+msgstr ""
+
+#: src/main/webapp/scripts/app/statistics/statisticsProjectCtrl.js:62
+msgid "Statistiques des projets"
+msgstr ""
+
+#: src/main/webapp/scripts/app/statistics/statistics.js:10
+msgid "Statistiques Projets"
+msgstr ""
+
+#: src/main/webapp/scripts/app/checks/checks.html:16
+#: src/main/webapp/scripts/app/checks/checks.html:21
+#: src/main/webapp/scripts/app/checks/checks.html:92
+#: src/main/webapp/scripts/app/delivery/deliveries.html:45
+#: src/main/webapp/scripts/app/delivery/deliveries.html:49
+#: src/main/webapp/scripts/app/delivery/deliveryEdit.html:102
+#: src/main/webapp/scripts/app/delivery/deliveryEdit.html:50
+#: src/main/webapp/scripts/app/delivery/deliveryPrevalidate.html:20
+#: src/main/webapp/scripts/app/document/docUnitEdit.html:170
+#: src/main/webapp/scripts/app/document/import/importEdit.html:188
+#: src/main/webapp/scripts/app/lot/deliveries.html:7
+#: src/main/webapp/scripts/app/lot/lotEdit.html:144
+#: src/main/webapp/scripts/app/lot/lotEdit.html:90
+#: src/main/webapp/scripts/app/lot/lots.html:50
+#: src/main/webapp/scripts/app/lot/lots.html:54
+#: src/main/webapp/scripts/app/project/lots.html:8
+#: src/main/webapp/scripts/app/project/projectEdit.html:225
+#: src/main/webapp/scripts/app/project/projectEdit.html:262
+#: src/main/webapp/scripts/app/project/projectEdit.html:87
+#: src/main/webapp/scripts/app/project/projects.html:50
+#: src/main/webapp/scripts/app/project/projects.html:54
+#: src/main/webapp/scripts/app/project/trains.html:7
+#: src/main/webapp/scripts/app/statistics/projects.html:33
+#: src/main/webapp/scripts/app/train/trainEdit.html:59
+#: src/main/webapp/scripts/app/train/trains.html:49
+#: src/main/webapp/scripts/app/train/trains.html:53
+msgid "Statut"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEditCtrl.js:44
+msgid "Statut de l'unité documentaire"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/digitalDocumentCtrl.js:60
+#: src/main/webapp/scripts/app/document/digitalDocumentCtrl.js:63
+msgid "Statut du document : {{status}}"
+msgstr ""
+
+#: src/main/webapp/scripts/app/dashboard/widgets/project/projectStateEditWidget.html:10
+#: src/main/webapp/scripts/app/dashboard/widgets/project/projectStateEditWidget.html:6
+msgid "Statut du projet"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/modals/modalExportCinesCtrl.js:19
+msgid "Subject"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/modals/createItemInternetArchive.html:89
+msgid "Sujet"
+msgstr ""
+
+#: src/main/webapp/scripts/components/modal/common/deleteWarning.html:2
+msgid "Suppression"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/modals/modalDeleteDocUnitResultsCtrl.js:28
+msgid "Suppression impossible :"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/modals/modalDeleteDocUnitResultsCtrl.js:22
+msgid "Supprimé avec succès"
+msgstr ""
+
+#: src/main/webapp/scripts/app/checkconfiguration/configurationEdit.html:14
+#: src/main/webapp/scripts/app/configuration/csvMapping/csvMapping.html:50
+#: src/main/webapp/scripts/app/configuration/docPropertyType/docPropertyType.html:37
+#: src/main/webapp/scripts/app/configuration/mailbox/mailboxEdit.html:13
+#: src/main/webapp/scripts/app/configuration/mapping/mapping.html:61
+#: src/main/webapp/scripts/app/configuration/z3950/z3950ServerEdit.html:12
+#: src/main/webapp/scripts/app/dashboard/templates/widget-delete.html:13
+#: src/main/webapp/scripts/app/dashboard/templates/widget-delete.html:2
+#: src/main/webapp/scripts/app/delivery/deliveryEdit.html:26
+#: src/main/webapp/scripts/app/document/docUnitEdit.html:38
+#: src/main/webapp/scripts/app/document/modals/exportCines.html:33
+#: src/main/webapp/scripts/app/document/recordEdit.html:31
+#: src/main/webapp/scripts/app/help/helpPageEdit.html:9
+#: src/main/webapp/scripts/app/library/libraryEdit.html:39
+#: src/main/webapp/scripts/app/lot/lotEdit.html:37
+#: src/main/webapp/scripts/app/platformconfiguration/ftpconfigurationEdit.html:14
+#: src/main/webapp/scripts/app/platformconfiguration/iaconfigurationEdit.html:14
+#: src/main/webapp/scripts/app/platformconfiguration/sftpconfigurationEdit.html:14
+#: src/main/webapp/scripts/app/project/projectEdit.html:39
+#: src/main/webapp/scripts/app/train/trainEdit.html:32
+#: src/main/webapp/scripts/app/user/roleEdit.html:13
+#: src/main/webapp/scripts/app/user/userEdit.html:38
+#: src/main/webapp/scripts/components/directives/semEditableBlockHeader/template.html:6
+#: src/main/webapp/scripts/components/directives/semEditableField/template-checkbox.html:5
+#: src/main/webapp/scripts/components/directives/semEditableField/template-default.html:5
+#: src/main/webapp/scripts/components/directives/semEditableField/template-select.html:5
+#: src/main/webapp/scripts/components/directives/semEditableField/template-select2.html:5
+#: src/main/webapp/scripts/components/directives/semEditableField/template-uiselect.html:5
+#: src/main/webapp/scripts/components/modal/common/deleteWarning.html:9
+msgid "Supprimer"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/mailbox/mailboxEdit.html:74
+msgid "Supprimer cette propriété"
+msgstr ""
+
+#: src/main/webapp/scripts/app/project/projectEdit.html:177
+msgid "Supprimer l'entité du regroupement"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEdit.html:6
+msgid "Supprimer l'import (les unités documentaire non importées seront aussi supprimées)"
+msgstr ""
+
+#: src/main/webapp/scripts/app/lot/docs.html:59
+msgid "Supprimer l'unité documentaire"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/csvMapping/csvMapping.html:93
+#: src/main/webapp/scripts/app/configuration/mapping/mapping.html:126
+msgid "Supprimer la règle"
+msgstr ""
+
+#: src/main/webapp/scripts/components/modal/common/newOpeningDate.html:33
+msgid "Supprimer la tranche"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/relations.html:62
+msgid "Supprimer le lien vers l'unité documentaire"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/relations.html:28
+msgid "Supprimer le lien vers l'unité documentaire parente"
+msgstr ""
+
+#: src/main/webapp/scripts/app/dashboard/templates/widget-title.html:22
+msgid "Supprimer le widget"
+msgstr ""
+
+#: src/main/webapp/scripts/app/lot/docs.html:12
+msgid "Supprimer les unités documentaires sélectionnées"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/modals/createItemInternetArchive.html:151
+msgid "Supprimer un champ personnalisé"
+msgstr ""
+
+#: src/main/webapp/scripts/app/dashboard/dashboard.js:8
+#: src/main/webapp/scripts/app/dashboard/dashboardCtrl.js:8
+#: src/main/webapp/scripts/app/dashboard/templates/dashboard-title.html:14
+msgid "Tableau de bord"
+msgstr ""
+
+#: src/main/webapp/scripts/app/help/helpPageEdit.html:37
+msgid "Tag"
+msgstr ""
+
+#: src/main/webapp/scripts/app/checkconfiguration/configurationEdit.html:44
+msgid "Taux d'échantillonnage"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/digitalDocumentCtrl.js:160
+msgid "Taux d'erreur dépassé par rapport à la taille de l'échantillon considéré"
+msgstr ""
+
+#: src/main/webapp/scripts/app/checkconfiguration/configurationEdit.html:32
+msgid "Taux d'erreurs majeures"
+msgstr ""
+
+#: src/main/webapp/scripts/app/checkconfiguration/configurationEdit.html:38
+msgid "Taux d'erreurs mineures"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/export.html:79
+msgid "Téléchargement aip.xml"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/exportAllOperationsCtrl.js:49
+msgid "Téléchargement du fichier aip.xml"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/exportAllOperationsCtrl.js:57
+msgid "Téléchargement du fichier impossible"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEdit.html:149
+msgid "Télécharger le fichier importé"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEdit.html:106
+msgid "Télécharger les fichiers importés"
+msgstr ""
+
+#: src/main/webapp/scripts/app/library/libraryEdit.html:64
+#: src/main/webapp/scripts/app/user/userEdit.html:80
+msgid "Téléphone"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEditCtrl.js:161
+msgid "Terminé"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/modals/modalExportCinesCtrl.js:17
+msgid "Title"
+msgstr ""
+
+#: src/main/webapp/scripts/app/dashboard/templates/dashboard-edit.html:8
+#: src/main/webapp/scripts/app/dashboard/templates/widget-edit.html:9
+#: src/main/webapp/scripts/app/document/allOperations/record.html:37
+#: src/main/webapp/scripts/app/document/digitalDocument.html:41
+#: src/main/webapp/scripts/app/document/modals/createItemInternetArchive.html:24
+#: src/main/webapp/scripts/app/document/modals/deleteDocUnitResults.html:11
+#: src/main/webapp/scripts/app/document/pageCheck.html:35
+#: src/main/webapp/scripts/app/document/recordEdit.html:46
+#: src/main/webapp/scripts/app/document/z3950/modalZ3950Search.html:13
+#: src/main/webapp/scripts/app/document/z3950/modalZ3950Search.html:52
+#: src/main/webapp/scripts/app/help/helpPageEdit.html:35
+msgid "Titre"
+msgstr ""
+
+#: src/main/webapp/scripts/app/user/roleEdit.html:42
+msgid "Tous les modules"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/docUnitsList.html:77
+#: src/main/webapp/scripts/app/lot/docs.html:19
+#: src/main/webapp/scripts/app/project/docs.html:18
+msgid "Tout cocher"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/docUnitsList.html:81
+#: src/main/webapp/scripts/app/lot/docs.html:22
+#: src/main/webapp/scripts/app/project/docs.html:21
+msgid "Tout décocher"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/docUnitEdit.html:21
+#: src/main/webapp/scripts/app/lot/lotEdit.html:21
+#: src/main/webapp/scripts/app/project/projectEdit.html:20
+#: src/main/webapp/scripts/app/train/trainEdit.html:15
+#: src/main/webapp/scripts/app/user/userEdit.html:21
+msgid "Toutes opérations"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/all_operations.html:5
+msgid "Toutes opérations Unité documentaire"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/docDetails.html:26
+#: src/main/webapp/scripts/app/document/docUnitsList.html:118
+#: src/main/webapp/scripts/app/project/allOperations.html:23
+#: src/main/webapp/scripts/app/train/allOperations.html:9
+msgid "Train"
+msgstr ""
+
+#: src/main/webapp/scripts/app/train/trainEditCtrl.js:230
+msgid "Train {{label}}"
+msgstr ""
+
+#: src/main/webapp/scripts/app/project/projectEdit.html:254
+#: src/main/webapp/scripts/app/train/train.js:16
+#: src/main/webapp/scripts/app/train/train.js:9
+#: src/main/webapp/scripts/app/train/trainCtrl.js:66
+#: src/main/webapp/scripts/components/message/codeSrvc.js:22
+msgid "Trains"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEdit.html:248
+msgid "Traitement des doublons"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/docUnit.html:18
+#: src/main/webapp/scripts/app/document/docUnitEdit.html:105
+#: src/main/webapp/scripts/app/document/modals/modalExportCinesCtrl.js:24
+#: src/main/webapp/scripts/app/help/helpPageEdit.html:20
+#: src/main/webapp/scripts/app/project/lots.html:7
+#: src/main/webapp/scripts/app/project/projectEdit.html:224
+msgid "Type"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEdit.html:77
+msgid "Type d'encodage DC"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEdit.html:32
+msgid "Type d'import"
+msgstr ""
+
+#: src/main/webapp/scripts/app/lot/lotEdit.html:84
+msgid "Type de lot"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/modals/createItemInternetArchive.html:61
+msgid "Type de média"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/modals/createItemInternetArchive.html:64
+msgid "Type de média (personnalisé)"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/z3950/z3950ServerEdit.html:58
+msgid "Type de notice"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/record.html:159
+#: src/main/webapp/scripts/app/document/allOperations/record.html:230
+#: src/main/webapp/scripts/app/document/allOperations/record.html:88
+#: src/main/webapp/scripts/app/document/recordEdit.html:119
+#: src/main/webapp/scripts/app/document/recordEdit.html:188
+#: src/main/webapp/scripts/app/document/recordEdit.html:257
+msgid "Type de propriété"
+msgstr ""
+
+#: src/main/webapp/scripts/app/help/helpPages.html:10
+msgid "Types"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/docPropertyType/docPropertyType.html:10
+msgid "Types de propriété"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/docPropertyType/docPropertyTypeCtrl.js:21
+msgid "Types de propriétés personnalisés"
+msgstr ""
+
+#: src/main/webapp/scripts/app/numahop/common/validationSrvc.js:120
+msgid "Un entier entre 1 et 5 est attendu"
+msgstr ""
+
+#: src/main/webapp/scripts/app/numahop/common/validationSrvc.js:51
+msgid "Un nombre entier est attendu"
+msgstr ""
+
+#: src/main/webapp/scripts/app/numahop/common/validationSrvc.js:81
+msgid "Un nombre entier positif ou nul est attendu"
+msgstr ""
+
+#: src/main/webapp/scripts/app/numahop/common/validationSrvc.js:89
+#: src/main/webapp/scripts/app/numahop/common/validationSrvc.js:97
+msgid "Un nombre positif est attendu"
+msgstr ""
+
+#: src/main/webapp/scripts/app/numahop/common/validationSrvc.js:73
+msgid "Un nombre positif ou nul est attendu"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/erreurSrvc.js:36
+msgid "Un ou plusieurs projets sont rattachés à cette bibliothèque"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/erreurSrvc.js:40
+msgid "Un ou plusieurs utilisateurs sont rattachés à cette bibliothèque"
+msgstr ""
+
+#: src/main/webapp/scripts/components/util/stringTools.js:394
+msgid "Une erreur est survenue lors de l'évaluation de ce champ calculé"
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/messageInterceptor.js:117
+msgid "Une erreur inattendue est survenue :<br/>{{statusText}}.<br/>Vous pouvez recharger la page. Si le problème persiste, contactez votre administrateur."
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/erreurSrvc.js:12
+msgid "Une erreur s'est produite lors de l'enregistrement des modifications"
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveryPrevalidateCtrl.js:94
+msgid "Une livraison est déjà en cours sur ce document, veuillez attendre la fin du traitement."
+msgstr ""
+
+#: src/main/webapp/scripts/components/message/erreurSrvc.js:21
+msgid "Une ou plusieurs unités documentaires sont rattachées à cette bibliothèque"
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveryPrevalidateCtrl.js:95
+msgid "Une relivraison est déjà en cours sur ce document, veuillez attendre la fin du traitement."
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/z3950/z3950ServerEditCtrl.js:20
+msgid "Unimarc"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/csvMapping/csvMapping.html:75
+#: src/main/webapp/scripts/app/configuration/csvMapping/csvModalEditRule.html:17
+#: src/main/webapp/scripts/app/configuration/mapping/mapping.html:92
+#: src/main/webapp/scripts/app/configuration/mapping/modalEditRule.html:17
+msgid "Unité doc."
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/docUnitsList.html:119
+msgid "Unité doc. mère"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/docAllOperationsCtrl.js:22
+#: src/main/webapp/scripts/app/document/docUnitEdit.html:82
+#: src/main/webapp/scripts/app/document/recordEdit.html:61
+msgid "Unité documentaire"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/digitalDocument.html:35
+#: src/main/webapp/scripts/app/document/pageCheck.html:29
+msgid "Unité documentaire :&nbsp;"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/docUnitEditCtrl.js:224
+msgid "Unité documentaire {{pgcnId}}"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/relations.html:5
+msgid "Unité documentaire parente"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/document.js:9
+#: src/main/webapp/scripts/app/document/docUnitCtrl.js:52
+#: src/main/webapp/scripts/app/lot/lots.html:37
+#: src/main/webapp/scripts/app/lot/lots.html:41
+#: src/main/webapp/scripts/app/main/menuLeft.html:12
+#: src/main/webapp/scripts/app/train/trains.html:37
+#: src/main/webapp/scripts/app/train/trains.html:40
+msgid "Unités documentaires"
+msgstr ""
+
+#: src/main/webapp/scripts/app/lot/allOperations.html:15
+#: src/main/webapp/scripts/app/project/allOperations.html:15
+#: src/main/webapp/scripts/app/train/allOperations.html:15
+msgid "Unités Documentaires"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/relations.html:38
+msgid "Unités documentaires filles"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/record.html:49
+#: src/main/webapp/scripts/app/document/recordEdit.html:55
+msgid "URL calames"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/modals/createItemInternetArchive.html:48
+msgid "URL de la licence"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/record.html:41
+#: src/main/webapp/scripts/app/document/recordEdit.html:49
+msgid "URL sigb"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/allOperations/record.html:45
+#: src/main/webapp/scripts/app/document/recordEdit.html:52
+msgid "URL Sudoc"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/z3950/z3950ServerEditCtrl.js:28
+#: src/main/webapp/scripts/app/document/import/importEditCtrl.js:66
+msgid "UTF-8"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEdit.html:129
+#: src/main/webapp/scripts/app/lot/lotEditCtrl.js:27
+#: src/main/webapp/scripts/app/project/projects.html:37
+#: src/main/webapp/scripts/app/project/projects.html:41
+#: src/main/webapp/scripts/app/user/accountCtrl.js:19
+#: src/main/webapp/scripts/app/user/userEditCtrl.js:26
+msgid "Utilisateur"
+msgstr ""
+
+#: src/main/webapp/scripts/app/user/userEditCtrl.js:229
+msgid "Utilisateur {{user}}"
+msgstr ""
+
+#: src/main/webapp/scripts/app/main/menuLeft.html:25
+#: src/main/webapp/scripts/app/main/menuLeft.html:28
+#: src/main/webapp/scripts/app/user/user.js:9
+#: src/main/webapp/scripts/app/user/userCtrl.js:48
+#: src/main/webapp/scripts/components/message/codeSrvc.js:20
+msgid "Utilisateurs"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/mailbox/mailboxEdit.html:59
+#: src/main/webapp/scripts/app/document/allOperations/record.html:163
+#: src/main/webapp/scripts/app/document/allOperations/record.html:234
+#: src/main/webapp/scripts/app/document/allOperations/record.html:92
+#: src/main/webapp/scripts/app/document/recordEdit.html:123
+#: src/main/webapp/scripts/app/document/recordEdit.html:192
+#: src/main/webapp/scripts/app/document/recordEdit.html:261
+msgid "Valeur"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/docUnitEdit.html:62
+msgid "Validation FACILE (Cines)"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEditCtrl.js:159
+msgid "Validation utilisateur"
+msgstr ""
+
+#: src/main/webapp/scripts/app/delivery/deliveryCtrl.js:52
+#: src/main/webapp/scripts/app/delivery/deliveryEditCtrl.js:33
+#: src/main/webapp/scripts/components/message/codeSrvc.js:31
+#: src/main/webapp/scripts/components/message/codeSrvc.js:46
+#: src/main/webapp/scripts/components/message/codeSrvc.js:77
+msgid "Validé"
+msgstr ""
+
+#: src/main/webapp/scripts/components/modal/common/cancelWithComment.html:16
+#: src/main/webapp/scripts/components/modal/common/integrateToProject.html:50
+#: src/main/webapp/scripts/components/modal/common/selectFields.html:24
+msgid "Valider"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/modals/selectDocUnit.html:54
+msgid "Valider la sélection"
+msgstr ""
+
+#: src/main/webapp/scripts/components/document/numahopAutoCheckService.js:27
+msgid "Vérification en cours"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEdit.html:241
+msgid "Vérifier les unités documentaires"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEdit.html:243
+msgid "Vérifier les unités documentaires avant de les importer"
+msgstr ""
+
+#: src/main/webapp/scripts/app/dashboard/widgets/project/projectDetailsWidget.html:1
+#: src/main/webapp/scripts/app/dashboard/widgets/project/projectStateWidget.html:1
+msgid "Veuillez configurer le widget via le bouton de configuration à droite du titre de ce widget."
+msgstr ""
+
+#: src/main/webapp/scripts/components/modal/common/cancelWithComment.html:6
+msgid "Veuillez saisir un commentaire avant d'annuler :"
+msgstr ""
+
+#: src/main/webapp/scripts/components/directives/inputSemnumber/inputSemnumberDirective.js:18
+msgid "Veuillez saisir un nombre"
+msgstr ""
+
+#: src/main/webapp/scripts/components/directives/inputSempercent/directive.js:16
+msgid "Veuillez saisir un pourcentage"
+msgstr ""
+
+#: src/main/webapp/scripts/app/library/libraryEdit.html:136
+#: src/main/webapp/scripts/app/library/libraryEdit.html:138
+#: src/main/webapp/scripts/app/user/userEdit.html:131
+#: src/main/webapp/scripts/app/user/userEdit.html:133
+msgid "Ville"
+msgstr ""
+
+#: src/main/webapp/scripts/app/lot/docs.html:55
+#: src/main/webapp/scripts/app/project/docs.html:58
+#: src/main/webapp/scripts/app/train/docs.html:26
+#: src/main/webapp/scripts/components/directives/numaCustomLink/template.html:1
+#: src/main/webapp/scripts/components/directives/semEditableField/template-default.html:20
+#: src/main/webapp/scripts/components/directives/semEditableField/template-default.html:28
+#: src/main/webapp/scripts/components/directives/semEditableField/template-select.html:17
+msgid "Voir"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEdit.html:372
+#: src/main/webapp/scripts/app/document/import/importEdit.html:407
+msgid "Voir l'unité documentaire"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEdit.html:178
+msgid "Voir le lot"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/importEdit.html:164
+msgid "Voir le projet"
+msgstr ""
+
+#: src/main/webapp/scripts/app/library/libraries.html:18
+msgid "Voir les bibliothèques inactives"
+msgstr ""
+
+#: src/main/webapp/scripts/app/configuration/mailbox/mailbox.html:29
+msgid "Voir les configurations inactives"
+msgstr ""
+
+#: src/main/webapp/scripts/app/lot/lots.html:19
+msgid "Voir les lots inactifs"
+msgstr ""
+
+#: src/main/webapp/scripts/app/library/libraryEdit.html:22
+msgid "Voir les projets"
+msgstr ""
+
+#: src/main/webapp/scripts/app/project/projects.html:19
+msgid "Voir les projets inactifs"
+msgstr ""
+
+#: src/main/webapp/scripts/app/train/trains.html:19
+msgid "Voir les trains inactifs"
+msgstr ""
+
+#: src/main/webapp/scripts/app/library/libraryEdit.html:15
+msgid "Voir les utilisateurs"
+msgstr ""
+
+#: src/main/webapp/scripts/app/user/users.html:20
+msgid "Voir les utilisateurs inactifs"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/docUnitsList.html:46
+#: src/main/webapp/scripts/components/templates/common/filters.html:30
+msgid "Voir uniquement les Unités Documentaires non rattachées"
+msgstr ""
+
+#: src/main/webapp/scripts/app/account/password/password.html:53
+#: src/main/webapp/scripts/app/main/password.html:53
+msgid "Votre confirmation du mot de passe doit comporter au moins 5 caractères"
+msgstr ""
+
+#: src/main/webapp/scripts/app/account/password/password.html:49
+#: src/main/webapp/scripts/app/main/password.html:49
+msgid "Votre confirmation du mot de passe est requis."
+msgstr ""
+
+#: src/main/webapp/scripts/app/account/password/password.html:57
+#: src/main/webapp/scripts/app/main/password.html:57
+msgid "Votre confirmation du mot de passe ne doit pas comporter plus de 50 caractères"
+msgstr ""
+
+#: src/main/webapp/scripts/app/account/login/login.html:19
+msgid "Votre mot de passe"
+msgstr ""
+
+#: src/main/webapp/scripts/app/account/password/password.html:32
+#: src/main/webapp/scripts/app/main/password.html:32
+msgid "Votre mot de passe doit comporter au moins 5 caractères"
+msgstr ""
+
+#: src/main/webapp/scripts/app/account/password/password.html:28
+#: src/main/webapp/scripts/app/main/password.html:28
+msgid "Votre mot de passe est requis."
+msgstr ""
+
+#: src/main/webapp/scripts/app/account/password/password.html:36
+#: src/main/webapp/scripts/app/main/password.html:36
+msgid "Votre mot de passe ne doit pas comporter plus de 50 caractères"
+msgstr ""
+
+#: src/main/webapp/scripts/app/account/login/login.html:14
+#: src/main/webapp/scripts/app/account/login/login.html:34
+msgid "Votre nom d'utilisateur"
+msgstr ""
+
+#: src/main/webapp/scripts/app/dashboard/templates/dashboard.html:35
+msgid ""
+"Votre tableau de bord permet de regrouper les principales informations qui vous seront utiles au\r\n"
+"quotidien. Il est personnalisable en ajoutant des widgets et en les positionnant dans la grille prévue à cet effet."
+msgstr ""
+
+#: src/main/webapp/scripts/components/modal/common/confirmModSub.html:5
+msgid "Vous avez saisi un nombre d’exemplaire à réceptionner supérieur à celui attendu, confirmez-vous cette action ?"
+msgstr ""
+
+#: src/main/webapp/scripts/app/dashboard/templates/dashboard.html:10
+msgid "Vous êtes actuellement en mode édition du tableau de bord. Pour ajouter un widget à votre tableau de bord, cliquez sur"
+msgstr ""
+
+#: src/main/webapp/scripts/app/dashboard/templates/dashboard.html:38
+msgid "Vous n'avez pas encore ajouté de widget à votre tableau de bord. Pour commencer, cliquez sur l'icône"
+msgstr ""
+
+#: src/main/webapp/scripts/app/app.js:206
+msgid "Vous n'avez pas les droits requis pour accéder à cette fonctionnalité"
+msgstr ""
+
+#: src/main/webapp/scripts/app/library/libraryEdit.html:61
+msgid "Website"
+msgstr ""
+
+#: src/main/webapp/scripts/app/document/import/import.html:14
+msgid "Z39.50"
+msgstr ""

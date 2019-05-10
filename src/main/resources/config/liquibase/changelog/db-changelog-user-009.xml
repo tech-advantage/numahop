@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Droit spécifique pour la gestion des fichiers apres archivage -->
+    <changeSet author="progilone" id="pgcn-create-user-9">
+        <sql>
+            INSERT INTO user_authorization(module,identifier,code,label,description,version)
+            VALUES ('ADMINISTRATION','FILES-GEST-HAB0','FILES-GEST-HAB0','Gestion des fichiers après archivage',
+            'Habilitation à la gestion des fichiers après archivage',0)
+        </sql>
+        <sql>
+            INSERT INTO user_role_authorization(user_authorization, role)
+            select 'FILES-GEST-HAB0', role from user_role_authorization where user_authorization = 'RESP-PROJ'
+        </sql>
+        <sql>
+            INSERT INTO user_role_authorization(user_authorization, role)
+            select 'FILES-GEST-HAB0', role from user_role_authorization where user_authorization = 'ADM'
+        </sql>
+        <sql>
+            INSERT INTO user_role_authorization(user_authorization, role)
+            select 'FILES-GEST-HAB0', role from user_role_authorization where user_authorization = 'SUPER-ADM'
+        </sql>
+        
+    </changeSet>
+
+</databaseChangeLog>

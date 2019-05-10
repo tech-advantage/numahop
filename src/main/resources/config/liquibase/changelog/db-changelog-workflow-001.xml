@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Changeset du module Workflow -->
+    <changeSet id="pgcn-create-workflow" author="progilone">
+
+        <!-- Workflow Group -->
+        <createTable tableName="workflow_group">
+            <column name="identifier" type="varchar(191)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(191)">
+                <constraints unique="true" uniqueConstraintName="uniq_workflow_group_name"/>
+            </column>
+            <column name="library" type="varchar(191)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="text"/>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="varchar(255)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(255)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <!-- Clés étrangère -->
+        <addForeignKeyConstraint baseTableName="workflow_group" baseColumnNames="library" constraintName="fk_workflow_group_library"
+                                 referencedTableName="lib_library" referencedColumnNames="identifier"/>
+        <createIndex indexName="idx_workflow_group_name"
+            tableName="workflow_group" unique="true">
+            <column name="name" type="varchar(191)" />
+        </createIndex>
+        <!-- Users liés aux groupes -->
+        <createTable tableName="workflow_group_user">
+            <column name="workflow_group" type="varchar(191)"/>
+            <column name="workflow_user" type="varchar(191)"/>
+        </createTable>
+        <addPrimaryKey tableName="workflow_group_user" columnNames="workflow_group, workflow_user"/>
+        <!-- Clés étrangères workflow_group_user -->
+        <addForeignKeyConstraint baseTableName="workflow_group_user" baseColumnNames="workflow_group" constraintName="fk_workflow_group_user_group"
+                                 referencedTableName="workflow_group" referencedColumnNames="identifier"/>
+        <addForeignKeyConstraint baseTableName="workflow_group_user" baseColumnNames="workflow_user" constraintName="fk_workflow_group_user_user"
+                                 referencedTableName="user_user" referencedColumnNames="identifier"/>
+        
+        
+        <!-- Workflow Model -->
+        <createTable tableName="workflow_model">
+            <column name="identifier" type="varchar(191)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(191)">
+                <constraints unique="true" uniqueConstraintName="uniq_workflow_model_name"/>
+            </column>
+            <column name="library" type="varchar(191)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="text"/>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="varchar(255)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(255)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <!-- Clés étrangère -->
+        <addForeignKeyConstraint baseTableName="workflow_model" baseColumnNames="library" constraintName="fk_workflow_model_library"
+                                 referencedTableName="lib_library" referencedColumnNames="identifier"/>
+        
+        
+        <!-- Workflow Model State -->
+        <createTable tableName="workflow_model_state">
+            <column name="identifier" type="varchar(191)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="key" type="varchar(255)">
+            </column>
+            <column name="group" type="varchar(191)">
+            </column>
+            <column name="model" type="varchar(191)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="limit_duration" type="BIGINT"/>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="varchar(255)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(255)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <!-- Clés étrangère -->
+        <addForeignKeyConstraint baseTableName="workflow_model_state" baseColumnNames="group" constraintName="fk_workflow_model_state_group"
+                                 referencedTableName="workflow_group" referencedColumnNames="identifier"/>
+        <addForeignKeyConstraint baseTableName="workflow_model_state" baseColumnNames="model" constraintName="fk_workflow_model_state_model"
+                                 referencedTableName="workflow_model" referencedColumnNames="identifier"/>
+        
+        
+        
+        
+
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,35 @@
+<div class="modal-header">
+    <h3 class="modal-title" translate>Sélectionner un fichier</h3>
+</div>
+<div class="modal-body">
+    <div class="row">
+        <!-- Sélection du fichier -->
+        <div class="row vertical-align">
+            <div class="col-xs-4 text-right">
+                <label for="importFiles0" translate>Fichier à téléverser</label><br/>
+            </div>
+            <div class="col-xs-12 col-lg-4">
+                <input type="file" id="importFiles0" ng-attr-accept="{{mainCtrl.accept}}"
+                       onchange="angular.element(this).scope().mainCtrl.setFiles(this)" />
+            </div>
+        </div>
+        <!-- Liste de fichiers -->
+        <div class="row vertical-align" ng-show="mainCtrl.files.length">
+            <div class="col-xs-4 text-right">
+                <label translate>Fichiers sélectionnés</label>
+            </div>
+            <div class="col-xs-8">
+                <div ng-repeat="file in mainCtrl.files" ng-switch="file.size > 1048576" style="margin-bottom: 3px">
+                    {{ ::file.webkitRelativePath || file.name}}
+                    <span ng-switch-when="true">({{ ::file.size / 1048576 | number:2 }} MB)</span>
+                    <span ng-switch-default>({{ ::file.size / 1024 | number:2 }} kB)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-sem4" ng-click="mainCtrl.cancel()" translate>Annuler</button>
+    <button type="button" class="btn btn-sem2" ng-click="mainCtrl.ok()" 
+            ng-disabled="!mainCtrl.files.length" translate>Téléverser</button>
+</div>

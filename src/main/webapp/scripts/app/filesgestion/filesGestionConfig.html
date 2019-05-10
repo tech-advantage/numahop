@@ -1,0 +1,21 @@
+<div class="row layout-columns">
+    <div class="col-sm-4 col-lg-3 col-layout-columns">
+        <div class="panel panel-column-1">
+            <div class="panel-heading">
+                <span translate>Gestion des fichiers après archivage</span>
+            </div>
+            <div class="panel-body">
+                <div class="filter-block">
+                    <div class="filter-title">{{::'Bibliothèque' | translate}}</div>
+                    <div class="filter-element">
+                        <div class="list" ng-repeat="library in options.libraries | orderBy:'name'" ng-repeat-end>
+                        <a ng-click="selectLibrary(library)" ng-class="{'active': library === selectedLibrary}">
+                            <span>{{ library.name }}</span>
+                        </a>
+                    </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+    <ng-include src="configurationInclude"></ng-include>
+</div>

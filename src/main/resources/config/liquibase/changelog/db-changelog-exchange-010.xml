@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="pgcn-create-exchange-010" author="progilone">
+
+        <sql>UPDATE exc_import_report SET type = 'SIMPLE'</sql>
+
+        <renameColumn tableName="exc_import_report" oldColumnName="mapping_perio" newColumnName="mapping_children" columnDataType="varchar(191)"/>
+
+        <addColumn tableName="exc_import_report">
+            <column name="add_mapping" type="varchar(255)"/>
+            <column name="parent" type="varchar(191)"/>
+            <column name="join_expression" type="text"/>
+        </addColumn>
+
+        <addForeignKeyConstraint baseTableName="exc_import_report" baseColumnNames="parent" constraintName="fk_exc_import_report_parent"
+                                 referencedTableName="exc_import_report" referencedColumnNames="identifier"/>
+        <createIndex tableName="exc_import_report" indexName="idx_exc_import_report_parent">
+            <column name="parent"/>
+        </createIndex>
+
+        <addColumn tableName="exc_doc_unit">
+            <column name="parent_key" type="varchar(191)"/>
+        </addColumn>
+
+        <createIndex tableName="exc_doc_unit" indexName="idx_exc_doc_unit_report_parent">
+            <column name="report"/>
+            <column name="parent_key"/>
+        </createIndex>
+
+    </changeSet>
+</databaseChangeLog>

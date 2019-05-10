@@ -1,0 +1,10 @@
+<div class="filter-block" ng-controller="InitialFilterCtrl">
+	<div class="filter-title">{{::'Initiales' | translate}} <span ng-click="unfilterInitial()" ng-show="filters.initiale"
+ 		class="glyphicon syrtis-icon-champ-delete"></span></div>
+	<div class="filter-element filter-initiale">
+ 		<span ng-repeat="letter in letters" class="letter">
+ 			<a ng-click="filterInitial(letter)" ng-class="{active: filters.initiale === letter}">{{::letter}}</a>
+		</span>
+ 		<a ng-click="filterInitial('OTHER')" ng-class="{active: filters.initiale === 'OTHER'}">{{::'Autre' | translate}}</a>
+ 	</div>
+</div>

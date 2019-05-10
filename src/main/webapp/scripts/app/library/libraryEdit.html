@@ -1,0 +1,183 @@
+<div class="col-sm-8 col-sm-offset-4 col-layout-columns" ng-controller="LibraryEditCtrl">
+    <div class="panel panel-column-3">
+        <div class="panel-heading">
+            <div class="pull-right">
+                <button type="button" class="btn btn-sem2 btn-xs" ng-click="libraryForm.$show()" ng-disabled="!library || !library.identifier"
+                    uib-tooltip="{{::'Modifier' | translate}}" ng-show="!libraryForm.$visible && loaded" sem-roles-allowed="LIB_HAB2">
+                    <span class="glyphicon-regular edit"></span>
+                </button>
+                <button type="button" class="btn btn-sem2 btn-xs" ng-click="goToAllUsers()" ng-disabled="!library || !library.identifier"
+                    uib-tooltip="{{::'Voir les utilisateurs' | translate}}" ng-show="!libraryForm.$visible && loaded">
+                    <span class="glyphicon-regular user"></span>
+                </button>
+                <button type="button" class="btn btn-sem2 btn-xs" ng-click="goToAllProjects()" ng-disabled="!library || !library.identifier"
+                    uib-tooltip="{{::'Voir les projets' | translate}}" ng-show="!libraryForm.$visible && loaded">
+                    <span class="glyphicon syrtis-icon-handshake"></span>
+                </button>
+
+                <div class="btn-group" sem-roles-allowed="LIB_HAB2" ng-show="!libraryForm.$visible && loaded" uib-dropdown
+                    dropdown-append-to-body>
+                    <button type="button" class="btn btn-sem2 btn-xs dropdown-toggle pull-right" ng-disabled="!library || !library.identifier"
+                        uib-tooltip="{{::'Autres actions' | translate}}" uib-dropdown-toggle sem-roles-allowed="LIB_HAB2">
+                        <span class="glyphicon-halflings glyphicon-align-justify"></span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-right" role="menu" uib-dropdown-menu>
+                        <li ng-class="{ 'disabled': !loaded || !library || !library.identifier }" ng-show="!libraryForm.$visible" sem-roles-allowed="LIB_HAB3">
+                            <a ng-click="!(!loaded || !library || !library.identifier) && delete(library)">
+                                <span class="glyphicon-halflings glyphicon-trash"></span> {{ ::'Supprimer' | translate }}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <h5 translate>Fiche</h5>
+        </div>
+        <div class="panel-body" id="libraryDetails">
+            <form editable-form name="libraryForm" onaftersave="saveLibrary(library)" ng-init="formRO = !isAuthorized([userRoles.LIB_HAB1, userRoles.LIB_HAB2])"
+                ng-show="loaded">
+
+                <numa-editable-field title="{{::'Nom' | translate}}" placeholder="{{::'Nom' | translate}}" form="libraryForm" model="library.name"
+                    numa-readonly="formRO" errors="{{ errors.label }}" onbeforesave="validation.required($data)" mandatory="true"></numa-editable-field>
+
+                <!-- <numa-editable-field title="{{::'Institution' | translate}}" placeholder="{{::'Institution' | translate}}" type="select" form="libraryForm" model="library.institution"
+                config="{ display: 'value', query:'key as value for (key, value) in $ctrl.config.data', data: options.institution }"
+                 numa-readonly="formRO" errors="{{ errors.institution }}" onbeforesave="validation.required($data)"></numa-editable-field> -->
+                    <numa-editable-field title="{{::'Website' | translate}}" placeholder="{{::'Website' | translate}}" type="url"
+                    form="libraryForm" model="library.website" numa-readonly="formRO" errors="{{ errors.website }}"> </numa-editable-field>
+
+                    <numa-editable-field title="{{::'Téléphone' | translate}}" placeholder="{{::'Téléphone' | translate}}"
+                    form="libraryForm" model="library.phoneNumber" numa-readonly="formRO" errors="{{ errors.phoneNumber }}"> </numa-editable-field>
+
+                    <numa-editable-field title="{{::'Courriel' | translate}}" placeholder="{{::'Courriel' | translate}}" type="mail"
+                    form="libraryForm" model="library.email" numa-readonly="formRO" errors="{{ errors.email }}"> </numa-editable-field>
+
+                    <numa-editable-field title="{{::'Préfixe' | translate}}" placeholder="{{::'Préfixe' | translate}}"
+                    form="libraryForm" model="library.prefix" numa-readonly="formRO" errors="{{ errors.prefix }}"> </numa-editable-field>
+
+                    <numa-editable-field title="{{::'Configuration FTP' | translate}}" type="select" form="libraryForm" 
+                    model="library.activeFTPConfiguration" numa-readonly="formRO" errors="{{ errors.activeFTPConfiguration }}"
+                    config="{ data: options.ftp,
+                    display: 'label',
+                    query: 'o.label for o in $ctrl.config.data track by o.identifier'}"
+                    link="{ type: 'ftpConfiguration', parameters: {'id': library.activeFTPConfiguration.identifier} }"> </numa-editable-field>
+
+                    <numa-editable-field title="{{::'Identifiant service versant Cines' | translate}}"
+                    form="libraryForm" model="library.cinesService" numa-readonly="formRO" errors="{{ errors.cinesService }}"> </numa-editable-field>
+                    
+                    <numa-editable-field title="{{::'Configuration contrôles' | translate}}" type="select" form="libraryForm" 
+                    model="library.activeCheckConfiguration" numa-readonly="formRO" errors="{{ errors.activeCheckConfiguration }}"
+                    config="{ data: options.check,
+                    display: 'label',
+                    query: 'o.label for o in $ctrl.config.data track by o.identifier'}"
+                    link="{ type: 'checkConfiguration', parameters: {'id': library.activeCheckConfiguration.identifier} }"> </numa-editable-field>
+                    
+                    <numa-editable-field title="{{::'Configuration langages ocr' | translate}}" type="select" form="libraryForm" 
+                    model="library.activeOcrLangConfiguration" numa-readonly="formRO" errors="{{ errors.activeOcrLangConfiguration }}"
+                    config="{ data: options.ocrLang,
+                    display: 'label',
+                    query: 'o.label for o in $ctrl.config.data track by o.identifier'}"
+                    link="{ type: 'ocrlangConfiguration', parameters: {'id': library.activeOcrLangConfiguration.identifier} }"> </numa-editable-field>
+                    
+                    <numa-editable-field title="{{::'Configuration format images' | translate}}" type="select" form="libraryForm" 
+                    model="library.activeFormatConfiguration" numa-readonly="formRO" errors="{{ errors.activeViewsFormatConfiguration }}"
+                    config="{ data: options.format,
+                    display: 'label',
+                    query: 'o.label for o in $ctrl.config.data track by o.identifier'}"
+                    link="{ type: 'formatConfiguration', parameters: {'id': library.activeFormatConfiguration.identifier} }"> </numa-editable-field>
+
+                    <numa-editable-field title="{{::'Actif' | translate}}" type="radiolist" form="libraryForm" 
+                    model="library.active" numa-readonly="formRO" errors="{{ errors.active }}"
+                    config="{ data: options.boolean, displayFn: displayBoolean, 
+                    query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }" > </numa-editable-field>
+
+                    <numa-editable-field title="{{::'Profil par défaut' | translate}}" type="select" form="libraryForm" 
+                    model="library.defaultRole" numa-readonly="formRO" errors="{{ errors.defaultRole }}"
+                    config="{ data: options.role,
+                    display: 'label',
+                    query: 'o.label for o in $ctrl.config.data track by o.identifier'}"
+                    link="{ type: 'role', parameters: {'id': library.defaultRole.identifier} }"> </numa-editable-field>
+
+                    <numa-editable-field title="{{::'Institution' | translate}}" placeholder="{{::'Institution' | translate}}"
+                    form="libraryForm" model="library.institution" numa-readonly="formRO" errors="{{ errors.institution }}"> </numa-editable-field>
+
+                <!-- Adresses -->
+                <div class="formBlock">
+                    <div class="formBlockTitle">
+                        <span translate>Adresse</span>
+                    </div>
+                    <div class="formBlockContent">
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <numa-editable-field title="{{::'Appartement, escalier, étage' | translate}}" placeholder="{{::'Appartement, escalier, étage' | translate}}"
+                                form="libraryForm" model="library.address.address2" numa-readonly="formRO" errors="{{ errors.address.address2 }}"> </numa-editable-field>
+                                <numa-editable-field title="{{::'Bâtiment, résidence' | translate}}" placeholder="{{::'Bâtiment, résidence' | translate}}"
+                                form="libraryForm" model="library.address.address3" numa-readonly="formRO" errors="{{ errors.address.address3 }}"> </numa-editable-field>
+                                <numa-editable-field title="{{::'Numéro et nom de la voie' | translate}}" placeholder="{{::'Numéro et nom de la voie' | translate}}"
+                                form="libraryForm" model="library.address.address1" numa-readonly="formRO" errors="{{ errors.address.address1 }}"> </numa-editable-field>
+                                <numa-editable-field title="{{::'Complément d\'adresse' | translate}}" placeholder="{{::'Complément d\'adresse' | translate}}"
+                                form="libraryForm" model="library.address.complement" numa-readonly="formRO" errors="{{ errors.address.complement }}"> </numa-editable-field>
+                                <div class="row vertical-align">
+                                    <div class="col-xs-12">
+                                        <numa-editable-field title="{{::'Code postal' | translate}}" placeholder="{{::'Code postal' | translate}}"
+                                        form="libraryForm" model="library.address.postcode" numa-readonly="formRO" errors="{{ errors.address.postcode }}"> </numa-editable-field>
+                                        <numa-editable-field title="{{::'Ville' | translate}}" placeholder="{{::'Ville' | translate}}"
+                                        form="libraryForm" model="library.address.city" numa-readonly="formRO" errors="{{ errors.address.city }}"> </numa-editable-field>
+                                    </div>
+                                </div>
+                                <numa-editable-field title="{{::'Pays' | translate}}" type="text" model="library.address.country" onaftersave="onaftersave"
+                                    e-placeholder="{{::'Pays' | translate}}" numa-readonly="formRO"></numa-editable-field>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Logo -->
+                <div class="formBlock" ng-if="loaded && library.identifier" ng-hide="libraryForm.$visible">
+                    <div class="formBlockTitle">
+                        <span translate>Logo</span>
+                    </div>
+                    <div class="formBlockContent">
+                        <div class="row" ng-if="hasLogo">
+                            <div class="col-xs-12">
+                                <div class="thumbnail text-center">
+                                    <div style="min-height: 138px">
+                                        <a ng-href="/api/rest/library/{{::library.identifier}}?logo=true" download>
+                                            <img class="img-thumbnail" ng-src="{{_library_thumbnail}}"/>
+                                        </a>
+                                    </div>
+                                    <button type="button" class="btn btn-sem3 btn-xs" ng-click="deleteLogo(library)" sem-roles-allowed="LIB_HAB1, LIB_HAB2">
+                                        <span class="glyphicon-halflings glyphicon-trash"></span> Supprimer le logo
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" sem-roles-allowed="LIB_HAB1, LIB_HAB2">
+                            <div class="col-xs-12 form-inline">
+                                <div class="form-group">
+                                    <label for="importFiles0"><i translate>Changer le logo: </i></label>
+                                </div>
+                                <div class="form-group">
+                                    <input type="file" id="importFiles0" accept="image/gif,image/jpeg,image/png" onchange="angular.element(this).scope().setLogo(this)" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center column-bottom column-6 margin-t10" ng-show="libraryForm.$visible">
+                    <div class="column-bottom-button">
+                        <!-- Création / Modification -->
+                        <div class="btn-group">
+                            <button type="button" ng-disabled="libraryForm.$waiting" class="btn btn-sem4" ng-click="cancel()">
+                                <span class="glyphicon-regular unshare"></span> {{::'Annuler' | translate}}
+                            </button>
+                            <button type="submit" class="btn btn-sem2" sem-roles-allowed="LIB_HAB1, LIB_HAB2">
+                                <span class="glyphicon-regular floppy-save"></span> {{::'Enregistrer' | translate}}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

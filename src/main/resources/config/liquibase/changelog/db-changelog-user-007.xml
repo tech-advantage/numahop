@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Constats d'état: droit d'administration supplémentaire -->
+    <changeSet author="progilone" id="pgcn-create-user-7">
+        <sql>
+            INSERT INTO user_authorization(module,identifier,code,label,description,version)
+            VALUES ('ADMINISTRATION','DOC-UNIT-HAB5','DOC-UNIT-HAB5','Administration des propriétés personnalisées','Habilitation à l''administration des propriétés personnalisées',0)
+        </sql>
+        <sql>
+            INSERT INTO user_role_authorization(user_authorization, role)
+            select 'DOC-UNIT-HAB5', role from user_role_authorization where user_authorization='DOC-UNIT-HAB2'
+        </sql>
+        <sql>UPDATE user_authorization SET description='Habilitation à la gestion des unités documentaires : modification' WHERE identifier='DOC-UNIT-HAB2'</sql>
+        <sql>UPDATE user_authorization SET description='Habilitation à la gestion des livraisons: visualisation' WHERE identifier='DEL-HAB0'</sql>
+    </changeSet>
+
+</databaseChangeLog>

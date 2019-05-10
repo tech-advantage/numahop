@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    
+    <!-- Mise en place configuration OMEKA -->
+    <changeSet id="pgcn-create-administration-008" author="progilone">
+        
+        <createTable tableName="conf_omeka">
+            <column name="identifier" type="varchar(191)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="label" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="library" type="varchar(191)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="storage_server" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="active" type="boolean" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="varchar(255)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(255)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- Clés étrangères conf_omeka -->
+        <addForeignKeyConstraint baseTableName="conf_omeka" baseColumnNames="library" constraintName="fk_conf_omeka_library"
+                                 referencedTableName="lib_library" referencedColumnNames="identifier"/>
+
+        <!-- Index conf_omeka -->
+        <createIndex tableName="conf_omeka" indexName="idx_conf_omeka_library">
+            <column name="library"/>
+        </createIndex>
+        
+        
+        <createTable tableName="conf_lists_omeka">
+            <column name="identifier" type="varchar(191)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="conf_omeka" type="varchar(191)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="list_type" type="varchar(191)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="varchar(255)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(255)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+
+        <addForeignKeyConstraint baseTableName="conf_lists_omeka" baseColumnNames="conf_omeka" constraintName="fk_conf_lists_omeka"
+                                 referencedTableName="conf_omeka"
+                                 referencedColumnNames="identifier"/>
+        
+        <addColumn tableName="proj_project">
+            <column name="collection_omeka" type="varchar(191)"/>
+            <column name="items_omeka" type="varchar(191)"/>
+        </addColumn>
+        <addColumn tableName="lot_lot">
+            <column name="collection_omeka" type="varchar(191)"/>
+            <column name="items_omeka" type="varchar(191)"/>
+        </addColumn>
+        <addColumn tableName="doc_unit">
+            <column name="collection_omeka" type="varchar(191)"/>
+            <column name="items_omeka" type="varchar(191)"/>
+        </addColumn>
+        
+        <addForeignKeyConstraint baseTableName="proj_project" baseColumnNames="collection_omeka"
+                                 constraintName="fk_proj_coll_omeka"
+                                 referencedTableName="conf_lists_omeka"
+                                 referencedColumnNames="identifier"/>
+        <addForeignKeyConstraint baseTableName="proj_project" baseColumnNames="items_omeka"
+                                 constraintName="fk_proj_items_omeka"
+                                 referencedTableName="conf_lists_omeka"
+                                 referencedColumnNames="identifier"/>
+                                 
+        <addForeignKeyConstraint baseTableName="lot_lot" baseColumnNames="collection_omeka"
+                                 constraintName="fk_lot_coll_omeka"
+                                 referencedTableName="conf_lists_omeka"
+                                 referencedColumnNames="identifier"/>
+        <addForeignKeyConstraint baseTableName="lot_lot" baseColumnNames="items_omeka"
+                                 constraintName="fk_lot_items_omeka"
+                                 referencedTableName="conf_lists_omeka"
+                                 referencedColumnNames="identifier"/>
+                                 
+        <addForeignKeyConstraint baseTableName="doc_unit" baseColumnNames="collection_omeka"
+                                 constraintName="fk_doc_unit_coll_omeka"
+                                 referencedTableName="conf_lists_omeka"
+                                 referencedColumnNames="identifier"/>
+        <addForeignKeyConstraint baseTableName="doc_unit" baseColumnNames="items_omeka"
+                                 constraintName="fk_doc_unit_items_omeka"
+                                 referencedTableName="conf_lists_omeka"
+                                 referencedColumnNames="identifier"/>
+                                 
+        <!-- Droits supplémentaires OMEKA -->
+        <loadData encoding="UTF-8" separator=";"
+                  file="config/liquibase/numahop/user/authorization-omeka.csv"
+                  tableName="user_authorization"/>
+    </changeSet>
+</databaseChangeLog>

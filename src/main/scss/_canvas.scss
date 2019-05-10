@@ -1,0 +1,34 @@
+#workflowModelEditStates canvas#workflowModelCanvas {
+    border: 3px solid #ccc;
+    border-radius: 5px;
+}
+
+#workflowModelEditStates {
+    margin-top: 50px;
+}
+
+#workflowModelEditStates button {
+    margin: 10px 20px;
+    width: 150px;
+    white-space: normal;
+}
+
+#workflowModelEditStates button div {
+    height: 100%;
+}
+
+#workflowModelEditStates .btn-model-red {
+    background-color: #FF0000;
+}
+#workflowModelEditStates .btn-model-green {
+    background-color: #2E8B57;
+}
+#workflowModelEditStates .btn-model-orange {
+    background-color: #FFA500;
+}
+#workflowModelEditStates .btn-model-blue {
+    background-color: #87CEFA;
+}
+#workflowModelEditStates .btn-model-grey {
+    background-color: #D3D3D3;
+}
