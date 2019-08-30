@@ -5,7 +5,7 @@
         .controller('StatisticsDocPublishedCtrl', StatisticsDocPublishedCtrl);
 
     function StatisticsDocPublishedCtrl($q, codeSrvc, HistorySrvc, gettextCatalog, LibrarySrvc,
-        NumaHopInitializationSrvc, NumahopStorageService, Principal, ProjectSrvc, StatisticsSrvc, USER_ROLES) {
+        NumaHopInitializationSrvc, NumahopStorageService, Principal, ProjectSrvc, LotSrvc, StatisticsSrvc, USER_ROLES) {
 
         var statCtrl = this;
 
@@ -129,6 +129,35 @@
                 multiple: true,
                 'allow-clear': true
             },
+            lots: {
+                text: "label",
+                placeholder: gettextCatalog.getString("Lot"),
+                trackby: "identifier",
+                refresh: function ($select) {
+                    statCtrl.lotsSelect = $select;
+                    // Gestion du cas où la liste est réinitialisée manuellement (search est indéfini)
+                    if (angular.isUndefined($select.search)) {
+                        return $q.when([]);
+                    }
+                    var searchParams = {
+                        page: 0,
+                        search: $select.search,
+                        active: true
+                    };
+                    if (statCtrl.filters.project) {
+                        searchParams["projects"] = _.pluck(statCtrl.filters.project, "identifier");
+                    }
+                    return LotSrvc.search(searchParams).$promise
+                        .then(function (lots) {
+                            return _.map(lots.content, function (lot) {
+                                return _.pick(lot, "identifier", "label");
+                            });
+                        });
+                },
+                'refresh-delay': 300,
+                'allow-clear': true,
+                multiple: true
+            },
             types: {
                 text: "label",
                 placeholder: gettextCatalog.getString("Type de document"),
@@ -186,6 +215,7 @@
 
             statCtrl.filters.library = [];
             statCtrl.filters.project = [];
+            statCtrl.filters.lot = [];
             statCtrl.filters.collection = [];
             statCtrl.filters.type = [];
             delete statCtrl.filters.publishedFrom;
@@ -235,6 +265,7 @@
                 size: statCtrl.pagination.size,
                 library: _.pluck(statCtrl.filters.library, "identifier"),
                 project: _.pluck(statCtrl.filters.project, "identifier"),
+                lot: _.pluck(statCtrl.filters.lot, "identifier"),
                 type: _.pluck(statCtrl.filters.type, "identifier"),
                 collection: _.pluck(statCtrl.filters.collection, "identifier"),
                 from: statCtrl.filters.publishedFrom,

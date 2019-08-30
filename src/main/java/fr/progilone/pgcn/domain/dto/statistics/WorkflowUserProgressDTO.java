@@ -1,17 +1,17 @@
 package fr.progilone.pgcn.domain.dto.statistics;
 
+import javax.annotation.Nullable;
+
 import com.google.common.collect.Ordering;
 import com.opencsv.bean.CsvBindByName;
-
-import javax.annotation.Nullable;
 
 public class WorkflowUserProgressDTO implements Comparable<WorkflowUserProgressDTO> {
 
     private static final Ordering<WorkflowUserProgressDTO> orderDto;
 
     static {
-        Ordering<WorkflowUserProgressDTO> orderLib = Ordering.natural().nullsFirst().onResultOf(WorkflowUserProgressDTO::getLibraryName);
-        Ordering<WorkflowUserProgressDTO> orderUser = Ordering.natural().nullsFirst().onResultOf(WorkflowUserProgressDTO::getUserFullName);
+        final Ordering<WorkflowUserProgressDTO> orderLib = Ordering.natural().nullsFirst().onResultOf(WorkflowUserProgressDTO::getLibraryName);
+        final Ordering<WorkflowUserProgressDTO> orderUser = Ordering.natural().nullsFirst().onResultOf(WorkflowUserProgressDTO::getUserFullName);
         orderDto = orderLib.compound(orderUser);
     }
 
@@ -21,7 +21,7 @@ public class WorkflowUserProgressDTO implements Comparable<WorkflowUserProgressD
     @CsvBindByName(column = "1. Bibliothèque")
     private String libraryName;
 
-    /* Utilisatur */
+    /* Utilisateur */
     private String userIdentifier;
 
     @CsvBindByName(column = "2. Login")
@@ -35,6 +35,13 @@ public class WorkflowUserProgressDTO implements Comparable<WorkflowUserProgressD
      */
     @CsvBindByName(column = "4. Nombre d'UD")
     private long nbDocUnit;
+    
+    @CsvBindByName(column = "4.a UD validées")
+    private long nbValidatedDocUnit;
+    
+    @CsvBindByName(column = "4.b UD rejetées")
+    private long nbRejectedDocUnit;
+    
 
     /**
      * Nombre moyen de pages
@@ -47,6 +54,13 @@ public class WorkflowUserProgressDTO implements Comparable<WorkflowUserProgressD
      */
     @CsvBindByName(column = "6. Délai moyen de contrôle")
     private long avgDuration;
+    
+    
+    private long nbPreValidatedDocUnit;
+    
+    private long nbPreRejectedDocUnit;
+    
+    
 
     public String getLibraryIdentifier() {
         return libraryIdentifier;
@@ -96,6 +110,22 @@ public class WorkflowUserProgressDTO implements Comparable<WorkflowUserProgressD
         this.nbDocUnit = nbDocUnit;
     }
 
+    public long getNbValidatedDocUnit() {
+        return nbValidatedDocUnit;
+    }
+
+    public void setNbValidatedDocUnit(final long nbValidatedDocUnit) {
+        this.nbValidatedDocUnit = nbValidatedDocUnit;
+    }
+
+    public long getNbRejectedDocUnit() {
+        return nbRejectedDocUnit;
+    }
+
+    public void setNbRejectedDocUnit(final long nbRejectedDocUnit) {
+        this.nbRejectedDocUnit = nbRejectedDocUnit;
+    }
+
     public int getAvgTotalPages() {
         return avgTotalPages;
     }
@@ -110,6 +140,22 @@ public class WorkflowUserProgressDTO implements Comparable<WorkflowUserProgressD
 
     public void setAvgDuration(final long avgDuration) {
         this.avgDuration = avgDuration;
+    }
+
+    public long getNbPreValidatedDocUnit() {
+        return nbPreValidatedDocUnit;
+    }
+
+    public void setNbPreValidatedDocUnit(final long nbPreValidatedDocUnit) {
+        this.nbPreValidatedDocUnit = nbPreValidatedDocUnit;
+    }
+
+    public long getNbPreRejectedDocUnit() {
+        return nbPreRejectedDocUnit;
+    }
+
+    public void setNbPreRejectedDocUnit(final long nbPreRejectedDocUnit) {
+        this.nbPreRejectedDocUnit = nbPreRejectedDocUnit;
     }
 
     @Override

@@ -31,8 +31,11 @@ import fr.progilone.pgcn.domain.workflow.WorkflowStateStatus;
 import fr.progilone.pgcn.repository.workflow.DocUnitStateRepository;
 import fr.progilone.pgcn.repository.workflow.DocUnitWorkflowRepository;
 import fr.progilone.pgcn.service.document.BibliographicRecordService;
+import fr.progilone.pgcn.service.document.DocCheckHistoryService;
 import fr.progilone.pgcn.service.document.DocUnitService;
 import fr.progilone.pgcn.service.document.conditionreport.ConditionReportService;
+import fr.progilone.pgcn.service.lot.LotService;
+import fr.progilone.pgcn.service.project.ProjectService;
 import fr.progilone.pgcn.service.user.UserService;
 import fr.progilone.pgcn.service.util.NumahopCollectors;
 
@@ -66,11 +69,19 @@ public class WorkflowServiceTest {
     private UserService userService;
     @Mock
     private ConditionReportService conditionReportService;
+    @Mock
+    private LotService lotService;
+    @Mock
+    private ProjectService projectService;
+    @Mock
+    private DocCheckHistoryService docCheckHistoryService; 
+    
 
     @Before
     public void setUp() {
         docUnitWorkflowService = new DocUnitWorkflowService(docUnitWorkflowRepository, docUnitStateRepository);
-        service = new WorkflowService(docUnitWorkflowService, workflowGroupService, docUnitService, recordService, userService, conditionReportService);
+        service = new WorkflowService(docUnitWorkflowService, workflowGroupService, docUnitService, recordService,
+                                      userService, conditionReportService, lotService, projectService, docCheckHistoryService);
         when(docUnitWorkflowService.save(any(DocUnitWorkflow.class))).then(AdditionalAnswers.returnsFirstArg());
         when(docUnitWorkflowService.save(any(DocUnitState.class))).then(AdditionalAnswers.returnsFirstArg());
     }

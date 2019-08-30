@@ -33,29 +33,6 @@ public interface DocUnitRepository extends JpaRepository<DocUnit, String>, DocUn
     DocUnit findOneWithDependencies(String identifier);
 
     @Query("select d "
-           + "from DocUnit d "
-           + "left join fetch d.parent parent "
-           + "left join fetch d.library "
-           + "left join fetch d.workflow "
-           + "left join fetch d.physicalDocuments pd "
-           + "left join fetch d.digitalDocuments dd "
-           + "left join fetch d.activeOcrLanguage "
-           + "left join fetch dd.pages pages "
-           + "left join fetch pages.files f "
-           + "left join fetch d.project "
-           + "left join fetch d.records r "
-           + "left join fetch r.properties p "
-           + "left join fetch d.exportData ed "
-           + "left join fetch ed.properties "
-           + "left join fetch p.type "
-           + "left join fetch d.archiveItem ai "
-           + "left join fetch ai.collections "
-           + "left join fetch ai.subjects "
-           + "left join fetch ai.headers "
-           + "where d.identifier = ?1")
-    DocUnit findOneWithAllDependencies(String identifier);
-    
-    @Query("select d "
             + "from DocUnit d "
             + "left join fetch d.activeOcrLanguage "
             + "left join fetch d.lot l "
@@ -70,6 +47,18 @@ public interface DocUnitRepository extends JpaRepository<DocUnit, String>, DocUn
            + "left join fetch w.model "
            + "where d.identifier = ?1")
     DocUnit findOneWithAllDependenciesForWorkflow(String identifier);
+    
+    @Query("select d "
+            + "from DocUnit d "
+            + "left join fetch d.library l "
+            + "left join fetch d.project p "
+            + "left join fetch d.lot l "
+            + "left join fetch d.physicalDocuments pd "
+            + "left join fetch d.workflow w "
+            + "left join fetch d.digitalDocuments dd "
+            + "left join fetch dd.deliveries del "
+            + "where d.identifier = ?1")
+     DocUnit findOneWithAllDependenciesForHistory(String identifier);
 
     @Query("select d "
            + "from DocUnit d "
@@ -220,6 +209,8 @@ public interface DocUnitRepository extends JpaRepository<DocUnit, String>, DocUn
      List<DocUnit> findByLibraryWithOmekaExportDep(String libraryId);
 
     @Query("select distinct d from DocUnit d "
+           + "left join fetch d.digitalDocuments dd "
+           + "left join fetch dd.pages pages "
            + "left join fetch d.library lib "
            + "left join fetch d.records r "
            + "left join fetch r.properties p "

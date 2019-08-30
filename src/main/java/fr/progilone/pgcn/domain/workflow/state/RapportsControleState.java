@@ -33,10 +33,13 @@ public class RapportsControleState extends DocUnitState {
     @Override
     protected List<DocUnitState> getNextStates() {
         final List<DocUnitState> states = new ArrayList<>();
-        states.add(getWorkflow().getFutureOrRunningByKey(WorkflowStateKey.ARCHIVAGE_DOCUMENT));
-        states.add(getWorkflow().getFutureOrRunningByKey(WorkflowStateKey.DIFFUSION_DOCUMENT));
-        states.add(getWorkflow().getFutureOrRunningByKey(WorkflowStateKey.DIFFUSION_DOCUMENT_OMEKA));
-        states.add(getWorkflow().getFutureOrRunningByKey(WorkflowStateKey.DIFFUSION_DOCUMENT_LOCALE));
+        
+        if (getWorkflow().isDocumentValidated()) {
+            states.add(getWorkflow().getFutureOrRunningByKey(WorkflowStateKey.ARCHIVAGE_DOCUMENT));
+            states.add(getWorkflow().getFutureOrRunningByKey(WorkflowStateKey.DIFFUSION_DOCUMENT));
+            states.add(getWorkflow().getFutureOrRunningByKey(WorkflowStateKey.DIFFUSION_DOCUMENT_OMEKA));
+            states.add(getWorkflow().getFutureOrRunningByKey(WorkflowStateKey.DIFFUSION_DOCUMENT_LOCALE));
+        }
         cleanNullStates(states);
         return states;
     }
@@ -60,7 +63,9 @@ public class RapportsControleState extends DocUnitState {
             cloture.initializeState(null, null, WorkflowStateStatus.FINISHED);
         } else {
             // Initialisation de la prochaine étape si applicable (aucune étape en cours)
-            if(getWorkflow().getCurrentStates().isEmpty()) {
+            if(getWorkflow().getCurrentStates().isEmpty() 
+                    && getWorkflow().isDocumentValidated() 
+                    && getWorkflow().isNoticeValidated()) {
                 getNextStates().stream()
                     .filter(Objects::nonNull)
                     .forEach(state -> state.initializeState(null, null, null));

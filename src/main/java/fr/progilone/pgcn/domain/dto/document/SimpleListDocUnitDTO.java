@@ -27,6 +27,8 @@ public class SimpleListDocUnitDTO extends AbstractDTO {
     private String parentPgcnId;
     private boolean hasRecord;
     private String digitalDocumentStatus;
+    private boolean changeTrainAuthorized;
+    
 
     public SimpleListDocUnitDTO() {
     }
@@ -142,6 +144,14 @@ public class SimpleListDocUnitDTO extends AbstractDTO {
 
     public void setDigitalDocumentStatus(final String digitalDocumentStatus) {
         this.digitalDocumentStatus = digitalDocumentStatus;
+    }
+
+    public boolean isChangeTrainAuthorized() {
+        return changeTrainAuthorized;
+    }
+
+    public void setChangeTrainAuthorized(final boolean changeTrainAuthorized) {
+        this.changeTrainAuthorized = changeTrainAuthorized;
     }
 
 }

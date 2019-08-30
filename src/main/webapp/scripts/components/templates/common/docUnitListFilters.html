@@ -11,7 +11,7 @@
 		<div class="panel-body">
 			<div ng-include="'scripts/components/templates/common/initialFilter.html'" ng-show="FilterCtrl.isAvailable(mainCtrl.listFilters.initial_filter)"></div>
 			<!-- Bibliothèque  -->
-			<div class="filter-block" ng-show="FilterCtrl.isAvailable(mainCtrl.listFilters.library_filter)">
+			<div class="filter-block" ng-show="isAuthorized(userRoles.SUPER_ADMIN) && FilterCtrl.isAvailable(mainCtrl.listFilters.library_filter)">
 				<div class="filter-title">{{::'Bibliothèque' | translate}}</div>
 				<div class="filter-element">
 					<ui-select multiple ng-model="mainCtrl.filters.libraries" theme="select2" on-select="mainCtrl.searchLibrary()" on-remove="mainCtrl.searchLibrary()"
@@ -48,6 +48,20 @@
 					</ui-select>
 				</div>
 			</div>
+			
+			<!-- Train -->
+            <div class="filter-block" ng-show="FilterCtrl.isAvailable(mainCtrl.listFilters.train_filter)">
+                <div class="filter-title">{{::'Train' | translate}}</div>
+                <div class="filter-element">
+                    <ui-select multiple ng-model="mainCtrl.filters.trains" theme="select2" on-select="mainCtrl.search()" on-remove="mainCtrl.search()" class="form-control">
+                        <ui-select-match placeholder="{{::'Train' | translate}}">{{$item.label}}</ui-select-match>
+                        <ui-select-choices repeat="option in mainCtrl.options.trains | filter: $select.search track by option.identifier">
+                            <div ng-bind-html="option.label | highlight: $select.search"></div>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+            </div>
+			
 			<!-- Statut wkf docUnit -->
             <div class="filter-block" ng-show="FilterCtrl.isAvailable(mainCtrl.listFilters.wkf_status_filter)">
                 <div class="filter-title">{{::'Statut' | translate}}</div>

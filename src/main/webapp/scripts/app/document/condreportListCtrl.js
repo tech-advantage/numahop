@@ -4,15 +4,16 @@
     angular.module('numaHopApp.controller')
         .controller('CondreportListCtrl', CondreportListCtrl);
 
-    function CondreportListCtrl($q, $http, $httpParamSerializer, $routeParams, $scope, CondreportSrvc, CondreportDescPropertySrvc,
+    function CondreportListCtrl($q, $location, $http, $httpParamSerializer, $routeParams, $scope, CondreportSrvc, CondreportDescPropertySrvc,
         CondreportDescValueSrvc, CondreportPropertyConfSrvc, DocUnitBaseService, FileSaver, gettext, gettextCatalog, HistorySrvc,
-        LibrarySrvc, MessageSrvc, ModalSrvc, NumahopStorageService, SelectionSrvc, Principal, WorkflowHandleSrvc, WorkflowSrvc) {
+        LibrarySrvc, MessageSrvc, ModalSrvc, NumahopStorageService, SelectionSrvc, Principal, WorkflowHandleSrvc, WorkflowSrvc, DtoService) {
 
         var mainCtrl = this;
         $scope.mainCtrl = mainCtrl;
 
         mainCtrl.addFilter = addFilter;
-        mainCtrl.addSelectionToProject = addSelectionToProject;
+        mainCtrl.addSelectionToTrain = addSelectionToTrain;
+        //mainCtrl.addSelectionToNewTrain = addSelectionToNewTrain;
         mainCtrl.descPropertyConfig = descPropertyConfig;
         mainCtrl.descValueConfig = descValueConfig;
         mainCtrl.canRemoveProject = DocUnitBaseService.canRemoveProject;
@@ -36,6 +37,7 @@
         mainCtrl.downloadSlip = downloadSlip;
         mainCtrl.changeValidateOnly = changeValidateOnly;
         mainCtrl.validSelection = validSelection;
+        mainCtrl.trainProject = undefined;
 
         var PAGE_START = 1;
         var FILTER_STORAGE_SERVICE_KEY = "cond_report_list";
@@ -284,7 +286,7 @@
             params["validateOnly"] = mainCtrl.filters.validateOnly;
             
             // Descriptions
-            params["desc"] = _.chain(mainCtrl.filters.descriptions)
+            params["descriptions"] = _.chain(mainCtrl.filters.descriptions)
                 .filter(function (desc) {
                     return desc.property && desc.property.identifier && desc.value && desc.value.length > 0;
                 })
@@ -402,33 +404,72 @@
         }
 
         /**
-         * Ajoute la sélection à un projet, pour les éléments n'appartenant pas déjà à un projet
+         * Ajoute la sélection à un train existant.
+         * 
+         * - ts les constats doivent dependre du mm projet non terminé
+         * - le wkf des docs doit etre sur 1 étape < 'En attente de numérisation' 
          **/
-        function addSelectionToProject() {
-            if (mainCtrl.selection.length === 0) {
-                MessageSrvc.addWarn(gettext("La sélection est vide"), {}, false);
-                return;
-            }
-            var docs = _.chain(mainCtrl.selection)
-                .values()
-                .filter(function (item) {
-                    return item.docUnit && !item.docUnit.project;
-                })
-                .map(function (item) {
-                    return _.pick(item.docUnit, "identifier", "label");
-                })
-                .value();
-
-            if (docs.length === 0) {
-                MessageSrvc.addWarn(gettext("Les unités documentaires sélectionnées ne peuvent pas être traitées car elles appartiennent déjà à un projet existant"), {}, false);
-                return;
-            }
-            // Traitement
-            ModalSrvc.integrateToProject(docs, "sm")
+        function addSelectionToTrain() {
+            
+            if (validSelectionForTrain()) {
+                ModalSrvc.integrateToTrain(mainCtrl.selection, mainCtrl.trainProject, "sm")
                 .then(function () {
                     search();
                 });
+            }
+
         }
+        
+        /**
+         * addSelectionToNewTrain - Création d'un nouveau train à partir de tous les exemplaires sélectionnés.
+         **/
+//        function addSelectionToNewTrain() {
+//            
+//            if (validSelectionForTrain()) {
+//                
+//                var docIdentifiers = _.pluck(_.pluck(mainCtrl.selection, "docUnit"), "identifier");
+//                DtoService.addDocs(docIdentifiers);
+//                $location.path("/train/train").search({ id: null, mode: "edit", new: true, project: mainCtrl.trainProject.identifier});
+//            }
+//        }
+        
+        /**
+         * Validation avant d'affecter la selection dans un train.
+         */
+        function validSelectionForTrain() {
+            
+            // On autorise la selection de constats/UDs appartenant ttes au mm projet en cours. 
+            var testValue = _.find(mainCtrl.selection, function (item) { return item.docUnit && item.docUnit.project; });
+            var selectionLength = 0;
+            var filteredDocs = [];
+            if (angular.isDefined(testValue)) {
+                filteredDocs = _.filter(mainCtrl.selection, function (item) {
+                    selectionLength++;
+                    return item.docUnit && item.docUnit.project 
+                                && item.docUnit.project.identifier === testValue.docUnit.project.identifier;
+                });
+                if (selectionLength !== filteredDocs.length) {
+                    MessageSrvc.addWarn(gettext("Les unités documentaires sélectionnées ne peuvent pas être traitées car elles appartiennent à des projets différents"), {}, false);
+                    return false;
+                }
+                if ('CLOSED' === testValue.docUnit.project.status) {
+                    MessageSrvc.addWarn(gettext("La sélection ne peut pas être traitée car le projet est au statut 'Terminé'"), {}, false);
+                    return false;
+                }
+                // le wkf ne doit pas avoir atteint l'etape 'En attente de numerisation'
+                var notAuthorized = _.find(filteredDocs, function (item) {
+                    return !item.docUnit.changeTrainAuthorized;
+                });
+                if (notAuthorized) {
+                    MessageSrvc.addWarn(gettext("La sélection ne peut pas être traitée, le workflow est trop avancé"), {}, false);
+                    return false;
+                }
+                mainCtrl.trainProject = testValue.docUnit.project;
+                return true;
+            }
+            return false;
+        }
+        
         
         /**
          * Validation des constats sélectionnés.

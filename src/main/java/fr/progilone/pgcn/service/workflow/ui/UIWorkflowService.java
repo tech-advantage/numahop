@@ -16,6 +16,7 @@ import fr.progilone.pgcn.domain.workflow.WorkflowStateKey;
 import fr.progilone.pgcn.security.SecurityUtils;
 import fr.progilone.pgcn.service.document.DigitalDocumentService;
 import fr.progilone.pgcn.service.document.DocUnitService;
+import fr.progilone.pgcn.service.document.ui.UIDocUnitService;
 import fr.progilone.pgcn.service.workflow.WorkflowService;
 import fr.progilone.pgcn.service.workflow.mapper.WorkflowMapper;
 
@@ -28,14 +29,17 @@ public class UIWorkflowService {
     private final WorkflowService service;
     private final DocUnitService docUnitService;
     private final DigitalDocumentService digitalDocumentService;
+    private final UIDocUnitService uiDocUnitService;
 
     @Autowired
     public UIWorkflowService(final WorkflowService service,
             final DocUnitService docUnitService,
-            final DigitalDocumentService digitalDocumentService) {
+            final DigitalDocumentService digitalDocumentService,
+            final UIDocUnitService uiDocUnitService) {
         this.service = service;
         this.docUnitService = docUnitService;
         this.digitalDocumentService = digitalDocumentService;
+        this.uiDocUnitService = uiDocUnitService;
     }
     
     @Transactional(readOnly = true)
@@ -49,6 +53,13 @@ public class UIWorkflowService {
     public StateIsDoneDTO isCheckStarted(final String identifier) {
         final StateIsDoneDTO result = new StateIsDoneDTO();
         result.setDone(service.isCheckInProgress(identifier));
+        return result;
+    }
+    
+    @Transactional(readOnly = true)
+    public StateIsDoneDTO isWaitingForRedelivering(final String identifier) {
+        final StateIsDoneDTO result = new StateIsDoneDTO();
+        result.setDone(service.isWaitingForRedelivering(identifier));
         return result;
     }
     
@@ -142,10 +153,17 @@ public class UIWorkflowService {
         service.processState(identifier, key, currentUser.getIdentifier());
     }
     
-    
+    /**
+     * Reinitialise les workflows pour relivraison
+     * et s'assure que cela ne provoque pas de blocage 
+     * des autres workflows de la livraison d'origine. 
+     * 
+     * @param docIds
+     */
     @Transactional
     public void resetToNumWaiting(final List<String> docIds) {
         service.resetToNumWaitingState(docIds);
+        uiDocUnitService.checkWorkflowStateforTrainRenum(docIds);
     }
     
     
@@ -171,6 +189,17 @@ public class UIWorkflowService {
             });
             
         });
+    }
+    
+    /**
+     * 
+     * @param docUnitId
+     * @param keys
+     * @return
+     */
+    @Transactional(readOnly = true)
+    public boolean areStatesRunning(final String docUnitId, final WorkflowStateKey... keys) {
+        return service.areStatesRunning(docUnitId, keys);
     }
     
 }

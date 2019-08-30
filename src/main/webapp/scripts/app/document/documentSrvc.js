@@ -57,6 +57,13 @@
                             'projectAndLot': true
                         }
                     },
+                    addToTrain: {
+                        method: 'POST',
+                        isArray: true,
+                        params: {
+                            'train': true
+                        }
+                    },
                     removeProject: {
                         method: 'POST',
                         params: {

@@ -1,10 +1,11 @@
 package fr.progilone.pgcn.domain.dto.statistics;
 
+import java.time.LocalDate;
+
 import com.google.common.collect.Ordering;
 import com.opencsv.bean.CsvBindByName;
-import fr.progilone.pgcn.domain.workflow.WorkflowStateKey;
 
-import java.time.LocalDate;
+import fr.progilone.pgcn.domain.workflow.WorkflowStateKey;
 
 public class StatisticsDocPublishedDTO implements Comparable<StatisticsDocPublishedDTO> {
 
@@ -47,11 +48,18 @@ public class StatisticsDocPublishedDTO implements Comparable<StatisticsDocPublis
 
     @CsvBindByName(column = "09. Diffusion")
     private WorkflowStateKey workflowState;
-    @CsvBindByName(column = "10. Regroupement")
+    
+    @CsvBindByName(column = "10. Lien IA")
+    private String linkIA;
+    
+    @CsvBindByName(column = "11. Url ark")
+    private String urlArk;
+    
+    @CsvBindByName(column = "12. Regroupement")
     private String collection;
-    @CsvBindByName(column = "11. Nombre de pages")
+    @CsvBindByName(column = "13. Nombre de pages")
     private int nbPages;
-    @CsvBindByName(column = "12. Date de publication")
+    @CsvBindByName(column = "14. Date de publication")
     private LocalDate publicationDate;
 
     public String getLibraryIdentifier() {
@@ -164,6 +172,22 @@ public class StatisticsDocPublishedDTO implements Comparable<StatisticsDocPublis
 
     public void setWorkflowState(final WorkflowStateKey workflowState) {
         this.workflowState = workflowState;
+    }
+
+    public String getLinkIA() {
+        return linkIA;
+    }
+
+    public void setLinkIA(final String lienIA) {
+        this.linkIA = lienIA;
+    }
+
+    public String getUrlArk() {
+        return urlArk;
+    }
+
+    public void setUrlArk(final String urlArk) {
+        this.urlArk = urlArk;
     }
 
     public String getCollection() {

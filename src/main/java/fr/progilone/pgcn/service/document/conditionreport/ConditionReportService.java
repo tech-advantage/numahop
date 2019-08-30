@@ -74,7 +74,6 @@ import fr.progilone.pgcn.exception.message.PgcnList;
 import fr.progilone.pgcn.repository.document.DocUnitRepository;
 import fr.progilone.pgcn.repository.document.conditionreport.ConditionReportRepository;
 import fr.progilone.pgcn.repository.document.conditionreport.ConditionReportRepositoryCustom;
-import fr.progilone.pgcn.repository.workflow.DocUnitWorkflowRepository;
 import fr.progilone.pgcn.security.SecurityUtils;
 import fr.progilone.pgcn.service.JasperReportsService;
 import fr.progilone.pgcn.service.document.mapper.BibliographicRecordMapper;
@@ -106,7 +105,6 @@ public class ConditionReportService {
     private final UserService userService;
     private final JasperReportsService jasperReportService;
     private final ConditionReportSlipConfigurationService conditionReportSlipConfigurationService;
-    private final DocUnitWorkflowRepository docUnitWorkflowRepository; 
     
 
     private static final ConditionReportMapper REPORT_MAPPER = ConditionReportMapper.INSTANCE;
@@ -130,8 +128,7 @@ public class ConditionReportService {
                                   final OdtEngineService odtEngineService,
                                   final UserService userService,
                                   final JasperReportsService jasperReportService,
-                                  final ConditionReportSlipConfigurationService conditionReportSlipConfigurationService,
-                                  final DocUnitWorkflowRepository docUnitWorkflowRepository) {
+                                  final ConditionReportSlipConfigurationService conditionReportSlipConfigurationService) {
         this.conditionReportRepository = conditionReportRepository;
         this.conditionReportAttachmentService = conditionReportAttachmentService;
         this.docUnitRepository = docUnitRepository;
@@ -142,7 +139,6 @@ public class ConditionReportService {
         this.userService = userService;
         this.jasperReportService = jasperReportService;
         this.conditionReportSlipConfigurationService = conditionReportSlipConfigurationService;
-        this.docUnitWorkflowRepository = docUnitWorkflowRepository;
     }
 
     /**

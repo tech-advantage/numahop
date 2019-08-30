@@ -50,6 +50,7 @@ import fr.progilone.pgcn.exception.PgcnException;
 import fr.progilone.pgcn.exception.PgcnLockException;
 import fr.progilone.pgcn.exception.PgcnTechnicalException;
 import fr.progilone.pgcn.service.LockService;
+import fr.progilone.pgcn.service.document.DocCheckHistoryService;
 import fr.progilone.pgcn.service.document.DocUnitService;
 import fr.progilone.pgcn.service.document.ui.UIDocUnitService;
 import fr.progilone.pgcn.service.es.EsDocUnitService;
@@ -69,6 +70,7 @@ public class DocUnitController extends AbstractRestController {
     private final AccessHelper accessHelper;
     private final LibraryAccesssHelper libraryAccesssHelper;
     private final LockService lockService;
+    private final DocCheckHistoryService docCheckHistoryService;
 
     @Autowired
     public DocUnitController(final DocUnitService docUnitService,
@@ -76,7 +78,8 @@ public class DocUnitController extends AbstractRestController {
                              final EsDocUnitService esDocUnitService,
                              final AccessHelper accessHelper,
                              final LibraryAccesssHelper libraryAccesssHelper,
-                             final LockService lockService) {
+                             final LockService lockService,
+                             final DocCheckHistoryService docCheckHistoryService) {
         super();
         this.docUnitService = docUnitService;
         this.uiDocUnitService = uiDocUnitService;
@@ -84,7 +87,31 @@ public class DocUnitController extends AbstractRestController {
         this.accessHelper = accessHelper;
         this.libraryAccesssHelper = libraryAccesssHelper;
         this.lockService = lockService;
+        this.docCheckHistoryService = docCheckHistoryService;
     }
+    
+    
+    /**
+     * Reprise d'historique des controles.
+     * 
+     * @param request
+     * @param libraryId
+     * @return
+     * @throws PgcnException
+     */
+    @RequestMapping(value = "/initHistory", method = RequestMethod.GET)
+    @Timed
+    @RolesAllowed(DOC_UNIT_HAB3)
+    public ResponseEntity<?> initDocCheckHistory(final HttpServletRequest request, 
+                                                 @RequestParam(name = "library") final String libraryId) throws PgcnException {
+        
+        
+        docCheckHistoryService.retrieveCheckHistory(libraryId);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+    
+    
 
     @RequestMapping(method = RequestMethod.POST)
     @Timed
@@ -286,6 +313,7 @@ public class DocUnitController extends AbstractRestController {
                                                                   filteredLibraries,
                                                                   requestParams.getProjects(),
                                                                   requestParams.getLots(),
+                                                                  requestParams.getTrains(),
                                                                   requestParams.getStatuses(),
                                                                   requestParams.getLastModifiedDateFrom(),
                                                                   requestParams.getLastModifiedDateTo(),
@@ -348,6 +376,24 @@ public class DocUnitController extends AbstractRestController {
         // TODO access control for docs, project, lot, train
         uiDocUnitService.setProjectAndLot(docs, project, lot, train);
     }
+    
+    
+    @RequestMapping(method = RequestMethod.POST, params = {"train"})
+    @ResponseStatus(HttpStatus.OK)
+    @Timed
+    @RolesAllowed(DOC_UNIT_HAB2)
+    public ResponseEntity<?> setTrain(@RequestBody final List<String> docs,
+                                      @RequestParam(name = "train") final String train) {
+        
+        // droits d'accès à l'ud
+        final Collection<DocUnit> filteredDocUnits = accessHelper.filterDocUnits(docs);
+        if (filteredDocUnits.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        uiDocUnitService.setTrain(docs, train);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+    
 
     /**
      * Retrait d'un {@link DocUnit} d'un {@link Project}
@@ -643,6 +689,7 @@ public class DocUnitController extends AbstractRestController {
         private List<String> libraries;
         private List<String> projects;
         private List<String> lots;
+        private List<String> trains;
         private List<String> statuses;
         private LocalDate lastModifiedDateFrom;
         private LocalDate lastModifiedDateTo;
@@ -762,6 +809,14 @@ public class DocUnitController extends AbstractRestController {
             this.lots = lots;
         }
 
+        public List<String> getTrains() {
+            return trains;
+        }
+
+        public void setTrains(final List<String> trains) {
+            this.trains = trains;
+        }
+        
         public List<String> getStatuses() {
             return statuses;
         }

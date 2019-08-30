@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import fr.progilone.pgcn.domain.AbstractDomainObject;
 import fr.progilone.pgcn.domain.administration.viewsformat.ViewsFormatConfiguration;
+import fr.progilone.pgcn.domain.exchange.template.Template;
 import fr.progilone.pgcn.domain.user.User;
 import fr.progilone.pgcn.repository.user.UserRepository;
 import fr.progilone.pgcn.security.SecurityUtils;
@@ -270,6 +271,26 @@ public class FileStorageManager {
             return null;
         }
         final File root = FileUtils.getFile(storageDir, getUserLibraryId());
+        final String filename = Base64.getEncoder().encodeToString(obj.getIdentifier().getBytes(StandardCharsets.UTF_8));
+        return retrieveFile(root, filename);
+    }
+    
+    /**
+     * Récupération d'un fichier lié à un {@link AbstractDomainObject}
+     * storageDir/obj.getIdentifier()
+     * 
+     * Pas de controle du user / library
+     * !!!! A reserver au reset password !!!!
+     *
+     * @param storageDir
+     * @param obj
+     * @return
+     */
+    public File uncheckedRetrieveFile(final String storageDir, final Template obj) {
+        if (obj == null) {
+            return null;
+        }
+        final File root = FileUtils.getFile(storageDir, obj.getLibrary().getIdentifier());
         final String filename = Base64.getEncoder().encodeToString(obj.getIdentifier().getBytes(StandardCharsets.UTF_8));
         return retrieveFile(root, filename);
     }

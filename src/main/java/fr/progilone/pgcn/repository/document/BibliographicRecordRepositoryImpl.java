@@ -1,17 +1,13 @@
 package fr.progilone.pgcn.repository.document;
 
-import com.mysema.query.BooleanBuilder;
-import com.mysema.query.jpa.JPQLQuery;
-import com.mysema.query.jpa.impl.JPAQuery;
-import com.mysema.query.types.Order;
-import com.mysema.query.types.OrderSpecifier;
-import com.mysema.query.types.expr.BooleanExpression;
-import fr.progilone.pgcn.domain.document.BibliographicRecord;
-import fr.progilone.pgcn.domain.document.DocUnit;
-import fr.progilone.pgcn.domain.document.QBibliographicRecord;
-import fr.progilone.pgcn.domain.document.QDocUnit;
-import fr.progilone.pgcn.domain.lot.QLot;
-import fr.progilone.pgcn.domain.project.QProject;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -21,12 +17,20 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
+import com.mysema.query.BooleanBuilder;
+import com.mysema.query.jpa.JPQLQuery;
+import com.mysema.query.jpa.impl.JPAQuery;
+import com.mysema.query.types.Order;
+import com.mysema.query.types.OrderSpecifier;
+import com.mysema.query.types.expr.BooleanExpression;
+
+import fr.progilone.pgcn.domain.document.BibliographicRecord;
+import fr.progilone.pgcn.domain.document.DocUnit;
+import fr.progilone.pgcn.domain.document.QBibliographicRecord;
+import fr.progilone.pgcn.domain.document.QDocUnit;
+import fr.progilone.pgcn.domain.document.QPhysicalDocument;
+import fr.progilone.pgcn.domain.lot.QLot;
+import fr.progilone.pgcn.domain.project.QProject;
 
 public class BibliographicRecordRepositoryImpl implements BibliographicRecordRepositoryCustom {
 
@@ -40,6 +44,7 @@ public class BibliographicRecordRepositoryImpl implements BibliographicRecordRep
                                             final List<String> libraries,
                                             final List<String> projects,
                                             final List<String> lots,
+                                            final List<String> trains,
                                             final LocalDate lastModifiedDateFrom,
                                             final LocalDate lastModifiedDateTo,
                                             final LocalDate createdDateFrom,
@@ -74,7 +79,11 @@ public class BibliographicRecordRepositoryImpl implements BibliographicRecordRep
             final BooleanExpression lotsFilter = qDocUnit.lot.identifier.in(lots);
             builder.and(lotsFilter);
         }
-
+        if (CollectionUtils.isNotEmpty(trains)) {
+            final QPhysicalDocument qpd = qDocUnit.physicalDocuments.any();
+            final BooleanExpression trainFilter = qpd.isNotNull().and(qpd.train.identifier.in(trains));
+            builder.and(trainFilter);
+        }
         if (lastModifiedDateFrom != null) {
             final BooleanExpression lastModifiedDateFromFilter = qRecord.lastModifiedDate.after(lastModifiedDateFrom.atStartOfDay());
             builder.and(lastModifiedDateFromFilter);
@@ -135,15 +144,15 @@ public class BibliographicRecordRepositoryImpl implements BibliographicRecordRep
      * @param lot
      * @return
      */
-    protected JPQLQuery applySorting(Sort sort, JPQLQuery query, QBibliographicRecord bib, QDocUnit doc, QProject project, QLot lot) {
+    protected JPQLQuery applySorting(final Sort sort, final JPQLQuery query, final QBibliographicRecord bib, final QDocUnit doc, final QProject project, final QLot lot) {
 
-        List<OrderSpecifier> orders = new ArrayList<>();
+        final List<OrderSpecifier> orders = new ArrayList<>();
         if (sort == null) {
             return query;
         }
 
-        for (Sort.Order order : sort) {
-            Order qOrder = order.isAscending() ? Order.ASC : Order.DESC;
+        for (final Sort.Order order : sort) {
+            final Order qOrder = order.isAscending() ? Order.ASC : Order.DESC;
 
             switch (order.getProperty()) {
                 case "docUnit.pgcnId":

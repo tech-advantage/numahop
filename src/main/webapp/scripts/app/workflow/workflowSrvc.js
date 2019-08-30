@@ -49,6 +49,13 @@
                             isCheckStarted: true
                         }
                     },
+                    isWaitingForRedelivering: {
+                        method: 'GET',
+                        isArray: false,
+                        params: {
+                            isWaitingRedelivering: true
+                        }
+                    },
                     isReportToValidate: {
                         method: 'GET',
                         isArray: false,

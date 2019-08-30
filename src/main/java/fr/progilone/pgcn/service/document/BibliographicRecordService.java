@@ -59,11 +59,13 @@ public class BibliographicRecordService {
     @Transactional
     public BibliographicRecord save(final BibliographicRecord record) {
         setDefaultValues(record);
+        
         final BibliographicRecord savedRecord = bibliographicRecordRepository.save(record);
-
+        
         for (final DocProperty property : record.getProperties()) {
             docPropertyService.save(property);
         }
+        
         return savedRecord;
     }
 
@@ -104,6 +106,7 @@ public class BibliographicRecordService {
                                             final List<String> libraries,
                                             final List<String> projects,
                                             final List<String> lots,
+                                            final List<String> trains,
                                             final LocalDate lastModifiedDateFrom,
                                             final LocalDate lastModifiedDateTo,
                                             final LocalDate createdDateFrom,
@@ -122,6 +125,7 @@ public class BibliographicRecordService {
                                                     libraries,
                                                     projects,
                                                     lots,
+                                                    trains,
                                                     lastModifiedDateFrom,
                                                     lastModifiedDateTo,
                                                     createdDateFrom,

@@ -33,6 +33,7 @@ import fr.progilone.pgcn.domain.dto.statistics.WorkflowUserProgressDTO;
 import fr.progilone.pgcn.domain.util.CustomUserDetails;
 import fr.progilone.pgcn.domain.workflow.WorkflowStateKey;
 import fr.progilone.pgcn.security.SecurityUtils;
+import fr.progilone.pgcn.service.document.DocCheckHistoryService;
 import fr.progilone.pgcn.service.statistics.StatisticsWorkflowService;
 import fr.progilone.pgcn.service.user.UserService;
 import fr.progilone.pgcn.web.util.AccessHelper;
@@ -46,13 +47,16 @@ public class StatisticsWorkflowController {
     private final AccessHelper accessHelper;
     private final LibraryAccesssHelper libraryAccesssHelper;
     private final StatisticsWorkflowService workflowProgressReportService;
+    private DocCheckHistoryService docCheckHistoryService;
 
     public StatisticsWorkflowController(final AccessHelper accessHelper,
                                         final LibraryAccesssHelper libraryAccesssHelper,
-                                        final StatisticsWorkflowService workflowProgressReportService) {
+                                        final StatisticsWorkflowService workflowProgressReportService, 
+                                        final DocCheckHistoryService docCheckHistoryService) {
         this.accessHelper = accessHelper;
         this.libraryAccesssHelper = libraryAccesssHelper;
         this.workflowProgressReportService = workflowProgressReportService;
+        this.docCheckHistoryService = docCheckHistoryService;
     }
 
     @RequestMapping(method = RequestMethod.GET, params = {"wdelivery"}, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -269,8 +273,8 @@ public class StatisticsWorkflowController {
         if (accessHelper.checkUserIsPresta()) { //  no presta
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
-        final List<String> filteredLibraries = libraryAccesssHelper.getLibraryFilter(request, libraries);
-        return new ResponseEntity<>(workflowProgressReportService.getWorkflowUsersStatistics(filteredLibraries,
+        final List<String> filteredLibraries = libraryAccesssHelper.getLibraryFilter(request, libraries);       
+        return new ResponseEntity<>(docCheckHistoryService.getWorkflowUsersStatistics(filteredLibraries,
                                                                                              projects,
                                                                                              lots,
                                                                                              deliveries,

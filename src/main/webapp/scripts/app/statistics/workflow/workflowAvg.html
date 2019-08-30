@@ -72,7 +72,13 @@
                             <th class="text-center h6 bold" translate>Projet</th>
                             <th class="text-center h6 bold" ng-if="statCtrl.filters.groupby === 'LOT' || statCtrl.filters.groupby === 'DELIVERY'" translate>Lot</th>
                             <th class="text-center h6 bold" ng-if="statCtrl.filters.groupby === 'DELIVERY'" translate>Livraison</th>
+                            <th class="text-center h6 bold" translate>Nb de documents</th>
                             <th class="text-center h6 bold" translate>Nb total de pages</th>
+                            <th class="text-center h6 bold" translate>Poids total</th>
+                            <th class="text-center h6 bold" translate>Taux de rejet 
+                                <span class="glyphicon-halflings glyphicon-question-sign cursor-help"
+                                        uib-tooltip="{{::'Pourcentage de documents ayant été rejetés au moins une fois' | translate}}"></span>
+                            </th>
                             <th class="text-center h6 bold" translate>Temps moyen de contrôle</th>
                             <th class="text-center h6 bold" translate>Temps moyen de (re)livraison</th>
                             <th class="text-center h6 bold" translate>Durée moyenne d'un workflow</th>
@@ -98,7 +104,10 @@
                                                     numa-link-parameters="{id: item.deliveryIdentifier}"
                                                     ng-if="item.deliveryIdentifier"></numa-custom-link>
                             </td>
+                            <td class="text-center">{{ ::item.nbDocs | number }}</td>
                             <td class="text-center">{{ ::item.avgTotalPages | number }}</td>
+                            <td class="text-center">{{ ::item.lengthDocs | filesize }}</td>
+                            <td class="text-center">{{ ::item.rejectRatio | percent }}</td>
                             <td class="text-center">{{ ::item.avgDurControl | duration:'hour' }}</td>
                             <td class="text-center">{{ ::item.avgDurDelivery | duration:'hour' }}</td>
                             <td class="text-center">{{ ::item.avgDurWorkflow | duration:'hour' }}</td>

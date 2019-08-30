@@ -81,7 +81,7 @@ public class CinesReportService {
      * @param report
      * @return
      */
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     public CinesReport setReportSending(final CinesReport report) {
         report.setStatus(CinesReport.Status.SENDING);
         report.setDateSent(LocalDateTime.now());
@@ -98,7 +98,7 @@ public class CinesReportService {
      * @param report
      * @return
      */
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     public CinesReport setReportSent(final CinesReport report) {
         report.setStatus(CinesReport.Status.SENT);
         report.setDateSent(LocalDateTime.now());
@@ -140,6 +140,8 @@ public class CinesReportService {
         report.setStatus(CinesReport.Status.REJECTED);
         report.setDateRejection(dateRejection);
         report.setRejectionMotive(motive);
+        // le cines a rejeté, on doit rester en 1er versement
+        report.getDocUnit().setCinesVersion(null);
 
         final CinesReport savedReport = cinesReportRepository.save(report);
         sendUpdate(savedReport);

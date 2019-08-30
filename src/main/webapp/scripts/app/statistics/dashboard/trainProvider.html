@@ -92,7 +92,6 @@
                     <table class="table table-hover sem-list">
                         <thead>
                         <tr>
-                            <th class="text-center h6 bold" ng-if="statCtrl.showLib" translate>Bibliothèque</th>
                             <th class="text-center h6 bold" translate>Projet</th>
                             <th class="text-center h6 bold" translate>Train</th>
                             <th class="text-center h6 bold" translate>Statut</th>
@@ -105,12 +104,6 @@
                         </thead>
                         <tbody>
                         <tr ng-repeat="item in statCtrl.items | orderBy:['libraryName', 'projectName', 'trainLabel']">
-                            <td class="text-right" ng-if="statCtrl.showLib">
-                                {{ ::item.libraryName }} 
-                                <numa-custom-link numa-link-type="library"
-                                                  numa-link-parameters="{id: item.libraryIdentifier}"
-                                                  ng-if="item.libraryIdentifier"></numa-custom-link>
-                            </td>
                             <td class="text-right">
                                 {{ ::item.projectName }} 
                                 <numa-custom-link numa-link-type="project"

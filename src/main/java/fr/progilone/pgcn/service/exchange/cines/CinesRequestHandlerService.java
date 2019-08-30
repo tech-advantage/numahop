@@ -45,7 +45,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.TransactionStatus;
 
 import fr.progilone.pgcn.domain.administration.MailboxConfiguration;
 import fr.progilone.pgcn.domain.document.DocUnit;
@@ -59,6 +59,7 @@ import fr.progilone.pgcn.service.document.DocUnitService;
 import fr.progilone.pgcn.service.exchange.mail.MailboxService;
 import fr.progilone.pgcn.service.storage.FileStorageManager;
 import fr.progilone.pgcn.service.util.DateUtils;
+import fr.progilone.pgcn.service.util.transaction.TransactionService;
 
 /**
  * Service gérant l'évolution des éléments exportés vers le(s) serveur(s) CINES
@@ -70,6 +71,8 @@ public class CinesRequestHandlerService {
 
     public static final String SIP_XML_FILE = "sip.xml";
     public static final String AIP_XML_FILE = "aip.xml";
+    
+    public static final String CINES_SUBJECT_ARCHIVAGE = "AVIS_PAC";
 
     private static final Logger LOG = LoggerFactory.getLogger(CinesRequestHandlerService.class);
 
@@ -98,6 +101,7 @@ public class CinesRequestHandlerService {
     private final MailboxConfigurationService mailboxConfigurationService;
     private final FileStorageManager fm;
     private final DocUnitService docUnitService;
+    private final TransactionService transactionService;
 
     @Autowired
     public CinesRequestHandlerService(final ExportCinesService exportCinesService,
@@ -105,13 +109,15 @@ public class CinesRequestHandlerService {
                                       final MailboxService mailboxService,
                                       final MailboxConfigurationService mailboxConfigurationService,
                                       final FileStorageManager fm,
-                                      final DocUnitService docUnitService) {
+                                      final DocUnitService docUnitService,
+                                      final TransactionService transactionService) {
         this.cinesReportService = cinesReportService;
         this.exportCinesService = exportCinesService;
         this.mailboxService = mailboxService;
         this.mailboxConfigurationService = mailboxConfigurationService;
         this.fm = fm;
         this.docUnitService = docUnitService;
+        this.transactionService = transactionService;
     }
 
     @PostConstruct
@@ -128,21 +134,18 @@ public class CinesRequestHandlerService {
     }
 
     @Scheduled(cron = "${cron.cinesExport}")
-    @Transactional
     public void cinesExportCron() {
 
         LOG.info("Lancement du cronjob cinesExport ...");
-        final List<DocUnit> docsToExport = exportCinesService.findDocUnitsReadyForCinesExport();
-        docsToExport.forEach(doc -> {
-            LOG.info("Debut export CINES - DocUnit[{}]", doc.getIdentifier());
-            final CinesReport report = exportCinesService.exportDocToCines(doc, true);
-            LOG.info("Fin export CINES - DocUnit[{}] - Message: {}", doc.getIdentifier(), report.getMessage());
+        final List<String> docsToExport = exportCinesService.findDocUnitsReadyForCinesExport();
+        docsToExport.forEach(id -> {
+            LOG.info("Debut export CINES - DocUnit[{}]", id);
+            final CinesReport report = exportCinesService.exportDocToCines(id, true);
+            LOG.info("Fin export CINES - DocUnit[{}] - Message: {}", id, report.getMessage());
         });
-
     }
 
     @Scheduled(cron = "${cron.cinesUpdateStatus}")
-    @Transactional
     public void updateExportedDocUnitsCron() {
         
         if (cinesUpdatingEnabled) {
@@ -163,34 +166,52 @@ public class CinesRequestHandlerService {
      * @param mailboxConfigurations
      * @throws PgcnTechnicalException
      */
-    @Transactional
     public void updateExportedDocUnits(final Collection<MailboxConfiguration> mailboxConfigurations) throws PgcnTechnicalException {
+        
         for (final MailboxConfiguration conf : mailboxConfigurations) {
-              final long nbPending = cinesReportService.countPendingByLibrary(conf.getLibrary());
+
+            final long nbPending = cinesReportService.countPendingByLibrary(conf.getLibrary());
             // Si des exports CINES sont en attente de réponse, on vérifie la boite mail
             if (nbPending > 0) {
+                
                 mailboxService.readMailbox(conf, messages -> {
-                    for (final Message message : messages) {
-                        try {
-                            final CinesResponse response = parseMessage(message);
-                            if (updateExport(response, conf.getLibrary())) {
-                                message.setFlag(Flags.Flag.SEEN, true);
-                                
-                            } else {
-                                message.setFlag(Flags.Flag.SEEN, false); 
+                    
+                    if (messages.length > 0) {
+                        
+                        final TransactionStatus tr = transactionService.startTransaction(false);
+                    
+                        for (final Message message : messages) {
+    
+                            try {
+                                final String subject = message.getSubject();                             
+                                // On ne traite pas les messages autres genre Ticket etc..  
+                                if (subject == null || !subject.contains(CINES_SUBJECT_ARCHIVAGE)) {
+                                    message.setFlag(Flags.Flag.SEEN, true); 
+                                } else {
+                                    // les messages qui nous interessent
+                                    final CinesResponse response = parseMessage(message);
+                                    if (updateExport(response, conf.getLibrary())) {
+                                        message.setFlag(Flags.Flag.SEEN, true);
+                                    } else {
+                                        message.setFlag(Flags.Flag.SEEN, false); 
+                                    }
+                                }
+                            } catch (JAXBException | IOException | MessagingException e) {
+                                LOG.warn("Vérification des boite mails CINES - Problem: {}", e.getMessage(), e);
+                                // on continue pour laisser leur chance aux msg suivants....
                             }
-                            
-                        } catch (JAXBException | IOException | MessagingException e) {
-                            LOG.warn("Vérification des boite mails CINES - Problem: {}", e.getMessage(), e);
-                            // on continue pour laisser leur chance aux msg suivants....
                         }
-                    }
+                        transactionService.commitTransaction(tr); 
+                    }    
                 });
+                
             } else {
-                LOG.debug("Aucun export en attente de reponse pour la bibliothèque {}", conf.getLibrary().getIdentifier());
-            }
+                LOG.debug("CINES - Aucun export en attente de reponse pour la bibliothèque {}", conf.getLibrary().getIdentifier());
+            }            
+            
         }
     }
+    
 
     /**
      * Parse le message à la recherche d'un corps au format avis.xsd et/ou d'une pièce jointe au format aip.xsd
@@ -202,6 +223,7 @@ public class CinesRequestHandlerService {
      * @throws JAXBException
      */
     private CinesResponse parseMessage(final Message message) throws MessagingException, IOException, JAXBException {
+        
         final Date sentDate = message.getSentDate();
         LOG.debug("Lecture du message {} du {}", message.getSubject(), sentDate);
         final CinesResponse response = new CinesResponse();
@@ -397,8 +419,8 @@ public class CinesRequestHandlerService {
         // Rejet du versement
         else if (response.hasId(REP_REJET_VERSEMENT)) {
             if (report.getStatus() == CinesReport.Status.SENT || report.getStatus() == CinesReport.Status.AR_RECEIVED) {
-                LOG.debug("L'export {} passe au statut {}", idVersement, CinesReport.Status.REJECTED);
-                final String motive = response.getAvis().getErreurValidation();
+                final String motive = response.getAvis().getCommentaire();
+                LOG.debug("L'export {} passe au statut {} - motif : {}", idVersement, CinesReport.Status.REJECTED, motive);
                 cinesReportService.setReportRejected(report, response.getMsgDate(), motive);
                 treated = true;
             }

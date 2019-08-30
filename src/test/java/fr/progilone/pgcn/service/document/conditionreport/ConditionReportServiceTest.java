@@ -55,7 +55,6 @@ import fr.progilone.pgcn.exception.message.PgcnErrorCode;
 import fr.progilone.pgcn.repository.document.DocUnitRepository;
 import fr.progilone.pgcn.repository.document.conditionreport.ConditionReportRepository;
 import fr.progilone.pgcn.repository.document.conditionreport.ConditionReportRepositoryCustom;
-import fr.progilone.pgcn.repository.workflow.DocUnitWorkflowRepository;
 import fr.progilone.pgcn.service.JasperReportsService;
 import fr.progilone.pgcn.service.es.EsConditionReportService;
 import fr.progilone.pgcn.service.exchange.template.OdtEngineService;
@@ -85,9 +84,7 @@ public class ConditionReportServiceTest {
     private OdtEngineService odtEngineService;
     @Mock
     private UserService userService;
-    @Mock
-    private DocUnitWorkflowRepository docUnitWorkflowRepository;
-
+    
     private ConditionReportService service;
 
     @Mock
@@ -106,8 +103,7 @@ public class ConditionReportServiceTest {
                                              odtEngineService,
                                              userService,
                                              jasperReportService,
-                                             conditionReportSlipConfigurationService,
-                                             docUnitWorkflowRepository);
+                                             conditionReportSlipConfigurationService);
 
         final CustomUserDetails customUserDetails =
             new CustomUserDetails("90cdcf40-ff39-4d8d-aad5-249c29a94b3a", "mickey", null, null, USER_LIBRARY_ID, null, false, User.Category.OTHER);

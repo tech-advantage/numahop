@@ -13,7 +13,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -50,6 +54,8 @@ import com.google.common.collect.Sets;
 
 import fr.progilone.pgcn.domain.administration.SftpConfiguration;
 import fr.progilone.pgcn.domain.administration.viewsformat.ViewsFormatConfiguration;
+import fr.progilone.pgcn.domain.delivery.DeliveredDocument;
+import fr.progilone.pgcn.domain.delivery.Delivery;
 import fr.progilone.pgcn.domain.document.BibliographicRecord;
 import fr.progilone.pgcn.domain.document.DigitalDocument;
 import fr.progilone.pgcn.domain.document.DocPage;
@@ -67,6 +73,7 @@ import fr.progilone.pgcn.domain.dto.document.SummaryDocUnitWithLotDTO;
 import fr.progilone.pgcn.domain.dto.exchange.InternetArchiveReportDTO;
 import fr.progilone.pgcn.domain.exportftpconfiguration.ExportFTPConfiguration;
 import fr.progilone.pgcn.domain.library.Library;
+import fr.progilone.pgcn.domain.lot.Lot;
 import fr.progilone.pgcn.domain.project.Project;
 import fr.progilone.pgcn.domain.storage.CheckSummedStoredFile;
 import fr.progilone.pgcn.domain.storage.StoredFile;
@@ -78,8 +85,11 @@ import fr.progilone.pgcn.exception.PgcnValidationException;
 import fr.progilone.pgcn.exception.message.PgcnError;
 import fr.progilone.pgcn.exception.message.PgcnErrorCode;
 import fr.progilone.pgcn.exception.message.PgcnList;
+import fr.progilone.pgcn.repository.lot.LotRepository;
 import fr.progilone.pgcn.service.LockService;
 import fr.progilone.pgcn.service.check.MetaDatasCheckService;
+import fr.progilone.pgcn.service.delivery.DeliveryService;
+import fr.progilone.pgcn.service.document.DigitalDocumentService;
 import fr.progilone.pgcn.service.document.DocUnitService;
 import fr.progilone.pgcn.service.document.mapper.DocUnitMapper;
 import fr.progilone.pgcn.service.document.mapper.SimpleDocUnitMapper;
@@ -112,7 +122,7 @@ public class UIDocUnitService {
 
     @Value("${instance.libraries}")
     private String[] instanceLibraries;
-    
+
     @Value("${services.ftpexport.cache}")
     private String ftpExportCacheDir;
 
@@ -131,6 +141,9 @@ public class UIDocUnitService {
     private final ExportFTPConfigurationService exportFTPConfigurationService;
     private final SftpService sftpService;
     private final CryptoService cryptoService;
+    private final LotRepository lotRepository;
+    private final DeliveryService deliveryService;
+    private final DigitalDocumentService digitalDocumentService;
 
     @Autowired
     public UIDocUnitService(final DocUnitService docUnitService,
@@ -147,7 +160,10 @@ public class UIDocUnitService {
                             final CinesRequestHandlerService cinesRequestHandlerService,
                             final ExportFTPConfigurationService exportFTPConfigurationService,
                             final SftpService sftpService,
-                            final CryptoService cryptoService) {
+                            final CryptoService cryptoService,
+                            final LotRepository lotRepository, 
+                            final DeliveryService deliveryService,
+                            final DigitalDocumentService digitalDocumentService) {
         this.docUnitService = docUnitService;
         this.exportEadService = exportEadService;
         this.uiDocUnitMapper = uiDocUnitMapper;
@@ -163,7 +179,9 @@ public class UIDocUnitService {
         this.exportFTPConfigurationService = exportFTPConfigurationService;
         this.sftpService = sftpService;
         this.cryptoService = cryptoService;
-
+        this.lotRepository = lotRepository;
+        this.deliveryService = deliveryService;
+        this.digitalDocumentService = digitalDocumentService;
     }
 
     @PostConstruct
@@ -175,7 +193,7 @@ public class UIDocUnitService {
             } catch (final IOException ex) {
                 LOG.error(ex.getMessage(), ex);
             }
-        });    
+        });
     }
 
     /**
@@ -279,7 +297,7 @@ public class UIDocUnitService {
 
     private DocUnitDTO mapIntoDTO(final DocUnit doc) {
         final DocUnitDTO result = DocUnitMapper.INSTANCE.docUnitToDocUnitDTO(doc);
-        if(doc != null) {
+        if (doc != null) {
             if (CollectionUtils.isNotEmpty(doc.getPhysicalDocuments())) {
                 result.setDigitalId(doc.getPhysicalDocuments().iterator().next().getDigitalId());
             }
@@ -425,6 +443,7 @@ public class UIDocUnitService {
                                                          libraries,
                                                          projects,
                                                          lots,
+                                                         Collections.emptyList(),
                                                          statuses,
                                                          lastModifiedDateFrom,
                                                          lastModifiedDateTo,
@@ -452,6 +471,7 @@ public class UIDocUnitService {
                                                    final List<String> libraries,
                                                    final List<String> projects,
                                                    final List<String> lots,
+                                                   final List<String> trains,
                                                    final List<String> statuses,
                                                    final LocalDate lastModifiedDateFrom,
                                                    final LocalDate lastModifiedDateTo,
@@ -475,6 +495,7 @@ public class UIDocUnitService {
                                                          libraries,
                                                          projects,
                                                          lots,
+                                                         trains,
                                                          statuses,
                                                          lastModifiedDateFrom,
                                                          lastModifiedDateTo,
@@ -489,7 +510,120 @@ public class UIDocUnitService {
 
     @Transactional
     public void setProjectAndLot(final List<String> docs, final String project, final String lot, final String train) {
-        docUnitService.setProjectAndLot(docs, project, lot, train);
+      
+        
+        final Lot l = StringUtils.isBlank(lot) ? null : lotRepository.findOne(lot);
+        final Set<DocUnit> dus = docUnitService.findByIdentifierInWithDocs(docs);
+               
+        // En cas de lot renum, il faut s'assurer que les workflows des autres docs en cours ne restent pas bloqués...
+        if (isLotRenum(dus, l)) {
+            checkWorkflowStateforRenum(dus); 
+        }
+        
+        docUnitService.setProjectAndLot(dus, project, l, train);
+    }
+    
+    /**
+     * Retourne vrai si on cree un lot de renumerisation.
+     * 
+     * @param dus
+     * @param lot
+     * @return
+     */
+    protected boolean isLotRenum(final Set<DocUnit> dus, final Lot lot) {
+        
+        return lot != null && 
+                dus.stream()
+                    .filter(du -> du.getLot() != null
+                        && ! du.getLot().getIdentifier().equals(lot.getIdentifier()))
+                    .findFirst().isPresent();
+    }
+    
+    
+    /**
+     * Appelée uniquement à la création d'un train de renumérisation.
+     * 
+     * @param docUnitIds
+     */
+    @Transactional
+    public void checkWorkflowStateforTrainRenum(final List<String> docUnitIds) {
+        checkWorkflowStateforRenum(docUnitService.findByIdentifierInWithDocs(docUnitIds));
+    }
+    
+    
+    /**
+     * Appelée uniquement à la création d'un train/lot de renumérisation
+     * pour vérifier que le changement de delivery des docs à renumeriser 
+     * ne puisse pas provoquer le blocage de workflows des autres docs de la livraison... 
+     * Si c'est le cas => on fait avancer les workflows concernés (processe l'envoi du rapport) 
+     * 
+     * @param dus
+     */
+    protected void checkWorkflowStateforRenum(final Set<DocUnit> dus) {
+        
+        final Set<String> renumDocUnitIds = dus.stream().map(d -> d.getIdentifier()).collect(Collectors.toSet());
+        final Set<String> deliveriesToCheck = new HashSet<>();
+        
+        // recupere les livraisons concernées par ces mouvement de docUnits.
+        dus.stream().forEach(du -> {
+           
+                final DigitalDocument digDoc = du.getDigitalDocuments().stream().findFirst().orElse(null);
+                // find delivery from last delivereddoc
+                final String lastDelivId = digDoc.getDeliveries()
+                         .stream()
+                         .filter(deliv -> deliv.getDelivery() != null)
+                         .sorted(Collections.reverseOrder(Comparator.nullsLast(Comparator.comparing(DeliveredDocument::getCreatedDate))))
+                         .map(deliv -> deliv.getDelivery().getIdentifier())
+                         .findFirst().orElse(null);
+                
+                deliveriesToCheck.add(lastDelivId);    
+        });
+      
+        // Dans chacune de ces livraisons...
+        deliveriesToCheck.forEach(deliveryId -> {
+            
+            final Set<String> possibleRunningStates = new HashSet<>();
+            final Map<String, Optional<DeliveredDocument>> docUnitIdsToTreat = new HashMap<>();
+            final Delivery delivery = deliveryService.findOneWithDep(deliveryId); 
+            
+            for (final DeliveredDocument delivered : delivery.getDocuments()) {
+                
+                if (delivered.getDigitalDocument() == null 
+                        || delivered.getDigitalDocument().getDocUnit() == null) {
+                    continue;
+                }
+                final String docUnitId = delivered.getDigitalDocument().getDocUnit().getIdentifier();
+                if (renumDocUnitIds.contains(docUnitId)) {  // ne tient pas compte des docUnits qui sortent pour renum
+                    continue;
+                }
+                docUnitIdsToTreat.put(docUnitId, Optional.of(delivered));
+                
+                // ... on verifie si au moins une etape susceptible de faire avancer le workflow est accessible....
+                if (workflowService.areStatesRunning(docUnitId, 
+                                                     WorkflowStateKey.CONTROLE_QUALITE_EN_COURS,
+                                                     WorkflowStateKey.PREREJET_DOCUMENT, 
+                                                     WorkflowStateKey.PREVALIDATION_DOCUMENT,
+                                                     WorkflowStateKey.VALIDATION_DOCUMENT)) {
+                    possibleRunningStates.add(docUnitId);
+                    // ok, workflow non bloqué
+                    break;
+                }
+            }
+            
+            // Sinon, le workflow ne pourra pas avancer, il faut le debloquer en déclenchant l'envoi du rapport... 
+            if (possibleRunningStates.isEmpty()) {
+                docUnitIdsToTreat.forEach((docUnitId, optDelivered) -> {
+                    digitalDocumentService.generateAndSendCheckSlip(docUnitId, optDelivered);
+               });            
+            }
+        });        
+        
+    }
+    
+    
+    @Transactional
+    public void setTrain(final List<String> docs, final String train) {
+        docUnitService.setTrain(docs, train);
     }
 
     /**
@@ -698,79 +832,76 @@ public class UIDocUnitService {
     }
 
     @Transactional
-    public boolean massExportToFtp(final Collection<String> docUnitIdentifiers, final List<String> exportTypes, final Library lib) throws IOException {
+    public boolean massExportToFtp(final Collection<String> docUnitIdentifiers, final List<String> exportTypes, final Library lib) throws
+                                                                                                                                   IOException {
 
-            boolean exported = false;
-            // Création du fichier zip global
-            String zipName = DateUtils.formatDateToString(LocalDateTime.now(), "yyyy-MM-dd HH-mm-ss") + "_";
-            if (CollectionUtils.isNotEmpty(docUnitIdentifiers) && docUnitIdentifiers.size() == 1) {
-                final DocUnit doc = docUnitService.findOne(docUnitIdentifiers.iterator().next());
-                zipName += doc.getPgcnId() + ".zip";
-            } else {
-                zipName += "export.zip";
+        boolean exported = false;
+        // Création du fichier zip global
+        String zipName = DateUtils.formatDateToString(LocalDateTime.now(), "yyyy-MM-dd HH-mm-ss") + "_";
+        if (CollectionUtils.isNotEmpty(docUnitIdentifiers) && docUnitIdentifiers.size() == 1) {
+            final DocUnit doc = docUnitService.findOne(docUnitIdentifiers.iterator().next());
+            zipName += doc.getPgcnId() + ".zip";
+        } else {
+            zipName += "export.zip";
+        }
+        final File zipFile = new File(Paths.get(ftpExportCacheDir, lib.getIdentifier()).toFile(), zipName);
+        try {
+            if (!zipFile.createNewFile()) {
+                LOG.warn("Probleme à la creation du zip : le fichier {} existe deja!", zipName);
             }
-            final File zipFile =
-                    new File(Paths.get(ftpExportCacheDir, lib.getIdentifier()).toFile(), zipName);
-            try {
-                if (!zipFile.createNewFile()) {
-                    LOG.warn("Probleme à la creation du zip : le fichier {} existe deja!", zipName);
-                }
-            } catch (final IOException e) {
-                LOG.error(e.getMessage(), e);
-                return exported;
-            }
-
-            try (final FileOutputStream fos = new FileOutputStream(zipFile); ) {
-                massExport(fos, docUnitIdentifiers, exportTypes);
-            } catch (final IOException e) {
-                LOG.error("Erreur lors de la compression des fichiers d'export", e);
-                return exported;
-            }
-
-            final Path zipPath = zipFile.toPath();
-
-            // recup config export ftp
-            final Set<ExportFTPConfiguration> configs = exportFTPConfigurationService.findByLibraryAndActive(lib, true);
-            if (CollectionUtils.isNotEmpty(configs)) {
-                final ExportFTPConfiguration conf = configs.iterator().next();
-                if (zipPath != null && zipPath.toFile().exists()) {
-
-                    final SftpConfiguration sftpConf = new SftpConfiguration();
-                    sftpConf.setActive(true);
-                    sftpConf.setHost(conf.getStorageServer());
-                    sftpConf.setPort(Integer.valueOf(conf.getPort()));
-                    sftpConf.setUsername(conf.getLogin());
-                    sftpConf.setTargetDir(conf.getAddress());
-
-                    try {
-                        sftpConf.setPassword(cryptoService.encrypt(conf.getPassword()));
-                        sftpService.sftpPut(sftpConf, zipPath);
-                    } catch(final PgcnTechnicalException e) {
-                        LOG.error("Erreur Export FTP", e);
-                        return exported;
-                    }
-                    exported = true;
-                }
-            }
-            if (exported) {
-                // Suppression du zip si envoyé sur le ftp
-                FileUtils.deleteQuietly(zipFile);
-            }
+        } catch (final IOException e) {
+            LOG.error(e.getMessage(), e);
             return exported;
+        }
+
+        try (final FileOutputStream fos = new FileOutputStream(zipFile);) {
+            massExport(fos, docUnitIdentifiers, exportTypes);
+        } catch (final IOException e) {
+            LOG.error("Erreur lors de la compression des fichiers d'export", e);
+            return exported;
+        }
+
+        final Path zipPath = zipFile.toPath();
+
+        // recup config export ftp
+        final Set<ExportFTPConfiguration> configs = exportFTPConfigurationService.findByLibraryAndActive(lib, true);
+        if (CollectionUtils.isNotEmpty(configs)) {
+            final ExportFTPConfiguration conf = configs.iterator().next();
+            if (zipPath != null && zipPath.toFile().exists()) {
+
+                final SftpConfiguration sftpConf = new SftpConfiguration();
+                sftpConf.setActive(true);
+                sftpConf.setHost(conf.getStorageServer());
+                sftpConf.setPort(Integer.valueOf(conf.getPort()));
+                sftpConf.setUsername(conf.getLogin());
+                sftpConf.setTargetDir(conf.getAddress());
+
+                try {
+                    sftpConf.setPassword(cryptoService.encrypt(conf.getPassword()));
+                    sftpService.sftpPut(sftpConf, zipPath);
+                } catch (final PgcnTechnicalException e) {
+                    LOG.error("Erreur Export FTP", e);
+                    return exported;
+                }
+                exported = true;
+            }
+        }
+        if (exported) {
+            // Suppression du zip si envoyé sur le ftp
+            FileUtils.deleteQuietly(zipFile);
+        }
+        return exported;
     }
 
-
     @Transactional
-    public void massExport(final OutputStream out, 
-                           final Collection<String> docUnitIdentifiers, 
-                           final List<String> exportTypes) throws IOException {
+    public void massExport(final OutputStream out, final Collection<String> docUnitIdentifiers, final List<String> exportTypes) throws IOException {
 
         final Collection<DocUnit> docUnits = docUnitService.findAllById(docUnitIdentifiers);
 
         try (final ZipOutputStream zos = new ZipOutputStream(out)) {
 
             for (final DocUnit du : docUnits) {
-                
+
                 final String libraryId = du.getLibrary().getIdentifier();
 
                 final String directory = du.getPgcnId() + "/";
@@ -792,15 +923,19 @@ public class UIDocUnitService {
 
                             if (exportTypes.contains("MASTER") && dp.getNumber() != null) {
                                 zos.putNextEntry(new ZipEntry(directory + "master/" + sf.getFilename()));
-                                final FileInputStream fis = new FileInputStream(file);
-                                IOUtils.copy(fis, zos);
-                                zos.closeEntry();
+
+                                try (final FileInputStream fis = new FileInputStream(file)) {
+                                    IOUtils.copy(fis, zos);
+                                    zos.closeEntry();
+                                }
                             }
                             if (exportTypes.contains("PDF") && dp.getNumber() == null) {
                                 zos.putNextEntry(new ZipEntry(directory + "pdf/" + sf.getFilename()));
-                                final FileInputStream fis = new FileInputStream(file);
-                                IOUtils.copy(fis, zos);
-                                zos.closeEntry();
+
+                                try (final FileInputStream fis = new FileInputStream(file)) {
+                                    IOUtils.copy(fis, zos);
+                                    zos.closeEntry();
+                                }
                             }
                         }
 
@@ -811,9 +946,11 @@ public class UIDocUnitService {
                                 final File file = bm.getFileForStoredFile(sf, libraryId);
                                 final String fileName = sf.getFilename().substring(0, sf.getFilename().lastIndexOf("."));
                                 zos.putNextEntry(new ZipEntry(directory.concat("view/").concat(fileName).concat(".").concat(ImageUtils.FORMAT_JPG)));
-                                final FileInputStream fis = new FileInputStream(file);
-                                IOUtils.copy(fis, zos);
-                                zos.closeEntry();
+
+                                try (final FileInputStream fis = new FileInputStream(file)) {
+                                    IOUtils.copy(fis, zos);
+                                    zos.closeEntry();
+                                }
                             }
                         }
 
@@ -827,9 +964,11 @@ public class UIDocUnitService {
                                                                        .concat(fileName)
                                                                        .concat(".")
                                                                        .concat(ImageUtils.FORMAT_JPG)));
-                                final FileInputStream fis = new FileInputStream(file);
-                                IOUtils.copy(fis, zos);
-                                zos.closeEntry();
+
+                                try (final FileInputStream fis = new FileInputStream(file)) {
+                                    IOUtils.copy(fis, zos);
+                                    zos.closeEntry();
+                                }
                             }
                         }
                     }
@@ -859,20 +998,23 @@ public class UIDocUnitService {
                     final File aipFile = cinesRequestHandlerService.retrieveAip(du.getIdentifier());
                     if (aipFile != null && aipFile.exists()) {
                         zos.putNextEntry(new ZipEntry(directory.concat(CinesRequestHandlerService.AIP_XML_FILE)));
-                        final FileInputStream fis = new FileInputStream(aipFile);
-                        IOUtils.copy(fis, zos);
-                        zos.closeEntry();
+
+                        try (final FileInputStream fis = new FileInputStream(aipFile)) {
+                            IOUtils.copy(fis, zos);
+                            zos.closeEntry();
+                        }
                     }
                     // sip.xml
                     final File sipFile = cinesRequestHandlerService.retrieveSip(du.getIdentifier(), false);
                     if (sipFile != null && sipFile.exists()) {
                         zos.putNextEntry(new ZipEntry(directory.concat(CinesRequestHandlerService.SIP_XML_FILE)));
-                        final FileInputStream fis = new FileInputStream(sipFile);
-                        IOUtils.copy(fis, zos);
-                        zos.closeEntry();
+
+                        try (final FileInputStream fis = new FileInputStream(sipFile)) {
+                            IOUtils.copy(fis, zos);
+                            zos.closeEntry();
+                        }
                     }
                 }
-
             }
         }
     }

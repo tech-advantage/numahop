@@ -1,18 +1,21 @@
 package fr.progilone.pgcn.repository.exchange.internetarchive;
 
+import java.time.LocalDate;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
+import org.apache.commons.collections4.CollectionUtils;
+
 import com.mysema.query.BooleanBuilder;
 import com.mysema.query.jpa.JPQLQuery;
 import com.mysema.query.jpa.impl.JPAQuery;
 import com.mysema.query.types.expr.BooleanExpression;
+
 import fr.progilone.pgcn.domain.document.QDocUnit;
 import fr.progilone.pgcn.domain.exchange.internetarchive.InternetArchiveReport;
 import fr.progilone.pgcn.domain.exchange.internetarchive.QInternetArchiveReport;
-import org.apache.commons.collections4.CollectionUtils;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import java.time.LocalDate;
-import java.util.List;
 
 public class InternetArchiveReportRepositoryImpl implements InternetArchiveReportRepositoryCustom {
 
@@ -34,7 +37,7 @@ public class InternetArchiveReportRepositoryImpl implements InternetArchiveRepor
         // Date
         builder.and(qIaReport.dateSent.goe(fromDate.atStartOfDay()));
         // failures
-        builder.and(qIaReport.status.eq(failures ? InternetArchiveReport.Status.FAILED : InternetArchiveReport.Status.SENT));
+        builder.and(qIaReport.status.eq(failures ? InternetArchiveReport.Status.FAILED : InternetArchiveReport.Status.ARCHIVED));
 
         // Query
         final JPQLQuery query = new JPAQuery(em);

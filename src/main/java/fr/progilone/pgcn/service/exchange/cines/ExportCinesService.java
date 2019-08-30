@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.xml.sax.SAXException;
 
@@ -63,6 +64,7 @@ import fr.progilone.pgcn.service.library.LibraryService;
 import fr.progilone.pgcn.service.storage.BinaryStorageManager;
 import fr.progilone.pgcn.service.storage.FileStorageManager;
 import fr.progilone.pgcn.service.util.FileUtils.CheckSumType;
+import fr.progilone.pgcn.service.util.transaction.TransactionService;
 
 /**
  * Created by Sébastien on 27/12/2016.
@@ -99,6 +101,7 @@ public class ExportCinesService {
     private final SftpService sftpService;
     private final FileStorageManager fm;
     private final LibraryParameterService libraryParameterService;
+    private final TransactionService transactionService;
     
 
     @Autowired
@@ -107,7 +110,8 @@ public class ExportCinesService {
                               final UIBibliographicRecordService uiBibliographicRecordService, final LibraryService libraryService, 
                               final SftpConfigurationService sftpConfigurationService, final CinesReportService cinesReportService, 
                               final EsCinesReportService esCinesReportService, final SftpService sftpService, 
-                              final FileStorageManager fm, final LibraryParameterService libraryParameterService) {
+                              final FileStorageManager fm, final LibraryParameterService libraryParameterService,
+                              final TransactionService transactionService) {
         
         this.exportMetsService = exportMetsService;
         this.exportSipService = exportSipService;
@@ -122,6 +126,7 @@ public class ExportCinesService {
         this.sftpService = sftpService;
         this.fm =fm;
         this.libraryParameterService = libraryParameterService;
+        this.transactionService = transactionService;
         
     }
 
@@ -461,7 +466,7 @@ public class ExportCinesService {
      * @return
      */
     @Transactional(readOnly = true)
-    public List<DocUnit> findDocUnitsReadyForCinesExport() {
+    public List<String> findDocUnitsReadyForCinesExport() {
         
         final List<DocUnit> docsToExport = new ArrayList<>();
         
@@ -486,12 +491,23 @@ public class ExportCinesService {
                                            docsToExport.add(doc);
                                        });
         }); 
-        return docsToExport;
+        return docsToExport.stream().map(DocUnit::getIdentifier).collect(Collectors.toList());
     }
     
-    @Transactional
-    public CinesReport exportDocToCines(final DocUnit doc, final boolean reversion) {
+
+    
+    /**
+     * 
+     * @param docUnitId
+     * @param reversion
+     * @return
+     */
+    public CinesReport exportDocToCines(final String docUnitId, final boolean reversion) {
+        
+        // On ouvre une transation en fin d'export du doc si success.
+        final TransactionStatus status = transactionService.startTransaction(false);
                 
+        final DocUnit doc = docUnitService.findOneWithAllDependencies(docUnitId);
         // Traitement
         CinesReport report = cinesReportService.createCinesReport(doc);
         
@@ -499,11 +515,11 @@ public class ExportCinesService {
         final SftpConfiguration conf = sftpConfigurationService.findByLibrary(doc.getLibrary(), true).stream().findFirst().orElse(null);
         if (conf == null) {
             LOG.trace("SFTP Conf. introuvable => DocUnit[{}] - Export Cines impossible.", doc.getIdentifier());
+            transactionService.rollbackTransaction(status);
             report = cinesReportService.failReport(report, "Configuration SFTP introuvable - export Cines impossible");
             return report;
         }
-        
-        
+               
         // Recup données depuis exportData, ou sinon depuis la notice.
         final BibliographicRecordDcDTO metaDC = getExportData(doc);
          
@@ -523,12 +539,18 @@ public class ExportCinesService {
             LOG.debug("Suppression du répertoire {}", path.toAbsolutePath().toString());
             FileUtils.deleteQuietly(path.toFile());
             
+            docUnitService.incrementDocUnitVersion(doc);
+            
+            transactionService.commitTransaction(status);
+            
         } catch (final MarshalException e) {
+            transactionService.rollbackTransaction(status);
             final String msg = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
             LOG.error("ERREUR EXPORT CINES : {}", msg, e);
             report = cinesReportService.failReport(report, msg);
             
         } catch (final Exception e) {
+            transactionService.rollbackTransaction(status);
             LOG.error(e.getMessage(), e);
             report = cinesReportService.failReport(report, e.getMessage());
         } finally {

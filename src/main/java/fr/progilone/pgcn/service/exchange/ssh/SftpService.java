@@ -140,8 +140,8 @@ public class SftpService {
                 // Positionnement sur le répertoire cible
                 channelSftp.cd(conf.getTargetDir());
                 // Si le répertoire existe déjà, on le supprime
-                final boolean pathOk = checkPath(localSource, channelSftp);
-                if (pathOk) {
+                final boolean pathExists = checkPath(localSource, channelSftp);
+                if (pathExists) {
                     final Path fileName = localSource.getFileName();
                     if (fileName != null) {
                         LOG.warn("Le répertoire distant {} existe déjà, le transfert est annulé", fileName.toString());

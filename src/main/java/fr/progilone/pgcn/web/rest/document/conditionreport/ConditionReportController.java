@@ -200,6 +200,8 @@ public class ConditionReportController extends AbstractRestController {
                                                                          page,
                                                                          size,
                                                                          sorts);
+        
+        results.forEach(res -> res.getDocUnit().setChangeTrainAuthorized(workflowAccessHelper.canChangeTrain(res.getDocUnit().getIdentifier()).isDone()));
         return new ResponseEntity<>(results, HttpStatus.OK);
     }
 

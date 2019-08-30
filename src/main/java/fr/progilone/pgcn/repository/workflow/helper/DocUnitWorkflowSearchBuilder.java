@@ -1,12 +1,13 @@
 package fr.progilone.pgcn.repository.workflow.helper;
 
-import fr.progilone.pgcn.domain.workflow.WorkflowStateKey;
-import org.apache.commons.collections4.CollectionUtils;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import org.apache.commons.collections4.CollectionUtils;
+
+import fr.progilone.pgcn.domain.workflow.WorkflowStateKey;
 
 /**
  * Aide pour la construction d'une recherche
@@ -24,6 +25,10 @@ public final class DocUnitWorkflowSearchBuilder {
     private LocalDate toDate;
     private List<String> types;
     private List<String> collections;
+    
+    private boolean withFailedStatuses = false;
+    
+    
 
     public Optional<List<String>> getLibraries() {
         return ofEmptiable(libraries);
@@ -129,6 +134,15 @@ public final class DocUnitWorkflowSearchBuilder {
 
     public DocUnitWorkflowSearchBuilder setCollections(final List<String> collections) {
         this.collections = collections;
+        return this;
+    }
+
+    public boolean isWithFailedStatuses() {
+        return this.withFailedStatuses;
+    }
+
+    public DocUnitWorkflowSearchBuilder setWithFailedStatuses(final boolean withFailedStatuses) {
+        this.withFailedStatuses = withFailedStatuses;
         return this;
     }
 

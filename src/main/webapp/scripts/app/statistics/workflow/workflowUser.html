@@ -66,9 +66,12 @@
                     <table class="table table-hover sem-list">
                         <thead>
                         <tr>
-                            <th class="text-center h6 bold" translate>Bibliothèque</th>
                             <th class="text-center h6 bold" translate>Utilisateur</th>
                             <th class="text-center h6 bold" translate>Nb d'UD contrôlées</th>
+                            <th class="text-center h6 bold" translate>UD pré-validées</th>
+                            <th class="text-center h6 bold" translate>UD validées</th>
+                            <th class="text-center h6 bold" translate>UD pré-rejetées</th>
+                            <th class="text-center h6 bold" translate>UD rejetées</th>
                             <th class="text-center h6 bold" translate>Nb moyen de pages</th>
                             <th class="text-center h6 bold" translate>Délai moyen de contrôle</th>
                         </tr>
@@ -76,18 +79,16 @@
                         <tbody>
                         <tr ng-repeat="item in statCtrl.items | orderBy:['libraryName', 'userFullName']">
                             <td class="text-right nowrap">
-                                {{ ::item.libraryName }} 
-                                <numa-custom-link numa-link-type="library"
-                                                  numa-link-parameters="{id: item.libraryIdentifier}"
-                                                  ng-if="item.libraryIdentifier"></numa-custom-link>
-                            </td>
-                            <td class="text-right nowrap">
                                 {{ ::item.userFullName || item.userLogin || ('Non renseigné' | translate) }} 
                                 <numa-custom-link numa-link-type="user"
                                                     numa-link-parameters="{id: item.userIdentifier}"
                                                     ng-if="item.userIdentifier"></numa-custom-link>
                             </td>
                             <td class="text-center">{{ ::item.nbDocUnit | number }}</td>
+                            <td class="text-center">{{ ::item.nbPreValidatedDocUnit | number }}</td>
+                            <td class="text-center">{{ ::item.nbValidatedDocUnit | number }}</td>
+                            <td class="text-center">{{ ::item.nbPreRejectedDocUnit | number }}</td>
+                            <td class="text-center">{{ ::item.nbRejectedDocUnit | number }}</td>
                             <td class="text-center">{{ ::item.avgTotalPages | number }}</td>
                             <td class="text-center">{{ ::item.avgDuration | duration:'hour' }}</td>
                         </tr>

@@ -8,13 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.exchange.internetarchive.InternetArchiveReport;
-import fr.progilone.pgcn.domain.workflow.WorkflowStateKey;
 import fr.progilone.pgcn.service.es.EsInternetArchiveReportService;
-import fr.progilone.pgcn.service.workflow.WorkflowService;
 
 /**
  * Gestion des opération IA asynchrone, notamment pour gérer l'indexation post-traitement
@@ -27,15 +24,12 @@ public class InternetArchiveServiceAsync {
 
     private final EsInternetArchiveReportService esIaReportService;
     private final InternetArchiveService internetArchiveService;
-    private final WorkflowService workflowService;
 
     @Autowired
     public InternetArchiveServiceAsync(final EsInternetArchiveReportService esIaReportService,
-                                       final InternetArchiveService internetArchiveService,
-                                       final WorkflowService workflowService) {
+                                       final InternetArchiveService internetArchiveService) {
         this.esIaReportService = esIaReportService;
         this.internetArchiveService = internetArchiveService;
-        this.workflowService = workflowService;
     }
 
     /**
@@ -46,33 +40,26 @@ public class InternetArchiveServiceAsync {
      */
     @Async
     public void createItem(final DocUnit docUnit, final InternetArchiveItemDTO item) {
-        final InternetArchiveReport report = internetArchiveService.createItem(docUnit, item);
-        if (workflowService.isStateRunning(docUnit.getIdentifier(), WorkflowStateKey.DIFFUSION_DOCUMENT)) {
-            workflowService.processAutomaticState(docUnit.getIdentifier(), WorkflowStateKey.DIFFUSION_DOCUMENT);
-        }
+        final InternetArchiveReport report = internetArchiveService.createItem(docUnit, item, true);
         esIaReportService.indexAsync(report.getIdentifier());
     }
 
     @Async
     public void createItem(final DocUnit docUnit, final InternetArchiveItemDTO item, final String userId) {
-        final InternetArchiveReport report = internetArchiveService.createItem(docUnit, item);
-        if (workflowService.isStateRunning(docUnit.getIdentifier(), WorkflowStateKey.DIFFUSION_DOCUMENT)) {
-            workflowService.processState(docUnit.getIdentifier(), WorkflowStateKey.DIFFUSION_DOCUMENT, userId);
-        }
+        final InternetArchiveReport report = internetArchiveService.createItem(docUnit, item, false);
         esIaReportService.indexAsync(report.getIdentifier());
     }
 
     /**
      * Lanceur de l'export automatique vers Archive.
      */
-    @Transactional
     @Scheduled(cron = "${cron.internetArchiveExport}")
     public void automaticInternetArchiveExport() {
         LOG.info("Lancement du Job internetArchiveExport...");
         final List<DocUnit> docsToExport = internetArchiveService.findDocUnitsReadyForArchiveExport();
         docsToExport.forEach(doc -> {
             LOG.info("Debut export vers ARCHIVE - DocUnit[{}]", doc.getIdentifier());
-            final InternetArchiveItemDTO item = internetArchiveService.prepareItem(doc);
+            final InternetArchiveItemDTO item = internetArchiveService.prepareItem(doc.getIdentifier());
             createItem(doc, item);
 
             LOG.info("Fin export vers ARCHIVE - DocUnit[{}]", doc.getIdentifier());

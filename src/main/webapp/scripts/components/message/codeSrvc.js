@@ -138,7 +138,6 @@
                 "workflow.NUMERISATION_EN_ATTENTE": gettextCatalog.getString('En attente de numérisation'),
                 "workflow.RELIVRAISON_DOCUMENT_EN_COURS": gettextCatalog.getString('Documents en attente de relivraison'),
                 "workflow.CLOTURE_DOCUMENT": gettextCatalog.getString('Fin'),
-                "workflow.CLOTURE_DOCUMENT": gettextCatalog.getString('Fin'),
                 "workflow.status.NOT_STARTED": gettextCatalog.getString('Non démarré'),
                 "workflow.status.PENDING": gettextCatalog.getString('En cours'),
                 "workflow.status.CANCELED": gettextCatalog.getString('Annulé'),
@@ -176,6 +175,11 @@
                 "workflow.model.NUMERISATION_EN_ATTENTE": gettextCatalog.getString('En attente de numérisation'),
                 "workflow.model.RELIVRAISON_DOCUMENT_EN_COURS": gettextCatalog.getString('En attente de relivraison'),
                 "workflow.model.CLOTURE_DOCUMENT": gettextCatalog.getString('Fin'),
+                
+                // Types de diffusion
+                "workflow.type.DIFFUSION_DOCUMENT": gettextCatalog.getString('IA'),
+                "workflow.type.DIFFUSION_DOCUMENT_OMEKA": gettextCatalog.getString('Omeka'),
+                "workflow.type.DIFFUSION_DOCUMENT_LOCALE": gettextCatalog.getString('locale'),
 
                 // Types de value (LibraryParam)
                 "libParam.value.type.RIGHTS_DEFAULT_VALUE": gettextCatalog.getString('Droits'),

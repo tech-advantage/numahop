@@ -24,6 +24,7 @@
             last_modified_date_filter: true,
             project_filter: true,
             lot_filter: true,
+            train_filter: true,
             created_date_filter: true
         };
 
@@ -104,8 +105,7 @@
         /**
          * Liste des options pour les listes déroulantes
          */
-        mainCtrl.options = {
-        };
+        mainCtrl.options = {};
         $scope.options = mainCtrl.options;
 
         init();
@@ -119,12 +119,14 @@
             // Chargement des données
             $q.all([NumaHopInitializationSrvc.loadLibraries(),
             NumaHopInitializationSrvc.loadProjects(),
-            NumaHopInitializationSrvc.loadLots()])
+            NumaHopInitializationSrvc.loadLots(),
+            NumaHopInitializationSrvc.loadTrains()])
 
                 .then(function (data) {
                     mainCtrl.options.libraries = data[0];
                     mainCtrl.options.projects = data[1];
                     mainCtrl.options.lots = data[2];
+                    mainCtrl.options.trains = data[3];
                     loadFilters();
                     loadPageSize();
                     getPage().then(function () {
@@ -145,6 +147,10 @@
                         .then(function (data) {
                             mainCtrl.options.lots = data;
                         });
+                    NumaHopInitializationSrvc.loadTrains(librariesIds, projectsIds)
+                    .then(function (data) {
+                        mainCtrl.options.trains = data;
+                    });
                 });
         }
 
@@ -241,6 +247,11 @@
             if (mainCtrl.filters.lots) {
                 var lotsIds = _.pluck(mainCtrl.filters.lots, "identifier");
                 params["lots"] = lotsIds;
+            }
+            // Train
+            if (mainCtrl.filters.trains) {
+                var trainsIds = _.pluck(mainCtrl.filters.trains, "identifier");
+                params["trains"] = trainsIds;
             }
             if (mainCtrl.filters.createdDateFrom) {
                 params["createdDateFrom"] = mainCtrl.filters.createdDateFrom;

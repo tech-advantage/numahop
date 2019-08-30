@@ -51,8 +51,8 @@ public class CacheConfiguration {
             cm.createCache(fr.progilone.pgcn.domain.library.Library.class.getName(), jcacheConfiguration);
             cm.createCache(fr.progilone.pgcn.domain.user.Address.class.getName(), jcacheConfiguration);
             cm.createCache(fr.progilone.pgcn.domain.document.DocPropertyType.class.getName(), jcacheConfiguration);
-            cm.createCache(fr.progilone.pgcn.domain.check.AutomaticCheckType.class.getName(), jcacheConfiguration);
             cm.createCache(fr.progilone.pgcn.domain.ocrlangconfiguration.OcrLanguage.class.getName(), jcacheConfiguration);
+            cm.createCache(fr.progilone.pgcn.domain.check.AutomaticCheckType.class.getName(), jcacheConfiguration);
         };
     }
 }

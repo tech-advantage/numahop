@@ -310,6 +310,7 @@ public class StatisticsWorkflowService {
                                                                                                 .setDeliveries(deliveries)
                                                                                                 .setFromDate(fromDate)
                                                                                                 .setToDate(toDate)
+                                                                                                .setWithFailedStatuses(true)
                                                                                                 .addState(CONTROLE_QUALITE_EN_COURS))
                                         .stream()
                                         .filter(w -> w.getDocUnit() != null && w.getDocUnit().getLibrary() != null)
@@ -630,9 +631,18 @@ public class StatisticsWorkflowService {
     }
 
     private void setWorkflowStateProgressDTO(final WorkflowUserProgressDTO dto, final List<WorkflowUserProgressRegroup> list) {
-        // Nombre d'unités documentaires contrôlées
+        // Nombre d'unités documentaires contrôlées  
         dto.setNbDocUnit(list.stream().map(g -> g.getWorkflow().getDocUnit()).distinct().count());
-
+      
+        // rejetees / validees
+        final long nbVal = list.stream()
+                                .filter(g -> WorkflowStateKey.CONTROLE_QUALITE_EN_COURS == g.getState().getKey())
+                                .filter(g -> WorkflowStateStatus.FINISHED == g.getState().getStatus())
+                                .map(g -> g.getWorkflow().getDocUnit())
+                                .distinct().count();
+        dto.setNbRejectedDocUnit(dto.getNbDocUnit()-nbVal);
+        dto.setNbValidatedDocUnit(nbVal);
+        
         // Nombre moyen de pages
         list.stream()
             .map(g -> g.getWorkflow().getDocUnit())
@@ -687,6 +697,7 @@ public class StatisticsWorkflowService {
     }
 
     private boolean filterFinishedState(final DocUnitState st) {
+        
         return st.getStartDate() != null && st.getEndDate() != null;
     }
 

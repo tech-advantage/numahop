@@ -122,11 +122,18 @@
                             <ul class="dropdown-menu dropdown-menu-right" uib-dropdown-menu role="menu">
                                 <!-- Ajouter la sélection à un train -->
                                 <li role="menuitem">
-                                    <a ng-click="mainCtrl.addSelectionToProject()" class="btn-xs">
+                                    <a ng-click="mainCtrl.addSelectionToTrain()" class="btn-xs">
                                         <span class="glyphicon-halflings glyphicon-plus"></span>
-                                        {{::'Ajouter à un projet' | translate}}
+                                        {{::'Ajouter à un train existant' | translate}}
                                     </a>
                                 </li>
+                                <!-- Ajouter la sélection à un nouveau train -->
+<!--                                 <li role="menuitem"> -->
+<!--                                     <a ng-click="mainCtrl.addSelectionToNewTrain()" class="btn-xs"> -->
+<!--                                         <span class="glyphicon-halflings glyphicon-plus"></span> -->
+<!--                                         {{::'Ajouter à un nouveau train' | translate}} -->
+<!--                                     </a> -->
+<!--                                 </li> -->
                                 
                                 <li role="menuitem" ng_if="!mainCtrl.isUserPresta">
                                     <a ng-click="mainCtrl.validSelection()" class="btn-xs">

@@ -26,7 +26,9 @@ public class ValidationNoticesState extends DocUnitState {
         processStatus();
 
         // Initialisation de la prochaine étape si applicable (aucune étape en cours)
-        if(getWorkflow().getCurrentStates().isEmpty()) {
+        if(getWorkflow().getCurrentStates().isEmpty() 
+                && getWorkflow().isDocumentValidated()
+                && getWorkflow().isRapportSent()) {
             getNextStates().forEach(state -> state.initializeState(null, null, null));
         }
     }

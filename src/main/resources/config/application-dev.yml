@@ -1,5 +1,8 @@
 server:
     port: 8080
+    
+instance:
+    libraries: library_bsg, library_bulac, library_sciencespo    
 
 spring:
     profiles: dev

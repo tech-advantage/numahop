@@ -146,10 +146,10 @@ public class UserService {
     }
 
     @Transactional
-    public void resetPassword(final String username) {
+    public boolean resetPassword(final String username) {
         final User user = userRepository.findByLogin(username);
-
-        if (user != null && user.getEmail() != null) {
+        
+        if (user != null && StringUtils.isNotBlank(user.getEmail())) {
             try {
                 // Génération du mot de passe
                 final String password = RandomUtil.generatePassword();
@@ -158,14 +158,16 @@ public class UserService {
                 parameters.put("login", username);
                 parameters.put("password", password);
                 // Envoi du mail
-                final boolean mailSent = sendEmail(user, Name.ReinitPassword, parameters);
-                if (mailSent) {
+                if (sendEmail(user, Name.ReinitPassword, parameters)) {
                     user.setPassword(passwordEncoder.encode(password));
                 }
+                return true;
+                
             } catch (final IOException e) {
                 LOG.error(e.getMessage(), e);
             }
         }
+        return false;
     }
 
     /**
@@ -471,11 +473,12 @@ public class UserService {
     }
 
     /**
-     * Envoi d'un email à l'utilisateur, généré à partir d'un template Velocity
-     *
+     * Envoi d'un email à l'utilisateur, généré à partir d'un template Velocity.
+     * 
      * @param user
      * @param templateName
      * @param parameters
+     * @param reset
      * @return
      * @throws IOException
      */

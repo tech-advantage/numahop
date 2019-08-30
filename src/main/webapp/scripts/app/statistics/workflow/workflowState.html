@@ -61,7 +61,6 @@
                     <table class="table table-hover sem-list">
                         <thead>
                         <tr>
-                            <th class="text-center h6 bold" translate>Bibliothèque</th>
                             <th class="text-center h6 bold" translate>Workflow</th>
                             <th class="text-center h6 bold" translate>Étape</th>
                             <th class="text-center h6 bold" translate>Durée moyenne</th>
@@ -69,12 +68,6 @@
                         </thead>
                         <tbody>
                         <tr ng-repeat="item in statCtrl.items | orderBy:['libraryName', 'workflowModelName']">
-                            <td class="text-right nowrap">
-                                {{ ::item.libraryName }} 
-                                <numa-custom-link numa-link-type="library"
-                                                  numa-link-parameters="{id: item.libraryIdentifier}"
-                                                  ng-if="item.libraryIdentifier"></numa-custom-link>
-                            </td>
                             <td class="text-right nowrap">
                                 {{ ::item.workflowModelName }} 
                                 <numa-custom-link numa-link-type="workflowModel"

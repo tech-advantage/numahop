@@ -336,7 +336,7 @@
         function loadAll(value) {
             onSuccess(value);
             $scope.loaded = true;
-            if (angular.isDefined(value.docUnit)) {
+            if (angular.isDefined(value.docUnit) && value.docUnit) {
                 WorkflowSrvc.canProcess({ docUnit: value.docUnit.identifier, key: 'VALIDATION_NOTICES' }).$promise
                     .then(function (result) {
                         if (result.value) {

@@ -71,7 +71,6 @@
                     <table class="table table-hover sem-list">
                         <thead>
                         <tr>
-                            <th class="text-center h6 bold" ng-if="statCtrl.showLib" translate>Bibliothèque</th>
                             <th class="text-center h6 bold" translate>Utilisateur</th>
                             <th class="text-center h6 bold" translate>Profil</th>
                             <th class="text-center h6 bold" translate>Projet</th>
@@ -84,12 +83,6 @@
                         </thead>
                         <tbody>
                         <tr ng-repeat="item in statCtrl.items | orderBy:['libraryName', 'userFullName', 'projectName', 'lotLabel', 'docPgcnId', 'startDate']">
-                            <td class="text-right" ng-if="statCtrl.showLib">
-                                {{ ::item.libraryName }} 
-                                <numa-custom-link numa-link-type="library"
-                                                  numa-link-parameters="{id: item.libraryIdentifier}"
-                                                  ng-if="item.libraryIdentifier"></numa-custom-link>
-                            </td>
                             <td class="text-right">
                                 {{ ::item.userFullName || item.userLogin || ('Non renseigné' | translate) }} 
                                 <numa-custom-link numa-link-type="user"

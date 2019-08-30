@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -19,6 +20,10 @@ import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.document.DocUnit.State;
 import fr.progilone.pgcn.domain.document.conditionreport.ConditionReportDetail.Type;
 import fr.progilone.pgcn.domain.lot.Lot;
+import fr.progilone.pgcn.domain.lot.Lot.LotStatus;
+import fr.progilone.pgcn.domain.project.Project;
+import fr.progilone.pgcn.domain.project.Project.ProjectStatus;
+import fr.progilone.pgcn.domain.train.Train.TrainStatus;
 import fr.progilone.pgcn.domain.user.User;
 import fr.progilone.pgcn.domain.workflow.DocUnitState;
 import fr.progilone.pgcn.domain.workflow.DocUnitWorkflow;
@@ -30,8 +35,11 @@ import fr.progilone.pgcn.exception.PgcnBusinessException;
 import fr.progilone.pgcn.exception.message.PgcnError;
 import fr.progilone.pgcn.exception.message.PgcnErrorCode;
 import fr.progilone.pgcn.service.document.BibliographicRecordService;
+import fr.progilone.pgcn.service.document.DocCheckHistoryService;
 import fr.progilone.pgcn.service.document.DocUnitService;
 import fr.progilone.pgcn.service.document.conditionreport.ConditionReportService;
+import fr.progilone.pgcn.service.lot.LotService;
+import fr.progilone.pgcn.service.project.ProjectService;
 import fr.progilone.pgcn.service.user.UserService;
 import fr.progilone.pgcn.service.util.NumahopCollectors;
 
@@ -46,6 +54,9 @@ public class WorkflowService {
     private final BibliographicRecordService recordService;
     private final UserService userService;
     private final ConditionReportService conditionReportService;
+    private final LotService lotService;
+    private final ProjectService projectService;
+    private final DocCheckHistoryService docCheckHistoryService; 
 
     @Autowired
     public WorkflowService(final DocUnitWorkflowService docUnitWorkflowService,
@@ -53,13 +64,19 @@ public class WorkflowService {
                            final DocUnitService docUnitService,
                            final BibliographicRecordService recordService,
                            final UserService userService,
-                           final ConditionReportService conditionReportService) {
+                           final ConditionReportService conditionReportService,
+                           final LotService lotService,
+                           final ProjectService projectService,
+                           final DocCheckHistoryService docCheckHistoryService) {
         this.docUnitWorkflowService = docUnitWorkflowService;
         this.workflowGroupService = workflowGroupService;
         this.docUnitService = docUnitService;
         this.recordService = recordService;
         this.userService = userService;
         this.conditionReportService = conditionReportService;
+        this.lotService = lotService;
+        this.projectService = projectService;
+        this.docCheckHistoryService = docCheckHistoryService;
     }
 
     /**
@@ -312,6 +329,12 @@ public class WorkflowService {
             } else {
                 LOG.error("Impossible de valider automatiquement la tâche");
             }
+            // init historique controle.
+            if (key == WorkflowStateKey.CONTROLES_AUTOMATIQUES_EN_COURS) {
+                //create docCheckHistory line.
+                docCheckHistoryService.create(doc.getIdentifier());
+            }
+            
             handleStatus(doc, workflow);
         }
     }
@@ -346,44 +369,74 @@ public class WorkflowService {
      * @param workflow
      */
     private void handleStatus(final DocUnit doc, final DocUnitWorkflow workflow) {
+        
         // contrôle de l'état (le workflow doit être fini pour impacter les conteneurs)
         final DocUnitState state = workflow.getByKey(WorkflowStateKey.CLOTURE_DOCUMENT).stream().collect(NumahopCollectors.singletonCollector());
-        // Si l'étape de fin est finie, on effectue les actions
+        // Si l'étape de fin est finie, on regarde si on peut cloturer lot/projet.
         if (state.isDone()) {
             // Date de référence
             final LocalDateTime endDate = state.getEndDate();
             workflow.setEndDate(endDate);
             
-            // @TODO A revoir : cloturer uniquement si tout OK (tout terminé et surtout sans erreur!!)
-            
             // Gestion du lot
-//            final Lot lot = lotService.findByDocUnitIdentifier(doc.getIdentifier());
-//            final List<DocUnit> processingDus =
-//                lot.getDocUnits().stream().filter(du -> du.getWorkflow() != null && !du.getWorkflow().isDone()).collect(Collectors.toList());
-//            if (processingDus.isEmpty()) {
-//                // Tous les documents du lots sont finis, on termine aussi le lot du coup
-//                lot.setRealEndDate(endDate.toLocalDate());
-//                lot.setStatus(LotStatus.CLOSED);
-//                lot.setActive(false);
-//                lotService.save(lot);
-//                LOG.info("Workflow : Mise a jour du lot {} => CLOSED", lot.getLabel());
-//            }
-//            // Gestion du projet
-//            final Project project = projectService.findByDocUnitIdentifier(doc.getIdentifier());
-//            final List<Lot> processingLots =
-//                project.getLots().stream().filter(lp -> !LotStatus.CLOSED.equals(lp.getStatus())).collect(Collectors.toList());
-//            if (processingLots.isEmpty()) {
-//                // Tous les lots sont finis, on termine aussi le projet et les trains du coup
-//                project.setRealEndDate(endDate.toLocalDate());
-//                project.setStatus(ProjectStatus.CLOSED);
-//                project.setActive(false);
-//                project.getTrains().forEach(train -> {
-//                    train.setActive(false);
-//                    train.setStatus(TrainStatus.CLOSED);
-//                });
-//                projectService.save(project);
-//                LOG.info("Workflow : Mise à jour du project {} => CLOSED", project.getName());
-//            }
+            // LOT : cloturé uniquement si tout OK (tout terminé et surtout sans erreur: tous les docs doivent etre validés)
+            final Lot lot = lotService.findByDocUnitIdentifier(doc.getIdentifier());
+            final List<DocUnit> processingDus = new ArrayList<>();
+            
+            lot.getDocUnits().stream()
+                                .forEach(du -> {
+                                    
+                                    if (processingDus.isEmpty()) {
+                                    
+                                        if (du.getWorkflow() == null || !du.getWorkflow().isDone()) {
+                                            // workflow non démarré ou non terminé
+                                            processingDus.add(du);
+                                        } else {
+                                            // workflow terminé et controle qualite non terminé ou attente de relivraison
+                                            final DocUnitState controlState = du.getWorkflow()
+                                                                                    .getStates()
+                                                                                    .stream()
+                                                                                    .filter(st -> WorkflowStateKey.CONTROLE_QUALITE_EN_COURS == st.getKey())
+                                                                                    .findFirst().orElse(null);
+                                            
+                                            final DocUnitState relivState = du.getWorkflow()
+                                                    .getStates()
+                                                    .stream()
+                                                    .filter(st -> WorkflowStateKey.RELIVRAISON_DOCUMENT_EN_COURS == st.getKey())
+                                                    .findFirst().orElse(null);
+                                            // Cas tordus à prendre en compte .... 
+                                            if ( (controlState != null && controlState.getStatus() != WorkflowStateStatus.FINISHED)
+                                                    || (relivState != null && relivState.getStatus() != WorkflowStateStatus.FINISHED) ) {
+                                                processingDus.add(du);
+                                            } 
+                                        }
+                                    }
+                                });
+            
+            if (processingDus.isEmpty()) {
+                // Tous les documents du lots sont finis et validés, -> on peut fermer le lot
+                lot.setRealEndDate(endDate.toLocalDate());
+                lot.setStatus(LotStatus.CLOSED);
+                lot.setActive(false);
+                lotService.save(lot);
+                LOG.info("Workflow : Mise a jour du lot {} => lot status : CLOSED", lot.getLabel());
+            }
+            // Gestion du projet
+            final Project project = projectService.findByDocUnitIdentifier(doc.getIdentifier());
+            final List<Lot> processingLots =
+                project.getLots().stream().filter(lp -> !LotStatus.CLOSED.equals(lp.getStatus())).collect(Collectors.toList());
+            if (processingLots.isEmpty()) {
+                // Tous les lots sont finis, on termine aussi le projet et les trains du coup
+                project.setRealEndDate(endDate.toLocalDate());
+                project.setStatus(ProjectStatus.CLOSED);
+                project.setActive(false);
+                project.getTrains().forEach(train -> {
+                    train.setActive(false);
+                    train.setStatus(TrainStatus.CLOSED);
+                });
+                projectService.save(project);
+                LOG.info("Workflow : Mise à jour du project {} => project status : CLOSED", project.getName());
+            }
         }
     }
 
@@ -755,6 +808,27 @@ public class WorkflowService {
         }
         return false;
     }
+    
+    /**
+     * Permet de déterminer si un workflow est démarré et le doc en attente de relivraison
+     *
+     * @param docUnitId
+     * @return
+     */
+    @Transactional(readOnly = true)
+    public boolean isWaitingForRedelivering(final String docUnitId) {
+        final DocUnit docUnit = docUnitService.findOneWithAllDependenciesForWorkflow(docUnitId);
+        if (docUnit != null && docUnit.getWorkflow() != null) {
+            final DocUnitWorkflow workflow = docUnit.getWorkflow();
+            final List<DocUnitState> statesForKey = workflow.getByKey(WorkflowStateKey.RELIVRAISON_DOCUMENT_EN_COURS);
+            if (statesForKey.size() == 1) {
+                if (statesForKey.get(0).isRunning()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
     @Transactional(readOnly = true)
     public boolean hasCondReportToValidate(final String docUnitId) {
@@ -762,4 +836,5 @@ public class WorkflowService {
                 || isStateRunning(docUnitId, WorkflowStateKey.CONSTAT_ETAT_AVANT_NUMERISATION)
                 || isStateRunning(docUnitId, WorkflowStateKey.CONSTAT_ETAT_APRES_NUMERISATION);
     }
+    
 }

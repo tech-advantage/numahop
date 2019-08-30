@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Changeset du module Check -->
+    <changeSet id="pgcn-check-013" author="progilone">
+    
+        <createTable tableName="doc_check_history">
+            <column name="identifier" type="varchar(191)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            
+            <column name="pgcn_id" type="varchar(191)">
+                <constraints nullable="false" />
+            </column>
+            <column name="library_id" type="varchar(191)">
+                <constraints nullable="false" />
+            </column>
+            <column name="library_label" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="project_id" type="varchar(191)">
+                <constraints nullable="false" />
+            </column>
+            <column name="project_label" type="varchar(255)">
+                <constraints nullable="false" />
+            </column> 
+            <column name="lot_id" type="varchar(191)">
+                <constraints nullable="false" />
+            </column>
+            <column name="lot_label" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="train_id" type="varchar(191)" />
+            <column name="train_label" type="varchar(255)" />
+            <column name="delivery_id" type="varchar(191)">
+                <constraints nullable="false" />
+            </column>
+            <column name="delivery_label" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>           
+            <column name="user_login" type="varchar(191)">
+                <constraints nullable="true" />
+            </column>  
+            <column name="status" type="varchar(191)">
+                <constraints nullable="false" />
+            </column>
+            
+            <column name="start_check_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="end_check_date" type="date">
+                <constraints nullable="true"/>
+            </column>     
+   
+            <column name="page_number" type="INT" />
+            <column name="total_length" type="BIGINT" />
+                
+			<!-- Données techniques auto -->
+            <column name="version" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        
+        <createIndex tableName="doc_check_history" indexName="idx_check_history_pgcn_id">
+            <column name="pgcn_id"/>
+        </createIndex>
+        <createIndex tableName="doc_check_history" indexName="idx_check_history_user_login">
+            <column name="user_login"/>
+        </createIndex>
+        <createIndex tableName="doc_check_history" indexName="idx_check_history_library_id">
+            <column name="library_id"/>
+        </createIndex>
+        <createIndex tableName="doc_check_history" indexName="idx_check_history_project_id">
+            <column name="project_id"/>
+        </createIndex>
+        <createIndex tableName="doc_check_history" indexName="idx_check_history_lot_id">
+            <column name="lot_id"/>
+        </createIndex>
+        <createIndex tableName="doc_check_history" indexName="idx_check_history_train_id">
+            <column name="train_id"/>
+        </createIndex>
+        <createIndex tableName="doc_check_history" indexName="idx_check_history_delivery_id">
+            <column name="delivery_id"/>
+        </createIndex>
+
+    </changeSet>
+</databaseChangeLog>

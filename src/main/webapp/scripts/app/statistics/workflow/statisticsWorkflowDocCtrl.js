@@ -5,7 +5,7 @@
         .controller('StatisticsWorkflowDocCtrl', StatisticsWorkflowDocCtrl);
 
     function StatisticsWorkflowDocCtrl($q, codeSrvc, gettextCatalog, HistorySrvc, LibrarySrvc,
-        NumahopStorageService, ProjectSrvc, StatisticsSrvc, WorkflowSrvc) {
+        NumahopStorageService, ProjectSrvc, LotSrvc, StatisticsSrvc, WorkflowSrvc) {
 
         var statCtrl = this;
 
@@ -71,6 +71,35 @@
                     }
                 },
                 'refresh-delay': 0, // pas de refresh-delay, car on lit les données en cache après le 1er chargement
+                'allow-clear': true,
+                multiple: true
+            },
+            lots: {
+                text: "label",
+                placeholder: gettextCatalog.getString("Lot"),
+                trackby: "identifier",
+                refresh: function ($select) {
+                    statCtrl.lotsSelect = $select;
+                    // Gestion du cas où la liste est réinitialisée manuellement (search est indéfini)
+                    if (angular.isUndefined($select.search)) {
+                        return $q.when([]);
+                    }
+                    var searchParams = {
+                        page: 0,
+                        search: $select.search,
+                        active: true
+                    };
+                    if (statCtrl.filters.project) {
+                        searchParams["projects"] = _.pluck(statCtrl.filters.project, "identifier");
+                    }
+                    return LotSrvc.search(searchParams).$promise
+                        .then(function (lots) {
+                            return _.map(lots.content, function (lot) {
+                                return _.pick(lot, "identifier", "label");
+                            });
+                        });
+                },
+                'refresh-delay': 300,
                 'allow-clear': true,
                 multiple: true
             },
@@ -194,7 +223,7 @@
                 library: _.pluck(statCtrl.filters.library, "identifier"),
                 pgcnid: statCtrl.filters.pgcnid,
                 project: _.pluck(statCtrl.filters.project, "identifier"),
-                lot: [],
+                lot: _.pluck(statCtrl.filters.lot, "identifier"),
                 state: _.pluck(statCtrl.filters.state, "identifier"),
                 from: statCtrl.filters.from,
                 to: statCtrl.filters.to

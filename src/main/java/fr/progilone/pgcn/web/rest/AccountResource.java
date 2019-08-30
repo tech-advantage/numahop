@@ -73,7 +73,12 @@ public class AccountResource {
     @Timed
     public ResponseEntity<?> resetPassword(final HttpServletRequest request,
                                            @RequestBody final String username) {
-        userService.resetPassword(username);
-        return new ResponseEntity<>(HttpStatus.OK);
+        
+        if (userService.resetPassword(username)) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        
     }
 }

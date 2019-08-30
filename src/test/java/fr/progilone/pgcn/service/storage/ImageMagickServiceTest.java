@@ -136,7 +136,7 @@ public class ImageMagickServiceTest {
             if (sourceFile == null || !sourceFile.exists()) {
                 fail("Unable to load " + SRC_FILE);
             }
-            final Optional<Map<String, String>> metas = service.getMetadatasOfFile(sourceFile);
+            final Optional<Map<String, String>> metas = service.getMetadatasOfFile(sourceFile, false);
             assertTrue(metas.isPresent());
             assertTrue(StringUtils.equals(metas.get().get("Colorspace"), "sRGB"));
             assertEquals(metas.get().get("Filesize"), "777835B");

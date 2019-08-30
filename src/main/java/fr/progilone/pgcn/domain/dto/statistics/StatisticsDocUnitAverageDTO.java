@@ -30,29 +30,47 @@ public class StatisticsDocUnitAverageDTO implements Comparable<StatisticsDocUnit
 
     @CsvBindByName(column = "3. Livraison")
     private String deliveryLabel;
+    
+    /**
+     * Nbre total de documents
+     */
+    @CsvBindByName(column = "4. Nombre total de documents")
+    private int nbDocs;
 
     /**
-     * Nombre moyen de pages
+     * Nombre total de pages
      */
-    @CsvBindByName(column = "4. Nombre total de pages")
+    @CsvBindByName(column = "5. Nombre total de pages")
     private int avgTotalPages;
+    
+    /**
+     * Poids total des documents livrés
+     */
+    @CsvBindByName(column = "6. Poids total des documents")
+    private long lengthDocs;
+    
+    /**
+     * Taux de rejet (% de docs qui ont été rejetés au moins une fois)
+     */
+    @CsvBindByName(column = "7. Taux de rejet")
+    private double rejectRatio;
 
     /**
      * Temps moyen de contrôle, en secondes
      */
-    @CsvBindByName(column = "5. Temps moyen de contrôle")
+    @CsvBindByName(column = "8. Temps moyen de contrôle")
     private long avgDurControl;
 
     /**
      * Temps moyen de livraison et de relivraison, en secondes
      */
-    @CsvBindByName(column = "6. Temps moyen de (re)livraison")
+    @CsvBindByName(column = "9. Temps moyen de (re)livraison")
     private long avgDurDelivery;
 
     /**
      * Durée moyenne d'un workflow, en secondes
      */
-    @CsvBindByName(column = "7. Durée moyenne d'un workflow")
+    @CsvBindByName(column = "10. Durée moyenne d'un workflow")
     private long avgDurWorkflow;
 
     public String getProjectIdentifier() {
@@ -103,12 +121,36 @@ public class StatisticsDocUnitAverageDTO implements Comparable<StatisticsDocUnit
         this.deliveryLabel = deliveryLabel;
     }
 
+    public int getNbDocs() {
+        return nbDocs;
+    }
+
+    public void setNbDocs(final int nbDocs) {
+        this.nbDocs = nbDocs;
+    }
+
     public int getAvgTotalPages() {
         return avgTotalPages;
     }
 
     public void setAvgTotalPages(final int avgTotalPages) {
         this.avgTotalPages = avgTotalPages;
+    }
+
+    public long getLengthDocs() {
+        return lengthDocs;
+    }
+
+    public void setLengthDocs(final long lengthDocs) {
+        this.lengthDocs = lengthDocs;
+    }
+
+    public double getRejectRatio() {
+        return rejectRatio;
+    }
+
+    public void setRejectRatio(final double rejectRatio) {
+        this.rejectRatio = rejectRatio;
     }
 
     public long getAvgDurControl() {

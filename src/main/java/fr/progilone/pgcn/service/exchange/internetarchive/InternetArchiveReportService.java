@@ -181,6 +181,12 @@ public class InternetArchiveReportService {
     public List<InternetArchiveReport> findByDocUnit(final String docUnitId) {
         return iaReportRepository.findByDocUnitIdentifierOrderByLastModifiedDateDesc(docUnitId);
     }
+    
+    @Transactional(readOnly = true)
+    public InternetArchiveReport findLastReportByDocUnit(final String docUnitId) {
+        return iaReportRepository.findByDocUnitIdentifierOrderByLastModifiedDateDesc(docUnitId)
+                            .stream().findFirst().orElse(null);
+    }
 
     @Transactional(readOnly = true)
     public List<InternetArchiveReport> findByDocUnits(final List<String> docUnitIds) {

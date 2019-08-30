@@ -1,6 +1,5 @@
 package fr.progilone.pgcn.service.exchange.cines;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -8,7 +7,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
 
 import javax.xml.bind.JAXBException;
 
@@ -16,7 +14,6 @@ import org.apache.commons.io.FileUtils;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -41,6 +38,7 @@ import fr.progilone.pgcn.service.library.LibraryParameterService;
 import fr.progilone.pgcn.service.library.LibraryService;
 import fr.progilone.pgcn.service.storage.BinaryStorageManager;
 import fr.progilone.pgcn.service.storage.FileStorageManager;
+import fr.progilone.pgcn.service.util.transaction.TransactionService;
 
 /**
  * Created by Sébastien on 27/12/2016.
@@ -76,6 +74,8 @@ public class ExportCinesServiceTest {
     private LibraryService libraryService;
     @Mock
     private LibraryParameterService libraryParameterService;
+    @Mock
+    private TransactionService transactionService;
 
     private ExportCinesService service;
 
@@ -93,7 +93,7 @@ public class ExportCinesServiceTest {
     public void setUp() {
         service = new ExportCinesService(exportMetsService, exportSipService, bm, docUnitService, uiExportDataMapper, 
                                          uiBibliographicRecordService, libraryService, sftpConfigurationService, cinesReportService,
-                                         esCinesReportService, sftpService, fm, libraryParameterService);
+                                         esCinesReportService, sftpService, fm, libraryParameterService, transactionService);
         ReflectionTestUtils.setField(service, "workingDir", WORKING_DIR);
     }
 
@@ -106,15 +106,6 @@ public class ExportCinesServiceTest {
         assertTrue(Files.exists(Paths.get(WORKING_DIR, docUnit.getPgcnId(), "DEPOT", "DESC")));
         assertTrue(Files.exists(Paths.get(WORKING_DIR, docUnit.getPgcnId(), "DEPOT", "DESC", "mets.xml")));
         assertTrue(Files.exists(Paths.get(WORKING_DIR, docUnit.getPgcnId(), "sip.xml")));
-    }
-    
-    @Ignore
-    @Test
-    public void testFindDocUnitsReadyToExport() {
-        final List<DocUnit> docs = service.findDocUnitsReadyForCinesExport();
-        
-        assertFalse(docs.isEmpty());
-        
     }
 
     private DocUnit getDocUnit() {

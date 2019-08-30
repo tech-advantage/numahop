@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.UriUtils;
 
@@ -57,12 +58,14 @@ import fr.progilone.pgcn.domain.document.DocProperty;
 import fr.progilone.pgcn.domain.document.DocPropertyType;
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.exchange.internetarchive.InternetArchiveReport;
+import fr.progilone.pgcn.domain.exchange.internetarchive.InternetArchiveReport.Status;
 import fr.progilone.pgcn.domain.library.Library;
 import fr.progilone.pgcn.domain.storage.StoredFile;
 import fr.progilone.pgcn.domain.storage.StoredFile.StoredFileType;
 import fr.progilone.pgcn.domain.workflow.WorkflowStateKey;
 import fr.progilone.pgcn.exception.PgcnTechnicalException;
 import fr.progilone.pgcn.repository.storage.BinaryRepository;
+import fr.progilone.pgcn.security.SecurityUtils;
 import fr.progilone.pgcn.service.administration.InternetArchiveConfigurationService;
 import fr.progilone.pgcn.service.document.DocUnitService;
 import fr.progilone.pgcn.service.document.common.LanguageCodeService;
@@ -73,6 +76,8 @@ import fr.progilone.pgcn.service.library.LibraryService;
 import fr.progilone.pgcn.service.storage.BinaryStorageManager;
 import fr.progilone.pgcn.service.util.CryptoService;
 import fr.progilone.pgcn.service.util.DateIso8601Util;
+import fr.progilone.pgcn.service.util.transaction.TransactionService;
+import fr.progilone.pgcn.service.workflow.WorkflowService;
 
 /**
  * Service pour l'interface avec Internet Archive
@@ -97,6 +102,8 @@ public class InternetArchiveService {
     private final UIInternetArchiveItemMapper uiInternetArchiveItemMapper;
     private final BinaryRepository binaryRepository;
     private final LibraryService libraryService;
+    private final TransactionService transactionService;
+    private final WorkflowService workflowService;
 
     private final ArchiveItemMapper archiveItemMapper = ArchiveItemMapper.INSTANCE;
 
@@ -109,7 +116,9 @@ public class InternetArchiveService {
                                   final DocUnitService docUnitService,
                                   final UIInternetArchiveItemMapper uiInternetArchiveItemMapper,
                                   final BinaryRepository binaryRepository,
-                                  final LibraryService libraryService) {
+                                  final LibraryService libraryService,
+                                  final TransactionService transactionService,
+                                  final WorkflowService workflowService) {
         this.bm = bm;
         this.cryptoService = cryptoService;
         this.docUnitService = docUnitService;
@@ -119,6 +128,8 @@ public class InternetArchiveService {
         this.uiInternetArchiveItemMapper = uiInternetArchiveItemMapper;
         this.binaryRepository = binaryRepository;
         this.libraryService = libraryService;
+        this.transactionService = transactionService;
+        this.workflowService = workflowService;
     }
 
     /**
@@ -127,7 +138,10 @@ public class InternetArchiveService {
      * @return
      */
     @Transactional(readOnly = true)
-    public InternetArchiveItemDTO prepareItem(final DocUnit docUnit) {
+    public InternetArchiveItemDTO prepareItem(final String docUnitId) {
+        
+        final DocUnit docUnit = docUnitService.findOneWithAllDependencies(docUnitId);
+        
         InternetArchiveItemDTO item;
         final String libraryId = docUnit.getLibrary().getIdentifier();
         if (docUnit.getArchiveItem() != null) {
@@ -224,25 +238,45 @@ public class InternetArchiveService {
 
     @Transactional
     public InternetArchiveReport createItem(final String docUnitId) {
-        final DocUnit docUnit = docUnitService.findOne(docUnitId);
-        final InternetArchiveItemDTO item = prepareItem(docUnit);
-        return createItem(docUnit, item);
+        final DocUnit docUnit = docUnitService.findOneWithAllDependencies(docUnitId);
+        final InternetArchiveItemDTO item = prepareItem(docUnitId);
+        return createItem(docUnit, item, false);
     }
 
-    @Transactional
-    public InternetArchiveReport createItem(final DocUnit docUnit, final InternetArchiveItemDTO item) {
+    
+    public InternetArchiveReport createItem(final DocUnit docUnit, final InternetArchiveItemDTO item, final boolean automaticEport) {
 
         // TODO FIXME : choix / config par défaut (à paramétrer)
         final Set<InternetArchiveConfiguration> confs = confService.findByLibraryAndActive(docUnit.getLibrary(), true);
-
+        InternetArchiveReport resultReport;
+        
         if (CollectionUtils.isNotEmpty(confs)) {
             final InternetArchiveConfiguration conf = confs.iterator().next();
             final InternetArchiveReport report = iaReportService.createInternetArchiveReport(docUnit, item.getArchiveIdentifier());
-            return callS3(docUnit, item, conf, ViewsFormatConfiguration.FileFormat.VIEW, report);
+            // en dehors d'une transaction sinon timeout exception possible...
+            resultReport = callS3(docUnit, item, conf, ViewsFormatConfiguration.FileFormat.VIEW, report);
         } else {
             LOG.warn("Aucune configuration pour Internet Archive : aucun export n'a été réalisé");
             return null;
         }
+        
+        if (resultReport.getStatus() == Status.ARCHIVED) {
+            // On ouvre une transation en fin d'export du doc si success.
+            final TransactionStatus trans = transactionService.startTransaction(false);
+            if (StringUtils.isNotBlank(resultReport.getArkUrl())) {           
+                docUnit.setArkUrl(resultReport.getArkUrl());
+                docUnitService.save(docUnit);
+            }
+            if (workflowService.isStateRunning(docUnit.getIdentifier(), WorkflowStateKey.DIFFUSION_DOCUMENT)) {
+                if (automaticEport) {
+                    workflowService.processAutomaticState(docUnit.getIdentifier(), WorkflowStateKey.DIFFUSION_DOCUMENT);
+                } else {
+                    workflowService.processState(docUnit.getIdentifier(), WorkflowStateKey.DIFFUSION_DOCUMENT, SecurityUtils.getCurrentUserId());
+                }
+            }
+            transactionService.commitTransaction(trans);
+        } 
+        return resultReport; 
     }
 
     /**
@@ -352,6 +386,7 @@ public class InternetArchiveService {
             pdf.ifPresent(f -> files.put(f.getName(), f));
             // 3- du fichier alto.xml s'il existe
             final Optional<File> alto = retrieveAlto(docUnit, libraryId);
+            alto.ifPresent(f -> files.put(f.getName(), f));
 
             report = iaReportService.setReportSending(report, files.size());
 
@@ -362,7 +397,9 @@ public class InternetArchiveService {
                     throw new PgcnTechnicalException("Le fichier " + file.getAbsolutePath() + " n'existe pas");
                 }
 
-                s3Client.putObject(new PutObjectRequest(item.getArchiveIdentifier(), sfName, new FileInputStream(file), metadata));
+                try (final FileInputStream in = new FileInputStream(file)) {
+                    s3Client.putObject(new PutObjectRequest(item.getArchiveIdentifier(), sfName, in, metadata));
+                }
                 report = iaReportService.updateReport(report, 1);
             }
 
@@ -383,7 +420,8 @@ public class InternetArchiveService {
             } else {
                 final JSONObject result = (JSONObject) temp.get("result");
                 if (result.has("identifier-ark")) {
-                    docUnit.setArkUrl((String) result.get("identifier-ark"));
+                    //docUnit.setArkUrl((String) result.get("identifier-ark"));
+                    report.setArkUrl((String) result.get("identifier-ark"));
                 }
                 if (result.has("fail-reasons")) {
                     final String failReasons = (String) result.get("fail-reasons");
@@ -392,7 +430,7 @@ public class InternetArchiveService {
                     report = iaReportService.setReportArchived(report, LocalDateTime.now(), report.getInternetArchiveIdentifier());
                 }
 
-                docUnitService.save(docUnit);
+               // docUnitService.save(docUnit);
             }
 
             // Close
@@ -551,7 +589,7 @@ public class InternetArchiveService {
 
     /**
      * Retrouve les docUnit candidates pour diffusion vers Archive.
-     * (diffusable et non diffusee - avec notice contenant 1 propriete de type 'identifier' - workflow termine ou en attente de diffusion)
+     * (diffusable et non diffusee - avec notice contenant 1 propriete de type 'identifier' - workflow en attente de diffusion)
      *
      * @return
      */

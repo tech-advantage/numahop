@@ -18,6 +18,11 @@
                     <sem-field sem-type="uiselect" sem-model="statCtrl.filters.project" sem-option-data="statCtrl.config.projects" 
                                sem-onchange="statCtrl.search()"></sem-field>
                 </numa-filter-field>
+                <!-- Lot -->
+                <numa-filter-field data-title="{{ ::'Lot' | translate }}">
+                    <sem-field sem-type="uiselect" sem-model="statCtrl.filters.lot" sem-option-data="statCtrl.config.lots" 
+                               sem-onchange="statCtrl.search()"></sem-field>
+                </numa-filter-field>
                 <numa-filter-field data-title="{{ ::'Unité documentaire' | translate }}">
                     <!-- PGCN Id -->
                     <sem-field sem-model="statCtrl.filters.pgcnid" sem-model-options="{ debounce: 300 }"

@@ -1,6 +1,27 @@
 package fr.progilone.pgcn.web.rest.exchange;
 
+import static fr.progilone.pgcn.web.rest.exchange.security.AuthorizationConstants.EXPORT_INTERNET_ARCHIVE_HAB0;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import javax.annotation.security.RolesAllowed;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.codahale.metrics.annotation.Timed;
+
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.exchange.internetarchive.InternetArchiveReport;
 import fr.progilone.pgcn.exception.PgcnTechnicalException;
@@ -13,24 +34,6 @@ import fr.progilone.pgcn.service.exchange.internetarchive.InternetArchiveService
 import fr.progilone.pgcn.web.rest.AbstractRestController;
 import fr.progilone.pgcn.web.util.AccessHelper;
 import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import static fr.progilone.pgcn.web.rest.exchange.security.AuthorizationConstants.*;
 
 /**
  * Export vers Internet Archive
@@ -69,7 +72,7 @@ public class ExportInternetArchiveController extends AbstractRestController {
     @RolesAllowed({EXPORT_INTERNET_ARCHIVE_HAB0})
     public ResponseEntity<InternetArchiveItemDTO> prepare(final HttpServletRequest request, @PathVariable("id") final String identifier) throws
                                                                                                                                          PgcnTechnicalException {
-        final DocUnit docUnit = docUnitService.findOneWithAllDependencies(identifier);
+        final DocUnit docUnit = docUnitService.findOneWithLibrary(identifier);
         if (docUnit == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -78,8 +81,7 @@ public class ExportInternetArchiveController extends AbstractRestController {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         // Pré paramétrage & sauvegarde
-        final InternetArchiveItemDTO item = iaService.prepareItem(docUnit);
-        //iaService.saveItem(docUnit, item);
+        final InternetArchiveItemDTO item = iaService.prepareItem(docUnit.getIdentifier());
         return new ResponseEntity<>(item, HttpStatus.OK);
     }
 

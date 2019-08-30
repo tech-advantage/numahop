@@ -102,7 +102,9 @@ public class CinesReportServiceTest {
     public void testSetReportRejected() {
         final CinesReport report = new CinesReport();
         final String motive = "Invalid format";
-
+        final DocUnit doc = new DocUnit();
+        //doc.setIdentifier("doc_unit_id_test");
+        report.setDocUnit(doc);
         final CinesReport actual = service.setReportRejected(report, LocalDateTime.now(), motive);
 
         verify(cinesReportRepository).save(report);

@@ -30,6 +30,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -164,7 +165,7 @@ public class BinaryManagerTest {
 	    );
     	
     	try {
-            when(imageMagickService.getMetadatasOfFile(any(File.class))).thenReturn(Optional.empty());
+            when(imageMagickService.getMetadatasOfFile(any(File.class), Matchers.eq(false))).thenReturn(Optional.empty());
         } catch (final PgcnTechnicalException e) {
             // nothing
         }
@@ -255,7 +256,7 @@ public class BinaryManagerTest {
                 );
         when(formatConfigurationService.getOneByLot(any(String.class))).thenReturn(getValidFormatConfiguration());
         try {
-            when(imageMagickService.getMetadatasOfFile(any(File.class))).thenReturn(Optional.empty());
+            when(imageMagickService.getMetadatasOfFile(any(File.class), Matchers.eq(false))).thenReturn(Optional.empty());
         } catch (final PgcnTechnicalException e) {
             // nothing
         }
@@ -315,7 +316,7 @@ public class BinaryManagerTest {
                 );
         when(formatConfigurationService.getOneByLot(any(String.class))).thenReturn(getValidFormatConfiguration());
         try {
-            when(imageMagickService.getMetadatasOfFile(any(File.class))).thenReturn(Optional.empty());
+            when(imageMagickService.getMetadatasOfFile(any(File.class), Matchers.eq(false))).thenReturn(Optional.empty());
         } catch (final PgcnTechnicalException e) {
             // nothing
         }
@@ -396,7 +397,7 @@ public class BinaryManagerTest {
     	});
     	when(formatConfigurationService.getOneByLot(any(String.class))).thenReturn(getValidFormatConfiguration());
     	try {
-            when(imageMagickService.getMetadatasOfFile(any(File.class))).thenReturn(Optional.empty());
+            when(imageMagickService.getMetadatasOfFile(any(File.class), Matchers.eq(false))).thenReturn(Optional.empty());
         } catch (final PgcnTechnicalException e) {
             // nothing
         }
@@ -451,7 +452,7 @@ public class BinaryManagerTest {
     	});
     	when(formatConfigurationService.getOneByLot(any(String.class))).thenReturn(getValidFormatConfiguration());
     	try {
-            when(imageMagickService.getMetadatasOfFile(any(File.class))).thenReturn(Optional.empty());
+            when(imageMagickService.getMetadatasOfFile(any(File.class), Matchers.eq(false))).thenReturn(Optional.empty());
         } catch (final PgcnTechnicalException e) {
             // nothing
         }

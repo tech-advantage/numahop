@@ -42,6 +42,8 @@ import fr.progilone.pgcn.service.exchange.iiif.manifest.Structures;
 public class TableOfContentsService {
 
     private static final Logger LOG = LoggerFactory.getLogger(TableOfContentsService.class);
+    
+    public final static String TOC_COL_ZERO_NAME = "FICHIER";
 
     private final DocPageRepository docPageRepository;
     private final BinaryRepository binaryRepository;
@@ -361,7 +363,8 @@ public class TableOfContentsService {
                     .filter(cell->cell!=null && CellType.STRING.equals(cell.getCellTypeEnum()))
                     .map(Cell::getStringCellValue);
 
-            if (value.isPresent() && "Fichier".equalsIgnoreCase(value.get())) {
+            if (value.isPresent() 
+                    && value.get().toUpperCase().contains(TOC_COL_ZERO_NAME)) {
                 LOG.debug("ok : TOC excel valorisée !");
                 // on traite
                 parseSheet(sheet, identifier, structList, ranges, storedMasters);

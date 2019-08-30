@@ -20,6 +20,7 @@ import javax.imageio.stream.FileImageInputStream;
 import javax.imageio.stream.ImageInputStream;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -83,19 +84,24 @@ public class BinaryStorageManager {
     private final BinaryRepository binaryRepository;
     private final ImageDispatcherService imageDispatcherService;
     private final ImageMagickService imageMagickService;
+    private final ExifToolService exifToolService;
     private final DeliveryProgressService deliveryProgressService;
     private final ViewsFormatConfigurationService formatConfigurationService;
     private final UserRepository userRepository;
  
 
     @Autowired
-    public BinaryStorageManager(final BinaryRepository binaryRepository, final ImageDispatcherService imageDispatcherService,
-                                final ImageMagickService imageMagickService, final DeliveryProgressService deliveryProgressService,
+    public BinaryStorageManager(final BinaryRepository binaryRepository,
+                                final ImageDispatcherService imageDispatcherService,
+                                final ImageMagickService imageMagickService,
+                                final ExifToolService exifToolService,
+                                final DeliveryProgressService deliveryProgressService,
                                 final ViewsFormatConfigurationService formatConfigurationService,
                                 final UserRepository userRepository) {
         this.binaryRepository = binaryRepository;
         this.imageDispatcherService = imageDispatcherService;
         this.imageMagickService = imageMagickService;
+        this.exifToolService = exifToolService;
         this.deliveryProgressService = deliveryProgressService;
         this.formatConfigurationService = formatConfigurationService;
         this.userRepository = userRepository;
@@ -171,6 +177,29 @@ public class BinaryStorageManager {
 
         return createFromFileForPage(page, file, type, format, ocrByPage, null, libraryId);
     }
+    
+    public Optional<Map<String, String>> getMetadatas(final File file) throws PgcnTechnicalException {
+        Optional<Map<String, String>> metas = Optional.empty();
+        final String format = FilenameUtils.getExtension(file.getName()).toUpperCase();
+        switch (format.toUpperCase()) {
+            case "JPEG":
+            case "JPG":
+            case "TIF":
+            case "TIFF":
+            case "GIF":
+            case "SVG":
+            case "PNG":
+            case "PDF":
+                metas = imageMagickService.getMetadatasOfFile(file, format.toUpperCase().equals("PDF"));
+                break;
+            case "JP2":
+                metas = exifToolService.extractMetadatas(file);
+                break;
+            default:
+                break;
+        }
+        return metas;
+    }
 
     /**
      * Create a storedFile <br/>
@@ -236,7 +265,7 @@ public class BinaryStorageManager {
                 // get metadatas of masters.
                 if (fileMetadatas == null) {
                     try {
-                        meta = imageMagickService.getMetadatasOfFile(file);
+                        meta = getMetadatas(file);
                     } catch (final PgcnTechnicalException e) {
                         LOG.error("Can't collect metadatas of file: {} - ", file.getName(), e);
                         errors.add(builder.reinit().setMessage("Can't collect metadatas of file").build());

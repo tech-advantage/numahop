@@ -294,7 +294,7 @@ public class DigitalDocument extends AbstractDomainObject {
          */
         CHECKING,
         /**
-         * Validé
+         * Validé definitivement
          */
         VALIDATED,
         /**
@@ -302,7 +302,7 @@ public class DigitalDocument extends AbstractDomainObject {
          */
         PRE_REJECTED,
         /**
-         * Rejeté par le second contrôle
+         * Rejeté definitivement
          */
         REJECTED,
         /**
@@ -312,7 +312,11 @@ public class DigitalDocument extends AbstractDomainObject {
         /**
          * En erreur de livraison
          */
-        DELIVERING_ERROR;
+        DELIVERING_ERROR,
+        /**
+         *  Pré validé
+         */
+        PRE_VALIDATED;
     }
 
     public List<DocPage> getOrderedPages() {

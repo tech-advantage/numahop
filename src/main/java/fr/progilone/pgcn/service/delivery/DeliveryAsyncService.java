@@ -93,7 +93,6 @@ import fr.progilone.pgcn.service.es.EsDeliveryService;
 import fr.progilone.pgcn.service.lot.LotService;
 import fr.progilone.pgcn.service.sample.SampleService;
 import fr.progilone.pgcn.service.storage.BinaryStorageManager;
-import fr.progilone.pgcn.service.storage.ExifToolService;
 import fr.progilone.pgcn.service.storage.ImageMagickService;
 import fr.progilone.pgcn.service.storage.TesseractService;
 import fr.progilone.pgcn.service.util.DeliveryProgressService;
@@ -146,7 +145,6 @@ public class DeliveryAsyncService {
     private final LotService lotService;
     private final DeliveryReportingService reportService;
     private final ImageMagickService imService;
-    private final ExifToolService exifToolService;
     private final SampleService sampleService;
     private final WorkflowService workflowService;
     private final BinaryRepository binaryRepository;
@@ -172,7 +170,6 @@ public class DeliveryAsyncService {
                                 final LotService lotService,
                                 final DeliveryReportingService reportService,
                                 final ImageMagickService imService,
-                                final ExifToolService exifToolService,
                                 final SampleService sampleService,
                                 final WorkflowService workflowService,
                                 final BinaryRepository binaryRepository,
@@ -196,7 +193,6 @@ public class DeliveryAsyncService {
         this.lotService = lotService;
         this.reportService = reportService;
         this.imService = imService;
-        this.exifToolService = exifToolService;
         this.sampleService = sampleService;
         this.workflowService = workflowService;
         this.binaryRepository = binaryRepository;
@@ -572,35 +568,12 @@ public class DeliveryAsyncService {
         // JobRunner plutot que parallelStream => on maitrise le nbre de proc utilises
         new JobRunner<File>(files.iterator()).autoSetMaxThreads().setElementName("fichiers").forEach(file -> {
             if (autoCheckService.checkIfNameIsCorrect(file.getName(), format)) {
-                Optional<Map<String, String>> metas = Optional.empty();
-                switch (format.toUpperCase()) {
-                    case "JPEG":
-                    case "JPG":
-                    case "TIF":
-                    case "TIFF":
-                    case "GIF":
-                    case "SVG":
-                    case "PNG":
-                    case EXTENSION_FORMAT_PDF:
-                        try {
-                            metas = imService.getMetadatasOfFile(file);
-                        } catch (final PgcnTechnicalException e) {
-                            LOG.error("imageMagickService error : Can't collect metadatas of file: {} - ", file.getName(), e);
-                        }
-                        break;
-                    
-                    case "JP2":
-                        try {
-                            metas = exifToolService.extractMetadatas(file);
-                        } catch (final PgcnTechnicalException e) {
-                            LOG.error("exifToolService error : Can't collect metadatas of file: {} - ", file.getName(), e);
-                        }
-                        break;
-
-                    default:
-                        break;
-                } // end switch
-                metadatasByFiles.put(file, metas);
+                 // end switch
+                try {
+                    metadatasByFiles.put(file, bm.getMetadatas(file));
+                } catch (final PgcnTechnicalException e) {
+                    LOG.error("Can't collect metadatas of file: {} - ", file.getName(), e);
+                }
                 final int processed = metadatasByFiles.size();
                 if (processed % step == 0) {
                     final int progress = (processed / files.size() * 15) + 5;

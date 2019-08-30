@@ -22,6 +22,7 @@ import fr.progilone.pgcn.service.administration.MailboxConfigurationService;
 import fr.progilone.pgcn.service.document.DocUnitService;
 import fr.progilone.pgcn.service.exchange.mail.MailboxService;
 import fr.progilone.pgcn.service.storage.FileStorageManager;
+import fr.progilone.pgcn.service.util.transaction.TransactionService;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CinesRequestHandlerServiceTest {
@@ -45,13 +46,15 @@ public class CinesRequestHandlerServiceTest {
     private  FileStorageManager fm;
     @Mock
     private  DocUnitService docUnitService;
+    @Mock
+    private TransactionService transactionService;
     
     private CinesRequestHandlerService service;
     
     
     @Before
     public void setUp() {
-        service = new CinesRequestHandlerService(exportCinesService, cinesReportService, mailboxService, mailboxConfigurationService, fm, docUnitService);
+        service = new CinesRequestHandlerService(exportCinesService, cinesReportService, mailboxService, mailboxConfigurationService, fm, docUnitService, transactionService);
         ReflectionTestUtils.setField(service, "instanceLibraries", instanceLibraries);
         ReflectionTestUtils.setField(service, "cinesUpdatingEnabled", true);
         ReflectionTestUtils.setField(service, "workingDir", WORKING_DIR);

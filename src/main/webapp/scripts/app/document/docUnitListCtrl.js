@@ -93,6 +93,7 @@
             available: true,
             active: true,
             projects: [],
+            trains: [],
             wkf_statuses: [],
             archivable: true,
             nonArchivable: true,
@@ -111,6 +112,7 @@
             last_modified_date_filter: true,
             project_filter: true,
             lot_filter: true,
+            train_filter: true,
             wkf_status_filter: true,
             created_date_filter: true,
             archive_filter: true,
@@ -135,6 +137,7 @@
             libraries: [],
             projects: [],
             lots: [],
+            trains:[],
             statuses: []
         };
 
@@ -158,13 +161,15 @@
                 NumaHopInitializationSrvc.loadLibraries(),
                 NumaHopInitializationSrvc.loadProjects(),
                 NumaHopInitializationSrvc.loadLots(),
+                NumaHopInitializationSrvc.loadTrains(),
                 DocUnitSrvc.getConfigFilterStatuses()])
 
                 .then(function (data) {
                     mainCtrl.options.libraries = data[0];
                     mainCtrl.options.projects = data[1];
                     mainCtrl.options.lots = data[2];
-                    mainCtrl.options.statuses = data[3];
+                    mainCtrl.options.trains = data[3];
+                    mainCtrl.options.statuses = data[4];
 
                     loadFilters();
                     loadPageSize();
@@ -257,6 +262,10 @@
                         .then(function (data) {
                             mainCtrl.options.lots = data;
                         });
+                    NumaHopInitializationSrvc.loadTrains(librariesIds, projectsIds)
+                    .then(function (data) {
+                        mainCtrl.options.trains = data;
+                    });
                 });
         }
 
@@ -284,6 +293,7 @@
             mainCtrl.filters.libraries = [];
             mainCtrl.filters.projects = [];
             mainCtrl.filters.lots = [];
+            mainCtrl.filters.trains = [];
             mainCtrl.filters.wkf_statuses = [];
             mainCtrl.filters.hasDigitalDocuments = false;
             mainCtrl.filters.inactive = false;
@@ -411,6 +421,11 @@
             if (mainCtrl.filters.lots) {
                 var lotsIds = _.pluck(mainCtrl.filters.lots, "identifier");
                 params["lots"] = lotsIds;
+            }
+            // train
+            if (mainCtrl.filters.trains) {
+                var trainsIds = _.pluck(mainCtrl.filters.trains, "identifier");
+                params["trains"] = trainsIds;
             }
             // statut
             if (mainCtrl.filters.statuses) {
@@ -590,7 +605,7 @@
         }
 
         /**
-         * Retourne le train à preselectionner s'il y a lieu.
+         * Retourne le train à preselectionne s'il y a lieu.
          */
         function getPreSelectedTrain(oneTrain) {
             var train = undefined;

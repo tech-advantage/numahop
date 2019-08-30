@@ -1,14 +1,15 @@
 package fr.progilone.pgcn.service.exchange.template;
 
-import fr.progilone.pgcn.domain.exchange.template.Name;
-import fr.progilone.pgcn.domain.exchange.template.Template;
-import fr.progilone.pgcn.domain.library.Library;
-import fr.progilone.pgcn.exception.PgcnValidationException;
-import fr.progilone.pgcn.exception.message.PgcnError;
-import fr.progilone.pgcn.exception.message.PgcnErrorCode;
-import fr.progilone.pgcn.exception.message.PgcnList;
-import fr.progilone.pgcn.repository.exchange.template.TemplateRepository;
-import fr.progilone.pgcn.service.storage.FileStorageManager;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,14 +19,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.PostConstruct;
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.util.List;
+import fr.progilone.pgcn.domain.exchange.template.Name;
+import fr.progilone.pgcn.domain.exchange.template.Template;
+import fr.progilone.pgcn.domain.library.Library;
+import fr.progilone.pgcn.exception.PgcnValidationException;
+import fr.progilone.pgcn.exception.message.PgcnError;
+import fr.progilone.pgcn.exception.message.PgcnErrorCode;
+import fr.progilone.pgcn.exception.message.PgcnList;
+import fr.progilone.pgcn.repository.exchange.template.TemplateRepository;
+import fr.progilone.pgcn.service.storage.FileStorageManager;
 
 /**
  * Gestion des templates Velocity
@@ -108,7 +110,7 @@ public class TemplateService {
             if (templateFile != null) {
                 return new BufferedInputStream(new FileInputStream(templateFile));
             }
-        } catch (IOException e) {
+        } catch (final IOException e) {
             LOG.error(e.getMessage(), e);
         }
         return null;
@@ -122,7 +124,15 @@ public class TemplateService {
      */
     @Transactional(readOnly = true)
     public File getTemplateFile(final Template template) {
-        return fm.retrieveFile(templateDir, template);
+        
+        if (template != null &&
+                    template.getName() == Name.ReinitPassword) {
+            return fm.uncheckedRetrieveFile(templateDir, template);
+        } else {
+            return fm.retrieveFile(templateDir, template);
+        }
+        
+            
     }
 
     @Transactional

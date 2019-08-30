@@ -1,8 +1,30 @@
 package fr.progilone.pgcn.service.statistics;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import fr.progilone.pgcn.domain.delivery.DeliveredDocument;
 import fr.progilone.pgcn.domain.delivery.Delivery;
 import fr.progilone.pgcn.domain.document.DigitalDocument;
+import fr.progilone.pgcn.domain.document.DigitalDocument.DigitalDocumentStatus;
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.document.PhysicalDocument;
 import fr.progilone.pgcn.domain.dto.statistics.StatisticsDocUnitAverageDTO;
@@ -27,24 +49,6 @@ import fr.progilone.pgcn.service.project.mapper.ProjectMapper;
 import fr.progilone.pgcn.service.train.TrainService;
 import fr.progilone.pgcn.service.user.UserService;
 import fr.progilone.pgcn.service.workflow.DocUnitWorkflowService;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Service dédié à l'affichage des statistiques
@@ -115,6 +119,7 @@ public class StatisticsService {
                                                        final List<String> lots,
                                                        final Integer page,
                                                        final Integer size) {
+
         final Page<DocUnit> pageOfDocs = docUnitService.search(null,
                                                                false,
                                                                false,
@@ -129,6 +134,7 @@ public class StatisticsService {
                                                                libraries,
                                                                projects,
                                                                lots,
+                                                               Collections.emptyList(),
                                                                Collections.emptyList(),
                                                                null,
                                                                null,
@@ -355,6 +361,7 @@ public class StatisticsService {
                                                                libraries,
                                                                project != null ? Collections.singletonList(project) : null,
                                                                lot != null ? Collections.singletonList(lot) : null,
+                                                               Collections.emptyList(),            
                                                                Collections.emptyList(),
                                                                null,
                                                                null,
@@ -461,8 +468,14 @@ public class StatisticsService {
         }
         // Regroupement de workflows par unité documentaire
         final Map<DocUnit, List<DocUnitWorkflow>> byDocUnit = workflows.stream().collect(Collectors.groupingBy(DocUnitWorkflow::getDocUnit));
+        
+        dto.setNbDocs(byDocUnit.size());
         // Nombre total de pages
         setAvgTotalPages(dto, byDocUnit);
+        // Taux de rejet
+        setRejectRatio(dto, byDocUnit);
+        // Poids total des documents
+        setTotalLengthDocs(dto, byDocUnit);
         // Temps moyen de contrôle
         setAvgDurControl(dto, byDocUnit);
         // Temps moyen de livraison et de relivraison
@@ -537,6 +550,59 @@ public class StatisticsService {
                                                                 .mapToInt(DigitalDocument::getNbPages))
                                         .sum();
         dto.setAvgTotalPages(totalPages);
+    }
+    
+    /**
+     * Calcul du taux de rejet de documents.
+     *
+     * @param dto
+     * @param byDocUnit
+     */
+    private void setRejectRatio(final StatisticsDocUnitAverageDTO dto, final Map<DocUnit, List<DocUnitWorkflow>> byDocUnit) {
+      
+        final List<DigitalDocument> digs = byDocUnit.keySet()
+                .stream()
+                .map(doc -> doc.getDigitalDocuments().stream()
+                                .filter(dig -> dig != null)
+                                .findFirst().orElse(null))
+                .collect(Collectors.toList());
+        
+        if (CollectionUtils.isEmpty(digs)) {
+            dto.setRejectRatio(0);
+        } else {
+        
+            final long nbRejected = digs.stream()
+                    .filter(dd -> dd != null)
+                    .filter(dd -> (dd.getDeliveries().size() == 1 
+                        && dd.getDeliveries().stream().findFirst().get().getStatus() == DigitalDocumentStatus.REJECTED)
+                      || (dd.getDeliveries().size() > 1 
+                          && dd.getDeliveries().stream()
+                              .noneMatch(deliv -> deliv.getStatus() == DigitalDocumentStatus.REJECTED)))
+                    .count();
+            final BigDecimal total = BigDecimal.valueOf(digs.size());
+            final BigDecimal ratio = BigDecimal.valueOf(nbRejected).divide(total, 2, RoundingMode.HALF_UP);
+            dto.setRejectRatio( ratio.doubleValue());
+        }
+                                                                      
+    }
+    
+    /**
+     * Calcul du poids total des documents.
+     *
+     * @param dto
+     * @param byDocUnit
+     */
+    private void setTotalLengthDocs(final StatisticsDocUnitAverageDTO dto, final Map<DocUnit, List<DocUnitWorkflow>> byDocUnit) {
+        
+        final long totalLength = byDocUnit.keySet()
+                                        .stream()
+                                        .filter(doc -> doc.getDigitalDocuments() != null)
+                                        .flatMapToLong(doc -> doc.getDigitalDocuments()
+                                                                .stream()
+                                                                .filter(dig -> dig != null && dig.getTotalLength() != null)
+                                                                .mapToLong(DigitalDocument::getTotalLength))
+                                        .sum();
+        dto.setLengthDocs(totalLength);
     }
 
     /**

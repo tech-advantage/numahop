@@ -22,6 +22,7 @@ import fr.progilone.pgcn.domain.document.DigitalDocument.DigitalDocumentStatus;
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.dto.statistics.StatisticsDocPublishedDTO;
 import fr.progilone.pgcn.domain.dto.statistics.StatisticsDocRejectedDTO;
+import fr.progilone.pgcn.domain.exchange.internetarchive.InternetArchiveReport;
 import fr.progilone.pgcn.domain.library.Library;
 import fr.progilone.pgcn.domain.lot.Lot;
 import fr.progilone.pgcn.domain.project.Project;
@@ -32,16 +33,21 @@ import fr.progilone.pgcn.repository.lot.LotRepository;
 import fr.progilone.pgcn.repository.lot.helper.LotSearchBuilder;
 import fr.progilone.pgcn.repository.workflow.DocUnitStateRepository;
 import fr.progilone.pgcn.repository.workflow.helper.DocUnitWorkflowSearchBuilder;
+import fr.progilone.pgcn.service.exchange.internetarchive.InternetArchiveReportService;
 
 @Service
 public class StatisticsDocumentService {
+    
+    public static final String ARCHIVE_BASE_URL = "https://archive.org/details/";
 
     private final DocUnitStateRepository docUnitStateRepository;
     private final LotRepository lotRepository;
+    private final InternetArchiveReportService internetArchiveReportService; 
 
-    public StatisticsDocumentService(final DocUnitStateRepository docUnitStateRepository, final LotRepository lotRepository) {
+    public StatisticsDocumentService(final DocUnitStateRepository docUnitStateRepository, final LotRepository lotRepository, final InternetArchiveReportService internetArchiveReportService) {
         this.docUnitStateRepository = docUnitStateRepository;
         this.lotRepository = lotRepository;
+        this.internetArchiveReportService = internetArchiveReportService;
     }
 
     @Transactional(readOnly = true)
@@ -54,19 +60,29 @@ public class StatisticsDocumentService {
                                                                final List<String> collections,
                                                                final Integer page,
                                                                final Integer size) {
-
-        return docUnitStateRepository.findDocUnitStates(new DocUnitWorkflowSearchBuilder().setLibraries(libraries)
-                                                                                          .setProjects(projects)
-                                                                                          .setLots(lots)
-                                                                                          .setFromDate(fromDate)
-                                                                                          .setToDate(toDate)
-                                                                                          .setTypes(types)
-                                                                                          .setCollections(collections)
-                                                                                          // Documents publiés
-                                                                                          .addState(DIFFUSION_DOCUMENT)
-                                                                                          .addState(DIFFUSION_DOCUMENT_LOCALE)
-                                                                                          .addState(DIFFUSION_DOCUMENT_OMEKA),
-                                                        new PageRequest(page, size)).map(this::initDto);
+        
+        final Page<StatisticsDocPublishedDTO> results = docUnitStateRepository.findDocUnitStates(new DocUnitWorkflowSearchBuilder().setLibraries(libraries)
+                                                                                             .setProjects(projects)
+                                                                                             .setLots(lots)
+                                                                                             .setFromDate(fromDate)
+                                                                                             .setToDate(toDate)
+                                                                                             .setTypes(types)
+                                                                                             .setCollections(collections)
+                                                                                             // Documents publiés
+                                                                                             .addState(DIFFUSION_DOCUMENT)
+                                                                                             .addState(DIFFUSION_DOCUMENT_LOCALE)
+                                                                                             .addState(DIFFUSION_DOCUMENT_OMEKA),
+                                                                                             new PageRequest(page, size)).map(this::initDto);
+        // Infos IA report => ia url
+        results.forEach(res -> {
+            if (res.getWorkflowState() == DIFFUSION_DOCUMENT) {
+                final InternetArchiveReport iaReport = internetArchiveReportService.findLastReportByDocUnit(res.getDocUnitIdentifier());
+                if (iaReport != null && iaReport.getInternetArchiveIdentifier()!=null) {
+                    res.setLinkIA(ARCHIVE_BASE_URL + iaReport.getInternetArchiveIdentifier());
+                }
+            }    
+        });
+        return results; 
     }
 
     private StatisticsDocPublishedDTO initDto(final DocUnitState docUnitState) {
@@ -80,6 +96,7 @@ public class StatisticsDocumentService {
         dto.setDocUnitLabel(docUnit.getLabel());
         dto.setDocUnitPgcnId(docUnit.getPgcnId());
         dto.setDocUnitType(docUnit.getType());
+        dto.setUrlArk(docUnit.getArkUrl());
 
         switch (docUnitState.getKey()) {
             case DIFFUSION_DOCUMENT:

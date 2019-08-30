@@ -321,8 +321,16 @@
             _.each(mainCtrl.pagination.items, function (item) {
                 item.checked = angular.isDefined(mainCtrl.selection[item.identifier]);
                 
-                // Récupération de la présence de workflow
+                // Récupération de la présence de workflow => controle en cours?
                 item.isCheckStarted = WorkflowHandleSrvc.isCheckStarted(item.docUnit.identifier);
+                // en attente de relivraison ?
+                if (item.status === 'REJECTED') {
+                    item.waitForRedelivering = WorkflowHandleSrvc.isWaitingForRedelivering(item.docUnit.identifier);
+                } else {
+                    item.waitForRedelivering = {};
+                    item.waitForRedelivering.done = false;
+                }
+                 
             });
             mainCtrl.pagination.busy = false;
         }

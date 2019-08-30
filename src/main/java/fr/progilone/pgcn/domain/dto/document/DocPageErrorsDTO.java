@@ -1,9 +1,9 @@
 package fr.progilone.pgcn.domain.dto.document;
 
+import java.util.Set;
+
 import fr.progilone.pgcn.domain.document.Check;
 import fr.progilone.pgcn.domain.dto.AbstractDTO;
-
-import java.util.List;
 
 /**
  * Structure pour renseigner les erreurs sur une page & les notes.
@@ -14,7 +14,7 @@ import java.util.List;
 public class DocPageErrorsDTO extends AbstractDTO{
     public DocPageErrorsDTO(){}
 
-    private List<Check.ErrorLabel> failedChecks;
+    private Set<Check.ErrorLabel> failedChecks;
     private String checkNotes;
     
     /* Donnees pour TOC */
@@ -23,7 +23,7 @@ public class DocPageErrorsDTO extends AbstractDTO{
     private String titleToc;
         
 
-    public List<Check.ErrorLabel> getFailedChecks() {
+    public Set<Check.ErrorLabel> getFailedChecks() {
         return failedChecks;
     }
 
@@ -31,11 +31,11 @@ public class DocPageErrorsDTO extends AbstractDTO{
         return checkNotes;
     }
 
-    public void setCheckNotes(String checkNotes) {
+    public void setCheckNotes(final String checkNotes) {
         this.checkNotes = checkNotes;
     }
 
-    public void setFailedChecks(List<Check.ErrorLabel> failedChecks) {
+    public void setFailedChecks(final Set<Check.ErrorLabel> failedChecks) {
         this.failedChecks = failedChecks;
     }
 
@@ -43,7 +43,7 @@ public class DocPageErrorsDTO extends AbstractDTO{
         return typeToc;
     }
 
-    public void setTypeToc(String typeToc) {
+    public void setTypeToc(final String typeToc) {
         this.typeToc = typeToc;
     }
 
@@ -51,7 +51,7 @@ public class DocPageErrorsDTO extends AbstractDTO{
         return orderToc;
     }
 
-    public void setOrderToc(String orderToc) {
+    public void setOrderToc(final String orderToc) {
         this.orderToc = orderToc;
     }
 
@@ -59,7 +59,7 @@ public class DocPageErrorsDTO extends AbstractDTO{
         return titleToc;
     }
 
-    public void setTitleToc(String titleToc) {
+    public void setTitleToc(final String titleToc) {
         this.titleToc = titleToc;
     }
 }

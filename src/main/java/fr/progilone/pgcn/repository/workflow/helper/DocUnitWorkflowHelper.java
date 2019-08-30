@@ -61,7 +61,13 @@ public class DocUnitWorkflowHelper {
         });
         // Étapes terminées avec succès
         searchBuilder.getStates().ifPresent(states -> {
-            builder.and(qDocUnitState.discriminator.in(states)).and(qDocUnitState.status.eq(WorkflowStateStatus.FINISHED));
+            if (searchBuilder.isWithFailedStatuses()) {
+                builder.and(qDocUnitState.discriminator.in(states)).and(qDocUnitState.status.eq(WorkflowStateStatus.FINISHED)
+                                                                        .or(qDocUnitState.status.eq(WorkflowStateStatus.FAILED)));
+            } else {
+                builder.and(qDocUnitState.discriminator.in(states)).and(qDocUnitState.status.eq(WorkflowStateStatus.FINISHED));
+            }
+            
         });
         // Période
         searchBuilder.getFromDate().ifPresent(fromDate -> {

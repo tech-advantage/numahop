@@ -75,6 +75,17 @@
                 if (train) { options.train = train; }
                 return open("scripts/components/modal/common/integrateToProject.html", options, size, 'ModalIntegrateToProjectCtrl', null);
             };
+            
+            var integrateToTrain = function (docs, proj, size) {
+                if (!size) {
+                    size = 'sm';
+                }
+                var options = {
+                    docs: docs,
+                    proj: proj
+                };
+                return open("scripts/components/modal/common/integrateToTrain.html", options, size, 'ModalIntegrateToTrainCtrl', null);
+            };
 
             var selectBibRecord = function (options, size) {
                 if (!size) {
@@ -294,6 +305,7 @@
                 modalUpdateDocUnitResults: modalUpdateDocUnitResults,
                 modalUnlinkDocUnitResults: modalUnlinkDocUnitResults,
                 integrateToProject: integrateToProject,
+                integrateToTrain: integrateToTrain,
                 selectBibRecord: selectBibRecord,
                 selectDocUnit: selectDocUnit,
                 selectFile: selectFile,

@@ -327,7 +327,7 @@ public class ImageMagickService {
      * @throws PgcnTechnicalException
      */
     @SuppressWarnings("findsecbugs:COMMAND_INJECTION")
-    public Optional<Map<String, String>> getMetadatasOfFile(final File file) throws PgcnTechnicalException {
+    public Optional<Map<String, String>> getMetadatasOfFile(final File file, final boolean isPDF) throws PgcnTechnicalException {
 
         if (!this.isConfigured) {
             throw new PgcnTechnicalException("Le service de conversion IM n'est pas configuré, impossible de collecter les metadatas.");
@@ -346,7 +346,7 @@ public class ImageMagickService {
                                                         "PixelsPerInch",
                                                         "-format",
                                                         formatArgs,
-                                                        file.getAbsolutePath());
+                                                        file.getAbsolutePath() + (isPDF ? "[0]" : ""));
 
         builder.redirectErrorStream(true);
         try {

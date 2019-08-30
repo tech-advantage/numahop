@@ -140,7 +140,7 @@ public class ConditionReportRepositoryImpl implements ConditionReportRepositoryC
                                   final QDocUnitState qState,
                                   final BooleanBuilder filter) {
         final JPAQuery query = new JPAQuery(em).from(qReport).innerJoin(qReport.details, qDetail).innerJoin(qReport.docUnit, qDocUnit)
-                                    .innerJoin(qDocUnit.workflow, qWorkflow).innerJoin(qWorkflow.states, qState);
+                                    .leftJoin(qDocUnit.workflow, qWorkflow).leftJoin(qWorkflow.states, qState);
 
         for (final QDescription qDescription : qDescriptions) {
             query.innerJoin(qDetail.descriptions, qDescription);

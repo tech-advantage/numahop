@@ -37,6 +37,7 @@ import fr.progilone.pgcn.domain.workflow.WorkflowStateKey;
 import fr.progilone.pgcn.repository.delivery.DeliveryRepository;
 import fr.progilone.pgcn.security.SecurityUtils;
 import fr.progilone.pgcn.service.document.DigitalDocumentService;
+import fr.progilone.pgcn.service.document.DocCheckHistoryService;
 import fr.progilone.pgcn.service.document.DocUnitService;
 import fr.progilone.pgcn.service.document.conditionreport.ConditionReportDetailService;
 import fr.progilone.pgcn.service.document.mapper.DigitalDocumentMapper;
@@ -64,6 +65,7 @@ public class UIDigitalDocumentService {
     private final WorkflowService workflowService;
     private final DocUnitService docUnitService;
     private final DeliveryRepository deliveryRepository;
+    private final DocCheckHistoryService docCheckHistoryService;
 
     private final NumberFormat numFormatter = NumberFormat.getNumberInstance(Locale.FRENCH);
     
@@ -75,7 +77,8 @@ public class UIDigitalDocumentService {
                                     final UserService userService,
                                     final WorkflowService workflowService,
                                     final DocUnitService docUnitService,
-                                    final DeliveryRepository deliveryRepository) {
+                                    final DeliveryRepository deliveryRepository,
+                                    final DocCheckHistoryService docCheckHistoryService) {
         this.digitalDocumentService = digitalDocumentService;
         this.uiDigitalDocumentMapper = uiDigitalDocumentMapper;
         this.reportDetailService = reportDetailService;
@@ -84,6 +87,7 @@ public class UIDigitalDocumentService {
         this.docUnitService = docUnitService;
         this.deliveryRepository = deliveryRepository;
         this.userService = userService;
+        this.docCheckHistoryService = docCheckHistoryService;
     }
 
     /**
@@ -241,18 +245,28 @@ public class UIDigitalDocumentService {
         }
     }
     
-    
+    /**
+     * Fin de controle d'un échantillon.
+     * 
+     * @param identifier
+     * @param checksOK
+     */
     @Transactional
     public void endChecksForSampling(final String identifier, final boolean checksOK) {
         final SampleDTO sample = sampleService.getOne(identifier);
-        sample.getDocuments().forEach(doc->endChecks(doc.getIdentifier(), checksOK, true));
+        sample.getDocuments().forEach(doc->endChecks(doc.getIdentifier(), checksOK));
     }
     
     
-
-
+    /**
+     * Fin de controle d'un document.
+     * 
+     * @param identifier
+     * @param checksOK
+     */
     @Transactional
-    public void endChecks(final String identifier, final boolean checksOK, final boolean sampling) {
+    public void endChecks(final String identifier, final boolean checksOK) {
+        
         final DigitalDocument digitalDocument = digitalDocumentService.findOne(identifier);
         final CustomUserDetails currentUser = SecurityUtils.getCurrentUser();
         final String docUnitId = digitalDocument.getDocUnit().getIdentifier();
@@ -265,6 +279,7 @@ public class UIDigitalDocumentService {
                 workflowService.processState(docUnit, WorkflowStateKey.CONTROLE_QUALITE_EN_COURS, user);
             }
             if(workflowService.isStateRunning(docUnit, WorkflowStateKey.PREVALIDATION_DOCUMENT)) {
+                digitalDocument.setStatus(DigitalDocumentStatus.PRE_VALIDATED);
                 workflowService.processState(docUnit, WorkflowStateKey.PREVALIDATION_DOCUMENT, user);
             } else if (workflowService.isStateRunning(docUnit, WorkflowStateKey.VALIDATION_DOCUMENT)) {
                 digitalDocument.setStatus(DigitalDocumentStatus.VALIDATED);
@@ -272,7 +287,7 @@ public class UIDigitalDocumentService {
             } else {
                 digitalDocument.setStatus(DigitalDocumentStatus.VALIDATED);
             }
-
+            
         } else { // Rejeter
             if(workflowService.isStateRunning(docUnit, WorkflowStateKey.CONTROLE_QUALITE_EN_COURS)) {
                 workflowService.rejectState(docUnit, WorkflowStateKey.CONTROLE_QUALITE_EN_COURS, user);
@@ -287,7 +302,7 @@ public class UIDigitalDocumentService {
                 digitalDocument.setStatus(DigitalDocumentStatus.REJECTED);
             }
         }
-
+        
         // on met à jour le doc livré le plus récent
         final Optional<DeliveredDocument> lastDeliveredDoc = digitalDocument.getDeliveries()
                        .stream()
@@ -305,10 +320,12 @@ public class UIDigitalDocumentService {
                            }
                            deliveryRepository.save(doc.getDelivery());
                        });
+        
+        // MAJ historique.
+        docCheckHistoryService.update(digitalDocument, user, lastDeliveredDoc);
 
         digitalDocumentService.generateAndSendCheckSlip(docUnitId, lastDeliveredDoc);
         digitalDocumentService.save(digitalDocument);
     }
-
     
 }

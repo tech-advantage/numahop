@@ -1,6 +1,7 @@
 package fr.progilone.pgcn.service.document.ui;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -84,10 +85,11 @@ public class UIBibliographicRecordService {
 
         try {
             final BibliographicRecord savedRecord = bibliographicRecordService.save(record);
-
             // Prise en compte des modifications de la notice dans l'export IA et CINES
-            savedRecord.getDocUnit().setArchiveItem(null);
-            savedRecord.getDocUnit().setExportData(null);
+            if (savedRecord.getDocUnit() != null) {
+                savedRecord.getDocUnit().setArchiveItem(null);
+                savedRecord.getDocUnit().setExportData(null);
+            }
 
             final BibliographicRecordDTO dto = getOne(savedRecord.getIdentifier());
 
@@ -109,7 +111,7 @@ public class UIBibliographicRecordService {
             e.getErrors().forEach(semanthequeError -> request.addError(buildError(semanthequeError.getCode())));
             throw new PgcnValidationException(request);
         }
-    }
+    }    
 
     private PgcnError buildError(final PgcnErrorCode pgcnErrorCode) {
         final PgcnError.Builder builder = new PgcnError.Builder();
@@ -177,6 +179,7 @@ public class UIBibliographicRecordService {
                                                                                  libraries,
                                                                                  projects,
                                                                                  lots,
+                                                                                 Collections.emptyList(),
                                                                                  lastModifiedDateFrom,
                                                                                  lastModifiedDateTo,
                                                                                  createdDateFrom,
@@ -204,6 +207,7 @@ public class UIBibliographicRecordService {
                                                                final List<String> libraries,
                                                                final List<String> projects,
                                                                final List<String> lots,
+                                                               final List<String> trains,
                                                                final LocalDate lastModifiedDateFrom,
                                                                final LocalDate lastModifiedDateTo,
                                                                final LocalDate createdDateFrom,
@@ -216,6 +220,7 @@ public class UIBibliographicRecordService {
                                                                                  libraries,
                                                                                  projects,
                                                                                  lots,
+                                                                                 trains,
                                                                                  lastModifiedDateFrom,
                                                                                  lastModifiedDateTo,
                                                                                  createdDateFrom,

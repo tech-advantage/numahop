@@ -57,6 +57,18 @@
 					</ui-select>
 				</div>
 			</div>
+			<!-- Train -->
+            <div class="filter-block" ng-show="FilterCtrl.isAvailable(listFilters.train_filter)">
+                <div class="filter-title">{{::'Train' | translate}}</div>
+                <div class="filter-element">
+                    <ui-select multiple ng-model="filters.trains" theme="select2" on-select="doFilter()" on-remove="doFilter()" class="form-control">
+                        <ui-select-match placeholder="{{::'Train' | translate}}">{{$item.label}}</ui-select-match>
+                        <ui-select-choices repeat="option in options.trains | filter: $select.search track by option.identifier">
+                            <div ng-bind-html="option.label | highlight: $select.search"></div>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+            </div>
 			<!-- Catégorie -->
 			<div class="filter-block" ng-show="FilterCtrl.isAvailable(listFilters.category_filter)">
 				<div class="filter-title">{{::'Catégorie' | translate}}</div>

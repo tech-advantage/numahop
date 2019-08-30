@@ -388,8 +388,9 @@
                                 <th class="text-center" sem-table-sorton="label">{{::"Libellé" | translate }}</th>
                                 <th class="text-center" sem-table-sorton="label">{{::"Nb. pages" | translate }}</th>
                                 <th class="text-center" sem-table-sorton="status">{{::"Statut" | translate }}</th>
-                                <th class="text-center" sem-table-sorton="totalDelivery">{{::"Nombre de livraisons" | translate }}</th>
-                                <th class="text-center" sem-table-sorton="deliveryDate">{{::"Date de livraison" | translate }}</th>
+                                <th class="text-center" sem-table-sorton="status">{{::"Attente relivraison" | translate }}</th>
+                                <th class="text-center" sem-table-sorton="totalDelivery">{{::"Nb. livraisons" | translate }}</th>
+                                <th class="text-center" sem-table-sorton="deliveryDate">{{::"Date livraison" | translate }}</th>
                                 <th class="text-center">{{::"Actions" | translate }}</th>
                             </tr>
                         </thead>
@@ -416,6 +417,12 @@
                                 </td>
                                 <td class="text-center">
                                     {{ ::mainCtrl.codes["digitalDocument."+item.status]}}
+                                </td>
+                                <td class="text-center">
+                                    <div ng_if="item.waitForRedelivering.done" class="checkbox checkbox-sid-main no-margin">
+                                        <input type="checkbox" checked="checked" disabled="disabled" />
+                                        <label />
+                                    </div>
                                 </td>
                                 <td class="text-center">
                                     {{ ::item.totalDelivery }}

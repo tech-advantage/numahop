@@ -142,6 +142,8 @@ public interface LotRepository extends JpaRepository<Lot, String>, LotRepository
     Long countByProvider(User user);
 
     Long countByWorkflowModel(WorkflowModel model);
+    /* attention : recupere aussi lots inactifs pour la reprise de données */
+    List<Lot> findAllByProjectLibraryIdentifierIn(List<String> libraries);
 
     @Query("from Lot lo "
             + "left join fetch lo.docUnits du "

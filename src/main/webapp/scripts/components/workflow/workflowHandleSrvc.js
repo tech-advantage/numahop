@@ -24,6 +24,13 @@
 			};
 			
 			/**
+			 * Retourne vrai si le doc est en attente de relivraison
+			 */
+			var isWaitingForRedelivering = function (doc) {
+			    return WorkflowSrvc.isWaitingForRedelivering({ doc: doc });
+            };
+            
+			/**
 			 * Retourne vrai si le constat peut etre validé.
 			 */
 			var isReportToValidate = function (doc) {
@@ -211,7 +218,8 @@
 				isRejectDefinitive: isRejectDefinitive,
 				canRecordBeValidated: canRecordBeValidated,
 				canCondReportBeValidated: canCondReportBeValidated,
-				isReportToValidate: isReportToValidate
+				isReportToValidate: isReportToValidate,
+				isWaitingForRedelivering: isWaitingForRedelivering
 			};
 		});
 })();

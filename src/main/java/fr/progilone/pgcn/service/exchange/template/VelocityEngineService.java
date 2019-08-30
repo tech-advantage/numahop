@@ -1,17 +1,5 @@
 package fr.progilone.pgcn.service.exchange.template;
 
-import fr.progilone.pgcn.domain.exchange.template.Name;
-import fr.progilone.pgcn.domain.library.Library;
-import fr.progilone.pgcn.service.exchange.template.loader.ResourceName;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.Velocity;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -20,6 +8,20 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
+
+import javax.annotation.PostConstruct;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.Velocity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import fr.progilone.pgcn.domain.exchange.template.Name;
+import fr.progilone.pgcn.domain.library.Library;
+import fr.progilone.pgcn.service.exchange.template.loader.ResourceName;
 
 /**
  * Service gérant la génération de documents avec le moteur de templates Velocity
@@ -98,7 +100,6 @@ public class VelocityEngineService {
      */
     public String generateDocument(final Name templateName, final Library library, final Map<String, Object> parameters) throws IOException {
         LOG.debug("Génération du document {}, bibliothèque {} avec les paramètres {}", templateName, library.getIdentifier(), parameters);
-
         // Initialisation du contexte
         final VelocityContext context = new VelocityContext();
         if (parameters != null) {

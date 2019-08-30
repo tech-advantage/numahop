@@ -1,12 +1,13 @@
 package fr.progilone.pgcn.repository.document;
 
-import fr.progilone.pgcn.domain.document.DocUnit;
+import java.time.LocalDate;
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 
-import java.time.LocalDate;
-import java.util.List;
+import fr.progilone.pgcn.domain.document.DocUnit;
 
 public interface DocUnitRepositoryCustom {
 
@@ -29,6 +30,7 @@ public interface DocUnitRepositoryCustom {
                          List<String> libraries,
                          List<String> projects,
                          List<String> lots,
+                         List<String> trains,
                          List<String> statuses,
                          LocalDate lastModifiedDateFrom,
                          LocalDate lastModifiedDateTo,
@@ -46,4 +48,12 @@ public interface DocUnitRepositoryCustom {
      * @return
      */
     List<DocUnit> searchDuplicates(final DocUnit reference, final List<String> identifiers, final DocUnit.State... state);
+    
+    /**
+     * Recherche d'unite documentaire complete.
+     * 
+     * @param identifier
+     * @return
+     */
+    DocUnit findOneWithAllDependencies(String identifier);
 }

@@ -185,6 +185,7 @@
     <include file="classpath:config/liquibase/changelog/db-changelog-document-024.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/db-changelog-check-010.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/db-changelog-check-012.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/db-changelog-check-013.xml" relativeToChangelogFile="false"/>
 
     <!-- Workflow -->
     <include file="classpath:config/liquibase/changelog/db-changelog-workflow-authorizations.xml" relativeToChangelogFile="false"/>

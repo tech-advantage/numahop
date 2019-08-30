@@ -206,9 +206,7 @@ public abstract class DocUnitState extends AbstractDomainObject {
         }
         setStartDate(startDate);
 
-        if (endDate != null) {
-            setEndDate(endDate);
-        }
+        setEndDate(endDate);  // reset to null
 
         if (status != null) {
             setStatus(status);

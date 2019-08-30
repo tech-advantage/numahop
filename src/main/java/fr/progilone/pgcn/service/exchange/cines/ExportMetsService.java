@@ -82,8 +82,9 @@ public class ExportMetsService {
     private static final ObjectFactory DC_FACTORY = new ObjectFactory();
     private static final fr.progilone.pgcn.domain.jaxb.mets.ObjectFactory METS_FACTORY = new fr.progilone.pgcn.domain.jaxb.mets.ObjectFactory();
     private static final String METS_SCHEMA_VALIDATION = "http://www.loc.gov/standards/mets/mets.xsd";
-    private static final String METS_SCHEMA_LOCATION = "http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd "
-                                                       + "http://purl.org/dc/elements/1.1/ http://dublincore.org/schemas/xmls/simpledc20021212.xsd";
+    private static final String METS_SCHEMA_LOCATION = "http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd";
+    // #4412 aout 2019 - changement au cines  (bien formé, mais pas valide White spaces are required between publicId and systemId)...                                                   
+    //+ "http://purl.org/dc/elements/1.1/ http://dublincore.org/schemas/xmls/simpledc20021212.xsd";
 
     private static final Logger LOG = LoggerFactory.getLogger(ExportMetsService.class);
 

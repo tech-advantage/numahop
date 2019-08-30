@@ -1,5 +1,25 @@
 package fr.progilone.pgcn.repository.document;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.Hibernate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+
 import com.mysema.query.BooleanBuilder;
 import com.mysema.query.jpa.JPASubQuery;
 import com.mysema.query.jpa.JPQLQuery;
@@ -8,10 +28,12 @@ import com.mysema.query.types.Order;
 import com.mysema.query.types.OrderSpecifier;
 import com.mysema.query.types.expr.BooleanExpression;
 import com.mysema.query.types.query.ListSubQuery;
+
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.document.QBibliographicRecord;
 import fr.progilone.pgcn.domain.document.QDocProperty;
 import fr.progilone.pgcn.domain.document.QDocUnit;
+import fr.progilone.pgcn.domain.document.QPhysicalDocument;
 import fr.progilone.pgcn.domain.exchange.cines.QCinesReport;
 import fr.progilone.pgcn.domain.exchange.internetarchive.QInternetArchiveReport;
 import fr.progilone.pgcn.domain.lot.QLot;
@@ -20,23 +42,6 @@ import fr.progilone.pgcn.domain.workflow.QDocUnitState;
 import fr.progilone.pgcn.domain.workflow.QDocUnitWorkflow;
 import fr.progilone.pgcn.domain.workflow.WorkflowStateKey;
 import fr.progilone.pgcn.domain.workflow.WorkflowStateStatus;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class DocUnitRepositoryImpl implements DocUnitRepositoryCustom {
 
@@ -60,6 +65,7 @@ public class DocUnitRepositoryImpl implements DocUnitRepositoryCustom {
                                 final List<String> libraries,
                                 final List<String> projects,
                                 final List<String> lots,
+                                final List<String> trains,
                                 final List<String> statuses,
                                 final LocalDate lastModifiedDateFrom,
                                 final LocalDate lastModifiedDateTo,
@@ -135,6 +141,11 @@ public class DocUnitRepositoryImpl implements DocUnitRepositoryCustom {
         if (CollectionUtils.isNotEmpty(lots)) {
             final BooleanExpression lotFilter = lot.identifier.in(lots);
             builder.and(lotFilter);
+        }
+        if (CollectionUtils.isNotEmpty(trains)) {
+            final QPhysicalDocument qpd = doc.docUnit.physicalDocuments.any();
+            final BooleanExpression trainFilter = qpd.isNotNull().and(qpd.train.identifier.in(trains));
+            builder.and(trainFilter);
         }
         // Statuts de workflow
         if (CollectionUtils.isNotEmpty(statuses)) {
@@ -277,4 +288,39 @@ public class DocUnitRepositoryImpl implements DocUnitRepositoryCustom {
         // Recherche
         return query.list(qDocUnit);
     }
+    
+    @Override
+    public DocUnit findOneWithAllDependencies(final String identifier) {
+        
+        final QDocUnit qDocUnit = QDocUnit.docUnit;
+        final DocUnit doc = new JPAQuery(em).from(qDocUnit).where(qDocUnit.identifier.eq(identifier)).uniqueResult(qDocUnit);
+        if (doc != null) {
+            Hibernate.initialize(doc.getParent());
+            Hibernate.initialize(doc.getLibrary());
+            Hibernate.initialize(doc.getWorkflow());
+            Hibernate.initialize(doc.getPhysicalDocuments());
+            Hibernate.initialize(doc.getDigitalDocuments());
+            Hibernate.initialize(doc.getActiveOcrLanguage());
+            
+            doc.getDigitalDocuments().forEach(dd -> {
+                dd.getPages().forEach(pg -> Hibernate.initialize(pg.getFiles())); 
+            });
+            Hibernate.initialize(doc.getProject());
+            doc.getRecords().forEach(not -> {
+                not.getProperties().forEach(p -> Hibernate.initialize(p.getType()));
+            });
+            
+            if (doc.getExportData() != null) {
+                Hibernate.initialize(doc.getExportData().getProperties());
+            }
+            
+            if (doc.getArchiveItem() != null) {
+                Hibernate.initialize(doc.getArchiveItem().getCollections());
+                Hibernate.initialize(doc.getArchiveItem().getSubjects());
+                Hibernate.initialize(doc.getArchiveItem().getHeaders());
+            }
+        }
+        return doc;
+    }
+    
 }

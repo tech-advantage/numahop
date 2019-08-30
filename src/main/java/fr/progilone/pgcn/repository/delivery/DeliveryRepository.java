@@ -91,7 +91,7 @@ public interface DeliveryRepository extends JpaRepository<Delivery, String>, Del
         + "join fetch dd.digitalDocument dig "
         + "join fetch d.lot lo "
         + "join fetch lo.activeFTPConfiguration ftpConf "
-        + "where dd.status = 'VALIDATED' and dd.deliveryDate > ?1")
+        + "where dd.status = 'VALIDATED' and dd.deliveryDate < ?1")
     Set<DeliveredDocument> getValidatedDeliveredDocs(LocalDate dateFrom);
     
 

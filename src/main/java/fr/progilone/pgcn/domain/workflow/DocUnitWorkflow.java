@@ -180,6 +180,32 @@ public class DocUnitWorkflow extends AbstractDomainObject {
     }
     
     /**
+     * Retourne vrai si le document a été validé.
+     * @return
+     */
+    public boolean isDocumentValidated() {
+        return states.stream()
+        .filter(state -> state.getKey().equals(WorkflowStateKey.VALIDATION_DOCUMENT) && state.isValidated())
+        .findFirst().isPresent();
+    }
+    
+    public boolean isNoticeValidated() {
+        return states.stream()
+        .filter(state -> state.getKey().equals(WorkflowStateKey.VALIDATION_NOTICES) && state.isValidated())
+        .findFirst().isPresent();
+    }
+    
+    /**
+     * Retourne vrai si le rapport de controles a été envoyé au prestataire.
+     * @return
+     */
+    public boolean isRapportSent() {
+        return states.stream()
+        .filter(state -> state.getKey().equals(WorkflowStateKey.RAPPORT_CONTROLES) && state.isValidated())
+        .findFirst().isPresent();
+    }
+    
+    /**
      * Retourne vrai si le workflow est terminé
      * @return
      */

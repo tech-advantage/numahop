@@ -330,7 +330,7 @@ public class DigitalDocumentController extends AbstractRestController {
                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
             // process de cloture
-            uiDigitalDocumentService.endChecks(identifier, checksOK, false);
+            uiDigitalDocumentService.endChecks(identifier, checksOK);
         }
 
         return new ResponseEntity<>(HttpStatus.OK);

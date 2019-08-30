@@ -193,6 +193,8 @@ public class BibliographicRecordController extends AbstractRestController {
                                                                                final List<String> projects,
                                                                                @RequestParam(value = "lots", required = false)
                                                                                final List<String> lots,
+                                                                               @RequestParam(value = "trains", required = false)
+                                                                               final List<String> trains,
                                                                                @DateTimeFormat(pattern = "yyyy-MM-dd")
                                                                                @RequestParam(value = "lastModifiedDateFrom", required = false)
                                                                                final LocalDate lastModifiedDateFrom,
@@ -220,6 +222,7 @@ public class BibliographicRecordController extends AbstractRestController {
                                                                               filteredLibraries,
                                                                               projects,
                                                                               lots,
+                                                                              trains,
                                                                               lastModifiedDateFrom,
                                                                               lastModifiedDateTo,
                                                                               createdDateFrom,

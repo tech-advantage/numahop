@@ -120,6 +120,16 @@ public class WorkflowController extends AbstractRestController {
         return createResponseEntity(uiService.isCheckStarted(identifier));
     }
     
+    @RequestMapping(method = RequestMethod.GET, params = {"isWaitingRedelivering"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<StateIsDoneDTO> isWaitingForRedelivering(final HttpServletRequest request, 
+            @RequestParam(value = "doc") final String identifier) {
+        if (!accessHelper.checkDocUnit(identifier)) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+        return createResponseEntity(uiService.isWaitingForRedelivering(identifier));
+    }
+    
     @RequestMapping(method = RequestMethod.GET, params = {"canReportBeValidated"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<StateIsDoneDTO> canReportBeValidated(final HttpServletRequest request, 
@@ -129,6 +139,7 @@ public class WorkflowController extends AbstractRestController {
         }
         return createResponseEntity(uiService.canReportBeValidated(identifier));
     }
+    
     
     @RequestMapping(method = RequestMethod.GET, params = {"isRejectDefinitive"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
@@ -140,6 +151,13 @@ public class WorkflowController extends AbstractRestController {
         return createResponseEntity(uiService.isRejectDefinitive(identifier));
     }
     
+    /**
+     * Force les docs au statut 'En attente de nenumerisation' 
+     * à la création d'un train de renumerisation. 
+     * 
+     * @param docIds
+     * @return
+     */
     @RequestMapping(method = RequestMethod.POST, params = {"resetNumWaiting"})
     @ResponseStatus(HttpStatus.OK)
     @Timed

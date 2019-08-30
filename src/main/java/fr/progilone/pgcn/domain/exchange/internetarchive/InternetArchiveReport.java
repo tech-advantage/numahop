@@ -1,12 +1,8 @@
 package fr.progilone.pgcn.domain.exchange.internetarchive;
 
-import fr.progilone.pgcn.domain.AbstractDomainObject;
-import fr.progilone.pgcn.domain.document.DocUnit;
-import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldIndex;
-import org.springframework.data.elasticsearch.annotations.FieldType;
-import org.springframework.data.elasticsearch.annotations.Parent;
+import static fr.progilone.pgcn.service.es.EsConstant.ANALYZER_KEYWORD;
+
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,9 +12,16 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import java.time.LocalDateTime;
+import javax.persistence.Transient;
 
-import static fr.progilone.pgcn.service.es.EsConstant.*;
+import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldIndex;
+import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.elasticsearch.annotations.Parent;
+
+import fr.progilone.pgcn.domain.AbstractDomainObject;
+import fr.progilone.pgcn.domain.document.DocUnit;
 
 /**
  * Rapports de diffusion Internet Archive
@@ -87,6 +90,21 @@ public class InternetArchiveReport extends AbstractDomainObject {
      */
     @Column(name = "message", columnDefinition = "text")
     private String message;
+    
+    /**
+     * Date de réception du certificat d'archivage
+     */
+    @Column(name = "date_archived")
+    private LocalDateTime dateArchived;
+    
+    /**
+     *  Simple passe-plat pour recuperer l'url ark
+     *  non persisté!
+     */
+    @Transient
+    private String arkUrl;
+    
+    
 
     public DocUnit getDocUnit() {
         return docUnit;
@@ -108,21 +126,15 @@ public class InternetArchiveReport extends AbstractDomainObject {
         return internetArchiveIdentifier;
     }
 
-    public void setInternetArchiveIdentifier(String internetArchiveIdentifier) {
+    public void setInternetArchiveIdentifier(final String internetArchiveIdentifier) {
         this.internetArchiveIdentifier = internetArchiveIdentifier;
     }
-
-    /**
-     * Date de réception du certificat d'archivage
-     */
-    @Column(name = "date_archived")
-    private LocalDateTime dateArchived;
 
     public Integer getNumber() {
         return number;
     }
 
-    public void setNumber(Integer number) {
+    public void setNumber(final Integer number) {
         this.number = number;
     }
 
@@ -130,7 +142,7 @@ public class InternetArchiveReport extends AbstractDomainObject {
         return total;
     }
 
-    public void setTotal(Integer total) {
+    public void setTotal(final Integer total) {
         this.total = total;
     }
 
@@ -154,7 +166,7 @@ public class InternetArchiveReport extends AbstractDomainObject {
         return dateArchived;
     }
 
-    public void setDateArchived(LocalDateTime dateArchived) {
+    public void setDateArchived(final LocalDateTime dateArchived) {
         this.dateArchived = dateArchived;
     }
 
@@ -164,6 +176,14 @@ public class InternetArchiveReport extends AbstractDomainObject {
 
     public void setMessage(final String message) {
         this.message = message;
+    }
+
+    public String getArkUrl() {
+        return arkUrl;
+    }
+
+    public void setArkUrl(final String arkUrl) {
+        this.arkUrl = arkUrl;
     }
 
     /**

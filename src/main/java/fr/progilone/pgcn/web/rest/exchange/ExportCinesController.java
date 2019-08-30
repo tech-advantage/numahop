@@ -98,6 +98,23 @@ public class ExportCinesController extends AbstractRestController {
         this.accessHelper = accessHelper;
     }
     
+    /**
+     * DEBUG ONLY
+     * 
+     * @param identifier
+     * @return
+     */
+//    @RequestMapping(value = "/checkbal")
+//    @PermitAll
+//    public ResponseEntity<?> checkBalCines() {
+//        
+//        // call : http://localhost:8080/api/rest/export/cines/checkbal
+//        cinesRequestHandlerService.updateExportedDocUnitsCron();
+//        
+//        return new ResponseEntity(HttpStatus.OK);
+//    }
+
+    
     
     /**
      * Récupération des données enregistrées lors du précédent export

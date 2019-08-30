@@ -28,6 +28,7 @@ import fr.progilone.pgcn.service.exchange.cines.CinesRequestHandlerService;
 import fr.progilone.pgcn.service.exchange.cines.ExportCinesService;
 import fr.progilone.pgcn.service.storage.FileStorageManager;
 import fr.progilone.pgcn.service.util.CryptoService;
+import fr.progilone.pgcn.service.util.transaction.TransactionService;
 import fr.progilone.pgcn.service.workflow.WorkflowService;
 import fr.progilone.pgcn.web.websocket.WebsocketService;
 
@@ -55,6 +56,8 @@ public class MailboxServiceTest {
     @Mock
     private DocUnitService docUnitService;
     @Mock
+    private TransactionService transactionService;
+    @Mock
     private WorkflowService workflowService;
 
     @Before
@@ -64,7 +67,7 @@ public class MailboxServiceTest {
         when(cryptoService.decrypt(anyString())).thenAnswer(new ReturnsArgumentAt(0));
 
         final CinesReportService cinesReportService = new CinesReportService(cinesReportRepository, websocketService, workflowService);
-        cinesRHandlerService = new CinesRequestHandlerService(exportCinesService, cinesReportService, service, mailboxConfigurationService, fm, docUnitService);
+        cinesRHandlerService = new CinesRequestHandlerService(exportCinesService, cinesReportService, service, mailboxConfigurationService, fm, docUnitService, transactionService);
     }
 
     @Ignore

@@ -4,7 +4,7 @@
     angular.module('numaHopApp.controller')
         .controller('FiltersController', FiltersController);
 
-    function FiltersController() {
+    function FiltersController(USER_ROLES) {
 
         var self = this;
 

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import fr.progilone.pgcn.domain.document.conditionreport.ConditionReportDetail.Type;
+import fr.progilone.pgcn.domain.dto.workflow.StateIsDoneDTO;
 import fr.progilone.pgcn.domain.lot.Lot;
 import fr.progilone.pgcn.domain.workflow.WorkflowGroup;
 import fr.progilone.pgcn.domain.workflow.WorkflowStateKey;
@@ -155,4 +156,23 @@ public class WorkflowAccessHelper {
     public boolean isDocUnitLockedByWorkflow(final String id) {
         return workflowService.isWorkflowRunning(id);
     }
+    
+    /**
+     * Permet de savoir si on peut toujours affecter la docUnit 
+     * liée au constat à un train 
+     * (1 constat et 1 workflow non encore demarré ou n'ayant pas depassé l'etape 'En attente de numerisation)
+     * 
+     * @param identifier
+     * @return
+     */
+    @Transactional(readOnly = true)
+    public StateIsDoneDTO canChangeTrain(final String identifier) {
+        final StateIsDoneDTO result = new StateIsDoneDTO();
+        result.setDone( (!workflowService.isWorkflowRunning(identifier))
+                       || (workflowService.isWorkflowRunning(identifier)
+                               && workflowService.areStatesRunning(identifier, WorkflowStateKey.GENERATION_BORDEREAU, WorkflowStateKey.VALIDATION_CONSTAT_ETAT, 
+                                          WorkflowStateKey.VALIDATION_BORDEREAU_CONSTAT_ETAT, WorkflowStateKey.CONSTAT_ETAT_AVANT_NUMERISATION)));
+        return result;
+    }
+    
 }

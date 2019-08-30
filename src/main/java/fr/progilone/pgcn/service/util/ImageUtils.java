@@ -1,15 +1,13 @@
 package fr.progilone.pgcn.service.util;
 
-import java.awt.Dimension;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Iterator;
-import java.util.Optional;
+import fr.progilone.pgcn.domain.administration.viewsformat.ViewsFormatConfiguration;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.tika.Tika;
+import org.imgscalr.Scalr;
+import org.imgscalr.Scalr.Method;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
@@ -19,16 +17,16 @@ import javax.imageio.ImageWriter;
 import javax.imageio.stream.FileImageInputStream;
 import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.ImageOutputStream;
-
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.tika.Tika;
-import org.imgscalr.Scalr;
-import org.imgscalr.Scalr.Method;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import fr.progilone.pgcn.domain.administration.viewsformat.ViewsFormatConfiguration;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Iterator;
+import java.util.Optional;
 
 /**
  * Classe fournissant des méthodes permettant de manipuler des images
@@ -155,15 +153,16 @@ public final class ImageUtils {
 
     /**
      * Génération d'une image dérivée au format JPEG
-     * 
+     *
      * @param sourceFile
      * @param destFile
      * @param format
      * @param formatConfiguration
      * @return
      */
-    public static boolean createDerived(final File sourceFile, final File destFile, 
-                                        final ViewsFormatConfiguration.FileFormat format, 
+    public static boolean createDerived(final File sourceFile,
+                                        final File destFile,
+                                        final ViewsFormatConfiguration.FileFormat format,
                                         final ViewsFormatConfiguration formatConfiguration) {
 
         int width = 0;
@@ -177,12 +176,12 @@ public final class ImageUtils {
                 height = ImageUtils.getHeight(sourceFile) / 2;
             } else {
                 if (formatConfiguration != null) {
-                    width = (int)  formatConfiguration.getWidthByFormat(format);
+                    width = (int) formatConfiguration.getWidthByFormat(format);
                     height = (int) formatConfiguration.getHeightByFormat(format);
                 }
             }
         }
-        
+
         if (sourceFile == null || destFile == null || width == 0 || height == 0) {
             LOG.error("Création du fichier dérivé impossible: le fichier source ou le fichier destination n'existe pas.");
             return false;
@@ -193,14 +192,16 @@ public final class ImageUtils {
             // resize de qualite !
             bi = Scalr.resize(bi, Method.ULTRA_QUALITY, width, height);
 
-          final ImageWriter writer = ImageIO.getImageWritersBySuffix(FORMAT_JPG).next();
-          final ImageWriteParam params = writer.getDefaultWriteParam();
-          params.setCompressionQuality(0.9F);
-          final ImageOutputStream imageOutputStream = ImageIO.createImageOutputStream( new FileOutputStream(destFile) );
-          writer.setOutput( imageOutputStream );
+            final ImageWriter writer = ImageIO.getImageWritersBySuffix(FORMAT_JPG).next();
+            final ImageWriteParam params = writer.getDefaultWriteParam();
+            params.setCompressionQuality(0.9F);
 
-          writer.write(null, new IIOImage(bi, null, null), params);
-          return true;
+            try (final ImageOutputStream imageOutputStream = ImageIO.createImageOutputStream(new FileOutputStream(destFile))) {
+                writer.setOutput(imageOutputStream);
+            }
+
+            writer.write(null, new IIOImage(bi, null, null), params);
+            return true;
         } catch (final IOException e) {
             LOG.error("Problème de création de l'image derivée de type {}", format.label(), e);
             return false;
@@ -268,14 +269,15 @@ public final class ImageUtils {
         final Iterator<ImageReader> it = ImageIO.getImageReadersByMIMEType(typeMime);
         if (it.hasNext()) {
             final ImageReader reader = it.next();
-            try {
-                final ImageInputStream stream = new FileImageInputStream(file);
+            try (final ImageInputStream stream = new FileImageInputStream(file)) {
                 reader.setInput(stream);
                 final int width = reader.getWidth(reader.getMinIndex());
                 final int height = reader.getHeight(reader.getMinIndex());
                 dim = new Dimension(width, height);
+
             } catch (final IOException e) {
                 LOG.error(e.getMessage());
+
             } finally {
                 reader.dispose();
             }

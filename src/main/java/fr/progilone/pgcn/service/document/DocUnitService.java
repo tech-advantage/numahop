@@ -46,6 +46,7 @@ import fr.progilone.pgcn.repository.exchange.internetarchive.InternetArchiveRepo
 import fr.progilone.pgcn.repository.lot.LotRepository;
 import fr.progilone.pgcn.repository.project.ProjectRepository;
 import fr.progilone.pgcn.repository.train.TrainRepository;
+import fr.progilone.pgcn.service.delivery.DeliveryService;
 import fr.progilone.pgcn.service.document.conditionreport.ConditionReportService;
 import fr.progilone.pgcn.service.es.EsDocUnitService;
 import fr.progilone.pgcn.service.util.SortUtils;
@@ -64,8 +65,8 @@ public class DocUnitService {
     private final InternetArchiveReportRepository internetArchiveReportRepository;
     private final PhysicalDocumentService physicalDocumentService;
     private final ProjectRepository projectRepository;
-    private final LotRepository lotRepository;
     private final TrainRepository trainRepository;
+    
 
     @Autowired
     public DocUnitService(final BibliographicRecordRepository bibliographicRecordRepository,
@@ -80,7 +81,8 @@ public class DocUnitService {
                           final PhysicalDocumentService physicalDocumentService,
                           final ProjectRepository projectRepository,
                           final LotRepository lotRepository,
-                          final TrainRepository trainRepository) {
+                          final TrainRepository trainRepository,
+                          final DeliveryService deliveryService) {
         this.bibliographicRecordRepository = bibliographicRecordRepository;
         this.cinesReportRepository = cinesReportRepository;
         this.conditionReportService = conditionReportService;
@@ -92,7 +94,6 @@ public class DocUnitService {
         this.internetArchiveReportRepository = internetArchiveReportRepository;
         this.physicalDocumentService = physicalDocumentService;
         this.projectRepository = projectRepository;
-        this.lotRepository = lotRepository;
         this.trainRepository = trainRepository;
     }
 
@@ -400,6 +401,7 @@ public class DocUnitService {
                                 final List<String> libraries,
                                 final List<String> projects,
                                 final List<String> lots,
+                                final List<String> trains,
                                 final List<String> statuses,
                                 final LocalDate lastModifiedDateFrom,
                                 final LocalDate lastModifiedDateTo,
@@ -413,8 +415,7 @@ public class DocUnitService {
         if (sort == null) {
             sort = new Sort(DocUnit_.pgcnId.getName());
         }
-        final Pageable pageRequest = new PageRequest(page, size, sort);
-
+        final Pageable pageRequest = new PageRequest(page, size, sort);        
         return docUnitRepository.search(search,
                                         hasDigitalDocuments,
                                         active,
@@ -429,6 +430,7 @@ public class DocUnitService {
                                         libraries,
                                         projects,
                                         lots,
+                                        trains,
                                         statuses,
                                         lastModifiedDateFrom,
                                         lastModifiedDateTo,
@@ -545,16 +547,33 @@ public class DocUnitService {
     }
 
     @Transactional
-    public void setProjectAndLot(final List<String> docs, final String project, final String lot, final String train) {
+    public void setProjectAndLot(final Set<DocUnit> dus, final String project, final Lot l, final String train) {
+        
         final Project p = projectRepository.findOne(project);
-        final Lot l = lot != null ? lotRepository.findOne(lot) : null;
+        final Train t = train != null ? trainRepository.findOne(train) : null;
+        
+        for (final DocUnit du : dus) {
+            du.setProject(p);            
+            du.setLot(l);
+
+            if (du.getPhysicalDocuments().iterator().hasNext()) {
+                du.getPhysicalDocuments().iterator().next().setTrain(t);
+            }
+            docUnitRepository.save(du);
+        }
+    }
+    
+    @Transactional(readOnly = true)
+    public Set<DocUnit> findByIdentifierInWithDocs(final List<String> docs) {
+        return docUnitRepository.findByIdentifierInWithDocs(docs);
+    }
+    
+    @Transactional
+    public void setTrain(final List<String> docs, final String train) {
         final Train t = train != null ? trainRepository.findOne(train) : null;
         final Set<DocUnit> dus = docUnitRepository.findByIdentifierInWithDocs(docs);
 
         for (final DocUnit du : dus) {
-            du.setProject(p);
-            du.setLot(l);
-
             if (du.getPhysicalDocuments().iterator().hasNext()) {
                 du.getPhysicalDocuments().iterator().next().setTrain(t);
             }
