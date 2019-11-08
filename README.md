@@ -35,6 +35,7 @@ Numahop nécessite au préalable l'installation des outils listés ci-dessous.
 * tesseract 3.04.01 (leptonica-1.74.1 : libgif 5.1.4 : libjpeg 6b (libjpeg-turbo 1.5.1) : libpng 1.6.28 : libtiff 4.0.8 : zlib 1.2.8 : libwebp 0.5.2 : libopenjp2 2.1.2)
 * ImageMagick 6.9.7-4 Q16 x86_64 20170114 - http://www.imagemagick.org
 * exiftool 10.40
+* compass 1.0.3 (Polaris) 
 
 Les versions proposées sont valides dans un environnement Debian Stretch.
 
@@ -159,9 +160,14 @@ Pour démarrer l'application:
 ```
 $ mvn clean package spring-boot:run -Pprod -Drun.jvmArguments="-Dspring.profiles.active=prod"
 ```
+En cas de problème, une commande alternative :
+
+```
+$  mvn spring-boot:run -P prod  -Drun.arguments="--spring.profiles.active=prod,--spring.config.location=file:/opt/pgcn/src/main/resources/config/"
+```
 
 En fin de build, l'application  est lancée sur le port 8080. 
-Vous pouvez vous logger en admin / admin afin d'effectuer le paramétrage de base et créer des utilisateurs autorisés.
+Vous pouvez vous logger en admin / admin afin d'effectuer le paramétrage de base, créer des utilisateurs autorisés etc..
 
 
 ## Les acteurs du projet
