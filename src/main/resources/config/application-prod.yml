@@ -38,7 +38,7 @@ spring:
                 cache:
                     use_second_level_cache: true
                     use_query_cache: false
-                    region.factory_class: fr.progilone.pgcn.config.jcache.NoDefaultJCacheRegionFactory
+                    region.factory_class: org.hibernate.cache.jcache.JCacheRegionFactory
 
 cache: # Cache configuration
     ehcache: # Ehcache configuration
