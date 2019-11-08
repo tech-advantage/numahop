@@ -38,6 +38,8 @@ Numahop nécessite au préalable l'installation des outils listés ci-dessous.
 
 Les versions proposées sont valides dans un environnement Debian Stretch.
 
+Il vous faudra également un user linux dédié disposant d'un repository maven (.m2).
+
 Pour des recherches Z39.50, il faudra également installer la librairie libyaz4 - Voir [yaz4.md](yaz4.md)
 
 ### Première mise en oeuvre
@@ -46,6 +48,10 @@ Pour des recherches Z39.50, il faudra également installer la librairie libyaz4 
 Configuration minimale : **application.yml** | **application-[PROFILE].yml**
 
 Les fichiers de configuration **.yml** doivent être mis à jour pour se conformer à votre installation.
+
+Le profil "dev" est dédié à la mise en place d'un environnement de developpement.
+
+**Pour simplement lancer NumaHop, l'utilisation du profil "prod" est préconisé.** 
 
 * MariaDB
 
@@ -145,10 +151,17 @@ services:
 ```
 
 ### Démarrage
-Démarrer l'application à l'aide de la commande :
+Pour démarrer l'application: 
+* se connecter avec votre utilisateur dédié disposant d'un repository maven
+* se positionner à la racine du projet
+* exécuter la commande suivante:
+
 ```
-$ mvn spring-boot:run
+$ mvn clean package spring-boot:run -Pprod -Drun.jvmArguments="-Dspring.profiles.active=prod"
 ```
+
+En fin de build, l'application  est lancée sur le port 8080. 
+Vous pouvez vous logger en admin / admin afin d'effectuer le paramétrage de base et créer des utilisateurs autorisés.
 
 
 ## Les acteurs du projet
