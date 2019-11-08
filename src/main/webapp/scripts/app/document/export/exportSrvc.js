@@ -173,7 +173,7 @@
                     method: 'GET',
                     isArray: false,
                     params: {
-                        prepare: true
+                        prepare_item: true
                     }
                 },
                 create: {

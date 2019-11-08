@@ -170,6 +170,25 @@
                             
                         </div>
 
+                        <!-- Contact -->
+                        <div class="formBlock">
+                            <div class="formBlockTitle">
+                                <span translate>Responsable bibliothèque</span>
+                            </div>
+                            <div class="formBlockContent">
+                                <div class="row">
+                                    <div class="col-sm-8">
+                                        <numa-editable-field title="{{::'Nom' | translate}}" placeholder="{{::'Nom' | translate}}"
+                                                             form="projectForm" model="project.libRespName" numa-readonly="formRO" errors="{{ errors.libRespName }}"> </numa-editable-field>
+                                        <numa-editable-field title="{{::'Tél' | translate}}" placeholder="{{::'Tél' | translate}}"
+                                                             form="projectForm" model="project.libRespPhone" numa-readonly="formRO" errors="{{ errors.libRespPhone }}"> </numa-editable-field>
+                                        <numa-editable-field title="{{::'Email' | translate}}" placeholder="{{::'Email' | translate}}"
+                                                             form="projectForm" model="project.libRespEmail" numa-readonly="formRO" errors="{{ errors.libRespEmail }}"> </numa-editable-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Bibliothèques partenaires -->
                         <div class="row">
                             <div class="col-sm-12">
@@ -275,6 +294,13 @@
                                         <span class="pull-left glyphicon-halflings" ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordions.lot]">&nbsp;</span>
                                         <h4>{{ 'Lots' | translate }}
                                             <span class="badge btn-sem2">{{ lots.length }}</span>
+
+                                            <button type="button" class="btn btn-sem2 btn-xs pull-right"
+                                                    uib-tooltip="{{::'Créer un lot' | translate}}"
+                                                    ng-click="createLot(project.identifier)"
+                                                    sem-roles-allowed="LOT_HAB0">
+                                                <span class="glyphicon-halflings glyphicon-plus"></span>
+                                            </button>
                                         </h4>
                                     </uib-accordion-heading>
                                     <table class="table table-condensed table-hover">

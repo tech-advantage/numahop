@@ -13,6 +13,26 @@
                         </ui-select-choices>
                     </ui-select>
                 </numa-filter-field>
+                <!-- Projet -->
+                <numa-filter-field data-title="{{ ::'Projet' | translate }}">
+                    <ui-select multiple ng-model="mainCtrl.filters.projects" theme="select2" on-select="mainCtrl.search(mainCtrl.sortModel)" on-remove="mainCtrl.search(mainCtrl.sortModel)"
+                               class="form-control">
+                        <ui-select-match placeholder="{{::'Projet' | translate}}">{{$item.name}}</ui-select-match>
+                        <ui-select-choices repeat="option in mainCtrl.options.projects | filter: $select.search track by option.identifier">
+                            <div ng-bind-html="option.name | highlight: $select.search"></div>
+                        </ui-select-choices>
+                    </ui-select>
+                </numa-filter-field>
+                <!-- Lot -->
+                <numa-filter-field data-title="{{ ::'Lot' | translate }}">
+                    <ui-select multiple ng-model="mainCtrl.filters.lots" theme="select2" on-select="mainCtrl.search(mainCtrl.sortModel)" on-remove="mainCtrl.search(mainCtrl.sortModel)"
+                               class="form-control">
+                        <ui-select-match placeholder="{{::'Lot' | translate}}">{{$item.label}}</ui-select-match>
+                        <ui-select-choices repeat="option in mainCtrl.options.lots | filter: $select.search track by option.identifier">
+                            <div ng-bind-html="option.label | highlight: $select.search"></div>
+                        </ui-select-choices>
+                    </ui-select>
+                </numa-filter-field>
                 <!-- Plage de dates -->
                 <numa-filter-field data-title="{{ ::'Date' | translate }}">
                     <div class="form-inline margin-b10">

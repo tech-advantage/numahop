@@ -67,7 +67,7 @@ public class ExportInternetArchiveController extends AbstractRestController {
         this.libraryAccesssHelper = libraryAccesssHelper;
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET, params = {"prepare"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET, params = {"prepare_item"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed({EXPORT_INTERNET_ARCHIVE_HAB0})
     public ResponseEntity<InternetArchiveItemDTO> prepare(final HttpServletRequest request, @PathVariable("id") final String identifier) throws
@@ -101,9 +101,7 @@ public class ExportInternetArchiveController extends AbstractRestController {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         // Envoi vers Internet Archive
-        final String currentUserId = SecurityUtils.getCurrentUserId();
-        iaServiceAsync.createItem(docUnit, item, currentUserId);
-
+        iaServiceAsync.createItem(docUnit, item, SecurityUtils.getCurrentUserId());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -151,7 +149,7 @@ public class ExportInternetArchiveController extends AbstractRestController {
         }
         final List<String> reports = new ArrayList<>();
         for (final DocUnit docUnit : filteredDocUnits) {
-            final InternetArchiveReport report = iaService.createItem(docUnit.getIdentifier());
+            final InternetArchiveReport report = iaService.createItem(docUnit.getIdentifier(), true);
             reports.add(report.getIdentifier());
         }
         // Indexation

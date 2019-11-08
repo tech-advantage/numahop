@@ -55,5 +55,7 @@ public interface DocUnitRepositoryCustom {
      * @param identifier
      * @return
      */
-    DocUnit findOneWithAllDependencies(String identifier);
+    DocUnit findOneWithAllDependencies(String identifier, boolean initFiles);
+    
+    
 }

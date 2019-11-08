@@ -94,7 +94,7 @@ public class ConditionReportExportService {
      */
     @Transactional(readOnly = true)
     public void writeReportTemplate(final OutputStream out, final List<String> docUnitIds, final WorkbookFormat format) throws IOException {
-        final List<DescriptionProperty> descProperties = descriptionPropertyService.findAll();
+        final List<DescriptionProperty> descProperties = descriptionPropertyService.findAllOrderByOrder();
         final List<DescriptionValue> descValues = descriptionValueService.findAll();
 
         final TemplateBuilder templateBuilder = new TemplateBuilder(format).setDescProperties(descProperties).setDescValues(descValues);

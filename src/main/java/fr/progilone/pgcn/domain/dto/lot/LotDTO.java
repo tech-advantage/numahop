@@ -12,6 +12,7 @@ import fr.progilone.pgcn.domain.dto.checkconfiguration.SimpleCheckConfigurationD
 import fr.progilone.pgcn.domain.dto.document.SimpleDocUnitDTO;
 import fr.progilone.pgcn.domain.dto.ftpconfiguration.SimpleFTPConfigurationDTO;
 import fr.progilone.pgcn.domain.dto.ocrlangconfiguration.OcrLanguageDTO;
+import fr.progilone.pgcn.domain.dto.project.ProjectDTO;
 import fr.progilone.pgcn.domain.dto.project.SimpleProjectDTO;
 import fr.progilone.pgcn.domain.dto.user.SimpleUserDTO;
 import fr.progilone.pgcn.domain.dto.workflow.SimpleWorkflowModelDTO;
@@ -38,7 +39,7 @@ public class LotDTO extends AbstractVersionedDTO {
     private String requiredFormat;
     private Date deliveryDateForseen;
     private Date realEndDate;
-    private SimpleProjectDTO project;
+    private ProjectDTO project;
     private Set<SimpleDocUnitDTO> docUnits;
     private SimpleFTPConfigurationDTO activeFTPConfiguration;
     private SimpleCheckConfigurationDTO activeCheckConfiguration;
@@ -67,7 +68,7 @@ public class LotDTO extends AbstractVersionedDTO {
                   final String requiredFormat,
                   final Date deliveryDateForseen,
                   final Date realEndDate,
-                  final SimpleProjectDTO project,
+                  final ProjectDTO project,
                   final Set<SimpleDocUnitDTO> docUnits,
                   final SimpleFTPConfigurationDTO activeFTPConfiguration,
                   final SimpleCheckConfigurationDTO activeCheckConfiguration,
@@ -113,11 +114,11 @@ public class LotDTO extends AbstractVersionedDTO {
     public LotDTO() {
     }
 
-    public SimpleProjectDTO getProject() {
+    public ProjectDTO getProject() {
         return project;
     }
 
-    public void setProject(final SimpleProjectDTO project) {
+    public void setProject(final ProjectDTO project) {
         this.project = project;
     }
 
@@ -357,7 +358,7 @@ public class LotDTO extends AbstractVersionedDTO {
         private String requiredFormat;
         private Date deliveryDateForseen;
         private Date realEndDate;
-        private SimpleProjectDTO project;
+        private ProjectDTO project;
         private Set<SimpleDocUnitDTO> docUnits;
         private SimpleFTPConfigurationDTO activeFTPConfiguration;
         private SimpleCheckConfigurationDTO activeCheckConfiguration;
@@ -403,7 +404,7 @@ public class LotDTO extends AbstractVersionedDTO {
             return this;
         }
 
-        public Builder setProject(final SimpleProjectDTO project) {
+        public Builder setProject(final ProjectDTO project) {
             this.project = project;
             return this;
         }

@@ -5,7 +5,8 @@
         .controller('RecordListCtrl', RecordListCtrl);
 
     function RecordListCtrl($q, $scope, DocUnitBaseService, gettext, gettextCatalog, HistorySrvc,
-        NumahopUrlService, MessageSrvc, ModalSrvc, NumaHopInitializationSrvc, NumahopStorageService, RecordSrvc) {
+        NumahopUrlService, MessageSrvc, ModalSrvc, NumaHopInitializationSrvc, NumahopStorageService, RecordSrvc,
+        DocUnitSrvc) {
 
         $scope.doFilter = search;
         $scope.doFilterLibrary = searchLibrary;
@@ -25,7 +26,8 @@
             project_filter: true,
             lot_filter: true,
             train_filter: true,
-            created_date_filter: true
+            created_date_filter: true,
+            wkf_status_filter: true
         };
 
 
@@ -120,13 +122,15 @@
             $q.all([NumaHopInitializationSrvc.loadLibraries(),
             NumaHopInitializationSrvc.loadProjects(),
             NumaHopInitializationSrvc.loadLots(),
-            NumaHopInitializationSrvc.loadTrains()])
+            NumaHopInitializationSrvc.loadTrains(),
+            DocUnitSrvc.getConfigFilterStatuses()])
 
                 .then(function (data) {
                     mainCtrl.options.libraries = data[0];
                     mainCtrl.options.projects = data[1];
                     mainCtrl.options.lots = data[2];
                     mainCtrl.options.trains = data[3];
+                    mainCtrl.options.statuses = data[4];
                     loadFilters();
                     loadPageSize();
                     getPage().then(function () {
@@ -252,6 +256,11 @@
             if (mainCtrl.filters.trains) {
                 var trainsIds = _.pluck(mainCtrl.filters.trains, "identifier");
                 params["trains"] = trainsIds;
+            }
+            // Statuses
+            if ($scope.filters.wkf_statuses) {
+                var statusesIds = _.pluck(mainCtrl.filters.wkf_statuses, "identifier");
+                params["statuses"] = statusesIds;
             }
             if (mainCtrl.filters.createdDateFrom) {
                 params["createdDateFrom"] = mainCtrl.filters.createdDateFrom;

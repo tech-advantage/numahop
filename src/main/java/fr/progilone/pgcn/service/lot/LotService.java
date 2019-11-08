@@ -2,6 +2,7 @@ package fr.progilone.pgcn.service.lot;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -13,15 +14,22 @@ import java.util.stream.Collectors;
 import javax.servlet.ServletOutputStream;
 
 import org.apache.commons.collections4.IterableUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import fr.progilone.pgcn.domain.AbstractDomainObject;
 import fr.progilone.pgcn.domain.administration.viewsformat.ViewsFormatConfiguration;
 import fr.progilone.pgcn.domain.checkconfiguration.CheckConfiguration;
+import fr.progilone.pgcn.domain.delivery.Delivery;
+import fr.progilone.pgcn.domain.delivery.Delivery.DeliveryStatus;
+import fr.progilone.pgcn.domain.document.DigitalDocument;
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.dto.lot.SimpleLotDTO;
 import fr.progilone.pgcn.domain.ftpconfiguration.FTPConfiguration;
@@ -45,6 +53,7 @@ import fr.progilone.pgcn.repository.project.ProjectRepository;
 import fr.progilone.pgcn.service.document.conditionreport.ConditionReportService;
 import fr.progilone.pgcn.service.es.EsLotService;
 import fr.progilone.pgcn.service.exchange.ImportReportService;
+import fr.progilone.pgcn.service.util.SortUtils;
 
 /**
  * Service de gestion des lots
@@ -55,6 +64,8 @@ import fr.progilone.pgcn.service.exchange.ImportReportService;
 @Service
 public class LotService {
 
+    private static final Logger LOG = LoggerFactory.getLogger(LotService.class);
+    
     private final DeliveryRepository deliveryRepository;
     private final DocUnitRepository docUnitRepository;
     private final EsLotService esLotService;
@@ -207,6 +218,11 @@ public class LotService {
     public Lot getOne(final String identifier) {
         return lotRepository.findOneWithDependencies(identifier);
     }
+    
+    @Transactional(readOnly = true)
+    public Lot findOneWithDocsAndWorkflows(final String lotId) {
+        return lotRepository.findOneWithDocsAndWorkflows(lotId);
+    }
 
     @Transactional(readOnly = true)
     public Lot getOneWithConfigRules(final String identifier) {
@@ -272,7 +288,14 @@ public class LotService {
                             final List<String> fileFormats,
                             final List<String> identifiers,
                             final Integer page,
-                            final Integer size) {
+                            final Integer size,
+                            final List<String> sorts) {
+
+        Sort sort = SortUtils.getSort(sorts);
+        if (sort == null) {
+            sort = new Sort("label");
+        }
+        final Pageable pageRequest = new PageRequest(page, size, sort);
 
         return lotRepository.search(new LotSearchBuilder().setSearch(search)
                                                           .setLibraries(libraries)
@@ -282,7 +305,7 @@ public class LotService {
                                                           .setProviders(providers)
                                                           .setDocNumber(docNumber)
                                                           .setFileFormats(fileFormats)
-                                                          .setIdentifiers(identifiers), new PageRequest(page, size));
+                                                          .setIdentifiers(identifiers), pageRequest);
     }
 
     @Transactional(readOnly = true)
@@ -433,6 +456,37 @@ public class LotService {
         final Set<DocUnit> docUnits = lot.getDocUnits();
         conditionReportService.writeSlipDocUnitsCSV(outputStream, docUnits, encoding, separator);
     }
+    
+    /**
+     * Cloture le lot et ses sous-éléments.
+     *  
+     * @param lot
+     * @param endDate
+     */
+    @Transactional
+    public void clotureLotAndCie(final Lot lot, final LocalDateTime endDate) {
+        
+        lot.setRealEndDate(endDate.toLocalDate());
+        lot.setStatus(LotStatus.CLOSED);
+        lot.setActive(false);
+        save(lot);
+        LOG.info("Workflow : Mise a jour du lot {} => lot status : CLOSED", lot.getLabel());
+        
+        lot.getDocUnits().forEach(du -> {    
+            // cloture les docUnits associées
+            du.setState(DocUnit.State.CLOSED);
+            docUnitRepository.save(du);
+            // cloture les livraisons associées
+            final DigitalDocument dig = du.getDigitalDocuments().stream().findFirst().orElse(null);
+            dig.getDeliveries().stream().forEach(delivered -> {
+                final Delivery delivToArchive = delivered.getDelivery(); 
+                delivToArchive.setStatus(DeliveryStatus.CLOSED);
+                deliveryRepository.save(delivToArchive);
+            });
+            
+        }); 
+    }
+ 
 
     /**
      * Recherche les lots clôtures par librairie depuis un delai en jours.

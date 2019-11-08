@@ -44,6 +44,8 @@ public class ConditionReportRepositoryImpl implements ConditionReportRepositoryC
 
     @Override
     public Page<String> search(final List<String> libraries,
+                               final List<String> projects,
+                               final List<String> lots,
                                final LocalDate from,
                                final LocalDate to,
                                final DimensionFilter dimensions,
@@ -74,6 +76,16 @@ public class ConditionReportRepositoryImpl implements ConditionReportRepositoryC
         if (CollectionUtils.isNotEmpty(libraries)) {
             final BooleanExpression sitesFilter = qDocUnit.library.identifier.in(libraries);
             builder.and(sitesFilter);
+        }
+        // Projets
+        if (CollectionUtils.isNotEmpty(projects)) {
+            final BooleanExpression projectsFilter = qDocUnit.project.identifier.in(projects);
+            builder.and(projectsFilter);
+        }
+        // Lots
+        if (CollectionUtils.isNotEmpty(lots)) {
+            final BooleanExpression lotsFilter = qDocUnit.lot.identifier.in(lots);
+            builder.and(lotsFilter);
         }
 
         // Dimensions

@@ -106,9 +106,9 @@ public class DigitalDocumentService {
     /**
      * Récupération au format StoredFileFormat.LABEL_THUMBNAIL
      *
-     * @param identifier
-     * @param page
-     * @return
+     * @param identifier DocPage
+     * @param page page
+     * @return File
      */
     @Transactional(readOnly = true)
     public File getThumbnail(final String identifier, final int page) {
@@ -386,7 +386,8 @@ public class DigitalDocumentService {
     /**
      * Vrai si il ne reste pas d'autre doc à traiter.
      *
-     * @param delivery
+     * @param documents
+     * @param current
      * @return
      */
     public boolean allDeliveryDocsChecked(final Set<DeliveredDocument> documents, final DeliveredDocument current) {
@@ -434,7 +435,6 @@ public class DigitalDocumentService {
      * Récupère une page de format pdf (number null) par son identifiant de document numérique.
      *
      * @param identifier
-     * @param pageNumber
      * @return
      */
     @Transactional(readOnly = true)
@@ -454,7 +454,7 @@ public class DigitalDocumentService {
      * Récupère une page par son numéro et son identifiant de document numérique
      *
      * @param identifier
-     * @param pageNumber
+     * @param orderNumber
      * @return
      */
     @Transactional
@@ -527,6 +527,7 @@ public class DigitalDocumentService {
                                         final LocalDate dateTo,
                                         final LocalDate dateLimitFrom,
                                         final LocalDate dateLimitTo,
+                                        final boolean relivraison,
                                         final String searchPgcnId,
                                         final String searchTitre,
                                         final String searchRadical,
@@ -558,6 +559,7 @@ public class DigitalDocumentService {
                                                 dateTo,
                                                 dateLimitFrom,
                                                 dateLimitTo,
+                                                relivraison,
                                                 searchPgcnId,
                                                 searchTitre,
                                                 searchRadical,

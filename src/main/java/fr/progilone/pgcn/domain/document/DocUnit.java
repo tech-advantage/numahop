@@ -908,7 +908,10 @@ public class DocUnit extends AbstractDomainObject {
         // l'unité documentaire n'est pas disponible dans l'application (import en cours, ...)
         DELETED,
         // l'unité documentaire a été supprimée (utilisé pour les recherches d'ud importées)
-        CANCELED       // l'unite documentaire est annulée ou rattachée à un projet annulé
+        CANCELED,       
+        // l'unite documentaire est annulée ou rattachée à un projet annulé
+        CLOSED        
+        // UD archivée suite cloture lot|projet.
     }
 
     /**

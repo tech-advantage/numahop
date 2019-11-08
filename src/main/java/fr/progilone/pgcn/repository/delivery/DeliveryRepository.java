@@ -78,11 +78,6 @@ public interface DeliveryRepository extends JpaRepository<Delivery, String>, Del
     @Query("select distinct doc "
             + "from DeliveredDocument doc "
             + "join fetch doc.delivery d "
-            + "join fetch doc.digitalDocument dig "
-            + "left join fetch dig.docUnit du "
-            + "left join fetch dig.automaticCheckResults acr "
-            + "left join fetch dig.pages pgs "
-            + "left join fetch pgs.files fls "
            + "where d.identifier = ?1")
     Set<DeliveredDocument> findDeliveredDocumentsByDeliveryIdentifier(String id);
     

@@ -689,8 +689,8 @@
          */
         function getDescriptionPos(description) {
             var property = description.property;
-            //return !property ? "999#999" : (property.fake ? "888#" : "000#") + property.label;
-            return !property ? 9999 : (property.fake ? (888+property.order) : property.order); //+ property.label;
+            // Si pas de property ou si fake, placer à la fin;
+            return (!property || property.fake) ? 9999 : property.order; //+ property.label;
         }
 
         /**

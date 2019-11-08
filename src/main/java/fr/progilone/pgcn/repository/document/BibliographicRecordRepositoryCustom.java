@@ -26,6 +26,7 @@ public interface BibliographicRecordRepositoryCustom {
                                      final List<String> libraries,
                                      final List<String> projects,
                                      final List<String> lots,
+                                     final List<String> statuses,
                                      final List<String> trains,
                                      final LocalDate lastModifiedDateFrom,
                                      final LocalDate lastModifiedDateTo,

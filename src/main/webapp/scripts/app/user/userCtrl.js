@@ -5,7 +5,7 @@
         .controller('UserCtrl', UserCtrl);
 
     function UserCtrl($location, $scope, $timeout, $q, $routeParams,
-        UserSrvc, gettextCatalog, HistorySrvc,
+        UserSrvc, gettextCatalog, HistorySrvc, AuthenticationSharedService, USER_ROLES,
         StringTools, NumahopStorageService, NumaHopInitializationSrvc) {
 
         $scope.applyFilter = applyFilter;
@@ -67,19 +67,21 @@
 
         /** Initialisation */
         function init() {
-            HistorySrvc.add(gettextCatalog.getString("Utilisateurs"));
-            reinitFilters(false);
-            loadOptionsAndFilters();
+            if(AuthenticationSharedService.isAuthorized(USER_ROLES.USER_HAB0)){
+                HistorySrvc.add(gettextCatalog.getString("Utilisateurs"));
+                reinitFilters(false);
+                loadOptionsAndFilters();
 
-            $scope.$on("$routeUpdate",
-                function ($currentRoute, $previousRoute) {
-                    $timeout(function () {
-                        $scope.userInclude = null;
-                        $scope.$apply();
-                        $scope.userInclude = "scripts/app/user/userEdit.html";
-                    });
-                }
-            );
+                $scope.$on("$routeUpdate",
+                    function ($currentRoute, $previousRoute) {
+                        $timeout(function () {
+                            $scope.userInclude = null;
+                            $scope.$apply();
+                            $scope.userInclude = "scripts/app/user/userEdit.html";
+                        });
+                    }
+                );
+            }
         }
 
         /****************************************************************/

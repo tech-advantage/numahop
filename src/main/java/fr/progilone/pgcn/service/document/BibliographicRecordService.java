@@ -106,6 +106,7 @@ public class BibliographicRecordService {
                                             final List<String> libraries,
                                             final List<String> projects,
                                             final List<String> lots,
+                                            final List<String> statuses,
                                             final List<String> trains,
                                             final LocalDate lastModifiedDateFrom,
                                             final LocalDate lastModifiedDateTo,
@@ -117,7 +118,7 @@ public class BibliographicRecordService {
                                             final List<String> sorts) {
         Sort sort = SortUtils.getSort(sorts);
         if (sort == null) {
-            sort = new Sort("docUnit.pgcnId");
+            sort = new Sort("docUnit.label");
         }
         final Pageable pageRequest = new PageRequest(page, size, sort);
 
@@ -125,6 +126,7 @@ public class BibliographicRecordService {
                                                     libraries,
                                                     projects,
                                                     lots,
+                                                    statuses,
                                                     trains,
                                                     lastModifiedDateFrom,
                                                     lastModifiedDateTo,
@@ -169,7 +171,7 @@ public class BibliographicRecordService {
         final BibliographicRecordDcDTO dto = new BibliographicRecordDcDTO();        
         // il faut reordonner les props custom selon le rank
         final List<DocProperty> customProps = record.getProperties().stream()
-                                .filter(p -> p.getType().getSuperType() == DocPropertyType.DocPropertySuperType.CUSTOM)
+                                .filter(p -> p.getType().getSuperType() == DocPropertyType.DocPropertySuperType.CUSTOM || p.getType().getSuperType() == DocPropertyType.DocPropertySuperType.CUSTOM_CINES)
                                 .sorted(Comparator.comparing(DocProperty::getRank))
                                 .collect(Collectors.toCollection(ArrayList::new));
         dto.setCustomProperties(DocPropertyMapper.INSTANCE.docPropsToDto(customProps));

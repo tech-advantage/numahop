@@ -1,0 +1,19 @@
+<div class="alert alert-warning margin-10" ng-if="!mainCtrl.isConfigured()" translate>
+    Veuillez configurer le widget via le bouton de configuration à droite du titre de ce widget.
+</div>
+<div class="row" ng-if="mainCtrl.chartData">
+    <div class="col-xs-12" ng-switch="mainCtrl.config.format.identifier">
+        <!-- Anneau -->
+        <div ng-switch-when="doughnut" style="width:95%; text-align: center">
+            <canvas chart-doughnut chart-data="mainCtrl.data" chart-labels="mainCtrl.labels" chart-options="mainCtrl.options" chart-colors="mainCtrl.colours" />
+        </div>
+        <!-- Camembert -->
+        <div ng-switch-when="pie" style="width:95%; text-align: center">
+            <canvas chart-pie chart-data="mainCtrl.data" chart-labels="mainCtrl.labels" chart-options="mainCtrl.options" chart-colors="mainCtrl.colours"/>
+        </div>
+        <!-- Histogramme -->
+        <div ng-switch-when="hbar" style="width:95%; text-align: center">
+            <canvas chart-horizontal-bar chart-data="mainCtrl.data" chart-labels="mainCtrl.labels" chart-options="mainCtrl.options" chart-colors="mainCtrl.colours"/>
+        </div>        
+    </div>
+</div>

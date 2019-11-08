@@ -225,7 +225,8 @@ public class ExportSipService {
         if (notice != null) {           
             // il faut reordonner les props custom selon le rank
             customProps = notice.getProperties().stream()
-                                    .filter(p -> p.getType().getSuperType() == DocPropertyType.DocPropertySuperType.CUSTOM)
+                                    .filter(p -> p.getType().getSuperType() == DocPropertyType.DocPropertySuperType.CUSTOM_CINES 
+                                            || p.getType().getSuperType() == DocPropertyType.DocPropertySuperType.CUSTOM)
                                     .sorted(Comparator.comparing(DocProperty::getRank))
                                     .collect(Collectors.toCollection(ArrayList::new));
         }

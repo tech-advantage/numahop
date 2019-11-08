@@ -4,7 +4,7 @@
     angular.module('numaHopApp.controller')
         .controller('CSVMappingCtrl', CSVMappingCtrl);
 
-    function CSVMappingCtrl($q, gettext, gettextCatalog, HistorySrvc, LibrarySrvc, CSVMappingSrvc, MessageSrvc, ModalSrvc, Principal, USER_ROLES) {
+    function CSVMappingCtrl($filter, $q, gettext, gettextCatalog, HistorySrvc, LibrarySrvc, CSVMappingSrvc, MessageSrvc, ModalSrvc, Principal, USER_ROLES) {
         var mainCtrl = this;
         mainCtrl.mappingModified = mappingModified;
         /** Mapping */
@@ -12,6 +12,7 @@
         mainCtrl.delete = del;
         mainCtrl.edit = edit;
         mainCtrl.getDocfieldLabel = getDocfieldLabel;
+        mainCtrl.getBibfieldLabel = getBibfieldLabel;
         mainCtrl.reload = reload;
         mainCtrl.save = save;
         mainCtrl.duplicate = duplicate;
@@ -20,7 +21,8 @@
         mainCtrl.copyRule = copyRule;
         mainCtrl.delRule = delRule;
         mainCtrl.editRule = editRule;
-        mainCtrl.sortRule = sortRule;
+        mainCtrl.downRule = downRule;
+        mainCtrl.upRule = upRule;
 
         /* Listes ui-select */
         mainCtrl.uioptions = {
@@ -144,7 +146,6 @@
                 return;
             }
             var isCreation = !mapping.identifier;
-
             mapping.$save()
                 .then(function () {
                     MessageSrvc.addSuccess(gettext("Le mapping {{label}} a été sauvegardé"), mapping);
@@ -175,24 +176,27 @@
         /** Copie d'une règle existante */
         function copyRule(rule, mapping) {
             var copyOfRule = rule
-                ? _.pick(rule, "csvField", "docUnitField")
+                ? _.pick(rule, "csvField", "docUnitField", "bibRecordField", "property")
                 : {};
             var options = { rule: copyOfRule };
             return ModalSrvc.open("scripts/app/configuration/csvMapping/csvModalEditRule.html", options, "lg", "CSVModalEditRuleCtrl")
                 .then(function (edRule) {
+                    
                     mapping.rules.push(edRule);
+                    computeRanks(mapping.rules);
                     mainCtrl.modified = true;
                     return edRule;
                 });
         }
         /** Suppression d'une règle existante */
         function delRule(rule, mapping) {
-            mainCtrl.modified = true;
-
             var idx = mapping.rules.indexOf(rule);
             if (idx >= 0) {
                 mapping.rules.splice(idx, 1);
+                computeRanks(mapping.rules);
+                mainCtrl.modified = true;
             }
+            
         }
         /** Suppression d'une règle existante */
         function editRule(rule, mapping) {
@@ -208,12 +212,7 @@
                     return rule;
                 });
         }
-        /** Tri des règles */
-        function sortRule(rule) {
-            if (rule.docUnitField) {
-                return rule.docUnitField;
-            }
-        }
+        
         /**
          * Libellé d'un champ d'une unité documentaire
          * 
@@ -228,5 +227,74 @@
             });
             return found ? found.label : "";
         }
+        /**
+         * Libellé d'un champ d'une notice bibliographique
+         * 
+         * @param {any} field 
+         */
+        function getBibfieldLabel(field) {
+            if (!field) {
+                return;
+            }
+            var found = _.find(CSVMappingSrvc.bibRecordFields, function (f) {
+                return f.code === field;
+            });
+            return found ? found.label : "";
+        }
+        
+        /**
+         * Déplacement des règles de mapping
+         * 
+         * @param {any} rule 
+         * @param {any} rules 
+         */
+        function downRule(rule, rules) {
+            moveRule(rule, rules, "down");
+        }
+
+        function upRule(rule, rules) {
+            moveRule(rule, rules, "up");
+        }
+
+        function moveRule(rule, rules, direction) {
+            var rank = rule.rank || 0;
+            var sortBy = direction === "up" ? function (r) { return -(r.rank || 0); } : "rank";
+            var find = direction === "up" ? function (r) { return r.rank < rank; } : function (r) { return r.rank > rank; };
+
+            var next = _.chain(rules)
+                    .sortBy(sortBy)
+                    .find(find)
+                    .value();
+            
+            if (angular.isDefined(next)) {
+                
+                swapItems(rules, rule, next);
+                computeRanks(rules);
+
+                mainCtrl.activeRule = rule;
+                mainCtrl.modified = true;
+            }
+        }
+        
+        /** on permute */
+        function swapItems(rules, r1, r2) {
+            var idx1 = rules.indexOf(r1);
+            var idx2 = rules.indexOf(r2);
+            
+            rules[idx1] = r2;
+            rules[idx2] = r1;
+        }
+        
+        /**
+         * recalcul systematique des positions.
+         */
+        function computeRanks(rules) {
+           var rank = 0;
+           _.each(rules, function(r) {
+              r.rank = rank++; 
+           });         
+           
+        }
+        
     }
 })();

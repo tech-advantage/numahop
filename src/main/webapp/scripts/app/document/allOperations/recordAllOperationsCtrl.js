@@ -22,7 +22,9 @@
             self.showType = {
                 dc: true,
                 dcq: true,
-                custom: true
+                custom: true,
+                custom_cines: true,
+                custom_archive: true
             };
 
             loadOptions();
@@ -86,12 +88,19 @@
                         self.sel2DocProperties.dc = [];
                         self.sel2DocProperties.dcq = [];
                         self.sel2DocProperties.custom = [];
+                        self.sel2DocProperties.custom_cines = [];
+                        self.sel2DocProperties.custom_archive = [];
+                        
                         _.each(self.sel2DocProperties, function (type) {
                             switch (type.superType) {
                                 case "DC": NumahopEditService.insertBasedOnRank(self.sel2DocProperties.dc, type);
                                     break;
                                 case "DCQ": NumahopEditService.insertBasedOnRank(self.sel2DocProperties.dcq, type);
                                     break;
+                                case "CUSTOM_CINES": NumahopEditService.insertBasedOnRank(self.sel2DocProperties.custom_cines, type);
+                                    break;
+                                case "CUSTOM_ARCHIVE": NumahopEditService.insertBasedOnRank(self.sel2DocProperties.custom_archive, type);
+                                    break;      
                                 default: NumahopEditService.insertBasedOnRank(self.sel2DocProperties.custom, type);
                             }
                         });
@@ -189,6 +198,20 @@
                             "record": { identifier: entity.identifier }
                         };
                         break;
+                    case "custom_cines":
+                        property = {
+                            "_name": "propertyFormCUSTOMCines" +self.indices[type]++,
+                            "type": undefined,
+                            "record": { identifier: entity.identifier }
+                        };
+                        break;
+                    case "custom_archive":
+                        property = {
+                            "_name": "propertyFormCUSTOMArchive" + self.indices[type]++,
+                            "type": undefined,
+                            "record": { identifier: entity.identifier }
+                        };
+                        break;         
                 }
 
                 entity.record[type].push(property);
@@ -223,6 +246,10 @@
                 newProperties = addNewProperties(newProperties, entity.dcq, entity.properties);
                 // Custom
                 newProperties = addNewProperties(newProperties, entity.custom, entity.properties);
+                // Custom CINES
+                newProperties = addNewProperties(newProperties, entity.custom_cines, entity.properties);
+                // Custom ARCHIVE
+                newProperties = addNewProperties(newProperties, entity.custom_archive, entity.properties);
 
                 _.each(newProperties, function (property) {
                     entity.properties.push(property);
@@ -306,6 +333,8 @@
                 initForm(self.entity.record.dc, "propertyFormDC", "dc");
                 initForm(self.entity.record.dcq, "propertyFormDCQ", "dcq");
                 initForm(self.entity.record.custom, "propertyFormCUSTOM", "custom");
+                initForm(self.entity.record.custom, "propertyFormCUSTOMCines", "custom_cines");
+                initForm(self.entity.record.custom, "propertyFormCUSTOMArchive", "custom_archive");
             }
             function initForm(elements, formPrefix, indexName) {
                 _.each(elements, function (element, idx) {
@@ -337,13 +366,20 @@
                 entity.record.dc = [];
                 entity.record.dcq = [];
                 entity.record.custom = [];
+                entity.record.custom_cines = [];
+                entity.record.custom_archive = [];
+                
                 _.each(entity.properties, function (property) {
                     switch (property.type.superType) {
                         case "DC": NumahopEditService.insertBasedOnRank(entity.record.dc, property, "weightedRank");
                             break;
                         case "DCQ": NumahopEditService.insertBasedOnRank(entity.record.dcq, property, "weightedRank");
                             break;
-                        default: NumahopEditService.insertBasedOnRank(entity.record.custom, property, "weightedRank");
+                        case "CUSTOM_CINES": NumahopEditService.insertBasedOnRank(entity.record.custom_cines, property, "weightedRank");
+                            break;
+                        case "CUSTOM_ARCHIVE": NumahopEditService.insertBasedOnRank(entity.record.custom_archive, property, "weightedRank");
+                            break;          
+                        default: NumahopEditService.insertBasedOnRank(entity.record.custom, property, property, "weightedRank");
                     }
                 });
             }

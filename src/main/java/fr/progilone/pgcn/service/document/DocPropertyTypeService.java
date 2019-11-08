@@ -1,20 +1,23 @@
 package fr.progilone.pgcn.service.document;
 
-import fr.progilone.pgcn.domain.document.DocPropertyType;
-import fr.progilone.pgcn.exception.PgcnValidationException;
-import fr.progilone.pgcn.exception.message.PgcnError;
-import fr.progilone.pgcn.exception.message.PgcnErrorCode;
-import fr.progilone.pgcn.exception.message.PgcnList;
-import fr.progilone.pgcn.repository.document.DocPropertyTypeRepository;
-import fr.progilone.pgcn.service.exchange.MappingService;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
-import java.util.List;
+import fr.progilone.pgcn.domain.document.DocPropertyType;
+import fr.progilone.pgcn.domain.document.DocPropertyType.DocPropertySuperType;
+import fr.progilone.pgcn.exception.PgcnValidationException;
+import fr.progilone.pgcn.exception.message.PgcnError;
+import fr.progilone.pgcn.exception.message.PgcnErrorCode;
+import fr.progilone.pgcn.exception.message.PgcnList;
+import fr.progilone.pgcn.repository.document.DocPropertyTypeRepository;
+import fr.progilone.pgcn.service.exchange.MappingService;
 
 @Service
 public class DocPropertyTypeService {
@@ -35,6 +38,15 @@ public class DocPropertyTypeService {
     @Transactional(readOnly = true)
     public List<DocPropertyType> findAll() {
         return docPropertyTypeRepository.findAll();
+    }
+    
+    @Transactional(readOnly = true)
+    public List<DocPropertyType> findCustom() {
+        
+        final DocPropertyType.DocPropertySuperType[] customTypes = {DocPropertySuperType.CUSTOM, 
+                                                                    DocPropertySuperType.CUSTOM_ARCHIVE, 
+                                                                    DocPropertySuperType.CUSTOM_CINES};
+        return docPropertyTypeRepository.findAllBySuperTypeIn(Arrays.asList(customTypes));
     }
 
     @Transactional(readOnly = true)
@@ -119,10 +131,10 @@ public class DocPropertyTypeService {
      *
      * @param propertyType
      */
-    private void handleRank(DocPropertyType propertyType) {
+    private void handleRank(final DocPropertyType propertyType) {
         if (propertyType.getRank() == null) {
             final Integer currentRank = docPropertyTypeRepository.findCurrentRankForPropertyType(propertyType.getSuperType());
-            Integer nextRank = currentRank != null ? currentRank + 1 : 1;
+            final Integer nextRank = currentRank != null ? currentRank + 1 : 1;
             propertyType.setRank(nextRank);
         }
     }

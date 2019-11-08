@@ -5,7 +5,7 @@
 </div>
 <ul id="menuRoot" class="nav nav-pills nav-stacked">
     <li sem-roles-allowed="DOC_UNIT_HAB0">
-        <a data-toggle="dropdown" data-parent="#menuRoot" href="#menucataloging" onclick="event.preventDefault();">
+        <a data-toggle="dropdown" data-parent="#menuRoot" href="#menucataloging" onclick="event.preventDefault();" data-active-link="document">
             <span class="menu-label" translate>Documents</span> <span class="glyphicon syrtis-icon-books-02 " tooltip-placement="auto right" uib-tooltip="{{::'Documents' | translate}}"></span>
         </a>
         <ul id="menucataloging" class="dropdown-menu dropright">
@@ -22,12 +22,12 @@
         </ul>
     </li>
     <li sem-roles-allowed="DOC_UNIT_HAB0">
-        <a href="#/search/advanced">
+        <a href="#/search/advanced" data-active-link="search">
             <span class="menu-label" translate>Recherche avancée</span> <span class="glyphicon-halflings glyphicon-search" tooltip-placement="auto right" uib-tooltip="{{::'Recherche avancée' | translate}}"></span>
         </a>
     </li>
     <li sem-roles-allowed="LIB_HAB5, USER_HAB0, ROLE_HAB0">
-        <a data-toggle="dropdown" data-parent="#menuRoot" href="#menuUsagers" onclick="event.preventDefault();">
+        <a data-toggle="dropdown" data-parent="#menuRoot" href="#menuUsagers" onclick="event.preventDefault();" data-active-link="user/user,library,user/role">
             <span class="menu-label" translate>Utilisateurs</span> <span class="glyphicon syrtis-icon-head-01" tooltip-placement="auto right" uib-tooltip="{{::'Utilisateurs' | translate}}"></span>
         </a>
         <ul id="menuUsagers" class="dropdown-menu dropright">
@@ -37,7 +37,7 @@
         </ul>
     </li>
     <li sem-roles-allowed="LOT_HAB3, PROJ_HAB7, PROJ_HAB0, TRA_HAB3, DEL_HAB0, DEL_HAB2">
-        <a data-toggle="dropdown" data-parent="#menuRoot" href="#menuProjets" onclick="event.preventDefault();">
+        <a data-toggle="dropdown" data-parent="#menuRoot" href="#menuProjets" onclick="event.preventDefault();" data-active-link="project/project,lot,train/train,delivery/delivery,multidelivery">
             <span class="menu-label" translate>Projets</span> <span class="glyphicon syrtis-icon-books-01" tooltip-placement="auto right" uib-tooltip="{{::'Projets' | translate}}"></span>
         </a>
         <ul id="menuProjets" class="dropdown-menu dropright">
@@ -53,7 +53,7 @@
         </ul>
     </li>
     <li sem-roles-allowed="CHECK_HAB4">
-        <a data-toggle="dropdown" data-parent="#menuRoot" href="#menuAcquisitions" onclick="event.preventDefault();" >
+        <a data-toggle="dropdown" data-parent="#menuRoot" href="#menuAcquisitions" onclick="event.preventDefault();" data-active-link="checks">
             <span class="menu-label sem-auto-hide" translate>Contrôles</span> <span class="glyphicon-halflings glyphicon-check" tooltip-placement="auto right" uib-tooltip="{{::'Contrôles' | translate}}"></span>
         </a>
         <ul id="menuAcquisitions" class="dropdown-menu dropright">
@@ -61,7 +61,7 @@
         </ul>
     </li>
     <li>
-        <a data-toggle="dropdown" data-parent="#menuRoot" href="#menuStats" onclick="event.preventDefault();">
+        <a data-toggle="dropdown" data-parent="#menuRoot" href="#menuStats" onclick="event.preventDefault();" data-active-link="statistics">
             <span class="menu-label" translate>Statistiques</span> <span class="fa fa-pie-chart" tooltip-placement="auto right" uib-tooltip="{{::'Statistiques' | translate}}"></span>
         </a>
         <ul id="menuStats" class="dropdown-menu dropright">
@@ -87,13 +87,14 @@
         </ul>
     </li>
     <li sem-roles-allowed="DOC_UNIT_HAB5,CHECK_HAB0,TPL_HAB0,WORKFLOW_HAB4,SUPER_ADMIN,EXC_HAB0,FTP_HAB0,CONF_INTERNET_ARCHIVE_HAB0,MAIL_HAB0,SFTP_HAB0,MAP_HAB0">
-        <a href="#/administration/appconfiguration">
+        <a href="#/administration/appconfiguration" data-active-link="administration,checkconfiguration,ocrlangconfiguration,filesgestion,workflow/group,workflow/model,platformconfiguration">
             <span class="menu-label sem-auto-hide" translate>Administration</span> <span class="glyphicon syrtis-icon-prefs" tooltip-placement="auto right" uib-tooltip="{{::'Administration' | translate}}"></span>
         </a>
     </li>
     <li>
         <a ng-href="#/help?tag={{location.path()}}">
-            <span class="menu-label sem-auto-hide" translate>Aide</span> <span class="glyphicon-regular circle-question-mark" tooltip-placement="auto right" uib-tooltip="{{::'Aide' | translate}}"></span>
+            <span class="menu-label sem-auto-hide" translate>Aide</span>
+            <span class="glyphicon-regular circle-question-mark" tooltip-placement="auto right" uib-tooltip="{{::'Aide' | translate}}"></span>
         </a>
     </li>
 </ul>

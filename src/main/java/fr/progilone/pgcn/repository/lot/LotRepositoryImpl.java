@@ -5,6 +5,8 @@ import com.mysema.query.Tuple;
 import com.mysema.query.jpa.JPASubQuery;
 import com.mysema.query.jpa.JPQLQuery;
 import com.mysema.query.jpa.impl.JPAQuery;
+import com.mysema.query.types.Order;
+import com.mysema.query.types.OrderSpecifier;
 import com.mysema.query.types.expr.BooleanExpression;
 import fr.progilone.pgcn.domain.delivery.QDeliveredDocument;
 import fr.progilone.pgcn.domain.document.QDigitalDocument;
@@ -20,11 +22,13 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -150,8 +154,13 @@ public class LotRepositoryImpl implements LotRepositoryCustom {
         if (pageable != null) {
             long total = baseQuery.count();
             baseQuery = baseQuery.offset(pageable.getOffset())
-                                 .limit(pageable.getPageSize())
-                                 .orderBy(qLibrary.name.asc(), qProject.name.asc(), qLot.label.asc());
+                                 .limit(pageable.getPageSize());
+            if(pageable.getSort() != null){
+                applySorting(pageable.getSort(), baseQuery, qLot, qProject);
+            } else {
+                baseQuery.orderBy(qLibrary.name.asc(), qProject.name.asc(), qLot.label.asc());
+            }
+
             return new PageImpl<>(baseQuery.list(qLot), pageable, total);
 
         } else {
@@ -186,5 +195,43 @@ public class LotRepositoryImpl implements LotRepositoryCustom {
 
         // Requête
         return new JPAQuery(em).from(qLot).leftJoin(qLot.project, qProject).leftJoin(qProject.library, qLibrary).where(builder.getValue()).list(qLot);
+    }
+
+    /**
+     * Gère le tri
+     *
+     * @param sort Sort
+     * @param query JPQLQuery
+     * @param lot QLot
+     * @return JPQLQuery
+     */
+    protected JPQLQuery applySorting(final Sort sort, final JPQLQuery query, final QLot lot, final QProject project) {
+
+        final List<OrderSpecifier> orders = new ArrayList<>();
+        if (sort == null) {
+            return query;
+        }
+
+        for (final Sort.Order order : sort) {
+            final Order qOrder = order.isAscending() ? Order.ASC : Order.DESC;
+
+            switch (order.getProperty()) {
+                case "label":
+                    orders.add(new OrderSpecifier(qOrder, lot.label));
+                    break;
+                case "project.name":
+                    orders.add(new OrderSpecifier(qOrder, project.name));
+                    break;
+                case "status":
+                    orders.add(new OrderSpecifier(qOrder, lot.status));
+                    break;
+                case "type":
+                    orders.add(new OrderSpecifier(qOrder, lot.type));
+                    break;
+            }
+        }
+        OrderSpecifier[] orderArray = new OrderSpecifier[orders.size()];
+        orderArray = orders.toArray(orderArray);
+        return query.orderBy(orderArray);
     }
 }

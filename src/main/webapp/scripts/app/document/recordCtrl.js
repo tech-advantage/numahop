@@ -5,7 +5,7 @@
         .controller('RecordCtrl', RecordCtrl);
 
     function RecordCtrl($location, $scope, $timeout, $q,
-        RecordSrvc, gettextCatalog, HistorySrvc,
+        RecordSrvc, gettextCatalog, HistorySrvc,DocUnitSrvc,
         NumahopEditService, NumahopStorageService, NumaHopInitializationSrvc) {
 
         $scope.applyFilter = applyFilter;
@@ -42,7 +42,8 @@
             last_modified_date_filter: true,
             project_filter: true,
             lot_filter: true,
-            created_date_filter: true
+            created_date_filter: true,
+            wkf_status_filter: true
         };
 
 
@@ -82,11 +83,13 @@
         function loadOptionsAndFilters() {
             $q.all([NumaHopInitializationSrvc.loadLibraries(),
             NumaHopInitializationSrvc.loadProjects(),
-            NumaHopInitializationSrvc.loadLots()])
+            NumaHopInitializationSrvc.loadLots(),
+            DocUnitSrvc.getConfigFilterStatuses()])
                 .then(function (data) {
                     $scope.options.libraries = data[0];
                     $scope.options.projects = data[1];
                     $scope.options.lots = data[2];
+                    $scope.options.statuses = data[3];
                     loadFilters();
                     nextPage();
                 });
@@ -161,6 +164,10 @@
             if ($scope.filters.lots) {
                 var lotsIds = _.pluck($scope.filters.lots, "identifier");
                 searchParams["lots"] = lotsIds;
+            }
+            if ($scope.filters.wkf_statuses) {
+                var statusesIds = _.pluck($scope.filters.wkf_statuses, "identifier");
+                searchParams["statuses"] = statusesIds;
             }
             if ($scope.filters.createdDateFrom) {
                 searchParams["createdDateFrom"] = $scope.filters.createdDateFrom;

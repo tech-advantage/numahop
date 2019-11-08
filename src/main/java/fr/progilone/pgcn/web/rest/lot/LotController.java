@@ -115,7 +115,8 @@ public class LotController extends AbstractRestController {
                                                      @RequestParam(value = "docNumber", required = false) final Integer docNumber,
                                                      @RequestParam(value = "fileFormat", required = false) final List<String> fileFormats,
                                                      @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
-                                                     @RequestParam(value = "size", required = false, defaultValue = "10") final Integer size) {
+                                                     @RequestParam(value = "size", required = false, defaultValue = "10") final Integer size,
+                                                     @RequestParam(value = "sorts", required = false) final List<String> sorts) {
         // Droits d'accès
         final List<String> filteredLibraries = libraryAccesssHelper.getLibraryFilter(request, libraries);
         final List<String> filteredProjects =
@@ -129,7 +130,8 @@ public class LotController extends AbstractRestController {
                                                         fileFormats,
                                                         null,
                                                         page,
-                                                        size), HttpStatus.OK);
+                                                        size,
+                                                        sorts), HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST, params = {"search"}, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -138,7 +140,8 @@ public class LotController extends AbstractRestController {
     public ResponseEntity<Page<SimpleLotDTO>> search(final HttpServletRequest request,
                                                      @RequestBody SearchRequest requestParams,
                                                      @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
-                                                     @RequestParam(value = "size", required = false, defaultValue = "10") final Integer size) {
+                                                     @RequestParam(value = "size", required = false, defaultValue = "10") final Integer size,
+                                                     @RequestParam(value = "sorts", required = false) final List<String> sorts) {
         // Droits d'accès
         final List<String> filteredLibraries = libraryAccesssHelper.getLibraryFilter(request, requestParams.getLibraries());
         final List<String> filteredProjects =
@@ -152,7 +155,8 @@ public class LotController extends AbstractRestController {
                                                         requestParams.getFileFormats(),
                                                         requestParams.getFilter(),
                                                         page,
-                                                        size), HttpStatus.OK);
+                                                        size,
+                                                        sorts), HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.GET, params = {"widget", "from"}, produces = MediaType.APPLICATION_JSON_VALUE)

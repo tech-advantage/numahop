@@ -1,5 +1,25 @@
 package fr.progilone.pgcn.service.project;
 
+import java.time.LocalDate;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.inject.Inject;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.IterableUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.project.Project;
 import fr.progilone.pgcn.exception.PgcnBusinessException;
@@ -14,24 +34,6 @@ import fr.progilone.pgcn.service.document.DocUnitService;
 import fr.progilone.pgcn.service.es.EsProjectService;
 import fr.progilone.pgcn.service.exchange.ImportReportService;
 import fr.progilone.pgcn.service.util.SortUtils;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.IterableUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.inject.Inject;
-import java.time.LocalDate;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -322,6 +324,11 @@ public class ProjectService {
     @Transactional(readOnly = true)
     public List<Project> findAllByLibraryIn(final List<String> libraries) {
         return projectRepository.findAllByActiveAndLibraryIdentifierIn(true, libraries);
+    }
+    
+    @Transactional(readOnly = true)
+    public List<Project> findAllByLibraryIdentifier(final String library) {
+        return projectRepository.findAllByLibraryIdentifier(library);
     }
 
     @Transactional

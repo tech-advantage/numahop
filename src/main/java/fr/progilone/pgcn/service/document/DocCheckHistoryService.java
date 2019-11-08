@@ -444,6 +444,7 @@ public class DocCheckHistoryService {
         
         return histories.stream()
                     .filter(histo -> DigitalDocumentStatus.DELIVERING != histo.getStatus())
+                    .filter(histo -> DigitalDocumentStatus.CHECKING != histo.getStatus())
                     .map(histo -> new LibraryUserProgressRegroup(histo.getLibraryId(), histo.getUserLogin(), histo))
                     // regroupement par [library + user] identiques
                     .collect(Collectors.groupingBy(LibraryUserProgressRegroup::getKey,
@@ -514,7 +515,7 @@ public class DocCheckHistoryService {
         
         // Nombre moyen de pages        
         list.stream()
-            .mapToInt(g-> g.getHistory().getPageNumber())
+            .mapToInt(g-> g.getHistory().getPageNumber() != null ? g.getHistory().getPageNumber() : 0)
             .average()
             .ifPresent(avg -> dto.setAvgTotalPages((int) avg));
 

@@ -7,6 +7,9 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import fr.progilone.pgcn.domain.workflow.QDocUnitState;
+import fr.progilone.pgcn.domain.workflow.QDocUnitWorkflow;
+import fr.progilone.pgcn.domain.workflow.WorkflowStateKey;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
@@ -56,6 +59,7 @@ public class DigitalDocumentRepositoryImpl implements DigitalDocumentRepositoryC
                                         final LocalDate dateTo,
                                         final LocalDate dateLimitFrom,
                                         final LocalDate dateLimitTo,
+                                        final boolean relivraison,
                                         final String searchPgcnId,
                                         final String searchTitre,
                                         final String searchRadical,
@@ -75,6 +79,8 @@ public class DigitalDocumentRepositoryImpl implements DigitalDocumentRepositoryC
         final QLibrary library = QLibrary.library;
         final QLot lot = QLot.lot;
         final QDocUnit docUnit = QDocUnit.docUnit;
+        final QDocUnitWorkflow workflow = QDocUnitWorkflow.docUnitWorkflow;
+        final QDocUnitState docUnitState = QDocUnitState.docUnitState;
         final QDelivery delivery = QDelivery.delivery;
         final QDeliveredDocument deliveredDocument = QDeliveredDocument.deliveredDocument; 
 
@@ -145,6 +151,13 @@ public class DigitalDocumentRepositoryImpl implements DigitalDocumentRepositoryC
             builder.and(new BooleanBuilder().and(docUnit.identifier.in(subCondRep)));
         }
 
+        if(relivraison){
+            final BooleanExpression stateFilter = docUnitState.discriminator.eq(WorkflowStateKey.RELIVRAISON_DOCUMENT_EN_COURS);
+            builder.and(stateFilter);
+            builder.and(docUnitState.startDate.isNotNull());
+            builder.and(docUnitState.endDate.isNull());
+        }
+
         if (dateFrom != null) {
             final BooleanExpression dateFromFilter = doc.deliveryDate.after(dateFrom.minusDays(1));
             builder.and(dateFromFilter);
@@ -208,6 +221,8 @@ public class DigitalDocumentRepositoryImpl implements DigitalDocumentRepositoryC
                     .leftJoin(doc.docUnit, docUnit)
                     .leftJoin(doc.docUnit.library, library)
                     .leftJoin(doc.docUnit.project, project)
+                    .leftJoin(docUnit.workflow, workflow)
+                    .leftJoin(workflow.states, docUnitState)
                     .leftJoin(doc.deliveries, deliveredDocument)
                     .leftJoin(delivery.lot, lot)
                     .where(builder.getValue())
@@ -220,6 +235,8 @@ public class DigitalDocumentRepositoryImpl implements DigitalDocumentRepositoryC
                     .leftJoin(doc.docUnit.library, library)
                     .leftJoin(doc.docUnit.project, project)
                     .leftJoin(doc.docUnit.lot, lot)
+                    .leftJoin(docUnit.workflow, workflow)
+                    .leftJoin(workflow.states, docUnitState)
                     .leftJoin(doc.deliveries, deliveredDocument)
                     .where(builder.getValue())
                     .orderBy(doc.digitalId.asc())

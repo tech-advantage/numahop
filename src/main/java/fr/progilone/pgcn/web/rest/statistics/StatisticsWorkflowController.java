@@ -153,6 +153,8 @@ public class StatisticsWorkflowController {
                                                                                                  final List<String> projects,
                                                                                                  @RequestParam(value = "lot", required = false)
                                                                                                  final List<String> lots,
+                                                                                                 @RequestParam(value = "train", required = false)
+                                                                                                 final List<String> trains,
                                                                                                  @RequestParam(value = "pgcnid", required = false)
                                                                                                  final String pgcnId,
                                                                                                  @RequestParam(value = "state", required = false)
@@ -191,6 +193,7 @@ public class StatisticsWorkflowController {
         return new ResponseEntity<>(workflowProgressReportService.getDocUnitProgressReport(filteredLibraries,
                                                                                            filteredProjects,
                                                                                            filteredLots,
+                                                                                           trains,
                                                                                            pgcnId,
                                                                                            states,
                                                                                            users,

@@ -37,7 +37,7 @@
                                     onbeforesave="validation.required($data)" numa-readonly="formRO"></numa-editable-field>
                 <numa-editable-field title="{{::'Login' | translate}}" placeholder="{{::'Login' | translate}}" form="exportFtpConfigForm" 
                                     model="configuration.login" errors="{{ errors.login }}" numa-readonly="formRO"></numa-editable-field>
-                <numa-editable-field title="{{::'Mot de passe' | translate}}" placeholder="{{::'Mot de passe' | translate}}" 
+                <numa-editable-field title="{{::'Mot de passe' | translate}}" type="password" placeholder="{{::'Mot de passe' | translate}}"
                                     form="exportFtpConfigForm" model="configuration.password" errors="{{ errors.password }}" 
                                     numa-readonly="formRO"></numa-editable-field>
                 <numa-editable-field title="{{::'Bibliothèque' | translate}}" type="select" placeholder="{{::'Bibliothèque' | translate}}" form="exportFtpConfigForm" 

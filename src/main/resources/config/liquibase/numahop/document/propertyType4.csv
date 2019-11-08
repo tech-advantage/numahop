@@ -1,0 +1,30 @@
+identifier;label;supertype;rank;version
+contexte_election;Contexte élection;CUSTOM_ARCHIVE;5;0
+contexte_tour;Contexte tour;CUSTOM_ARCHIVE;6;0
+departement;Département;CUSTOM_ARCHIVE;8;0
+pages;Pages;CUSTOM_ARCHIVE;10;0
+en_soutien_a;En soutien à;CUSTOM_ARCHIVE;15;0
+en_opposition_a;En opposition à;CUSTOM_ARCHIVE;17;0
+nom_titulaire;Nom titulaire;CUSTOM_ARCHIVE;20;0
+prenom_titulaire;Prénom titulaire;CUSTOM_ARCHIVE;21;0
+sexe_titulaire;Sexe titulaire;CUSTOM_ARCHIVE;22;0
+nom_suppleant;Nom suppléant;CUSTOM_ARCHIVE;25;0
+prenom_suppleant;Prénom suppléant;CUSTOM_ARCHIVE;26;0
+sexe_suppleant;Sexe suppléant;CUSTOM_ARCHIVE;27;0
+profession_titulaire;Profession titulaire;CUSTOM_ARCHIVE;30;0
+mandat_cours_titulaire;Mandat en cours titulaire;CUSTOM_ARCHIVE;32;0
+mandat_passe_titulaire;Mandat passé titulaire;CUSTOM_ARCHIVE;33;0
+profession_suppleant;Profession suppléant;CUSTOM_ARCHIVE;35;0
+mandat_cours_suppleant;Mandat en cours suppléant;CUSTOM_ARCHIVE;36;0
+mandat_passe_suppleant;Mandat passé suppléant;CUSTOM_ARCHIVE;37;0
+organisations_titulaire;Organisations titulaire;CUSTOM_ARCHIVE;40;0
+liste_slogan_titulaire;Liste / slogan titulaire;CUSTOM_ARCHIVE;41;0
+organisations_suppleant;Organisations suppléant;CUSTOM_ARCHIVE;42;0
+liste_slogan_suppleant;Liste / slogna suppléant;CUSTOM_ARCHIVE;43;0
+impression;Impression;CUSTOM_ARCHIVE;50;0
+couleur;Couleur;CUSTOM_ARCHIVE;51;0
+objet_sujet;Objet / sujet;CUSTOM_ARCHIVE;52;0
+forme;Forme;CUSTOM_ARCHIVE;53;0
+acronyme;Acronyme;CUSTOM_ARCHIVE;54;0
+texte;Texte;CUSTOM_ARCHIVE;55;0
+

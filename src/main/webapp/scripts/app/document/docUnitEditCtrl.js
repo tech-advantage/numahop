@@ -6,7 +6,7 @@
 
     function DocUnitEditCtrl($http, $httpParamSerializer, $location, $q, $routeParams, $scope, $timeout, codeSrvc, WebsocketSrvc,
         DocUnitBaseService, DocUnitSrvc, ErreurSrvc, ExportSrvc, FileSaver, gettext, gettextCatalog, HistorySrvc,
-        ListTools, LockSrvc, ModalSrvc, NumahopEditService, NumahopAutoCheckService, MessageSrvc, OcrLanguageSrvc, 
+        ListTools, LockSrvc, ModalSrvc, NumahopEditService, NumahopAutoCheckService, MessageSrvc,
         NumaHopStatusService, NumaHopInitializationSrvc, ValidationSrvc, WorkflowHandleSrvc, DateUtils) {
 
         $scope.semCodes = codeSrvc;

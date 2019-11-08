@@ -33,8 +33,8 @@
         $scope.canChangeLot = true;
         $scope.deliveryNotChecked = false;
 
-        $scope.finishedStatus = ["TO_BE_CONTROLLED", "AUTOMATICALLY_REJECTED", "REJECTED", "DELIVERED", "TREATED", "VALIDATED", "DELIVERING_ERROR"];
-        $scope.toCheckStatus = ["TO_CHECK", "CHECKING", "PRE_REJECTED"];
+        $scope.finishedStatus = ["TO_BE_CONTROLLED", "AUTOMATICALLY_REJECTED", "REJECTED", "DELIVERED", "TREATED", "VALIDATED", "DELIVERING_ERROR", "CLOSED"];
+        $scope.toCheckStatus = ["TO_CHECK", "CHECKING", "PRE_REJECTED", "PRE_VALIDATED"];
 
         // Définition des listes déroulantes
         $scope.options = {

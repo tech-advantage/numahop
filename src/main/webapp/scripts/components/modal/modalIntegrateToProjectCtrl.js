@@ -3,7 +3,7 @@
 
     angular.module("numaHopApp.controller")
         .controller("ModalIntegrateToProjectCtrl", function($scope, $q, $uibModalInstance, $location, options, gettext, DtoService,
-        NumaHopInitializationSrvc, ProjectSrvc, MessageSrvc, ModalSrvc, gettextCatalog, LotSrvc, DocUnitSrvc, TrainSrvc) {
+        NumaHopInitializationSrvc, ProjectSrvc, MessageSrvc, ModalSrvc, gettextCatalog, LotSrvc, DocUnitSrvc, TrainSrvc, DocUnitBaseService) {
             var mainCtrl = this;
             _.extend(mainCtrl, options);
 
@@ -12,6 +12,9 @@
             mainCtrl.onSelectProject = onSelectProject;
             mainCtrl.confirm = confirm;
             mainCtrl.cancel = cancel;
+
+            mainCtrl.canRemove = canRemove;
+
             init();
 
             /** Initialisation */
@@ -73,6 +76,13 @@
                 if (angular.isDefined(mainCtrl.options.train)) {
                     mainCtrl.train = mainCtrl.options.train;  
                 }
+            }
+
+            function canRemove(item){
+                if(item != null){
+                    return _.contains(["CREATED"], item.status);
+                }
+                return true;
             }
 
             function confirm() {

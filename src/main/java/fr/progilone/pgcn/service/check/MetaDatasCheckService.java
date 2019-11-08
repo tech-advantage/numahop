@@ -75,7 +75,7 @@ public class MetaDatasCheckService {
 
     private final FileStorageManager fm;
     private final DeliveryReportingService reportService;
-    
+
     @Value("${instance.libraries}")
     private String[] instanceLibraries;
 
@@ -90,8 +90,8 @@ public class MetaDatasCheckService {
 
     @PostConstruct
     public void initialize() {
-        
-        // 1 disk space per library 
+
+        // 1 disk space per library
         Arrays.asList(instanceLibraries).forEach(lib -> {
             try {
                 FileUtils.forceMkdir(new File(metaDatasDirectory, lib));
@@ -99,7 +99,7 @@ public class MetaDatasCheckService {
                 LOG.error(ex.getMessage(), ex);
             }
         });
-        
+
     }
 
     /**
@@ -292,7 +292,7 @@ public class MetaDatasCheckService {
         }
         return Optional.of(excelFile);
     }
-    
+
     /**
      * Recuperation du fichier mets brut.
      * @param digitalId
@@ -305,7 +305,7 @@ public class MetaDatasCheckService {
         final Path metsPath = root.resolve(METS_XML_FILE);
         if (metsPath != null) {
             metsXml = Optional.of(metsPath.toFile());
-        } 
+        }
         return metsXml;
     }
 
@@ -316,7 +316,7 @@ public class MetaDatasCheckService {
      * @return
      */
     public Optional<Mets> getMetaDataMetsFile(final String digitalId, final String libraryId) {
-        
+
         Optional<Mets> mets;
         final Optional<File> metsFile = getMetsXmlFile(digitalId, libraryId);
         try {
@@ -365,17 +365,17 @@ public class MetaDatasCheckService {
                                     final Delivery delivery,
                                     final String libraryId,
                                     final Set<String> prefixToTreat) {
-        
+
         final Path root = Paths.get(metaDatasDirectory, libraryId);
 
         metaDatasDTO.forEach((idDoc, dtos) -> {
-            
+
             final List<File> files = metaDataFiles.get(idDoc);
             final String[] dirsToAdd = {idDoc};
-            
+
             // on ne recupere que les TDM des doc à traiter.
             if (prefixToTreat.contains(idDoc)) {
-                
+
                 dtos.forEach((dto) -> {
                     String targetName = null;
                     switch (dto.getRole()) {

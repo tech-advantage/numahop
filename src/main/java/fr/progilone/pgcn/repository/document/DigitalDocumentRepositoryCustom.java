@@ -24,6 +24,7 @@ public interface DigitalDocumentRepositoryCustom {
                                  LocalDate dateTo,
                                  LocalDate dateLimitFrom,
                                  LocalDate dateLimitTo,
+                                 boolean relivraison,
                                  String searchPgcnId,
                                  String searchTitre,
                                  String searchRadical,

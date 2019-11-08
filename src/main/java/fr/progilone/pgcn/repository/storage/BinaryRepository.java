@@ -12,6 +12,8 @@ public interface BinaryRepository extends JpaRepository<StoredFile, String> {
     
     StoredFile getOneByPageIdentifierAndFileFormat(String page, ViewsFormatConfiguration.FileFormat format);
     
+    int countByPageDigest(String pageDigest);
+    
     @Query("select sf from StoredFile sf "
             + "left join fetch sf.page p "
             + "where p.identifier in ?1 "

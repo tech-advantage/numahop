@@ -8,11 +8,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
+import java.nio.file.FileVisitOption;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
@@ -796,6 +802,37 @@ public class BinaryStorageManager {
         public String getExtension() {
             return this.extension;
         }
+    }
+    
+    @Transactional
+    public void deleteOrphanFiles(final String libraryId) {
+        
+        final File binStorage = storageInfos.get(libraryId).get("filesStorageDir"); 
+        final Path dest =  binStorage.toPath();
+        
+        LOG.warn("DELETE ORPHANS - filesstoragedir = {}", binStorage.getAbsolutePath());
+        
+        try (final Stream<Path> stream = Files.walk(dest, FileVisitOption.FOLLOW_LINKS)) {
+            
+            final List<File> dirDigests = stream.filter(p -> MASTER_PATH.equals(p.getFileName().toString()))
+                    .map(Path::getParent)
+                    .map(Path::toFile)
+                    .filter(f -> f.isDirectory())
+                    .filter(f -> binaryRepository.countByPageDigest(f.getName()) == 0)
+                    .collect(Collectors.toList());
+            LOG.warn("dossiers parents de master à supprimer : {}", dirDigests.size());
+            
+            dirDigests.stream()
+                        .forEach(f -> {
+                            LOG.debug("orphan file found : {}", f.getName());
+                            FileUtils.deleteQuietly(f);
+                        });            
+                  
+            stream.close();
+        } catch (IOException | SecurityException e) {
+            LOG.error("Erreur lors de la suppression des fichiers binaires dans {}", dest.toAbsolutePath().toString(), e);
+        }
+        
     }
 
     /**

@@ -8,7 +8,7 @@
     </parent>
     <groupId>fr.progilone.numahop</groupId>
     <artifactId>numahop</artifactId>
-    <version>1.0.5</version>
+    <version>1.0.6</version>
     <packaging>war</packaging>
     <name>NumaHOP</name>
     <description>NumaHOP</description>
@@ -16,8 +16,8 @@
         <maven>3.0.0</maven>
     </prerequisites>
     <properties>
-        <amazonaws.version>1.11.119</amazonaws.version>
-        <apache.http.version>4.5.6</apache.http.version>
+        <amazonaws.version>1.11.656</amazonaws.version>
+        <apache.http.version>4.5.10</apache.http.version>
         <assertj-core.version>3.1.0</assertj-core.version>
         <commons-collections.version>3.2.2</commons-collections.version>
         <commons-csv.version>1.5</commons-csv.version>
@@ -1060,7 +1060,6 @@
                 <artifactId>git-commit-id-plugin</artifactId>
                 <configuration>
                     <verbose>false</verbose>
-                    <failOnNoGitDirectory>false</failOnNoGitDirectory>
                 </configuration>
             </plugin>
         </plugins>
@@ -1093,8 +1092,8 @@
                                     <goal>install-node-and-npm</goal>
                                 </goals>
                                 <configuration>
-                                    <nodeVersion>v6.9.1</nodeVersion>
-                                    <npmVersion>3.10.9</npmVersion>
+                                    <nodeVersion>v8.16.0</nodeVersion>
+                                    <npmVersion>6.9.2</npmVersion>
                                 </configuration>
                             </execution>
                             <execution>

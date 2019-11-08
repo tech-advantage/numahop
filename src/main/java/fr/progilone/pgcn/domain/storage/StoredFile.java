@@ -252,6 +252,12 @@ public class StoredFile extends AbstractDomainObject {
                           .add("mimetype", mimetype)
                           .toString();
     }
+    
+    public StoredFile getWithoutOcrText() {
+        setTextOcr(null);
+        return this;
+    }
+    
 
     /**
      * Return digest based on identifier

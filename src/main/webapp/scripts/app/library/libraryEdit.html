@@ -131,6 +131,25 @@
                     </div>
                 </div>
 
+                <!-- Contact -->
+                <div class="formBlock">
+                    <div class="formBlockTitle">
+                        <span translate>Responsable bibliothèque</span>
+                    </div>
+                    <div class="formBlockContent">
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <numa-editable-field title="{{::'Nom' | translate}}" placeholder="{{::'Nom' | translate}}"
+                                                     form="libraryForm" model="library.libRespName" numa-readonly="formRO" errors="{{ errors.libRespName }}"> </numa-editable-field>
+                                <numa-editable-field title="{{::'Tél' | translate}}" placeholder="{{::'Tél' | translate}}"
+                                                     form="libraryForm" model="library.libRespPhone" numa-readonly="formRO" errors="{{ errors.libRespPhone }}"> </numa-editable-field>
+                                <numa-editable-field title="{{::'Email' | translate}}" placeholder="{{::'Email' | translate}}"
+                                                     form="libraryForm" model="library.libRespEmail" numa-readonly="formRO" errors="{{ errors.libRespEmail }}"> </numa-editable-field>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Logo -->
                 <div class="formBlock" ng-if="loaded && library.identifier" ng-hide="libraryForm.$visible">
                     <div class="formBlockTitle">

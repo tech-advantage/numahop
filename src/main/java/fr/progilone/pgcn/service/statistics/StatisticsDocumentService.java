@@ -28,7 +28,6 @@ import fr.progilone.pgcn.domain.lot.Lot;
 import fr.progilone.pgcn.domain.project.Project;
 import fr.progilone.pgcn.domain.user.User;
 import fr.progilone.pgcn.domain.workflow.DocUnitState;
-import fr.progilone.pgcn.domain.workflow.DocUnitWorkflow;
 import fr.progilone.pgcn.repository.lot.LotRepository;
 import fr.progilone.pgcn.repository.lot.helper.LotSearchBuilder;
 import fr.progilone.pgcn.repository.workflow.DocUnitStateRepository;
@@ -89,8 +88,7 @@ public class StatisticsDocumentService {
         final StatisticsDocPublishedDTO dto = new StatisticsDocPublishedDTO();
         dto.setWorkflowState(docUnitState.getKey());
 
-        final DocUnitWorkflow docUnitWorkflow = docUnitState.getWorkflow();
-        final DocUnit docUnit = docUnitWorkflow.getDocUnit();
+        final DocUnit docUnit = docUnitState.getWorkflow().getDocUnit();
 
         dto.setDocUnitIdentifier(docUnit.getIdentifier());
         dto.setDocUnitLabel(docUnit.getLabel());

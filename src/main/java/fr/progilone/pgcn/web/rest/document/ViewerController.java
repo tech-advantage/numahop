@@ -150,6 +150,11 @@ public class ViewerController extends AbstractRestController {
         } else {
             f = digitalDocumentService.getView(identifier, pageNumber);
         }
+        // Au cas ou il ne resterait que les vignettes
+        if (f == null) {
+            f = digitalDocumentService.getThumbnail(identifier, pageNumber);
+        }
+        
         writeResponseForDownload(response, f, MediaType.IMAGE_JPEG_VALUE, f.getName());
         return new ResponseEntity<>(HttpStatus.OK);
     }

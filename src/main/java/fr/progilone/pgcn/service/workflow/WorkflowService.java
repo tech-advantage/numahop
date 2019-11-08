@@ -379,47 +379,21 @@ public class WorkflowService {
             workflow.setEndDate(endDate);
             
             // Gestion du lot
-            // LOT : cloturé uniquement si tout OK (tout terminé et surtout sans erreur: tous les docs doivent etre validés)
-            final Lot lot = lotService.findByDocUnitIdentifier(doc.getIdentifier());
-            final List<DocUnit> processingDus = new ArrayList<>();
+            // LOT : cloturé uniquement si tout OK (tout terminé et surtout sans erreur: tous les docs doivent avoir 1 worflow terminé)
+            final Lot lot = lotService.findOneWithDocsAndWorkflows(doc.getLot().getIdentifier());
             
-            lot.getDocUnits().stream()
-                                .forEach(du -> {
-                                    
-                                    if (processingDus.isEmpty()) {
-                                    
-                                        if (du.getWorkflow() == null || !du.getWorkflow().isDone()) {
-                                            // workflow non démarré ou non terminé
-                                            processingDus.add(du);
-                                        } else {
-                                            // workflow terminé et controle qualite non terminé ou attente de relivraison
-                                            final DocUnitState controlState = du.getWorkflow()
-                                                                                    .getStates()
-                                                                                    .stream()
-                                                                                    .filter(st -> WorkflowStateKey.CONTROLE_QUALITE_EN_COURS == st.getKey())
-                                                                                    .findFirst().orElse(null);
-                                            
-                                            final DocUnitState relivState = du.getWorkflow()
-                                                    .getStates()
-                                                    .stream()
-                                                    .filter(st -> WorkflowStateKey.RELIVRAISON_DOCUMENT_EN_COURS == st.getKey())
-                                                    .findFirst().orElse(null);
-                                            // Cas tordus à prendre en compte .... 
-                                            if ( (controlState != null && controlState.getStatus() != WorkflowStateStatus.FINISHED)
-                                                    || (relivState != null && relivState.getStatus() != WorkflowStateStatus.FINISHED) ) {
-                                                processingDus.add(du);
-                                            } 
-                                        }
-                                    }
-                                });
+            final long uncompletedWorkflows = lot.getDocUnits().stream()
+                                                .filter(du -> du.getState() == State.AVAILABLE)
+                                                .filter(du -> du.getWorkflow() == null 
+                                                            || !du.getWorkflow().isDone()
+                                                            || isCheckFailed(du.getWorkflow()))
+                                                .count();
+                            
+            LOG.trace("handleStatus - Boucle sur les docUnits du lot {} - total docs: {} - docs avec workflow en cours ou non demarré: {}", lot.getLabel(), lot.getDocUnits().size(), uncompletedWorkflows); 
             
-            if (processingDus.isEmpty()) {
-                // Tous les documents du lots sont finis et validés, -> on peut fermer le lot
-                lot.setRealEndDate(endDate.toLocalDate());
-                lot.setStatus(LotStatus.CLOSED);
-                lot.setActive(false);
-                lotService.save(lot);
-                LOG.info("Workflow : Mise a jour du lot {} => lot status : CLOSED", lot.getLabel());
+            // Tous les documents du lots sont finis et validés, -> on peut fermer le lot
+            if (uncompletedWorkflows == 0) {
+                lotService.clotureLotAndCie(lot, endDate);
             }
             // Gestion du projet
             final Project project = projectService.findByDocUnitIdentifier(doc.getIdentifier());
@@ -810,6 +784,21 @@ public class WorkflowService {
     }
     
     /**
+     * Retourne vrai si le controle qualité est en échec.
+     * 
+     * @param wkf
+     * @return
+     */
+    public boolean isCheckFailed(final DocUnitWorkflow wkf) {
+        
+        final DocUnitState state = wkf.getStates()
+                                .stream()
+                                .filter(st -> WorkflowStateKey.CONTROLE_QUALITE_EN_COURS == st.getKey())
+                                .findFirst().orElse(null);
+        return state != null && WorkflowStateStatus.FAILED == state.getStatus();
+    }
+    
+    /**
      * Permet de déterminer si un workflow est démarré et le doc en attente de relivraison
      *
      * @param docUnitId
@@ -821,10 +810,8 @@ public class WorkflowService {
         if (docUnit != null && docUnit.getWorkflow() != null) {
             final DocUnitWorkflow workflow = docUnit.getWorkflow();
             final List<DocUnitState> statesForKey = workflow.getByKey(WorkflowStateKey.RELIVRAISON_DOCUMENT_EN_COURS);
-            if (statesForKey.size() == 1) {
-                if (statesForKey.get(0).isRunning()) {
-                    return true;
-                }
+            if (!statesForKey.isEmpty()) {
+                return !statesForKey.stream().filter(DocUnitState::isRunning).collect(Collectors.toList()).isEmpty();
             }
         }
         return false;
@@ -835,6 +822,11 @@ public class WorkflowService {
         return isStateRunning(docUnitId, WorkflowStateKey.VALIDATION_CONSTAT_ETAT)
                 || isStateRunning(docUnitId, WorkflowStateKey.CONSTAT_ETAT_AVANT_NUMERISATION)
                 || isStateRunning(docUnitId, WorkflowStateKey.CONSTAT_ETAT_APRES_NUMERISATION);
+    }
+    
+    
+    public List<DocUnitWorkflow> findDocUnitWorkflowsForArchiveExport(final String library) {
+        return docUnitWorkflowService.findDocUnitWorkflowsForArchiveExport(library);
     }
     
 }

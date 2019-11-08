@@ -81,5 +81,14 @@ public class UILibraryMapper {
         if (libraryDTO.getDefaultRole() != null) {
             library.setDefaultRole(roleRepository.findOne(libraryDTO.getDefaultRole().getIdentifier()));
         }
+        if(libraryDTO.getLibRespName() != null){
+            library.setLibRespName(libraryDTO.getLibRespName());
+        }
+        if(libraryDTO.getLibRespPhone() != null){
+            library.setLibRespPhone(libraryDTO.getLibRespPhone());
+        }
+        if(libraryDTO.getLibRespEmail() != null){
+            library.setLibRespEmail(libraryDTO.getLibRespEmail());
+        }
     }
 }

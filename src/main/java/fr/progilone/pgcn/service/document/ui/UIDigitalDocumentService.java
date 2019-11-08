@@ -196,11 +196,21 @@ public class UIDigitalDocumentService {
 
         final Sort sort = SortUtils.getSort(sorts);
         final Pageable pageRequest = new PageRequest(page, size, sort);
+
+        // Statut en attente de relivraison
+        boolean relivraison = false;
+        if(status != null && status.contains("RELIVRAISON_DOCUMENT_EN_COURS")){
+            relivraison = true;
+            // Le statut en attente de relivraison n'est pas un statut de document numérique de l'unité documentaire
+            status.remove("RELIVRAISON_DOCUMENT_EN_COURS");
+        }
+
         final Page<DigitalDocument> docs = digitalDocumentService.search(search, status, filteredLibraries, projects, lots, trains, libraries,
-                                                                         dateFrom, dateTo, dateLimitFrom, dateLimitTo,
+                                                                         dateFrom, dateTo, dateLimitFrom, dateLimitTo, relivraison,
                                                                          searchPgcnId, searchTitre, searchRadical, searchFileFormats, searchMaxAngles,
                                                                          searchPageFrom, searchPageTo, searchPageCheckFrom, searchPageCheckTo, searchMinSize, searchMaxSize, validated, pageRequest);
         
+
         final Page<SimpleListDigitalDocumentDTO> docDtos = docs.map(DigitalDocumentMapper.INSTANCE::digitalDocumentToSimpleListDigitalDocumentDTO);
         docDtos.forEach(doc-> {
             final Optional<ConditionReportDetail> det = reportDetailService.getLastDetailByDocUnitId(doc.getDocUnit().getIdentifier());

@@ -224,6 +224,12 @@
     
     <include file="classpath:config/liquibase/changelog/db-changelog-storage-008.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/db-changelog-administration-008.xml" relativeToChangelogFile="false"/>
+	<include file="classpath:config/liquibase/changelog/db-changelog-administration-009.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/db-changelog-doc-digital-size-check-notes.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/db-changelog-add-libResp-library-project.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/db-changelog-exchange-015.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/db-changelog-document-data-004.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/db-changelog-document-034.xml" relativeToChangelogFile="false"/>
 
 </databaseChangeLog>
 

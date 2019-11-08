@@ -7,7 +7,7 @@
     function LotEditCtrl($http, $httpParamSerializer, $location, $q, $routeParams, $scope, $timeout, codeSrvc,
         CONFIGURATION, DeliverySrvc, DocUnitBaseService, DocUnitSrvc, DtoService, FileSaver, gettext, gettextCatalog,
         HistorySrvc, ListTools, LotSrvc, MessageSrvc, ModalSrvc, NumahopEditService, NumaHopInitializationSrvc, Principal,
-        ValidationSrvc) {
+        ValidationSrvc, ProjectSrvc) {
 
         $scope.semCodes = codeSrvc;
         $scope.reloadSelects = reloadSelects;
@@ -182,41 +182,19 @@
 
         function afterLoadingLot(lot) {
             if (lot.project) {
-                $q.all([NumaHopInitializationSrvc.loadProvidersForLibrary(lot.project.library.identifier),
-                NumaHopInitializationSrvc.loadFTPConfigurationForProject(lot.project.identifier),
-                NumaHopInitializationSrvc.loadCheckConfigurationForProject(lot.project.identifier),
-                NumaHopInitializationSrvc.loadPACS(lot.project.library.identifier),
-                NumaHopInitializationSrvc.loadCollections(lot.project.library.identifier),
-                NumaHopInitializationSrvc.loadWorkflowModels(lot.project.library.identifier),
-                NumaHopInitializationSrvc.loadFormatConfigurationForProject(lot.project.identifier),
-                NumaHopInitializationSrvc.loadOmekaCollections(lot.project.library.identifier),
-                NumaHopInitializationSrvc.loadOmekaItems(lot.project.library.identifier),
-                NumaHopInitializationSrvc.loadOcrLanguagesForLibrary(lot.project.library.identifier)
-                ])
-                    .then(function (data) {
-                        $scope.options.providers = data[0];
-                        $scope.options.ftp = data[1];
-                        $scope.options.check = data[2];
-                        $scope.options.pacs = data[3];
-                        $scope.options.collections = data[4];
-                        $scope.options.workflowModels = data[5];
-                        $scope.options.imgFormat = data[6];
-                        $scope.options.omekaCollections = data[7];
-                        $scope.options.omekaItems = data[8];
-                        $scope.options.languagesOcr = data[9];
+                reloadSelects(lot.project);
 
-                        // pré-sélection
-                        if ($routeParams.activeCheckConfiguration) {
-                            lot.activeCheckConfiguration = _.find($scope.options.check, function (conf) { return conf.identifier === $routeParams.activeCheckConfiguration; });
-                        }
-                        if ($routeParams.activeFTPConfiguration) {
-                            lot.activeFTPConfiguration = _.find($scope.options.ftp, function (conf) { return conf.identifier === $routeParams.activeFTPConfiguration; });
-                        }
-                        if ($routeParams.activeFormatConfiguration) {
-                            lot.activeFormatConfiguration = _.find($scope.options.imgFormat, function (conf) { return conf.identifier === $routeParams.activeFormatConfiguration; });
-                        }
-                        loadAll(lot);
-                    });
+                // pré-sélection
+                if ($routeParams.activeCheckConfiguration) {
+                    lot.activeCheckConfiguration = _.find($scope.options.check, function (conf) { return conf.identifier === $routeParams.activeCheckConfiguration; });
+                }
+                if ($routeParams.activeFTPConfiguration) {
+                    lot.activeFTPConfiguration = _.find($scope.options.ftp, function (conf) { return conf.identifier === $routeParams.activeFTPConfiguration; });
+                }
+                if ($routeParams.activeFormatConfiguration) {
+                    lot.activeFormatConfiguration = _.find($scope.options.imgFormat, function (conf) { return conf.identifier === $routeParams.activeFormatConfiguration; });
+                }
+                loadAll(lot);
             }
             else {
                 $scope.options.providers = [];
@@ -271,6 +249,31 @@
                             provider.fullName = provider.firstname + " " + provider.surname;
                         });
                     });
+                ProjectSrvc.get({
+                    id: project.identifier
+                }, function (projectDto) {
+                    if(!$scope.lot.provider && projectDto.provider){
+                        $scope.lot.provider = projectDto.provider;
+                    }
+                    if(!$scope.lot.activeFTPConfiguration && projectDto.activeFTPConfiguration){
+                        $scope.lot.activeFTPConfiguration = projectDto.activeFTPConfiguration;
+                    }
+                    if(!$scope.lot.activeCheckConfiguration && projectDto.activeCheckConfiguration){
+                        $scope.lot.activeCheckConfiguration = projectDto.activeCheckConfiguration;
+                    }
+                    if(!$scope.lot.activeFormatConfiguration && projectDto.activeFormatConfiguration){
+                        $scope.lot.activeFormatConfiguration = projectDto.activeFormatConfiguration;
+                    }
+                    if(!$scope.lot.workflowModel && projectDto.workflowModel){
+                        $scope.lot.workflowModel = projectDto.workflowModel;
+                    }
+                    if(!$scope.lot.planClassementPAC && projectDto.planClassementPAC){
+                       $scope.lot.planClassementPAC = projectDto.planClassementPAC;
+                    }
+                    if(!$scope.lot.collectionIA && projectDto.collectionIA){
+                       $scope.lot.collectionIA = projectDto.collectionIA;
+                    }
+                });
             }
             else {
                 $scope.options.providers = [];

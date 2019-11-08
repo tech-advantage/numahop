@@ -61,7 +61,7 @@
                         method: 'POST',
                         isArray: true,
                         params: {
-                            'train': true
+                            'setTrain': true
                         }
                     },
                     removeProject: {

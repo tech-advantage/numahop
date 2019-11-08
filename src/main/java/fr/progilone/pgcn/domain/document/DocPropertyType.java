@@ -1,13 +1,23 @@
 package fr.progilone.pgcn.domain.document;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import fr.progilone.pgcn.domain.AbstractDomainObject;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+
+import fr.progilone.pgcn.domain.AbstractDomainObject;
 
 /**
  * Classe représentant un type propriété d'une notice
@@ -48,7 +58,7 @@ public class DocPropertyType extends AbstractDomainObject {
         return label;
     }
 
-    public void setLabel(String label) {
+    public void setLabel(final String label) {
         this.label = label;
     }
 
@@ -56,7 +66,7 @@ public class DocPropertyType extends AbstractDomainObject {
         return superType;
     }
 
-    public void setSuperType(DocPropertySuperType superType) {
+    public void setSuperType(final DocPropertySuperType superType) {
         this.superType = superType;
     }
 
@@ -64,7 +74,7 @@ public class DocPropertyType extends AbstractDomainObject {
         return rank;
     }
 
-    public void setRank(Integer rank) {
+    public void setRank(final Integer rank) {
         this.rank = rank;
     }
 
@@ -75,6 +85,8 @@ public class DocPropertyType extends AbstractDomainObject {
     public enum DocPropertySuperType {
         DC, /* champs du dublin core */
         DCQ, /* champs du dublin core qualified */
-        CUSTOM /* champs ajoutés */
+        CUSTOM, /* champs ajoutés (général) */
+        CUSTOM_CINES, /* champs ajoutés (sp. CINES) */
+        CUSTOM_ARCHIVE ; /* champs ajoutés (sp. Archive) */
     }
 }

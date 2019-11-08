@@ -1,10 +1,14 @@
 package fr.progilone.pgcn.service.delivery;
 
+import static fr.progilone.pgcn.exception.message.PgcnErrorCode.DELIVERY_NOT_ENOUGH_AVAILABLE_SPACE;
 import static fr.progilone.pgcn.exception.message.PgcnErrorCode.DELIVERY_NO_MASTER_FOUND;
 import static fr.progilone.pgcn.exception.message.PgcnErrorCode.DELIVERY_NO_MATCHING_PREFIX;
 import static fr.progilone.pgcn.exception.message.PgcnErrorCode.DELIVERY_WRONG_FOLDER;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -69,6 +73,7 @@ import fr.progilone.pgcn.service.document.DigitalDocumentService;
 import fr.progilone.pgcn.service.document.DocUnitService;
 import fr.progilone.pgcn.service.document.conditionreport.ConditionReportService;
 import fr.progilone.pgcn.service.lot.LotService;
+import fr.progilone.pgcn.service.storage.BinaryStorageManager;
 import fr.progilone.pgcn.service.workflow.WorkflowService;
 import fr.progilone.pgcn.web.util.WorkflowAccessHelper;
 
@@ -98,7 +103,9 @@ public class DeliveryProcessService {
     private final WorkflowAccessHelper workflowAccessHelper;
     private final WorkflowService workflowService;
     private final ConditionReportService conditionReportService;
-
+    //private final ProjectService projectService;
+    private BinaryStorageManager bm;
+    
     @Autowired
     public DeliveryProcessService(final PhysicalDocumentRepository physicalDocumentRepository,
                                   final DigitalDocumentService digitalDocumentService,
@@ -110,7 +117,8 @@ public class DeliveryProcessService {
                                   final DocUnitService docUnitService,
                                   final WorkflowAccessHelper workflowAccessHelper,
                                   final WorkflowService workflowService,
-                                  final ConditionReportService conditionReportService) {
+                                  final ConditionReportService conditionReportService,
+                                  final BinaryStorageManager bm) {
         this.physicalDocumentRepository = physicalDocumentRepository;
         this.digitalDocumentService = digitalDocumentService;
         this.autoCheckService = autoCheckService;
@@ -122,6 +130,7 @@ public class DeliveryProcessService {
         this.workflowAccessHelper = workflowAccessHelper;
         this.workflowService = workflowService;
         this.conditionReportService = conditionReportService;
+        this.bm = bm;
     }
 
     /**
@@ -165,11 +174,23 @@ public class DeliveryProcessService {
         final DeliverySlip deliverySlip = new DeliverySlip();
         delivery.setDeliverySlip(deliverySlip);
         deliverySlip.setDelivery(delivery);
+        
+        long totalMastersSize = 0L;
 
         for (final File directory : subDirectories) {
             final String prefix = prefixes.getOrDefault(directory, directory.getName());
             final Collection<File> filesToHandle = FileUtils.listFiles(directory, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
-
+            
+            try {
+                totalMastersSize += Files.walk(directory.toPath())
+                                        .filter(p -> p.toFile().isFile())
+                                        .filter(p -> autoCheckService.checkIfNameIsCorrect(p.toFile().getName(), format))
+                                        .mapToLong(p -> p.toFile().length())
+                                        .sum();
+            } catch(final IOException e) {
+                LOG.error("Erreur evaluation taille directory {}", directory.getName(), e.getMessage());
+            }
+            
             // Traitement des fichiers au format attendu (FIXME : master et non master au même format)
             final List<String> fileNames = autoCheckService.findMastersOnly(filesToHandle, format);
             int pageCount = 0;
@@ -244,11 +265,16 @@ public class DeliveryProcessService {
             LOG.error("Aucun fichier à livrer => livraison stoppée");
             preDeliveryDTO.addError(buildError(DELIVERY_NO_MASTER_FOUND));
         }
-
         // On effectue le contrôle après : les dossiers non correspondants sont simplement ignorés
         if (pddtos.isEmpty()) {
             preDeliveryDTO.addError(buildError(DELIVERY_NO_MATCHING_PREFIX));
         }
+        // Controle espace disque / taille totale des masters. 
+        if (!checkDiskAvailableSpace(lot.getProject().getLibrary(), totalMastersSize)) {
+            LOG.error("Manque de place sur le disque  => livraison stoppée");
+            preDeliveryDTO.addError(buildError(DELIVERY_NOT_ENOUGH_AVAILABLE_SPACE)); 
+        }
+        
         preDeliveryDTO.setDocuments(pddtos);
 
         deliveryService.save(delivery);
@@ -289,7 +315,7 @@ public class DeliveryProcessService {
     }
 
     private List<File> getSubDirectories(final Delivery delivery, final PreDeliveryDTO preDeliveryDTO) {
-        final String deliveryPath = getFolderPath(delivery);
+        final String deliveryPath = getFolderPath(delivery).toString();
         if (deliveryPath == null) {
             final PgcnError error = buildError(DELIVERY_WRONG_FOLDER);
             preDeliveryDTO.addError(error);
@@ -647,13 +673,43 @@ public class DeliveryProcessService {
      * @param delivery
      * @return
      */
-    private String getFolderPath(final Delivery delivery) {
+    private Path getFolderPath(final Delivery delivery) {
         final FTPConfiguration activeFTPConfiguration = lotService.getActiveFTPConfiguration(delivery.getLot());
         if (activeFTPConfiguration == null) {
             LOG.error("Aucune configuration FTP active n'a été trouvée pour la livraison du lot {}", delivery.getLot());
             return null;
         }
-        return Paths.get(activeFTPConfiguration.getDeliveryFolder(), delivery.getFolderPath()).toString();
+        return Paths.get(activeFTPConfiguration.getDeliveryFolder(), delivery.getFolderPath());
+    }
+    
+    /**
+     * Controle si espace disque suffisant pour la livraison à venir.
+     * 
+     * @param delivery
+     * @param totalMastersSize
+     * @return
+     */
+    private boolean checkDiskAvailableSpace(final Library library, final long totalMastersSize) {
+        final File tmpdir = bm.getTmpDir(library.getIdentifier());
+        return tmpdir.getUsableSpace() > (3 * totalMastersSize);        
+    }
+    
+    /**
+     * Retourne infos sur l'espace disque de la bibliothèque (widget Espace disque disponible).
+     * 
+     * @param libId
+     * @return
+     */
+    public Map<String, Long> getDiskInfos(final String libId) {
+
+        final File tmpdir = bm.getTmpDir(libId);
+        final Map<String, Long> infos = new HashMap<>();
+        if (tmpdir != null) {
+            infos.put("occupe", tmpdir.getTotalSpace() - tmpdir.getUsableSpace());
+            infos.put("disponible", tmpdir.getUsableSpace());
+            LOG.debug("Espace disque - Occupé {} - Disponible {}", infos.get("occupe"), infos.get("disponible"));
+        }
+        return infos;   
     }
 
     private PgcnError buildError(final PgcnErrorCode pgcnErrorCode) {
@@ -664,6 +720,7 @@ public class DeliveryProcessService {
                 builder.setCode(pgcnErrorCode);
                 break;
             case DELIVERY_WRONG_FOLDER:
+            case DELIVERY_NOT_ENOUGH_AVAILABLE_SPACE:
                 builder.setCode(pgcnErrorCode);
                 break;
             default:

@@ -5,12 +5,14 @@
     <div class="row">
         <h4 class="col-xs-12" translate>Champs</h4>
     </div>
+    
     <div class="row">
         <div class="col-xs-12 col-md-4">
-            <sem-field sem-type="text" sem-label-class="col-xs-5" sem-field-class="col-xs-7"
-                       sem-label="{{::'Propriété' | translate}}" sem-model="mainCtrl.rule.csvField"
+            <sem-field sem-type="select" sem-label-class="col-xs-5" sem-field-class="col-xs-7"
+                       sem-label="{{::'personnalisé' | translate}}" sem-model="mainCtrl.rule.property"
                        sem-select-options="option.label group by option.superType for option in optionData | orderBy:['superType', 'rank'] track by option.identifier"
-                       sem-option-data="mainCtrl.config.properties"></sem-field>
+                       sem-option-data="mainCtrl.config.properties"
+                       sem-onchange="mainCtrl.populateRule(value)"></sem-field>
         </div>
         <div class="col-xs-12 col-md-4">
             <sem-field sem-type="select" sem-label-class="col-xs-5" sem-field-class="col-xs-7"
@@ -18,7 +20,32 @@
                        sem-select-options="option.code as option.label for option in optionData | orderBy:'rank'"
                        sem-option-data="mainCtrl.config.docUnitFields"></sem-field>
         </div>
+        <div class="col-xs-12 col-md-4">
+            <sem-field sem-type="select" sem-label-class="col-xs-5" sem-field-class="col-xs-7"
+                       sem-label="{{::'Notice bibl.' | translate}}" sem-model="mainCtrl.rule.bibRecordField"
+                       sem-select-options="option.code as option.label for option in optionData | orderBy:'rank'"
+                       sem-option-data="mainCtrl.config.bibRecordFields"></sem-field>
+        </div>
     </div>
+    
+    <div class="row">
+            <h4 class="col-xs-12">
+                {{ ::'Règle' | translate }}
+            </h4>
+    </div>
+        
+    <div class="row">
+            <div class="col-xs-12">
+                <div class="row vertical-align">
+                    <div class="model-container col-xs-12 textarea100 code">
+                        <textarea class="form-control" placeholder="{{::'Règle de mapping' | translate}}"
+                                  ng-model="mainCtrl.rule.csvField" ng-trim="false">
+                        </textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
 </div>
 <div class="modal-footer">
     <button type="button" class="btn btn-sem4" ng-click="mainCtrl.cancel()" translate>Annuler</button>

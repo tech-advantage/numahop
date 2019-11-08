@@ -6,7 +6,8 @@
 
     function CondreportListCtrl($q, $location, $http, $httpParamSerializer, $routeParams, $scope, CondreportSrvc, CondreportDescPropertySrvc,
         CondreportDescValueSrvc, CondreportPropertyConfSrvc, DocUnitBaseService, FileSaver, gettext, gettextCatalog, HistorySrvc,
-        LibrarySrvc, MessageSrvc, ModalSrvc, NumahopStorageService, SelectionSrvc, Principal, WorkflowHandleSrvc, WorkflowSrvc, DtoService) {
+        LibrarySrvc, MessageSrvc, ModalSrvc, NumahopStorageService, SelectionSrvc, Principal, WorkflowHandleSrvc, WorkflowSrvc,
+        NumaHopInitializationSrvc, DtoService) {
 
         var mainCtrl = this;
         $scope.mainCtrl = mainCtrl;
@@ -88,6 +89,42 @@
                     }
                     else {
                         return $q.when(mainCtrl.config.libraries.data);
+                    }
+                },
+                'refresh-delay': 0, // pas de refresh-delay, car on lit les données en cache après le 1er chargement
+                'allow-clear': true
+            },
+            projects: {
+                text: "name",
+                placeholder: gettextCatalog.getString("Projet"),
+                trackby: "identifier",
+                multiple: true,
+                // Chargement avec mise en cache du résultat
+                refresh: function () {
+                    if (!mainCtrl.config.projects.data) {
+                       mainCtrl.config.projects.data = NumaHopInitializationSrvc.loadProjects();
+                       return mainCtrl.config.projects.data.$promise;
+                    }
+                    else {
+                        return $q.when(mainCtrl.config.projects.data);
+                    }
+                },
+                'refresh-delay': 0, // pas de refresh-delay, car on lit les données en cache après le 1er chargement
+                'allow-clear': true
+            },
+            lots: {
+                text: "label",
+                placeholder: gettextCatalog.getString("Lot"),
+                trackby: "identifier",
+                multiple: true,
+                // Chargement avec mise en cache du résultat
+                refresh: function () {
+                    if (!mainCtrl.config.lots.data) {
+                        mainCtrl.config.lots.data = NumaHopInitializationSrvc.loadLots();
+                        return mainCtrl.config.lots.data.$promise;
+                    }
+                    else {
+                        return $q.when(mainCtrl.config.lots.data);
                     }
                 },
                 'refresh-delay': 0, // pas de refresh-delay, car on lit les données en cache après le 1er chargement
@@ -174,13 +211,19 @@
          *         Recherche         *
          *****************************/
         function loadOptions() {
+            // Chargement des données
+            return $q.all([NumaHopInitializationSrvc.loadLibraries(),
+            NumaHopInitializationSrvc.loadProjects(),
+            NumaHopInitializationSrvc.loadLots(),
+            NumaHopInitializationSrvc.loadTrains()])
+                .then(function (data) {
+                    mainCtrl.options.libraries = data[0];
+                    mainCtrl.options.projects = data[1];
+                    mainCtrl.options.lots = data[2];
+                    loadFilters();
 
-            return LibrarySrvc.query({ dto: true }).$promise.then(function (value) {
-                mainCtrl.options.libraries = value;
-                loadFilters();
-
-                return getPage();
-            });
+                    return getPage();
+                });
         }
 
         /**
@@ -268,7 +311,17 @@
             // Bibliothèque
             if (mainCtrl.filters.libraries) {
                 var librariesIds = _.pluck(mainCtrl.filters.libraries, "identifier");
-                params["library"] = librariesIds;
+                params["libraries"] = librariesIds;
+            }
+            // Projet
+            if (mainCtrl.filters.projects) {
+                var projectsIds = _.pluck(mainCtrl.filters.projects, "identifier");
+                params["projects"] = projectsIds;
+            }
+            // Lot
+            if (mainCtrl.filters.lots) {
+                var lotsIds = _.pluck(mainCtrl.filters.lots, "identifier");
+                params["lots"] = lotsIds;
             }
             // Dates
             params["from"] = mainCtrl.filters.from;

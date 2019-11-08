@@ -15,7 +15,7 @@
 						var parameters = angular.copy(changesObj.linkParameters.currentValue);
 						var params, url;
 
-						if (parameters.state === "LIVRAISON_DOCUMENT_EN_COURS") {
+						if (parameters.state === "LIVRAISON_DOCUMENT_EN_COURS" || parameters.state === "RELIVRAISON_DOCUMENT_EN_COURS") {
 							params = {
 							    new: true,      
 								lot: parameters.item.infos.lot

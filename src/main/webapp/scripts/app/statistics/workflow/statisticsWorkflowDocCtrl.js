@@ -5,7 +5,7 @@
         .controller('StatisticsWorkflowDocCtrl', StatisticsWorkflowDocCtrl);
 
     function StatisticsWorkflowDocCtrl($q, codeSrvc, gettextCatalog, HistorySrvc, LibrarySrvc,
-        NumahopStorageService, ProjectSrvc, LotSrvc, StatisticsSrvc, WorkflowSrvc) {
+        NumahopStorageService, ProjectSrvc, LotSrvc, TrainSrvc, StatisticsSrvc, WorkflowSrvc) {
 
         var statCtrl = this;
 
@@ -96,6 +96,35 @@
                         .then(function (lots) {
                             return _.map(lots.content, function (lot) {
                                 return _.pick(lot, "identifier", "label");
+                            });
+                        });
+                },
+                'refresh-delay': 300,
+                'allow-clear': true,
+                multiple: true
+            },
+            trains: {
+                text: "label",
+                placeholder: gettextCatalog.getString("Train"),
+                trackby: "identifier",
+                refresh: function ($select) {
+                    statCtrl.trainsSelect = $select;
+                    // Gestion du cas où la liste est réinitialisée manuellement (search est indéfini)
+                    if (angular.isUndefined($select.search)) {
+                        return $q.when([]);
+                    }
+                    var searchParams = {
+                        page: 0,
+                        search: $select.search,
+                        active: true
+                    };
+                    if (statCtrl.filters.project) {
+                        searchParams["projects"] = _.pluck(statCtrl.filters.project, "identifier");
+                    }
+                    return TrainSrvc.search(searchParams).$promise
+                        .then(function (trains) {
+                            return _.map(trains.content, function (train) {
+                                return _.pick(train, "identifier", "label");
                             });
                         });
                 },
@@ -224,6 +253,7 @@
                 pgcnid: statCtrl.filters.pgcnid,
                 project: _.pluck(statCtrl.filters.project, "identifier"),
                 lot: _.pluck(statCtrl.filters.lot, "identifier"),
+                train: _.pluck(statCtrl.filters.train, "identifier"),
                 state: _.pluck(statCtrl.filters.state, "identifier"),
                 from: statCtrl.filters.from,
                 to: statCtrl.filters.to

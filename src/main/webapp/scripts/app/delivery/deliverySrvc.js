@@ -131,6 +131,14 @@
                         params: {
                             delivprogress: true
                         }
+                    },
+                    getDiskUsageInfos: {
+                        method: 'GET',
+                        isArray: false,
+                        params: {
+                            diskspace: true,
+                            widget: true
+                        } 
                     }
                 });
 
@@ -158,7 +166,7 @@
                     { identifier: "REJECTED", label: gettextCatalog.getString('Rejeté') },
                     { identifier: "AUTOMATICALLY_REJECTED", label: gettextCatalog.getString('Rejeté automatiquement') },
                     { identifier: "TREATED", label: gettextCatalog.getString('Traité') },
-              /*  { identifier: "DELIVERED_AGAIN", label: gettextCatalog.getString('Relivré') }*/]
+                    { identifier: "CLOSED", label: gettextCatalog.getString('Clôturé') }]
             };
             return service;
         });

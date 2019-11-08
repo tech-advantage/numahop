@@ -70,7 +70,6 @@ public final class AuthorizationConstants {
         AuthorizationManager.setRequirements(AuthorizationConstants.USER_HAB2, AuthorizationConstants.USER_HAB0);
         AuthorizationManager.setRequirements(AuthorizationConstants.USER_HAB3, AuthorizationConstants.USER_HAB0);
         AuthorizationManager.setRequirements(AuthorizationConstants.USER_HAB5, AuthorizationConstants.USER_HAB0);
-        AuthorizationManager.setRequirements(AuthorizationConstants.USER_HAB6, AuthorizationConstants.USER_HAB0);
         AuthorizationManager.setRequirements(AuthorizationConstants.USER_HAB4, AuthorizationConstants.USER_HAB0, AuthorizationConstants.USER_HAB2);
         AuthorizationManager.setRequirements(AuthorizationConstants.ROLE_HAB1, AuthorizationConstants.ROLE_HAB0);
         AuthorizationManager.setRequirements(AuthorizationConstants.ROLE_HAB2, AuthorizationConstants.ROLE_HAB0);

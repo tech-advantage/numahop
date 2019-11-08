@@ -1,5 +1,26 @@
 package fr.progilone.pgcn.service;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.time.LocalDateTime;
+import java.util.Collections;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.test.util.ReflectionTestUtils;
+
 import fr.progilone.pgcn.domain.Lock;
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.user.Lang;
@@ -7,20 +28,6 @@ import fr.progilone.pgcn.domain.user.User;
 import fr.progilone.pgcn.domain.util.CustomUserDetails;
 import fr.progilone.pgcn.exception.PgcnLockException;
 import fr.progilone.pgcn.repository.LockRepository;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.internal.stubbing.answers.ReturnsArgumentAt;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.security.authentication.TestingAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-
-import java.time.LocalDateTime;
-import java.util.Collections;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LockServiceTest {
@@ -31,152 +38,44 @@ public class LockServiceTest {
     private LockService service;
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         service = new LockService(lockRepository);
-        setUser();
     }
 
     @Test
-    public void testAcquireLock() {
-        final String id = "dcab0d3d-d47e-49d9-a941-5e85f5ee0d72";
-        final DocUnit docUnit = new DocUnit();
-        docUnit.setIdentifier(id);
-
-        final Lock lock = new Lock();
-        lock.setIdentifier(id);
-        lock.setClazz(DocUnit.class.getName());
-        lock.setLockedDate(LocalDateTime.now().minusMinutes(15));
-        lock.setLockedBy("anne");
-
-        when(lockRepository.findOne(docUnit.getIdentifier())).thenReturn(null, lock);
-        when(lockRepository.save(any(Lock.class))).then(new ReturnsArgumentAt(0));
-
-        // création du lock => ok
-        try {
-            final Lock actual = service.acquireLock(docUnit);
-
-            assertEquals(id, actual.getIdentifier());
-            assertEquals(DocUnit.class.getName(), actual.getClazz());
-            assertEquals("anne", actual.getLockedBy());
-            assertNotNull(actual.getLockedDate());
-
-        } catch (PgcnLockException e) {
-            fail("testAcquireLock - unexpected failure: " + e.getMessage());
-        }
-
-        // lock sur anne => ok
-        try {
-            lock.setLockedBy("anne");
-            lock.setLockedDate(LocalDateTime.now().minusHours(2));
-
-            final Lock actual = service.acquireLock(docUnit);
-
-            assertEquals(id, actual.getIdentifier());
-            assertEquals(DocUnit.class.getName(), actual.getClazz());
-            assertEquals("anne", actual.getLockedBy());
-            assertNotNull(actual.getLockedDate());
-
-        } catch (PgcnLockException e) {
-            fail("testAcquireLock - unexpected failure: " + e.getMessage());
-        }
-
-        // lock sur qqn d'autre, timeout dépassé => ok
-        try {
-            lock.setLockedBy("Mr. Chow");
-            lock.setLockedDate(LocalDateTime.now().minusHours(2));
-            final Lock actual = service.acquireLock(docUnit);
-
-            assertEquals(id, actual.getIdentifier());
-            assertEquals(DocUnit.class.getName(), actual.getClazz());
-            assertEquals("anne", actual.getLockedBy());
-            assertNotNull(actual.getLockedDate());
-
-        } catch (PgcnLockException e) {
-            fail("testAcquireLock - unexpected failure: " + e.getMessage());
-        }
-
-        // lock sur qqn d'autre, en cours => ko
-        try {
-            lock.setLockedBy("Ms. Chan");
-            lock.setLockedDate(LocalDateTime.now().minusMinutes(30));
-            service.acquireLock(docUnit);
-
-            fail("testAcquireLock - unexpected success");
-
-        } catch (PgcnLockException e) {
-            assertEquals(id, e.getObjectId());
-            assertEquals(DocUnit.class.getName(), e.getObjectClass());
-            assertNotEquals("anne", e.getLockedBy());
-            assertNotNull(e.getLockedDate());
-        }
-    }
-
-    @Test
-    public void testReleaseLock() {
-        final String id = "dcab0d3d-d47e-49d9-a941-5e85f5ee0d72";
-        final DocUnit docUnit = new DocUnit();
-        docUnit.setIdentifier(id);
-
-        final Lock lock = new Lock();
-        lock.setIdentifier(id);
-        lock.setClazz(DocUnit.class.getName());
-        lock.setLockedDate(LocalDateTime.now().minusMinutes(15));
-        lock.setLockedBy("anne");
-
-        when(lockRepository.findOne(docUnit.getIdentifier())).thenReturn(null, lock);
-
-        // pas de lock en cours
-        try {
-            service.releaseLock(docUnit);
-            verify(lockRepository, never()).delete(any(Lock.class));
-
-        } catch (PgcnLockException e) {
-            fail("testAcquireLock - unexpected failure: " + e.getMessage());
-        }
-
-        // lock sur anne => ok
-        try {
-            lock.setLockedBy("anne");
-            lock.setLockedDate(LocalDateTime.now().minusHours(2));
-
-            service.releaseLock(docUnit);
-            verify(lockRepository).delete(lock);
-
-        } catch (PgcnLockException e) {
-            fail("testAcquireLock - unexpected failure: " + e.getMessage());
-        }
-
-        // lock sur qqn d'autre, timeout dépassé => ok
-        try {
-            lock.setLockedBy("Mr. Chow");
-            lock.setLockedDate(LocalDateTime.now().minusHours(2));
-
-            service.releaseLock(docUnit);
-            verify(lockRepository, times(2)).delete(lock);
-
-        } catch (PgcnLockException e) {
-            fail("testAcquireLock - unexpected failure: " + e.getMessage());
-        }
-
-        // lock sur qqn d'autre, en cours => ko
-        try {
-            lock.setLockedBy("Ms. Chan");
-            lock.setLockedDate(LocalDateTime.now().minusMinutes(30));
-            service.releaseLock(docUnit);
-
-            fail("testAcquireLock - unexpected success");
-
-        } catch (PgcnLockException e) {
-            assertEquals(id, e.getObjectId());
-            assertEquals(DocUnit.class.getName(), e.getObjectClass());
-            assertNotEquals("anne", e.getLockedBy());
-            assertNotNull(e.getLockedDate());
-        }
-    }
-
-    private void setUser() {
+    public void testAcquireLock_ShouldThrowException_whenExistingNonExpiredLockOnEntityForAnotherUser() {
+        final String USER_ID = "user";
         final CustomUserDetails userDetails = new CustomUserDetails("4efbfc73-3af8-4747-b730-8610374acf86",
-                                                                    "anne",
+                                                                  "user",
+                                                                  "azerty",
+                                                                  Lang.FR,
+                                                                  "LIB-001",
+                                                                  Collections.emptyList(),
+                                                                  false,
+                                                                  User.Category.PROVIDER);
+        final TestingAuthenticationToken authenticationToken = new TestingAuthenticationToken(userDetails, "credentials");
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
+        final DocUnit lockedWork = new DocUnit();
+        lockedWork.setIdentifier("DocUnit");
+
+        final Lock lockOnWork = new Lock(lockedWork.getIdentifier(), "toto");
+        lockOnWork.setIdentifier("lock");
+
+        when(lockRepository.findByIdentifier(lockedWork.getIdentifier())).thenReturn(lockOnWork);
+
+        try {
+            service.acquireLock(lockedWork);
+            fail("testAcquireLock_ShouldThrowException_whenExistingNonExpiredLockOnEntityForAnotherUser should have trow an Exception");
+        } catch (final PgcnLockException e) {
+            verify(lockRepository, never()).save(any(Lock.class));
+        }
+    }
+
+    @Test
+    public void testAcquireLock_ShouldAcquireLockAndRemoveExpiredLockifPresent_whenExistingExpiredLockOnEntity() throws PgcnLockException {
+        final CustomUserDetails userDetails = new CustomUserDetails("4efbfc73-3af8-4747-b730-8610374acf86",
+                                                                    "user",
                                                                     "azerty",
                                                                     Lang.FR,
                                                                     "LIB-001",
@@ -185,5 +84,171 @@ public class LockServiceTest {
                                                                     User.Category.PROVIDER);
         final TestingAuthenticationToken authenticationToken = new TestingAuthenticationToken(userDetails, "credentials");
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
+        final DocUnit lockedWork = new DocUnit();
+        lockedWork.setIdentifier("DocUnit");
+
+        final LocalDateTime lockedOn = LocalDateTime.of(2018,11,5,0,0);
+        final Lock expiredLockOnWork = new Lock(lockedWork.getIdentifier(), "toto");
+        ReflectionTestUtils.setField(expiredLockOnWork, "lockedDate", lockedOn);
+
+        expiredLockOnWork.setIdentifier("lock");
+
+        when(lockRepository.findByIdentifier(lockedWork.getIdentifier())).thenReturn(expiredLockOnWork);
+        final ArgumentCaptor<Lock> argument = ArgumentCaptor.forClass(Lock.class);
+
+        service.acquireLock(lockedWork);
+
+        verify(lockRepository, times(1)).deleteByIdentifier(lockedWork.getIdentifier());
+        verify(lockRepository).save(argument.capture());
+        assertEquals(lockedWork.getIdentifier(), argument.getValue().getIdentifier());
+        assertEquals(userDetails.getLogin(), argument.getValue().getLockedBy());
+    }
+
+    @Test
+    public void testAcquireLock_ShouldAcquireNewLock_whenNoExistingLockOnEntity() throws PgcnLockException {
+        final CustomUserDetails userDetails = new CustomUserDetails("4efbfc73-3af8-4747-b730-8610374acf86",
+                                                                    "user",
+                                                                    "azerty",
+                                                                    Lang.FR,
+                                                                    "LIB-001",
+                                                                    Collections.emptyList(),
+                                                                    false,
+                                                                    User.Category.PROVIDER);
+        final TestingAuthenticationToken authenticationToken = new TestingAuthenticationToken(userDetails, "credentials");
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
+        final DocUnit DocUnit = new DocUnit();
+        DocUnit.setIdentifier("DocUnit");
+
+        when(lockRepository.findByIdentifier(DocUnit.getIdentifier())).thenReturn(null);
+        final ArgumentCaptor<Lock> argument = ArgumentCaptor.forClass(Lock.class);
+
+        service.acquireLock(DocUnit);
+
+        verify(lockRepository).save(argument.capture());
+        assertEquals(DocUnit.getIdentifier(), argument.getValue().getIdentifier());
+        assertEquals(userDetails.getLogin(), argument.getValue().getLockedBy());
+    }
+
+    @Test
+    public void testReleaseLock_ShouldReleaseLock_whenExistingLockOnEntityForCurrentUser() throws PgcnLockException {
+        final CustomUserDetails userDetails = new CustomUserDetails("4efbfc73-3af8-4747-b730-8610374acf86",
+                                                                    "user",
+                                                                    "azerty",
+                                                                    Lang.FR,
+                                                                    "LIB-001",
+                                                                    Collections.emptyList(),
+                                                                    false,
+                                                                    User.Category.PROVIDER);
+        final TestingAuthenticationToken authenticationToken = new TestingAuthenticationToken(userDetails, "credentials");
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
+        final DocUnit lockedWork = new DocUnit();
+        lockedWork.setIdentifier("DocUnit");
+
+        final Lock lockOnWork = new Lock(lockedWork.getIdentifier(), "user");
+
+        when(lockRepository.findByIdentifier(lockedWork.getIdentifier())).thenReturn(lockOnWork);
+
+        service.releaseLock(lockedWork);
+
+        verify(lockRepository).deleteByIdentifier(lockedWork.getIdentifier());
+    }
+
+    @Test
+    public void testReleaseLock_ShouldThrowException_whenExistingLockOnEntityForAnotherUser()  {
+        final CustomUserDetails userDetails = new CustomUserDetails("4efbfc73-3af8-4747-b730-8610374acf86",
+                                                                    "user",
+                                                                    "azerty",
+                                                                    Lang.FR,
+                                                                    "LIB-001",
+                                                                    Collections.emptyList(),
+                                                                    false,
+                                                                    User.Category.PROVIDER);
+        final TestingAuthenticationToken authenticationToken = new TestingAuthenticationToken(userDetails, "credentials");
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
+        final DocUnit lockedWork = new DocUnit();
+        lockedWork.setIdentifier("DocUnit");
+        final Lock lockOnWork = new Lock(lockedWork.getIdentifier(), "toto");
+
+        when(lockRepository.findByIdentifier(lockedWork.getIdentifier())).thenReturn(lockOnWork);
+
+        try {
+            service.releaseLock(lockedWork);
+            fail("testReleaseLock_ShouldThrowException_whenExistingLockOnEntityForAnotherUser should have trow an Exception");
+        } catch (final PgcnLockException e) {
+            verify(lockRepository, never()).deleteByIdentifier(any());
+        }
+    }
+
+    @Test(expected = PgcnLockException.class)
+    public void testCheckLock_ShouldThrowException_whenExistingNonExpiredLockOnEntityForAnotherUser() throws PgcnLockException {
+        final CustomUserDetails userDetails = new CustomUserDetails("4efbfc73-3af8-4747-b730-8610374acf86",
+                                                                    "user",
+                                                                    "azerty",
+                                                                    Lang.FR,
+                                                                    "LIB-001",
+                                                                    Collections.emptyList(),
+                                                                    false,
+                                                                    User.Category.PROVIDER);
+        final TestingAuthenticationToken authenticationToken = new TestingAuthenticationToken(userDetails, "credentials");
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
+        final DocUnit lockedWork = new DocUnit();
+        lockedWork.setIdentifier("DocUnit");
+        final Lock lockOnWork = new Lock(lockedWork.getIdentifier(), "toto");
+
+        when(lockRepository.findByIdentifier(lockedWork.getIdentifier())).thenReturn(lockOnWork);
+
+        service.checkLock(lockedWork);
+    }
+
+    @Test
+    public void testCheckLock_ShouldNotThrowException_whenExistingExpiredLockOnEntityForAnotherUser() throws PgcnLockException {
+        final CustomUserDetails userDetails = new CustomUserDetails("4efbfc73-3af8-4747-b730-8610374acf86",
+                                                                    "user",
+                                                                    "azerty",
+                                                                    Lang.FR,
+                                                                    "LIB-001",
+                                                                    Collections.emptyList(),
+                                                                    false,
+                                                                    User.Category.PROVIDER);
+        final TestingAuthenticationToken authenticationToken = new TestingAuthenticationToken(userDetails, "credentials");
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
+        final DocUnit lockedWork = new DocUnit();
+        lockedWork.setIdentifier("DocUnit");
+
+        final Lock lockOnWork = new Lock(lockedWork.getIdentifier(), "toto", LocalDateTime.now().minusYears(1));
+
+        when(lockRepository.findByIdentifier(lockedWork.getIdentifier())).thenReturn(lockOnWork);
+
+        service.checkLock(lockedWork);
+    }
+
+    @Test
+    public void testCheckLock_ShouldNotThrowException_whenExistingExpiredLockOnEntityForCurrentUser() throws PgcnLockException {
+        final CustomUserDetails userDetails = new CustomUserDetails("4efbfc73-3af8-4747-b730-8610374acf86",
+                                                                    "user",
+                                                                    "azerty",
+                                                                    Lang.FR,
+                                                                    "LIB-001",
+                                                                    Collections.emptyList(),
+                                                                    false,
+                                                                    User.Category.PROVIDER);
+        final TestingAuthenticationToken authenticationToken = new TestingAuthenticationToken(userDetails, "credentials");
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
+        final DocUnit lockedWork = new DocUnit();
+        lockedWork.setIdentifier("DocUnit");
+
+        final Lock lockOnWork = new Lock(lockedWork.getIdentifier(), "user", LocalDateTime.now().minusYears(1));
+
+        when(lockRepository.findByIdentifier(lockedWork.getIdentifier())).thenReturn(lockOnWork);
+
+        service.checkLock(lockedWork);
     }
 }
+

@@ -57,7 +57,10 @@
                         };
                     })
                     .each(function (index) {
-                        ctrl.config.index[index.group].push(index);
+                        if(ctrl.config.index[index.group]) {
+                            ctrl.config.index[index.group].push(index);
+                        }
+
                     });
             }
             // pptés des constats d'état
@@ -73,7 +76,9 @@
                         };
                     })
                     .each(function (index) {
-                        ctrl.config.index[index.group].push(index);
+                        if(ctrl.config.index[index.group]) {
+                            ctrl.config.index[index.group].push(index);
+                        }
                     });
             }
         }

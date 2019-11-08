@@ -26,6 +26,10 @@ public class LibraryDTO extends AbstractVersionedDTO {
     private boolean active;
     private String institution;
     private AddressDTO address;
+    // responsable bibliotheque
+    private String libRespName;
+    private String libRespPhone;
+    private String libRespEmail;
     private String cinesService;
     private Set<SimpleFTPConfigurationDTO> ftpConfigurations;
     private SimpleFTPConfigurationDTO activeFTPConfiguration;
@@ -122,6 +126,30 @@ public class LibraryDTO extends AbstractVersionedDTO {
 
     public final void setAddress(final AddressDTO address) {
         this.address = address;
+    }
+
+    public String getLibRespName() {
+        return libRespName;
+    }
+
+    public void setLibRespName(String libRespName) {
+        this.libRespName = libRespName;
+    }
+
+    public String getLibRespPhone() {
+        return libRespPhone;
+    }
+
+    public void setLibRespPhone(String libRespPhone) {
+        this.libRespPhone = libRespPhone;
+    }
+
+    public String getLibRespEmail() {
+        return libRespEmail;
+    }
+
+    public void setLibRespEmail(String libRespEmail) {
+        this.libRespEmail = libRespEmail;
     }
 
     public final String getCinesService() {

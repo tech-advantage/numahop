@@ -8,6 +8,7 @@ public class FilesGestionConfigDTO extends AbstractVersionedDTO {
     private String identifier;
     private String triggerType;
     private int delay;
+    private boolean useExportFtp;
     private String destinationDir;
     private boolean deleteMaster;
     private boolean deletePdf;
@@ -56,6 +57,16 @@ public class FilesGestionConfigDTO extends AbstractVersionedDTO {
 
     public void setDelay(final int delay) {
         this.delay = delay;
+    }
+
+
+    public boolean isUseExportFtp() {
+        return useExportFtp;
+    }
+
+
+    public void setUseExportFtp(final boolean useExportFtp) {
+        this.useExportFtp = useExportFtp;
     }
 
 

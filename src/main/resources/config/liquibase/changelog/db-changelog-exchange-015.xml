@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="pgcn-create-exchange-015" author="progilone">
+
+        <addColumn tableName="exc_csv_mapping_rule">
+            <column name="bib_record_field" type="varchar(255)"/>
+            <column name="property" type="varchar(191)"/>
+            <column name="rank" type="integer" defaultValue="0" />
+        </addColumn>
+        
+        <addForeignKeyConstraint baseTableName="exc_csv_mapping_rule" baseColumnNames="property" constraintName="fk_exc_csv_mapping_rule_property"
+                                 referencedTableName="doc_property_type" referencedColumnNames="identifier"/>
+
+    </changeSet>
+</databaseChangeLog>

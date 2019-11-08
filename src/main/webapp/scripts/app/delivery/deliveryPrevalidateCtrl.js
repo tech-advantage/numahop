@@ -10,6 +10,7 @@
         $scope.semCodes = codeSrvc;
         $scope.validation = ValidationSrvc;
         $scope.authorizedDelivery = true;
+        $scope.availableSpaceOnDisk = true;
         $scope.prefixToExclude = [];
 
         // Gestion des vues
@@ -55,7 +56,7 @@
         }
 
         function save() {
-            if ($scope.authorizedDelivery) {
+            if ($scope.authorizedDelivery && $scope.availableSpaceOnDisk) {
                 if ($scope.predelivery.lockedDigitalDocuments.length > 0) {
                     ModalSrvc.confirmAction(gettextCatalog.getString("effectuer la livraison incomplète")).then(function () {
                         deliver();
@@ -110,6 +111,10 @@
                         if ('DELIVERY_NO_MASTER_FOUND' === $scope.predelivery.errors[i].code) {
                             $scope.authorizedDelivery = false;
                             MessageSrvc.addWarn(gettextCatalog.getString("Aucun document à livrer ne correspond à cette livraison"));
+                        }
+                        if ('DELIVERY_NOT_ENOUGH_AVAILABLE_SPACE' === $scope.predelivery.errors[i].code) {
+                            $scope.availableSpaceOnDisk = false;
+                            MessageSrvc.addWarn(gettextCatalog.getString("Espace disque insuffisant pour cette livraison"));
                         }
                     }
                 } else if (predelivery.lockedDigitalDocuments.length > 0) {

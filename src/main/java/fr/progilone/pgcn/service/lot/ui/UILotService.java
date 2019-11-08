@@ -1,18 +1,5 @@
 package fr.progilone.pgcn.service.lot.ui;
 
-import java.time.LocalDate;
-import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.dto.audit.AuditLotRevisionDTO;
 import fr.progilone.pgcn.domain.dto.lot.LotDTO;
@@ -37,6 +24,18 @@ import fr.progilone.pgcn.service.lot.mapper.UILotMapper;
 import fr.progilone.pgcn.service.util.transaction.VersionValidationService;
 import fr.progilone.pgcn.service.workflow.WorkflowService;
 import fr.progilone.pgcn.web.util.AccessHelper;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Service dédié à les gestion des vues des lots
@@ -241,9 +240,10 @@ public class UILotService {
                                      final List<String> fileFormats,
                                      final List<String> identifiers,
                                      final Integer page,
-                                     final Integer size) {
+                                     final Integer size,
+                                     final List<String> sorts) {
         final Page<Lot> lots =
-            lotService.search(search, libraries, projects, active, lotStatuses, null, docNumber, fileFormats, identifiers, page, size);
+            lotService.search(search, libraries, projects, active, lotStatuses, null, docNumber, fileFormats, identifiers, page, size, sorts);
         return lots.map(SimpleLotMapper.INSTANCE::lotToSimpleLotDTO);
     }
 

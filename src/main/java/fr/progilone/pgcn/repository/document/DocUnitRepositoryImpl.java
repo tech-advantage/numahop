@@ -289,8 +289,14 @@ public class DocUnitRepositoryImpl implements DocUnitRepositoryCustom {
         return query.list(qDocUnit);
     }
     
-    @Override
+    
+    
     public DocUnit findOneWithAllDependencies(final String identifier) {
+        return findOneWithAllDependencies(identifier, false);
+    }
+    
+    @Override
+    public DocUnit findOneWithAllDependencies(final String identifier, final boolean initFiles) {
         
         final QDocUnit qDocUnit = QDocUnit.docUnit;
         final DocUnit doc = new JPAQuery(em).from(qDocUnit).where(qDocUnit.identifier.eq(identifier)).uniqueResult(qDocUnit);
@@ -303,8 +309,14 @@ public class DocUnitRepositoryImpl implements DocUnitRepositoryCustom {
             Hibernate.initialize(doc.getActiveOcrLanguage());
             
             doc.getDigitalDocuments().forEach(dd -> {
-                dd.getPages().forEach(pg -> Hibernate.initialize(pg.getFiles())); 
+                Hibernate.initialize(dd.getPages());
+                if (initFiles) {
+                    dd.getPages().forEach(pg -> {
+                        Hibernate.initialize(pg.getFiles());
+                    });
+                }
             });
+            
             Hibernate.initialize(doc.getProject());
             doc.getRecords().forEach(not -> {
                 not.getProperties().forEach(p -> Hibernate.initialize(p.getType()));

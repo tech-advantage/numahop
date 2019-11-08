@@ -75,15 +75,36 @@
                             <table class="table table-striped table-bordered table-hover">
                                 <thead>
                                 <tr>
-                                    <td translate>Propriété</td>
+                                    <td colspan="4" translate>Champ</td>
+                                    <td translate>Mapping</td>
+                                    <td rowspan="2" style="width: 100px">&nbsp;</td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td translate>Champ personnalisé</td>
                                     <td translate>Unité doc.</td>
-                                    <td style="width: 110px">&nbsp;</td>
+                                    <td translate>Notice bibl.</td>
+                                    <td translate>Règle</td>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr ng-repeat="rule in mainCtrl.editedMapping.rules | orderBy:mainCtrl.sortRule">
-                                    <td>{{ rule.csvField }}</td>
+                                <tr ng-repeat="rule in mainCtrl.editedMapping.rules">
+                                    <td>
+                                        <button type="button" class="btn btn-sem3 btn-xs" 
+                                                ng-click="mainCtrl.upRule(rule, mainCtrl.editedMapping.rules)"
+                                                ng-disabled="!mainCtrl.rw || rule.defaultRule">
+                                            <span class="fa fa-chevron-up"></span>
+                                        </button>
+                                        <button type="button" class="btn btn-sem3 btn-xs" 
+                                                ng-click="mainCtrl.downRule(rule, mainCtrl.editedMapping.rules)"
+                                                ng-disabled="!mainCtrl.rw || rule.defaultRule">
+                                            <span class="fa fa-chevron-down"></span>
+                                        </button>
+                                    </td>
+                                    <td>{{ rule.property ? rule.property.label : '' }}</td>
                                     <td>{{ mainCtrl.getDocfieldLabel(rule.docUnitField) }}</td>
+                                    <td>{{ mainCtrl.getBibfieldLabel(rule.bibRecordField) }}</td>
+                                    <td>{{ rule.csvField }}</td>
                                     <td>
                                         <button type="button" class="btn btn-sem2 btn-xs" ng-click="mainCtrl.editRule(rule, mainCtrl.editedMapping)"
                                                 uib-tooltip="{{::'Éditer la règle' | translate}}" sem-roles-allowed="MAP_HAB1" ng-disabled="!mainCtrl.rw">
@@ -108,6 +129,7 @@
                                 <span class="glyphicon-halflings glyphicon-plus"></span> {{ ::'Ajouter une règle' | translate }}
                             </button>
                         </div>
+                        
                     </div>
                 </div>
             </div>

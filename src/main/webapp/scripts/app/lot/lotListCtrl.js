@@ -366,7 +366,8 @@
         }
 
         function loadPageSize() {
-            mainCtrl.pageSize = NumahopStorageService.getPageSize(FILTER_STORAGE_SERVICE_KEY);
+            var savedSize = NumahopStorageService.getPageSize(FILTER_STORAGE_SERVICE_KEY);
+            mainCtrl.pageSize = savedSize ? savedSize : 10;
             mainCtrl.pagination.size = mainCtrl.pageSize;
         }
 

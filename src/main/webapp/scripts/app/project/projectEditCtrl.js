@@ -30,6 +30,7 @@
         $scope.saveProject = saveProject;
         $scope.displayBoolean = DocUnitBaseService.displayBoolean;
         $scope.displayStatus = displayStatus;
+        $scope.createLot = createLot;
 
 
         // Définition des listes déroulantes
@@ -170,6 +171,7 @@
 
                     if ($scope.options.sel2Libraries.data.length === 1 && !$scope.project.library) {
                         $scope.project.library = $scope.options.sel2Libraries.data[0];
+                        loadResponsableLibrary($scope.project.library);
                     }
 
                     // Load other
@@ -347,6 +349,15 @@
                 });
         }
 
+        /**
+        * Chargement du responsable bibliothèque
+        **/
+        function loadResponsableLibrary(library){
+            $scope.project.libRespName = library.libRespName;
+            $scope.project.libRespPhone = library.libRespPhone;
+            $scope.project.libRespEmail = library.libRespEmail;
+        }
+
         function onChangeLibrary(library) {
             loadProviders(library);
             loadConfigurationSelect(library);
@@ -355,6 +366,7 @@
             loadOmekaCollections(library);
             loadOmekaItems(library);
             loadWorkflowModels(library);
+            loadResponsableLibrary(library);
         }
 
         function addLibrary() {
@@ -675,6 +687,10 @@
             return _.every($scope.project.associatedUsers, function (user) {
                 return user.identifier !== value.identifier;
             });
+        }
+
+        function createLot(projectId) {
+            $location.path("/lot/lot").search({ new: true, 'project' : projectId });
         }
     }
 })();

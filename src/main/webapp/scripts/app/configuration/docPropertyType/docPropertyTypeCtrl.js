@@ -25,6 +25,14 @@
             code: "CUSTOM",
             label: gettextCatalog.getString("Personnalisé"),
             editable: true
+        }, {
+            code: "CUSTOM_CINES",
+            label: gettextCatalog.getString("Personnalisé CINES"),
+            editable: true
+        }, {
+            code: "CUSTOM_ARCHIVE",
+            label: gettextCatalog.getString("Personnalisé INTERNET ARCHIVE"),
+            editable: true
         }];
 
         init();
@@ -56,7 +64,7 @@
         function create(superType) {
             var types = mainCtrl.types[superType.code];
             if (!types) {
-                return;
+                types = [];
             }
 
             var newType = new DocPropertyTypeSrvc();
@@ -68,8 +76,14 @@
 
             newType.$save().then(function () {
                 types.push(newType);
+                if (!mainCtrl.types[superType.code]) {
+                   loadTypes(); 
+                }
                 MessageSrvc.addSuccess(gettext("Le type {{label}} a été créé"), newType);
             });
+            
+            
+            
         }
 
         /**

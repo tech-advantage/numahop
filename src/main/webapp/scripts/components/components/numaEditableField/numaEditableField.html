@@ -62,6 +62,11 @@
                   class="editable editable-click" e-placeholder="{{::$ctrl.placeholder}}" 
                   e-ng-readonly="$ctrl.numaReadonly" onbeforesave="$ctrl.onbeforesave({$data: $data})" 
                   ng-click="$ctrl.form.$show()" e-ng-change="$ctrl.onchange($data)">{{ $ctrl.model || $ctrl.defaultText }}</span>
+            <!-- password -->
+            <span editable-text="$ctrl.model" ng-switch-when="password" e-maxlength="{{::$ctrl.maxlength}}"
+                class="editable editable-click" e-placeholder="{{::$ctrl.placeholder}}"
+                e-ng-readonly="$ctrl.numaReadonly" onbeforesave="$ctrl.onbeforesave({$data: $data})"
+                ng-click="$ctrl.form.$show()" e-ng-change="$ctrl.onchange($data)">{{ ::'Contenu masqué' | translate }}</span>
             <!-- Mail -->
             <a type="button" target="_blank" class="btn btn-sem2 btn-xs" uib-tooltip="{{ ::'Envoyer un mail' | translate }}" 
                   ng-href="mailto:{{$ctrl.model}}" ng-if="$ctrl.type === 'mail' && $ctrl.model" ng-show="!$ctrl.form.$visible">

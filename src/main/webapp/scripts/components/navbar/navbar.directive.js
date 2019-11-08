@@ -1,22 +1,24 @@
 (function () {
     "use strict";
 
-    angular.module('numaHopApp')
-        .directive('activeLink', function (location) {
+    angular.module('numaHopApp.directive')
+        .directive('activeLink', function ($location) {
             return {
                 restrict: 'A',
-                link: function (scope, element, attrs) {
-                    var clazz = attrs.activeLink;
-                    var path = attrs.href;
-                    path = path.substring(1); //hack because path does bot return including hashbang
-                    scope.location = location;
-                    scope.$watch('location.path()', function (newPath) {
-                        if (path === newPath) {
-                            element.addClass(clazz);
-                        } else {
-                            element.removeClass(clazz);
-                        }
-                    });
+                link: function (scope, element, attrs, controller) {
+                    var activePaths = attrs.activeLink.trim().split(/\s*[,;]\s*/);
+
+                    scope.$watch(function() { return $location.path(); },
+                        function(path) {
+                            for(var i=0; i< activePaths.length ; i++){
+                                if (path.includes(activePaths[i])) {
+                                    element.addClass("active");
+                                    break;
+                                } else {
+                                    element.removeClass('active');
+                                }
+                            }
+                        });
                 }
             };
         });

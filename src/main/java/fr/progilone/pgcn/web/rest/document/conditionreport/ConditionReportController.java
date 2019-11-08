@@ -9,6 +9,7 @@ import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstant
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -191,6 +192,8 @@ public class ConditionReportController extends AbstractRestController {
 
         final List<String> filteredLibraries = libraryAccesssHelper.getLibraryFilter(request, requestParams.getLibraries());
         final Page<SearchResult> results = conditionReportService.search(filteredLibraries,
+                                                                         requestParams.getProjects(),
+                                                                         requestParams.getLots(),
                                                                          requestParams.getDimensions(),
                                                                          requestParams.getFrom(),
                                                                          requestParams.getTo(),
@@ -401,6 +404,8 @@ public class ConditionReportController extends AbstractRestController {
     
     private static final class SearchRequest {
         private List<String> libraries;
+        private List<String> projects;
+        private List<String> lots;
         private DimensionFilter.Operator op;
         private Integer dim1;
         private Integer dim2;
@@ -418,6 +423,14 @@ public class ConditionReportController extends AbstractRestController {
         public void setLibraries(final List<String> libraries) {
             this.libraries = libraries;
         }
+
+        public List<String> getProjects() { return projects; }
+
+        public void setProjects(List<String> projects) { this.projects = projects; }
+
+        public List<String> getLots() { return lots; }
+
+        public void setLots(List<String> lots) { this.lots = lots; }
 
         public DimensionFilter.Operator getOp() {
             return op;

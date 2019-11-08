@@ -36,6 +36,11 @@ public class DescriptionPropertyService {
         return descriptionPropertyRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
+    public List<DescriptionProperty> findAllOrderByOrder() {
+        return descriptionPropertyRepository.findAllByOrderByOrderAsc();
+    }
+
     @Transactional
     public void delete(final String identifier) throws PgcnValidationException {
         final DescriptionProperty property = descriptionPropertyRepository.findOne(identifier);

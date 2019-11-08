@@ -296,7 +296,7 @@ public class ExportCinesController extends AbstractRestController {
                                                              SftpConfiguration conf) {
 
         
-        final DocUnit docUnit = docUnitService.findOneWithAllDependencies(docUnitId);
+        final DocUnit docUnit = docUnitService.findOneWithAllDependencies(docUnitId, true);
         // Non trouvé
         if (docUnit == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -367,7 +367,7 @@ public class ExportCinesController extends AbstractRestController {
      */
     private ResponseEntity<CinesReport> exportDocUnitToCines(final HttpServletRequest request, final String docUnitId) {
 
-        final DocUnit docUnit = docUnitService.findOneWithAllDependencies(docUnitId);
+        final DocUnit docUnit = docUnitService.findOneWithAllDependencies(docUnitId, true);
         SftpConfiguration conf;
         // Non trouvé
         if (docUnit == null) {
@@ -394,7 +394,7 @@ public class ExportCinesController extends AbstractRestController {
         CinesReport report = cinesReportService.createCinesReport(docUnit);
         try {
             // Génération des fichiers / répertoires CINES
-            final BibliographicRecordDcDTO metaDc = exportCinesService.getExportData(docUnit);
+            final BibliographicRecordDcDTO metaDc = exportCinesService.getExportData(docUnit, true);
             final Path path = exportCinesService.exportDocUnit(docUnit, true, metaDc, false);
 
             // Tranferts du répertoire généré

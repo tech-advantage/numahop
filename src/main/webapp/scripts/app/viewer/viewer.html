@@ -93,15 +93,15 @@
                         <h5 ng_if="sampling" translate>Note de contrôle Livraison</h5>
                     </div>
                     <div class="row">
-                        <textarea ng_if="!sampling" ng-disabled="!isAuthorized([userRoles.CHECK_HAB4])" class="form-control" rows="3" ng-model="digitalDocument.checkNotes" maxlength="255"></textarea>
+                        <textarea ng_if="!sampling" ng-disabled="!isAuthorized([userRoles.CHECK_HAB4])" class="form-control" rows="5" ng-model="digitalDocument.checkNotes" maxlength="2000"></textarea>
                         <textarea ng_if="sampling"  ng-disabled="!isAuthorized([userRoles.CHECK_HAB4])" class="form-control" rows="3" ng-model="sample.delivery.controlNotes" maxlength="255"></textarea>
                     </div>
                     <div class="row">
                         <label>Erreurs globales</label>
                         <ui-select multiple ng-model="select.selectedErrors" theme="select2" on-select="" on-remove="" class="form-control" ng-disabled="!isAuthorized([userRoles.CHECK_HAB4])">
                             <ui-select-match placeholder="{{::'Erreurs' | translate}}">{{$item.value}}</ui-select-match>
-                            <ui-select-choices group-by="groupErrorLabels" repeat="item in options.errors track by item.key">
-                                <div ng-bind-html="item.value"></div>
+                            <ui-select-choices group-by="groupErrorLabels" repeat="item in options.errors | filter: $select.search track by item.key">
+                                <div ng-bind-html="item.value | highlight: $select.search"></div>
                             </ui-select-choices>
                         </ui-select>
                     </div>
@@ -109,7 +109,8 @@
                         <button type="button" class="btn btn-sem2" ng-click="goToPageCheck()" sem-roles-allowed="CHECK_HAB4">
                             <span translate>Contrôles pages</span>
                         </button>
-                        <div class="btn-group" style="padding: 5px" ng_if="digitalDocument.status === 'TO_CHECK' || digitalDocument.status === 'CHECKING' || digitalDocument.status === 'PRE_REJECTED'">
+                        <div class="btn-group" style="padding: 5px" ng_if="digitalDocument.status === 'TO_CHECK' || digitalDocument.status === 'CHECKING' 
+                                                    || digitalDocument.status === 'PRE_REJECTED' || digitalDocument.status === 'PRE_VALIDATED'">
                             <button type="button" class="btn btn-sem4" ng-click="reject()" ng-hide="rejected" sem-roles-allowed="CHECK_HAB4">
                                 <span translate>Rejeter</span>
                                 <span class="glyphicon-regular remove"></span>
@@ -253,9 +254,9 @@
 	                                </div>
 	                                <div class="row">
 	                                    <textarea ng_if="ascending || currentPage===1 || !bookView || !imgDoublePaged" ng-disabled="!isAuthorized([userRoles.CHECK_HAB4])" 
-	                                                            class="form-control" rows="3" ng-model="data.checkNotes"></textarea>
+	                                                            class="form-control" rows="3" ng-model="data.checkNotes" maxlength="2000"></textarea>
 	                                    <textarea ng_if="bookView && imgDoublePaged && !ascending && currentPage!==1" ng-disabled="!isAuthorized([userRoles.CHECK_HAB4])" 
-	                                                            class="form-control" rows="3" ng-model="data.checkNotes2"></textarea>
+	                                                            class="form-control" rows="3" ng-model="data.checkNotes2" maxlength="2000"></textarea>
 	                                </div>
 	                                <div class="row text-center">
 	                                    <label translate>Erreurs</label>
@@ -264,17 +265,17 @@
 	                                    <ui-select ng_if="ascending || currentPage===1 || !bookView || !imgDoublePaged" multiple ng-model="select.selectedErrors" 
 	                                                    ng-disabled="!isAuthorized([userRoles.CHECK_HAB4])" theme="select2" on-select="" on-remove="" class="form-control">
 	                                        <ui-select-match placeholder="{{::'Erreurs' | translate}}">{{$item.value}}</ui-select-match>
-	                                        <ui-select-choices group-by="groupErrorLabels" repeat="item in options.errors track by item.key">
-	                                            <div ng-bind-html="item.value"></div>
-	                                        </ui-select-choices>
+                                            <ui-select-choices group-by="groupErrorLabels" repeat="item in options.errors | filter: $select.search track by item.key">
+                                                <div ng-bind-html="item.value | highlight: $select.search"></div>
+                                            </ui-select-choices>
 	                                    </ui-select>
 	                                    <div class="row">
 		                                    <ui-select ng_if="bookView && imgDoublePaged && !ascending && currentPage!==1" multiple ng-model="select.selectedErrors2" 
 		                                                    ng-disabled="!isAuthorized([userRoles.CHECK_HAB4])" theme="select2" on-select="" on-remove="" class="form-control">
 		                                        <ui-select-match placeholder="{{::'Erreurs' | translate}}">{{$item.value}}</ui-select-match>
-		                                        <ui-select-choices group-by="groupErrorLabels" repeat="item in options.errors track by item.key">
-		                                            <div ng-bind-html="item.value"></div>
-		                                        </ui-select-choices>
+                                                <ui-select-choices group-by="groupErrorLabels" repeat="item in options.errors | filter: $select.search track by item.key">
+                                                    <div ng-bind-html="item.value | highlight: $select.search"></div>
+                                                </ui-select-choices>
 		                                    </ui-select>
 		                                </div>
 		                            </div>
@@ -409,8 +410,10 @@
                                     <h5 translate>Notes de contrôle</h5>
                                 </div>
                                 <div class="row">
-                                    <textarea ng_if="ascending || currentPage===1" class="form-control" rows="3" ng-model="data.checkNotes2" ng-disabled="!isAuthorized([userRoles.CHECK_HAB4])"></textarea>
-                                    <textarea ng_if="imgDoublePaged && !ascending && currentPage!==1" class="form-control" rows="3" ng-model="data.checkNotes" ng-disabled="!isAuthorized([userRoles.CHECK_HAB4])"></textarea>
+                                    <textarea ng_if="ascending || currentPage===1" class="form-control" rows="3" ng-model="data.checkNotes2" maxlength="2000"
+                                              ng-disabled="!isAuthorized([userRoles.CHECK_HAB4])"></textarea>
+                                    <textarea ng_if="imgDoublePaged && !ascending && currentPage!==1" class="form-control" rows="3" ng-model="data.checkNotes" maxlength="2000"
+                                              ng-disabled="!isAuthorized([userRoles.CHECK_HAB4])"></textarea>
                                 </div>
                                 <div class="row text-center">
                                     <label translate>Erreurs</label>
@@ -419,15 +422,15 @@
                                     <ui-select ng_if="ascending || currentPage===1" multiple ng-model="select.selectedErrors2" ng-disabled="!isAuthorized([userRoles.CHECK_HAB4])" 
                                                                                                                             theme="select2" on-select="" on-remove="" class="form-control">
                                         <ui-select-match placeholder="{{::'Erreurs' | translate}}">{{$item.value}}</ui-select-match>
-                                        <ui-select-choices group-by="groupErrorLabels" repeat="item in options.errors track by item.key">
-                                            <div ng-bind-html="item.value"></div>
+                                        <ui-select-choices group-by="groupErrorLabels" repeat="item in options.errors | filter: $select.search track by item.key">
+                                            <div ng-bind-html="item.value | highlight: $select.search"></div>
                                         </ui-select-choices>
                                     </ui-select>
                                     <ui-select ng_if="imgDoublePaged && !ascending && currentPage!==1" multiple ng-model="select.selectedErrors" ng-disabled="!isAuthorized([userRoles.CHECK_HAB4])" 
                                                                                                                             theme="select2" on-select="" on-remove="" class="form-control">
                                         <ui-select-match placeholder="{{::'Erreurs' | translate}}">{{$item.value}}</ui-select-match>
-                                        <ui-select-choices group-by="groupErrorLabels" repeat="item in options.errors track by item.key">
-                                            <div ng-bind-html="item.value"></div>
+                                        <ui-select-choices group-by="groupErrorLabels" repeat="item in options.errors | filter: $select.search track by item.key">
+                                            <div ng-bind-html="item.value | highlight: $select.search"></div>
                                         </ui-select-choices>
                                     </ui-select>
                                 </div>

@@ -99,6 +99,8 @@ public interface ProjectRepository extends JpaRepository<Project, String>, Proje
     
 
     List<Project> findAllByActiveAndLibraryIdentifierIn(boolean active, List<String> libraries);
+    
+    List<Project> findAllByLibraryIdentifier(String library);
 
     List<Project> findAllByAssociatedLibraries(Library library);
 

@@ -4,10 +4,15 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import fr.progilone.pgcn.domain.workflow.QDocUnitState;
+import fr.progilone.pgcn.domain.workflow.QDocUnitWorkflow;
+import fr.progilone.pgcn.domain.workflow.WorkflowStateKey;
+import fr.progilone.pgcn.domain.workflow.WorkflowStateStatus;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -44,6 +49,7 @@ public class BibliographicRecordRepositoryImpl implements BibliographicRecordRep
                                             final List<String> libraries,
                                             final List<String> projects,
                                             final List<String> lots,
+                                            final List<String> statuses,
                                             final List<String> trains,
                                             final LocalDate lastModifiedDateFrom,
                                             final LocalDate lastModifiedDateTo,
@@ -56,6 +62,8 @@ public class BibliographicRecordRepositoryImpl implements BibliographicRecordRep
         final QDocUnit qDocUnit = QDocUnit.docUnit;
         final QProject qProject = QProject.project;
         final QLot qLot = QLot.lot;
+        final QDocUnitWorkflow qWorkflow = QDocUnitWorkflow.docUnitWorkflow;
+        final QDocUnitState qState = QDocUnitState.docUnitState;
 
         final BooleanBuilder builder = new BooleanBuilder();
 
@@ -78,6 +86,26 @@ public class BibliographicRecordRepositoryImpl implements BibliographicRecordRep
         if (CollectionUtils.isNotEmpty(lots)) {
             final BooleanExpression lotsFilter = qDocUnit.lot.identifier.in(lots);
             builder.and(lotsFilter);
+        }
+        // Statuts de workflow
+        if (CollectionUtils.isNotEmpty(statuses)) {
+            final List<WorkflowStateKey> wkfStates = statuses.stream().map(WorkflowStateKey::valueOf).collect(Collectors.toList());
+
+            final BooleanBuilder statusBuilder = new BooleanBuilder();
+            if (statuses.contains(WorkflowStateKey.CLOTURE_DOCUMENT.name())) {
+                statuses.remove(WorkflowStateKey.CLOTURE_DOCUMENT.name());
+                statusBuilder.and(qState.discriminator.eq(WorkflowStateKey.CLOTURE_DOCUMENT)).and(qState.status.in(WorkflowStateStatus.FINISHED));
+                if (CollectionUtils.isNotEmpty(statuses)) {
+                    wkfStates.remove(WorkflowStateKey.CLOTURE_DOCUMENT);
+                    statusBuilder.or(qState.discriminator.in(wkfStates).and(qState.startDate.isNotNull().and(qState.endDate.isNull())));
+                }
+            } else {
+                final BooleanExpression stateFilter = qState.discriminator.in(wkfStates);
+                final BooleanExpression statusFilter = qState.startDate.isNotNull().and(qState.endDate.isNull());
+                statusBuilder.and(stateFilter).and(statusFilter);
+            }
+
+            builder.and(statusBuilder);
         }
         if (CollectionUtils.isNotEmpty(trains)) {
             final QPhysicalDocument qpd = qDocUnit.physicalDocuments.any();
@@ -119,15 +147,22 @@ public class BibliographicRecordRepositoryImpl implements BibliographicRecordRep
             applySorting(pageable.getSort(), baseQuery, qRecord, qDocUnit, qProject, qLot);
         }
 
-        final long total = countQuery.from(qRecord).leftJoin(qRecord.docUnit, qDocUnit).where(builder.getValue()).distinct().count();
+        final long total = countQuery.from(qRecord)
+                                     .leftJoin(qRecord.docUnit, qDocUnit)
+                                     .leftJoin(qDocUnit.project, qProject)
+                                     .leftJoin(qDocUnit.lot, qLot)
+                                     .leftJoin(qDocUnit.workflow, qWorkflow)
+                                     .leftJoin(qWorkflow.states, qState)
+                                     .where(builder.getValue()).distinct().count();
 
         final List<BibliographicRecord> result = baseQuery.from(qRecord)
                                                           .leftJoin(qRecord.docUnit, qDocUnit)
                                                           .fetch()
                                                           .leftJoin(qDocUnit.project, qProject)
                                                           .leftJoin(qDocUnit.lot, qLot)
+                                                          .leftJoin(qDocUnit.workflow, qWorkflow)
+                                                          .leftJoin(qWorkflow.states, qState)
                                                           .where(builder.getValue())
-                                                          .orderBy(qRecord.title.asc())
                                                           .distinct()
                                                           .list(qRecord);
         return new PageImpl<>(result, pageable, total);
@@ -157,6 +192,9 @@ public class BibliographicRecordRepositoryImpl implements BibliographicRecordRep
             switch (order.getProperty()) {
                 case "docUnit.pgcnId":
                     orders.add(new OrderSpecifier(qOrder, doc.pgcnId));
+                    break;
+                case "docUnit.label":
+                    orders.add(new OrderSpecifier(qOrder, doc.label));
                     break;
                 case "title":
                     orders.add(new OrderSpecifier(qOrder, bib.title));

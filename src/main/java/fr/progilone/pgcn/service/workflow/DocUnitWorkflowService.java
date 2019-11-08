@@ -231,6 +231,7 @@ public class DocUnitWorkflowService {
             reinitializeState(workflow, WorkflowStateKey.VALIDATION_DOCUMENT, NOT_STARTED);
             reinitializeState(workflow, WorkflowStateKey.PREVALIDATION_DOCUMENT, NOT_STARTED);
             reinitializeState(workflow, WorkflowStateKey.PREREJET_DOCUMENT, NOT_STARTED);
+            workflow.setEndDate(null);
             save(workflow);
         }
 
@@ -390,5 +391,10 @@ public class DocUnitWorkflowService {
                                                                                                 .setDeliveries(deliveries)
                                                                                                 .setFromDate(fromDate)
                                                                                                 .setToDate(toDate));
+    }
+    
+    
+    public List<DocUnitWorkflow> findDocUnitWorkflowsForArchiveExport(final String library) {
+        return docUnitWorkflowRepository.findDocUnitWorkflowsForArchiveExport(library);
     }
 }

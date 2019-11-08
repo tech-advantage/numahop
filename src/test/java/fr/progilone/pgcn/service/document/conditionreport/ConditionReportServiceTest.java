@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import fr.progilone.pgcn.repository.project.ProjectRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -210,6 +211,58 @@ public class ConditionReportServiceTest {
     }
 
     @Test
+    public void testGetNewConditionReportWithLibRespFromProject() {
+        final DocUnit docUnit = new DocUnit();
+
+        // Responsable bibliothèque
+        final String libRespName = "libRespName";
+        final String libRespPhone = "libRespPhone";
+        final String libRespEmail = "libRespEmail";
+
+        final Project project = new Project();
+        project.setLibRespName(libRespName);
+        project.setLibRespPhone(libRespPhone);
+        project.setLibRespEmail(libRespEmail);
+
+        docUnit.setProject(project);
+
+        ConditionReport actual = service.getNewConditionReport(docUnit);
+
+        assertNotNull(actual);
+        assertSame(docUnit, actual.getDocUnit());
+        assertEquals(libRespName, actual.getLibRespName());
+        assertEquals(libRespPhone, actual.getLibRespPhone());
+        assertEquals(libRespEmail, actual.getLibRespEmail());
+    }
+
+    @Test
+    public void testGetNewConditionReportWithLibRespFromLibrary() {
+        final DocUnit docUnit = new DocUnit();
+
+        // Responsable bibliothèque
+        final String libRespName = "libRespName";
+        final String libRespPhone = "libRespPhone";
+        final String libRespEmail = "libRespEmail";
+
+        final Project project = new Project();
+        docUnit.setProject(project);
+
+        final Library library = new Library();
+        library.setLibRespName(libRespName);
+        library.setLibRespPhone(libRespPhone);
+        library.setLibRespEmail(libRespEmail);
+        docUnit.setLibrary(library);
+
+        ConditionReport actual = service.getNewConditionReport(docUnit);
+
+        assertNotNull(actual);
+        assertSame(docUnit, actual.getDocUnit());
+        assertEquals(libRespName, actual.getLibRespName());
+        assertEquals(libRespPhone, actual.getLibRespPhone());
+        assertEquals(libRespEmail, actual.getLibRespEmail());
+    }
+
+    @Test
     public void testFindByDocUnit() {
         final String docUnitId = "70aaf390-fa10-4f0a-ac3d-464f0accfd5c";
         final ConditionReport report = new ConditionReport();
@@ -287,6 +340,8 @@ public class ConditionReportServiceTest {
     @Test
     public void testSearch() {
         final List<String> libraries = new ArrayList<>();
+        final List<String> projects = new ArrayList<>();
+        final List<String> lots = new ArrayList<>();
         final ConditionReportRepositoryCustom.DimensionFilter dimensions =
             new ConditionReportRepositoryCustom.DimensionFilter(ConditionReportRepositoryCustom.DimensionFilter.Operator.EQ, 1, 2, 3);
         final LocalDate from = LocalDate.now().minusMonths(1);
@@ -307,6 +362,8 @@ public class ConditionReportServiceTest {
         final CapturingMatcher<Map<String, List<String>>> descMatcher = new CapturingMatcher<>();
 
         when(conditionReportRepository.search(eq(libraries),
+                                              eq(projects),
+                                              eq(lots),
                                               eq(from),
                                               eq(to),
                                               eq(dimensions),
@@ -318,7 +375,7 @@ public class ConditionReportServiceTest {
         when(docUnitRepository.findByIdentifierInWithProj(anyListOf(String.class))).thenReturn(Collections.singletonList(docUnit));
 
         final Page<ConditionReportService.SearchResult> actual =
-            service.search(libraries, dimensions, from, to, descriptions, null, false, page, size, sorts);
+            service.search(libraries, projects, lots, dimensions, from, to, descriptions, null, false, page, size, sorts);
 
         final List<ConditionReportDTO> actualReports =
             actual.getContent().stream().map(ConditionReportService.SearchResult::getReport).collect(Collectors.toList());

@@ -42,6 +42,10 @@ public class ProjectDTO extends AbstractVersionedDTO {
     private String cancelingComment;
     private OmekaListDTO omekaCollection;
     private OmekaListDTO omekaItem;
+    // responsable bibliotheque
+    private String libRespName;
+    private String libRespPhone;
+    private String libRespEmail;
 
     private final Set<SimpleLibraryDTO> associatedLibraries = new HashSet<>();
     private final Set<SimpleUserDTO> associatedUsers = new HashSet<>();
@@ -238,6 +242,30 @@ public class ProjectDTO extends AbstractVersionedDTO {
 
     public void setOmekaItem(final OmekaListDTO omekaItem) {
         this.omekaItem = omekaItem;
+    }
+
+    public String getLibRespName() {
+        return libRespName;
+    }
+
+    public void setLibRespName(String libRespName) {
+        this.libRespName = libRespName;
+    }
+
+    public String getLibRespPhone() {
+        return libRespPhone;
+    }
+
+    public void setLibRespPhone(String libRespPhone) {
+        this.libRespPhone = libRespPhone;
+    }
+
+    public String getLibRespEmail() {
+        return libRespEmail;
+    }
+
+    public void setLibRespEmail(String libRespEmail) {
+        this.libRespEmail = libRespEmail;
     }
 
     public String getCreatedBy() {

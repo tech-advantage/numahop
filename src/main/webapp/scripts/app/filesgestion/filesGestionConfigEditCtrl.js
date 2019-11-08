@@ -85,6 +85,7 @@
                 saveView: false,
                 saveThumb: false,
                 saveAipSip: false,
+                useExportFtp: false,
                 destinationDir: '',
                 library: $scope.selectedLibrary
             };
@@ -129,6 +130,9 @@
                     break;
                 case 'savAipSip':
                     $scope.conf.saveAipSip = val.saveAipSip;
+                    break;
+                case 'useExportFtp':
+                    $scope.conf.useExportFtp = val.useExportFtp;
                     break;
                 default:
                 // nothing

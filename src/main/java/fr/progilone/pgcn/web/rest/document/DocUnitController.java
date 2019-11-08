@@ -378,7 +378,7 @@ public class DocUnitController extends AbstractRestController {
     }
     
     
-    @RequestMapping(method = RequestMethod.POST, params = {"train"})
+    @RequestMapping(method = RequestMethod.POST, params = {"setTrain"})
     @ResponseStatus(HttpStatus.OK)
     @Timed
     @RolesAllowed(DOC_UNIT_HAB2)

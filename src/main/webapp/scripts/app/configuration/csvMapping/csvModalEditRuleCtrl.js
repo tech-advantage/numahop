@@ -2,15 +2,18 @@
     'use strict';
 
     angular.module("numaHopApp.controller")
-        .controller("CSVModalEditRuleCtrl", function ($uibModalInstance, CSVMappingSrvc, DocPropertyTypeSrvc, gettextCatalog, options) {
+        .controller("CSVModalEditRuleCtrl", function ($uibModalInstance, CSVMappingSrvc, MappingSrvc, DocPropertyTypeSrvc, gettextCatalog, options) {
 
             var mainCtrl = this;
             mainCtrl.ok = ok;
             mainCtrl.cancel = cancel;
+            
+            mainCtrl.populateRule = populateRule;
 
             /** Configuration des listes */
             mainCtrl.config = {
-                docUnitFields: CSVMappingSrvc.docUnitFields
+                docUnitFields: CSVMappingSrvc.docUnitFields,
+                bibRecordFields: MappingSrvc.bibRecordFields
             };
 
             init();
@@ -27,13 +30,17 @@
             }
             /** Chargement des types de propriété */
             function loadDocPropertyTypes() {
-                var result = DocPropertyTypeSrvc.query({ dto: "true" });
+                var result = DocPropertyTypeSrvc.query({ customOnly: "true" });
                 result.$promise
                     .then(function (propTypes) {
                         propTypes.unshift({ label: "", rank: 0 });    // sélection vide
                         return propTypes;
                     });
                 return result;
+            }
+            
+            function populateRule(ppty) {
+                mainCtrl.rule.csvField = ppty.identifier;
             }
 
             /** Validation de la fenêtre modale */

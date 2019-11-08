@@ -25,9 +25,25 @@
                 <numa-editable-field title="{{::'Délai (en jours)' | translate}}" placeholder="{{::'Délai à respecter avant déclenchement' | translate}}" form="configTotoForm" 
                                      model="conf.delay" errors="{{ errors.label }}" type="number"
                                       numa-readonly="formRO"></numa-editable-field>
+                
+                <div class="row" ng-if="loaded">
+	                <div class="text-right col-xs-4">
+	                    <label class="ng-binding">Utiliser la configuration d'export FTP active</label>
+	                </div>                    
+	                <div class="btn-group btn-group-sm margin-l10">
+                                    <input bs-switch 
+                                           ng-model="conf.useExportFtp"
+                                           type="checkbox"
+                                           ng-change="toggleChoice(conf, 'useExportFtp')"
+                                           switch-readonly="{{!configTotoForm.$visible}}"
+                                           switch-on-text="{{ onLabelActiv | translate }}"
+                                           switch-off-text="{{ offLabelActiv | translate }}"
+                                           switch-label-width="0px"/>
+                                </div>                      
+                </div>                      
                 <numa-editable-field title="{{::'Répertoire de sauvegarde' | translate}}" placeholder="{{::'Chemin complet du répertoire de sauvegarde' | translate}}" 
                                      form="configTotoForm" model="conf.destinationDir" errors="{{ errors.destinationDir }}" 
-                                      numa-readonly="formRO"></numa-editable-field>                                           
+                                      numa-readonly="formRO || conf.useExportFtp"></numa-editable-field>                                           
                 <numa-editable-field title="{{::'Bibliothèque' | translate}}" type="select" placeholder="{{::'Bibliothèque' | translate}}" form="configTotoForm" 
                                     model="conf.library" errors="{{ errors.library }}" 
                                     onbeforesave="validation.required($data)" numa-readonly="true" 

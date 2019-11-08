@@ -322,9 +322,9 @@ public class UserController extends AbstractRestController {
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, params = {"signexists"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    @RolesAllowed({USER_HAB0})
+    @RolesAllowed({USER_HAB0, USER_HAB6})
     public ResponseEntity<Map<?, ?>> hasSignature(@PathVariable("id") final String userId) {
-        
+
         final User user = userService.getOne(userId);
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

@@ -55,18 +55,31 @@
             });
         }
 
+        /**
+        * Une unité documentaire peut être retirée d'un projet si:
+        * * elle n'est pas attachée à un lot
+        * * le statut du projet est Créé (ie. le workflow n'est pas démarré)
+        */
         function canRemoveProject(docUnit) {
             return !docUnit.lot
                 && docUnit.project
-                && _.contains(["CREATED", "PENDING"], docUnit.project.status);
+                && _.contains(["CREATED"], docUnit.project.status);
         }
 
+        /**
+        * Une unité documentaire peut être retirée d'un lot si:
+        * * le statut du lot est Créé (ie. le workflow n'est pas démarré)
+        */
         function canRemoveLot(docUnit) {
-            return docUnit.lot && _.contains(["CREATED", "PENDING"], docUnit.lot.status);
+            return docUnit.lot && _.contains(["CREATED"], docUnit.lot.status);
         }
 
+        /**
+        * Une unité documentaire peut être retirée d'un train si:
+        * * le statut du train est Créé (ie. le workflow n'est pas démarré)
+        */
         function canRemoveTrain(docUnit) {
-            return docUnit.train && _.contains(["CREATED", "PENDING"], docUnit.train.status);
+            return docUnit.train && _.contains(["CREATED"], docUnit.train.status);
         }
 
         /**

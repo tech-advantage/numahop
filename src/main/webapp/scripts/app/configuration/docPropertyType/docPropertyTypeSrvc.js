@@ -12,6 +12,13 @@
                         params: {
                             dto: true
                         }
+                    },
+                    dtoCustom: {
+                        method: 'GET',
+                        isArray: true,
+                        params: {
+                            customOnly: true 
+                        }
                     }
                 });
             return service;

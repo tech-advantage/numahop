@@ -34,7 +34,7 @@
                     }
 
                     if (noDeletion !== true) {
-                        var timeout = (duration && duration!==null) ? duration : 5000;
+                        var timeout = (duration && duration!=null) ? duration : 5000;
                         newMessage.delayedDeletion = $timeout(function () {
                             deleteMessage(newMessage);
                         }, timeout);

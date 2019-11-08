@@ -1,7 +1,7 @@
 package fr.progilone.pgcn.domain.exchange;
 
-import fr.progilone.pgcn.domain.AbstractDomainObject;
-import fr.progilone.pgcn.domain.library.Library;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -10,9 +10,11 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
-import java.util.ArrayList;
-import java.util.List;
+
+import fr.progilone.pgcn.domain.AbstractDomainObject;
+import fr.progilone.pgcn.domain.library.Library;
 
 @Entity
 @Table(name = CSVMapping.TABLE_NAME)
@@ -28,6 +30,7 @@ public class CSVMapping extends AbstractDomainObject {
     private Library library;
 
     @OneToMany(mappedBy = "mapping", fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @OrderBy("rank ASC")
     private final List<CSVMappingRule> rules = new ArrayList<>();
 
     public String getLabel() {

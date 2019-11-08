@@ -124,7 +124,7 @@
                                 ng-repeat="state in statCtrl.config.states.data | filter:statCtrl.isVisible" 
                                 ng-init="data = statCtrl.getCount(item, state.identifier);">
                                 <span ng-if="data" class="margin-r5 margin-l5" >
-                                      {{ item.docUnitNumber + ' ud' | translate }}&nbsp;</span>
+                                      {{ data.count + ' ud' | translate }}&nbsp;</span>
                                 <span ng-if="!data">&nbsp;</span>
                             </td>
                         </tr>

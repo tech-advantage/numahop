@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+
+    <changeSet id="pgcn-document-custom-cines-props-034" author="progilone">
+
+        <sql>UPDATE doc_property_type SET supertype = 'CUSTOM_CINES' WHERE identifier = 'type_language'</sql>
+        <sql>UPDATE doc_property_type SET supertype = 'CUSTOM_CINES' WHERE identifier = 'title_language'</sql>
+        <sql>UPDATE doc_property_type SET supertype = 'CUSTOM_CINES' WHERE identifier = 'format_language'</sql>
+        <sql>UPDATE doc_property_type SET supertype = 'CUSTOM_CINES' WHERE identifier = 'rights_language'</sql>
+        <sql>UPDATE doc_property_type SET supertype = 'CUSTOM_CINES' WHERE identifier = 'source_language'</sql>
+        <sql>UPDATE doc_property_type SET supertype = 'CUSTOM_CINES' WHERE identifier = 'subject_language'</sql>
+        <sql>UPDATE doc_property_type SET supertype = 'CUSTOM_CINES' WHERE identifier = 'coverage_language'</sql>
+        <sql>UPDATE doc_property_type SET supertype = 'CUSTOM_CINES' WHERE identifier = 'relation_language'</sql>
+        <sql>UPDATE doc_property_type SET supertype = 'CUSTOM_CINES' WHERE identifier = 'description_language'</sql>      
+
+    </changeSet>
+</databaseChangeLog>

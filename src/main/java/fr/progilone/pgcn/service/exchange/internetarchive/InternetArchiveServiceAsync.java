@@ -39,14 +39,16 @@ public class InternetArchiveServiceAsync {
      * @param item
      */
     @Async
-    public void createItem(final DocUnit docUnit, final InternetArchiveItemDTO item) {
-        final InternetArchiveReport report = internetArchiveService.createItem(docUnit, item, true);
+    public void createItem(final String docUnitId, final boolean automaticExport) {
+        
+        final InternetArchiveReport report = internetArchiveService.createItem(docUnitId, automaticExport);
         esIaReportService.indexAsync(report.getIdentifier());
     }
 
-    @Async
+
     public void createItem(final DocUnit docUnit, final InternetArchiveItemDTO item, final String userId) {
-        final InternetArchiveReport report = internetArchiveService.createItem(docUnit, item, false);
+        
+        final InternetArchiveReport report = internetArchiveService.createItem(docUnit, item, false, userId);
         esIaReportService.indexAsync(report.getIdentifier());
     }
 
@@ -56,13 +58,11 @@ public class InternetArchiveServiceAsync {
     @Scheduled(cron = "${cron.internetArchiveExport}")
     public void automaticInternetArchiveExport() {
         LOG.info("Lancement du Job internetArchiveExport...");
-        final List<DocUnit> docsToExport = internetArchiveService.findDocUnitsReadyForArchiveExport();
-        docsToExport.forEach(doc -> {
-            LOG.info("Debut export vers ARCHIVE - DocUnit[{}]", doc.getIdentifier());
-            final InternetArchiveItemDTO item = internetArchiveService.prepareItem(doc.getIdentifier());
-            createItem(doc, item);
-
-            LOG.info("Fin export vers ARCHIVE - DocUnit[{}]", doc.getIdentifier());
+        final List<String> docsToExport = internetArchiveService.findDocUnitsReadyForArchiveExport();
+        docsToExport.forEach(docId -> {
+            LOG.info("Debut export vers ARCHIVE - DocUnit[{}]", docId);
+            createItem(docId, true);
+            LOG.info("Fin export vers ARCHIVE - DocUnit[{}]", docId);
         });
     }
 }

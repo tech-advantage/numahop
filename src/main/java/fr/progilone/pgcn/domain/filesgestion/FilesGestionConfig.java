@@ -23,6 +23,9 @@ public class FilesGestionConfig extends AbstractDomainObject {
   @Column(name = "delay")
   private int delay;
   
+  @Column(name = "export_ftp")
+  private boolean useExportFtp;
+  
   @Column(name = "destination_dir")
   private String destinationDir;
   
@@ -82,6 +85,16 @@ public int getDelay() {
 
 public void setDelay(final int delay) {
     this.delay = delay;
+}
+
+
+public boolean isUseExportFtp() {
+    return useExportFtp;
+}
+
+
+public void setUseExportFtp(final boolean useExportFtp) {
+    this.useExportFtp = useExportFtp;
 }
 
 

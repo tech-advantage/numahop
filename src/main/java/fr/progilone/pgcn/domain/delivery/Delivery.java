@@ -1,19 +1,17 @@
 package fr.progilone.pgcn.domain.delivery;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import fr.progilone.pgcn.domain.AbstractDomainObject;
-import fr.progilone.pgcn.domain.check.AutomaticCheckResult;
-import fr.progilone.pgcn.domain.lot.Lot;
-import fr.progilone.pgcn.domain.multilotsdelivery.MultiLotsDelivery;
-import org.hibernate.envers.AuditTable;
-import org.hibernate.envers.Audited;
-import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldIndex;
-import org.springframework.data.elasticsearch.annotations.FieldType;
-import org.springframework.data.elasticsearch.annotations.InnerField;
-import org.springframework.data.elasticsearch.annotations.MultiField;
-import org.springframework.data.elasticsearch.annotations.Parent;
+import static fr.progilone.pgcn.service.es.EsConstant.ANALYZER_CI_AI;
+import static fr.progilone.pgcn.service.es.EsConstant.ANALYZER_CI_AS;
+import static fr.progilone.pgcn.service.es.EsConstant.ANALYZER_KEYWORD;
+import static fr.progilone.pgcn.service.es.EsConstant.ANALYZER_PHRASE;
+import static fr.progilone.pgcn.service.es.EsConstant.SUBFIELD_CI_AI;
+import static fr.progilone.pgcn.service.es.EsConstant.SUBFIELD_CI_AS;
+import static fr.progilone.pgcn.service.es.EsConstant.SUBFIELD_PHRASE;
+import static fr.progilone.pgcn.service.es.EsConstant.SUBFIELD_RAW;
+
+import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -24,11 +22,23 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
 
-import static fr.progilone.pgcn.service.es.EsConstant.*;
+import org.hibernate.envers.AuditTable;
+import org.hibernate.envers.Audited;
+import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldIndex;
+import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.elasticsearch.annotations.InnerField;
+import org.springframework.data.elasticsearch.annotations.MultiField;
+import org.springframework.data.elasticsearch.annotations.Parent;
+
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+
+import fr.progilone.pgcn.domain.AbstractDomainObject;
+import fr.progilone.pgcn.domain.check.AutomaticCheckResult;
+import fr.progilone.pgcn.domain.lot.Lot;
+import fr.progilone.pgcn.domain.multilotsdelivery.MultiLotsDelivery;
 
 /**
  * Classe métier permettant de gérer les livraisons.
@@ -515,7 +525,8 @@ public class Delivery extends AbstractDomainObject {
         AUTOMATICALLY_REJECTED,
         DELIVERED_AGAIN,
         DELIVERING_ERROR,
-        TREATED
+        TREATED,
+        CLOSED
     }
 
     public enum DeliveryMethod {

@@ -14,7 +14,7 @@
                             <th class="text-left" translate>Projet</th>
                             <th class="text-left" translate>Lot</th>
                             <th class="text-left" translate>PGCN Id</th>
-                            <th ng_if="'CONTROLE_QUALITE_EN_COURS'===state" class="text-left" translate>Statut</th>
+                            <th ng_if="'CONTROLE_QUALITE_EN_COURS'===state || 'VALIDATION_DOCUMENT'===state" class="text-left" translate>Statut</th>
                             <th ng_if="'CONTROLE_QUALITE_EN_COURS'===state" class="text-left" translate>Nb.pages</th>
                             <th></th>
                         </tr>
@@ -30,7 +30,7 @@
                             <td class="text-left nowrap">
                                 {{ ::item.docPgcnId }}
                             </td>
-                            <td class="text-left nowrap" ng_if="'CONTROLE_QUALITE_EN_COURS'===state">
+                            <td class="text-left nowrap" ng_if="'CONTROLE_QUALITE_EN_COURS'===state || 'VALIDATION_DOCUMENT'===state">
                                 {{ ::$ctrl.code['digitalDocument.' + item.docStatus] }}
                             </td>
                             <td class="text-center nowrap" ng_if="'CONTROLE_QUALITE_EN_COURS'===state">
@@ -39,7 +39,7 @@
                             <td class="text-right">
                                 <numa-workflow-link 
                                                   numa-link-parameters="{item: item, state: state}" 
-                                                  ng-if="item.docIdentifier"></numa-custom-link>
+                                                  ng-if="item.docIdentifier"></numa-workflow-link>
                             </td>
                         </tr>
                     </tbody>

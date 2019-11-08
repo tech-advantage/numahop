@@ -16,8 +16,8 @@
         <tbody>
             <tr ng-repeat="doc in mainCtrl.pagination.items">
                 <td class="text-left">{{::doc.pgcnId}}</td>
-                <td class="text-left">{{::doc.ia | boolean}}</td>
                 <td class="text-left">{{::doc.cines | boolean}}</td>
+                <td class="text-left">{{::doc.ia | boolean}}</td>
                 <td class="text-left">{{::doc.totalPage | number}}</td>
                 <td class="text-left">{{::doc.totalLength | filesize}}</td>
                 <td class="text-right">

@@ -566,7 +566,7 @@
          * Modifier un projet/ lot/ train.
          **/
         function addSelectionToProject() {
-            var docs = getValidSelection();
+            var docs = getValidSelection("project");
             var ud = _.find(mainCtrl.selection, function (item) { return item.project; });
             var proj = angular.isDefined(ud) && ud.project ? ud.project : undefined;
 
@@ -641,7 +641,7 @@
          * avec de basculer sur la page de création de lot.
          */
         function addSelectionToNewLot() {
-            addSelectionToNewObject("/lot/lot");
+            addSelectionToNewObject("/lot/lot", "lot");
         }
 
         /**
@@ -650,11 +650,11 @@
          * avec de basculer sur la page de création de train.
          */
         function addSelectionToNewTrain() {
-            addSelectionToNewObject("/train/train");
+            addSelectionToNewObject("/train/train", "train");
         }
 
-        function addSelectionToNewObject(path) {
-            var docs = getValidSelection();
+        function addSelectionToNewObject(path, type) {
+            var docs = getValidSelection(type);
             var searchParams = { new: true, callback: "/document/docunit_list" };
 
             var ud = _.find(mainCtrl.selection, function (item) { return item.project; });
@@ -723,7 +723,7 @@
          * 
          * @returns 
          */
-        function getValidSelection() {
+        function getValidSelection(type) {
             if (mainCtrl.selectedLength === 0) {
                 MessageSrvc.addWarn(gettext("La sélection est vide"), {}, false);
                 return;
@@ -737,7 +737,7 @@
                     return item.project && item.project.identifier === testValue.project.identifier;
                 });
                 if ('CLOSED' === testValue.project.status) {
-                    MessageSrvc.addWarn(gettext("Les unités documentaires sélectionnées ne peuvent pas être traitées car un projet est au statut 'En cours' ou 'Terminé'"), {}, false);
+                    MessageSrvc.addWarn(gettext("Les unités documentaires sélectionnées ne peuvent pas être traitées car le projet est au statut 'Terminé'"), {}, false);
                     return;
                 }
             } else {
@@ -751,14 +751,16 @@
             }
 
             // On autorise la sélection d'UDs :
-            //   - avec des lots s'ils ne sont pas au statut en cours/terminé, 
+            //   - avec les lots s'ils sont au statut Créé (CREATED),
             //   - ou sans lot.
-            filteredDocs = _.filter(mainCtrl.selection, function (item) {
-                return !item.lot || mainCtrl.canRemoveLot(item);
-            });
-            if (mainCtrl.selectedLength !== filteredDocs.length) {
-                MessageSrvc.addWarn(gettext("Les unités documentaires sélectionnées ne peuvent pas être traitées car certains lots ont un statut 'En cours' ou 'Terminé'"), {}, false);
-                return;
+            if(type == "lot"){
+                filteredDocs = _.filter(mainCtrl.selection, function (item) {
+                    return !item.lot || mainCtrl.canRemoveLot(item);
+                });
+                if (mainCtrl.selectedLength !== filteredDocs.length) {
+                    MessageSrvc.addWarn(gettext("Les unités documentaires sélectionnées ne peuvent pas être traitées car certains lots ont un statut 'En cours' ou 'Terminé'"), {}, false);
+                    return;
+                }
             }
 
             var docs = _.chain(mainCtrl.selection)

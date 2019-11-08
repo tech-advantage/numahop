@@ -101,7 +101,8 @@
                         link="{ type: 'project', parameters: {'id': lot.project.identifier} }"> </numa-editable-field>
 
                         <numa-editable-field data-title="{{::'Prestataire' | translate}}" type="select" form="lotForm" 
-                        model="lot.provider" numa-readonly="formRO" errors="{{ errors.provider }}" default-text="Hérité du projet"
+                        model="lot.provider" numa-readonly="formRO" errors="{{ errors.provider }}"
+                        default-text="{{ lot.project.provider != null ? lot.project.provider.name : 'Non renseigné' }}"
                         config="{ data: [{fullName: ''}].concat(options.providers),
                         display: 'fullName',
                         query: 'o.fullName for o in $ctrl.config.data track by o.identifier'}"
@@ -152,14 +153,16 @@
                         displayFn: displayColorspace,
                         query: 'key as value for (key, value) in $ctrl.config.data'}" > </numa-editable-field>
                         
-                        <numa-editable-field data-title="{{::'Configuration FTP' | translate}}" type="select" form="lotForm" default-text="Hérité du projet"
+                        <numa-editable-field data-title="{{::'Configuration FTP' | translate}}" type="select" form="lotForm"
+                        default-text="{{ lot.project.activeFTPConfiguration != null ? lot.project.activeFTPConfiguration.label : 'Non renseigné' }}"
                         model="lot.activeFTPConfiguration" numa-readonly="formRO" errors="{{ errors.activeFTPConfiguration }}"
                         config="{ data: [{label: ''}].concat(options.ftp),
                         display: 'label',
                         query: 'o.label for o in $ctrl.config.data track by o.identifier'}"
                         link="{ type: 'ftpConfiguration', parameters: {'id': lot.activeFTPConfiguration.identifier} }"> </numa-editable-field>
 
-                        <numa-editable-field data-title="{{::'Configuration contrôles' | translate}}" type="select" form="lotForm" default-text="Hérité du projet"
+                        <numa-editable-field data-title="{{::'Configuration contrôles' | translate}}" type="select" form="lotForm"
+                        default-text="{{ lot.project.activeCheckConfiguration != null ? lot.project.activeCheckConfiguration.label : 'Non renseigné' }}"
                         model="lot.activeCheckConfiguration" numa-readonly="formRO" errors="{{ errors.activeCheckConfiguration }}"
                         config="{ data: [{label: ''}].concat(options.check),
                         display: 'label',
@@ -172,7 +175,8 @@
                         display: 'label',
                         query: 'o.label for o in $ctrl.config.data track by o.identifier'}"> </numa-editable-field>
                         
-                        <numa-editable-field data-title="{{::'Configuration format images' | translate}}" type="select" form="lotForm" default-text="Hérité du projet"
+                        <numa-editable-field data-title="{{::'Configuration format images' | translate}}" type="select" form="lotForm"
+                        default-text="{{ lot.project.activeFormatConfiguration != null ? lot.project.activeFormatConfiguration.label : 'Non renseigné' }}"
                         model="lot.activeFormatConfiguration" numa-readonly="formRO" errors="{{ errors.activeFormatConfiguration }}"
                         config="{ data: [{label: ''}].concat(options.imgFormat),
                         display: 'label',
@@ -180,28 +184,33 @@
                         link="{ type: 'formatConfiguration', parameters: {'id': lot.activeFormatConfiguration.identifier} }"> </numa-editable-field>
                                                 
                         <numa-editable-field data-title="{{::'Workflow' | translate}}" type="select" form="lotForm" model="lot.workflowModel" 
-                                numa-readonly="lot.status!=='CREATED'" errors="{{ errors.workflowModel }}" default-text="Hérité du projet" 
+                                numa-readonly="lot.status!=='CREATED'" errors="{{ errors.workflowModel }}"
+                                default-text="{{ lot.project.workflowModel != null ? lot.project.workflowModel.name : 'Non renseigné' }}"
                                 config="{ data: [{name: ''}].concat(options.workflowModels),
                                 display: 'name',
                                 query: 'o.name for o in $ctrl.config.data track by o.identifier'}" 
                                 link="{ type: 'workflowModel', parameters: {'id': lot.workflowModel.identifier} }">
                         </numa-editable-field>
                         
-                        <numa-editable-field data-title="{{::'Notes concernant le conditionnement' | translate}}" numa-type="textarea" placeholder="{{::'Notes concernant le conditionnement' | translate}}"
+                        <numa-editable-field data-title="{{::'Notes concernant le conditionnement' | translate}}" numa-type="textarea"
+                        placeholder="{{::'Notes concernant le conditionnement' | translate}}"
                         form="lotForm" model="lot.condNotes" numa-readonly="formRO" errors="{{ errors.condNotes }}"> </numa-editable-field>
 
-                        <numa-editable-field data-title="{{::'Notes concernant la numérisation' | translate}}" numa-type="textarea" placeholder="{{::'Notes concernant la numérisation' | translate}}"
+                        <numa-editable-field data-title="{{::'Notes concernant la numérisation' | translate}}" numa-type="textarea"
+                        placeholder="{{::'Notes concernant la numérisation' | translate}}"
                         form="lotForm" model="lot.numNotes" numa-readonly="formRO" errors="{{ errors.numNotes }}"> </numa-editable-field>
 
 
                         <numa-editable-field title="{{::'Collection Internet Archive' | translate}}" type="select" form="lotForm" 
-                        model="lot.collectionIA" numa-readonly="formRO" errors="{{ errors.collectionIA }}" default-text="Hérité du projet"
+                        model="lot.collectionIA" numa-readonly="formRO" errors="{{ errors.collectionIA }}"
+                        default-text="{{ lot.project.collectionIA != null ? lot.project.collectionIA.name : 'Non renseigné' }}"
                         config="{ data: [{name: ''}].concat(options.collections),
                         display: 'name',
                         query: 'o.name for o in $ctrl.config.data track by o.identifier'}"> </numa-editable-field>
 
                         <numa-editable-field title="{{::'Plan de classement PAC' | translate}}" type="select" form="lotForm" 
-                        model="lot.planClassementPAC" numa-readonly="formRO" errors="{{ errors.planClassementPAC }}" default-text="Hérité du projet"
+                        model="lot.planClassementPAC" numa-readonly="formRO" errors="{{ errors.planClassementPAC }}"
+                        default-text="{{ lot.project.planClassementPAC != null ? lot.project.planClassementPAC.name : 'Non renseigné' }}"
                         config="{ data: [{name: ''}].concat(options.pacs),
                         display: 'name',
                         query: 'o.name for o in $ctrl.config.data track by o.identifier'}"> </numa-editable-field>

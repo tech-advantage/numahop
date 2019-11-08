@@ -901,7 +901,10 @@
                         if (response.data.byteLength === 0) {
                             MessageSrvc.addWarn("Aucune table des matières initiale", null, false);
                         } else {
-                            var filename = "toc";
+                            var filename = $scope.digitalDocument.docUnit.pgcnId;
+                            if(response.headers("content-type") != "application/xml"){
+                                filename = filename + ".xlsx"
+                            }
                             var blob = new Blob([response.data], { type: response.headers("content-type") });
                             FileSaver.saveAs(blob, filename);
                         }

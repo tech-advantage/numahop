@@ -23,6 +23,7 @@
                 "DELIVERY_DUPLICATE_LABEL": gettextCatalog.getString("Ce libellé est déjà utilisé"),
                 "DELIVERY_LOT_MANDATORY": gettextCatalog.getString("Le lot est obligatoire"),
                 "DELIVERY_NO_MASTER_FOUND": gettextCatalog.getString("Aucun fichier master ne correspond à cette livraison"),
+                "DELIVERY_NOT_ENOUGH_AVAILABLE_SPACE": gettextCatalog.getString("Espace disque insuffisant pour cette livraison"),
                 "DELIVERY_NO_MATCHING_PREFIX": gettextCatalog.getString("Certains dossiers ne correspondent à aucun document"),
                 "DELIVERY_WRONG_FOLDER": gettextCatalog.getString("Le dossier de livraison n'existe pas"),
                 "DESC_PROPERTY_DEL_EXISTS_DESC": gettextCatalog.getString("Cette propriété est utilisée sur au moins un constat d'état"),

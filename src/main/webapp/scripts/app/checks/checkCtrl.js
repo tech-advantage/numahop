@@ -118,7 +118,7 @@
             maxAngles: []
         };
 
-        mainCtrl.options.statuses = ["TO_CHECK", "CHECKING", "VALIDATED", "PRE_REJECTED", "REJECTED", "DELIVERING_ERROR", "WAITING_FOR_REPAIR"];
+        mainCtrl.options.statuses = ["TO_CHECK", "CHECKING", "PRE_VALIDATED", "PRE_REJECTED", "VALIDATED", "REJECTED", "DELIVERING_ERROR", "RELIVRAISON_DOCUMENT_EN_COURS"];
 
         init();
 

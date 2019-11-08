@@ -207,10 +207,8 @@ public interface DocUnitRepository extends JpaRepository<DocUnit, String>, DocUn
             + "where d.distributable = true and w != null "
             + "and lib.identifier in ?1")
      List<DocUnit> findByLibraryWithOmekaExportDep(String libraryId);
-
+    
     @Query("select distinct d from DocUnit d "
-           + "left join fetch d.digitalDocuments dd "
-           + "left join fetch dd.pages pages "
            + "left join fetch d.library lib "
            + "left join fetch d.records r "
            + "left join fetch r.properties p "
@@ -219,10 +217,8 @@ public interface DocUnitRepository extends JpaRepository<DocUnit, String>, DocUn
            + "left join fetch ai.collections "
            + "left join fetch ai.subjects "
            + "left join fetch ai.headers "
-           + "left join fetch d.workflow w "
-           + "where d.distributable = true and w != null "
-           + "and lib.identifier in ?1")
-    List<DocUnit> findByLibraryWithArchiveExportDep(String libraryId);
+           + "where d.identifier in ?1")
+    List<DocUnit> findByLibraryWithArchiveExportDep(List<String> archivableDocIds);
 
     @Query("select distinct d.type from DocUnit d where d.type is not null order by d.type asc")
     Page<String> findDistinctTypes(final Pageable pageable);

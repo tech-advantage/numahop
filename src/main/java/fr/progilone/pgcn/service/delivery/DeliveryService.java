@@ -44,6 +44,7 @@ import fr.progilone.pgcn.domain.delivery.Delivery.DeliveryStatus;
 import fr.progilone.pgcn.domain.delivery.DeliverySlip;
 import fr.progilone.pgcn.domain.delivery.DeliverySlipConfiguration;
 import fr.progilone.pgcn.domain.delivery.DeliverySlipLine;
+import fr.progilone.pgcn.domain.document.DigitalDocument;
 import fr.progilone.pgcn.domain.dto.document.ValidatedDeliveredDocumentDTO;
 import fr.progilone.pgcn.domain.library.Library;
 import fr.progilone.pgcn.exception.PgcnBusinessException;
@@ -182,7 +183,15 @@ public class DeliveryService {
 
     @Transactional(readOnly = true)
     public Set<DeliveredDocument> getDigitalDocumentsByDelivery(final String id) {
-        return deliveryRepository.findDeliveredDocumentsByDeliveryIdentifier(id);
+
+        final Set<DeliveredDocument> deliveredDocs =  deliveryRepository.findDeliveredDocumentsByDeliveryIdentifier(id);
+        deliveredDocs.forEach(dd-> {
+            final DigitalDocument dig = dd.getDigitalDocument();
+            Hibernate.initialize(dig.getDocUnit());
+            Hibernate.initialize(dig.getAutomaticCheckResults());
+            Hibernate.initialize(dig.getPages());
+        });
+        return deliveredDocs; 
     }
 
     @Transactional(readOnly = true)

@@ -636,5 +636,27 @@ public class DeliveryController extends AbstractRestController {
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
+    
+    /**
+     * Infos espace disque de la bibliothèque.
+     *
+     * @param id
+     * @param datas
+     * @return
+     * @throws PgcnException
+     */
+    @RolesAllowed({DEL_HAB0})
+    @RequestMapping(method = RequestMethod.GET, params = {"diskspace", "widget"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<Map<String, Long>> getDiskInfos(final HttpServletRequest request, @RequestParam(value = "libraries", required = true) final List<String> libraries) {
+
+        final List<String> filteredLibraries = libraryAccesssHelper.getLibraryFilter(request, libraries);
+        Map<String, Long> diskInfos = new HashMap<>();
+        if (filteredLibraries.size() == 1) {
+            diskInfos = uiDeliveryService.getDiskInfos(filteredLibraries.get(0));  
+        } 
+        return new ResponseEntity<>(diskInfos, HttpStatus.OK);
+    }
+    
 
 }

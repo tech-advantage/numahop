@@ -10,7 +10,7 @@
                 title: gettext("Utilisateurs"),
                 reloadOnSearch: false,
                 access: {
-                    authorizedRoles: [USER_ROLES.USER_HAB0]
+                    authorizedRoles: [USER_ROLES.USER_HAB0, USER_ROLES.USER_HAB6]
                 }
             }).when('/user/authorization', {
                 templateUrl: 'scripts/app/user/authorizations.html',

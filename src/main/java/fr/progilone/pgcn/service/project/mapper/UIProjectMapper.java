@@ -130,5 +130,15 @@ public class UIProjectMapper {
         } else {
             project.setProvider(null);
         }
+
+        if(projectDTO.getLibRespName() != null){
+            project.setLibRespName(projectDTO.getLibRespName());
+        }
+        if(projectDTO.getLibRespPhone() != null){
+            project.setLibRespPhone(projectDTO.getLibRespPhone());
+        }
+        if(projectDTO.getLibRespEmail() != null){
+            project.setLibRespEmail(projectDTO.getLibRespEmail());
+        }
     }
 }

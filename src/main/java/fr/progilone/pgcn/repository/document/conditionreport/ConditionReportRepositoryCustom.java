@@ -22,6 +22,8 @@ public interface ConditionReportRepositoryCustom {
      * @return page d'identifiants
      */
     Page<String> search(List<String> libraries,
+                        List<String> projects,
+                        List<String> lots,
                         LocalDate from,
                         LocalDate to,
                         DimensionFilter dimensions,

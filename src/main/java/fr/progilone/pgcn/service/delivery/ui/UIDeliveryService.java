@@ -33,7 +33,6 @@ import fr.progilone.pgcn.domain.dto.delivery.ManualDeliveryDTO;
 import fr.progilone.pgcn.domain.dto.delivery.PreDeliveryDTO;
 import fr.progilone.pgcn.domain.dto.delivery.SimpleDeliveryDTO;
 import fr.progilone.pgcn.domain.dto.delivery.SimpleDeliveryForViewerDTO;
-import fr.progilone.pgcn.domain.dto.document.DeliveredDigitalDocumentDTO;
 import fr.progilone.pgcn.domain.dto.document.DigitalDocumentDTO;
 import fr.progilone.pgcn.domain.dto.document.PreDeliveryDocumentDTO;
 import fr.progilone.pgcn.domain.dto.document.SimpleDeliveredDigitalDocDTO;
@@ -111,12 +110,6 @@ public class UIDeliveryService {
     }
 
     @Transactional
-    public Set<DeliveredDigitalDocumentDTO> getDigitalDocuments(final String id) {
-        final Set<DeliveredDocument> digitalDocuments = deliveryService.getDigitalDocumentsByDelivery(id);
-        return DeliveredDocumentMapper.INSTANCE.docToDTOs(digitalDocuments);
-    }
-
-    @Transactional
     public Set<SimpleDeliveredDigitalDocDTO> getSimpleDigitalDocuments(final String id) {
         final Set<DeliveredDocument> digitalDocuments = deliveryService.getSimpleDigitalDocumentsByDelivery(id);
         return DeliveredDocumentMapper.INSTANCE.docToSimpleDTOs(digitalDocuments);
@@ -136,6 +129,17 @@ public class UIDeliveryService {
         final Delivery savedDelivery = deliveryService.save(delivery);
         final Delivery deliveryWithProperties = deliveryService.getOne(savedDelivery.getIdentifier());
         return DeliveryMapper.INSTANCE.deliveryToDeliveryDTO(deliveryWithProperties);
+    }
+    
+    /**
+     * Infos espace disque / bibliothèque.
+     * 
+     * @param libIdentifier
+     * @return
+     */
+    public Map<String, Long> getDiskInfos(final String libIdentifier) { 
+        
+        return deliveryProcessService.getDiskInfos(libIdentifier);
     }
 
     /**

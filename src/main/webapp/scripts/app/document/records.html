@@ -50,7 +50,7 @@
 
                 <div>
                     <div ng-repeat="entity in pagination.items" class="col-infinite-scroll">
-                        <div ng-show="$index === 0 || getFirstLetter(entity.title) != getFirstLetter(pagination.items[$index-1].title)"
+                        <div ng-show="$index === 0 || getFirstLetter(entity.docUnit.label) != getFirstLetter(pagination.items[$index-1].docUnit.label)"
                              class="pagination-break">{{entity.title|initial:'OTHER'}}
                         </div>
                         <div class="list" ng-class="{active: entity._selected}">

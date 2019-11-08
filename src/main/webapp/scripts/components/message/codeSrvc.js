@@ -28,6 +28,7 @@
                 "import.DocUnit.State.NOT_AVAILABLE": gettextCatalog.getString("Pré-importé"),
                 "import.DocUnit.State.DELETED": gettextCatalog.getString("Ignoré"),
                 "import.DocUnit.State.CANCELED": gettextCatalog.getString("Annulé"),
+                "import.DocUnit.State.CLOSED": gettextCatalog.getString("Clôturé"),
                 // types de pages d'aide
                 "helpPageType.PGCN": gettextCatalog.getString('Aide de PGCN'),
                 "helpPageType.CUSTOM": gettextCatalog.getString('Pages d\'aide personnalisées'),
@@ -55,8 +56,10 @@
                 "digitalDocument.CHECKING": gettextCatalog.getString('En cours de contrôle'),
                 "digitalDocument.VALIDATED": gettextCatalog.getString('Validé'),
                 "digitalDocument.PRE_REJECTED": gettextCatalog.getString('Pré-rejeté'),
+                "digitalDocument.PRE_VALIDATED": gettextCatalog.getString('Pré-validé'),
                 "digitalDocument.REJECTED": gettextCatalog.getString('Rejeté'),
                 "digitalDocument.WAITING_FOR_REPAIR": gettextCatalog.getString('En attente de réfection'),
+                "digitalDocument.RELIVRAISON_DOCUMENT_EN_COURS": gettextCatalog.getString('En attente de relivraison'),
                 "digitalDocument.DELIVERING_ERROR": gettextCatalog.getString('Erreur de livraison'),
                 "digitalDocument.CANCELED": gettextCatalog.getString('Annulé'),
 
@@ -94,6 +97,7 @@
                 "delivery.DELIVERED_AGAIN": gettextCatalog.getString('Re-livré'),
                 "delivery.DELIVERING_ERROR": gettextCatalog.getString('Erreur de livraison'),
                 "delivery.TREATED": gettextCatalog.getString('Traité'),
+                "delivery.CLOSED": gettextCatalog.getString('Clôturé'),
 
                 // formats fichiers
                 "format.JP2": gettextCatalog.getString('JP2 (JPEG-2000 File Format Syntax)'),

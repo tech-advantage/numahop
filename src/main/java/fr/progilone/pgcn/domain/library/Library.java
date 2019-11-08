@@ -117,6 +117,24 @@ public class Library extends AbstractDomainObject {
     private Boolean superuser = Boolean.FALSE;
 
     /**
+     * Responsable bibliothèque: nom
+     */
+    @Column(name = "lib_resp_name")
+    private String libRespName;
+
+    /**
+     * Responsable bibliothèque: téléphone
+     */
+    @Column(name = "lib_resp_phone")
+    private String libRespPhone;
+
+    /**
+     * Responsable bibliothèque: email
+     */
+    @Column(name = "lib_resp_email")
+    private String libRespEmail;
+
+    /**
      * Liste des plateformes associées à la bibliothèque
      */
     @OneToMany(mappedBy = "library", fetch = FetchType.LAZY)
@@ -302,6 +320,30 @@ public class Library extends AbstractDomainObject {
 
     public void setSuperuser(final Boolean superuser) {
         this.superuser = superuser;
+    }
+
+    public String getLibRespName() {
+        return libRespName;
+    }
+
+    public void setLibRespName(String libRespName) {
+        this.libRespName = libRespName;
+    }
+
+    public String getLibRespPhone() {
+        return libRespPhone;
+    }
+
+    public void setLibRespPhone(String libRespPhone) {
+        this.libRespPhone = libRespPhone;
+    }
+
+    public String getLibRespEmail() {
+        return libRespEmail;
+    }
+
+    public void setLibRespEmail(String libRespEmail) {
+        this.libRespEmail = libRespEmail;
     }
 
     @Override

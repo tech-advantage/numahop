@@ -29,6 +29,7 @@ public interface DocUnitWorkflowRepositoryCustom {
     Page<DocUnitWorkflow> findDocUnitProgressStats(List<String> libraries,
                                                    List<String> projects,
                                                    List<String> lots,
+                                                   List<String> trains,
                                                    String pgcnId,
                                                    List<WorkflowStateKey> states,
                                                    List<String> users,
@@ -91,4 +92,12 @@ public interface DocUnitWorkflowRepositoryCustom {
                                                               List<String> lots,
                                                               List<DigitalDocumentStatus> states,
                                                               LocalDate fromDate);
+    /**
+     * Retrouve les docUnitWorkflow candidats pour diffusion vers Archive.
+     * (diffusable et workflow en attente de diffusion)
+     * ATTENTION : pas de controle d'acces - A reserver aux traitements automatiques
+     *
+     * @return
+     */
+    List<DocUnitWorkflow> findDocUnitWorkflowsForArchiveExport(String library);
 }

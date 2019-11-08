@@ -165,7 +165,7 @@ public class DocUnitWorkflow extends AbstractDomainObject {
      */
     public List<DocUnitState> getFutureOrRunning() {
         return states.stream()
-                .filter(state -> state.isFutureOrCurrentState())
+                .filter(DocUnitState::isFutureOrCurrentState)
                 .collect(Collectors.toList());
     }
     

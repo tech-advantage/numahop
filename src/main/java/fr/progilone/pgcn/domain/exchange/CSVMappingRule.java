@@ -1,8 +1,14 @@
 package fr.progilone.pgcn.domain.exchange;
 
-import fr.progilone.pgcn.domain.AbstractDomainObject;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
-import javax.persistence.*;
+import fr.progilone.pgcn.domain.AbstractDomainObject;
+import fr.progilone.pgcn.domain.document.DocPropertyType;
 
 /**
  * Régle de mapping
@@ -20,6 +26,22 @@ public class CSVMappingRule extends AbstractDomainObject {
 
     @Column(name = "csv_field")
     private String csvField;
+    
+    /**
+     * Champ de {@link fr.progilone.pgcn.domain.document.BibliographicRecord} concerné par cette règle de mapping
+     */
+    @Column(name = "bib_record_field")
+    private String bibRecordField;
+    
+    @Column(name = "rank")
+    private int rank;
+    
+    /**
+     * Propriété concernée par cette règle de mapping
+     */
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "property")
+    private DocPropertyType property;
 
     /**
      * Ensemble de règles de mapping auquel celle-ci appartient
@@ -56,7 +78,31 @@ public class CSVMappingRule extends AbstractDomainObject {
         return csvField;
     }
 
-    public void setCsvField(String csvField) {
+    public void setCsvField(final String csvField) {
         this.csvField = csvField;
+    }
+
+    public String getBibRecordField() {
+        return bibRecordField;
+    }
+
+    public void setBibRecordField(final String bibRecordField) {
+        this.bibRecordField = bibRecordField;
+    }
+
+    public int getRank() {
+        return rank;
+    }
+
+    public void setRank(final int rank) {
+        this.rank = rank;
+    }
+
+    public DocPropertyType getProperty() {
+        return property;
+    }
+
+    public void setProperty(final DocPropertyType property) {
+        this.property = property;
     }
 }

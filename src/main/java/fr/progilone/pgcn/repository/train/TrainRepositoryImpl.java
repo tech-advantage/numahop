@@ -1,11 +1,26 @@
 package fr.progilone.pgcn.repository.train;
 
+import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+
 import com.mysema.query.BooleanBuilder;
 import com.mysema.query.Tuple;
 import com.mysema.query.jpa.JPASubQuery;
 import com.mysema.query.jpa.JPQLQuery;
 import com.mysema.query.jpa.impl.JPAQuery;
 import com.mysema.query.types.expr.BooleanExpression;
+
 import fr.progilone.pgcn.domain.document.QDocUnit;
 import fr.progilone.pgcn.domain.document.QPhysicalDocument;
 import fr.progilone.pgcn.domain.document.conditionreport.QConditionReport;
@@ -15,19 +30,8 @@ import fr.progilone.pgcn.domain.library.QLibrary;
 import fr.progilone.pgcn.domain.project.QProject;
 import fr.progilone.pgcn.domain.train.QTrain;
 import fr.progilone.pgcn.domain.train.Train;
+import fr.progilone.pgcn.domain.train.Train.TrainStatus;
 import fr.progilone.pgcn.repository.util.QueryDSLBuilderUtils;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class TrainRepositoryImpl implements TrainRepositoryCustom {
 
@@ -63,17 +67,17 @@ public class TrainRepositoryImpl implements TrainRepositoryCustom {
     }
 
     @Override
-    public Page<Train> search(String search,
-                              List<String> libraries,
-                              List<String> projects,
-                              boolean active,
-                              List<Train.TrainStatus> statuses,
-                              LocalDate providerSendingDateFrom,
-                              LocalDate providerSendingDateTo,
-                              LocalDate returnDateFrom,
-                              LocalDate returnDateTo,
-                              Integer docNumber,
-                              Pageable pageable) {
+    public Page<Train> search(final String search,
+                              final List<String> libraries,
+                              final List<String> projects,
+                              final boolean active,
+                              final List<Train.TrainStatus> statuses,
+                              final LocalDate providerSendingDateFrom,
+                              final LocalDate providerSendingDateTo,
+                              final LocalDate returnDateFrom,
+                              final LocalDate returnDateTo,
+                              final Integer docNumber,
+                              final Pageable pageable) {
 
         final QTrain qTrain = QTrain.train;
         final QLibrary qLibrary = QLibrary.library;
@@ -84,9 +88,16 @@ public class TrainRepositoryImpl implements TrainRepositoryCustom {
             final BooleanExpression nameFilter = qTrain.label.containsIgnoreCase(search);
             builder.andAnyOf(nameFilter);
         }
-
+        
         // active
-        if (active) {
+        boolean effectiveActive;
+        if (CollectionUtils.isNotEmpty(statuses) 
+                && (statuses.contains(TrainStatus.CLOSED) || statuses.contains(TrainStatus.CLOSED))) {
+            effectiveActive = false;
+        } else {
+            effectiveActive = active;
+        }
+        if (effectiveActive) {
             builder.and(qTrain.active.eq(true));
         }
         // provider
@@ -250,9 +261,10 @@ public class TrainRepositoryImpl implements TrainRepositoryCustom {
      * @param projectIds
      * @return
      */
+    @Override
     public List<SimpleTrainDTO> findAllIdentifiersInProjectIds(final Iterable<String> projectIds) {
 
-        String q = "select t.identifier, t.label from Train t inner join t.project p where p.identifier in :projectIds ";
+        final String q = "select t.identifier, t.label from Train t inner join t.project p where p.identifier in :projectIds ";
         final TypedQuery<Object[]> query = em.createQuery(q, Object[].class); // NOSONAR : Non il n'y a pas de possiblité d'injection SQL...
         query.setParameter("projectIds", projectIds);
 

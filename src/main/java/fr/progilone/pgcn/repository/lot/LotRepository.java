@@ -100,7 +100,7 @@ public interface LotRepository extends JpaRepository<Lot, String>, LotRepository
             + "and l.identifier = ?1 "
             + "and lo.realEndDate < ?2 ")
      List<Lot> getClosedLotsByLibrary(String libraryId, LocalDate dateTo);
-
+    
     List<Lot> findByLabelAndProject(String label, Project project);
 
     List<Lot> findAllByActive(boolean active);
@@ -150,6 +150,12 @@ public interface LotRepository extends JpaRepository<Lot, String>, LotRepository
             + "left join fetch du.workflow "            
             + "where du.identifier = ?1 ")
     Lot findOneByDocUnit(String id);
+    
+    @Query("from Lot lo "
+            + "left join fetch lo.docUnits du "
+            + "left join fetch du.workflow "            
+            + "where lo.identifier = ?1 ")
+    Lot findOneWithDocsAndWorkflows(String lotIdentifier);
     
     @Query("from Lot lo "
             + "left join fetch lo.workflowModel wf "

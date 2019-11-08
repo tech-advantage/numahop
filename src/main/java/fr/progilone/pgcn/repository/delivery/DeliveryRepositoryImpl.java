@@ -1,5 +1,19 @@
 package fr.progilone.pgcn.repository.delivery;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+
 import com.mysema.query.BooleanBuilder;
 import com.mysema.query.Tuple;
 import com.mysema.query.jpa.JPASubQuery;
@@ -7,6 +21,7 @@ import com.mysema.query.jpa.JPQLQuery;
 import com.mysema.query.jpa.impl.JPAQuery;
 import com.mysema.query.types.Predicate;
 import com.mysema.query.types.expr.BooleanExpression;
+
 import fr.progilone.pgcn.domain.delivery.Delivery;
 import fr.progilone.pgcn.domain.delivery.Delivery.DeliveryStatus;
 import fr.progilone.pgcn.domain.delivery.QDeliveredDocument;
@@ -22,17 +37,6 @@ import fr.progilone.pgcn.domain.workflow.QDocUnitWorkflow;
 import fr.progilone.pgcn.domain.workflow.QWorkflowModelState;
 import fr.progilone.pgcn.repository.delivery.helper.DeliverySearchBuilder;
 import fr.progilone.pgcn.repository.util.QueryDSLBuilderUtils;
-import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class DeliveryRepositoryImpl implements DeliveryRepositoryCustom {
 
@@ -111,9 +115,14 @@ public class DeliveryRepositoryImpl implements DeliveryRepositoryCustom {
             builder.and(qDelivery.identifier.in(deliveries));
         });
         // Statut
-        searchBuilder.getStatus().ifPresent(status -> {
-            builder.and(qDelivery.status.in(status));
-        });
+        if (searchBuilder.getStatus().isPresent()) {
+            builder.and(qDelivery.status.in(searchBuilder.getStatus().get()));
+        } else {
+            final List<DeliveryStatus> statuses = new ArrayList<>();
+            statuses.add(DeliveryStatus.CLOSED);
+            builder.and(qDelivery.status.notIn(statuses));
+        }
+
         // Dates
         searchBuilder.getDateFrom().ifPresent(dateFrom -> {
             builder.and(qDelivery.receptionDate.after(dateFrom.minusDays(1)));

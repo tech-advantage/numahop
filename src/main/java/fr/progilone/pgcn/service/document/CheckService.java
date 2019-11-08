@@ -97,7 +97,11 @@ public class CheckService {
             final DocPage docPage =
                                   sampling ? digitalDocumentService.getPage(identifier, pageNumber)
                                            : digitalDocumentService.getPageByOrder(identifier, pageNumber);
+
+            // On supprime les erreurs
+            checkRepository.delete(docPage.getChecks());
             docPage.getChecks().clear();
+
             for (final Check.ErrorLabel error : errors.getFailedChecks()) {
                 final Check check = new Check();
                 check.setErrorType(error.getType());

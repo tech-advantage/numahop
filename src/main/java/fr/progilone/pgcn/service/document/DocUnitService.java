@@ -193,7 +193,7 @@ public class DocUnitService {
     }
 
     /**
-     * Retourne une unité doc avec toutes les dépendences :
+     * Retourne une unité doc avec toutes les dépendences sauf les StoredFilesF:
      * (StoredFile, Page, DigitalDoc, PhysicalDoc, Project, Records..)
      * ne pas utiliser dans une boucle, à utiliser unitairement
      *
@@ -202,9 +202,22 @@ public class DocUnitService {
      */
     @Transactional(readOnly = true)
     public DocUnit findOneWithAllDependencies(final String identifier) {
-        return docUnitRepository.findOneWithAllDependencies(identifier);
+        return docUnitRepository.findOneWithAllDependencies(identifier, false);
     }
 
+    /**
+     * Retourne une unité doc avec toutes les dépendences y-compris storedFiles si initFiles == true:
+     * (StoredFile (ou pas), Page, DigitalDoc, PhysicalDoc, Project, Records..)
+     * ne pas utiliser dans une boucle, à utiliser unitairement
+     *
+     * @param identifier
+     * @return
+     */
+    @Transactional(readOnly = true)
+    public DocUnit findOneWithAllDependencies(final String identifier, final boolean initFiles) {
+        return docUnitRepository.findOneWithAllDependencies(identifier, initFiles);
+    }
+    
     /**
      * Retrouve une unité documentaire avec les dépendances liées au workflow
      *
@@ -553,10 +566,13 @@ public class DocUnitService {
         final Train t = train != null ? trainRepository.findOne(train) : null;
         
         for (final DocUnit du : dus) {
-            du.setProject(p);            
-            du.setLot(l);
+            du.setProject(p);
 
-            if (du.getPhysicalDocuments().iterator().hasNext()) {
+            if(l != null){
+                du.setLot(l);
+            }
+
+            if (du.getPhysicalDocuments().iterator().hasNext() && t != null) {
                 du.getPhysicalDocuments().iterator().next().setTrain(t);
             }
             docUnitRepository.save(du);
@@ -618,7 +634,7 @@ public class DocUnitService {
     /**
      * Récupération du langage OCR dans le docUnit, ou dans le lot.
      *
-     * @param lot
+     * @param doc DocUnit
      * @return
      */
     @Transactional(readOnly = true)
@@ -693,10 +709,10 @@ public class DocUnitService {
     public List<DocUnit> findByLibraryWithOmekaExportDep(final String libraryId) {
         return docUnitRepository.findByLibraryWithOmekaExportDep(libraryId);
     }
-
+    
     @Transactional(readOnly = true)
-    public List<DocUnit> findByLibraryWithArchiveExportDep(final String libraryId) {
-        return docUnitRepository.findByLibraryWithArchiveExportDep(libraryId);
+    public List<DocUnit> findDocUnitWithArchiveExportDepIn(final List<String> archivableDocIds) {
+        return docUnitRepository.findByLibraryWithArchiveExportDep(archivableDocIds);
     }
 
     @Transactional(readOnly = true)

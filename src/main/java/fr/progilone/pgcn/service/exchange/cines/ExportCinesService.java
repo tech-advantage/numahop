@@ -27,6 +27,7 @@ import javax.xml.bind.MarshalException;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,7 @@ import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.document.ExportData;
 import fr.progilone.pgcn.domain.document.ExportProperty;
 import fr.progilone.pgcn.domain.dto.document.BibliographicRecordDcDTO;
+import fr.progilone.pgcn.domain.dto.document.DocPropertyDTO;
 import fr.progilone.pgcn.domain.exchange.cines.CinesReport;
 import fr.progilone.pgcn.domain.library.Library;
 import fr.progilone.pgcn.domain.library.LibraryParameter;
@@ -356,11 +358,11 @@ public class ExportCinesService {
     @Transactional
     public BibliographicRecordDcDTO getExportData(final String identifier) {
         final DocUnit du = docUnitService.findOne(identifier);
-        return getExportData(du);
+        return getExportData(du, true);
     }
 
     @Transactional
-    public BibliographicRecordDcDTO getExportData(final DocUnit docUnit) {
+    public BibliographicRecordDcDTO getExportData(final DocUnit docUnit, final boolean cinesExport) {
         final ExportData ed = docUnit.getExportData();
         BibliographicRecordDcDTO dto;
         if(ed != null) {
@@ -372,6 +374,7 @@ public class ExportCinesService {
                 .forEach(p -> {
                     try {
                         final String dcProperty = p.getType().getIdentifier();
+                        @SuppressWarnings("unchecked")
                         final List<String> current = (List<String>) PropertyUtils.getSimpleProperty(dto, dcProperty);
                         current.add(p.getValue());
 
@@ -382,12 +385,21 @@ public class ExportCinesService {
 
         } else {
             final BibliographicRecord record = docUnit.getRecords().iterator().next();
+            
             dto = uiBibliographicRecordService.getOneDc(record.getIdentifier());
+            if (cinesExport) {
+                final List<DocPropertyDTO> customProps = dto.getCustomProperties().stream()
+                                                        .filter(p -> !StringUtils.equals(p.getType().getSuperType(), 
+                                                                                        DocPropertyType.DocPropertySuperType.CUSTOM_ARCHIVE.name()))
+                                                        .collect(Collectors.toList());
+               dto.setCustomProperties(customProps);
+            }
         }
         
         setDefaultValues(docUnit, dto);
         return dto;
     }
+    
 
     @Transactional
     public void save(final String docUnitId, final BibliographicRecordDcDTO metaDc) {
@@ -507,7 +519,7 @@ public class ExportCinesService {
         // On ouvre une transation en fin d'export du doc si success.
         final TransactionStatus status = transactionService.startTransaction(false);
                 
-        final DocUnit doc = docUnitService.findOneWithAllDependencies(docUnitId);
+        final DocUnit doc = docUnitService.findOneWithAllDependencies(docUnitId, true);
         // Traitement
         CinesReport report = cinesReportService.createCinesReport(doc);
         
@@ -521,7 +533,7 @@ public class ExportCinesService {
         }
                
         // Recup données depuis exportData, ou sinon depuis la notice.
-        final BibliographicRecordDcDTO metaDC = getExportData(doc);
+        final BibliographicRecordDcDTO metaDC = getExportData(doc, true);
          
         try {
             // Génération des fichiers / répertoires CINES

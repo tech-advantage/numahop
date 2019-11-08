@@ -1,49 +1,6 @@
 package fr.progilone.pgcn.service.document.conditionreport;
 
-import static com.opencsv.CSVWriter.DEFAULT_ESCAPE_CHARACTER;
-import static com.opencsv.CSVWriter.DEFAULT_QUOTE_CHARACTER;
-import static com.opencsv.CSVWriter.RFC4180_LINE_END;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.BiFunction;
-import java.util.stream.Collectors;
-
-import javax.servlet.ServletOutputStream;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.opencsv.CSVWriter;
-
 import fr.opensagres.xdocreport.document.images.ClassPathImageProvider;
 import fr.opensagres.xdocreport.document.images.IImageProvider;
 import fr.progilone.pgcn.domain.document.BibliographicRecord;
@@ -74,6 +31,7 @@ import fr.progilone.pgcn.exception.message.PgcnList;
 import fr.progilone.pgcn.repository.document.DocUnitRepository;
 import fr.progilone.pgcn.repository.document.conditionreport.ConditionReportRepository;
 import fr.progilone.pgcn.repository.document.conditionreport.ConditionReportRepositoryCustom;
+import fr.progilone.pgcn.repository.project.ProjectRepository;
 import fr.progilone.pgcn.security.SecurityUtils;
 import fr.progilone.pgcn.service.JasperReportsService;
 import fr.progilone.pgcn.service.document.mapper.BibliographicRecordMapper;
@@ -88,6 +46,44 @@ import fr.progilone.pgcn.service.library.LibraryService;
 import fr.progilone.pgcn.service.user.UserService;
 import fr.progilone.pgcn.service.util.ImageUtils;
 import fr.progilone.pgcn.service.util.SortUtils;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.servlet.ServletOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.BiFunction;
+import java.util.stream.Collectors;
+
+import static com.opencsv.CSVWriter.*;
 
 @Service
 public class ConditionReportService {
@@ -193,11 +189,36 @@ public class ConditionReportService {
         } else {
             provider = null;
         }
-                                                                                                                                 
+
         if (provider != null) {
             conditionReport.setProviderEmail(provider.getEmail());
             conditionReport.setProviderName(provider.getFullName());
             conditionReport.setProviderPhone(provider.getPhoneNumber());
+            conditionReport.setProviderContactEmail(provider.getEmail());
+            conditionReport.setProviderContactName(provider.getFullName());
+            conditionReport.setProviderContactPhone(provider.getPhoneNumber());
+        }
+
+        // Responsable bibliothèque
+        if(docUnit.getProject() != null &&
+           (!StringUtils.isEmpty(docUnit.getProject().getLibRespName()) ||
+            !StringUtils.isEmpty(docUnit.getProject().getLibRespPhone()) ||
+            !StringUtils.isEmpty(docUnit.getProject().getLibRespEmail()))){
+
+            // Du côté du projet d'abord
+            conditionReport.setLibRespName(docUnit.getProject().getLibRespName());
+            conditionReport.setLibRespPhone(docUnit.getProject().getLibRespPhone());
+            conditionReport.setLibRespEmail(docUnit.getProject().getLibRespEmail());
+
+        } else if(docUnit.getLibrary() != null &&
+                  (!StringUtils.isEmpty(docUnit.getLibrary().getLibRespName()) ||
+                   !StringUtils.isEmpty(docUnit.getLibrary().getLibRespPhone()) ||
+                   !StringUtils.isEmpty(docUnit.getLibrary().getLibRespEmail()))) {
+
+            // Puis de la bibliothèque
+            conditionReport.setLibRespName(docUnit.getLibrary().getLibRespName());
+            conditionReport.setLibRespPhone(docUnit.getLibrary().getLibRespPhone());
+            conditionReport.setLibRespEmail(docUnit.getLibrary().getLibRespEmail());
         }
         return conditionReport;
     }
@@ -205,8 +226,8 @@ public class ConditionReportService {
     /**
      * Propagation du rapport aux relations filles.
      * 
-     * @param docUnitId
-     * @param typeDetail
+     * @param docUnitId String
+     * @param detailId String
      */
     @Transactional
     public Map<String, String> propagateReport(final String docUnitId, final String detailId) {
@@ -436,6 +457,8 @@ public class ConditionReportService {
      */
     @Transactional(readOnly = true)
     public Page<SearchResult> search(final List<String> libraries,
+                                     final List<String> projects,
+                                     final List<String> lots,
                                      final ConditionReportRepositoryCustom.DimensionFilter dimensions,
                                      final LocalDate from,
                                      final LocalDate to,
@@ -452,7 +475,9 @@ public class ConditionReportService {
         final Pageable pageable = new PageRequest(page, size, sort);
         // Recherche de la page d'identifiants
         final Page<String> pageOfIds =
-            conditionReportRepository.search(libraries, from, to, dimensions, parseDescriptions(descriptions), docIdentifiers, toValidateOnly, pageable);
+            conditionReportRepository.search(libraries, projects, lots,
+                                             from, to, dimensions, parseDescriptions(descriptions),
+                                             docIdentifiers, toValidateOnly, pageable);
 
         if (pageOfIds.getNumberOfElements() > 0) {
             final List<SearchResult> results = findSearchResultByIdentifierIn(pageOfIds.getContent(), toValidateOnly);
