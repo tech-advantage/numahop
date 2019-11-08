@@ -51,7 +51,7 @@ Les fichiers de configuration **.yml** doivent être mis à jour pour se conform
 
 Le profil "dev" est dédié à la mise en place d'un environnement de developpement.
 
-**Pour simplement lancer NumaHop, l'utilisation du profil "prod" est préconisé.** 
+**Pour simplement lancer NumaHop, l'utilisation du profil "prod" est préconisée.** 
 
 * MariaDB
 
