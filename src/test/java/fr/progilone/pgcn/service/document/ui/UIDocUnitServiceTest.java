@@ -1,8 +1,6 @@
 package fr.progilone.pgcn.service.document.ui;
 
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -30,6 +28,7 @@ import fr.progilone.pgcn.service.exchange.ead.ExportEadService;
 import fr.progilone.pgcn.service.exchange.internetarchive.ui.UIInternetArchiveReportService;
 import fr.progilone.pgcn.service.exchange.ssh.SftpService;
 import fr.progilone.pgcn.service.exportftpconfiguration.ExportFTPConfigurationService;
+import fr.progilone.pgcn.service.storage.AltoService;
 import fr.progilone.pgcn.service.storage.BinaryStorageManager;
 import fr.progilone.pgcn.service.util.CryptoService;
 import fr.progilone.pgcn.service.workflow.WorkflowService;
@@ -73,6 +72,8 @@ public class UIDocUnitServiceTest {
     private  DeliveryService deliveryService;
     @Mock
     private  DigitalDocumentService digitalDocumentService;
+    @Mock
+    private AltoService altoService;
     
     private UIDocUnitService service;
     
@@ -83,7 +84,10 @@ public class UIDocUnitServiceTest {
                                        bm, uiBibliographicRecordService, lockService,
                                        workflowService, esDocUnitService, cinesRequestHandlerService,
                                        exportFTPConfigurationService, sftpService, cryptoService,
-                                       lotRepository, deliveryService, digitalDocumentService);
+                                       lotRepository,
+                                       deliveryService,
+                                       digitalDocumentService,
+                                       altoService);
         
     }
     

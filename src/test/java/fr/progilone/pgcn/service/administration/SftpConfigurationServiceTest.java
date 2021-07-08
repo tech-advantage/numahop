@@ -1,15 +1,18 @@
 package fr.progilone.pgcn.service.administration;
 
-import fr.progilone.pgcn.domain.administration.SftpConfiguration;
-import fr.progilone.pgcn.domain.dto.administration.SftpConfigurationDTO;
-import fr.progilone.pgcn.domain.library.Library;
-import fr.progilone.pgcn.exception.PgcnTechnicalException;
-import fr.progilone.pgcn.exception.PgcnValidationException;
-import fr.progilone.pgcn.repository.administration.SftpConfigurationRepository;
-import fr.progilone.pgcn.service.administration.mapper.SftpConfigurationMapper;
-import fr.progilone.pgcn.service.library.mapper.LibraryMapper;
-import fr.progilone.pgcn.service.util.CryptoService;
-import fr.progilone.pgcn.util.TestUtil;
+import static fr.progilone.pgcn.exception.message.PgcnErrorCode.CONF_SFTP_LABEL_MANDATORY;
+import static fr.progilone.pgcn.exception.message.PgcnErrorCode.CONF_SFTP_LIBRARY_MANDATORY;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.HashSet;
+import java.util.Set;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,15 +21,16 @@ import org.mockito.internal.stubbing.answers.ReturnsArgumentAt;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import static fr.progilone.pgcn.exception.message.PgcnErrorCode.CONF_SFTP_LABEL_MANDATORY;
-import static fr.progilone.pgcn.exception.message.PgcnErrorCode.CONF_SFTP_LIBRARY_MANDATORY;
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import fr.progilone.pgcn.domain.administration.SftpConfiguration;
+import fr.progilone.pgcn.domain.dto.administration.SftpConfigurationDTO;
+import fr.progilone.pgcn.domain.library.Library;
+import fr.progilone.pgcn.exception.PgcnTechnicalException;
+import fr.progilone.pgcn.exception.PgcnValidationException;
+import fr.progilone.pgcn.repository.administration.SftpConfigurationRepository;
+import fr.progilone.pgcn.service.administration.mapper.SftpConfigurationMapper;
+import fr.progilone.pgcn.service.library.mapper.SimpleLibraryMapper;
+import fr.progilone.pgcn.service.util.CryptoService;
+import fr.progilone.pgcn.util.TestUtil;
 
 /**
  * Created by Sebastien on 30/12/2016.
@@ -44,7 +48,7 @@ public class SftpConfigurationServiceTest {
     @Before
     public void setUp() {
         final SftpConfigurationMapper mapper = SftpConfigurationMapper.INSTANCE;
-        ReflectionTestUtils.setField(mapper, "libraryMapper", LibraryMapper.INSTANCE);
+        ReflectionTestUtils.setField(mapper, "simpleLibraryMapper", SimpleLibraryMapper.INSTANCE);
         service = new SftpConfigurationService(sftpConfigurationRepository, cryptoService);
     }
 
@@ -104,9 +108,9 @@ public class SftpConfigurationServiceTest {
         try {
             service.save(configurationSftp);
             fail("test Save should have failed !");
-        } catch (PgcnTechnicalException e) {
+        } catch (final PgcnTechnicalException e) {
             fail("test Save should have failed with PgcnTechnicalException !");
-        } catch (PgcnValidationException e) {
+        } catch (final PgcnValidationException e) {
             TestUtil.checkPgcnException(e, CONF_SFTP_LABEL_MANDATORY, CONF_SFTP_LIBRARY_MANDATORY);
         }
 
@@ -115,7 +119,7 @@ public class SftpConfigurationServiceTest {
         final Library lib = new Library();
         lib.setIdentifier("LIB-001");
         configurationSftp.setLibrary(lib);
-        SftpConfiguration actual = service.save(configurationSftp);
+        final SftpConfiguration actual = service.save(configurationSftp);
 
         assertEquals(configurationSftp.getIdentifier(), actual.getIdentifier());
         assertNotNull(actual.getLabel());

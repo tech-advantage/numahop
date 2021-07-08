@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 
@@ -28,6 +29,7 @@ import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.library.Library;
 import fr.progilone.pgcn.exception.ExportCinesException;
 import fr.progilone.pgcn.exception.PgcnTechnicalException;
+import fr.progilone.pgcn.repository.lot.LotRepository;
 import fr.progilone.pgcn.service.administration.SftpConfigurationService;
 import fr.progilone.pgcn.service.document.DocUnitService;
 import fr.progilone.pgcn.service.document.mapper.UIExportDataMapper;
@@ -39,6 +41,7 @@ import fr.progilone.pgcn.service.library.LibraryService;
 import fr.progilone.pgcn.service.storage.BinaryStorageManager;
 import fr.progilone.pgcn.service.storage.FileStorageManager;
 import fr.progilone.pgcn.service.util.transaction.TransactionService;
+import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
 
 /**
  * Created by Sébastien on 27/12/2016.
@@ -76,6 +79,10 @@ public class ExportCinesServiceTest {
     private LibraryParameterService libraryParameterService;
     @Mock
     private TransactionService transactionService;
+    @Mock
+    private LotRepository lotRepository;
+    @Mock
+    private LibraryAccesssHelper libraryAccesssHelper;
 
     private ExportCinesService service;
 
@@ -93,14 +100,14 @@ public class ExportCinesServiceTest {
     public void setUp() {
         service = new ExportCinesService(exportMetsService, exportSipService, bm, docUnitService, uiExportDataMapper, 
                                          uiBibliographicRecordService, libraryService, sftpConfigurationService, cinesReportService,
-                                         esCinesReportService, sftpService, fm, libraryParameterService, transactionService);
+                                         esCinesReportService, sftpService, fm, libraryParameterService, transactionService, lotRepository, libraryAccesssHelper);
         ReflectionTestUtils.setField(service, "workingDir", WORKING_DIR);
     }
 
     @Test
     public void testExportDocUnit() throws IOException, JAXBException, PgcnTechnicalException, SAXException, NoSuchAlgorithmException, ExportCinesException {
         final DocUnit docUnit = getDocUnit();
-        service.exportDocUnit(docUnit, false, null, false);
+        service.exportDocUnit(docUnit, false, null, false, true);
 
         assertTrue(Files.exists(Paths.get(WORKING_DIR, docUnit.getPgcnId(), "DEPOT")));
         assertTrue(Files.exists(Paths.get(WORKING_DIR, docUnit.getPgcnId(), "DEPOT", "DESC")));
@@ -108,6 +115,20 @@ public class ExportCinesServiceTest {
         assertTrue(Files.exists(Paths.get(WORKING_DIR, docUnit.getPgcnId(), "sip.xml")));
     }
 
+    @Test
+    public void testTarDepot() throws IOException, JAXBException, PgcnTechnicalException, SAXException, NoSuchAlgorithmException, ExportCinesException {
+        
+        final DocUnit docUnit = getDocUnit();
+        final Path depot = service.exportDocUnit(docUnit, false, null, false, true);
+        
+        final Path newPath = Paths.get(depot.getParent().toFile().getAbsolutePath(), depot.toFile().getName());
+        final Path tpath = service.tarDirectory(newPath);
+        assertTrue(Files.exists(tpath));  // il existe
+        assertTrue(Files.exists(Paths.get(WORKING_DIR, docUnit.getPgcnId() + ".tar"))); // et bien là ou on l'attend en +...
+    }
+    
+    
+    
     private DocUnit getDocUnit() {
         final DocPropertyType dcCreator = new DocPropertyType();
         dcCreator.setIdentifier("creator");

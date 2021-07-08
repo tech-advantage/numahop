@@ -1,5 +1,33 @@
 package fr.progilone.pgcn.service.exchange;
 
+import static fr.progilone.pgcn.exception.message.PgcnErrorCode.MAPPING_LABEL_MANDATORY;
+import static fr.progilone.pgcn.exception.message.PgcnErrorCode.MAPPING_LIBRARY_MANDATORY;
+import static fr.progilone.pgcn.exception.message.PgcnErrorCode.MAPPING_RULE_FIELD_MANDATORY;
+import static fr.progilone.pgcn.exception.message.PgcnErrorCode.MAPPING_RULE_LABEL_MANDATORY;
+import static fr.progilone.pgcn.exception.message.PgcnErrorCode.MAPPING_RULE_PGCNID_MANDATORY;
+import static fr.progilone.pgcn.exception.message.PgcnErrorCode.MAPPING_RULE_RIGHTS_MANDATORY;
+import static fr.progilone.pgcn.exception.message.PgcnErrorCode.MAPPING_TYPE_MANDATORY;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.internal.stubbing.answers.ReturnsArgumentAt;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.test.util.ReflectionTestUtils;
+
 import fr.progilone.pgcn.domain.document.DocPropertyType;
 import fr.progilone.pgcn.domain.dto.exchange.MappingDTO;
 import fr.progilone.pgcn.domain.exchange.Mapping;
@@ -10,25 +38,9 @@ import fr.progilone.pgcn.repository.exchange.ImportReportRepository;
 import fr.progilone.pgcn.repository.exchange.MappingRepository;
 import fr.progilone.pgcn.repository.exchange.MappingRuleRepository;
 import fr.progilone.pgcn.service.exchange.mapper.MappingMapper;
-import fr.progilone.pgcn.service.library.mapper.LibraryMapper;
+import fr.progilone.pgcn.service.library.mapper.SimpleLibraryMapper;
 import fr.progilone.pgcn.util.CatchAndReturnArgumentAt;
 import fr.progilone.pgcn.util.TestUtil;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.internal.stubbing.answers.ReturnsArgumentAt;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.test.util.ReflectionTestUtils;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
-import static fr.progilone.pgcn.exception.message.PgcnErrorCode.*;
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
 
 /**
  * Created by Sebastien on 23/11/2016.
@@ -47,8 +59,8 @@ public class MappingServiceTest {
 
     @Before
     public void setUp() {
-        MappingMapper mapper = MappingMapper.INSTANCE;
-        ReflectionTestUtils.setField(mapper, "libraryMapper", LibraryMapper.INSTANCE);
+        final MappingMapper mapper = MappingMapper.INSTANCE;
+        ReflectionTestUtils.setField(mapper, "simpleLibraryMapper", SimpleLibraryMapper.INSTANCE);
         service = new MappingService(importReportRepository, mappingRepository, mappingRuleRepository);
     }
 
@@ -145,7 +157,7 @@ public class MappingServiceTest {
         try {
             service.save(mapping);
             fail("test Save should have failed !");
-        } catch (PgcnValidationException e) {
+        } catch (final PgcnValidationException e) {
             TestUtil.checkPgcnException(e,
                                         MAPPING_LABEL_MANDATORY,
                                         MAPPING_LIBRARY_MANDATORY,
@@ -165,11 +177,11 @@ public class MappingServiceTest {
 
             mapping.setRules(Arrays.asList(labelRule, pgcnIdRule, rightsRule, typeRule));
 
-            Mapping actual = service.save(mapping);
+            final Mapping actual = service.save(mapping);
 
             assertEquals(mapping.getIdentifier(), actual.getIdentifier());
             assertNotNull(actual.getLabel());
-        } catch (PgcnValidationException e) {
+        } catch (final PgcnValidationException e) {
             fail("unexpected failure: " + e.getMessage());
         }
 
@@ -177,26 +189,26 @@ public class MappingServiceTest {
         final DocPropertyType ppty = new DocPropertyType();
         ppty.setIdentifier("author");
 
-        MappingRule rule01 = new MappingRule();
-        MappingRule rule02 = new MappingRule();
+        final MappingRule rule01 = new MappingRule();
+        final MappingRule rule02 = new MappingRule();
         rule02.setProperty(ppty);
         mapping.setRules(Arrays.asList(labelRule, pgcnIdRule, rightsRule, typeRule, rule01, rule02));
 
         try {
             service.save(mapping);
             fail("test Save should have failed !");
-        } catch (PgcnValidationException e) {
+        } catch (final PgcnValidationException e) {
             TestUtil.checkPgcnException(e, MAPPING_RULE_FIELD_MANDATORY);
         }
 
         // #4 règles ok
         try {
             rule01.setDocUnitField("author");
-            Mapping actual = service.save(mapping);
+            final Mapping actual = service.save(mapping);
 
             assertEquals(mapping.getIdentifier(), actual.getIdentifier());
             assertNotNull(actual.getLabel());
-        } catch (PgcnValidationException e) {
+        } catch (final PgcnValidationException e) {
             fail("unexpected failure: " + e.getMessage());
         }
     }

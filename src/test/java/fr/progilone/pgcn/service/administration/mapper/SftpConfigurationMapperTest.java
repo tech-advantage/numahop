@@ -1,15 +1,16 @@
 package fr.progilone.pgcn.service.administration.mapper;
 
-import fr.progilone.pgcn.domain.administration.SftpConfiguration;
-import fr.progilone.pgcn.domain.dto.administration.SftpConfigurationDTO;
-import fr.progilone.pgcn.domain.library.Library;
-import fr.progilone.pgcn.service.library.mapper.LibraryMapper;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import fr.progilone.pgcn.domain.administration.SftpConfiguration;
+import fr.progilone.pgcn.domain.dto.administration.SftpConfigurationDTO;
+import fr.progilone.pgcn.domain.library.Library;
+import fr.progilone.pgcn.service.library.mapper.SimpleLibraryMapper;
 
 /**
  * Created by Sebastien on 07/12/2016.
@@ -21,7 +22,7 @@ public class SftpConfigurationMapperTest {
     @Before
     public void setUp() {
         mapper = SftpConfigurationMapper.INSTANCE;
-        ReflectionTestUtils.setField(mapper, "libraryMapper", LibraryMapper.INSTANCE);
+        ReflectionTestUtils.setField(mapper, "simpleLibraryMapper", SimpleLibraryMapper.INSTANCE);
     }
 
     @Test

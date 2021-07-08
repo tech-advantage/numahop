@@ -19,6 +19,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.exchange.cines.CinesReport;
+import fr.progilone.pgcn.domain.exchange.cines.CinesReport.Status;
 import fr.progilone.pgcn.repository.exchange.cines.CinesReportRepository;
 import fr.progilone.pgcn.service.workflow.WorkflowService;
 import fr.progilone.pgcn.util.SetIdAndReturnsArgumentAt;
@@ -137,14 +138,20 @@ public class CinesReportServiceTest {
     public void testSetReportFailed() {
         final CinesReport report = new CinesReport();
         report.setStatus(CinesReport.Status.EXPORTING);
+        report.setIdentifier("EXPORT-CINES-001");
         final String message = "la prise est débranchée";
-
+        
+        CinesReport mockReport = new CinesReport();
+        mockReport.setIdentifier("EXPORT-CINES-001");
+        mockReport.setStatus(Status.EXPORTING);
+        when(cinesReportRepository.findByIdentifier(any(String.class))).thenReturn(mockReport);
+        
         final CinesReport actual = service.failReport(report, message);
 
         verify(cinesReportRepository).save(report);
         verify(websocketService).sendObject(eq(report.getIdentifier()), anyMap());
 
         assertEquals(CinesReport.Status.FAILED, actual.getStatus());
-        assertEquals("Arrêt imprévu du traitement au statut EXPORTING avec l'erreur: la prise est débranchée", report.getMessage());
+        assertEquals("Arrêt imprévu du traitement au statut EXPORTING avec l'erreur: la prise est débranchée", actual.getMessage());
     }
 }

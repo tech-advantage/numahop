@@ -1,14 +1,16 @@
 package fr.progilone.pgcn.service.check;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -27,6 +29,7 @@ import fr.progilone.pgcn.domain.document.DigitalDocument;
 import fr.progilone.pgcn.domain.document.DocPage;
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.dto.check.AutomaticCheckTypeDTO;
+import fr.progilone.pgcn.domain.dto.check.SplitFilename;
 import fr.progilone.pgcn.domain.dto.checkconfiguration.AutomaticCheckRuleDTO;
 import fr.progilone.pgcn.domain.storage.StoredFile;
 import fr.progilone.pgcn.domain.storage.StoredFile.StoredFileType;
@@ -98,6 +101,25 @@ public class AutomaticCheckServiceTest {
         fileNames = service.findMastersOnly(files, format);
         assertEquals(5, fileNames.size());
     }
+
+    @Test
+    public void testFileNameAgainstFormatOTHER() {
+        AutomaticCheckResult result = new AutomaticCheckResult();
+        when(service.save(result)).thenReturn(result);
+        final String format = "jpg";
+        List<String> fileNames = new ArrayList<>();
+        final Collection<File> files = new ArrayList<>();
+
+        result = service.checkFileNamesAgainstFormat(result, files, format, fileNames, buildAutoCheckRule());
+        assertEquals(AutoCheckResult.KO, result.getResult());
+        assertEquals(0, fileNames.size());
+
+        fileNames = service.findNonMaster(files, format);
+        assertEquals(0, fileNames.size());
+
+        fileNames = service.findMastersOnly(files, format);
+        assertEquals(0, fileNames.size());
+    }
     
     @Test
     public void testFileNameAgainstFormatKO() {
@@ -138,19 +160,143 @@ public class AutomaticCheckServiceTest {
     
     
     /**
-     * FIXME
+     * 
      */
     @Test
     public void checkSequenceNumberOK() {
-        
+        AutomaticCheckResult result = new AutomaticCheckResult();
+        when(service.save(result)).thenReturn(result);
+
+        final Map<String, Optional<SplitFilename>> splitNames = new HashMap<>();
+
+        final String format = "jpg";
+        final List<String> fileNames = new ArrayList<>();
+        final Collection<File> files = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            files.add(new File("test_00" + i + ".jpg"));
+        }
+
+        fileNames.addAll(service.findMastersOnly(files, format));
+
+        result = service.checkSequenceNumber(result,
+                                             fileNames,
+                                             splitNames,
+                                             buildAutoCheckRule(),
+                                             false,
+                                             "_",
+                                             false,
+                                             false,
+                                             "test");
+        assertEquals(AutoCheckResult.OK, result.getResult());
+        assertEquals(5, fileNames.size());
     }
-    
+
     /**
-     * FIXME
+     * 
      */
     @Test
-    public void checkTotalFileNumber() {
-        
+    public void checkSequenceNumberKO() {
+        AutomaticCheckResult result = new AutomaticCheckResult();
+        when(service.save(result)).thenReturn(result);
+
+        final Map<String, Optional<SplitFilename>> splitNames = new HashMap<>();
+
+        final String format = "jpg";
+        final List<String> fileNames = new ArrayList<>();
+        final Collection<File> files = new ArrayList<>();
+        files.add(new File("test_001.jpg"));
+        files.add(new File("test_002.jpg"));
+        files.add(new File("test_004.jpg"));
+        files.add(new File("test_005.jpg"));
+
+        fileNames.addAll(service.findMastersOnly(files, format));
+
+        result = service.checkSequenceNumber(result,
+                                             fileNames,
+                                             splitNames,
+                                             buildAutoCheckRule(),
+                                             false,
+                                             "_",
+                                             false,
+                                             false,
+                                             "test");
+        assertEquals(AutoCheckResult.KO, result.getResult());
+        assertEquals(4, fileNames.size());
+    }
+
+    /**
+     * 
+     */
+    @Test
+    public void checkSequenceNumberWithPieceOK() {
+        AutomaticCheckResult result = new AutomaticCheckResult();
+        when(service.save(result)).thenReturn(result);
+
+        final Map<String, Optional<SplitFilename>> splitNames = new HashMap<>();
+
+        final String format = "jpg";
+        final List<String> fileNames = new ArrayList<>();
+        final Collection<File> files = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            files.add(new File("test-1_00" + i + ".jpg"));
+        }
+        for (int i = 0; i < 2; i++) {
+            files.add(new File("test-2_00" + i + ".jpg"));
+        }
+        for (int i = 0; i < 1; i++) {
+            files.add(new File("test-3_00" + i + ".jpg"));
+        }
+
+        fileNames.addAll(service.findMastersOnly(files, format));
+
+        result = service.checkSequenceNumber(result,
+                                             fileNames,
+                                             splitNames,
+                                             buildAutoCheckRule(),
+                                             false,
+                                             "_",
+                                             false,
+                                             false,
+                                             "test");
+        assertEquals(AutoCheckResult.OK, result.getResult());
+        assertEquals(6, fileNames.size());
+    }
+
+    /**
+     * 
+     */
+    @Test
+    public void checkSequenceNumberWithPieceKO() {
+        AutomaticCheckResult result = new AutomaticCheckResult();
+        when(service.save(result)).thenReturn(result);
+
+        final Map<String, Optional<SplitFilename>> splitNames = new HashMap<>();
+
+        final String format = "jpg";
+        final List<String> fileNames = new ArrayList<>();
+        final Collection<File> files = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            files.add(new File("test-1_00" + i + ".jpg"));
+        }
+        for (int i = 0; i < 2; i++) {
+            files.add(new File("test-2_00" + i + ".jpg"));
+        }
+        files.add(new File("test-3_001.jpg"));
+        files.add(new File("test-3_003.jpg"));
+
+        fileNames.addAll(service.findMastersOnly(files, format));
+
+        result = service.checkSequenceNumber(result,
+                                             fileNames,
+                                             splitNames,
+                                             buildAutoCheckRule(),
+                                             false,
+                                             "_",
+                                             false,
+                                             false,
+                                             "test");
+        assertEquals(AutoCheckResult.KO, result.getResult());
+        assertEquals(7, fileNames.size());
     }
 
     @Test

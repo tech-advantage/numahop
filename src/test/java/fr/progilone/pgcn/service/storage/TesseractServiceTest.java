@@ -1,6 +1,6 @@
 package fr.progilone.pgcn.service.storage;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -67,7 +67,7 @@ public class TesseractServiceTest {
             service.buildPdf(new File(SRC_FILES_TO_JOIN), TEST_DIR, "prefix", TEST_DIR+"/generated", "fra", new ArrayList<>(), false, "").get();
         } catch (final PgcnTechnicalException e) {
             // tesseract non configuré
-        } catch (InterruptedException | ExecutionException e) {
+        } catch (final InterruptedException | ExecutionException e) {
             // erreur du process
         }
         

@@ -1,13 +1,8 @@
 package fr.progilone.pgcn.service.workflow;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -74,14 +69,14 @@ public class WorkflowServiceTest {
     @Mock
     private ProjectService projectService;
     @Mock
-    private DocCheckHistoryService docCheckHistoryService; 
+    private DocCheckHistoryService docCheckHistoryService;
     
 
     @Before
     public void setUp() {
         docUnitWorkflowService = new DocUnitWorkflowService(docUnitWorkflowRepository, docUnitStateRepository);
         service = new WorkflowService(docUnitWorkflowService, workflowGroupService, docUnitService, recordService,
-                                      userService, conditionReportService, lotService, projectService, docCheckHistoryService);
+                                      userService, conditionReportService, lotService, projectService, docCheckHistoryService, docUnitWorkflowRepository);
         when(docUnitWorkflowService.save(any(DocUnitWorkflow.class))).then(AdditionalAnswers.returnsFirstArg());
         when(docUnitWorkflowService.save(any(DocUnitState.class))).then(AdditionalAnswers.returnsFirstArg());
     }
@@ -95,7 +90,7 @@ public class WorkflowServiceTest {
         final WorkflowModel model = generateModelOptionnal();
         final DocUnitWorkflow workflowInstance = service.initializeWorkflow(doc, model, null);
         // Il y a 20 étapes en tout
-        assertEquals(20, workflowInstance.getStates().size());
+        assertEquals(21, workflowInstance.getStates().size());
         // Une étape étant facultative, il doit en rester 2 en attente (on a en plus l'etape de validation notices dispo des le debut maintenant)
         assertEquals(2, workflowInstance.getCurrentStates().size());
         // Ce doit être l'étape VALIDATION_CONSTAT_ETAT
@@ -191,7 +186,7 @@ public class WorkflowServiceTest {
         final WorkflowModel model = generateModelComplete();
         final DocUnitWorkflow workflowInstance = service.initializeWorkflow(doc, model, null);
         // Il y a 20 étapes en tout
-        assertEquals(20, workflowInstance.getStates().size());
+        assertEquals(21, workflowInstance.getStates().size());
         // Il doit y avoir 3 étapes en attente
         assertEquals(3, workflowInstance.getCurrentStates().size());
         // Ce doit être l'étape VALIDATION_CONSTAT_ETAT et l'étape GENERATION_BORDEREAU et VALIDATION_NOTICES
@@ -238,7 +233,7 @@ public class WorkflowServiceTest {
         final DocUnit doc = generateDummyDocUnit();
         final DocUnitWorkflow workflowInstance = service.initializeWorkflow(doc, model, null);
         // Il y a 20 étapes en tout
-        assertEquals(20, workflowInstance.getStates().size());
+        assertEquals(21, workflowInstance.getStates().size());
         validateStateIsPending(workflowInstance, WorkflowStateKey.VALIDATION_CONSTAT_ETAT);
         
         // Annulation du workflow
@@ -405,6 +400,7 @@ public class WorkflowServiceTest {
         model.addModelState(generateModelState(model, WorkflowStateKey.ARCHIVAGE_DOCUMENT, true));
         model.addModelState(generateModelState(model, WorkflowStateKey.DIFFUSION_DOCUMENT, true));
         model.addModelState(generateModelState(model, WorkflowStateKey.DIFFUSION_DOCUMENT_OMEKA, true));
+        model.addModelState(generateModelState(model, WorkflowStateKey.DIFFUSION_DOCUMENT_DIGITAL_LIBRARY, false));
         model.addModelState(generateModelState(model, WorkflowStateKey.DIFFUSION_DOCUMENT_LOCALE, true));
         model.addModelState(generateModelState(model, WorkflowStateKey.CLOTURE_DOCUMENT, false));
         return model;
@@ -434,6 +430,7 @@ public class WorkflowServiceTest {
         model.addModelState(generateModelState(model, WorkflowStateKey.ARCHIVAGE_DOCUMENT, false));
         model.addModelState(generateModelState(model, WorkflowStateKey.DIFFUSION_DOCUMENT, false));
         model.addModelState(generateModelState(model, WorkflowStateKey.DIFFUSION_DOCUMENT_OMEKA, false));
+        model.addModelState(generateModelState(model, WorkflowStateKey.DIFFUSION_DOCUMENT_DIGITAL_LIBRARY, false));
         model.addModelState(generateModelState(model, WorkflowStateKey.DIFFUSION_DOCUMENT_LOCALE, false));
         model.addModelState(generateModelState(model, WorkflowStateKey.CLOTURE_DOCUMENT, false));
         return model;
