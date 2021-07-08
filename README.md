@@ -15,8 +15,8 @@ NumaHOP est composé de plusieurs modules fonctionnels permettant :
   * de valider les unités documentaires numérisées (images + métadonnées) et de les exporter vers les diffuseurs et les archiveurs
   * de produire des fichiers OCR, METS, images dérivées...
 
-NumaHOP offre la possibilité de disséminer largement et de manière automatisée les contenus numérisés, à la fois sous l’identité des établissements à travers leurs bibliothèques numériques, mais aussi vers des plates-formes externes telles qu’Internet Archive ou OMEKA.  
-  
+NumaHOP offre la possibilité de disséminer largement et de manière automatisée les contenus numérisés, à la fois sous l’identité des établissements à travers leurs bibliothèques numériques, mais aussi vers des plates-formes externes telles qu’Internet Archive ou OMEKAS.  
+
 ## Commencer
 
 NumaHop est une application SpringBoot construite avec [Maven](https://maven.apache.org/).
@@ -149,6 +149,8 @@ services:
         cache: **path to workBaseDir**/omeka/cache
     ftpexport:
         cache: **path to workBaseDir**/ftpexport/cache
+    digitalLibraryDiffusion:
+        cache: **path to workBaseDir**/digitalLibraryDiffusion/cache
 ```
 
 ### Démarrage
