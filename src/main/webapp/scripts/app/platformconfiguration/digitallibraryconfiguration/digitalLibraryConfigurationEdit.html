@@ -1,0 +1,93 @@
+<div class="col-sm-6 col-sm-offset-6 col-layout-columns" ng-controller="DigitalLibraryConfigurationEditCtrl as ctrl"
+     ng-ctrl="ctrl.init()">
+    <div class="panel panel-column-3">
+        <div class="panel-heading">
+            <div class="pull-right">
+                <button type="button" class="btn btn-sem2 btn-xs"
+                        ng-click="digitalLibraryConfigForm.$show()" uib-tooltip="{{::'Modifier' | translate}}"
+                        ng-disabled="digitalLibraryConfigForm.$visible" ng-show="ctrl.loaded"
+                        sem-roles-allowed="CONF_DIFFUSION_DIGITAL_LIBRARY_HAB1">
+                    <span class="glyphicon-regular edit"></span>
+                </button>
+                <button type="button" class="btn btn-sem2 btn-xs"
+                        ng-click="ctrl.delete(ctrl.configuration)" uib-tooltip="{{::'Supprimer' | translate}}"
+                        ng-disabled="!ctrl.configuration || !ctrl.configuration.identifier" ng-show="ctrl.loaded"
+                        sem-roles-allowed="CONF_DIFFUSION_DIGITAL_LIBRARY_HAB2">
+                    <span class="glyphicon-halflings glyphicon-trash"></span>
+                </button>
+            </div>
+            <h5 translate>Fiche</h5>
+        </div>
+        <div class="panel-body">
+            <form editable-form name="digitalLibraryConfigForm" onaftersave="ctrl.saveConfiguration()" ng-show="ctrl.loaded"
+                  ng-init="formRO = !isAuthorized([userRoles.CONF_DIFFUSION_DIGITAL_LIBRARY_HAB1])">
+
+                <numa-editable-field title="{{::'Libellé' | translate}}" placeholder="{{::'Libellé' | translate}}" form="digitalLibraryConfigForm"
+                                     model="ctrl.configuration.label" errors="{{ ctrl.errors.label }}" mandatory="true"
+                                     onbeforesave="ctrl.validation.required($data)" numa-readonly="formRO"></numa-editable-field>
+
+                <numa-editable-field title="{{::'Adresse du serveur' | translate}}" placeholder="{{::'Adresse' | translate}}" form="digitalLibraryConfigForm"
+                                     model="ctrl.configuration.address" errors="{{ ctrl.errors.address }}" mandatory="true"
+                                     onbeforesave="ctrl.validation.required($data)" numa-readonly="formRO"></numa-editable-field>
+                <numa-editable-field title="{{::'Port' | translate}}" placeholder="{{::'Port' | translate}}" form="digitalLibraryConfigForm"
+                                     model="ctrl.configuration.port" errors="{{ ctrl.errors.port }}" mandatory="true"
+                                     onbeforesave="ctrl.validation.required($data)" numa-readonly="formRO"></numa-editable-field>
+
+                <numa-editable-field title="{{::'Répertoire de destination' | translate}}" placeholder="{{::'Répertoire' | translate}}" form="digitalLibraryConfigForm"
+                                     model="ctrl.configuration.deliveryFolder" errors="{{ ctrl.errors.deliveryFolder }}" mandatory="true"
+                                     onbeforesave="ctrl.validation.required($data)" numa-readonly="formRO"></numa-editable-field>
+                <numa-editable-field title="{{::'Login' | translate}}" placeholder="{{::'Login' | translate}}" form="digitalLibraryConfigForm"
+                                     model="ctrl.configuration.login" errors="{{ ctrl.errors.login }}" numa-readonly="formRO"></numa-editable-field>
+                <numa-editable-field title="{{::'Mot de passe' | translate}}" placeholder="{{::'Mot de passe' | translate}}" form="digitalLibraryConfigForm"
+                                     default-text="{{ ::'Contenu masqué' | translate }}" model="ctrl.configuration.password"
+                                     numa-readonly="formRo"></numa-editable-field>
+                <numa-editable-field title="{{::'Email' | translate}}" model="ctrl.configuration.mail" errors="{{ ctrl.errors.mail }}" mandatory="true"
+                                     onbeforesave="ctrl.validation.required($data)" placeholder="{{::'Email' | translate}}" numa-readonly="formRO"
+                                     uib-tooltip="{{::'Email recevant une copie du fichier csv' | translate}}"></numa-editable-field>
+                <numa-editable-field title="{{::'Valeur par défaut' | translate}}" model="ctrl.configuration.defaultValue" errors="{{ ctrl.errors.defaultValue }}"
+                                     placeholder="{{::'Valeur par défaut' | translate}}" numa-readonly="formRO"
+                                     uib-tooltip="{{::'Valeur par défaut pour les champs vides' | translate}}"></numa-editable-field>
+                <numa-editable-field data-title="{{::'Actif' | translate}}" type="radiolist" form="digitalLibraryConfigForm"
+                                     model="ctrl.configuration.active" numa-readonly="formRO" errors="{{ ctrl.errors.active }}"
+                                     config="{ data: ctrl.options.boolean, displayFn: ctrl.displayBoolean,
+                                                    query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }"></numa-editable-field>
+                <numa-editable-field title="{{::'Bibliothèque' | translate}}" type="select" placeholder="{{::'Bibliothèque' | translate}}" form="digitalLibraryConfigForm"
+                                     model="ctrl.configuration.library" errors="{{ ctrl.errors.library }}"
+                                     onbeforesave="ctrl.validation.required($data)" numa-readonly="formRO" mandatory="true"
+                                     config="{ data: ctrl.options.libraries,
+                                            display: 'name', 
+                                            query: 'o.name for o in $ctrl.config.data track by o.identifier' }"
+                                     link="{ type: 'library', parameters: {'id': configuration.library.identifier} }"></numa-editable-field>
+
+                <div uib-accordion>
+                    <div uib-accordion-group ng-init="accordions.filesType = true" is-open="accordions.filesType">
+                        <uib-accordion-heading>
+                                <span class="pull-left glyphicon-halflings"
+                                      ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordions.filesType]"/>
+                            <span>{{::' Types de fichiers à exporter ' | translate}}</span>
+                        </uib-accordion-heading>
+                        <div class="row text-center">
+                            <label translate>Masters</label>
+                            <input type="checkbox" ng-model="ctrl.configuration.exportMaster" style="margin-right: 15px;" ng-disabled="!ctrl.loaded || viewMode !== viewModes.EDIT">
+                            <label translate>Alto</label>
+                            <input type="checkbox" ng-model="ctrl.configuration.exportAlto" ng-disabled="!ctrl.loaded || viewMode !== viewModes.EDIT">
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center column-bottom column-5 margin-t10" ng-if="digitalLibraryConfigForm.$visible">
+                    <div class="column-bottom-button">
+                        <!-- Création / Modification -->
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-sem4" ng-disabled="digitalLibraryConfigForm.$waiting" ng-click="ctrl.cancel()">
+                                <span class="glyphicon-regular unshare"></span> {{::'Annuler' | translate}}
+                            </button>
+                            <button type="submit" class="btn btn-sem2" sem-roles-allowed="CONF_DIFFUSION_DIGITAL_LIBRARY_HAB1">
+                                <span class="glyphicon-regular floppy-save"></span> {{::'Enregistrer' | translate}}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

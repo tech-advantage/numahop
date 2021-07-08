@@ -30,8 +30,9 @@
                                 </thead>
                                 <tbody>
                                     <tr ng-repeat="(k,v) in currentHealth.details">
-                                        <td class="col-md-6 text-left">{{k}}</td>
-                                        <td class="col-md-6 text-left">{{v}}</td>
+                                        <td class="col-md-6 text-left">{{k}}</td> 
+                                        <td ng-if="baseName(currentHealth.name) === 'diskSpace'" class="col-md-6 text-left">{{v | filesize}}</td>
+                                        <td ng-if="baseName(currentHealth.name) !== 'diskSpace'" class="col-md-6 text-left">{{v}}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -48,6 +49,8 @@
 
     <p>
         <button type="button" class="btn btn-primary" ng-click="refresh()"><span class="glyphicon-regular refresh"></span>&nbsp;<span>Refresh</span>
+        </button>
+        <button type="button" class="btn btn-primary" ng-click="index()"><span>Indexer Elasticsearch</span>
         </button>
     </p>
 

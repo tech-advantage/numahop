@@ -105,32 +105,21 @@
                 loadFilters();
             }
         }
-        function handleRedirectDocument() {
-            if (angular.isDefined($routeParams.docUnit)) {
-                $scope.filters.docUnits.push(_.find($scope.options.docUnits, { identifier: $routeParams.docUnit }));
-            } else {
-                loadFilters();
-            }
-        }
 
         /****************************************************************/
         /** Options *****************************************************/
         /****************************************************************/
         function loadOptionsAndFilters() {
             $q.all([
-                NumaHopInitializationSrvc.loadDocUnits(),
                 NumaHopInitializationSrvc.loadProjects(),
                 NumaHopInitializationSrvc.loadProviders(),
                 NumaHopInitializationSrvc.loadLibraries()])
                 .then(function (data) {
-                    $scope.options.docUnits = data[0];
-                    $scope.options.projects = data[1];
-                    $scope.options.providers = data[2];
-                    $scope.options.libraries = data[3];
+                    $scope.options.projects = data[0];
+                    $scope.options.providers = data[1];
+                    $scope.options.libraries = data[2];
 
-                    loadFilters();
                     handleRedirect();
-                    handleRedirectDocument();
 
                     nextPage().then(function () {
                         $scope.loaded = true;
@@ -267,7 +256,6 @@
         function reinitFilters(reload) {
             $scope.filters = {
                 projects: [],
-                docUnits: [],
                 statuses: [],
                 categories: [],
                 inactive: false

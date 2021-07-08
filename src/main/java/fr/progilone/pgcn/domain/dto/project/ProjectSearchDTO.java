@@ -25,11 +25,11 @@ public class ProjectSearchDTO {
         return name;
     }
 
-    public final void setIdentifier(String identifier) {
+    public void setIdentifier(String identifier) {
 		this.identifier = identifier;
 	}
 
-	public final void setName(String name) {
+	public void setName(String name) {
 		this.name = name;
 	}
 

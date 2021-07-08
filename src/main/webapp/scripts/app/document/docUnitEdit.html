@@ -73,11 +73,14 @@
                         <li ng-show="loaded && docUnit.digitalDocuments[0].status === 'VALIDATED' && canExportToCines && docUnit.records.length > 0 && docUnit.archivable">
                             <a ng-click="export('cines', docUnit, docUnit.records[0])" translate><span class="glyphicon-halflings glyphicon-export"></span> Export Cines</a>
                         </li>
-                        <li ng-show="loaded && docUnit.digitalDocuments[0].status === 'VALIDATED' && canExportToOmeka && docUnit.distributable">
+                        <li ng-show="loaded && docUnit.digitalDocuments[0].status === 'VALIDATED' && canExportToOmeka && docUnit.distributable && isAuthorized([userRoles.EXPORT_DIFFUSION_OMEKA_HAB0])">
                             <a ng-click="export('omeka', docUnit)" translate><span class="glyphicon-halflings glyphicon-export"></span> Export Omeka</a>
                         </li>
-                        <li ng-show="loaded && docUnit.digitalDocuments[0].status === 'VALIDATED' && canExportToInternetArchive && docUnit.distributable">
+                        <li ng-show="loaded && docUnit.digitalDocuments[0].status === 'VALIDATED' && canExportToInternetArchive && docUnit.distributable && isAuthorized([userRoles.EXPORT_INTERNET_ARCHIVE_HAB0])">
                             <a ng-click="export('internetarchive', docUnit)" translate><span class="glyphicon-halflings glyphicon-export"></span> Export Internet Archive</a>
+                        </li>
+                        <li ng-show="loaded && docUnit.digitalDocuments[0].status === 'VALIDATED' && canExportToDigitalLibrary && docUnit.distributable && isAuthorized([userRoles.EXPORT_DIFFUSION_DIGITAL_LIBRARY_HAB0])">
+                            <a ng-click="export('digitallibrary', docUnit)" translate><span class="glyphicon-halflings glyphicon-export"></span> Export sur bibliothèque numérique</a>
                         </li>
                         <li ng-show="loaded && docUnit.digitalDocuments[0].status === 'VALIDATED' && canExportToCines">
                             <a ng-click="checkFacile()" translate>Validation FACILE (Cines)</a>
@@ -354,25 +357,26 @@
 <!--                             <span ng-repeat="err in facileErrors"> -->
 <!--                                 <span ng-if="$first">[</span> -->
 <!--                                     {{err | translate}} -->
-<!--                                  <span ng-if="!$last"> - </span> -->
-<!--                                  <span ng-if="$last"> ] </span> -->
-<!--                             </span>                  -->
+                            <!--                                  <span ng-if="!$last"> - </span> -->
+                            <!--                                  <span ng-if="$last"> ] </span> -->
+                            <!--                             </span>                  -->
                                              
                         </span>
                         <span ng-if="!dateFacileResults">
-                            <numa-editable-field title="{{::'Validation FACILE' | translate}}" type="readonly" 
-                                             value="{{ facileResults | translate }}"></numa-editable-field>
+                            <numa-editable-field title="{{::'Validation FACILE' | translate}}" type="readonly"
+                                                 value="{{ facileResults | translate }}"></numa-editable-field>
                         </span>
-                        
-                        
-                        
-                        <numa-editable-field title="{{::'Archivable' | translate}}" type="radiolist" model="docUnit.archivable" form="entityForm"
+
+
+                        <numa-editable-field title="{{::'Archivable' | translate}}" type="radiolist" id="archivable"
+                                             model="docUnit.archivable" form="entityForm"
                                              config="{ data: options.booleanObj, displayFn: displayBoolean, 
-                                                       query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }" 
+                                                       query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }"
                                              numa-readonly="formRO" errors="{{ errors.archivable }}"></numa-editable-field>
-                        <numa-editable-field title="{{::'Archivé au Cines' | translate}}" type="radiolist" model="cinesArchived"
+                        <numa-editable-field title="{{::'Archivé au Cines' | translate}}" type="radiolist" id="cinesArchived"
+                                             model="cinesArchived"
                                              config="{ data: options.booleanObj, displayFn: displayBoolean, 
-                                                       query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }" 
+                                                       query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }"
                                              numa-readonly="true"></numa-editable-field>
                     </div>
 
@@ -399,17 +403,17 @@
                         model="docUnit.omekaItem" numa-readonly="formRO" errors="{{ errors.omekaItem }}"
 	                    config="{ data: [{name: ''}].concat(options.omekaItems),
 	                              display: 'name',
-	                              query: 'o.name for o in $ctrl.config.data track by o.identifier'}"> </numa-editable-field>          
+	                              query: 'o.name for o in $ctrl.config.data track by o.identifier'}"> </numa-editable-field>
 
-                       <numa-editable-field title="{{::'Diffusable' | translate}}" type="radiolist" 
+                       <numa-editable-field title="{{::'Diffusable' | translate}}" type="radiolist" id="distributable"
                                             model="docUnit.distributable" numa-readonly="formRO" form="entityForm"
                                             config="{ data: options.booleanObj, displayFn: displayBoolean, 
-                                                      query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }" 
-                                            errors="{{ errors.distributable }}"></numa-editable-field>    
-                       <numa-editable-field title="{{::'Diffusé sur Internet Archive' | translate}}" type="radiolist" model="iaArchived" 
+                                                      query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }"
+                                            errors="{{ errors.distributable }}"></numa-editable-field>
+                       <numa-editable-field title="{{::'Diffusé sur Internet Archive' | translate}}" type="radiolist" id="iaArchived" model="iaArchived"
                                             config="{ data: options.booleanObj, displayFn: displayBoolean, 
-                                                      query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }" 
-                                           numa-readonly="true"></numa-editable-field>
+                                                      query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }"
+                                            numa-readonly="true"></numa-editable-field>
                        <numa-editable-field title="{{::'Url ark' | translate}}" model="docUnit.arkUrl" ng-if="iaArchived"
                                            numa-readonly="true"></numa-editable-field>                    
                        <numa-editable-field title="{{::'Diffusé sur Omeka' | translate}}" type="text" model="omekaDistribStatus"  
@@ -419,10 +423,10 @@
                                             config="{ data: options.rights, 
                                                       displayFn: displayRight,
                                                       query: 'key as value for (key, value) in $ctrl.config.data' }"></numa-editable-field>
-                       <numa-editable-field title="{{::'Référence auteur trouvée' | translate}}" type="radiolist" 
+                       <numa-editable-field title="{{::'Référence auteur trouvée' | translate}}" type="radiolist" id="foundRefAuthor"
                                             model="docUnit.foundRefAuthor" numa-readonly="formRO" form="entityForm"
                                             config="{ data: options.booleanObj, displayFn: displayBoolean, 
-                                                      query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }" 
+                                                      query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }"
                                             errors="{{ errors.distributable }}"></numa-editable-field>                               
                        
                        <numa-editable-field title="{{::'Etat de la demande' | translate}}" type="select" form="entityForm" 

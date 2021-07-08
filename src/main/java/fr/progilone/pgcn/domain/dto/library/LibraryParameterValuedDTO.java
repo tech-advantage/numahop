@@ -23,7 +23,7 @@ public class LibraryParameterValuedDTO extends AbstractDTO {
         return identifier;
     }
 
-	public final void setIdentifier(final String identifier) {
+	public void setIdentifier(final String identifier) {
 		this.identifier = identifier;
 	}
 
@@ -31,7 +31,7 @@ public class LibraryParameterValuedDTO extends AbstractDTO {
         return type;
     }
 
-    public final void setType(final String type) {
+    public void setType(final String type) {
         this.type = type;
     }
 
@@ -39,7 +39,7 @@ public class LibraryParameterValuedDTO extends AbstractDTO {
         return library;
     }
 
-    public final void setLibrary(final SimpleLibraryDTO library) {
+    public void setLibrary(final SimpleLibraryDTO library) {
         this.library = library;
     }
 

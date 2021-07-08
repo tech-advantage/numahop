@@ -105,15 +105,21 @@
                                     {{::'Archivage CINES' | translate}}
                                 </a>
                             </li>
-                            <li role="menuitem">
+                            <li role="menuitem" ng-if="isAuthorized([userRoles.EXPORT_DIFFUSION_OMEKA_HAB0])">
                                 <a ng-click="mainCtrl.massOmeka()" class="btn-xs">
                                     <span class="glyphicon-halflings glyphicon-export"></span>
-                                     {{::'Export Omeka' | translate}}</a>
-                        </li>
-                            <li role="menuitem">
+                                    {{::'Export Omeka' | translate}}</a>
+                            </li>
+                            <li role="menuitem" ng-if="isAuthorized([userRoles.EXPORT_INTERNET_ARCHIVE_HAB0])">
                                 <a ng-click="mainCtrl.massIA()" class="btn-xs">
                                     <span class="glyphicon-halflings glyphicon-export"></span>
                                     {{::'Diffusion Internet Archive' | translate}}
+                                </a>
+                            </li>
+                            <li role="menuitem" ng-if="isAuthorized([userRoles.EXPORT_DIFFUSION_DIGITAL_LIBRARY_HAB0])">
+                                <a ng-click="mainCtrl.massDigitalLibrary()" class="btn-xs">
+                                    <span class="glyphicon-halflings glyphicon-export"></span>
+                                    {{::'Diffusion bibliothèque numérique' | translate}}
                                 </a>
                             </li>
                             <li role="separator" class="divider" sem-roles-allowed="DOC_UNIT_HAB2"></li>

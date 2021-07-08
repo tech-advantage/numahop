@@ -19,7 +19,7 @@ public class LibraryParameterValueCinesDTO extends AbstractLibraryParameterValue
         return type;
     }
 
-    public final void setType(String type) {
+    public void setType(String type) {
         this.type = type;
     }
 
@@ -27,7 +27,7 @@ public class LibraryParameterValueCinesDTO extends AbstractLibraryParameterValue
         return value;
     }
 
-    public final void setValue(String value) {
+    public void setValue(String value) {
         this.value = value;
     }
 }

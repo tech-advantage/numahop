@@ -137,6 +137,7 @@
                 "workflow.ARCHIVAGE_DOCUMENT": gettextCatalog.getString('Documents en attente d\'archivage CINES'),
                 "workflow.DIFFUSION_DOCUMENT": gettextCatalog.getString('Documents en attente de diffusion IA'),
                 "workflow.DIFFUSION_DOCUMENT_OMEKA": gettextCatalog.getString('Documents en attente de diffusion Omeka'),
+                "workflow.DIFFUSION_DOCUMENT_DIGITAL_LIBRARY": gettextCatalog.getString('Diffusion  du document sur une bibliothèque numérique'),
                 "workflow.DIFFUSION_DOCUMENT_LOCALE": gettextCatalog.getString('Documents en attente de diffusion locale'),
                 "workflow.INITIALISATION_DOCUMENT": gettextCatalog.getString('Initialisation'),
                 "workflow.NUMERISATION_EN_ATTENTE": gettextCatalog.getString('En attente de numérisation'),
@@ -174,6 +175,7 @@
                 "workflow.model.ARCHIVAGE_DOCUMENT": gettextCatalog.getString('Archivage du document (export CINES)'),
                 "workflow.model.DIFFUSION_DOCUMENT": gettextCatalog.getString('Diffusion IA du document'),
                 "workflow.model.DIFFUSION_DOCUMENT_OMEKA": gettextCatalog.getString('Diffusion Omeka du document'),
+                "workflow.model.DIFFUSION_DOCUMENT_DIGITAL_LIBRARY": gettextCatalog.getString('Diffusion  du document sur une bibliothèque numérique'),
                 "workflow.model.DIFFUSION_DOCUMENT_LOCALE": gettextCatalog.getString('Diffusion locale du document'),
                 "workflow.model.INITIALISATION_DOCUMENT": gettextCatalog.getString('Initialisation'),
                 "workflow.model.NUMERISATION_EN_ATTENTE": gettextCatalog.getString('En attente de numérisation'),
@@ -183,6 +185,7 @@
                 // Types de diffusion
                 "workflow.type.DIFFUSION_DOCUMENT": gettextCatalog.getString('IA'),
                 "workflow.type.DIFFUSION_DOCUMENT_OMEKA": gettextCatalog.getString('Omeka'),
+                "workflow.type.DIFFUSION_DOCUMENT_DIGITAL_LIBRARY": gettextCatalog.getString('Diffusion  du document sur une bibliothèque numérique'),
                 "workflow.type.DIFFUSION_DOCUMENT_LOCALE": gettextCatalog.getString('locale'),
 
                 // Types de value (LibraryParam)

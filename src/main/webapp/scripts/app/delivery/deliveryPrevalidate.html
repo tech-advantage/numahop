@@ -71,7 +71,8 @@
                             <thead>
                             <tr>
                                 <th translate>Document</th>
-                                <th translate>Pages</th>
+                                <th style="text-align: center;" translate>Pages</th>
+                                <th style="text-align: center;" translate>Pièces</th>
                                 <th translate>Fichiers autres (métadonnées, dérivés, ..)</th>
                             </tr>
                             </thead>
@@ -80,18 +81,21 @@
                                 <td>{{::doc.digitalId}}
                                     <br/>
                                     <div class="padding-t20 text-center">
-			                                <div class="btn-group btn-group-sm">
-			                                    <input bs-switch 
-			                                           ng-model="doc.includeDoc"
-			                                           type="checkbox"
-			                                           ng-change="updateIncludeDoc(doc)"
-			                                           switch-on-text="{{ onLabelActiv | translate }}"
-			                                           switch-off-text="{{ offLabelActiv | translate }}"
-			                                           switch-label-width="0px"/>
-			                                </div>
+                                        <div class="btn-group btn-group-sm">
+                                            <input bs-switch
+                                                   ng-model="doc.includeDoc"
+                                                   type="checkbox"
+                                                   ng-change="updateIncludeDoc(doc)"
+                                                   switch-on-text="{{ onLabelActiv | translate }}"
+                                                   switch-off-text="{{ offLabelActiv | translate }}"
+                                                   switch-label-width="0px"/>
+                                        </div>
                                     </div>
                                 </td>
-                                <td>{{::doc.pageNumber}}</td>
+                                <td style="text-align: center;">{{::doc.pageNumber}}</td>
+                                <td style="text-align: center;" uib-tooltip="{{::doc.pieces}}">
+                                    {{::doc.pieces.length}}
+                                </td>
                                 <td>
                                     <table class="table table-condensed">
                                         <thead>
@@ -100,7 +104,7 @@
                                             <th translate>Rôle</th>
                                         </tr>
                                         </thead>
-                                        <tbody> 
+                                        <tbody>
                                         <tr ng-repeat="file in doc.metaDataFiles">
                                             <td>
                                                 <div>

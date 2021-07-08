@@ -18,9 +18,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.MarshalException;
 
@@ -32,6 +34,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +43,7 @@ import org.xml.sax.SAXException;
 
 import fr.progilone.pgcn.domain.administration.SftpConfiguration;
 import fr.progilone.pgcn.domain.document.BibliographicRecord;
+import fr.progilone.pgcn.domain.document.DocPage;
 import fr.progilone.pgcn.domain.document.DocPropertyType;
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.document.ExportData;
@@ -49,12 +54,16 @@ import fr.progilone.pgcn.domain.exchange.cines.CinesReport;
 import fr.progilone.pgcn.domain.library.Library;
 import fr.progilone.pgcn.domain.library.LibraryParameter;
 import fr.progilone.pgcn.domain.library.LibraryParameterValueCines.LibraryParameterValueCinesType;
+import fr.progilone.pgcn.domain.lot.Lot;
 import fr.progilone.pgcn.domain.storage.CheckSummedStoredFile;
 import fr.progilone.pgcn.domain.storage.StoredFile;
+import fr.progilone.pgcn.domain.workflow.DocUnitState;
 import fr.progilone.pgcn.domain.workflow.WorkflowStateKey;
+import fr.progilone.pgcn.domain.workflow.WorkflowStateStatus;
 import fr.progilone.pgcn.exception.ExportCinesException;
 import fr.progilone.pgcn.exception.PgcnTechnicalException;
 import fr.progilone.pgcn.exception.PgcnUncheckedException;
+import fr.progilone.pgcn.repository.lot.LotRepository;
 import fr.progilone.pgcn.service.administration.SftpConfigurationService;
 import fr.progilone.pgcn.service.document.DocUnitService;
 import fr.progilone.pgcn.service.document.mapper.UIExportDataMapper;
@@ -66,7 +75,9 @@ import fr.progilone.pgcn.service.library.LibraryService;
 import fr.progilone.pgcn.service.storage.BinaryStorageManager;
 import fr.progilone.pgcn.service.storage.FileStorageManager;
 import fr.progilone.pgcn.service.util.FileUtils.CheckSumType;
+import fr.progilone.pgcn.service.util.TarUtils;
 import fr.progilone.pgcn.service.util.transaction.TransactionService;
+import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
 
 /**
  * Created by Sébastien on 27/12/2016.
@@ -104,6 +115,8 @@ public class ExportCinesService {
     private final FileStorageManager fm;
     private final LibraryParameterService libraryParameterService;
     private final TransactionService transactionService;
+    private final LotRepository lotRepository;
+    private final LibraryAccesssHelper libraryAccesssHelper;
     
 
     @Autowired
@@ -113,7 +126,7 @@ public class ExportCinesService {
                               final SftpConfigurationService sftpConfigurationService, final CinesReportService cinesReportService, 
                               final EsCinesReportService esCinesReportService, final SftpService sftpService, 
                               final FileStorageManager fm, final LibraryParameterService libraryParameterService,
-                              final TransactionService transactionService) {
+                              final TransactionService transactionService, final LotRepository lotRepository, final LibraryAccesssHelper libraryAccesssHelper) {
         
         this.exportMetsService = exportMetsService;
         this.exportSipService = exportSipService;
@@ -129,7 +142,8 @@ public class ExportCinesService {
         this.fm =fm;
         this.libraryParameterService = libraryParameterService;
         this.transactionService = transactionService;
-        
+        this.lotRepository = lotRepository;
+        this.libraryAccesssHelper = libraryAccesssHelper;
     }
 
     @PostConstruct
@@ -152,6 +166,187 @@ public class ExportCinesService {
         final DocUnit doc = docUnitService.findOneWithLibrary(docUnitId);
         return doc.getLibrary().getIdentifier();
     }
+    
+    /**
+     * Export unitaire manuel.
+     * Génération du répertoire d'export et upload sur le serveur CINES
+     *
+     * @param request
+     * @param docUnitId
+     * @param metaDc
+     * @param metaEad
+     * @param conf
+     * @return
+     */
+    @Transactional
+    public ResponseEntity<CinesReport> exportDocUnitToCines(final HttpServletRequest request,
+                                                             final String docUnitId,
+                                                             final BibliographicRecordDcDTO metaDc,
+                                                             final boolean reversion,
+                                                             final boolean metaEad,
+                                                             SftpConfiguration conf) {
+        
+        final DocUnit docUnit = docUnitService.findOneWithAllDependencies(docUnitId, true);
+        // Non trouvé
+        if (docUnit == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        // Vérification de la bibliothèque de l'utilisateur
+        // 1/ sur l'unité documentaire
+        if (!libraryAccesssHelper.checkLibrary(request, docUnit, DocUnit::getLibrary)) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+        // 2/ sur la configuration SFTP
+        if (conf != null) {
+            conf = sftpConfigurationService.findOne(conf.getIdentifier());
+            if (!libraryAccesssHelper.checkLibrary(request, conf, SftpConfiguration::getLibrary)) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+        } else {
+            // TODO: définir une configuration SFTP par défaut par type d'export
+            final Set<SftpConfiguration> confs = sftpConfigurationService.findByLibrary(docUnit.getLibrary(), true);
+            if (!confs.isEmpty()) {
+                conf = confs.iterator().next();
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        }
+        // Traitement
+        CinesReport report = cinesReportService.createCinesReport(docUnit);
+        try {
+            // Génération des fichiers / répertoires CINES
+            final Path path = exportDocUnit(docUnit, reversion, metaDc, metaEad, true);
+
+            // PAC V3 : on tar a partir du repertoire racine
+            final Path tarpath = tarDirectory(path);
+            
+            // Tranferts du répertoire généré
+            report = cinesReportService.setReportSending(report);
+            sftpService.sftpPut(conf, tarpath);
+            report = cinesReportService.setReportSent(report);
+            
+            // sauvegarde des fichiers sip.xml et mets.xml avant nettoyage
+            keepLastCopySip(path, docUnit.getIdentifier());
+            keepLastCopyMets(path, docUnit.getIdentifier());
+            
+            // Suppression du répertoire généré, après le traitement
+            LOG.debug("Suppression du répertoire {}", path.toAbsolutePath().toString());
+            FileUtils.deleteQuietly(path.toFile());
+            FileUtils.deleteQuietly(tarpath.toFile());
+            
+            // pas d'erreur, on peut versionner
+            docUnitService.incrementDocUnitVersion(docUnit);
+
+            // Indexation
+            esCinesReportService.indexAsync(report.getIdentifier());
+
+            return new ResponseEntity<>(report, HttpStatus.OK);
+
+        } catch (final MarshalException e) {
+            if (e.getCause() != null) {
+                return failReport(e.getCause(), report);
+            } else {
+                return failReport(e, report);
+            }
+        } catch (final Exception e) {
+            return failReport(e, report);
+        }
+    }
+
+    
+    /**
+     * Export en masse.
+     * Génération du répertoire d'export et upload sur le serveur CINES
+     *
+     * @param request
+     * @param docUnitId
+     * @return
+     */
+    @Transactional
+    public ResponseEntity<CinesReport> exportDocUnitToCines(final HttpServletRequest request, final String docUnitId) {
+
+        final DocUnit docUnit = docUnitService.findOneWithAllDependencies(docUnitId, true);
+        final SftpConfiguration conf;
+        // Non trouvé
+        if (docUnit == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        if (docUnit.getRecords().isEmpty()) {
+            LOG.debug("Impossible d'exporter l'unité documentaire [{}] : Pas de notice", docUnit.getPgcnId());
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        // Vérification de la bibliothèque de l'utilisateur
+        // Vérifier accès
+        if (!libraryAccesssHelper.checkLibrary(request, docUnit, DocUnit::getLibrary)) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+        // Trouver une configuration SFTP
+        final Set<SftpConfiguration> confs = sftpConfigurationService.findByLibrary(docUnit.getLibrary(), true);
+        if (!confs.isEmpty()) {
+            conf = confs.iterator().next();
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        
+        // Traitement
+        CinesReport report = cinesReportService.createCinesReport(docUnit);
+        try {
+            // Génération des fichiers / répertoires CINES
+            final BibliographicRecordDcDTO metaDc = getExportData(docUnit, true);
+            final Path path = exportDocUnit(docUnit, true, metaDc, false, true);
+            
+            // PAC V3 : on tar a partir du repertoire racine
+            final Path tarpath = tarDirectory(path);
+
+            // Tranferts du répertoire généré
+            report = cinesReportService.setReportSending(report);
+            sftpService.sftpPut(conf, tarpath);
+            report = cinesReportService.setReportSent(report);
+            
+            // sauvegarde des fichiers sip.xml et mets.xml avant nettoyage
+            keepLastCopySip(path, docUnit.getIdentifier());
+            keepLastCopyMets(path, docUnit.getIdentifier());
+
+            // Suppression du répertoire généré, après le traitement
+            LOG.debug("Suppression du répertoire {}", path.toAbsolutePath().toString());
+            FileUtils.deleteQuietly(path.toFile());
+            FileUtils.deleteQuietly(tarpath.toFile());
+
+            // pas d'erreur, on peut versionner
+            docUnitService.incrementDocUnitVersion(docUnit);
+            
+            // Indexation
+            esCinesReportService.indexAsync(report.getIdentifier());
+            
+            // pas d'erreur, on peut versionner
+            docUnitService.incrementDocUnitVersion(docUnit);
+
+            return new ResponseEntity<>(report, HttpStatus.OK);
+
+        } catch (final MarshalException e) {
+            if (e.getCause() != null) {
+                return failReport(e.getCause(), report);
+            } else {
+                return failReport(e, report);
+            }
+        } catch (final Exception e) {
+            return failReport(e, report);
+        }
+    }
+    
+    /**
+     * 
+     * @param e
+     * @param report
+     * @return
+     */
+    private ResponseEntity<CinesReport> failReport(final Throwable e, CinesReport report) {
+        LOG.error(e.getMessage(), e);
+        report = cinesReportService.failReport(report, e.getMessage());
+        esCinesReportService.indexAsync(report.getIdentifier());
+        return new ResponseEntity<>(report, HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+    
     
     /**
      * <h1>Export CINES</h1>
@@ -183,13 +378,12 @@ public class ExportCinesService {
      * @param docUnit
      * @param metaDc
      * @param metaEad
-     * @param directory
      * @throws NoSuchAlgorithmException
      * @throws PgcnTechnicalException
      * @throws SAXException
      */
     public Path exportDocUnit(final DocUnit docUnit, final boolean reversion, final BibliographicRecordDcDTO metaDc, 
-                                                     final boolean metaEad) throws
+                                                     final boolean metaEad, final boolean generateSip) throws
                                                                                                           IOException,
                                                                                                           JAXBException,
                                                                                                           PgcnTechnicalException,
@@ -229,8 +423,10 @@ public class ExportCinesService {
             // DEPOT/DESC: métadonnées de pérennisation, format DC, lien des fichiers
             final String checkSumMets =
                 createDocUnitMetaData(docUnit, metaDc, metaEad, depotPath, listWithCheckSummedStoredFiles, DIR_DESC, FILE_METS_XML);
-            // SIP.xml: métadonnées du document à archiver
-            createDocUnitMetadata(docUnit, metaDc, listWithCheckSummedStoredFiles, root, checkSumMets, FILE_SIP_XML, verifiedReversion);
+            if (generateSip) {
+                // SIP.xml: métadonnées du document à archiver
+                createDocUnitMetadata(docUnit, metaDc, listWithCheckSummedStoredFiles, root, checkSumMets, FILE_SIP_XML, verifiedReversion);
+            }
 
         } catch (final UncheckedIOException e) {
             throw new IOException(e);
@@ -298,9 +494,11 @@ public class ExportCinesService {
         final List<CheckSummedStoredFile> checkSums = new ArrayList<>();
         docUnit.getDigitalDocuments().forEach(digitalDoc -> {
             // # 2503 filtre car on ne veut pas un éventuel pdf associé.
-            digitalDoc.getOrderedPages().stream()
-                                    .filter(page-> page.getNumber() != null)
-                                    .forEach(page -> {
+            List<DocPage> pages = digitalDoc.getOrderedPages().stream().filter(page -> page.getNumber() != null).collect(Collectors.toList());
+            if (docUnit.getLot().getRequiredFormat().equalsIgnoreCase("PDF")) {
+                pages = digitalDoc.getOrderedPages().stream().filter(page -> page.getNumber() == null).collect(Collectors.toList());
+            }
+            pages.forEach(page -> {
                 if (page.getMaster().isPresent()) {
                     final StoredFile masterStoredFile = page.getMaster().get();
                     final File sourceFile = bm.getFileForStoredFile(masterStoredFile, libraryId);
@@ -364,7 +562,7 @@ public class ExportCinesService {
     @Transactional
     public BibliographicRecordDcDTO getExportData(final DocUnit docUnit, final boolean cinesExport) {
         final ExportData ed = docUnit.getExportData();
-        BibliographicRecordDcDTO dto;
+        final BibliographicRecordDcDTO dto;
         if(ed != null) {
             dto = new BibliographicRecordDcDTO();
             ed.getProperties()
@@ -378,7 +576,7 @@ public class ExportCinesService {
                         final List<String> current = (List<String>) PropertyUtils.getSimpleProperty(dto, dcProperty);
                         current.add(p.getValue());
 
-                    } catch (ReflectiveOperationException | IllegalArgumentException e) {
+                  } catch (final ReflectiveOperationException | IllegalArgumentException e) {
                         LOG.error(e.getMessage(), e);
                     }
                 });
@@ -471,6 +669,50 @@ public class ExportCinesService {
         }
     }
     
+    /**
+     * Sauvegarde une copie du fichier METS avant le nettoyage du depot du cache en fin d'export CINES.
+     * 
+     * @param srcPath
+     * @param docUnit
+     */
+    public void keepLastCopyMets(final Path srcPath, final String docUnit) {
+        
+        final Path metsPath = Paths.get(srcPath.toFile().getAbsolutePath(), DIR_DEPOT, DIR_DESC);
+        final File mets = fm.retrieveFile(metsPath.toFile(), FILE_METS_XML);
+        final Path destPath = Paths.get(cinesAipDir, getDocLibraryId(docUnit), docUnit);
+               
+        try (final BufferedInputStream input = new BufferedInputStream(new FileInputStream(mets))) {    
+            fm.copyInputStreamToFile(input, destPath.toFile(), FILE_METS_XML, true, false);
+            
+        } catch (final FileNotFoundException e) {
+            LOG.error("Fichier {} non trouvé.", mets.getName(), e);
+        } catch (final IOException e) {
+            LOG.error("Erreur {} lors du traitement du fichier {}.", e.getMessage(), mets.getName(), e);
+        }
+    }
+    
+    /**
+     * Sauvegarde une copie du fichier METS avant le nettoyage du depot du cache pour le rattrapage de génération mets.
+     * 
+     * @param srcPath
+     * @param docUnit
+     */
+    public void keepLastCopyMetsAdmin(final Path srcPath, final String docUnit, final String libraryId) {
+        
+        final Path metsPath = Paths.get(srcPath.toFile().getAbsolutePath(), DIR_DEPOT, DIR_DESC);
+        final File mets = fm.retrieveFile(metsPath.toFile(), FILE_METS_XML);
+        final Path destPath = Paths.get(cinesAipDir, libraryId, docUnit);
+               
+        try (final BufferedInputStream input = new BufferedInputStream(new FileInputStream(mets))) {    
+            fm.copyInputStreamToFileAdmin(input, destPath.toFile(), FILE_METS_XML, true);
+            
+        } catch (final FileNotFoundException e) {
+            LOG.error("Fichier {} non trouvé.", mets.getName(), e);
+        } catch (final IOException e) {
+            LOG.error("Erreur {} lors du traitement du fichier {}.", e.getMessage(), mets.getName(), e);
+        }
+    }
+    
     
     /**
      * Retrouve les docUnit candidates pour l'export vers CINES. 
@@ -537,19 +779,24 @@ public class ExportCinesService {
          
         try {
             // Génération des fichiers / répertoires CINES
-            final Path path = exportDocUnit(doc, reversion, metaDC, false);
+            final Path path = exportDocUnit(doc, reversion, metaDC, false, true);
+            
+            // PAC V3 : on tar a partir du repertoire racine
+            final Path tarpath = tarDirectory(path);
             
             // Tranferts du répertoire généré
             report = cinesReportService.setReportSending(report);
-            sftpService.sftpPut(conf, path);
+            sftpService.sftpPut(conf, tarpath);
             report = cinesReportService.setReportSent(report);
             
-            // sauvegarde du fichier sip.xml avant nettoyage
+            // sauvegarde des fichiers sip.xml et mets.xml avant nettoyage
             keepLastCopySip(path, doc.getIdentifier());
+            keepLastCopyMets(path, doc.getIdentifier());
             
             // Suppression du répertoire généré, après le traitement
             LOG.debug("Suppression du répertoire {}", path.toAbsolutePath().toString());
             FileUtils.deleteQuietly(path.toFile());
+            FileUtils.deleteQuietly(tarpath.toFile());
             
             docUnitService.incrementDocUnitVersion(doc);
             
@@ -570,6 +817,82 @@ public class ExportCinesService {
             esCinesReportService.indexAsync(report.getIdentifier());
         }
         return report;
+    }
+    
+    
+    public Path tarDirectory(final Path depot) throws ExportCinesException, IOException {
+        
+        final File tarDirectory = depot.getParent().toFile();
+        final String tarName = depot.getFileName() + ".tar";
+        final List<File> files = Files.walk(depot).map(Path::toFile).collect(Collectors.toList());
+        final File[] tabFiles = files.toArray(new File[files.size()]);
+        
+        try {
+            TarUtils.compress(tarDirectory.getAbsolutePath() + File.separator + tarName, depot, tabFiles);
+        } catch (final IOException e) {
+            LOG.error("Erreur lors de la compression du tar {}", tarName, e);
+            throw new ExportCinesException("Erreur lors de la compression du tar " + tarName);
+        }
+
+        final Path tarPath = Paths.get(tarDirectory.getAbsolutePath(), tarName);
+        
+        return tarPath;
+    }
+    
+    /**
+     * 
+     * @param libraryId
+     */
+    public void regenerateMetsforArchivedDocUnits(final String libraryId) {
+        
+        // lots concernés : actifs ou non mais pas encore archivés (on a besoin des fichiers)...
+        final Set<String> idLots = lotRepository.findAllByProjectLibraryIdentifierIn(Arrays.asList(libraryId))
+                .stream().filter(lo-> !lo.isFilesArchived())
+                .map(Lot::getIdentifier).collect(Collectors.toSet());
+        
+        idLots.forEach(idLot -> {
+            // docUnits : les docUnits qui ont été archivés au Cines
+            final Set<String> docIds = docUnitService.findAllByLotId(idLot)
+                                        .stream()
+                                        .filter(doc -> doc.getCinesVersion() != null)  // on veut les docUnits déjà archivés 
+                                        .map(DocUnit::getIdentifier).collect(Collectors.toSet());
+            
+            LOG.info("Regenerate Mets for Archived DocUnits - lot {}", idLot);           
+            docIds.forEach(id -> {
+                transactionService.executeInNewTransaction(() -> {
+                
+                    // recup docUnit bien lourde
+                    final DocUnit docUnit = docUnitService.findOneWithAllDependencies(id, true);
+                    if (docUnit != null && docUnit.getWorkflow() != null) {
+                        
+                        final List<DocUnitState> statesForKey = docUnit.getWorkflow().getByKey(WorkflowStateKey.ARCHIVAGE_DOCUMENT);
+                        if (statesForKey.size() == 1) {
+                        
+                            final DocUnitState state = statesForKey.get(0);
+                            if (state.isDone() && state.getStatus() == WorkflowStateStatus.FINISHED) {
+                        
+                                try {
+                                    // Génération des fichiers / répertoires CINES
+                                    final BibliographicRecordDcDTO metaDc = getExportData(docUnit, true);
+                                    final Path path = exportDocUnit(docUnit, true, metaDc, false, false);
+            
+                                    // Ce pourquoi on est la !!
+                                    keepLastCopyMetsAdmin(path, docUnit.getIdentifier(), libraryId);
+            
+                                    // Suppression du répertoire généré, après le traitement
+                                    LOG.debug("Suppression du répertoire {}", path.toAbsolutePath().toString());
+                                    FileUtils.deleteQuietly(path.toFile());
+            
+                                } catch (final Exception e ) {
+                                    LOG.error("Erreur Marshalling:  ", e);
+                                }
+                            }    
+                        }
+                    } 
+                });
+            });                      
+        });
+        
     }
     
 }

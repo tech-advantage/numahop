@@ -14,6 +14,7 @@
             mainCtrl.view = false;
             mainCtrl.thumb = false;
             mainCtrl.pdf = false;
+            mainCtrl.alto = false;
 
             mainCtrl.cancel = cancel;
             mainCtrl.ok = ok;
@@ -29,6 +30,7 @@
                 if(mainCtrl.master) {exportTypes.push("MASTER");}
                 if(mainCtrl.pdf) {exportTypes.push("PDF");}
                 if(mainCtrl.thumb) {exportTypes.push("THUMBNAIL");}
+                if(mainCtrl.alto) {exportTypes.push("ALTO");}
                 
                 var objExportTypes = {
                   ftpExport: mainCtrl.ftpExport,

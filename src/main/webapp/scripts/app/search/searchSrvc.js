@@ -11,6 +11,12 @@
                 params: {
                     "search": ""
                 }
+            },
+            index: {
+                method: 'GET',
+                params: {
+                    "index":true
+                }
             }
         });
 

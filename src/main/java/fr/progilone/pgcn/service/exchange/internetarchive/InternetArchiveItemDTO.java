@@ -20,25 +20,25 @@ public class InternetArchiveItemDTO extends AbstractDTO {
 
     private String identifier;
     private String archiveIdentifier;
-    private List<String> collections = new ArrayList<>();
-    private String contributor;
-    private String coverage;
-    private String creator;
+    private final List<String> collections = new ArrayList<>();
+    private final List<String> contributors = new ArrayList<>();
+    private final List<String> coverages = new ArrayList<>();
+    private final List<String> creators = new ArrayList<>();
     private String credits;
     private String date; // ISO 8601 compliant required
     private String description;
     @JsonIgnore
-    private TreeMap<Integer, String> descriptions = new TreeMap<>();
-    private String language;
+    private final TreeMap<Integer, String> descriptions = new TreeMap<>();
+    private final List<String> languages = new ArrayList<>();
     private String licenseUrl;
     private MediaType mediatype;
     private String customMediatype;
     private String notes;
     private String publisher;
     private String rights;
-    private List<String> subjects = new ArrayList<>();
+    private final List<String> subjects = new ArrayList<>();
     private String title;
-    private List<CustomHeader> customHeaders = new ArrayList<>();
+    private final List<CustomHeader> customHeaders = new ArrayList<>();
     private int total;
     private String type;
     private String source;
@@ -53,28 +53,55 @@ public class InternetArchiveItemDTO extends AbstractDTO {
         this.identifier = identifier;
     }
 
-    public String getContributor() {
-        return contributor;
+    public List<String> getContributors() {
+        return contributors;
     }
 
-    public void setContributor(final String contributor) {
-        this.contributor = contributor;
+    public void setContributors(final List<String> contributors) {
+        this.contributors.clear();
+        if (contributors != null) {
+            contributors.forEach(this::addContributor);
+        }
     }
 
-    public String getCoverage() {
-        return coverage;
+    public void addContributor(final String coverage) {
+        if (coverage != null) {
+            this.contributors.add(coverage);
+        }
     }
 
-    public void setCoverage(final String coverage) {
-        this.coverage = coverage;
+    public List<String> getCoverages() {
+        return coverages;
     }
 
-    public String getCreator() {
-        return creator;
+    public void setCoverages(final List<String> coverages) {
+        this.coverages.clear();
+        if (coverages != null) {
+            coverages.forEach(this::addCoverage);
+        }
     }
 
-    public void setCreator(final String creator) {
-        this.creator = creator;
+    public void addCoverage(final String coverage) {
+        if (coverage != null) {
+            this.coverages.add(coverage);
+        }
+    }
+
+    public List<String> getCreators() {
+        return creators;
+    }
+
+    public void setCreators(final List<String> creator) {
+        this.creators.clear();
+        if (creator != null) {
+            creator.forEach(this::addCreator);
+        }
+    }
+
+    public void addCreator(final String creator) {
+        if (creator != null) {
+            this.creators.add(creator);
+        }
     }
 
     public String getCredits() {
@@ -101,12 +128,21 @@ public class InternetArchiveItemDTO extends AbstractDTO {
         this.description = description;
     }
 
-    public String getLanguage() {
-        return language;
+    public List<String> getLanguages() {
+        return languages;
     }
 
-    public void setLanguage(final String language) {
-        this.language = language;
+    public void setLanguages(final List<String> languages) {
+        this.languages.clear();
+        if (languages != null) {
+            languages.forEach(this::addLanguage);
+        }
+    }
+
+    public void addLanguage(final String language) {
+        if (language != null) {
+            this.languages.add(language);
+        }
     }
 
     public String getLicenseUrl() {

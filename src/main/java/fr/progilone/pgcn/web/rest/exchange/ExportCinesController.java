@@ -38,6 +38,7 @@ import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.dto.document.BibliographicRecordDcDTO;
 import fr.progilone.pgcn.domain.exchange.cines.CinesReport;
 import fr.progilone.pgcn.domain.util.CustomUserDetails;
+import fr.progilone.pgcn.exception.PgcnException;
 import fr.progilone.pgcn.exception.PgcnTechnicalException;
 import fr.progilone.pgcn.security.SecurityUtils;
 import fr.progilone.pgcn.service.administration.MailboxConfigurationService;
@@ -140,6 +141,7 @@ public class ExportCinesController extends AbstractRestController {
         }
         exportCinesService.save(identifier, metaDc);
         return new ResponseEntity<>(HttpStatus.OK);
+        
     }
 
     /**
@@ -158,7 +160,7 @@ public class ExportCinesController extends AbstractRestController {
                                                                   @RequestParam(value = "reversion", required = false, defaultValue = "false") final
                                                                       boolean reversion,
                                                                   @RequestBody final BibliographicRecordDcDTO metaDc) {
-         return exportDocUnitToCines(request, docUnitId, metaDc, reversion, false, conf);
+         return exportCinesService.exportDocUnitToCines(request, docUnitId, metaDc, reversion, false, conf);
     }
 
     /**
@@ -176,7 +178,7 @@ public class ExportCinesController extends AbstractRestController {
                                                                    @RequestParam(value = "conf", required = false) final SftpConfiguration conf,
                                                                    @RequestParam(value = "reversion", required = false, defaultValue = "false") final
                                                                        boolean reversion) {
-        return exportDocUnitToCines(request, docUnitId, null, reversion, true, conf);
+        return exportCinesService.exportDocUnitToCines(request, docUnitId, null, reversion, true, conf);
     }
 
     /**
@@ -255,6 +257,23 @@ public class ExportCinesController extends AbstractRestController {
             return new ResponseEntity<>(HttpStatus.OK);
         }
     }
+    
+    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_XML_VALUE, params = {"mets", "docUnit"})
+    @RolesAllowed({DOC_UNIT_HAB4})
+    public ResponseEntity<?> getMets(final HttpServletRequest request,
+                                    final HttpServletResponse response,
+                                    @RequestParam(value = "docUnit") final String docUnitId,
+                                    @RequestParam(value = "cinesStatus") final String status) throws PgcnTechnicalException {
+
+        final File mets = cinesRequestHandlerService.retrieveMets(docUnitId, StringUtils.equals(status, "FAILED"));
+        // Non trouvé
+        if (mets == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            writeResponseForDownload(response, mets, MediaType.APPLICATION_XML_VALUE, "mets.xml");
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+    }
 
     /**
      * Déclenche l'export CINES de la liste de documents spécifiés.
@@ -271,167 +290,30 @@ public class ExportCinesController extends AbstractRestController {
         if (filteredDocUnits.isEmpty()) {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
         }
-
         for (final DocUnit docUnit : filteredDocUnits) {
-            exportDocUnitToCines(request, docUnit.getIdentifier());
+            exportCinesService.exportDocUnitToCines(request, docUnit.getIdentifier());
         }
         return new ResponseEntity(HttpStatus.OK);
     }
-
+    
+    
     /**
-     * Génération du répertoire d'export et upload sur le serveur CINES
-     *
+     * Reprise d'historique des controles.
+     * 
      * @param request
-     * @param docUnitId
-     * @param metaDc
-     * @param metaEad
-     * @param conf
+     * @param libraryId
      * @return
+     * @throws PgcnException
      */
-    private ResponseEntity<CinesReport> exportDocUnitToCines(final HttpServletRequest request,
-                                                             final String docUnitId,
-                                                             final BibliographicRecordDcDTO metaDc,
-                                                             final boolean reversion,
-                                                             final boolean metaEad,
-                                                             SftpConfiguration conf) {
-
+    @RequestMapping(value = "/regenerateMets", method = RequestMethod.GET)
+    @Timed
+    @RolesAllowed(AuthorizationConstants.SUPER_ADMIN)
+    public ResponseEntity<?> regenerateMets(final HttpServletRequest request, 
+                                                 @RequestParam(name = "library") final String libraryId) throws PgcnException {
         
-        final DocUnit docUnit = docUnitService.findOneWithAllDependencies(docUnitId, true);
-        // Non trouvé
-        if (docUnit == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        // Vérification de la bibliothèque de l'utilisateur
-        // 1/ sur l'unité documentaire
-        if (!libraryAccesssHelper.checkLibrary(request, docUnit, DocUnit::getLibrary)) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
-        // 2/ sur la configuration SFTP
-        if (conf != null) {
-            conf = sftpConfigurationService.findOne(conf.getIdentifier());
-            if (!libraryAccesssHelper.checkLibrary(request, conf, SftpConfiguration::getLibrary)) {
-                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-            }
-        } else {
-            // TODO: définir une configuration SFTP par défaut par type d'export
-            final Set<SftpConfiguration> confs = sftpConfigurationService.findByLibrary(docUnit.getLibrary(), true);
-            if (!confs.isEmpty()) {
-                conf = confs.iterator().next();
-            } else {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-        }
-        // Traitement
-        CinesReport report = cinesReportService.createCinesReport(docUnit);
-        try {
-            // Génération des fichiers / répertoires CINES
-            final Path path = exportCinesService.exportDocUnit(docUnit, reversion, metaDc, metaEad);
-
-            // Tranferts du répertoire généré
-            report = cinesReportService.setReportSending(report);
-            sftpService.sftpPut(conf, path);
-            report = cinesReportService.setReportSent(report);
-            
-            // sauvegarde du fichier sip.xml avant nettoyage
-            exportCinesService.keepLastCopySip(path, docUnit.getIdentifier());
-
-            // Suppression du répertoire généré, après le traitement
-            LOG.debug("Suppression du répertoire {}", path.toAbsolutePath().toString());
-            FileUtils.deleteQuietly(path.toFile());
-            
-            // pas d'erreur, on peut versionner
-            docUnitService.incrementDocUnitVersion(docUnit);
-
-            // Indexation
-            esCinesReportService.indexAsync(report.getIdentifier());
-
-            return new ResponseEntity<>(report, HttpStatus.OK);
-
-        } catch (final MarshalException e) {
-            if (e.getCause() != null) {
-                return failReport(e.getCause(), report);
-            } else {
-                return failReport(e, report);
-            }
-        } catch (final Exception e) {
-            return failReport(e, report);
-        }
+        exportCinesService.regenerateMetsforArchivedDocUnits(libraryId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
-
-    /**
-     * Génération du répertoire d'export et upload sur le serveur CINES
-     *
-     * @param request
-     * @param docUnitId
-     * @return
-     */
-    private ResponseEntity<CinesReport> exportDocUnitToCines(final HttpServletRequest request, final String docUnitId) {
-
-        final DocUnit docUnit = docUnitService.findOneWithAllDependencies(docUnitId, true);
-        SftpConfiguration conf;
-        // Non trouvé
-        if (docUnit == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        if (docUnit.getRecords().isEmpty()) {
-            LOG.debug("Impossible d'exporter l'unité documentaire [{}] : Pas de notice", docUnit.getPgcnId());
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        // Vérification de la bibliothèque de l'utilisateur
-        // Vérifier accès
-        if (!libraryAccesssHelper.checkLibrary(request, docUnit, DocUnit::getLibrary)) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
-        // Trouver une configuration SFTP
-        final Set<SftpConfiguration> confs = sftpConfigurationService.findByLibrary(docUnit.getLibrary(), true);
-        if (!confs.isEmpty()) {
-            conf = confs.iterator().next();
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        
-        // Traitement
-        CinesReport report = cinesReportService.createCinesReport(docUnit);
-        try {
-            // Génération des fichiers / répertoires CINES
-            final BibliographicRecordDcDTO metaDc = exportCinesService.getExportData(docUnit, true);
-            final Path path = exportCinesService.exportDocUnit(docUnit, true, metaDc, false);
-
-            // Tranferts du répertoire généré
-            report = cinesReportService.setReportSending(report);
-            sftpService.sftpPut(conf, path);
-            report = cinesReportService.setReportSent(report);
-            
-            // sauvegarde du fichier sip.xml avant nettoyage
-            exportCinesService.keepLastCopySip(path, docUnit.getIdentifier());
-
-            // Suppression du répertoire généré, après le traitement
-            LOG.debug("Suppression du répertoire {}", path.toAbsolutePath().toString());
-            FileUtils.deleteQuietly(path.toFile());
-
-            // Indexation
-            esCinesReportService.indexAsync(report.getIdentifier());
-            
-            // pas d'erreur, on peut versionner
-            docUnitService.incrementDocUnitVersion(docUnit);
-
-            return new ResponseEntity<>(report, HttpStatus.OK);
-
-        } catch (final MarshalException e) {
-            if (e.getCause() != null) {
-                return failReport(e.getCause(), report);
-            } else {
-                return failReport(e, report);
-            }
-        } catch (final Exception e) {
-            return failReport(e, report);
-        }
-    }
-
-    private ResponseEntity<CinesReport> failReport(final Throwable e, CinesReport report) {
-        LOG.error(e.getMessage(), e);
-        report = cinesReportService.failReport(report, e.getMessage());
-        esCinesReportService.indexAsync(report.getIdentifier());
-        return new ResponseEntity<>(report, HttpStatus.UNPROCESSABLE_ENTITY);
-    }
+    
+ 
 }

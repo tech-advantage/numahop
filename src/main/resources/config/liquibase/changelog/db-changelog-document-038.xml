@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Ajout colonne export bibliothèque numérique -->
+    <changeSet id="pgcn-document-38" author="progilone">
+
+        <addColumn tableName="doc_unit">
+            <column name="dig_lib_export_status" type="varchar(255)"/>
+        </addColumn>
+        
+        <addColumn tableName="doc_unit">
+            <column name="dig_lib_export_date" type="datetime"/>
+        </addColumn>
+
+    </changeSet>
+</databaseChangeLog>

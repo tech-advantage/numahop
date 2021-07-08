@@ -24,6 +24,8 @@ import java.util.zip.ZipOutputStream;
 import javax.annotation.PostConstruct;
 import javax.xml.bind.JAXBException;
 
+import fr.progilone.pgcn.service.exchange.cines.ExportMetsService;
+import fr.progilone.pgcn.service.exchange.csv.ExportCSVService;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
@@ -79,7 +81,10 @@ public class OmekaService {
     private static final String EMPTY_FIELD_VALUE = "Non renseigné";
     private static final String NEW_LINE_SEPARATOR = "\n";
     private static final String JPG_EXT = ".jpg";
-    
+    private static final String MASTER_DIR = "master";
+    private static final String VIEW_DIR = "view";
+    private static final String THUMBNAIL_DIR = "thumbnail";
+
     private static final String CSV_NAME_MASS_EXPORT = "docs_export.csv";
     
     private static final String FILE_HEADER = "Dublin Core:Identifier" + CSV_COL_SEP + "Dublin Core:Title" + CSV_COL_SEP + "Dublin Core:Subject" + CSV_COL_SEP + "Dublin Core:Publisher" + CSV_COL_SEP 
@@ -96,13 +101,20 @@ public class OmekaService {
     private final CryptoService cryptoService;
     private final FileCleaningManager fileCleaningManager;
     private final MailService mailService;
-    
+    private final ExportMetsService exportMetsService;
+    private final ExportCSVService exportCSVService;
+
     @Autowired
-    public OmekaService(final LibraryService libraryService, final OmekaConfigurationService omekaConfigurationService, 
+    public OmekaService(final LibraryService libraryService,
+                        final OmekaConfigurationService omekaConfigurationService,
                         final BinaryStorageManager bm, final DocUnitService docUnitService,
                         final UIBibliographicRecordService uiBibliographicRecordService,
-                        final SftpService sftpService, final CryptoService cryptoService, 
-                        final FileCleaningManager fileCleaningManager, final MailService mailService) {
+                        final SftpService sftpService,
+                        final CryptoService cryptoService,
+                        final FileCleaningManager fileCleaningManager,
+                        final MailService mailService,
+                        final ExportMetsService exportMetsService,
+                        final ExportCSVService exportCSVService) {
         this.libraryService = libraryService;
         this.omekaConfigurationService = omekaConfigurationService;
         this.bm = bm;
@@ -112,6 +124,8 @@ public class OmekaService {
         this.cryptoService = cryptoService;
         this.fileCleaningManager = fileCleaningManager;
         this.mailService = mailService;
+        this.exportMetsService = exportMetsService;
+        this.exportCSVService = exportCSVService;
     }
     
     @PostConstruct
@@ -151,9 +165,7 @@ public class OmekaService {
                                && (doc.getWorkflow().getCurrentStateByKey(WorkflowStateKey.DIFFUSION_DOCUMENT_OMEKA) != null 
                                                && doc.getWorkflow().getCurrentStateByKey(WorkflowStateKey.DIFFUSION_DOCUMENT_OMEKA).isCurrentState());
                    })
-                                       .forEach(doc-> {
-                                           docsToExport.add(doc);
-                                       });
+                                  .forEach(docsToExport::add);
         });
         LOG.debug("OMEKA :  " + docsToExport.size()  +" Docs recuperes pour l'export");
         return docsToExport;
@@ -175,7 +187,7 @@ public class OmekaService {
             return exported;
         }   
         // Recup données de la notice.
-        final BibliographicRecordDcDTO metaDC = getDataRecord(doc);
+        final BibliographicRecordDcDTO metaDC = uiBibliographicRecordService.getBibliographicRecordDcDTOFromDocUnit(doc);
         if (metaDC == null) {
             LOG.trace("Omeka - Notice introuvable => DocUnit[{}] - Export Omeka impossible.", doc.getIdentifier());
             return exported;
@@ -234,9 +246,6 @@ public class OmekaService {
     
     /**
      * Envoi du csv pour import Omeka par mail.
-     *
-     * @param delivery
-     * @param mailTo
      */
     public void sendCsvFile(final Path rootPath, final String mailTo, final boolean multiple, final DocUnit docUnit) {
         
@@ -254,9 +263,6 @@ public class OmekaService {
     
     /**
      * On zippe le contenu du repertoire à exporter.
-     *
-     * @param conf
-     * @param project
      */
     public Path compressOmekaFiles(final File destDir, final String name) {
 
@@ -284,7 +290,7 @@ public class OmekaService {
             LOG.trace("Archive ZIP {} créée dans le dossier {}", zipFile.getName(), destDir.toString());
             zipped = true;
 
-        } catch (IOException | SecurityException e) {
+        } catch (final IOException | SecurityException e) {
             LOG.error("Erreur lors de la compression des fichiers sauvegardes", e);
         }
 
@@ -294,7 +300,7 @@ public class OmekaService {
 
                 stream.sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
                 stream.close();
-            } catch (IOException | SecurityException e) {
+            } catch (final IOException | SecurityException e) {
                 LOG.error("Erreur lors de la suppression des documents livrés dans {}", destDir.getName(), e);
             }
         }
@@ -361,7 +367,8 @@ public class OmekaService {
     
     /**
      * Génération d'un csv simple (1 entete, 1 ligne) pour traitement par Omeka.
-     * 
+     *
+     *
      * @param docUnit
      * @param metaDc
      * @param conf
@@ -376,9 +383,7 @@ public class OmekaService {
                                        final List<CheckSummedStoredFile> listWithCheckSummedStoredFiles,
                                        final boolean multiple, final boolean firstDoc) {
         
-        if (depotPath == null 
-            || depotPath.toFile() == null 
-                || !depotPath.toFile().canRead()) {
+        if (depotPath == null || !depotPath.toFile().canRead()) {
             return null;
         }
         
@@ -409,17 +414,17 @@ public class OmekaService {
             writer.append(NEW_LINE_SEPARATOR);
             // champs DC
             writer.append(docUnit.getPgcnId()).append(CSV_COL_SEP);
-            writer.append(getFormatedValues(metaDc.getTitle())).append(CSV_COL_SEP);
-            writer.append(getFormatedValues(metaDc.getSubject())).append(CSV_COL_SEP);
-            writer.append(getFormatedValues(metaDc.getPublisher())).append(CSV_COL_SEP);
-            writer.append(getFormatedValues(metaDc.getDate())).append(CSV_COL_SEP);
-            writer.append(getFormatedValues(metaDc.getCreator())).append(CSV_COL_SEP);
-            writer.append(getFormatedValues(metaDc.getDescription())).append(CSV_COL_SEP);
-            writer.append(getFormatedValues(metaDc.getSource())).append(CSV_COL_SEP);
-            writer.append(getFormatedValues(metaDc.getRights())).append(CSV_COL_SEP);
-            writer.append(getFormatedValues(metaDc.getFormat())).append(CSV_COL_SEP);
-            writer.append(getFormatedValues(metaDc.getLanguage())).append(CSV_COL_SEP);
-            writer.append(getFormatedValues(metaDc.getType())).append(CSV_COL_SEP);
+            writer.append(exportCSVService.getFormatedValues(metaDc.getTitle(), EMPTY_FIELD_VALUE, CSV_REPEATED_FIELD_SEP)).append(CSV_COL_SEP);
+            writer.append(exportCSVService.getFormatedValues(metaDc.getSubject(), EMPTY_FIELD_VALUE, CSV_REPEATED_FIELD_SEP)).append(CSV_COL_SEP);
+            writer.append(exportCSVService.getFormatedValues(metaDc.getPublisher(), EMPTY_FIELD_VALUE, CSV_REPEATED_FIELD_SEP)).append(CSV_COL_SEP);
+            writer.append(exportCSVService.getFormatedValues(metaDc.getDate(), EMPTY_FIELD_VALUE, CSV_REPEATED_FIELD_SEP)).append(CSV_COL_SEP);
+            writer.append(exportCSVService.getFormatedValues(metaDc.getCreator(), EMPTY_FIELD_VALUE, CSV_REPEATED_FIELD_SEP)).append(CSV_COL_SEP);
+            writer.append(exportCSVService.getFormatedValues(metaDc.getDescription(), EMPTY_FIELD_VALUE, CSV_REPEATED_FIELD_SEP)).append(CSV_COL_SEP);
+            writer.append(exportCSVService.getFormatedValues(metaDc.getSource(), EMPTY_FIELD_VALUE, CSV_REPEATED_FIELD_SEP)).append(CSV_COL_SEP);
+            writer.append(exportCSVService.getFormatedValues(metaDc.getRights(), EMPTY_FIELD_VALUE, CSV_REPEATED_FIELD_SEP)).append(CSV_COL_SEP);
+            writer.append(exportCSVService.getFormatedValues(metaDc.getFormat(), EMPTY_FIELD_VALUE, CSV_REPEATED_FIELD_SEP)).append(CSV_COL_SEP);
+            writer.append(exportCSVService.getFormatedValues(metaDc.getLanguage(), EMPTY_FIELD_VALUE, CSV_REPEATED_FIELD_SEP)).append(CSV_COL_SEP);
+            writer.append(exportCSVService.getFormatedValues(metaDc.getType(), EMPTY_FIELD_VALUE, CSV_REPEATED_FIELD_SEP)).append(CSV_COL_SEP);
             
             // collection omeka
             if (docUnit.getOmekaCollection().getName() != null) {
@@ -465,30 +470,10 @@ public class OmekaService {
         }
         return csvFile;
     }
-    
-    private String getFormatedValues(final List<String> values) throws IOException {
-        
-        if (values == null || values.isEmpty()) {
-            return EMPTY_FIELD_VALUE;
-        }
-        
-        final StringBuilder sb = new StringBuilder();
-        values.forEach(val -> {
-            sb.append(docUnitService.deleteUnwantedCrLf(val))
-                .append(CSV_REPEATED_FIELD_SEP);
-        });
-        final String aggreg = sb.toString();
-        if (aggreg.endsWith(CSV_REPEATED_FIELD_SEP)) {
-            return aggreg.substring(0, aggreg.length()-1);
-        } else {
-            return aggreg;
-        }
-    }
-    
-    
+
     private String getFilesAdress(final String docId, final List<CheckSummedStoredFile> listWithCheckSummedStoredFiles, final String adress) throws IOException {
         
-        final String startAdr = adress + docId + "/view/";
+        final String startAdr = adress + docId + "/" + VIEW_DIR + "/";
         
         final StringBuilder sb = new StringBuilder();
         listWithCheckSummedStoredFiles.forEach(sf -> {
@@ -502,67 +487,22 @@ public class OmekaService {
             return aggreg;
         }
     }
-    
-    
-    
-    /**
-     * On a besoin de la notice.
-     * 
-     * @param docUnit
-     * @return
-     */
-    @Transactional
-    public BibliographicRecordDcDTO getDataRecord(final DocUnit docUnit) {
-        final ExportData ed = docUnit.getExportData();
-        BibliographicRecordDcDTO dto;
-        if(ed != null) {
-            dto = new BibliographicRecordDcDTO();
-            ed.getProperties()
-                .stream()
-                .filter(p -> p.getType().getSuperType() == DocPropertyType.DocPropertySuperType.DC)
-                .sorted(Comparator.comparing(ExportProperty::getRank))
-                .forEach(p -> {
-                    try {
-                        final String dcProperty = p.getType().getIdentifier();
-                        final List<String> current = (List<String>) PropertyUtils.getSimpleProperty(dto, dcProperty);
-                        current.add(p.getValue());
 
-                    } catch (ReflectiveOperationException | IllegalArgumentException e) {
-                        LOG.error(e.getMessage(), e);
-                    }
-                });
-
-        } else {
-            if (docUnit.getRecords().iterator().hasNext()) {
-                final BibliographicRecord record = docUnit.getRecords().iterator().next();
-                dto = uiBibliographicRecordService.getOneDc(record.getIdentifier());
-            } else {
-                dto = null;
-            }
-        }
-        return dto;
-    }
-    
     /**
      * DEPOT: fichiers à archiver
-     *
-     * @param root
-     * @param dirDepot
-     * @return Path du répertoire créé
-     * @throws IOException
      */
     private Path createDirectories(final Path root, final OmekaConfiguration conf) throws IOException {
         
         final Path depotPath = Files.createDirectory(root);
         LOG.debug("Répertoire {} créé", depotPath.toString());
         if (conf.isExportMaster()) {
-            Files.createDirectory(depotPath.resolve("master"));
+            Files.createDirectory(depotPath.resolve(MASTER_DIR));
         }
         if (conf.isExportView()) {
-            Files.createDirectory(depotPath.resolve("view"));
+            Files.createDirectory(depotPath.resolve(VIEW_DIR));
         }
         if (conf.isExportThumb()) {
-            Files.createDirectory(depotPath.resolve("thumbnail"));
+            Files.createDirectory(depotPath.resolve(THUMBNAIL_DIR));
         }
         return depotPath;
     }
@@ -579,7 +519,6 @@ public class OmekaService {
         final String libraryId = docUnit.getLibrary().getIdentifier();
         docUnit.getDigitalDocuments().forEach(digitalDoc -> {
             digitalDoc.getOrderedPages()
-                        .stream()
                         .forEach(page -> {
                             
                             final Optional<StoredFile> master = page.getMaster();
@@ -591,12 +530,12 @@ public class OmekaService {
                                 final Path sourcePath = Paths.get(sourceFile.getAbsolutePath());
                                 
                                 if (conf.isExportMaster() && page.getNumber() != null) {
-                                    final Path depotMaster = depotPath.resolve("master");
+                                  final Path depotMaster = depotPath.resolve(MASTER_DIR);
                                     try {
                                         final Path destPath = Files.createFile(depotMaster.resolve(masterStoredFile.getFilename()));
                                         Files.copy(sourcePath, destPath, StandardCopyOption.REPLACE_EXISTING);
                                         // On remplit la map pour optimiser le traitement ultérieur des métadonnées
-                                        checkSums.add(getCheckSummedStoredFile(masterStoredFile, sourceFile));
+                                      checkSums.add(exportMetsService.getCheckSummedStoredFile(masterStoredFile, sourceFile));
                                     } catch (final IOException e) {
                                         throw new UncheckedIOException(e);
                                     } 
@@ -611,7 +550,7 @@ public class OmekaService {
                                 }
                                 
                                 if (conf.isExportView()) {
-                                    final Path depotView = depotPath.resolve("view");
+                                  final Path depotView = depotPath.resolve(VIEW_DIR);
                                     final Optional<StoredFile> view = page.getDerivedForFormat(ViewsFormatConfiguration.FileFormat.VIEW);
                                     if (view.isPresent()) {
                                         final StoredFile sf = view.get();
@@ -622,7 +561,7 @@ public class OmekaService {
                                             final Path destPath = Files.createFile(depotView.resolve(fileName));
                                             Files.copy(srcPath, destPath, StandardCopyOption.REPLACE_EXISTING);
                                             // On remplit la map pour optimiser le traitement ultérieur des métadonnées
-                                            checkSums.add(getCheckSummedStoredFile(sf, file));
+                                          checkSums.add(exportMetsService.getCheckSummedStoredFile(sf, file));
                                         } catch (final IOException e) {
                                             throw new UncheckedIOException(e);
                                         }     
@@ -630,7 +569,7 @@ public class OmekaService {
                                 }
 
                                 if (conf.isExportThumb()) {
-                                    final Path depotThumb = depotPath.resolve("thumbnail");
+                                  final Path depotThumb = depotPath.resolve(THUMBNAIL_DIR);
                                     final Optional<StoredFile> thumb = page.getDerivedForFormat(ViewsFormatConfiguration.FileFormat.THUMB);
                                     if (thumb.isPresent()) {
                                         final StoredFile sf = thumb.get();
@@ -653,24 +592,4 @@ public class OmekaService {
         });
         return checkSums;
     }
-    
-    /**
-    *
-    * @param storedFile
-    * @param sourceFile
-    * @return
-    * @throws IOException
-    */
-   public CheckSummedStoredFile getCheckSummedStoredFile(final StoredFile storedFile, final File sourceFile) throws IOException {
-       final CheckSummedStoredFile checkSummed = new CheckSummedStoredFile();
-       checkSummed.setStoredFile(storedFile);
-       checkSummed.setCheckSumType(fr.progilone.pgcn.service.util.FileUtils.CheckSumType.MD5);
-       try {
-           checkSummed.setCheckSum(fr.progilone.pgcn.service.util.FileUtils.checkSum(sourceFile, fr.progilone.pgcn.service.util.FileUtils.CheckSumType.MD5));
-       } catch (final NoSuchAlgorithmException e) {
-               LOG.error(e.getMessage(), e);
-               throw new PgcnUncheckedException(e);
-       }
-       return checkSummed;
-   }
 }

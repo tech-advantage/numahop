@@ -31,7 +31,10 @@ import fr.progilone.pgcn.domain.project.QProject;
 import fr.progilone.pgcn.domain.train.QTrain;
 import fr.progilone.pgcn.domain.train.Train;
 import fr.progilone.pgcn.domain.train.Train.TrainStatus;
+import fr.progilone.pgcn.domain.user.User;
+import fr.progilone.pgcn.domain.util.CustomUserDetails;
 import fr.progilone.pgcn.repository.util.QueryDSLBuilderUtils;
+import fr.progilone.pgcn.security.SecurityUtils;
 
 public class TrainRepositoryImpl implements TrainRepositoryCustom {
 
@@ -90,7 +93,7 @@ public class TrainRepositoryImpl implements TrainRepositoryCustom {
         }
         
         // active
-        boolean effectiveActive;
+        final boolean effectiveActive;
         if (CollectionUtils.isNotEmpty(statuses) 
                 && (statuses.contains(TrainStatus.CLOSED) || statuses.contains(TrainStatus.CLOSED))) {
             effectiveActive = false;
@@ -101,7 +104,19 @@ public class TrainRepositoryImpl implements TrainRepositoryCustom {
             builder.and(qTrain.active.eq(true));
         }
         // provider
-        QueryDSLBuilderUtils.addAccessFilters(builder, qLibrary, qProject, libraries, null);
+        final CustomUserDetails currentUser = SecurityUtils.getCurrentUser();
+
+        // Prestataire: voit les projets sur lesquels il est prestataires + les données de sa bibliothèque
+        if (currentUser != null && currentUser.getCategory() == User.Category.PROVIDER) {
+            builder.and(qProject.provider.identifier.eq(currentUser.getIdentifier()).and(qLibrary.identifier.eq(currentUser.getLibraryId())))
+                   .or(qTrain.createdBy.eq(currentUser.getLogin()));
+        }
+        // Sinon on applique les filtres demandés
+        else {
+            if (CollectionUtils.isNotEmpty(libraries)) {
+                builder.and(qLibrary.identifier.in(libraries));
+            }
+        }
 
         // projets
         if (CollectionUtils.isNotEmpty(projects)) {

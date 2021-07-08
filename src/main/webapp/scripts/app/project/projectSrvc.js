@@ -13,6 +13,13 @@
                             dto: true
                         }
                     },
+                    dtoComplete: {
+                        method: 'GET',
+                        isArray: true,
+                        params: {
+                            dto2: true
+                        }
+                    },
                     searchProject: {
                         method: 'GET',
                         isArray: true,

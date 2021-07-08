@@ -23,7 +23,7 @@ public class DocPropertyDTO extends AbstractDTO {
         return identifier;
     }
 
-    public final void setIdentifier(String identifier) {
+    public void setIdentifier(String identifier) {
         this.identifier = identifier;
     }
 
@@ -31,7 +31,7 @@ public class DocPropertyDTO extends AbstractDTO {
         return value;
     }
 
-    public final void setValue(String value) {
+    public void setValue(String value) {
         this.value = value;
     }
 
@@ -39,7 +39,7 @@ public class DocPropertyDTO extends AbstractDTO {
         return rank;
     }
 
-    public final void setRank(Integer rank) {
+    public void setRank(Integer rank) {
         this.rank = rank;
     }
 
@@ -47,7 +47,7 @@ public class DocPropertyDTO extends AbstractDTO {
         return type;
     }
 
-    public final void setType(DocPropertyTypeDTO type) {
+    public void setType(DocPropertyTypeDTO type) {
         this.type = type;
     }
 
@@ -55,7 +55,7 @@ public class DocPropertyDTO extends AbstractDTO {
         return weightedRank;
     }
 
-    public final void setWeightedRank(Double weightedRank) {
+    public void setWeightedRank(Double weightedRank) {
         this.weightedRank = weightedRank;
     }
 }

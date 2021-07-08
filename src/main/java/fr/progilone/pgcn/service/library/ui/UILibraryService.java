@@ -1,5 +1,15 @@
 package fr.progilone.pgcn.service.library.ui;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import fr.progilone.pgcn.domain.dto.library.LibraryDTO;
 import fr.progilone.pgcn.domain.dto.library.SimpleLibraryDTO;
 import fr.progilone.pgcn.domain.dto.user.SimpleUserDTO;
@@ -11,19 +21,11 @@ import fr.progilone.pgcn.exception.message.PgcnErrorCode;
 import fr.progilone.pgcn.exception.message.PgcnList;
 import fr.progilone.pgcn.service.library.LibraryService;
 import fr.progilone.pgcn.service.library.mapper.LibraryMapper;
+import fr.progilone.pgcn.service.library.mapper.SimpleLibraryMapper;
 import fr.progilone.pgcn.service.library.mapper.UILibraryMapper;
 import fr.progilone.pgcn.service.user.UserService;
 import fr.progilone.pgcn.service.user.mapper.UserMapper;
 import fr.progilone.pgcn.service.util.transaction.VersionValidationService;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Service dédié à les gestion des vues des bibliothèques
@@ -90,23 +92,23 @@ public class UILibraryService {
                                          final Integer page,
                                          final Integer size) {
         final Page<Library> libraries = libraryService.search(search, filteredLibraries, initiale, institutions, isActive, page, size);
-        return libraries.map(LibraryMapper.INSTANCE::libraryToSimpleLibraryDTO);
+        return libraries.map(SimpleLibraryMapper.INSTANCE::libraryToSimpleLibraryDTO);
     }
 
     @Transactional
     public List<SimpleLibraryDTO> findAllActiveDTO() {
         final List<Library> libraries = libraryService.findAllByActive(true);
-        return libraries.stream().map(LibraryMapper.INSTANCE::libraryToSimpleLibraryDTO).collect(Collectors.toList());
+        return libraries.stream().map(SimpleLibraryMapper.INSTANCE::libraryToSimpleLibraryDTO).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public Collection<SimpleUserDTO> findProviders(String id) {
+    public Collection<SimpleUserDTO> findProviders(final String id) {
         final Collection<User> users = userService.findProvidersForLibrary(id);
         return users.stream().map(UserMapper.INSTANCE::userToSimpleUserDTO).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public Collection<SimpleUserDTO> findUsers(String id) {
+    public Collection<SimpleUserDTO> findUsers(final String id) {
         final Collection<User> users = userService.findUsersForLibrary(id);
         return users.stream().map(UserMapper.INSTANCE::userToSimpleUserDTO).collect(Collectors.toList());
     }

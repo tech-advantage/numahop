@@ -66,15 +66,15 @@ public class SimpleLotDTO {
         return identifier;
     }
 
-    public final void setIdentifier(final String identifier) {
+    public void setIdentifier(final String identifier) {
         this.identifier = identifier;
     }
 
-    public final void setLabel(final String label) {
+    public void setLabel(final String label) {
         this.label = label;
     }
 
-    public final void setCode(final String code) {
+    public void setCode(final String code) {
         this.code = code;
     }
 

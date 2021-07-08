@@ -50,6 +50,13 @@
                             size: 50
                         }
                     },
+                    searchAsMinList: {
+                        method: 'POST',
+                        isArray: true,
+                        params: {
+                            searchAsMinList: true
+                        }
+                    },
                     addToProjectAndLot: {
                         method: 'POST',
                         isArray: true,
@@ -135,13 +142,18 @@
                 "PREVALIDATION_DOCUMENT",
                 "VALIDATION_DOCUMENT",
                 "VALIDATION_NOTICES",
+                "ARCHIVAGE_DOCUMENT",
+                "DIFFUSION_DOCUMENT",
+                "DIFFUSION_DOCUMENT_DIGITAL_LIBRARY",
+                "DIFFUSION_DOCUMENT_LOCALE",
+                "DIFFUSION_DOCUMENT_OMEKA",
                 "CLOTURE_DOCUMENT"];
 
             service.getConfigFilterStatuses = function () {
                 return _.map(service.filterStatuses, function (st) {
                     return {
                         identifier: st,
-                        label: codeSrvc['docUnit.filter.' + st] || st
+                        label: codeSrvc['workflow.' + st] || st
                     };
                 });
             };
@@ -242,6 +254,13 @@
                         isArray: false,
                         params: {
                             deliverynotes: true
+                        }
+                    },
+                    getPiecesNb: {
+                        method: 'GET',
+                        isArray: false,
+                        params: {
+                            nbPieces: true
                         }
                     }
                 });

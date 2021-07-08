@@ -1,13 +1,7 @@
 package fr.progilone.pgcn.web.rest.delivery;
 
-import static fr.progilone.pgcn.domain.delivery.Delivery.DeliveryPayment.PAID;
-import static fr.progilone.pgcn.web.rest.delivery.security.AuthorizationConstants.DEL_HAB0;
-import static fr.progilone.pgcn.web.rest.delivery.security.AuthorizationConstants.DEL_HAB1;
-import static fr.progilone.pgcn.web.rest.delivery.security.AuthorizationConstants.DEL_HAB2;
-import static fr.progilone.pgcn.web.rest.delivery.security.AuthorizationConstants.DEL_HAB3;
-import static fr.progilone.pgcn.web.rest.delivery.security.AuthorizationConstants.DEL_HAB5;
-import static fr.progilone.pgcn.web.rest.delivery.security.AuthorizationConstants.DEL_HAB5_2;
-import static fr.progilone.pgcn.web.rest.delivery.security.AuthorizationConstants.DEL_HAB8;
+import static fr.progilone.pgcn.domain.delivery.Delivery.DeliveryPayment.*;
+import static fr.progilone.pgcn.web.rest.delivery.security.AuthorizationConstants.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -548,7 +542,7 @@ public class DeliveryController extends AbstractRestController {
         if (!accessHelper.checkDocUnit(docUnitId)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
-        return createResponseEntity(uiDeliveryService.findLatestDelivery(docUnitId));
+        return new ResponseEntity<>(uiDeliveryService.findLatestDelivery(docUnitId), HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.GET, params = {"delivstatus"}, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -639,11 +633,6 @@ public class DeliveryController extends AbstractRestController {
     
     /**
      * Infos espace disque de la bibliothèque.
-     *
-     * @param id
-     * @param datas
-     * @return
-     * @throws PgcnException
      */
     @RolesAllowed({DEL_HAB0})
     @RequestMapping(method = RequestMethod.GET, params = {"diskspace", "widget"}, produces = MediaType.APPLICATION_JSON_VALUE)

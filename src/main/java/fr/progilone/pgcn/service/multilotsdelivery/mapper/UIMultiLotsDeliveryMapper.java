@@ -10,7 +10,6 @@ import fr.progilone.pgcn.domain.lot.Lot;
 import fr.progilone.pgcn.domain.multilotsdelivery.MultiLotsDelivery;
 import fr.progilone.pgcn.domain.multilotsdelivery.MultiLotsDelivery.DeliveryMethod;
 import fr.progilone.pgcn.domain.multilotsdelivery.MultiLotsDelivery.DeliveryPayment;
-import fr.progilone.pgcn.domain.multilotsdelivery.MultiLotsDelivery.DeliveryStatus;
 import fr.progilone.pgcn.service.delivery.DeliveryService;
 import fr.progilone.pgcn.service.lot.LotService;
 
@@ -37,7 +36,7 @@ public class UIMultiLotsDeliveryMapper {
         multi.setPayment(DeliveryPayment.valueOf(dto.getPayment()));
         multi.setMethod(DeliveryMethod.valueOf(dto.getMethod()));
         if (StringUtils.isNotBlank(dto.getStatus())) {
-            multi.setStatus(DeliveryStatus.valueOf(dto.getStatus()));
+            multi.setStatus(Delivery.DeliveryStatus.valueOf(dto.getStatus()));
         }
         multi.setReceptionDate(dto.getReceptionDate());
         multi.setControlNotes(dto.getControlNotes());

@@ -1,5 +1,18 @@
 package fr.progilone.pgcn.service.lot.ui;
 
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.dto.audit.AuditLotRevisionDTO;
 import fr.progilone.pgcn.domain.dto.lot.LotDTO;
@@ -24,18 +37,6 @@ import fr.progilone.pgcn.service.lot.mapper.UILotMapper;
 import fr.progilone.pgcn.service.util.transaction.VersionValidationService;
 import fr.progilone.pgcn.service.workflow.WorkflowService;
 import fr.progilone.pgcn.web.util.AccessHelper;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Service dédié à les gestion des vues des lots
@@ -138,10 +139,7 @@ public class UILotService {
     @Transactional(readOnly = true)
     public List<LotListDTO> findAllActiveForDelivery() {
         final List<Lot> lots = lotService.findAllByActiveForDelivery(true);
-        final List<Lot> availables = 
-                lots.stream().filter(lot -> checkLotIsAvailableForDeliv(lot)).collect(Collectors.toList());
-                    
-        return filterLots(availables).stream().map(LotMapper.INSTANCE::lotToLotListDTO).collect(Collectors.toList());
+        return filterLots(lots).stream().map(LotMapper.INSTANCE::lotToLotListDTO).collect(Collectors.toList());
     }
        
     /**
@@ -182,6 +180,18 @@ public class UILotService {
         return filterLots(lots).stream().map(LotMapper.INSTANCE::lotToLotListDTO).collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
+    public Collection<LotListDTO> findAllActiveByLibraryIn(final List<String> libraries) {
+        final List<Lot> lots = lotService.findAllActiveByLibraryIn(libraries);
+        return lots.stream().map(LotMapper.INSTANCE::lotToLotListDTO).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public Collection<LotListDTO> findAllActiveByProjectIn(final List<String> projects) {
+        final List<Lot> lots = lotService.findAllActiveByProjectIn(projects);
+        return lots.stream().map(LotMapper.INSTANCE::lotToLotListDTO).collect(Collectors.toList());
+    }
+    
     @Transactional(readOnly = true)
     public Collection<LotListDTO> findAllByLibraryIn(final List<String> libraries) {
         final List<Lot> lots = lotService.findAllByLibraryIn(libraries);

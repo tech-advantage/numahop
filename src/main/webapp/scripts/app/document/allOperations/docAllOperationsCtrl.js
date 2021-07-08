@@ -228,6 +228,17 @@
                 mainCtrl.canExportToOmeka = true;
                 mainCtrl.omekaDistribStatus = 'Non';
             }
+            if (entity.digLibExportStatus) {
+                if (entity.digLibExportStatus === 'IN_PROGRESS') {
+                    mainCtrl.canExportToDigitalLibrary = false;
+                } else if (entity.digLibExportStatus === 'SENT') {
+                    mainCtrl.canExportToDigitalLibrary = true;
+                } else if (entity.digLibExportStatus === 'FAILED') {
+                    mainCtrl.canExportToDigitalLibrary = true;
+                }
+            } else {
+                mainCtrl.canExportToDigitalLibrary = true;
+            }
             if (angular.isDefined(entity.cinesReports) && entity.cinesReports.length > 0) {
                 var reportCinesValue = _.find(entity.cinesReports, function (report) {
                     if (report.certificate !== null) {
@@ -360,7 +371,18 @@
                         MessageSrvc.addFailure(ErreurSrvc.getMessage(error.data.status));
                         MessageSrvc.addError(gettext(error.data.message));
                     });
-                    break;    
+                    break;
+                case "digitallibrary":
+                    var params = {docUnit: docUnit.identifier};
+                    ExportSrvc.toDigitalLibrary(params, {}, null, null).$promise
+                        .then(function () {
+                            MessageSrvc.addSuccess(gettext("L'export vers la bibliothèque numérique est en cours"));
+                    })
+                    .catch(function (error) {
+                        MessageSrvc.addFailure(ErreurSrvc.getMessage(error.data.status));
+                        MessageSrvc.addError(gettext(error.data.message));
+                    });
+                    break;
             }
         }
         

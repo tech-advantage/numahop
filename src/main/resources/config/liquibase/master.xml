@@ -221,15 +221,24 @@
     <include file="classpath:config/liquibase/changelog/db-changelog-document-029.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/db-changelog-document-032.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/db-changelog-document-033.xml" relativeToChangelogFile="false"/>
-    
+
     <include file="classpath:config/liquibase/changelog/db-changelog-storage-008.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/db-changelog-administration-008.xml" relativeToChangelogFile="false"/>
-	<include file="classpath:config/liquibase/changelog/db-changelog-administration-009.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/db-changelog-administration-009.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/db-changelog-doc-digital-size-check-notes.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/db-changelog-add-libResp-library-project.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/db-changelog-exchange-015.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/db-changelog-document-data-004.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/db-changelog-document-034.xml" relativeToChangelogFile="false"/>
-
+    <include file="classpath:config/liquibase/changelog/db-changelog-project-2020-06-19-11-50.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/db-changelog-document-035.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/db-changelog-document-037.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/db-changelog-conf-digital-library.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/db-changelog-user-011.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/db-changelog-document-038.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/db-changelog-document-036.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/db-changelog-delivery-001.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/db-changelog-check-0014.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/db-changelog-conf-digital-library-01.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>
 

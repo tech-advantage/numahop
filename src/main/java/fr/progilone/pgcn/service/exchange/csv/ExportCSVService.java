@@ -1,11 +1,6 @@
 package fr.progilone.pgcn.service.exchange.csv;
 
-import com.opencsv.bean.StatefulBeanToCsv;
-import com.opencsv.bean.StatefulBeanToCsvBuilder;
-import com.opencsv.exceptions.CsvDataTypeMismatchException;
-import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
-import fr.progilone.pgcn.exception.PgcnTechnicalException;
-import org.springframework.stereotype.Service;
+import static com.opencsv.CSVWriter.*;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -14,7 +9,14 @@ import java.io.Writer;
 import java.util.Collections;
 import java.util.List;
 
-import static com.opencsv.CSVWriter.*;
+import org.springframework.stereotype.Service;
+
+import com.opencsv.bean.StatefulBeanToCsv;
+import com.opencsv.bean.StatefulBeanToCsvBuilder;
+import com.opencsv.exceptions.CsvDataTypeMismatchException;
+import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
+
+import fr.progilone.pgcn.exception.PgcnTechnicalException;
 
 @Service
 public class ExportCSVService {
@@ -45,9 +47,39 @@ public class ExportCSVService {
             try {
                 beanToCsv.write(beans);
 
-            } catch (CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
+            } catch (final CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
                 throw new PgcnTechnicalException(e.getMessage());
             }
         }
+    }
+
+    public String getFormatedValues(final List<String> values, final String emptyFieldValue, final String csvRepeatedFieldSep) throws IOException {
+
+        if (values == null || values.isEmpty()) {
+            return emptyFieldValue;
+        }
+
+        final StringBuilder sb = new StringBuilder();
+        values.forEach(val -> {
+            sb.append(deleteUnwantedCrLf(val))
+              .append(csvRepeatedFieldSep);
+        });
+        final String aggreg = sb.toString();
+        if (aggreg.endsWith(csvRepeatedFieldSep)) {
+            return aggreg.substring(0, aggreg.length() - 1);
+        } else {
+            return aggreg;
+        }
+    }
+
+    /**
+     * tentative de fix pb saut de ligne
+     * notamment pour qq caracteres arabes entre crochets !!
+     *
+     * @param value
+     * @return
+     */
+    private String deleteUnwantedCrLf(final String value) {
+        return (value.replace("\n", " ")).replace("\r", "");
     }
 }

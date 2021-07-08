@@ -13,7 +13,7 @@ import fr.progilone.pgcn.domain.library.AbstractLibraryParameterValue;
 import fr.progilone.pgcn.domain.library.LibraryParameter;
 import fr.progilone.pgcn.domain.library.LibraryParameterValueCines;
 
-@Mapper(uses = {LibraryMapper.class})
+@Mapper(uses = {SimpleLibraryMapper.class})
 public interface LibraryParameterMapper {
 
     LibraryParameterMapper INSTANCE = Mappers.getMapper(LibraryParameterMapper.class);

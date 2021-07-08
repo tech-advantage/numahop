@@ -21,6 +21,7 @@
         $scope.editState = editState;
         $scope.getType = getType;
         $scope.getState = getState;
+        $scope.stateExist = stateExist;
 
         $scope.options = {
             booleanValue: [
@@ -54,6 +55,7 @@
                 /** Création d'une nouvelle entité **/
                 HistorySrvc.add(gettext("Nouveau modèle de workflow"));
                 $scope.model = new WorkflowModelSrvc();
+                $scope.model.active = true;
                 initStates();
                 var currentUser = Principal.identity();
                 if (angular.isDefined(currentUser)) {
@@ -99,6 +101,7 @@
             $scope.model.states.push({ key: "CONSTAT_ETAT_AVANT_NUMERISATION", type: "TO_SKIP" });            
             $scope.model.states.push({ key: "DIFFUSION_DOCUMENT", type: "TO_SKIP" });
             $scope.model.states.push({ key: "DIFFUSION_DOCUMENT_OMEKA", type: "TO_SKIP" });
+            $scope.model.states.push({ key: "DIFFUSION_DOCUMENT_DIGITAL_LIBRARY", type: "TO_SKIP" });
             $scope.model.states.push({ key: "DIFFUSION_DOCUMENT_LOCALE", type: "TO_SKIP" });
             $scope.model.states.push({ key: "GENERATION_BORDEREAU", type: "TO_SKIP" });
             $scope.model.states.push({ key: "PREREJET_DOCUMENT", type: "TO_SKIP" });
@@ -324,6 +327,10 @@
                         $location.url(url);
                     });
             }
+        }
+
+        function stateExist(model, key){
+            return _.where(model.states, { key: key }).length > 0;
         }
     }
 })();

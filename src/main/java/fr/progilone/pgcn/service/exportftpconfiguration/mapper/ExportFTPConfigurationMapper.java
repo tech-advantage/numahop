@@ -6,9 +6,9 @@ import org.mapstruct.factory.Mappers;
 import fr.progilone.pgcn.domain.dto.exportftpconfiguration.ExportFTPConfigurationDTO;
 import fr.progilone.pgcn.domain.dto.exportftpconfiguration.SimpleExportFTPConfDTO;
 import fr.progilone.pgcn.domain.exportftpconfiguration.ExportFTPConfiguration;
-import fr.progilone.pgcn.service.library.mapper.LibraryMapper;
+import fr.progilone.pgcn.service.library.mapper.SimpleLibraryMapper;
 
-@Mapper(uses = {LibraryMapper.class})
+@Mapper(uses = {SimpleLibraryMapper.class})
 public interface ExportFTPConfigurationMapper {
 
     ExportFTPConfigurationMapper INSTANCE = Mappers.getMapper(ExportFTPConfigurationMapper.class);

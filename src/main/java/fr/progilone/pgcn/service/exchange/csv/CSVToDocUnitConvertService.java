@@ -32,12 +32,15 @@ public class CSVToDocUnitConvertService extends AbstractImportConvertService {
                                   final CSVRecord header,
                                   final String parentKeyExpr,
                                   final Map<String, DocPropertyType> propertyTypes, 
-                                  final List<String> entetes) {
+                                  final Map<Integer, String> entetes,
+                                  final boolean archivable,
+								  final boolean distributable) {
 
         final DocUnit docUnit = initDocUnit(mapping.getLibrary(), BibliographicRecord.PropertyOrder.BY_PROPERTY_TYPE);
         final BibliographicRecord bibRecord = Iterables.getOnlyElement(docUnit.getRecords());
 
-       // final Map<String, String> attributes = getLine(header, record);
+        docUnit.setArchivable(archivable);
+        docUnit.setDistributable(distributable);
         
         final Map<String, String> attributes = getLineFromMappedHeader(entetes, record);
 
@@ -89,9 +92,8 @@ public class CSVToDocUnitConvertService extends AbstractImportConvertService {
                     }
                     if (rule.getBibRecordField() != null) {
                         setObjectField(bibRecord, rule.getBibRecordField(), Collections.singletonList(attributes.get(realKey)));
-                    }    
+                    }
                 }
-                unusedKeys.remove(realKey);
             }
             
 
@@ -101,8 +103,9 @@ public class CSVToDocUnitConvertService extends AbstractImportConvertService {
         final DocUnitWrapper wrapper = new DocUnitWrapper();
         wrapper.setDocUnit(docUnit);
         // Clé parent
-        if (StringUtils.isNotBlank(parentKeyExpr) && attributes.containsKey(parentKeyExpr)) {
-            wrapper.setParentKey(attributes.get(parentKeyExpr));
+        if (StringUtils.isNotBlank(parentKeyExpr) && attributes.keySet().stream().anyMatch(key -> StringUtils.contains(key, parentKeyExpr))) {
+            final String parentKey = attributes.keySet().stream().filter(key -> StringUtils.contains(key, parentKeyExpr)).findFirst().get();
+            wrapper.setParentKey(attributes.get(parentKey));
         }
         return wrapper;
     }
@@ -123,11 +126,13 @@ public class CSVToDocUnitConvertService extends AbstractImportConvertService {
         return line;
     }
     
-    private Map<String, String> getLineFromMappedHeader(final List<String> entetes, final CSVRecord record) {
+    private Map<String, String> getLineFromMappedHeader(final Map<Integer, String> entetes, final CSVRecord record) {
         final Map<String, String> line = new HashMap<>();
 
+        final int maxEntete = entetes.keySet().stream().max(Comparator.naturalOrder()).get();
+
         for (int i = 0; i < record.size(); i++) {
-            if (i < entetes.size() && StringUtils.isNotEmpty(record.get(i))) {   
+            if (i <= maxEntete && StringUtils.isNotEmpty(record.get(i)) && entetes.get(i) != null) {
                 // ajout prefixe colx_ pour gerer les proprietes multiples
                 final String key = "col" + i + "_" + entetes.get(i);
                 final String value = record.get(i);

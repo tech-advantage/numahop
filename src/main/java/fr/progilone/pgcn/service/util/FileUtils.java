@@ -8,9 +8,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public final class FileUtils {
 
@@ -33,34 +30,6 @@ public final class FileUtils {
                 os.write(buffer, 0, length);
             }
         }
-    }
-
-    /**
-     * Retourne tous les fichiers d'un répertoire et de ses sous-répertoies, ordonnés alphabétiquement
-     *
-     * @param path
-     * @param extension
-     * @return List<File>
-     */
-    public static List<File> getFiles(final File path, final String extension) {
-        final List<File> files = new ArrayList<>();
-        final File[] filesArray;
-        if (extension != null) {
-            filesArray = path.listFiles(f -> f.isDirectory() || f.getName().toLowerCase().endsWith(extension.toLowerCase()));
-        } else {
-            filesArray = path.listFiles();
-        }
-        if (filesArray != null) {
-            for (final File f : filesArray) {
-                if (f.isDirectory()) {
-                    files.addAll(getFiles(f, extension));
-                } else {
-                    files.add(f);
-                }
-            }
-            Collections.sort(files);
-        }
-        return files;
     }
 
     /**

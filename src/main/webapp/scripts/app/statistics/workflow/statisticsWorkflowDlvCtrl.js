@@ -249,7 +249,7 @@
                 lot: _.pluck(statCtrl.filters.lot, "identifier"),
                 pgcnid: statCtrl.filters.pgcnid,
                 project: _.pluck(statCtrl.filters.project, "identifier"),
-                state: _.pluck(statCtrl.filters.state, "identifier"),
+                state: _.pluck(statCtrl.columns, "identifier"),
                 from: statCtrl.filters.dlvFrom,
                 to: statCtrl.filters.dlvTo
             };

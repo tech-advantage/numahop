@@ -3,6 +3,7 @@ package fr.progilone.pgcn.domain.workflow;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
@@ -146,7 +147,7 @@ public abstract class DocUnitState extends AbstractDomainObject {
      */
     public boolean isFutureOrCurrentState() {
         return WorkflowStateStatus.NOT_STARTED.equals(status) || WorkflowStateStatus.PENDING.equals(status) || WorkflowStateStatus.TO_SKIP.equals(
-            status) || WorkflowStateStatus.TO_WAIT.equals(status) || WorkflowStateStatus.WAITING.equals(status);
+            status) || WorkflowStateStatus.TO_WAIT.equals(status) || WorkflowStateStatus.WAITING.equals(status) || WorkflowStateStatus.WAITING_NEXT_COMPLETED.equals(status) ;
     }
 
     /**
@@ -232,11 +233,22 @@ public abstract class DocUnitState extends AbstractDomainObject {
                         setEndDate(startDate);
                         // On continue d'initialiser si il n'y a pas d'étape en attente ou juste la validation de notice
                         final List<DocUnitState> currentStates = getWorkflow().getCurrentStates();
+                        final List<DocUnitState> notStartedNextStates = getWorkflow().getFutureOrRunning()
+                                                                                     .stream()
+                                                                                     .filter(state -> state.getStatus()
+                                                                                                           .equals(WorkflowStateStatus.NOT_STARTED)
+                                                                                                      && !state.getKey()
+                                                                                                               .equals(WorkflowStateKey.CLOTURE_DOCUMENT))
+                                                                                     .collect(Collectors.toList());
                         if(currentStates.isEmpty() 
                                 || (currentStates.size() == 1 
                                         && WorkflowStateKey.VALIDATION_NOTICES == currentStates.get(0).getKey())) {
                             for (final DocUnitState state : getNextStates()) {
-                                state.initializeState(startDate, null, null);
+                                // #5455 - Ne pas cloture le workflow s'il y a des étapes NOT_STARTED à après (cas CINES ignoré qui entraine la
+                                // cloture du document)
+                                if (!WorkflowStateKey.CLOTURE_DOCUMENT.equals(state.getKey()) || notStartedNextStates.isEmpty()) {
+                                    state.initializeState(startDate, null, null);
+                                }
                             }
                         }
                         break;
@@ -294,6 +306,15 @@ public abstract class DocUnitState extends AbstractDomainObject {
      */
     public boolean isSkipped() {
         return WorkflowStateStatus.SKIPPED.equals(status);
+    }
+
+    /**
+     * Retourne vrai si la tâche est à ignorer.
+     *
+     * @return
+     */
+    public boolean isToSkip() {
+        return WorkflowStateStatus.TO_SKIP.equals(status);
     }
 
     

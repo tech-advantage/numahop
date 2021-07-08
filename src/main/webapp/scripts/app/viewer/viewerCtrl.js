@@ -90,9 +90,15 @@
                 };
                 DeliverySrvc.getDeliveryForViewer(parms, function (delivery) {
                     $scope.delivery = delivery;
+                    $scope.deliveryNotes = $scope.delivery.digitizingNotes;
                 });
                 $scope.delivLoaded = true;
             }
+
+            // Récupération du nombre de pièces
+            DigitalDocumentSrvc.getPiecesNb(params, function (val) {
+                $scope.nbPieces = val.nbPieces;
+            });
 
             if ($scope.sampling) {
                 // MODE ECHANTILLONNAGE
@@ -177,10 +183,6 @@
                     $scope.select.selectedErrors = _.filter($scope.options.errors, function (error) {
                         return _.contains(errors, error.key);
                     });
-                });
-
-                DigitalDocumentSrvc.getDeliveryNotes(params, function (val) {
-                    $scope.deliveryNotes = val.deliveryNotes;
                 });
 
                 // Historique des resultats si relivraison

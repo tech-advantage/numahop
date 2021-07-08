@@ -1,5 +1,21 @@
 package fr.progilone.pgcn.service.exchange.ead;
 
+import static fr.progilone.pgcn.domain.document.BibliographicRecord.*;
+
+import java.io.File;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+
 import fr.progilone.pgcn.domain.document.DocPropertyType;
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.exchange.ImportReport;
@@ -19,21 +35,6 @@ import fr.progilone.pgcn.service.exchange.MappingService;
 import fr.progilone.pgcn.service.exchange.ead.mapping.CompiledMapping;
 import fr.progilone.pgcn.service.util.transaction.TransactionService;
 import fr.progilone.pgcn.web.websocket.WebsocketService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-
-import java.io.File;
-import java.util.Map;
-import java.util.Objects;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import static fr.progilone.pgcn.domain.document.BibliographicRecord.*;
 
 /**
  * Created by Sébastien on 16/05/2017.
@@ -112,11 +113,13 @@ public class ImportEadService extends AbstractImportService {
                                final boolean stepValidation,
                                final boolean stepDeduplication,
                                final ImportedDocUnit.Process defaultDedupProcess,
-                               final PropertyOrder propertyOrder) {
+                               final PropertyOrder propertyOrder,
+                               final boolean archivable,
+							   final boolean distributable) {
         try {
             /* Pré-import */
             LOG.info("Pré-import du fichier EAD {}", importFile.getAbsolutePath());
-            report = importEadRecords(importFile, mappingId, mappingChildId, report, propertyOrder);
+            report = importEadRecords(importFile, mappingId, mappingChildId, report, propertyOrder, archivable, distributable);
 
             /* Poursuite du traitement des unités documentaires pré-importées: recherche de doublons, validation utilisateur, import */
             importDocUnit(report, null, stepValidation, stepDeduplication, defaultDedupProcess);
@@ -144,7 +147,9 @@ public class ImportEadService extends AbstractImportService {
                                           final String mappingId,
                                           final String mappingChildId,
                                           final ImportReport report,
-                                          final PropertyOrder propertyOrder) throws PgcnTechnicalException {
+                                          final PropertyOrder propertyOrder,
+                                          final boolean archivable,
+                                          final boolean distributable) throws PgcnTechnicalException {
         try {
             final TransactionStatus status = transactionService.startTransaction(true);
 
@@ -197,7 +202,7 @@ public class ImportEadService extends AbstractImportService {
 
             // SIMPLE: 1 composant EAD enfant = 1 notice dans PGCN
             if (mappingChild == null) {
-                getSimpleEadCEntityHandler(compiledMapping, propertyTypes, propertyOrder, runningReport, tMgr)
+                getSimpleEadCEntityHandler(compiledMapping, propertyTypes, propertyOrder, runningReport, tMgr, archivable, distributable)
                     // Lecture du fichier d'entrée
                     .parse(importFile);
             }
@@ -233,7 +238,9 @@ public class ImportEadService extends AbstractImportService {
                                                          final Map<String, DocPropertyType> propertyTypes,
                                                          final PropertyOrder propertyOrder,
                                                          final ImportReport runningReport,
-                                                         final TransactionManager tMgr) {
+                                                         final TransactionManager tMgr,
+                                                         final boolean archivable,
+                                                         final boolean distributable) {
         return new EadCEntityHandler((eadheader, rootC) -> {
             final EadCParser eadCParser = new EadCParser(eadheader, rootC);
 
@@ -241,7 +248,9 @@ public class ImportEadService extends AbstractImportService {
                 try {
                     // Conversion du XML en unité documentaire
                     final DocUnit docUnit = convertService.convert(c, eadCParser, compiledMapping, propertyTypes, propertyOrder);
-
+                    docUnit.setArchivable(archivable);
+                    docUnit.setDistributable(distributable);
+                    
                     // Sauvegarde
                     final ImportedDocUnit imp = new ImportedDocUnit();
                     imp.initDocUnitFields(docUnit);
@@ -257,7 +266,7 @@ public class ImportEadService extends AbstractImportService {
                         runningReport.incrementNbImp(1);
                     }
 
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     LOG.error(e.getMessage(), e);
                 }
                 // Gestion de la transaction
@@ -315,7 +324,14 @@ public class ImportEadService extends AbstractImportService {
                 // Ajout des composants enfant, mappés avec le sous-mapping
                 for (final C c : eadCParser.getcLeaves()) {
                     if (!Objects.equals(c, rootC)) {
-                        convertService.convert(docUnit, c, eadCParser, compiledMappingChild, propertyTypes);
+                        final DocUnit docUnitChild = convertService.convert(c, eadCParser, compiledMappingChild, propertyTypes, propertyOrder);
+                        docUnitChild.setParent(docUnit);
+                        // Sauvegarde
+                        final ImportedDocUnit impChild = new ImportedDocUnit();
+                        impChild.initDocUnitFields(docUnitChild);
+                        impChild.setReport(runningReport);
+                        impChild.setParentDocUnit(savedUnit.getIdentifier());
+                        final ImportedDocUnit savedUnitChild = importDocUnitService.create(impChild);
                     }
                 }
 
@@ -328,7 +344,7 @@ public class ImportEadService extends AbstractImportService {
                     runningReport.incrementNbImp(1);
                 }
 
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 LOG.error(e.getMessage(), e);
             }
             // Gestion de la transaction

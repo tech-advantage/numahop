@@ -31,10 +31,12 @@ public class DescriptionProperty extends AbstractDomainObject {
      * Type de propriété
      */
     public enum Type {
-        BINDING,
+        TYPE,
         DESCRIPTION,
+        STATE,
         NUMBERING,
-        VIGILANCE
+        BINDING,
+        VIGILANCE,
     }
 
     /**

@@ -38,6 +38,23 @@ public interface DocUnitRepositoryCustom {
                          LocalDate createdDateTo,
                          List<String> identifiers,
                          @PageableDefault(size = Integer.MAX_VALUE) final Pageable pageable);
+    
+    /**
+     * Recherche minimaliste d'UDS .
+     * 
+     * @param search
+     * @param libraries
+     * @param projects
+     * @param lots
+     * @param trains
+     * @return
+     */
+    List<DocUnit> minSearch(String search,
+                            List<String> libraries,
+                            List<String> projects,
+                            List<String> lots,
+                            List<String> trains,
+                            List<String> statuses);
 
     /**
      * Recherche d'unités documentaires correspondant à l'un des identifiants, pour un état donné et par rapport à une unité documentaire de référence

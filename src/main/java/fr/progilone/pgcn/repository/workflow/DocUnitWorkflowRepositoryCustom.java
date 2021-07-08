@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import fr.progilone.pgcn.domain.document.DigitalDocument.DigitalDocumentStatus;
 import fr.progilone.pgcn.domain.workflow.DocUnitWorkflow;
 import fr.progilone.pgcn.domain.workflow.WorkflowStateKey;
+import fr.progilone.pgcn.domain.workflow.WorkflowStateStatus;
 import fr.progilone.pgcn.repository.workflow.helper.DocUnitWorkflowSearchBuilder;
 
 public interface DocUnitWorkflowRepositoryCustom {
@@ -28,10 +29,12 @@ public interface DocUnitWorkflowRepositoryCustom {
      */
     Page<DocUnitWorkflow> findDocUnitProgressStats(List<String> libraries,
                                                    List<String> projects,
+                                                   boolean projetActive,
                                                    List<String> lots,
                                                    List<String> trains,
                                                    String pgcnId,
                                                    List<WorkflowStateKey> states,
+                                                   final List<WorkflowStateStatus> status,
                                                    List<String> users,
                                                    LocalDate fromDate,
                                                    LocalDate toDate,
@@ -100,4 +103,22 @@ public interface DocUnitWorkflowRepositoryCustom {
      * @return
      */
     List<DocUnitWorkflow> findDocUnitWorkflowsForArchiveExport(String library);
+
+    /**
+     * Retrouve les docUnitWorkflow candidats pour Export local.
+     * (workflow en attente)
+     * ATTENTION : pas de controle d'acces - A reserver aux traitements automatiques
+     *
+     * @return
+     */
+    List<DocUnitWorkflow> findDocUnitWorkflowsForLocalExport(String library);
+
+    /**
+     * Retrouve les docUnitWorkflow candidats pour Export sur bibliothèque numérique.
+     * (workflow en attente)
+     * ATTENTION : pas de controle d'acces - A reserver aux traitements automatiques
+     *
+     * @return
+     */
+    List<DocUnitWorkflow> findDocUnitWorkflowsForDigitalLibraryExport(String library);
 }

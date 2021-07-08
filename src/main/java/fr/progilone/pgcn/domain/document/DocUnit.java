@@ -1,13 +1,6 @@
 package fr.progilone.pgcn.domain.document;
 
-import static fr.progilone.pgcn.service.es.EsConstant.ANALYZER_CI_AI;
-import static fr.progilone.pgcn.service.es.EsConstant.ANALYZER_CI_AS;
-import static fr.progilone.pgcn.service.es.EsConstant.ANALYZER_KEYWORD;
-import static fr.progilone.pgcn.service.es.EsConstant.ANALYZER_PHRASE;
-import static fr.progilone.pgcn.service.es.EsConstant.SUBFIELD_CI_AI;
-import static fr.progilone.pgcn.service.es.EsConstant.SUBFIELD_CI_AS;
-import static fr.progilone.pgcn.service.es.EsConstant.SUBFIELD_PHRASE;
-import static fr.progilone.pgcn.service.es.EsConstant.SUBFIELD_RAW;
+import static fr.progilone.pgcn.service.es.EsConstant.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -374,6 +367,16 @@ public class DocUnit extends AbstractDomainObject {
     
     @Column(name = "local_exp_date")
     private LocalDateTime localExportDate;
+
+    /**
+     * Infos diffusion bibliothèque numérique
+     */
+    @Column(name = "dig_lib_export_status")
+    @Enumerated(EnumType.STRING)
+    private ExportStatus digLibExportStatus;
+
+    @Column(name = "dig_lib_export_date")
+    private LocalDateTime digLibExportDate;
     
     
     /** langage selectionné pour ocr */
@@ -801,6 +804,22 @@ public class DocUnit extends AbstractDomainObject {
 
     public void setLocalExportDate(final LocalDateTime localExportDate) {
         this.localExportDate = localExportDate;
+    }
+
+    public ExportStatus getDigLibExportStatus() {
+        return digLibExportStatus;
+    }
+
+    public void setDigLibExportStatus(final ExportStatus digLibExportStatus) {
+        this.digLibExportStatus = digLibExportStatus;
+    }
+
+    public LocalDateTime getDigLibExportDate() {
+        return digLibExportDate;
+    }
+
+    public void setDigLibExportDate(final LocalDateTime digLibExportDate) {
+        this.digLibExportDate = digLibExportDate;
     }
 
     public String getProjectId() {

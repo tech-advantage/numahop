@@ -147,6 +147,9 @@
                     if ($routeParams["reinitStatusFilter"]) {
                         mainCtrl.filters.statuses = [];
                     }
+                    if($routeParams["reinitFilters"]){
+                        reinitFilters(false);
+                    }
                     if ($routeParams["radical"]) {
                         mainCtrl.filters.searchRadical = $routeParams["radical"];
                     }
@@ -258,7 +261,7 @@
          * Réinitialise l'ensemble des filtres et lance une nouvelle recherche
          * @return {[type]} [description]
          */
-        function reinitFilters() {
+        function reinitFilters(search) {
             mainCtrl.pagination.items = [];
             mainCtrl.pagination.totalItems = 0;
             mainCtrl.pagination.busy = false;
@@ -285,8 +288,11 @@
             mainCtrl.filters.searchPageCheckTo = '';
             mainCtrl.filters.searchMinSize = '';
             mainCtrl.filters.searchMaxSize = '';
+            mainCtrl.filters.statuses = [];
 
-            search();
+            if(search){
+                search();
+            }
         }
 
         /**

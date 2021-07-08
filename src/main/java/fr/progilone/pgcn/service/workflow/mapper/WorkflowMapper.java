@@ -14,10 +14,10 @@ import fr.progilone.pgcn.domain.workflow.DocUnitWorkflow;
 import fr.progilone.pgcn.domain.workflow.WorkflowGroup;
 import fr.progilone.pgcn.domain.workflow.WorkflowModel;
 import fr.progilone.pgcn.domain.workflow.WorkflowModelState;
-import fr.progilone.pgcn.service.library.mapper.LibraryMapper;
+import fr.progilone.pgcn.service.library.mapper.SimpleLibraryMapper;
 import fr.progilone.pgcn.service.user.mapper.UserMapper;
 
-@Mapper(uses = {LibraryMapper.class,
+@Mapper(uses = {SimpleLibraryMapper.class,
                 UserMapper.class,
                 SimpleWorkflowMapper.class})
 public interface WorkflowMapper {

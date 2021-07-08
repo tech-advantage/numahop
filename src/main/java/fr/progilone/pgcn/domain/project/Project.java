@@ -280,6 +280,12 @@ public class Project extends AbstractDomainObject {
     @Column(name = "lib_resp_email")
     private String libRespEmail;
 
+    /**
+     * URL de la licence : Internet Archive
+     */
+    @Column(name = "license_url")
+    private String licenseUrl;
+
 
     public Library getLibrary() {
         return library;
@@ -568,6 +574,14 @@ public class Project extends AbstractDomainObject {
 
     public void setLibRespEmail(String libRespEmail) {
         this.libRespEmail = libRespEmail;
+    }
+
+    public String getLicenseUrl() {
+        return licenseUrl;
+    }
+
+    public void setLicenseUrl(String licenseUrl) {
+        this.licenseUrl = licenseUrl;
     }
 
     /**

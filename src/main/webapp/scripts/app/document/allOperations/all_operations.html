@@ -79,18 +79,21 @@
                             <li>
                                 <a ng-show="mainCtrl.binding.loaded && mainCtrl.docUnit.digitalDocuments[0].status === 'VALIDATED' && mainCtrl.docUnit.records.length > 0" 
                                     ng-click="mainCtrl.exportLocal()" translate><span class="glyphicon-halflings glyphicon-export"></span> Export Local</a>
-                                    
-                                <a ng-show="mainCtrl.binding.loaded && mainCtrl.docUnit.digitalDocuments[0].status === 'VALIDATED' && mainCtrl.canExportToCines && mainCtrl.docUnit.records.length > 0 && mainCtrl.docUnit.archivable" 
-                                    ng-click="mainCtrl.export('cines', mainCtrl.docUnit, mainCtrl.docUnit.records[0])"
-                                    translate><span class="glyphicon-halflings glyphicon-export"></span> Export Cines</a>
-                                <a ng-show="mainCtrl.binding.loaded && mainCtrl.docUnit.digitalDocuments[0].status === 'VALIDATED' && mainCtrl.canExportToOmeka && mainCtrl.docUnit.records.length > 0 && mainCtrl.docUnit.distributable" 
-                                    ng-click="mainCtrl.export('omeka', mainCtrl.docUnit, mainCtrl.docUnit.records[0])"
-                                    translate><span class="glyphicon-halflings glyphicon-export"></span> Export Omeka</a>    
-                                <a ng-show="mainCtrl.binding.loaded && mainCtrl.docUnit.digitalDocuments[0].status === 'VALIDATED' && mainCtrl.canExportToInternetArchive && mainCtrl.docUnit.distributable" 
-                                    ng-click="mainCtrl.export('internetarchive', mainCtrl.docUnit)"
-                                    translate><span class="glyphicon-halflings glyphicon-export"></span> Export Internet Archive</a>
-                                <a ng-show="mainCtrl.docUnit.digitalDocuments[0].status !== 'CREATING' && mainCtrl.docUnit.digitalDocuments[0].status !== 'DELIVERING'" 
-                                    ng-click="mainCtrl.checkFacile()" translate>Validation FACILE (Cines)</a>
+
+                                <a ng-show="mainCtrl.binding.loaded && mainCtrl.docUnit.digitalDocuments[0].status === 'VALIDATED' && mainCtrl.canExportToCines && mainCtrl.docUnit.records.length > 0 && mainCtrl.docUnit.archivable"
+                                   ng-click="mainCtrl.export('cines', mainCtrl.docUnit, mainCtrl.docUnit.records[0])"
+                                   translate><span class="glyphicon-halflings glyphicon-export"></span> Export Cines</a>
+                                <a ng-show="mainCtrl.binding.loaded && mainCtrl.docUnit.digitalDocuments[0].status === 'VALIDATED' && mainCtrl.canExportToOmeka && mainCtrl.docUnit.records.length > 0 && mainCtrl.docUnit.distributable && isAuthorized([userRoles.EXPORT_DIFFUSION_OMEKA_HAB0])"
+                                   ng-click="mainCtrl.export('omeka', mainCtrl.docUnit, mainCtrl.docUnit.records[0])"
+                                   translate><span class="glyphicon-halflings glyphicon-export"></span> Export Omeka</a>
+                                <a ng-show="mainCtrl.binding.loaded && mainCtrl.docUnit.digitalDocuments[0].status === 'VALIDATED' && mainCtrl.canExportToInternetArchive && mainCtrl.docUnit.distributable && isAuthorized([userRoles.EXPORT_INTERNET_ARCHIVE_HAB0])"
+                                   ng-click="mainCtrl.export('internetarchive', mainCtrl.docUnit)"
+                                   translate><span class="glyphicon-halflings glyphicon-export"></span> Export Internet Archive</a>
+                                <a ng-show="mainCtrl.binding.loaded && mainCtrl.docUnit.digitalDocuments[0].status === 'VALIDATED' && mainCtrl.canExportToDigitalLibrary && mainCtrl.docUnit.distributable &&  isAuthorized([userRoles.EXPORT_DIFFUSION_DIGITAL_LIBRARY_HAB0])"
+                                   ng-click="mainCtrl.export('digitallibrary', mainCtrl.docUnit)"
+                                   translate><span class="glyphicon-halflings glyphicon-export"></span>Export sur bibliothèque numérique</a>
+                                <a ng-show="mainCtrl.docUnit.digitalDocuments[0].status !== 'CREATING' && mainCtrl.docUnit.digitalDocuments[0].status !== 'DELIVERING'"
+                                   ng-click="mainCtrl.checkFacile()" translate>Validation FACILE (Cines)</a>
                             </li>
                         </ul>
                     </div>

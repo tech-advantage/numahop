@@ -130,7 +130,8 @@
 			sortedStates.push(_.where(states, { key: "NUMERISATION_EN_ATTENTE" })[0]);
 			sortedStates.push(_.where(states, { key: "CONSTAT_ETAT_APRES_NUMERISATION" })[0]);
 			sortedStates.push(_.where(states, { key: "LIVRAISON_DOCUMENT_EN_COURS" })[0]);
-			var relivStates = _.where(states, { key: "RELIVRAISON_DOCUMENT_EN_COURS" }); 
+			var relivStates = _.where(states, { key: "RELIVRAISON_DOCUMENT_EN_COURS" });
+			relivStates = _.sortBy(relivStates, function(relivState){ return new Date( relivState.startDate ) }).reverse();
 			if (relivStates.length > 0) {
 			    sortedStates.push(relivStates[0]); 
 			}
@@ -147,6 +148,7 @@
 			if (diffOmekaStates.length > 0) {
 			    sortedStates.push(diffOmekaStates[0]);
 			}
+			sortedStates.push(_.where(states, { key: "DIFFUSION_DOCUMENT_DIGITAL_LIBRARY" })[0]);
 			var diffLocalStates = _.where(states, { key: "DIFFUSION_DOCUMENT_LOCALE" }); 
             if (diffLocalStates.length > 0) {
                 sortedStates.push(diffLocalStates[0]);

@@ -11,6 +11,8 @@
 			self.accCinesCertificate = false;
 			self.downloadAIP = downloadAIP;
 			self.downloadSIP = downloadSIP;
+			self.downloadMETS = downloadMETS;
+			
 
 			/**
 			 * Fonctionne uniquement pour une notice unique attachée à l'unité doc
@@ -63,6 +65,17 @@
 				} else {
 				    self.omekaDistribStatus = 'Non envoyé';
 				}
+                if (self.docUnit.digLibExportStatus) {
+                    if (self.docUnit.digLibExportStatus === 'IN_PROGRESS') {
+                        self.digLibDistribStatus = 'En cours';
+                    } else if (self.docUnit.digLibExportStatus === 'SENT') {
+                        self.digLibDistribStatus = 'Envoyé';
+                    } else if (self.docUnit.digLibExportStatus === 'FAILED') {
+                        self.digLibDistribStatus = 'Envoi en échec';
+                    }
+                } else {
+                    self.digLibDistribStatus = 'Non';
+                }
 
 				// Affichage pour un temps limité à l'ouverture
 				MessageSrvc.initPanel();
@@ -95,5 +108,19 @@
 						});
 
 			}
+			
+			function downloadMETS(status) {
+                MessageSrvc.addSuccess(gettextCatalog.getString("Téléchargement du fichier mets.xml"));
+                ExportSrvc
+                    .getMets({ docUnit: self.docUnit.identifier, cinesStatus: status })
+                    .$promise
+                    .then(function (data) {
+                        FileSaver.saveAs(data.response, "mets.xml");
+                    },
+                        function () {
+                            MessageSrvc.addError(gettextCatalog.getString("Téléchargement du fichier impossible"));
+                        });
+
+            }
 		});
 })();

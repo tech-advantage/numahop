@@ -38,10 +38,13 @@ import fr.progilone.pgcn.domain.exchange.cines.QCinesReport;
 import fr.progilone.pgcn.domain.exchange.internetarchive.QInternetArchiveReport;
 import fr.progilone.pgcn.domain.lot.QLot;
 import fr.progilone.pgcn.domain.project.QProject;
+import fr.progilone.pgcn.domain.user.User;
+import fr.progilone.pgcn.domain.util.CustomUserDetails;
 import fr.progilone.pgcn.domain.workflow.QDocUnitState;
 import fr.progilone.pgcn.domain.workflow.QDocUnitWorkflow;
 import fr.progilone.pgcn.domain.workflow.WorkflowStateKey;
 import fr.progilone.pgcn.domain.workflow.WorkflowStateStatus;
+import fr.progilone.pgcn.security.SecurityUtils;
 
 public class DocUnitRepositoryImpl implements DocUnitRepositoryCustom {
 
@@ -147,6 +150,19 @@ public class DocUnitRepositoryImpl implements DocUnitRepositoryCustom {
             final BooleanExpression trainFilter = qpd.isNotNull().and(qpd.train.identifier.in(trains));
             builder.and(trainFilter);
         }
+        // Droits d'accès
+        final CustomUserDetails currentUser = SecurityUtils.getCurrentUser();
+        if (currentUser != null) {
+            // Prestataires
+            if (currentUser.getCategory() == User.Category.PROVIDER) {
+                final BooleanExpression providerFilter =
+                                                       // prestataire sur le projet
+                                                       project.provider.identifier.eq(currentUser.getIdentifier())
+                                                                                  // prestataire sur un lot du projet
+                                                                                  .or(lot.provider.identifier.eq(currentUser.getIdentifier()));
+                builder.and(providerFilter);
+            }
+        }
         // Statuts de workflow
         if (CollectionUtils.isNotEmpty(statuses)) {
             final List<WorkflowStateKey> wkfStates = statuses.stream().map(WorkflowStateKey::valueOf).collect(Collectors.toList());
@@ -210,6 +226,91 @@ public class DocUnitRepositoryImpl implements DocUnitRepositoryCustom {
 
         return new PageImpl<>(result, pageable, total);
     }
+    
+    
+    @Override
+    public List<DocUnit> minSearch(final String search,
+                                final List<String> libraries,
+                                final List<String> projects,
+                                final List<String> lots,
+                                final List<String> trains,
+                                final List<String> statuses) {
+
+        final QDocUnit doc = QDocUnit.docUnit;
+        final QProject project = QProject.project;
+        final QLot lot = QLot.lot;
+        final QDocUnitWorkflow workflow = QDocUnitWorkflow.docUnitWorkflow;
+        final QDocUnitState state = QDocUnitState.docUnitState;
+
+        final BooleanBuilder builder = new BooleanBuilder();
+        
+        if (StringUtils.isNotBlank(search)) {
+            final BooleanExpression nameFilter = doc.label.containsIgnoreCase(search).or(doc.pgcnId.containsIgnoreCase(search));
+            builder.andAnyOf(nameFilter);
+        }
+        // available
+        //builder.and(doc.digitalDocuments.isEmpty().not());
+
+        if (CollectionUtils.isNotEmpty(libraries)) {
+            final BooleanExpression sitesFilter = doc.library.identifier.in(libraries);
+            builder.and(sitesFilter);
+        }
+        if (CollectionUtils.isNotEmpty(projects)) {
+            final BooleanExpression projectFilter = project.identifier.in(projects);
+            builder.and(projectFilter);
+        }
+        if (CollectionUtils.isNotEmpty(lots)) {
+            final BooleanExpression lotFilter = lot.identifier.in(lots);
+            builder.and(lotFilter);
+        }
+        
+        if (CollectionUtils.isNotEmpty(trains)) {
+            final QPhysicalDocument qpd = doc.docUnit.physicalDocuments.any();
+            final BooleanExpression trainFilter = qpd.isNotNull().and(qpd.train.identifier.in(trains));
+            builder.and(trainFilter);
+        }
+        
+        // Statuts de workflow
+        if (CollectionUtils.isNotEmpty(statuses)) {
+            final List<WorkflowStateKey> wkfStates = statuses.stream().map(WorkflowStateKey::valueOf).collect(Collectors.toList());
+
+            final BooleanBuilder statusBuilder = new BooleanBuilder();
+            if (statuses.contains(WorkflowStateKey.CLOTURE_DOCUMENT.name())) {
+                statuses.remove(WorkflowStateKey.CLOTURE_DOCUMENT.name());
+                statusBuilder.and(state.discriminator.eq(WorkflowStateKey.CLOTURE_DOCUMENT)).and(state.status.in(WorkflowStateStatus.FINISHED));
+                if (CollectionUtils.isNotEmpty(statuses)) {
+                    wkfStates.remove(WorkflowStateKey.CLOTURE_DOCUMENT);
+                    statusBuilder.or(state.discriminator.in(wkfStates).and(state.startDate.isNotNull().and(state.endDate.isNull())));
+                }
+            } else {
+                final BooleanExpression stateFilter = state.discriminator.in(wkfStates);
+                final BooleanExpression statusFilter = state.startDate.isNotNull().and(state.endDate.isNull());
+                statusBuilder.and(stateFilter).and(statusFilter);
+            }
+
+            builder.and(statusBuilder);
+        }
+
+        final JPQLQuery baseQuery = new JPAQuery(em);
+
+        final List<DocUnit> result = baseQuery.from(doc)
+                                              .leftJoin(doc.library)
+                                              .fetch()
+                                              .leftJoin(doc.project, project)
+                                              //.leftJoin(project.trains, train)
+                                              .leftJoin(doc.lot, lot)
+                                              .leftJoin(doc.workflow, workflow)
+                                              .leftJoin(workflow.states, state)
+                                              .where(builder.getValue())
+                                              .orderBy(doc.label.asc())
+                                              .orderBy(doc.pgcnId.asc())
+                                              .distinct()
+                                              .list(doc);
+
+        return result;
+    }
+
+    
 
     /**
      * Gère le tri
@@ -318,8 +419,30 @@ public class DocUnitRepositoryImpl implements DocUnitRepositoryCustom {
             });
             
             Hibernate.initialize(doc.getProject());
+            Hibernate.initialize(doc.getLot());
+            
+            if (doc.getPlanClassementPAC() == null) {
+                if (doc.getLot() != null) {
+                    if (doc.getLot().getPlanClassementPAC() == null) {
+                        if (doc.getProject() != null) {
+                            Hibernate.initialize(doc.getProject().getPlanClassementPAC());
+                        }
+                    } else {
+                        Hibernate.initialize(doc.getLot().getPlanClassementPAC());
+                    }
+                }
+            } else {
+            	Hibernate.initialize(doc.getPlanClassementPAC());
+            }
+      
+            Hibernate.initialize(doc.getRecords());
             doc.getRecords().forEach(not -> {
-                not.getProperties().forEach(p -> Hibernate.initialize(p.getType()));
+            	if (not != null) {
+            		Hibernate.initialize(not.getProperties());
+            		if (not.getProperties() != null) {
+            			not.getProperties().forEach(p -> Hibernate.initialize(p.getType()));
+            		}
+            	}
             });
             
             if (doc.getExportData() != null) {
@@ -330,6 +453,10 @@ public class DocUnitRepositoryImpl implements DocUnitRepositoryCustom {
                 Hibernate.initialize(doc.getArchiveItem().getCollections());
                 Hibernate.initialize(doc.getArchiveItem().getSubjects());
                 Hibernate.initialize(doc.getArchiveItem().getHeaders());
+                Hibernate.initialize(doc.getArchiveItem().getCoverages());
+                Hibernate.initialize(doc.getArchiveItem().getContributors());
+                Hibernate.initialize(doc.getArchiveItem().getCreators());
+                Hibernate.initialize(doc.getArchiveItem().getLanguages());
             }
         }
         return doc;

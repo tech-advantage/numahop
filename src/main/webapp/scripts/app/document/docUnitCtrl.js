@@ -238,12 +238,16 @@
 
                 var idNewEntities = _.pluck($scope.newEntities, 'identifier');
 
+                var docUnitIdentifiers = _.map(value.content, function(docUnit) { return docUnit.identifier; });
                 for (var i = 0; i < value.content.length; i++) {
                     if (idNewEntities.indexOf(value.content[i].identifier) < 0) {
                         if (afterUpdate && value.content[i].identifier === $scope.docUnit.identifier) {
                             $scope.docUnit._selected = true;
                             $scope.pagination.items.push($scope.docUnit);
                         } else {
+                            if(value.content[i].parentIdentifier != null && !_.contains(docUnitIdentifiers, value.content[i].parentIdentifier)){
+                                value.content[i].parentIdentifier = null;
+                            }
                             $scope.pagination.items.push(value.content[i]);
                         }
                     }

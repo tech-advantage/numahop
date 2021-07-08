@@ -1,6 +1,7 @@
 package fr.progilone.pgcn.service.document;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -13,11 +14,14 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Hibernate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,10 +53,13 @@ import fr.progilone.pgcn.repository.train.TrainRepository;
 import fr.progilone.pgcn.service.delivery.DeliveryService;
 import fr.progilone.pgcn.service.document.conditionreport.ConditionReportService;
 import fr.progilone.pgcn.service.es.EsDocUnitService;
+import fr.progilone.pgcn.service.exchange.internetarchive.ui.UIInternetArchiveReportService;
 import fr.progilone.pgcn.service.util.SortUtils;
 
 @Service
 public class DocUnitService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DocUnitService.class);
 
     private final BibliographicRecordRepository bibliographicRecordRepository;
     private final CinesReportRepository cinesReportRepository;
@@ -63,6 +70,7 @@ public class DocUnitService {
     private final EsDocUnitService esDocUnitService;
     private final ImportedDocUnitRepository importedDocUnitRepository;
     private final InternetArchiveReportRepository internetArchiveReportRepository;
+    private final UIInternetArchiveReportService uiIAReportService;
     private final PhysicalDocumentService physicalDocumentService;
     private final ProjectRepository projectRepository;
     private final TrainRepository trainRepository;
@@ -82,7 +90,8 @@ public class DocUnitService {
                           final ProjectRepository projectRepository,
                           final LotRepository lotRepository,
                           final TrainRepository trainRepository,
-                          final DeliveryService deliveryService) {
+                          final DeliveryService deliveryService,
+                          final UIInternetArchiveReportService uiIAReportService) {
         this.bibliographicRecordRepository = bibliographicRecordRepository;
         this.cinesReportRepository = cinesReportRepository;
         this.conditionReportService = conditionReportService;
@@ -95,6 +104,7 @@ public class DocUnitService {
         this.physicalDocumentService = physicalDocumentService;
         this.projectRepository = projectRepository;
         this.trainRepository = trainRepository;
+        this.uiIAReportService = uiIAReportService;
     }
 
     /**
@@ -375,7 +385,7 @@ public class DocUnitService {
                                             final Map<String, DocUnitDeletedReportDTO> entityDeletedReportsMap,
                                             final String entityId,
                                             final String label) {
-        DocUnitDeletedReportDTO entityDeletedReport;
+        final DocUnitDeletedReportDTO entityDeletedReport;
 
         if (entityDeletedReportsMap.containsKey(entityId)) {
             entityDeletedReport = entityDeletedReportsMap.get(entityId);
@@ -452,6 +462,24 @@ public class DocUnitService {
                                         identifiers,
                                         pageRequest);
     }
+    
+    @Transactional(readOnly = true)
+    public List<DocUnit> searchMinList(final String search,
+                                final List<String> libraries,
+                                final List<String> projects,
+                                final List<String> lots,
+                                final List<String> trains,
+                                final List<String> statuses) {
+       
+        return docUnitRepository.minSearch(search,
+                                        libraries,
+                                        projects,
+                                        lots,
+                                        trains,
+                                        statuses);
+    }
+
+    
 
     @Transactional
     public void delete(final String identifier) {
@@ -530,11 +558,25 @@ public class DocUnitService {
      * @return
      */
     @Transactional(readOnly = true)
-    public DocUnit findOneByPgcnId(final String pgcnId) {
+    public DocUnit findOneByPgcnIdAndState(final String pgcnId) {
         if (pgcnId == null) {
             return null;
         }
         return docUnitRepository.getOneByPgcnIdAndState(pgcnId, State.AVAILABLE);
+    }
+    
+    /**
+     * Retourne les {@link DocUnit} de type {@link State#AVAILABLE} en fonction de leur PGCN ID
+     *
+     * @param pgcnId
+     * @return
+     */
+    @Transactional(readOnly = true)
+    public DocUnit findOneByPgcnId(final String pgcnId) {
+        if (pgcnId == null) {
+            return null;
+        }
+        return docUnitRepository.getOneByPgcnId(pgcnId);
     }
 
     /**
@@ -792,6 +834,18 @@ public class DocUnitService {
         return doc.getArchiveItem() != null && doc.getArchiveItem().getIdentifier() != null;
     }
 
+    /**
+     * Permet de s'assurer que les données d'export vers Omeka sont déjà existantes
+     *
+     * @param identifier
+     * @return
+     */
+    @Transactional(readOnly = true)
+    public boolean isDocumentReadyForDiffusionOmeka(final String identifier) {
+        final DocUnit doc = docUnitRepository.findOne(identifier);
+        return doc.getOmekaCollection() != null && doc.getOmekaItem() != null;
+    }
+
     @Transactional(readOnly = true)
     public Page<String> getDistinctTypes(final String search, final Integer page, final Integer size) {
         if (StringUtils.isEmpty(search)) {
@@ -802,14 +856,18 @@ public class DocUnitService {
     }
 
     /**
-     * tentative de fix pb saut de ligne 
-     * notamment pour qq caracteres arabes entre crochets !!
-     * 
-     * @param value
-     * @return
+     * Mise à jour des ark s'il n'a été mis à jour après l'export
      */
-    public String deleteUnwantedCrLf(final String value) {
-        return (value.replace("\n", " ")).replace("\r", "");
+    @Scheduled(cron = "${cron.docUnitUpdateArk}")
+    @Transactional
+    public void docUnitUpdateArk() {
+        LOG.info("Lancement du Job docUnitUpdateArk...");
+        final LocalDateTime dateFrom = LocalDateTime.now().minusDays(7L);
+        internetArchiveReportRepository.findAllByStatusArchivedAndEmptyDocUnitArk(dateFrom).forEach(report -> {
+            final DocUnit docUnit = report.getDocUnit();
+            docUnit.setArkUrl(uiIAReportService.getIaArkUrl(report.getInternetArchiveIdentifier()));
+            save(docUnit);
+        });
     }
-    
+
 }

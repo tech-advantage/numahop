@@ -30,7 +30,7 @@ public class DocPropertyTypeDTO extends AbstractDTO {
 		return identifier;
 	}
 
-	public final void setIdentifier(String identifier) {
+	public void setIdentifier(String identifier) {
 		this.identifier = identifier;
 	}
 
@@ -38,7 +38,7 @@ public class DocPropertyTypeDTO extends AbstractDTO {
 		return label;
 	}
 
-	public final void setLabel(String label) {
+	public void setLabel(String label) {
 		this.label = label;
 	}
 
@@ -48,7 +48,7 @@ public class DocPropertyTypeDTO extends AbstractDTO {
 
 
 
-	public final void setSuperType(String superType) {
+	public void setSuperType(String superType) {
 		this.superType = superType;
 	}
 
@@ -60,7 +60,7 @@ public class DocPropertyTypeDTO extends AbstractDTO {
 
 
 
-	public final void setRank(Integer rank) {
+	public void setRank(Integer rank) {
 		this.rank = rank;
 	}
 

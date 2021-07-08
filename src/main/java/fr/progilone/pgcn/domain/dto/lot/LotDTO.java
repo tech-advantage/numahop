@@ -13,7 +13,6 @@ import fr.progilone.pgcn.domain.dto.document.SimpleDocUnitDTO;
 import fr.progilone.pgcn.domain.dto.ftpconfiguration.SimpleFTPConfigurationDTO;
 import fr.progilone.pgcn.domain.dto.ocrlangconfiguration.OcrLanguageDTO;
 import fr.progilone.pgcn.domain.dto.project.ProjectDTO;
-import fr.progilone.pgcn.domain.dto.project.SimpleProjectDTO;
 import fr.progilone.pgcn.domain.dto.user.SimpleUserDTO;
 import fr.progilone.pgcn.domain.dto.workflow.SimpleWorkflowModelDTO;
 import fr.progilone.pgcn.domain.lot.Lot;
@@ -74,7 +73,8 @@ public class LotDTO extends AbstractVersionedDTO {
                   final SimpleCheckConfigurationDTO activeCheckConfiguration,
                   final SimpleViewsFormatConfigurationDTO activeFormatConfiguration,
                   final InternetArchiveCollectionDTO collectionIA,
-                  final CinesPACDTO planClassementPAC, final SimpleUserDTO provider,
+                  final CinesPACDTO planClassementPAC, 
+                  final SimpleUserDTO provider,
                   final String requiredTypeCompression,
                   final Integer requiredTauxCompression,
                   final String requiredResolution,

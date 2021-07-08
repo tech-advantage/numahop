@@ -10,7 +10,9 @@
         ctrl.params = {
                       page : 0,
                       size : 500,
-                      mine : true // filtrage sur les alertes de l'utilisateur connecté
+                      mine : true, // filtrage sur les alertes de l'utilisateur connecté
+                      project_active : true,
+                      status: "PENDING"
                   };
 
         /**

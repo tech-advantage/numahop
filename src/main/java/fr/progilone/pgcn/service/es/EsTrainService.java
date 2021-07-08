@@ -1,12 +1,11 @@
 package fr.progilone.pgcn.service.es;
 
-import fr.progilone.pgcn.domain.AbstractDomainObject_;
-import fr.progilone.pgcn.domain.train.Train;
-import fr.progilone.pgcn.repository.es.EsTrainRepository;
-import fr.progilone.pgcn.repository.es.helper.EsSearchOperation;
-import fr.progilone.pgcn.repository.es.helper.EsSort;
-import fr.progilone.pgcn.repository.train.TrainRepository;
-import fr.progilone.pgcn.service.util.transaction.TransactionService;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,13 +16,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
+import fr.progilone.pgcn.domain.AbstractDomainObject_;
+import fr.progilone.pgcn.domain.train.Train;
+import fr.progilone.pgcn.repository.es.EsTrainRepository;
+import fr.progilone.pgcn.repository.es.helper.EsSearchOperation;
+import fr.progilone.pgcn.repository.es.helper.EsSort;
+import fr.progilone.pgcn.repository.train.TrainRepository;
+import fr.progilone.pgcn.service.util.transaction.TransactionService;
 
 @Service
 public class EsTrainService extends AbstractElasticsearchOperations<Train> {
@@ -133,28 +134,30 @@ public class EsTrainService extends AbstractElasticsearchOperations<Train> {
      * @return
      */
     public long reindex(final String index) {
+        
         long nbImported = 0;
-        Page<Train> pageOfObjects = null;    // Chargement des objets par page de bulkSize éléments
-
+        final AtomicReference<Page<Train>> pageRef = new AtomicReference<>();
         do {
-            final TransactionStatus status = transactionService.startTransaction(true);
+            final int result = transactionService.executeInNewTransactionWithReturn(() -> {
 
-            // Chargement des objets
-            final Pageable pageable = pageOfObjects == null ?
-                                      new PageRequest(0, bulkSize, Sort.Direction.ASC, AbstractDomainObject_.identifier.getName()) :
-                                      pageOfObjects.nextPageable();
-            pageOfObjects = trainRepository.findAll(pageable);
+                // Chargement des objets
+                final Pageable pageable = pageRef.get() == null ?
+                                          new PageRequest(0, bulkSize, Sort.Direction.ASC, AbstractDomainObject_.identifier.getName()) :
+                                              pageRef.get().nextPageable();
+                final Page<Train> pageOfObjects = trainRepository.findAll(pageable);
+    
+                // Traitement des trains
+                final List<Train> entities = pageOfObjects.getContent();
+                esTrainRepository.index(index, entities);
 
-            // Traitement des unités documentaires
-            final List<Train> entities = pageOfObjects.getContent();
-            esTrainRepository.index(index, entities);
+                pageRef.set(pageOfObjects);
+                return entities.size();
+            });
 
-            transactionService.commitTransaction(status);
+            nbImported += result;
+            LOG.trace("{} / {} éléments indexés", nbImported, pageRef.get().getTotalElements());
 
-            nbImported += entities.size();
-            LOG.trace("{} / {} éléments indexés", nbImported, pageOfObjects.getTotalElements());
-
-        } while (pageOfObjects.hasNext());
+        } while (pageRef.get() != null && pageRef.get().hasNext());
 
         return nbImported;
     }

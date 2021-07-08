@@ -32,6 +32,7 @@ import fr.progilone.pgcn.domain.dto.statistics.WorkflowUserActivityDTO;
 import fr.progilone.pgcn.domain.dto.statistics.WorkflowUserProgressDTO;
 import fr.progilone.pgcn.domain.util.CustomUserDetails;
 import fr.progilone.pgcn.domain.workflow.WorkflowStateKey;
+import fr.progilone.pgcn.domain.workflow.WorkflowStateStatus;
 import fr.progilone.pgcn.security.SecurityUtils;
 import fr.progilone.pgcn.service.document.DocCheckHistoryService;
 import fr.progilone.pgcn.service.statistics.StatisticsWorkflowService;
@@ -47,7 +48,7 @@ public class StatisticsWorkflowController {
     private final AccessHelper accessHelper;
     private final LibraryAccesssHelper libraryAccesssHelper;
     private final StatisticsWorkflowService workflowProgressReportService;
-    private DocCheckHistoryService docCheckHistoryService;
+    private final DocCheckHistoryService docCheckHistoryService;
 
     public StatisticsWorkflowController(final AccessHelper accessHelper,
                                         final LibraryAccesssHelper libraryAccesssHelper,
@@ -151,6 +152,7 @@ public class StatisticsWorkflowController {
                                                                                                  final List<String> libraries,
                                                                                                  @RequestParam(value = "project", required = false)
                                                                                                  final List<String> projects,
+                                                                                                 @RequestParam(value = "project_active", required = false, defaultValue = "false") final boolean projetActive,
                                                                                                  @RequestParam(value = "lot", required = false)
                                                                                                  final List<String> lots,
                                                                                                  @RequestParam(value = "train", required = false)
@@ -159,6 +161,7 @@ public class StatisticsWorkflowController {
                                                                                                  final String pgcnId,
                                                                                                  @RequestParam(value = "state", required = false)
                                                                                                  final List<WorkflowStateKey> states,
+                                                                                                 @RequestParam(value = "status", required = false) final List<WorkflowStateStatus> status,
                                                                                                  @RequestParam(value = "mine",
                                                                                                                required = false,
                                                                                                                defaultValue = "false")
@@ -192,10 +195,12 @@ public class StatisticsWorkflowController {
         
         return new ResponseEntity<>(workflowProgressReportService.getDocUnitProgressReport(filteredLibraries,
                                                                                            filteredProjects,
+                                                                                           projetActive,
                                                                                            filteredLots,
                                                                                            trains,
                                                                                            pgcnId,
                                                                                            states,
+                                                                                           status,
                                                                                            users,
                                                                                            fromDate,
                                                                                            toDate,

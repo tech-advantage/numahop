@@ -1,0 +1,183 @@
+<div class="row layout-columns">
+    <div class="col-sm-3 col-layout-columns">
+        <div class="panel panel-column-1">
+            <div class="panel-heading">
+                <div class="pull-right">
+                    <button type="button" class="btn btn-sem2 btn-xs" ng-click="reinitFilters(true)" 
+                            uib-tooltip="{{::'Réinitialiser les filtres de la recherche' | translate}}">
+                        <span class="glyphicon-halflings glyphicon-refresh"></span>
+                    </button>
+                </div>
+                <span translate>Outil Workflow DocUnit</span>
+            </div>
+            <div class="panel-body">
+                
+                <!-- Bibliothèque  -->
+                <div class="filter-block">
+                    <div class="filter-title">{{::'Bibliothèque' | translate}}</div>
+	                <div class="filter-element">
+	                    <ui-select multiple ng-model="filters.libraries" theme="select2" on-select="doFilterLibrary()" on-remove="doFilterLibrary()"
+	                     class="form-control" mandatory="true">
+	                        <ui-select-match placeholder="{{::'Bibliothèque' | translate}}">{{$item.name}}</ui-select-match>
+	                        <ui-select-choices repeat="option in options.libraries | filter: $select.search track by option.identifier">
+	                            <div ng-bind-html="option.name | highlight: $select.search"></div>
+	                        </ui-select-choices>
+	                    </ui-select>
+	                </div>
+                </div>
+	            <!-- Projet -->
+	            <div class="filter-block">
+	                <div class="filter-title">{{::'Projet' | translate}}</div>
+	                <div class="filter-element">
+	                    <ui-select multiple ng-model="filters.projects" theme="select2" on-select="doFilterProject()" on-remove="doFilterProject()"
+	                     class="form-control"  mandatory="true">
+	                        <ui-select-match placeholder="{{::'Projet' | translate}}">{{$item.name}}</ui-select-match>
+	                        <ui-select-choices repeat="option in options.projects | filter: $select.search track by option.identifier">
+	                            <div ng-bind-html="option.name | highlight: $select.search"></div>
+	                        </ui-select-choices>
+	                    </ui-select>
+	                </div>
+	            </div>
+	            <!-- Lot -->
+	            <div class="filter-block">
+	                <div class="filter-title">{{::'Lot' | translate}}</div>
+	                <div class="filter-element">
+	                    <ui-select multiple ng-model="filters.lots" theme="select2" on-select="doFilterLot()" on-remove="doFilterLot()" class="form-control">
+	                        <ui-select-match placeholder="{{::'Lot' | translate}}">{{$item.label}}</ui-select-match>
+	                        <ui-select-choices repeat="option in options.lots | filter: $select.search track by option.identifier">
+	                            <div ng-bind-html="option.label | highlight: $select.search"></div>
+	                        </ui-select-choices>
+	                    </ui-select>
+	                </div>
+	            </div>
+            <!-- Train -->
+            <div class="filter-block">
+                <div class="filter-title">{{::'Train' | translate}}</div>
+                <div class="filter-element">
+                    <ui-select multiple ng-model="filters.trains" theme="select2" on-select="doFilterTrain()" on-remove="doFilterTrain()" class="form-control">
+                        <ui-select-match placeholder="{{::'Train' | translate}}">{{$item.label}}</ui-select-match>
+                        <ui-select-choices repeat="option in options.trains | filter: $select.search track by option.identifier">
+                            <div ng-bind-html="option.label | highlight: $select.search"></div>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+            </div>
+            
+            <!-- Statut -->
+            <div class="filter-block">
+                <div class="filter-title">{{::'Statut workflow' | translate}}</div>
+                <div class="filter-element">
+                    <ui-select multiple ng-model="filters.statuses" theme="select2" on-select="doFilter()" on-remove="doFilter()" class="form-control">
+                        <ui-select-match placeholder="{{::'Statut' | translate}}">{{$item.label}}</ui-select-match>
+                        <ui-select-choices repeat="status in options.statuses | filter: $select.search track by status.identifier">
+                            <div ng-bind-html="status.label | highlight: $select.search"></div>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+            </div>
+                
+            <div class="filter-block">
+                <div class="filter-title">{{::'Unité documentaire' | translate}}</div>
+                <div class="filter-element">
+                    <ui-select multiple ng-model="filters.docUnits" theme="select2" on-select="" on-remove="" class="form-control">
+                        <ui-select-match placeholder="{{::'Unite documentaire' | translate}}">{{$item.pgcnId}}</ui-select-match>
+                        <ui-select-choices repeat="option in options.docUnits | filter: $select.search track by option.identifier">
+                            <div ng-bind-html="option.pgcnId | highlight: $select.search"></div>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+            </div>    
+                
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-9 col-sm-offset-3 col-layout-columns">
+        <div class="panel panel-column-2">
+            <div class="panel-heading">
+                <span translate></span>
+            </div>
+            <div class="panel-body">
+                      
+                <uib-accordion close-others="false">
+                    <!-- Configuration de l'unité doc -->
+                    <div class="margin-t20 formBlock" uib-accordion-group is-open="accordions.selection_UD">
+                        <uib-accordion-heading class="formBlockContent">
+                            <span class="pull-left glyphicon-halflings"
+                                    ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordions.selection_UD]">&nbsp;</span>
+                            <h5>{{ ::'Sélection' | translate }}</h5>
+                        </uib-accordion-heading>
+                           
+                        <div class="well" ng-show="filters.docUnits.length === 0" translate>Aucune unité documentaire sélectionnée</div>
+                        <div>
+                            <div ng-repeat="docUnit in filters.docUnits" class="col-infinite-scroll">
+                                <div class="list">
+                                    <span class="second">[{{docUnit.pgcnId}}]</span>&nbsp;<span class="principal">{{docUnit.label}}</span>
+                                </div>
+                        </div>
+                        </div>                               
+                    </div>
+                    <div class="margin-t20 formBlock" uib-accordion-group is-open="accordions.end_wkf">
+                       <uib-accordion-heading>
+                           <span class="pull-left glyphicon-halflings"
+                                   ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordions.end_wkf]">&nbsp;</span>
+                           <h5>{{ ::'Terminer les workflows' | translate }}</h5>
+                       </uib-accordion-heading>
+                       
+                       <span class="second margin-l50">-> Annule toutes les étapes en cours ou en attente et clôture le workflow de chaque document sélectionné</span>
+                       
+                       <div class="column-bottom-button text-right">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-sem4" ng-click="endAllDocWorkflows()">
+                                    <span class="glyphicon-regular download"></span> {{::'Terminer workflows' | translate}}
+                                </button>
+                            </div>
+                       </div>
+                   </div>
+                   
+                   <div class="margin-t20 formBlock" uib-accordion-group is-open="accordions.valid_state">
+                       <uib-accordion-heading>
+                           <span class="pull-left glyphicon-halflings"
+                                   ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordions.valid_state]">&nbsp;</span>
+                           <h5>{{ ::'Valider une étape de workflow' | translate }}</h5>
+                       </uib-accordion-heading>
+                       <span class="second margin-l50">-> Force la validation de l'étape de workflow sélectionnée pour chaque document (attention: l'étape doit être en cours ou en attente)</span>
+                       <sem-field sem-type="select" sem-label="{{::'Etape' | translate}}" sem-onchange="selectStateToValid()"
+                            sem-label-class="col-xs-3" sem-field-class="col-xs-3"
+                            sem-select-options="t.label for t in optionData.data"
+                            sem-model="wkfFilters.validState" sem-option-data="options.statesToValid"></sem-field> 
+                       <div class="column-bottom-button text-right">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-sem4" ng-click="validDocWorkflowState()">
+                                    <span class="glyphicon-regular download"></span> {{::"Valider l'étape" | translate}}
+                                </button>
+                            </div>
+                       </div>
+                   </div>
+                   
+                   <div class="margin-t20 formBlock" uib-accordion-group is-open="accordions.reinit_state">
+                       <uib-accordion-heading>
+                           <span class="pull-left glyphicon-halflings"
+                                   ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordions.reinit_state]">&nbsp;</span>
+                           <h5>{{ ::'Réinitialiser une étape de workflow' | translate }}</h5>
+                       </uib-accordion-heading>
+                       <span class="second margin-l50">-> Force la réinitialisation de l'étape de workflow sélectionnée pour chaque document (attention: l'étape doit être validée ou rejetée et l'étape qui suit ne doit pas être terminée)</span>
+                       <sem-field sem-type="select" sem-label="{{::'Etape' | translate}}" sem-onchange="selectStateToReinit()"
+                            sem-label-class="col-xs-3" sem-field-class="col-xs-3"
+                            sem-select-options="t.label for t in optionData.data"
+                            sem-model="wkfFilters.reinitState" sem-option-data="options.statesToReinit"></sem-field> 
+
+                       <div class="column-bottom-button text-right">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-sem4" ng-click="reinitDocWorkflowState()">
+                                    <span class="glyphicon-regular download"></span> {{::"Réinitialiser l'étape" | translate}}
+                                </button>
+                            </div>
+                       </div>
+                   </div>
+                    
+                </uib-accordion>
+
+            </div>
+        </div>
+    </div>
+</div>

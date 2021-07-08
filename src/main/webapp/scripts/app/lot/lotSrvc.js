@@ -13,6 +13,14 @@
                             dto: true
                         }
                     },
+                    dtoComplete: {
+                        method: 'GET',
+                        isArray: false,
+                        params: {
+                            dto: true,
+                            complete: true
+                        }
+                    },
                     findByProjectIds: {
                         method: 'GET',
                         isArray: false,
@@ -94,6 +102,20 @@
                         isArray: true,
                         params: {
                             widget: true
+                        }
+                    },
+                    closeLot: {
+                        method: 'POST',
+                        isArray: true,
+                        params: {
+                            'cloturelot': true
+                        }
+                    },
+                    uncloseLot: {
+                        method: 'POST',
+                        isArray: true,
+                        params: {
+                            'decloturelot': true
                         }
                     }
                 });

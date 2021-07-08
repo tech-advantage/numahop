@@ -1,15 +1,11 @@
 package fr.progilone.pgcn.service.es;
 
-import fr.progilone.pgcn.domain.AbstractDomainObject_;
-import fr.progilone.pgcn.domain.document.DocUnit;
-import fr.progilone.pgcn.domain.document.conditionreport.ConditionReport;
-import fr.progilone.pgcn.domain.dto.document.conditionreport.ConditionReportSearchDTO;
-import fr.progilone.pgcn.repository.document.conditionreport.ConditionReportRepository;
-import fr.progilone.pgcn.repository.es.EsConditionReportRepository;
-import fr.progilone.pgcn.repository.es.helper.EsSearchOperation;
-import fr.progilone.pgcn.repository.es.helper.EsSort;
-import fr.progilone.pgcn.service.document.mapper.ConditionReportMapper;
-import fr.progilone.pgcn.service.util.transaction.TransactionService;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,13 +16,18 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
+import fr.progilone.pgcn.domain.AbstractDomainObject_;
+import fr.progilone.pgcn.domain.document.DocUnit;
+import fr.progilone.pgcn.domain.document.conditionreport.ConditionReport;
+import fr.progilone.pgcn.domain.dto.document.conditionreport.ConditionReportSearchDTO;
+import fr.progilone.pgcn.repository.document.conditionreport.ConditionReportRepository;
+import fr.progilone.pgcn.repository.es.EsConditionReportRepository;
+import fr.progilone.pgcn.repository.es.helper.EsSearchOperation;
+import fr.progilone.pgcn.repository.es.helper.EsSort;
+import fr.progilone.pgcn.service.document.mapper.ConditionReportMapper;
+import fr.progilone.pgcn.service.util.transaction.TransactionService;
 
 @Service
 public class EsConditionReportService extends AbstractElasticsearchOperations<ConditionReport> {
@@ -156,28 +157,31 @@ public class EsConditionReportService extends AbstractElasticsearchOperations<Co
      * @return
      */
     public long reindex(final String index) {
+        
         long nbImported = 0;
-        Page<ConditionReport> pageOfObjects = null;    // Chargement des objets par page de bulkSize éléments
-
+        final AtomicReference<Page<ConditionReport>> pageRef = new AtomicReference<>();
         do {
-            final TransactionStatus status = transactionService.startTransaction(true);
+            final int result = transactionService.executeInNewTransactionWithReturn(() -> {
 
-            // Chargement des objets
-            final Pageable pageable = pageOfObjects == null ?
-                                      new PageRequest(0, bulkSize, Sort.Direction.ASC, AbstractDomainObject_.identifier.getName()) :
-                                      pageOfObjects.nextPageable();
-            pageOfObjects = conditionReportRepository.findAllByDocUnitState(DocUnit.State.AVAILABLE, pageable);
+                // Chargement des objets
+                final Pageable pageable = pageRef.get() == null ?
+                                          new PageRequest(0, bulkSize, Sort.Direction.ASC, AbstractDomainObject_.identifier.getName()) :
+                                              pageRef.get().nextPageable();
+                
+                final Page<ConditionReport> pageOfObjects = conditionReportRepository.findAllByDocUnitState(DocUnit.State.AVAILABLE, pageable);
+    
+                // Traitement des unités documentaires
+                final List<ConditionReport> entities = pageOfObjects.getContent();
+                esConditionReportRepository.index(index, entities);
+    
+                pageRef.set(pageOfObjects);
+                return entities.size();
+            });
 
-            // Traitement des unités documentaires
-            final List<ConditionReport> entities = pageOfObjects.getContent();
-            esConditionReportRepository.index(index, entities);
+            nbImported += result;
+            LOG.trace("{} / {} éléments indexés", nbImported, pageRef.get().getTotalElements());
 
-            transactionService.commitTransaction(status);
-
-            nbImported += entities.size();
-            LOG.trace("{} / {} éléments indexés", nbImported, pageOfObjects.getTotalElements());
-
-        } while (pageOfObjects.hasNext());
+        } while (pageRef.get() != null && pageRef.get().hasNext());
 
         return nbImported;
     }

@@ -199,7 +199,7 @@
                     <div class="formBlockContent">
                         <table class="table table-condensed no-border">
                             <tbody>
-                                <tr ng-repeat="property in entity.record.custom">
+                                <tr ng-repeat="property in entity.record.custom | orderBy: 'weightedRank'">
                                     <td style="width: 40px" ng-show="entityForm.$visible">
                                         <span class="btn-group-xs margin-l15" ng-show="entityForm.$visible">
                                             <button type="button" class="btn btn-sem1 btn-removable" uib-tooltip="{{::'Supprimer' | translate}}" 
@@ -245,7 +245,7 @@
                     <div class="formBlockContent">
                         <table class="table table-condensed no-border">
                             <tbody>
-                                <tr ng-repeat="property in entity.record.custom_cines">
+                                <tr ng-repeat="property in entity.record.custom_cines | orderBy: 'weightedRank'">
                                     <td style="width: 40px" ng-show="entityForm.$visible">
                                         <span class="btn-group-xs margin-l15" ng-show="entityForm.$visible">
                                             <button type="button" class="btn btn-sem1 btn-removable" uib-tooltip="{{::'Supprimer' | translate}}" 
@@ -291,7 +291,7 @@
                     <div class="formBlockContent">
                         <table class="table table-condensed no-border">
                             <tbody>
-                                <tr ng-repeat="property in entity.record.custom_archive">
+                                <tr ng-repeat="property in entity.record.custom_archive | orderBy: 'weightedRank'">
                                     <td style="width: 40px" ng-show="entityForm.$visible">
                                         <span class="btn-group-xs margin-l15" ng-show="entityForm.$visible">
                                             <button type="button" class="btn btn-sem1 btn-removable" uib-tooltip="{{::'Supprimer' | translate}}" 

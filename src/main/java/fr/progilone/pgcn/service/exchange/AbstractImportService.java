@@ -1,5 +1,26 @@
 package fr.progilone.pgcn.service.exchange;
 
+import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.transaction.TransactionStatus;
+
 import fr.progilone.pgcn.domain.AbstractDomainObject_;
 import fr.progilone.pgcn.domain.document.BibliographicRecord;
 import fr.progilone.pgcn.domain.document.DocUnit;
@@ -14,25 +35,6 @@ import fr.progilone.pgcn.service.es.EsBibliographicRecordService;
 import fr.progilone.pgcn.service.es.EsDocUnitService;
 import fr.progilone.pgcn.service.util.transaction.TransactionService;
 import fr.progilone.pgcn.web.websocket.WebsocketService;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.transaction.TransactionStatus;
-
-import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Created by Sébastien on 02/01/2017.
@@ -188,7 +190,7 @@ public abstract class AbstractImportService {
             LOG.info("Fin de l'import de {} unités documentaires, pré-importées à partir du fichier {}", nbProcessed, report.getFilesAsString());
             return importReportService.endReport(report);
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error(e.getMessage(), e);
             return importReportService.failReport(report, e);
         }
@@ -259,19 +261,20 @@ public abstract class AbstractImportService {
         if (CollectionUtils.isEmpty(importedDocUnits)) {
             return 0;
         }
-        TransactionStatus status = transactionService.startTransaction(true);
-        @SuppressWarnings("ConstantConditions")
-        final Set<String> ids = importedDocUnits.stream()
-                                                .filter(imp -> imp.getDocUnit() != null)
-                                                .map(imp -> imp.getDocUnit().getIdentifier())
-                                                .distinct()
-                                                .collect(Collectors.toSet());
-        final Set<DocUnit> docUnits = docUnitService.findAllById(ids);
-        transactionService.commitTransaction(status);
+        final Set<DocUnit> docUnits = transactionService.executeInNewTransactionWithReturn(() -> {
+            
+            final Set<String> ids = importedDocUnits.stream()
+                                                    .filter(imp -> imp.getDocUnit() != null)
+                                                    .map(imp -> imp.getDocUnit().getIdentifier())
+                                                    .distinct()
+                                                    .collect(Collectors.toSet());
+            return docUnitService.findAllById(ids);
+        });
+        
 
         final Set<DocUnit> deletedUnits = new HashSet<>();
-
-        for (DocUnit docUnit : docUnits) {
+        TransactionStatus status = null;
+        for (final DocUnit docUnit : docUnits) {
             try {
                 status = transactionService.startTransaction(false);
 
@@ -279,7 +282,7 @@ public abstract class AbstractImportService {
                 docUnitService.save(docUnit);
                 transactionService.commitTransaction(status);
 
-            } catch (PgcnValidationException e) {
+            } catch (final PgcnValidationException e) {
                 LOG.error(e.getMessage());
                 transactionService.rollbackTransaction(status); // Annulation de la sauvegarde de l'unité documentaire
 
@@ -299,9 +302,9 @@ public abstract class AbstractImportService {
         }
         // on supprime les ud en erreur pour ne pas bloquer les ré-imports ultérieurs
         if (!deletedUnits.isEmpty()) {
-            status = transactionService.startTransaction(false);
-            deletedUnits.stream().map(DocUnit::getIdentifier).forEach(id -> docUnitService.delete(id, false));
-            transactionService.commitTransaction(status);
+            transactionService.executeInNewTransaction(() -> {
+                deletedUnits.stream().map(DocUnit::getIdentifier).forEach(id -> docUnitService.delete(id, false));
+            });
         }
         return deletedUnits.size();
     }
@@ -351,7 +354,7 @@ public abstract class AbstractImportService {
      * @return
      * @throws PgcnTechnicalException
      */
-    protected ImportReport lookupDuplicates(ImportReport report) {
+    protected ImportReport lookupDuplicates(final ImportReport report) {
         LOG.info("Recherche de doublons pour les unités documentaires pré-importées à partir du fichier {}", report.getFilesAsString());
         Page<ImportedDocUnit> importedUnits = null;
         int nbProcessed = 0;
@@ -463,37 +466,40 @@ public abstract class AbstractImportService {
     }
 
     private ImportReport indexEntities(final ImportReport report) {
+        
         LOG.info("Indexation des unités documentaires importées à partir du fichier {}", report.getFilesAsString());
         long nbDocUnits = 0, nbRecords = 0;
-        Page<DocUnit> pageOfDocs = null;    // Chargement des objets par page de bulkSize éléments
-
+        final AtomicReference<Page<DocUnit>> pageRef = new AtomicReference<>();
         do {
-            final TransactionStatus status = transactionService.startTransaction(true);
+            final int[] result = transactionService.executeInNewTransactionWithReturn(() -> {
 
-            // Chargement des objets
-            final Pageable pageable = pageOfDocs == null ?
-                                      new PageRequest(0, esBulkSize, Sort.Direction.ASC, AbstractDomainObject_.identifier.getName()) :
-                                      pageOfDocs.nextPageable();
-            pageOfDocs = importDocUnitService.findDocUnitByImportReport(report, State.AVAILABLE, pageable);
-            final List<DocUnit> docUnits = pageOfDocs.getContent();
-            final List<String> docUnitIds = docUnits.stream().map(DocUnit::getIdentifier).collect(Collectors.toList());
-            final List<String> recordIds =
-                docUnits.stream().flatMap(doc -> doc.getRecords().stream()).map(BibliographicRecord::getIdentifier).collect(Collectors.toList());
+                // Chargement des objets
+                final Pageable pageable = pageRef.get() == null ?
+                                          new PageRequest(0, esBulkSize, Sort.Direction.ASC, AbstractDomainObject_.identifier.getName()) :
+                                              pageRef.get().nextPageable();
+                final Page<DocUnit> pageOfDocs = importDocUnitService.findDocUnitByImportReport(report, State.AVAILABLE, pageable);
+                final List<DocUnit> docUnits = pageOfDocs.getContent();
+                final List<String> docUnitIds = docUnits.stream().map(DocUnit::getIdentifier).collect(Collectors.toList());
+                final List<String> recordIds =
+                    docUnits.stream().flatMap(doc -> doc.getRecords().stream()).map(BibliographicRecord::getIdentifier).collect(Collectors.toList());
+    
+                // Traitement des unités documentaires
+                esDocUnitService.extendDocUnits(docUnits);
+                // Indexation des unités documentaires
+                esDocUnitService.index(docUnitIds);
+                // Indexation des notices biblio
+                esBibliographicRecordService.index(recordIds);
+                
+                pageRef.set(pageOfDocs);
+                final int[] tab = {docUnitIds.size(), recordIds.size()};
+                return tab;
+            });
 
-            // Traitement des unités documentaires
-            esDocUnitService.extendDocUnits(docUnits);
-            // Indexation des unités documentaires
-            esDocUnitService.index(docUnitIds);
-            // Indexation des notices biblio
-            esBibliographicRecordService.index(recordIds);
+            nbDocUnits += result[0];
+            nbRecords += result[0];
+            LOG.trace("{} / {} unités documentaires (et {} notices) indexées", nbDocUnits, pageRef.get().getTotalElements(), nbRecords);
 
-            transactionService.commitTransaction(status);
-
-            nbDocUnits += docUnitIds.size();
-            nbRecords += recordIds.size();
-            LOG.trace("{} / {} unités documentaires (et {} notices) indexées", nbDocUnits, pageOfDocs.getTotalElements(), nbRecords);
-
-        } while (pageOfDocs.hasNext());
+        } while (pageRef.get() != null && pageRef.get().hasNext());
 
         LOG.info("Fin de l'indexation: {} unités documentaires, {} notices importées", nbDocUnits, nbRecords);
         return report;

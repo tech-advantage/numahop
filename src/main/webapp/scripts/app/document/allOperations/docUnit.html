@@ -72,14 +72,14 @@
                             <numa-editable-field title="{{::'Validation FACILE' | translate}}" type="readonly" 
                                              value="{{ ::docUnitCtrl.facileResults | translate }}"></numa-editable-field>
                         </span>
-                        <numa-editable-field title="{{::'Archivable' | translate}}" type="radiolist" model="docUnitCtrl.entity.archivable" form="entityForm"
-                                        config="{ data: mainCtrl.options.booleanObj, displayFn: mainCtrl.displayBoolean, 
-                                                query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }" 
-                                        numa-readonly="formRO" errors="{{ docUnitCtrl.errors.archivable }}"></numa-editable-field>
-                        
-                        <numa-editable-field title="{{::'Archivé au Cines' | translate}}" type="radiolist" model="docUnitCtrl.cinesArchived" form="entityForm"
+                        <numa-editable-field title="{{::'Archivable' | translate}}" type="radiolist" id="archivable" model="docUnitCtrl.entity.archivable" form="entityForm"
+                                             config="{ data: mainCtrl.options.booleanObj, displayFn: mainCtrl.displayBoolean,
+                                                query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }"
+                                             numa-readonly="formRO" errors="{{ docUnitCtrl.errors.archivable }}"></numa-editable-field>
+
+                        <numa-editable-field title="{{::'Archivé au Cines' | translate}}" type="radiolist" id="cinesArchived" model="docUnitCtrl.cinesArchived" form="entityForm"
                                              config="{ data: mainCtrl.options.booleanObj, displayFn: mainCtrl.displayBoolean, 
-                                                       query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }" 
+                                                       query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }"
                                              numa-readonly="true"></numa-editable-field>
                     </div>
                     
@@ -102,27 +102,28 @@
                                   display: 'name',
                                   query: 'o.name for o in $ctrl.config.data track by o.identifier'}"> </numa-editable-field>
                             
-                        <numa-editable-field title="{{::'Type d\'item Omeka' | translate}}" type="select" form="entityForm" 
-                        model="docUnitCtrl.entity.omekaItem" numa-readonly="formRO" errors="{{ docUnitCtrl.errors.omekaItem }}"
-                        config="{ data: [{name: ''}].concat(docUnitCtrl.options.omekaItems),
+                        <numa-editable-field title="{{::'Type d\'item Omeka' | translate}}" type="select" form="entityForm"
+                                             model="docUnitCtrl.entity.omekaItem" numa-readonly="formRO" errors="{{ docUnitCtrl.errors.omekaItem }}"
+                                             config="{ data: [{name: ''}].concat(docUnitCtrl.options.omekaItems),
                                   display: 'name',
-                                  query: 'o.name for o in $ctrl.config.data track by o.identifier'}"> </numa-editable-field>                                       
-                
-                        <numa-editable-field title="{{::'Diffusable' | translate}}" type="radiolist" 
-                                        model="docUnitCtrl.entity.distributable" numa-readonly="formRO" form="entityForm"
-                                        config="{ data: mainCtrl.options.booleanObj, displayFn: mainCtrl.displayBoolean, 
-                                                query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }" 
-                                        errors="{{ docUnitCtrl.errors.distributable }}"></numa-editable-field>
-                                        
-                        <numa-editable-field title="{{::'Diffusé sur Internet Archive' | translate}}" type="radiolist" model="docUnitCtrl.iaArchived" form="entityForm"
-                                            config="{ data: mainCtrl.options.booleanObj, displayFn: mainCtrl.displayBoolean, 
-                                                      query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }" 
-                                           numa-readonly="true"></numa-editable-field>                
-                        <numa-editable-field title="{{::'Diffusé sur Omeka' | translate}}" type="text" model="docUnitCtrl.omekaDistribStatus"  
-                                           numa-readonly="true"></numa-editable-field>
-                        <numa-editable-field title="{{::'Droits de diffusion' | translate}}" type="select" form="entityForm" 
-                                        model="docUnitCtrl.entity.rights" numa-readonly="formRO" errors="{{ docUnitCtrl.errors.rights }}" 
-                                        config="{ data: mainCtrl.options.rights, 
+                                  query: 'o.name for o in $ctrl.config.data track by o.identifier'}"></numa-editable-field>
+
+                        <numa-editable-field title="{{::'Diffusable' | translate}}" type="radiolist" id="distributable"
+                                             model="docUnitCtrl.entity.distributable" numa-readonly="formRO" form="entityForm"
+                                             config="{ data: mainCtrl.options.booleanObj, displayFn: mainCtrl.displayBoolean,
+                                                query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }"
+                                             errors="{{ docUnitCtrl.errors.distributable }}"></numa-editable-field>
+
+                        <numa-editable-field title="{{::'Diffusé sur Internet Archive' | translate}}" type="radiolist" id="iaArchived"
+                                             model="docUnitCtrl.iaArchived" form="entityForm"
+                                             config="{ data: mainCtrl.options.booleanObj, displayFn: mainCtrl.displayBoolean,
+                                                      query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }"
+                                             numa-readonly="true"></numa-editable-field>
+                        <numa-editable-field title="{{::'Diffusé sur Omeka' | translate}}" type="text" model="docUnitCtrl.omekaDistribStatus"
+                                             numa-readonly="true"></numa-editable-field>
+                        <numa-editable-field title="{{::'Droits de diffusion' | translate}}" type="select" form="entityForm"
+                                             model="docUnitCtrl.entity.rights" numa-readonly="formRO" errors="{{ docUnitCtrl.errors.rights }}"
+                                             config="{ data: mainCtrl.options.rights,
                                                 displayFn: mainCtrl.displayRight,
                                                 query: 'key as value for (key, value) in $ctrl.config.data' }"></numa-editable-field>
                        

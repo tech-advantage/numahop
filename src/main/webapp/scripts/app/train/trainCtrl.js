@@ -103,13 +103,11 @@
         /****************************************************************/
         function loadOptionsAndFilters() {
             $q.all([
-                NumaHopInitializationSrvc.loadDocUnits(),
                 NumaHopInitializationSrvc.loadProjects(),
                 NumaHopInitializationSrvc.loadLibraries()])
                 .then(function (data) {
-                    $scope.options.docUnits = data[0];
-                    $scope.options.projects = data[1];
-                    $scope.options.libraries = data[2];
+                    $scope.options.projects = data[0];
+                    $scope.options.libraries = data[1];
                     loadFilters();
 
                     nextPage().then(function () {

@@ -36,6 +36,7 @@ public class ProjectDTO extends AbstractVersionedDTO {
     private SimpleCheckConfigurationDTO activeCheckConfiguration;
     private SimpleViewsFormatConfigurationDTO activeFormatConfiguration;
     private InternetArchiveCollectionDTO collectionIA;
+    private String licenseUrl;
     private CinesPACDTO planClassementPAC;
     private SimpleUserDTO provider;
     private SimpleWorkflowModelDTO workflowModel;
@@ -73,15 +74,15 @@ public class ProjectDTO extends AbstractVersionedDTO {
         return description;
     }
 
-    public final void setDescription(final String description) {
+    public void setDescription(final String description) {
         this.description = description;
     }
 
-    public final void setIdentifier(final String identifier) {
+    public void setIdentifier(final String identifier) {
         this.identifier = identifier;
     }
 
-    public final void setName(final String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -183,6 +184,14 @@ public class ProjectDTO extends AbstractVersionedDTO {
         this.collectionIA = collectionIA;
     }
 
+    public String getLicenseUrl() {
+        return licenseUrl;
+    }
+
+    public void setLicenseUrl(String licenseUrl) {
+        this.licenseUrl = licenseUrl;
+    }
+
     public CinesPACDTO getPlanClassementPAC() {
         return planClassementPAC;
     }
@@ -248,7 +257,7 @@ public class ProjectDTO extends AbstractVersionedDTO {
         return libRespName;
     }
 
-    public void setLibRespName(String libRespName) {
+    public void setLibRespName(final String libRespName) {
         this.libRespName = libRespName;
     }
 
@@ -256,7 +265,7 @@ public class ProjectDTO extends AbstractVersionedDTO {
         return libRespPhone;
     }
 
-    public void setLibRespPhone(String libRespPhone) {
+    public void setLibRespPhone(final String libRespPhone) {
         this.libRespPhone = libRespPhone;
     }
 
@@ -264,7 +273,7 @@ public class ProjectDTO extends AbstractVersionedDTO {
         return libRespEmail;
     }
 
-    public void setLibRespEmail(String libRespEmail) {
+    public void setLibRespEmail(final String libRespEmail) {
         this.libRespEmail = libRespEmail;
     }
 

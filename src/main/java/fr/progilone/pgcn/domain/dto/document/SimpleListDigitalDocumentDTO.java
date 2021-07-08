@@ -1,7 +1,7 @@
 package fr.progilone.pgcn.domain.dto.document;
 
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
 
 import fr.progilone.pgcn.domain.document.DigitalDocument;
 import fr.progilone.pgcn.domain.dto.AbstractDTO;
@@ -22,7 +22,7 @@ public class SimpleListDigitalDocumentDTO extends AbstractDTO {
     private int totalDelivery;
     private LocalDate deliveryDate;
     private int pageNumber;
-    private Set<LightDeliveredDigitalDocDTO> deliveries;
+    private List<LightDeliveredDigitalDocDTO> deliveries;
     private LightCondReportDetailDTO reportDetail;
     
     public SimpleListDigitalDocumentDTO() {
@@ -124,11 +124,11 @@ public class SimpleListDigitalDocumentDTO extends AbstractDTO {
         this.pageNumber = pageNumber;
     }
 
-    public Set<LightDeliveredDigitalDocDTO> getDeliveries() {
+    public List<LightDeliveredDigitalDocDTO> getDeliveries() {
         return deliveries;
     }
 
-    public void setDeliveries(final Set<LightDeliveredDigitalDocDTO> deliveries) {
+    public void setDeliveries(final List<LightDeliveredDigitalDocDTO> deliveries) {
         this.deliveries = deliveries;
     }
 

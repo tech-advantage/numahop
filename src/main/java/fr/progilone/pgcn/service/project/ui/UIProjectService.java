@@ -309,7 +309,19 @@ public class UIProjectService {
         final List<Project> projects = projectService.findAllByActive(true);
         return projects.stream().map(SimpleProjectMapper.INSTANCE::projectToSimpleProjectDTO).collect(Collectors.toList());
     }
+    
+    @Transactional(readOnly = true)
+    public List<SimpleProjectDTO> findAllDTO() {
+        final List<Project> projects = projectService.findAll();
+        return projects.stream().map(SimpleProjectMapper.INSTANCE::projectToSimpleProjectDTO).collect(Collectors.toList());
+    }
 
+    @Transactional(readOnly = true)
+    public List<SimpleProjectDTO> findAllActiveByLibraryIn(final List<String> libraries) {
+        final List<Project> projects = projectService.findAllByActiveAndLibraryIn(libraries);
+        return projects.stream().map(SimpleProjectMapper.INSTANCE::projectToSimpleProjectDTO).collect(Collectors.toList());
+    }
+    
     @Transactional(readOnly = true)
     public List<SimpleProjectDTO> findAllByLibraryIn(final List<String> libraries) {
         final List<Project> projects = projectService.findAllByLibraryIn(libraries);

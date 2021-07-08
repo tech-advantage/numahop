@@ -28,7 +28,7 @@ public class TesseractService {
 
     private ExecutorService executorService;
 
-    private AltoService altoService;
+    private final AltoService altoService;
 
     public TesseractService(final AltoService altoService) {
         this.altoService = altoService;
@@ -56,7 +56,7 @@ public class TesseractService {
 
             try (final InputStream is = process.getInputStream();
                  final InputStreamReader isr = new InputStreamReader(is);
-                 final BufferedReader br = new BufferedReader(isr);) {
+                 final BufferedReader br = new BufferedReader(isr)) {
 
                 String line;
                 final StringBuilder sb = new StringBuilder();
@@ -127,7 +127,7 @@ public class TesseractService {
             builder.redirectOutput(Redirect.INHERIT);
             try {
                 final Process process = builder.start();
-                if (process.waitFor(2, TimeUnit.HOURS) && process.exitValue() == 0) {
+                if (process.waitFor(4, TimeUnit.HOURS) && process.exitValue() == 0) {
                     // when pdf is done, write to the correct output
                     // only if the size is not null
 
@@ -140,6 +140,7 @@ public class TesseractService {
                         final File hocr = new File(outputName + ".hocr");
                         if (hocr.exists() && hocr.canRead()) {
                             altoService.transformHocrToAlto(hocr, prefix, libraryId);
+                            altoService.transformHocrToText(hocr, prefix, libraryId);
                         }
 
                     } else {

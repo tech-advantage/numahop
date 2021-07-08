@@ -107,6 +107,12 @@ public class UITrainService {
         final List<Train> trains = trainService.findAllByActive(true);
         return trains.stream().map(TrainMapper.INSTANCE::trainToTrainDTO).collect(Collectors.toList());
     }
+    
+    @Transactional(readOnly = true)
+    public List<TrainDTO> findAllDTO() {
+        final List<Train> trains = trainService.findAll();
+        return trains.stream().map(TrainMapper.INSTANCE::trainToTrainDTO).collect(Collectors.toList());
+    }
 
     @Transactional(readOnly = true)
     public List<TrainDTO> findAllForProject(final String projectId) {

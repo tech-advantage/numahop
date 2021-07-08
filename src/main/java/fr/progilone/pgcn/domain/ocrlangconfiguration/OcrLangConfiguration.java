@@ -1,7 +1,7 @@
 package fr.progilone.pgcn.domain.ocrlangconfiguration;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -39,8 +39,8 @@ public class OcrLangConfiguration extends AbstractDomainObject {
     /**
      * Liste des confs de language ocr actifs.
      */
-    @OneToMany(mappedBy = "ocrLangConfiguration", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private final List<ActivatedOcrLanguage> activatedOcrLanguages = new ArrayList<>();
+    @OneToMany(mappedBy = "ocrLangConfiguration", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private final Set<ActivatedOcrLanguage> activatedOcrLanguages = new LinkedHashSet<>();
     
 
     public String getLabel() {
@@ -67,11 +67,11 @@ public class OcrLangConfiguration extends AbstractDomainObject {
         this.library = library;
     }
 
-    public List<ActivatedOcrLanguage> getActivatedOcrLanguages() {
+    public Set<ActivatedOcrLanguage> getActivatedOcrLanguages() {
         return activatedOcrLanguages;
     }
     
-    public void setActivatedOcrLanguages(final List<ActivatedOcrLanguage> languages) {
+    public void setActivatedOcrLanguages(final Set<ActivatedOcrLanguage> languages) {
         this.activatedOcrLanguages.clear();
         if (languages != null) {
             languages.forEach(this::addLanguage);

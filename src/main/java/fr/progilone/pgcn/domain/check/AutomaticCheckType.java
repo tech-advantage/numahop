@@ -89,6 +89,7 @@ public class AutomaticCheckType extends AbstractDomainObject {
         WITH_MASTER, /* Conditionne l'activation des controles auto */
         FILE_INTEGRITY, /* controle coherence taille des masters */
         FACILE, /* contrôle via WS FACILE du Cines */
+        FILE_RADICAL, /* Contrôle du radical des fichiers */
         FILE_SEQUENCE, /* Contrôle des numéros de séquence */
         FILE_FORMAT, /* Contrôle du format des fichiers */
         FILE_TOTAL_NUMBER, /* Contrôle du nombre total de Fichiers */

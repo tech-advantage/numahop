@@ -1,5 +1,19 @@
 package fr.progilone.pgcn.repository.workflow;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+
 import com.mysema.query.BooleanBuilder;
 import com.mysema.query.Tuple;
 import com.mysema.query.jpa.JPASubQuery;
@@ -7,8 +21,10 @@ import com.mysema.query.jpa.JPQLQuery;
 import com.mysema.query.jpa.impl.JPAQuery;
 import com.mysema.query.types.Predicate;
 import com.mysema.query.types.expr.BooleanExpression;
+
 import fr.progilone.pgcn.domain.delivery.QDeliveredDocument;
 import fr.progilone.pgcn.domain.document.DigitalDocument.DigitalDocumentStatus;
+import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.document.QDigitalDocument;
 import fr.progilone.pgcn.domain.document.QDocUnit;
 import fr.progilone.pgcn.domain.document.QPhysicalDocument;
@@ -23,18 +39,6 @@ import fr.progilone.pgcn.domain.workflow.WorkflowStateStatus;
 import fr.progilone.pgcn.repository.util.QueryDSLBuilderUtils;
 import fr.progilone.pgcn.repository.workflow.helper.DocUnitWorkflowHelper;
 import fr.progilone.pgcn.repository.workflow.helper.DocUnitWorkflowSearchBuilder;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class DocUnitWorkflowRepositoryImpl implements DocUnitWorkflowRepositoryCustom {
 
@@ -44,10 +48,12 @@ public class DocUnitWorkflowRepositoryImpl implements DocUnitWorkflowRepositoryC
     @Override
     public Page<DocUnitWorkflow> findDocUnitProgressStats(final List<String> libraries,
                                                           final List<String> projects,
+                                                          final boolean projetActive,
                                                           final List<String> lots,
                                                           final List<String> trains,
                                                           final String pgcnId,
                                                           final List<WorkflowStateKey> states,
+                                                          final List<WorkflowStateStatus> status,
                                                           final List<String> users,
                                                           final LocalDate fromDate,
                                                           final LocalDate toDate,
@@ -67,6 +73,9 @@ public class DocUnitWorkflowRepositoryImpl implements DocUnitWorkflowRepositoryC
             builder.and(qDocUnit.pgcnId.like('%' + pgcnId + '%'));
         }
         // Projets
+        if (projetActive) {
+            builder.and(qDocUnit.project.active.eq(true));
+        }
         if (CollectionUtils.isNotEmpty(projects)) {
             builder.and(qDocUnit.project.identifier.in(projects));
         }
@@ -80,10 +89,9 @@ public class DocUnitWorkflowRepositoryImpl implements DocUnitWorkflowRepositoryC
             final BooleanExpression trainFilter = qpd.isNotNull().and(qpd.train.identifier.in(trains));
             builder.and(trainFilter);
         }
-        // Étape de workflow en cours au moment de l'exécution de la requête
+        // Étape de workflow
         if (CollectionUtils.isNotEmpty(states)) {
             builder.and(qDocUnitState.discriminator.in(states));
-            builder.and(qDocUnitState.startDate.isNotNull()).and(qDocUnitState.endDate.isNull());
         }
         // Étape de workflow, démarrée, appartenant à l'intervalle [fromDate; toDate]
         if (fromDate != null) {
@@ -93,6 +101,9 @@ public class DocUnitWorkflowRepositoryImpl implements DocUnitWorkflowRepositoryC
         if (toDate != null) {
             builder.and(qDocUnitState.status.ne(WorkflowStateStatus.NOT_STARTED));
             builder.and(new BooleanBuilder().or(qDocUnitState.startDate.before(toDate.plusDays(1).atStartOfDay())));
+        }
+        if (CollectionUtils.isNotEmpty(status)) {
+            builder.and(qDocUnitState.status.in(status));
         }
         // Utilisateurs
         if (CollectionUtils.isNotEmpty(users)) {
@@ -393,6 +404,77 @@ public class DocUnitWorkflowRepositoryImpl implements DocUnitWorkflowRepositoryC
         builder.and(qDocUnit.distributable.isTrue()).and(qDocUnitWorkflow.endDate.isNull());
        
         builder.and(qDocUnit.library.identifier.eq(library));
+
+        // Requête
+        return new JPAQuery(em).from(qDocUnitWorkflow)
+                               .innerJoin(qDocUnitWorkflow.docUnit, qDocUnit)
+                               .leftJoin(qDocUnitWorkflow.states, qDocUnitState)
+                               .fetch()
+                               .where(builder.getValue())
+                               .distinct()
+                               .list(qDocUnitWorkflow);
+    }
+
+    /**
+     * 
+     * @param library
+     *            String
+     * @return
+     */
+    @Override
+    public List<DocUnitWorkflow> findDocUnitWorkflowsForLocalExport(final String library) {
+
+        final QDocUnitWorkflow qDocUnitWorkflow = QDocUnitWorkflow.docUnitWorkflow;
+        final QDocUnitState qDocUnitState = QDocUnitState.docUnitState;
+        final QDocUnit qDocUnit = QDocUnit.docUnit;
+
+        final BooleanBuilder builder = new BooleanBuilder();
+
+        final List<WorkflowStateKey> wkfStates = new ArrayList<>();
+        wkfStates.add(WorkflowStateKey.DIFFUSION_DOCUMENT_LOCALE);
+
+        // etape diffusion locale
+        builder.and(qDocUnitState.discriminator.in(wkfStates))
+               .and(qDocUnitState.status.eq(WorkflowStateStatus.PENDING))
+               .and(qDocUnitState.endDate.isNull());
+
+        builder.and(qDocUnit.library.identifier.eq(library));
+
+        // Requête
+        return new JPAQuery(em).from(qDocUnitWorkflow)
+                               .innerJoin(qDocUnitWorkflow.docUnit, qDocUnit)
+                               .leftJoin(qDocUnitWorkflow.states, qDocUnitState)
+                               .fetch()
+                               .where(builder.getValue())
+                               .distinct()
+                               .list(qDocUnitWorkflow);
+    }
+
+    /**
+     *
+     * @param library
+     *            String
+     * @return
+     */
+    @Override
+    public List<DocUnitWorkflow> findDocUnitWorkflowsForDigitalLibraryExport(final String library) {
+
+        final QDocUnitWorkflow qDocUnitWorkflow = QDocUnitWorkflow.docUnitWorkflow;
+        final QDocUnitState qDocUnitState = QDocUnitState.docUnitState;
+        final QDocUnit qDocUnit = QDocUnit.docUnit;
+
+        final BooleanBuilder builder = new BooleanBuilder();
+
+        final List<WorkflowStateKey> wkfStates = new ArrayList<>();
+        wkfStates.add(WorkflowStateKey.DIFFUSION_DOCUMENT_DIGITAL_LIBRARY);
+
+        // etape diffusion sur bibliothèqure numérique
+        builder.and(qDocUnitState.discriminator.in(wkfStates))
+               .and(qDocUnitState.status.eq(WorkflowStateStatus.PENDING))
+               .and(qDocUnitState.endDate.isNull());
+
+        builder.and(qDocUnit.library.identifier.eq(library));
+        builder.and(qDocUnit.digLibExportStatus.ne(DocUnit.ExportStatus.IN_PROGRESS).or(qDocUnit.digLibExportStatus.isNull()));
 
         // Requête
         return new JPAQuery(em).from(qDocUnitWorkflow)

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Mise en place configuration EXPORT FTP  -->
+    <changeSet id="pgcn-create-digital-library-conf-01" author="progilone">
+
+        <addColumn tableName="conf_digital_library">
+            <column name="default_value" type="varchar(255)" />
+        </addColumn>
+
+    </changeSet>
+</databaseChangeLog>

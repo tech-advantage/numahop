@@ -25,7 +25,7 @@
 						} else if (parameters.state === "VALIDATION_DOCUMENT" || parameters.state === "CONTROLE_QUALITE_EN_COURS") {
 						    params = {
 		                                radical: parameters.item.infos.radical,
-		                                reinitStatusFilter: true
+		                                reinitFilters: true
 		                    };
 						    url = "/#/checks/checks";
 
@@ -54,7 +54,10 @@
 							};
 							url = "/#/document/all_operations/" + parameters.item.docIdentifier;
 
-						} else if (parameters.state === "DIFFUSION_DOCUMENT") {
+						} else if (parameters.state === "DIFFUSION_DOCUMENT" ||
+						parameters.state === "DIFFUSION_DOCUMENT_LOCALE" ||
+						parameters.state === "DIFFUSION_DOCUMENT_OMEKA" ||
+						parameters.state === "DIFFUSION_DOCUMENT_DIGITAL_LIBRARY") {
 							params = {
 								tab: 'EXPORT'
 							};

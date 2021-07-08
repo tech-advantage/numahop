@@ -1,6 +1,7 @@
 package fr.progilone.pgcn.repository.multilotsdelivery;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -16,11 +17,11 @@ import com.mysema.query.BooleanBuilder;
 import com.mysema.query.jpa.JPQLQuery;
 import com.mysema.query.jpa.impl.JPAQuery;
 
+import fr.progilone.pgcn.domain.delivery.Delivery;
 import fr.progilone.pgcn.domain.delivery.QDelivery;
 import fr.progilone.pgcn.domain.library.QLibrary;
 import fr.progilone.pgcn.domain.lot.QLot;
 import fr.progilone.pgcn.domain.multilotsdelivery.MultiLotsDelivery;
-import fr.progilone.pgcn.domain.multilotsdelivery.MultiLotsDelivery.DeliveryStatus;
 import fr.progilone.pgcn.domain.multilotsdelivery.QMultiLotsDelivery;
 import fr.progilone.pgcn.domain.project.QProject;
 import fr.progilone.pgcn.domain.user.QRole;
@@ -40,7 +41,7 @@ public class MultiLotsDeliveryRepositoryImpl implements MultiLotsDeliveryReposit
                                  final List<String> lots,
                                  final List<String> deliveries,
                                  final List<String> providers,
-                                 final List<DeliveryStatus> status,
+                                          final List<Delivery.DeliveryStatus> status,
                                  final LocalDate dateFrom,
                                  final LocalDate dateTo,
                                  final List<WorkflowStateKey> docUnitStates,
@@ -75,9 +76,13 @@ public class MultiLotsDeliveryRepositoryImpl implements MultiLotsDeliveryReposit
             builder.and(qDelivery.identifier.in(deliveries));
         }
         // Statut
-//        if (CollectionUtils.isNotEmpty(status)) {
-//            builder.and(qMulti.status.in(status));
-//        }
+        if (status != null) {
+            builder.and(qDelivery.status.in(status));
+        } else {
+            final List<Delivery.DeliveryStatus> statusClosed = new ArrayList<>();
+            statusClosed.add(Delivery.DeliveryStatus.CLOSED);
+            builder.and(qMulti.status.notIn(statusClosed));
+        }
         // Dates
         if (dateFrom != null) {
             builder.and(qDelivery.receptionDate.after(dateFrom.minusDays(1)));

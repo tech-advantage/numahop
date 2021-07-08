@@ -45,7 +45,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
 
 import fr.progilone.pgcn.domain.administration.MailboxConfiguration;
 import fr.progilone.pgcn.domain.document.DocUnit;
@@ -71,6 +70,7 @@ public class CinesRequestHandlerService {
 
     public static final String SIP_XML_FILE = "sip.xml";
     public static final String AIP_XML_FILE = "aip.xml";
+    public static final String METS_XML_FILE = "mets.xml";
     
     public static final String CINES_SUBJECT_ARCHIVAGE = "AVIS_PAC";
 
@@ -178,30 +178,30 @@ public class CinesRequestHandlerService {
                     
                     if (messages.length > 0) {
                         
-                        final TransactionStatus tr = transactionService.startTransaction(false);
+                        transactionService.executeInNewTransaction(() -> {
                     
-                        for (final Message message : messages) {
-    
-                            try {
-                                final String subject = message.getSubject();                             
-                                // On ne traite pas les messages autres genre Ticket etc..  
-                                if (subject == null || !subject.contains(CINES_SUBJECT_ARCHIVAGE)) {
-                                    message.setFlag(Flags.Flag.SEEN, true); 
-                                } else {
-                                    // les messages qui nous interessent
-                                    final CinesResponse response = parseMessage(message);
-                                    if (updateExport(response, conf.getLibrary())) {
-                                        message.setFlag(Flags.Flag.SEEN, true);
+                            for (final Message message : messages) {
+        
+                                try {
+                                    final String subject = message.getSubject();                             
+                                    // On ne traite pas les messages autres genre Ticket etc..  
+                                    if (subject == null || !subject.contains(CINES_SUBJECT_ARCHIVAGE)) {
+                                        message.setFlag(Flags.Flag.SEEN, true); 
                                     } else {
-                                        message.setFlag(Flags.Flag.SEEN, false); 
+                                        // les messages qui nous interessent
+                                        final CinesResponse response = parseMessage(message);
+                                        if (updateExport(response, conf.getLibrary())) {
+                                            message.setFlag(Flags.Flag.SEEN, true);
+                                        } else {
+                                            message.setFlag(Flags.Flag.SEEN, false); 
+                                        }
                                     }
+                                } catch (final JAXBException | IOException | MessagingException e) {
+                                    LOG.warn("Vérification des boite mails CINES - Problem: {}", e.getMessage(), e);
+                                    // on continue pour laisser leur chance aux msg suivants....
                                 }
-                            } catch (JAXBException | IOException | MessagingException e) {
-                                LOG.warn("Vérification des boite mails CINES - Problem: {}", e.getMessage(), e);
-                                // on continue pour laisser leur chance aux msg suivants....
                             }
-                        }
-                        transactionService.commitTransaction(tr); 
+                        });
                     }    
                 });
                 
@@ -419,7 +419,10 @@ public class CinesRequestHandlerService {
         // Rejet du versement
         else if (response.hasId(REP_REJET_VERSEMENT)) {
             if (report.getStatus() == CinesReport.Status.SENT || report.getStatus() == CinesReport.Status.AR_RECEIVED) {
-                final String motive = response.getAvis().getCommentaire();
+                String motive = response.getAvis().getCommentaire();
+                if (StringUtils.isBlank(motive)) {
+                    motive = response.getAvis().getErreurValidation();
+                }
                 LOG.debug("L'export {} passe au statut {} - motif : {}", idVersement, CinesReport.Status.REJECTED, motive);
                 cinesReportService.setReportRejected(report, response.getMsgDate(), motive);
                 treated = true;
@@ -455,11 +458,15 @@ public class CinesRequestHandlerService {
             final String idVersement = aip.getDocMeta() != null ? aip.getDocMeta().getIdentifiantDocProducteur() : null;
             if (idVersement != null) {
                 final DocUnit doc = docUnitService.findOneByPgcnId(idVersement);
-                final Path root = Paths.get(workingDir, exportCinesService.getDocLibraryId(doc.getIdentifier()), doc.getIdentifier());
-                if (root != null) {
-                    fm.copyInputStreamToFile(part.getInputStream(), root.toFile(), AIP_XML_FILE, true, false);
+                if (doc != null) {
+                    final Path root = Paths.get(workingDir, exportCinesService.getDocLibraryId(doc.getIdentifier()), doc.getIdentifier());
+                    if (root != null) {
+                        fm.copyInputStreamToFile(part.getInputStream(), root.toFile(), AIP_XML_FILE, true, false);
+                    }
+                } else {
+                    LOG.error("DocUnit non trouve - pgcnID = {}", idVersement);
                 }
-            }
+            } 
         }
     }
     
@@ -485,7 +492,7 @@ public class CinesRequestHandlerService {
      * Récupération du fichier sip.xml le + recent stocké en cache
      * ou backuppé pour un docUnit donné.
      *
-     * @param docUnit
+     * @param docUnitId
      * @return
      */
     public File retrieveSip(final String docUnitId, final boolean exportError) {
@@ -502,6 +509,33 @@ public class CinesRequestHandlerService {
                 final Path root = Paths.get(workingDir, exportCinesService.getDocLibraryId(docUnitId), docUnitId);
                 if (root != null) {
                     return fm.retrieveFile(root.toFile(), SIP_XML_FILE);
+                }
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * Récupération du fichier mets.xml le + recent stocké en cache
+     * ou backuppé pour un docUnit donné.
+     *
+     * @param docUnitId
+     * @return
+     */
+    public File retrieveMets(final String docUnitId, final boolean exportError) {
+
+        if(docUnitId != null) {
+            if (exportError) {
+                final DocUnit docUnit = docUnitService.findOne(docUnitId);
+                final Path root = Paths.get(cacheDir, exportCinesService.getDocLibraryId(docUnitId),  docUnit.getPgcnId());
+                if (root != null) {
+                    return fm.retrieveFile(root.toFile(), METS_XML_FILE);
+                }
+            } else {
+    
+                final Path root = Paths.get(workingDir, exportCinesService.getDocLibraryId(docUnitId), docUnitId);
+                if (root != null) {
+                    return fm.retrieveFile(root.toFile(), METS_XML_FILE);
                 }
             }
         }

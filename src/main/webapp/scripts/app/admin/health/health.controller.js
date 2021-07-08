@@ -2,7 +2,7 @@
     'use strict';
 
     angular.module('numaHopApp')
-        .controller('HealthController', function ($scope, MonitoringService) {
+        .controller('HealthController', function ($scope, MonitoringService, SearchSrvc, MessageSrvc) {
             $scope.updatingHealth = true;
             $scope.separator = '.';
 
@@ -132,6 +132,11 @@
                     var remainder = split.join('.');
                     return remainder ? ' - ' + remainder : '';
                 }
+            };
+
+            $scope.index = function () {
+                SearchSrvc.index();
+                MessageSrvc.addSuccess("L'indexation a commencé");
             };
         });
 })();

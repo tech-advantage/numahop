@@ -1,8 +1,6 @@
 package fr.progilone.pgcn.service.statistics;
 
-import static fr.progilone.pgcn.domain.workflow.WorkflowStateKey.DIFFUSION_DOCUMENT;
-import static fr.progilone.pgcn.domain.workflow.WorkflowStateKey.DIFFUSION_DOCUMENT_LOCALE;
-import static fr.progilone.pgcn.domain.workflow.WorkflowStateKey.DIFFUSION_DOCUMENT_OMEKA;
+import static fr.progilone.pgcn.domain.workflow.WorkflowStateKey.*;
 
 import java.time.LocalDate;
 import java.util.Comparator;
@@ -70,7 +68,8 @@ public class StatisticsDocumentService {
                                                                                              // Documents publiés
                                                                                              .addState(DIFFUSION_DOCUMENT)
                                                                                              .addState(DIFFUSION_DOCUMENT_LOCALE)
-                                                                                             .addState(DIFFUSION_DOCUMENT_OMEKA),
+                                                                                                                                 .addState(DIFFUSION_DOCUMENT_OMEKA)
+                                                                                                                                 .addState(DIFFUSION_DOCUMENT_DIGITAL_LIBRARY),
                                                                                              new PageRequest(page, size)).map(this::initDto);
         // Infos IA report => ia url
         results.forEach(res -> {

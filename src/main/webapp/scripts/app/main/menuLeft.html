@@ -12,12 +12,12 @@
             <li class="dropdown-header">Gestion unitaire</li>
             <li><a href="#/document/docunit" translate>Unités documentaires</a></li>
             <li><a href="#/document/record" translate>Notices</a></li>
-            <li class="divider" sem-roles-allowed="DOC_UNIT_HAB2"/>
-            <li class="dropdown-header" sem-roles-allowed="DOC_UNIT_HAB2">Opérations groupées</li>
-            <li><a href="#/document/docunit_list"  sem-roles-allowed="DOC_UNIT_HAB2" translate>Unités documentaires</a></li>
-            <li><a href="#/document/record_list"  sem-roles-allowed="DOC_UNIT_HAB2" translate>Notices</a></li>
-            <li><a href="#/document/condreport_list"  sem-roles-allowed="DOC_UNIT_HAB2" translate>Constats d'état</a></li>
-            <li class="divider" sem-roles-allowed="EXC_HAB0" />
+            <li class="divider" sem-roles-allowed="DOC_UNIT_HAB2,COND_REPORT_HAB0"/>
+            <li class="dropdown-header" sem-roles-allowed="DOC_UNIT_HAB2,COND_REPORT_HAB0">Opérations groupées</li>
+            <li><a href="#/document/docunit_list" sem-roles-allowed="DOC_UNIT_HAB2" translate>Unités documentaires</a></li>
+            <li><a href="#/document/record_list" sem-roles-allowed="DOC_UNIT_HAB2" translate>Notices</a></li>
+            <li><a href="#/document/condreport_list" sem-roles-allowed="COND_REPORT_HAB0" translate>Constats d'état</a></li>
+            <li class="divider" sem-roles-allowed="EXC_HAB0"/>
             <li><a href="#/document/import" sem-roles-allowed="EXC_HAB0" translate>Imports</a></li>
         </ul>
     </li>
@@ -27,7 +27,7 @@
         </a>
     </li>
     <li sem-roles-allowed="LIB_HAB5, USER_HAB0, ROLE_HAB0">
-        <a data-toggle="dropdown" data-parent="#menuRoot" href="#menuUsagers" onclick="event.preventDefault();" data-active-link="user/user,library,user/role">
+        <a data-toggle="dropdown" data-parent="#menuRoot" href="#menuUsagers" onclick="event.preventDefault();" data-active-link="user/user,library/library,user/role">
             <span class="menu-label" translate>Utilisateurs</span> <span class="glyphicon syrtis-icon-head-01" tooltip-placement="auto right" uib-tooltip="{{::'Utilisateurs' | translate}}"></span>
         </a>
         <ul id="menuUsagers" class="dropdown-menu dropright">

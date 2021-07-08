@@ -1,68 +1,7 @@
 package fr.progilone.pgcn.service.document.conditionreport;
 
-import com.opencsv.CSVWriter;
-import fr.opensagres.xdocreport.document.images.ClassPathImageProvider;
-import fr.opensagres.xdocreport.document.images.IImageProvider;
-import fr.progilone.pgcn.domain.document.BibliographicRecord;
-import fr.progilone.pgcn.domain.document.DocUnit;
-import fr.progilone.pgcn.domain.document.DocUnit_;
-import fr.progilone.pgcn.domain.document.conditionreport.ConditionReport;
-import fr.progilone.pgcn.domain.document.conditionreport.ConditionReportDetail;
-import fr.progilone.pgcn.domain.document.conditionreport.ConditionReportDetail.Type;
-import fr.progilone.pgcn.domain.document.conditionreport.ConditionReportSlipConfiguration;
-import fr.progilone.pgcn.domain.document.conditionreport.Description;
-import fr.progilone.pgcn.domain.dto.document.DocPropertyDTO;
-import fr.progilone.pgcn.domain.dto.document.DocPropertyTypeDTO;
-import fr.progilone.pgcn.domain.dto.document.DocUnitBibliographicRecordDTO;
-import fr.progilone.pgcn.domain.dto.document.SimpleListDocUnitDTO;
-import fr.progilone.pgcn.domain.dto.document.conditionreport.ConditionReportDTO;
-import fr.progilone.pgcn.domain.dto.document.conditionreport.ConditionReportDetailDTO;
-import fr.progilone.pgcn.domain.dto.document.conditionreport.ConditionReportDetailVelocityDTO;
-import fr.progilone.pgcn.domain.dto.document.conditionreport.ConditionReportValueVelocityDTO;
-import fr.progilone.pgcn.domain.exchange.template.Name;
-import fr.progilone.pgcn.domain.library.Library;
-import fr.progilone.pgcn.domain.user.User;
-import fr.progilone.pgcn.exception.PgcnException;
-import fr.progilone.pgcn.exception.PgcnTechnicalException;
-import fr.progilone.pgcn.exception.PgcnValidationException;
-import fr.progilone.pgcn.exception.message.PgcnError;
-import fr.progilone.pgcn.exception.message.PgcnErrorCode;
-import fr.progilone.pgcn.exception.message.PgcnList;
-import fr.progilone.pgcn.repository.document.DocUnitRepository;
-import fr.progilone.pgcn.repository.document.conditionreport.ConditionReportRepository;
-import fr.progilone.pgcn.repository.document.conditionreport.ConditionReportRepositoryCustom;
-import fr.progilone.pgcn.repository.project.ProjectRepository;
-import fr.progilone.pgcn.security.SecurityUtils;
-import fr.progilone.pgcn.service.JasperReportsService;
-import fr.progilone.pgcn.service.document.mapper.BibliographicRecordMapper;
-import fr.progilone.pgcn.service.document.mapper.ConditionReportAttachmentMapper;
-import fr.progilone.pgcn.service.document.mapper.ConditionReportDetailMapper;
-import fr.progilone.pgcn.service.document.mapper.ConditionReportMapper;
-import fr.progilone.pgcn.service.document.mapper.SimpleDocUnitMapper;
-import fr.progilone.pgcn.service.es.EsConditionReportService;
-import fr.progilone.pgcn.service.exchange.template.OdtEngineService;
-import fr.progilone.pgcn.service.exchange.template.OdtEngineService.TypedFileImageProvider;
-import fr.progilone.pgcn.service.library.LibraryService;
-import fr.progilone.pgcn.service.user.UserService;
-import fr.progilone.pgcn.service.util.ImageUtils;
-import fr.progilone.pgcn.service.util.SortUtils;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import static com.opencsv.CSVWriter.*;
 
-import javax.servlet.ServletOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -83,7 +22,71 @@ import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
-import static com.opencsv.CSVWriter.*;
+import javax.servlet.ServletOutputStream;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.opencsv.CSVWriter;
+
+import fr.opensagres.xdocreport.document.images.ClassPathImageProvider;
+import fr.opensagres.xdocreport.document.images.IImageProvider;
+import fr.progilone.pgcn.domain.document.BibliographicRecord;
+import fr.progilone.pgcn.domain.document.DocUnit;
+import fr.progilone.pgcn.domain.document.DocUnit_;
+import fr.progilone.pgcn.domain.document.conditionreport.ConditionReport;
+import fr.progilone.pgcn.domain.document.conditionreport.ConditionReportDetail;
+import fr.progilone.pgcn.domain.document.conditionreport.ConditionReportDetail.Type;
+import fr.progilone.pgcn.domain.document.conditionreport.ConditionReportSlipConfiguration;
+import fr.progilone.pgcn.domain.document.conditionreport.Description;
+import fr.progilone.pgcn.domain.document.conditionreport.DescriptionProperty;
+import fr.progilone.pgcn.domain.dto.document.DocPropertyDTO;
+import fr.progilone.pgcn.domain.dto.document.DocPropertyTypeDTO;
+import fr.progilone.pgcn.domain.dto.document.DocUnitBibliographicRecordDTO;
+import fr.progilone.pgcn.domain.dto.document.SimpleListDocUnitDTO;
+import fr.progilone.pgcn.domain.dto.document.conditionreport.ConditionReportDTO;
+import fr.progilone.pgcn.domain.dto.document.conditionreport.ConditionReportDetailDTO;
+import fr.progilone.pgcn.domain.dto.document.conditionreport.ConditionReportDetailVelocityDTO;
+import fr.progilone.pgcn.domain.dto.document.conditionreport.ConditionReportValueVelocityDTO;
+import fr.progilone.pgcn.domain.exchange.template.Name;
+import fr.progilone.pgcn.domain.library.Library;
+import fr.progilone.pgcn.domain.user.User;
+import fr.progilone.pgcn.exception.PgcnException;
+import fr.progilone.pgcn.exception.PgcnTechnicalException;
+import fr.progilone.pgcn.exception.PgcnValidationException;
+import fr.progilone.pgcn.exception.message.PgcnError;
+import fr.progilone.pgcn.exception.message.PgcnErrorCode;
+import fr.progilone.pgcn.exception.message.PgcnList;
+import fr.progilone.pgcn.repository.document.DocUnitRepository;
+import fr.progilone.pgcn.repository.document.conditionreport.ConditionReportRepository;
+import fr.progilone.pgcn.repository.document.conditionreport.ConditionReportRepositoryCustom;
+import fr.progilone.pgcn.security.SecurityUtils;
+import fr.progilone.pgcn.service.JasperReportsService;
+import fr.progilone.pgcn.service.document.mapper.BibliographicRecordMapper;
+import fr.progilone.pgcn.service.document.mapper.ConditionReportAttachmentMapper;
+import fr.progilone.pgcn.service.document.mapper.ConditionReportDetailMapper;
+import fr.progilone.pgcn.service.document.mapper.ConditionReportMapper;
+import fr.progilone.pgcn.service.document.mapper.SimpleDocUnitMapper;
+import fr.progilone.pgcn.service.es.EsConditionReportService;
+import fr.progilone.pgcn.service.exchange.template.OdtEngineService;
+import fr.progilone.pgcn.service.exchange.template.OdtEngineService.TypedFileImageProvider;
+import fr.progilone.pgcn.service.library.LibraryService;
+import fr.progilone.pgcn.service.user.UserService;
+import fr.progilone.pgcn.service.util.ImageUtils;
+import fr.progilone.pgcn.service.util.SortUtils;
 
 @Service
 public class ConditionReportService {
@@ -266,18 +269,25 @@ public class ConditionReportService {
         final ConditionReportDetail childDetail;
         
         if (existingReport == null) {
-            // il faut creer constat + detail
+            // il faut creer constat + detail + descriptions
             final ConditionReport childReport = new ConditionReport();
             childReport.setDocUnit(doc);
-            //childReport.setDocUnitId(doc.getIdentifier());
             BeanUtils.copyProperties(detail.getReport(), childReport, "identifier", "version", "docUnit", "attachments", "details", "docUnitId", "docUnitLabel", "docUnitPgcnId", "docUnitCondReportType");
             
             final ConditionReport savedReport = conditionReportRepository.save(childReport);
             
+            // détail
             childDetail = conditionReportDetailService.getNewDetailWithoutWriters(detail.getType(), savedReport, 0);
+            BeanUtils.copyProperties(detail, childDetail, "identifier", "version", "position", "report", "sortedType", "descriptions");
             savedReport.addDetail(childDetail);
-            BeanUtils.copyProperties(detail, childDetail, "identifier", "version", "position", "report", "sortedType");
-            
+
+            // descriptions
+            for (final Description description : detail.getDescriptions()) {
+                final Description childDesc = new Description();
+                BeanUtils.copyProperties(description, childDesc, "identifier", "version", "detail");
+                childDetail.addDescription(childDesc);
+            }
+
         } else {
             if (Type.LIBRARY_LEAVING == detail.getType()) {
                 // constat initial deja present
@@ -289,6 +299,13 @@ public class ConditionReportService {
                 childDetail.setReport(existingReport);
                 existingReport.addDetail(childDetail);
                 BeanUtils.copyProperties(detail, childDetail, "identifier", "version", "position", "report", "sortedType");
+
+                // descriptions
+                for (final Description description : detail.getDescriptions()) {
+                    final Description childDesc = new Description();
+                    BeanUtils.copyProperties(description, childDesc, "identifier", "version", "detail");
+                    childDetail.addDescription(childDesc);
+                }
             }
         }
         
@@ -750,7 +767,28 @@ public class ConditionReportService {
 
     private String writeSummary(final ConditionReportDetail detail) {
         final StringBuilder summary = new StringBuilder();
-        for (final Description description : detail.getDescriptions()) {
+        if (detail.getDim1() != null || detail.getDim2() != null || detail.getDim3() != null) {
+            final Integer dim1 = detail.getDim1() != null ? detail.getDim1() : 0;
+            final Integer dim2 = detail.getDim2() != null ? detail.getDim2() : 0;
+            final Integer dim3 = detail.getDim3() != null ? detail.getDim3() : 0;
+            summary.append("Dimensions (HxLxP, mm): ");
+            summary.append(dim1).append(" x ").append(dim2).append(" x ").append(dim3);
+            summary.append(System.getProperty("line.separator"));
+        }
+        final List<Description> descriptions =
+                                             detail.getDescriptions()
+                                                   .stream()
+                                                   .sorted(Comparator.comparing(desc -> desc.getProperty().getType()))
+                                                   .collect(Collectors.toList());
+
+        final List<String> titles = new ArrayList<>();
+        for (final Description description : descriptions) {
+            final String title = getTitleFromPropertyType(description.getProperty().getType());
+            if (!titles.contains(title)) {
+                summary.append(title);
+                summary.append(System.getProperty("line.separator"));
+                titles.add(title);
+            }
             if (description.getProperty() != null && description.getProperty().getLabel() != null) {
                 summary.append(description.getProperty().getLabel()).append(" : ");
             }
@@ -769,6 +807,24 @@ public class ConditionReportService {
             summary.append(detail.getAdditionnalDesc());
         }
         return summary.toString();
+    }
+
+    private String getTitleFromPropertyType(final DescriptionProperty.Type type) {
+        switch (type) {
+            case VIGILANCE:
+                return "POINTS DE VIGILANCE";
+            case DESCRIPTION:
+                return "DESCRIPTION DU DOCUMENT";
+            case BINDING:
+                return "ÉTAT DE LA RELIURE";
+            case NUMBERING:
+                return "NUMÉROTATION";
+            case TYPE:
+                return "TYPE DE DOCUMENT";
+            case STATE:
+                return "ETAT DU DOCUMENT";
+        }
+        return StringUtils.EMPTY;
     }
 
     public Set<String> getSummary(final ConditionReport report) {

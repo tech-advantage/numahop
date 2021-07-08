@@ -1,5 +1,20 @@
 package fr.progilone.pgcn.repository.lot;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+
 import com.mysema.query.BooleanBuilder;
 import com.mysema.query.Tuple;
 import com.mysema.query.jpa.JPASubQuery;
@@ -8,6 +23,7 @@ import com.mysema.query.jpa.impl.JPAQuery;
 import com.mysema.query.types.Order;
 import com.mysema.query.types.OrderSpecifier;
 import com.mysema.query.types.expr.BooleanExpression;
+
 import fr.progilone.pgcn.domain.delivery.QDeliveredDocument;
 import fr.progilone.pgcn.domain.document.QDigitalDocument;
 import fr.progilone.pgcn.domain.document.QDocUnit;
@@ -18,19 +34,6 @@ import fr.progilone.pgcn.domain.lot.QLot;
 import fr.progilone.pgcn.domain.project.QProject;
 import fr.progilone.pgcn.repository.lot.helper.LotSearchBuilder;
 import fr.progilone.pgcn.repository.util.QueryDSLBuilderUtils;
-import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class LotRepositoryImpl implements LotRepositoryCustom {
 
@@ -43,6 +46,7 @@ public class LotRepositoryImpl implements LotRepositoryCustom {
      * @param projectIds
      * @return
      */
+    @Override
     public List<SimpleLotDTO> findAllIdentifiersInProjectIds(final Iterable<String> projectIds) {
 
         final String q = "select l.identifier, l.label from Lot l inner join l.project p where p.identifier in :projectIds ";
@@ -152,7 +156,7 @@ public class LotRepositoryImpl implements LotRepositoryCustom {
             new JPAQuery(em).from(qLot).leftJoin(qLot.project, qProject).leftJoin(qProject.library, qLibrary).where(builder.getValue()).distinct();
 
         if (pageable != null) {
-            long total = baseQuery.count();
+            final long total = baseQuery.count();
             baseQuery = baseQuery.offset(pageable.getOffset())
                                  .limit(pageable.getPageSize());
             if(pageable.getSort() != null){

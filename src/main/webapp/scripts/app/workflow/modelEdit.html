@@ -242,34 +242,45 @@
                            </button>
                        </div>
                        <div class="col-sm-2">
-                           <button type="button" class="btn btn-sem2 btn-sm" ng-click="editState(model, 'DIFFUSION_DOCUMENT_OMEKA')" 
-                           ng-class="{'REQUIRED': 'btn-model-orange',
+                           <button type="button" class="btn btn-sem2 btn-sm" ng-click="editState(model, 'DIFFUSION_DOCUMENT_OMEKA')"
+                                   ng-class="{'REQUIRED': 'btn-model-orange',
                                         'TO_SKIP': 'btn-model-blue',
                                         'TO_WAIT': 'btn-model-grey'}[getType(model, 'DIFFUSION_DOCUMENT_OMEKA')]">
                                <div>{{codes["workflow.model.DIFFUSION_DOCUMENT_OMEKA"]}}
-                               <span ng-class="{'STATE_OK': 'glyphicon-halflings glyphicon-ok',
+                                   <span ng-class="{'STATE_OK': 'glyphicon-halflings glyphicon-ok',
                                         'STATE_KO': 'glyphicon-halflings glyphicon-remove'}[getState(model, 'DIFFUSION_DOCUMENT_OMEKA')]"></span>
                                </div>
                            </button>
                        </div>
-                       <div class="col-sm-2">
-                           <button type="button" class="btn btn-sem2 btn-sm" ng-click="editState(model, 'DIFFUSION_DOCUMENT_LOCALE')" 
-                           ng-class="{'REQUIRED': 'btn-model-orange',
+                        <div class="col-sm-2" ng-show="stateExist(model, 'DIFFUSION_DOCUMENT_DIGITAL_LIBRARY')">
+                            <button type="button" class="btn btn-sem2 btn-sm" ng-click="editState(model, 'DIFFUSION_DOCUMENT_DIGITAL_LIBRARY')"
+                                    ng-class="{'REQUIRED': 'btn-model-orange',
+                                        'TO_SKIP': 'btn-model-blue',
+                                        'TO_WAIT': 'btn-model-grey'}[getType(model, 'DIFFUSION_DOCUMENT_DIGITAL_LIBRARY')]">
+                                <div>{{codes["workflow.model.DIFFUSION_DOCUMENT_DIGITAL_LIBRARY"]}}
+                                    <span ng-class="{'STATE_OK': 'glyphicon-halflings glyphicon-ok',
+                                        'STATE_KO': 'glyphicon-halflings glyphicon-remove'}[getState(model, 'DIFFUSION_DOCUMENT_DIGITAL_LIBRARY')]"></span>
+                                </div>
+                            </button>
+                        </div>
+                        <div class="col-sm-2">
+                            <button type="button" class="btn btn-sem2 btn-sm" ng-click="editState(model, 'DIFFUSION_DOCUMENT_LOCALE')"
+                                    ng-class="{'REQUIRED': 'btn-model-orange',
                                         'TO_SKIP': 'btn-model-blue',
                                         'TO_WAIT': 'btn-model-grey'}[getType(model, 'DIFFUSION_DOCUMENT_LOCALE')]">
-                               <div>{{codes["workflow.model.DIFFUSION_DOCUMENT_LOCALE"]}}
-                               <span ng-class="{'STATE_OK': 'glyphicon-halflings glyphicon-ok',
+                                <div>{{codes["workflow.model.DIFFUSION_DOCUMENT_LOCALE"]}}
+                                    <span ng-class="{'STATE_OK': 'glyphicon-halflings glyphicon-ok',
                                         'STATE_KO': 'glyphicon-halflings glyphicon-remove'}[getState(model, 'DIFFUSION_DOCUMENT_LOCALE')]"></span>
-                               </div>
-                           </button>
-                       </div>
-                       <div class="clearfix"></div>
-                       <div class="col-sm-3">
-                           <button type="button" class="btn btn-sem2 btn-sm btn-model-red" ng-click="editState(model, 'CLOTURE_DOCUMENT')" >
-                               <div>{{codes["workflow.model.CLOTURE_DOCUMENT"]}}</div>
-                           </button>
-                       </div>
-	                </div>
+                                </div>
+                            </button>
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="col-sm-3">
+                            <button type="button" class="btn btn-sem2 btn-sm btn-model-red" ng-click="editState(model, 'CLOTURE_DOCUMENT')">
+                                <div>{{codes["workflow.model.CLOTURE_DOCUMENT"]}}</div>
+                            </button>
+                        </div>
+                    </div>
                     
                     <div class="text-center column-bottom column-5 margin-t10" ng-show="entityForm.$visible">
                         <div class="column-bottom-button">

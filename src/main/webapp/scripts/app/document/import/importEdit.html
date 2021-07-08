@@ -302,7 +302,12 @@
                             sem-model="editCtrl.import.dedupProcess" sem-tooltip="{{ ::'Action par défaut si un doublon est trouvé' | translate }}"
                             sem-select-options="key as value for (key, value) in optionData" sem-option-data="editCtrl.options.dedupProcess"></sem-field>
 
-                        <!-- Importer -->
+						<sem-field sem-type="checkbox" sem-label="{{::'Rendre les unités documentaires archivables ' | translate}}"
+                            sem-model="editCtrl.report.archivable" sem-tooltip="{{ ::'Rendre les unités documentaires importées archivables au Cines' | translate }}"></sem-field>
+						<sem-field sem-type="checkbox" sem-label="{{::'Rendre les unités documentaires diffusables ' | translate}}"
+                            sem-model="editCtrl.report.distributable" sem-tooltip="{{ ::'Rendre les unités documentaires importées diffusables sur Archive' | translate }}"></sem-field>
+                        
+						<!-- Importer -->
                         <div class="row vertical-align" ng-if="!editCtrl.sourceSrvc">
                             <div class="col-xs-offset-4 col-xs-8 margin-t10">
                                 <button type="button" class="btn btn-sem2" ng-click="editCtrl.importFiles()"

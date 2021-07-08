@@ -10,9 +10,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import fr.progilone.pgcn.domain.delivery.Delivery;
 import fr.progilone.pgcn.domain.lot.Lot;
 import fr.progilone.pgcn.domain.multilotsdelivery.MultiLotsDelivery;
-import fr.progilone.pgcn.domain.multilotsdelivery.MultiLotsDelivery.DeliveryStatus;
 import fr.progilone.pgcn.exception.PgcnBusinessException;
 import fr.progilone.pgcn.exception.PgcnValidationException;
 import fr.progilone.pgcn.repository.delivery.DeliveryRepository;
@@ -35,7 +35,7 @@ public class MultiLotsDeliveryService {
     @Transactional
     public MultiLotsDelivery save(final MultiLotsDelivery multi) throws PgcnValidationException, PgcnBusinessException {
         if (multi.getIdentifier() == null) {
-            multi.setStatus(DeliveryStatus.SAVED);
+            multi.setStatus(Delivery.DeliveryStatus.SAVED);
         }
         deliveryRepository.save(multi.getDeliveries());
         return multiRepository.save(multi);
@@ -77,7 +77,7 @@ public class MultiLotsDeliveryService {
                                  final List<String> projects,
                                  final List<String> lots,
                                  final List<String> providers,
-                                 final List<DeliveryStatus> status,
+                                          final List<Delivery.DeliveryStatus> status,
                                  final LocalDate dateFrom,
                                  final LocalDate dateTo,
                                  final Integer page,
@@ -91,5 +91,15 @@ public class MultiLotsDeliveryService {
     public List<Lot> findLotsByTrainIdentifier(final String trainId) {
         return multiRepository.findLotsByTrainIdentifier(trainId);
     }
-    
+
+    @Transactional
+    public void closeMultiLotDelivery(final Delivery delivery) {
+        final MultiLotsDelivery multiLotsDelivery = delivery.getMultiLotsDelivery();
+
+        final List<Delivery> deliveries = multiLotsDelivery.getDeliveries();
+        if (deliveries.stream().noneMatch(del -> del.getStatus() != Delivery.DeliveryStatus.CLOSED)) {
+            multiLotsDelivery.setStatus(Delivery.DeliveryStatus.CLOSED);
+            save(multiLotsDelivery);
+        }
+    }
 }

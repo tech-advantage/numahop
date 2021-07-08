@@ -127,59 +127,59 @@ public class UserDTO extends AbstractVersionedDTO {
 		return library;
 	}
 
-	public final void setLibrary(SimpleLibraryDTO library) {
+	public void setLibrary(SimpleLibraryDTO library) {
 		this.library = library;
 	}
 
-	public final void setIdentifier(String identifier) {
+	public void setIdentifier(String identifier) {
 		this.identifier = identifier;
 	}
 
-	public final void setLogin(String login) {
+	public void setLogin(String login) {
 		this.login = login;
 	}
 
-	public final void setFirstname(String firstname) {
+	public void setFirstname(String firstname) {
 		this.firstname = firstname;
 	}
 
-	public final void setSurname(String surname) {
+	public void setSurname(String surname) {
 		this.surname = surname;
 	}
 
-	public final void setActive(Boolean active) {
+	public void setActive(Boolean active) {
 		this.active = active;
 	}
 
-	public final void setCategory(String category) {
+	public void setCategory(String category) {
 		this.category = category;
 	}
 
-	public final void setLang(Lang lang) {
+	public void setLang(Lang lang) {
 		this.lang = lang;
 	}
 
-	public final void setRole(RoleDTO role) {
+	public void setRole(RoleDTO role) {
 		this.role = role;
 	}
 
-	public final void setAddress(AddressDTO address) {
+	public void setAddress(AddressDTO address) {
 		this.address = address;
 	}
 
-	public final void setPhoneNumber(String phoneNumber) {
+	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
 
-	public final void setEmail(String email) {
+	public void setEmail(String email) {
 		this.email = email;
 	}
 
-	public final void setCompanyName(String companyName) {
+	public void setCompanyName(String companyName) {
 		this.companyName = companyName;
 	}
 
-	public final void setFunction(String function) {
+	public void setFunction(String function) {
 		this.function = function;
 	}
 

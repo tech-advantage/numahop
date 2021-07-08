@@ -28,7 +28,7 @@ public class ValidationNoticesState extends DocUnitState {
         // Initialisation de la prochaine étape si applicable (aucune étape en cours)
         if(getWorkflow().getCurrentStates().isEmpty() 
                 && getWorkflow().isDocumentValidated()
-                && getWorkflow().isRapportSent()) {
+            && (getWorkflow().isRapportSent() || getWorkflow().isRapportFailed())) {
             getNextStates().forEach(state -> state.initializeState(null, null, null));
         }
     }
@@ -40,6 +40,7 @@ public class ValidationNoticesState extends DocUnitState {
         states.add(getWorkflow().getFutureOrRunningByKey(WorkflowStateKey.DIFFUSION_DOCUMENT));
         states.add(getWorkflow().getFutureOrRunningByKey(WorkflowStateKey.DIFFUSION_DOCUMENT_OMEKA));
         states.add(getWorkflow().getFutureOrRunningByKey(WorkflowStateKey.DIFFUSION_DOCUMENT_LOCALE));
+        states.add(getWorkflow().getFutureOrRunningByKey(WorkflowStateKey.DIFFUSION_DOCUMENT_DIGITAL_LIBRARY));
         cleanNullStates(states);
         return states;
     }

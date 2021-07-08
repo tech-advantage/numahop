@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Changeset du module Document -->
+    <changeSet id="pgcn-document-35" author="progilone">
+
+        <createTable tableName="doc_archive_coverage">
+            <column name="identifier" type="varchar(191)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <!-- Données -->
+            <column name="value" type="text"/>
+            <!-- Lien technique -->
+            <column name="item" type="varchar(191)">
+                <constraints nullable="false"/>
+            </column>
+            <!-- Données techniques auto -->
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="item" baseTableName="doc_archive_coverage"
+                                 constraintName="fk_doc_archive_coverage"
+                                 referencedColumnNames="identifier" referencedTableName="doc_archive_item"/>
+
+        <sql>INSERT INTO `doc_archive_coverage`(`identifier`, `value`, `item`, `version`, `created_by`, `last_modified_by`, `created_date`, `last_modified_date`)
+            SELECT uuid(), `coverage`, `identifier`, `version`, `created_by`, `last_modified_by`, `created_date`, `last_modified_date` FROM doc_archive_item
+        </sql>
+
+        <dropColumn tableName="doc_archive_item" columnName="coverage"/>
+    </changeSet>
+</databaseChangeLog>

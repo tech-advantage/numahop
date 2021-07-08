@@ -41,7 +41,7 @@ public class SimpleProjectDTO {
         return name;
     }
 
-    public final void setName(final String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -49,7 +49,7 @@ public class SimpleProjectDTO {
         return identifier;
     }
 
-    public final void setIdentifier(final String identifier) {
+    public void setIdentifier(final String identifier) {
         this.identifier = identifier;
     }
 

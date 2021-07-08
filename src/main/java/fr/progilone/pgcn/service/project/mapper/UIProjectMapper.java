@@ -1,5 +1,11 @@
 package fr.progilone.pgcn.service.project.mapper;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import fr.progilone.pgcn.domain.administration.CinesPAC;
 import fr.progilone.pgcn.domain.administration.InternetArchiveCollection;
 import fr.progilone.pgcn.domain.administration.omeka.OmekaList;
@@ -20,11 +26,6 @@ import fr.progilone.pgcn.service.ftpconfiguration.FTPConfigurationService;
 import fr.progilone.pgcn.service.library.LibraryService;
 import fr.progilone.pgcn.service.user.UserService;
 import fr.progilone.pgcn.service.workflow.WorkflowModelService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class UIProjectMapper {
@@ -98,6 +99,10 @@ public class UIProjectMapper {
             project.setCollectionIA(internetArchiveCollection);
         } else {
             project.setCollectionIA(null);
+        }
+
+        if(projectDTO.getLicenseUrl() != null){
+            project.setLicenseUrl(projectDTO.getLicenseUrl());
         }
 
         final CinesPACDTO cinesPACDTO = projectDTO.getPlanClassementPAC();

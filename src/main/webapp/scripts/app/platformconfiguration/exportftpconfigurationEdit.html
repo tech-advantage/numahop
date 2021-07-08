@@ -56,17 +56,19 @@
                                 <span>{{::' Types de fichiers à exporter' | translate}}</span>
                             </uib-accordion-heading>        
                             <div class="row text-center">
-                                   <label translate>METS</label>
-                                   <input type="checkbox" ng-model="configuration.exportMets" style="margin-right: 15px;" ng-disabled="!loaded || viewMode !== viewModes.EDIT">
-                                   <label translate>Masters</label>
-                                   <input type="checkbox" ng-model="configuration.exportMaster" style="margin-right: 15px;" ng-disabled="!loaded || viewMode !== viewModes.EDIT">
-                                   <label translate>Views</label>
-                                    <input type="checkbox" ng-model="configuration.exportView" style="margin-right: 15px;" ng-disabled="!loaded || viewMode !== viewModes.EDIT">
-                                    <label translate>Vignettes</label>
-                                    <input type="checkbox" ng-model="configuration.exportThumb" style="margin-right: 15px;" ng-disabled="!loaded || viewMode !== viewModes.EDIT">
-                                    <label translate>Pdf</label>
-                                    <input type="checkbox" ng-model="configuration.exportPdf" ng-disabled="!loaded || viewMode !== viewModes.EDIT">
-                       </div>                                        
+                                <label translate>METS</label>
+                                <input type="checkbox" ng-model="configuration.exportMets" style="margin-right: 15px;" ng-disabled="!loaded || viewMode !== viewModes.EDIT">
+                                <label translate>AIP/SIP</label>
+                                <input type="checkbox" ng-model="configuration.exportAipSip" style="margin-right: 15px;" ng-disabled="!loaded || viewMode !== viewModes.EDIT">
+                                <label translate>Masters</label>
+                                <input type="checkbox" ng-model="configuration.exportMaster" style="margin-right: 15px;" ng-disabled="!loaded || viewMode !== viewModes.EDIT">
+                                <label translate>Views</label>
+                                <input type="checkbox" ng-model="configuration.exportView" style="margin-right: 15px;" ng-disabled="!loaded || viewMode !== viewModes.EDIT">
+                                <label translate>Vignettes</label>
+                                <input type="checkbox" ng-model="configuration.exportThumb" style="margin-right: 15px;" ng-disabled="!loaded || viewMode !== viewModes.EDIT">
+                                <label translate>Pdf</label>
+                                <input type="checkbox" ng-model="configuration.exportPdf" ng-disabled="!loaded || viewMode !== viewModes.EDIT">
+                            </div>
                </div>                             
                 
                <div class="text-center column-bottom column-5 margin-t10" ng-if="exportFtpConfigForm.$visible">

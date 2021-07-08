@@ -16,14 +16,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import fr.progilone.pgcn.domain.delivery.DeliveredDocument;
+import fr.progilone.pgcn.domain.document.DigitalDocument.DigitalDocumentStatus;
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.document.DocUnit.State;
 import fr.progilone.pgcn.domain.document.conditionreport.ConditionReportDetail.Type;
 import fr.progilone.pgcn.domain.lot.Lot;
-import fr.progilone.pgcn.domain.lot.Lot.LotStatus;
 import fr.progilone.pgcn.domain.project.Project;
-import fr.progilone.pgcn.domain.project.Project.ProjectStatus;
-import fr.progilone.pgcn.domain.train.Train.TrainStatus;
 import fr.progilone.pgcn.domain.user.User;
 import fr.progilone.pgcn.domain.workflow.DocUnitState;
 import fr.progilone.pgcn.domain.workflow.DocUnitWorkflow;
@@ -34,6 +33,7 @@ import fr.progilone.pgcn.domain.workflow.WorkflowStateStatus;
 import fr.progilone.pgcn.exception.PgcnBusinessException;
 import fr.progilone.pgcn.exception.message.PgcnError;
 import fr.progilone.pgcn.exception.message.PgcnErrorCode;
+import fr.progilone.pgcn.repository.workflow.DocUnitWorkflowRepository;
 import fr.progilone.pgcn.service.document.BibliographicRecordService;
 import fr.progilone.pgcn.service.document.DocCheckHistoryService;
 import fr.progilone.pgcn.service.document.DocUnitService;
@@ -56,7 +56,8 @@ public class WorkflowService {
     private final ConditionReportService conditionReportService;
     private final LotService lotService;
     private final ProjectService projectService;
-    private final DocCheckHistoryService docCheckHistoryService; 
+    private final DocCheckHistoryService docCheckHistoryService;
+    private final DocUnitWorkflowRepository docUnitWorkflowRepository;
 
     @Autowired
     public WorkflowService(final DocUnitWorkflowService docUnitWorkflowService,
@@ -67,7 +68,8 @@ public class WorkflowService {
                            final ConditionReportService conditionReportService,
                            final LotService lotService,
                            final ProjectService projectService,
-                           final DocCheckHistoryService docCheckHistoryService) {
+                           final DocCheckHistoryService docCheckHistoryService,
+                           final DocUnitWorkflowRepository docUnitWorkflowRepository) {
         this.docUnitWorkflowService = docUnitWorkflowService;
         this.workflowGroupService = workflowGroupService;
         this.docUnitService = docUnitService;
@@ -77,6 +79,7 @@ public class WorkflowService {
         this.lotService = lotService;
         this.projectService = projectService;
         this.docCheckHistoryService = docCheckHistoryService;
+        this.docUnitWorkflowRepository = docUnitWorkflowRepository;
     }
 
     /**
@@ -350,13 +353,15 @@ public class WorkflowService {
         final DocUnit doc = docUnitService.findOneWithAllDependenciesForWorkflow(docUnitId);
         final DocUnitWorkflow workflow = doc.getWorkflow();
         if (workflow == null) {
-            LOG.warn("Aucun workflow sur le document : impossible de rejeter automatiquement l'étape {}", key.name());
+            LOG.warn("Aucun workflow sur le document : impossible de rejeter automatiquement l'étape {} pour le document {}",
+                     key.name(),
+                     doc.getPgcnId());
         } else {
             final DocUnitState currentState = workflow.getCurrentStateByKey(key);
             if (currentState != null && currentState.isWaiting()) {
                 currentState.reject(null);
             } else {
-                LOG.error("Workflow : Impossible de refuser automatiquement la tâche");
+                LOG.error("Workflow : Impossible de refuser automatiquement la tâche {} pour le document {}", key.name(), doc.getPgcnId());
             }
             handleStatus(doc, workflow);
         }
@@ -378,38 +383,38 @@ public class WorkflowService {
             final LocalDateTime endDate = state.getEndDate();
             workflow.setEndDate(endDate);
             
+            // Gestion statuts docDigital et deliveredDocument 
+            final DocUnitState validationState = workflow.getByKey(WorkflowStateKey.VALIDATION_DOCUMENT).stream().collect(NumahopCollectors.singletonCollector());
+            if (WorkflowStateStatus.CANCELED == validationState.getStatus()) {
+                // Validation document annulée, on est en administration / terminer workflow
+                // il faut passer le digitalDocument et le deliveredDoc à canceled
+                
+                doc.getDigitalDocuments().stream()
+                                        .findFirst()
+                                        .ifPresent(dig-> {
+                   
+                    dig.setStatus(DigitalDocumentStatus.CANCELED);
+                       dig.getDeliveries()
+                          .stream()
+                          .filter(deliv -> deliv.getDelivery() != null)
+                          .max(Comparator.nullsLast(Comparator.comparing(DeliveredDocument::getCreatedDate)))
+                          .ifPresent(lastDeliv -> lastDeliv.setStatus(DigitalDocumentStatus.CANCELED));
+                   });
+                
+            }
+            
             // Gestion du lot
             // LOT : cloturé uniquement si tout OK (tout terminé et surtout sans erreur: tous les docs doivent avoir 1 worflow terminé)
             final Lot lot = lotService.findOneWithDocsAndWorkflows(doc.getLot().getIdentifier());
-            
-            final long uncompletedWorkflows = lot.getDocUnits().stream()
-                                                .filter(du -> du.getState() == State.AVAILABLE)
-                                                .filter(du -> du.getWorkflow() == null 
-                                                            || !du.getWorkflow().isDone()
-                                                            || isCheckFailed(du.getWorkflow()))
-                                                .count();
-                            
+            final long uncompletedWorkflows = lotService.countUncompletedWorkflowsLot(lot);
             LOG.trace("handleStatus - Boucle sur les docUnits du lot {} - total docs: {} - docs avec workflow en cours ou non demarré: {}", lot.getLabel(), lot.getDocUnits().size(), uncompletedWorkflows); 
-            
             // Tous les documents du lots sont finis et validés, -> on peut fermer le lot
             if (uncompletedWorkflows == 0) {
                 lotService.clotureLotAndCie(lot, endDate);
-            }
-            // Gestion du projet
-            final Project project = projectService.findByDocUnitIdentifier(doc.getIdentifier());
-            final List<Lot> processingLots =
-                project.getLots().stream().filter(lp -> !LotStatus.CLOSED.equals(lp.getStatus())).collect(Collectors.toList());
-            if (processingLots.isEmpty()) {
-                // Tous les lots sont finis, on termine aussi le projet et les trains du coup
-                project.setRealEndDate(endDate.toLocalDate());
-                project.setStatus(ProjectStatus.CLOSED);
-                project.setActive(false);
-                project.getTrains().forEach(train -> {
-                    train.setActive(false);
-                    train.setStatus(TrainStatus.CLOSED);
-                });
-                projectService.save(project);
-                LOG.info("Workflow : Mise à jour du project {} => project status : CLOSED", project.getName());
+                
+                // Gestion du projet : cloture projet / trains si conditions reunies
+                final Project project = projectService.findByDocUnitIdentifier(doc.getIdentifier());
+                projectService.checkAndCloseProject(project);
             }
         }
     }
@@ -470,9 +475,13 @@ public class WorkflowService {
             case CONTROLE_QUALITE_EN_COURS:
                 return true;
             case DIFFUSION_DOCUMENT:
-            case DIFFUSION_DOCUMENT_OMEKA:
-            case DIFFUSION_DOCUMENT_LOCALE:
                 return docUnitService.isDocumentReadyForDiffusion(doc.getIdentifier());
+            case DIFFUSION_DOCUMENT_OMEKA:
+                return docUnitService.isDocumentReadyForDiffusionOmeka(doc.getIdentifier());
+            case DIFFUSION_DOCUMENT_LOCALE:
+                return true;
+            case DIFFUSION_DOCUMENT_DIGITAL_LIBRARY:
+                return true;
             case GENERATION_BORDEREAU:
                 break;
             case INITIALISATION_DOCUMENT:
@@ -783,20 +792,6 @@ public class WorkflowService {
         return false;
     }
     
-    /**
-     * Retourne vrai si le controle qualité est en échec.
-     * 
-     * @param wkf
-     * @return
-     */
-    public boolean isCheckFailed(final DocUnitWorkflow wkf) {
-        
-        final DocUnitState state = wkf.getStates()
-                                .stream()
-                                .filter(st -> WorkflowStateKey.CONTROLE_QUALITE_EN_COURS == st.getKey())
-                                .findFirst().orElse(null);
-        return state != null && WorkflowStateStatus.FAILED == state.getStatus();
-    }
     
     /**
      * Permet de déterminer si un workflow est démarré et le doc en attente de relivraison
@@ -827,6 +822,31 @@ public class WorkflowService {
     
     public List<DocUnitWorkflow> findDocUnitWorkflowsForArchiveExport(final String library) {
         return docUnitWorkflowService.findDocUnitWorkflowsForArchiveExport(library);
+    }
+
+    public List<DocUnitWorkflow> findDocUnitWorkflowsForDigitalLibraryExport(final String library) {
+        return docUnitWorkflowService.findDocUnitWorkflowsForDigitalLibraryExport(library);
+    }
+
+    /**
+     * 
+     * !! ADMIN ONLY
+     * 
+     * @param state
+     */
+    @Transactional
+    public void forceReinitState(final String id, final DocUnitState state) {
+        
+        final DocUnit doc = docUnitService.findOneWithAllDependenciesForWorkflow(id);
+        
+        // revient à l'état précédent pour la state sélectionnée
+        state.setEndDate(null); // sinon pas d'init possible...
+        state.initializeState(state.getStartDate(), null, null);
+        docUnitWorkflowService.save(state);
+        
+        // et retour arriere pour les states suivantes qui peuvent etre en cours ou en attente
+        docUnitWorkflowService.resetNextStateByAdmin(doc, state.getKey());
+        docUnitService.save(doc);
     }
     
 }

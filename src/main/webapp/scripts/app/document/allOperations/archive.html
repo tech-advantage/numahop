@@ -25,6 +25,7 @@
 									 <span class="label label-primary">{{::exportCtrl.code[exportCtrl.firstCines.status] || exportCtrl.firstCines.status}}</span>
 									 {{::impDoc.docUnit.label}}  
 									 <span class="label text-right" ng-click="exportCtrl.downloadSIP(exportCtrl.firstCines.status);"><span class="glyphicon-regular download"> </span>{{' Télécharger le fichier sip.xml' | translate}}</span>
+									 <span class="label text-right" ng-click="exportCtrl.downloadMETS(exportCtrl.firstCines.status);"><span class="glyphicon-regular download"> </span>{{' Télécharger le fichier mets.xml' | translate}}</span>
 									 <table class="table table-hover table-import">
 									   <tbody>
 										   <tr ng-if="exportCtrl.firstCines.dateSent" class="sid-sec">

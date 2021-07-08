@@ -1,6 +1,6 @@
 package fr.progilone.pgcn.service.document;
 
-import java.awt.Dimension;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -645,14 +645,14 @@ public class ViewerService {
     /**
      * Retourne la structure de TOC d'un document si présente.
      *
-     * @param identifier
+     * @param doc
      * @return
      */
     private List<Structures> getStructureByDocument(final DigitalDocument doc) {
 
         final String identifier = doc.getIdentifier();
         final Optional<Mets> mets = getMetsFile(identifier);
-        List<Structures> structures = mets.isPresent() ? tocService.getTableOfContent(identifier, mets.get()) : null;
+        List<Structures> structures = mets.map(value -> tocService.getTableOfContent(identifier, value)).orElse(null);
         if (structures == null) {
             // pas de mets => on cherche un excel...
             final Optional<File> excel = getExcelFile(identifier, doc.getDocUnit().getLibrary().getIdentifier());
@@ -722,6 +722,8 @@ public class ViewerService {
                         }
                         // Text OCR
                         datas.put("textOcr", sf.getTextOcr());
+                         // Piece
+                         datas.put("piece", sf.getPage().getPiece());
                         // cle : simple increment => permet de rester synchro mm avec une sequence bizarre
                         metadataFiles.put(String.valueOf(metadataFiles.size()), datas);
                     });
@@ -785,6 +787,8 @@ public class ViewerService {
 
             // Text OCR
             datas.put("textOcr", sf.getTextOcr());
+                         // Piece
+                         datas.put("piece", sf.getPage().getPiece());
             // cle : simple increment => permet de rester synchro mm avec une sequence bizarre
             metadataFiles.put(String.valueOf(metadataFiles.size()), datas);
         });

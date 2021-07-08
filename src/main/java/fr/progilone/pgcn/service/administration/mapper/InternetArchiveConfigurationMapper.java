@@ -7,14 +7,14 @@ import org.mapstruct.factory.Mappers;
 
 import fr.progilone.pgcn.domain.administration.InternetArchiveConfiguration;
 import fr.progilone.pgcn.domain.dto.administration.InternetArchiveConfigurationDTO;
-import fr.progilone.pgcn.service.library.mapper.LibraryMapper;
+import fr.progilone.pgcn.service.library.mapper.SimpleLibraryMapper;
 
 /**
  *
  * @author jbrunet
  * Créé le 19 avr. 2017
  */
-@Mapper(uses = {LibraryMapper.class,
+@Mapper(uses = {SimpleLibraryMapper.class,
 InternetArchiveCollectionMapper.class})
 public interface InternetArchiveConfigurationMapper {
 

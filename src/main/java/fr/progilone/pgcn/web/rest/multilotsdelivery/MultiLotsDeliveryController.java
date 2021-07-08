@@ -1,13 +1,7 @@
 package fr.progilone.pgcn.web.rest.multilotsdelivery;
 
-import static fr.progilone.pgcn.domain.delivery.Delivery.DeliveryPayment.PAID;
-import static fr.progilone.pgcn.web.rest.delivery.security.AuthorizationConstants.DEL_HAB0;
-import static fr.progilone.pgcn.web.rest.delivery.security.AuthorizationConstants.DEL_HAB1;
-import static fr.progilone.pgcn.web.rest.delivery.security.AuthorizationConstants.DEL_HAB2;
-import static fr.progilone.pgcn.web.rest.delivery.security.AuthorizationConstants.DEL_HAB3;
-import static fr.progilone.pgcn.web.rest.delivery.security.AuthorizationConstants.DEL_HAB5;
-import static fr.progilone.pgcn.web.rest.delivery.security.AuthorizationConstants.DEL_HAB5_2;
-import static fr.progilone.pgcn.web.rest.delivery.security.AuthorizationConstants.DEL_HAB8;
+import static fr.progilone.pgcn.domain.delivery.Delivery.DeliveryPayment.*;
+import static fr.progilone.pgcn.web.rest.delivery.security.AuthorizationConstants.*;
 
 import java.time.LocalDate;
 import java.util.Comparator;
@@ -39,6 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.codahale.metrics.annotation.Timed;
 
 import fr.progilone.pgcn.domain.AbstractDomainObject;
+import fr.progilone.pgcn.domain.delivery.Delivery;
 import fr.progilone.pgcn.domain.dto.delivery.PreDeliveryDTO;
 import fr.progilone.pgcn.domain.dto.delivery.SimpleDeliveryLotDTO;
 import fr.progilone.pgcn.domain.dto.document.PreDeliveryDocumentDTO;
@@ -47,7 +42,6 @@ import fr.progilone.pgcn.domain.dto.document.SimpleDeliveredDigitalDocDTO;
 import fr.progilone.pgcn.domain.dto.lot.SimpleLotForDeliveryDTO;
 import fr.progilone.pgcn.domain.dto.multilotsdelivery.MultiLotsDeliveryDTO;
 import fr.progilone.pgcn.domain.multilotsdelivery.MultiLotsDelivery;
-import fr.progilone.pgcn.domain.multilotsdelivery.MultiLotsDelivery.DeliveryStatus;
 import fr.progilone.pgcn.exception.PgcnException;
 import fr.progilone.pgcn.exception.PgcnTechnicalException;
 import fr.progilone.pgcn.service.delivery.ui.UIDeliveryService;
@@ -155,7 +149,7 @@ public class MultiLotsDeliveryController extends AbstractRestController {
                                                           @RequestParam(value = "projects", required = false) final List<String> projects,
                                                           @RequestParam(value = "lots", required = false) final List<String> lots,
                                                           @RequestParam(value = "providers", required = false) final List<String> providers,
-                                                          @RequestParam(value = "status", required = false) final List<DeliveryStatus> status,
+                                                             @RequestParam(value = "status", required = false) final List<Delivery.DeliveryStatus> status,
                                                           @DateTimeFormat(pattern = "yyyy-MM-dd")
                                                           @RequestParam(value = "deliveryDateFrom", required = false) final LocalDate dateFrom,
                                                           @DateTimeFormat(pattern = "yyyy-MM-dd")

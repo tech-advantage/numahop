@@ -1,19 +1,5 @@
 package fr.progilone.pgcn.service.exchange.ead;
 
-import fr.progilone.pgcn.domain.jaxb.ead.C;
-import fr.progilone.pgcn.domain.jaxb.ead.Chronitem;
-import fr.progilone.pgcn.domain.jaxb.ead.Did;
-import fr.progilone.pgcn.domain.jaxb.ead.Eadheader;
-import fr.progilone.pgcn.domain.jaxb.ead.Eventgrp;
-import fr.progilone.pgcn.domain.jaxb.ead.Note;
-import fr.progilone.pgcn.domain.jaxb.ead.Publicationstmt;
-import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.collections4.ListUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.xml.bind.JAXBElement;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,6 +8,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import javax.xml.bind.JAXBElement;
+
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import fr.progilone.pgcn.domain.jaxb.ead.C;
+import fr.progilone.pgcn.domain.jaxb.ead.Chronitem;
+import fr.progilone.pgcn.domain.jaxb.ead.Did;
+import fr.progilone.pgcn.domain.jaxb.ead.Eadheader;
+import fr.progilone.pgcn.domain.jaxb.ead.Eventgrp;
+import fr.progilone.pgcn.domain.jaxb.ead.Note;
+import fr.progilone.pgcn.domain.jaxb.ead.Publicationstmt;
 
 /**
  * Created by Sébastien on 16/05/2017.
@@ -93,7 +95,7 @@ public class EadCParser {
         C newC = null;
 
         do {
-            C copy = copy(current);
+            final C copy = copy(current);
             if (newC != null) {
                 copy.getTheadAndC().add(newC);
             }
@@ -263,7 +265,7 @@ public class EadCParser {
             if (!values.isEmpty()) {
                 return getListValues(values, field, subField);
             }
-        } catch (ReflectiveOperationException | IllegalArgumentException e) {
+        } catch (final ReflectiveOperationException | IllegalArgumentException e) {
             LOG.error(e.getMessage(), e);
         }
         return Collections.emptyList();
@@ -291,7 +293,7 @@ public class EadCParser {
         // Chronitem
         else if (o instanceof Chronitem) {
             final Chronitem chronitem = (Chronitem) o;
-            List<Object> l = new ArrayList<>();
+            final List<Object> l = new ArrayList<>();
             l.add(chronitem.getDate());
             l.add(chronitem.getEvent());
             l.add(chronitem.getEventgrp());

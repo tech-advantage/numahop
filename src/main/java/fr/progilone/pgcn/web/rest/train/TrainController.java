@@ -1,17 +1,24 @@
 package fr.progilone.pgcn.web.rest.train;
 
-import com.codahale.metrics.annotation.Timed;
-import fr.progilone.pgcn.domain.AbstractDomainObject;
-import fr.progilone.pgcn.domain.dto.train.SimpleTrainDTO;
-import fr.progilone.pgcn.domain.dto.train.TrainDTO;
-import fr.progilone.pgcn.exception.PgcnException;
-import fr.progilone.pgcn.exception.PgcnTechnicalException;
-import fr.progilone.pgcn.service.es.EsTrainService;
-import fr.progilone.pgcn.service.train.TrainService;
-import fr.progilone.pgcn.service.train.ui.UITrainService;
-import fr.progilone.pgcn.web.rest.AbstractRestController;
-import fr.progilone.pgcn.web.util.AccessHelper;
-import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
+import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.COND_REPORT_HAB0;
+import static fr.progilone.pgcn.web.rest.lot.security.AuthorizationConstants.LOT_HAB3;
+import static fr.progilone.pgcn.web.rest.train.security.AuthorizationConstants.TRA_HAB0;
+import static fr.progilone.pgcn.web.rest.train.security.AuthorizationConstants.TRA_HAB1;
+import static fr.progilone.pgcn.web.rest.train.security.AuthorizationConstants.TRA_HAB2;
+import static fr.progilone.pgcn.web.rest.train.security.AuthorizationConstants.TRA_HAB3;
+
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.annotation.security.RolesAllowed;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,20 +35,19 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import com.codahale.metrics.annotation.Timed;
 
-import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.*;
-import static fr.progilone.pgcn.web.rest.lot.security.AuthorizationConstants.*;
-import static fr.progilone.pgcn.web.rest.train.security.AuthorizationConstants.*;
+import fr.progilone.pgcn.domain.AbstractDomainObject;
+import fr.progilone.pgcn.domain.dto.train.SimpleTrainDTO;
+import fr.progilone.pgcn.domain.dto.train.TrainDTO;
+import fr.progilone.pgcn.exception.PgcnException;
+import fr.progilone.pgcn.exception.PgcnTechnicalException;
+import fr.progilone.pgcn.service.es.EsTrainService;
+import fr.progilone.pgcn.service.train.TrainService;
+import fr.progilone.pgcn.service.train.ui.UITrainService;
+import fr.progilone.pgcn.web.rest.AbstractRestController;
+import fr.progilone.pgcn.web.util.AccessHelper;
+import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
 
 @RestController
 @RequestMapping(value = "/api/rest/train")
@@ -113,10 +119,10 @@ public class TrainController extends AbstractRestController {
         return createResponseEntity(train);
     }
 
-    @RequestMapping(method = RequestMethod.GET, params = {"filterByProjects", "projectIds"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.GET, params = {"filterByProjects"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed({LOT_HAB3})
-    public ResponseEntity<List<SimpleTrainDTO>> findAllIdentifiersForProjects(@RequestParam(value = "projectIds") final List<String> projectIds) {
+    public ResponseEntity<List<SimpleTrainDTO>> findAllIdentifiersForProjects(final HttpServletRequest request, @RequestParam(value = "projectsIds", required = false) final List<String> projectIds) {
         final List<SimpleTrainDTO> trainIds = trainService.findAllByProjectIds(projectIds);
         return createResponseEntity(trainIds);
     }
@@ -162,11 +168,21 @@ public class TrainController extends AbstractRestController {
     @RequestMapping(method = RequestMethod.GET, params = {"dto"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed({TRA_HAB3})
-    public ResponseEntity<Collection<TrainDTO>> findAllDTO() {
+    public ResponseEntity<Collection<TrainDTO>> findAllActiveDTO() {
         final Collection<TrainDTO> trains = uiTrainService.findAllActiveDTO();
         final List<TrainDTO> filteredTrains = filterTrainDTOs(trains, TrainDTO::getIdentifier);
         return createResponseEntity(filteredTrains);
     }
+    
+    @RequestMapping(method = RequestMethod.GET, params = {"dto", "complete"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    @RolesAllowed({TRA_HAB3})
+    public ResponseEntity<Collection<TrainDTO>> findAllDTO() {
+        final Collection<TrainDTO> trains = uiTrainService.findAllDTO();
+        final List<TrainDTO> filteredTrains = filterTrainDTOs(trains, TrainDTO::getIdentifier);
+        return createResponseEntity(filteredTrains);
+    }
+
 
     @RequestMapping(method = RequestMethod.GET, params = {"project"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
@@ -210,7 +226,7 @@ public class TrainController extends AbstractRestController {
         try {
             writeResponseHeaderForDownload(response, "text/csv; charset=" + encoding, null, "bordereau.csv");
             trainService.writeCondReportSlip(response.getOutputStream(), id, encoding, separator);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             LOG.error(e.getMessage(), e);
             throw new PgcnTechnicalException(e);
         }
@@ -227,7 +243,7 @@ public class TrainController extends AbstractRestController {
         try {
             writeResponseHeaderForDownload(response, "application/pdf", null, "bordereau.pdf");
             trainService.writeCondReportSlipPDF(response.getOutputStream(), id);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             LOG.error(e.getMessage(), e);
             throw new PgcnTechnicalException(e);
         }

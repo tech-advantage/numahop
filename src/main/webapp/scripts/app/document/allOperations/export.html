@@ -156,7 +156,7 @@
                                  <span class="label label-primary">{{::exportCtrl.omekaDistribStatus | translate}}</span>
                                  <table class="table table-hover table-import">
                                    <tbody>
-                                       <tr ng-if="exportCtrl.firstIA.dateSent" class="sid-sec">
+                                       <tr ng-if="exportCtrl.docUnit.omekaExportDate" class="sid-sec">
                                            <td>{{'Date d\'envoi' | translate}}
                                            </td>
                                            <td>{{::exportCtrl.docUnit.omekaExportDate | date:'short'}}
@@ -167,13 +167,56 @@
                              </td>
                          </tr>
                          </tbody>
-                     </table>
+                            </table>
                         </div>
                     </div>
-               </div>
+                </div>
             </div>
         </uib-accordion>
         <!-- Fin Export Omeka -->
-        
+
+        <!-- Début Export bib numérique -->
+        <uib-accordion>
+            <div class="formBlock margin-t0">
+                <div class="formBlockTitle">
+                    <span translate>Export bibliothèque numérique</span>
+                </div>
+                <!-- Infos cachées lorsque l'accordion est replié -->
+                <!-- Unités documentaires importées -->
+                <div class="formBlockContent margin-t0">
+                    <div class="row" ng-if="!exportCtrl.docUnit.digLibExportStatus">
+                        <div class="col-xs-12 text-right">
+                            <small translate>Aucun export bibliothèque numérique</small>
+                        </div>
+                    </div>
+                    <!-- Premier report -->
+                    <div class="row" ng-if="exportCtrl.docUnit.digLibExportStatus">
+                        <div class="col-xs-12">
+
+                            <table class="table table-hover table-import">
+                                <tbody>
+                                <tr ng-init="status = (exportCtrl.docUnit.digLibExportStatus === 'SENT');" class="root" ng-class="{ true: 'sid-fourth', false: 'sid-third' }[status]">
+                                    <td>
+                                        <span class="label label-primary">{{::exportCtrl.digLibDistribStatus | translate}}</span>
+                                        <table class="table table-hover table-import">
+                                            <tbody>
+                                            <tr ng-if="exportCtrl.docUnit.digLibExportDate" class="sid-sec">
+                                                <td>{{'Date d\'envoi' | translate}}
+                                                </td>
+                                                <td>{{::exportCtrl.docUnit.digLibExportDate | date:'short'}}
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </uib-accordion>
+        <!-- Fin Export bib numérique -->
     </div>
 </div>

@@ -12,7 +12,7 @@ public class AbstractLibraryParameterValueDTO extends AbstractDTO {
         return identifier;
     }
 
-    public final void setIdentifier(String identifier) {
+    public void setIdentifier(String identifier) {
         this.identifier = identifier;
     }
 }

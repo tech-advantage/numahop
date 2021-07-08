@@ -146,7 +146,9 @@
             DESCRIPTION: false,
             NUMBERING: false,
             BINDING: false,
-            VIGILANCE: false
+            VIGILANCE: false,
+            TYPE: false,
+            STATE: false
         };
 
         mainCtrl.pagination = {
@@ -256,6 +258,12 @@
                            break;
                        case 'VIGILANCE':
                            mainCtrl.accordions.VIGILANCE = true;
+                           break;
+                       case 'TYPE':
+                           mainCtrl.accordions.TYPE = true;
+                           break;
+                       case 'STATE':
+                           mainCtrl.accordions.STATE = true;
                            break;
                        default: 
                            break;

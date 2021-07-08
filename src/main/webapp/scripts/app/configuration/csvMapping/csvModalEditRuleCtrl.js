@@ -40,7 +40,11 @@
             }
             
             function populateRule(ppty) {
-                mainCtrl.rule.csvField = ppty.identifier;
+                if(ppty.superType == "CUSTOM"){
+                    mainCtrl.rule.csvField = ppty.label;
+                } else {
+                    mainCtrl.rule.csvField = ppty.identifier;
+                }
             }
 
             /** Validation de la fenêtre modale */

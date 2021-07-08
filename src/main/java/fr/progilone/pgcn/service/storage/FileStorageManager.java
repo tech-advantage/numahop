@@ -125,6 +125,40 @@ public class FileStorageManager {
     
     /**
      * Store a file, no questions asked.
+     * idem ci-dessus, mais sans chercher la library (réservé à ADMIN!).
+     * 
+     * @param input
+     * @param directory
+     * @param filename
+     * @param createDir
+     * @return
+     */
+    public File copyInputStreamToFileAdmin(final InputStream input, final File directory, final String filename, 
+                                      final boolean createDir) { 
+        if (input != null && directory != null && filename != null) {
+            final Path path = Paths.get(directory.getPath());
+            if (createDir) {
+                try {  
+                    FileUtils.forceMkdir(path.toFile());
+        
+                } catch (final IOException e) {
+                    LOG.error(e.getMessage(), e);
+                }
+            }
+            try {
+                final File destination = new File(path.toFile(), filename);
+                FileUtils.copyInputStreamToFile(input, destination);
+                return destination;
+        
+            } catch (final IOException e) {
+                LOG.error(e.getMessage(), e);
+            }
+        }
+        return null;
+}
+    
+    /**
+     * Store a file, no questions asked.
      * idem ci-dessus, mais avec possiblilité d'intercaler des dossiers supplémentaires.
      *
      * @param input
@@ -201,7 +235,7 @@ public class FileStorageManager {
 
     /**
      * Upload d'un fichier
-     * storageDir/obj.getIdentifier()/name
+     * storageDir/library/obj.getIdentifier()/name
      *
      * @param source
      * @param storageDir
@@ -209,10 +243,10 @@ public class FileStorageManager {
      * @return
      */
     public File copyInputStreamToFile(final InputStream source, final String storageDir, final AbstractDomainObject obj, final String name) {
-        final Path path = Paths.get(storageDir);
+        final Path path = Paths.get(storageDir, getUserLibraryId());
         final File destinationDir = new File(path.toFile(), obj.getIdentifier());
         final String destination = Base64.getEncoder().encodeToString(name.getBytes(StandardCharsets.UTF_8));
-        return copyInputStreamToFile(source, destinationDir, destination, true, true);
+        return copyInputStreamToFile(source, destinationDir, destination, true, false);
     }
 
     public File retrieveFile(final File file) {

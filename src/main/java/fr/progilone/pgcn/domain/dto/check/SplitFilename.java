@@ -3,7 +3,9 @@ package fr.progilone.pgcn.domain.dto.check;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -18,16 +20,25 @@ import fr.progilone.pgcn.exception.PgcnTechnicalException;
  */
 public class SplitFilename {
 
-    private String library;
-    private String prefix;
+    private final String library;
+    private final String prefix;
     private Integer number;
-    private String extension;
+    private final String extension;
+    private final String piece;
+    private final String directory;
 
-    public SplitFilename(final String library, final String prefix, final Integer number, final String extension) {
+    public SplitFilename(final String library,
+                         final String prefix,
+                         final Integer number,
+                         final String extension,
+                         final String piece,
+                         final String directory) {
         this.library = library;
         this.prefix = prefix;
         this.number = number;
         this.extension = extension;
+        this.piece = piece;
+        this.directory = directory;
     }
 
     public String getLibrary() {
@@ -48,6 +59,14 @@ public class SplitFilename {
 
     public void setNumber(final Integer number) {
         this.number = number;
+    }
+
+    public String getPiece() {
+        return piece;
+    }
+
+    public String getDirectory() {
+        return directory;
     }
 
     /**
@@ -73,7 +92,9 @@ public class SplitFilename {
                                       final Map<String, Optional<SplitFilename>> splitNames,
                                       final boolean bibPrefixMandatory,
                                       final String seqSeparator,
-                                      final boolean isPdfDelivery) throws PgcnTechnicalException {
+                                      final boolean isPdfDelivery,
+                                      final boolean isJustOneEstampe,
+                                      final String prefixDirectory) throws PgcnTechnicalException {
         // check cache
         if (filename == null) {
             throw new PgcnTechnicalException("[Livraison] Nom de fichier nul");
@@ -112,15 +133,22 @@ public class SplitFilename {
             splitNames.put(filename, Optional.empty());
             throw new PgcnTechnicalException("[Livraison] Mauvais format de nom de fichier : " + filename);
         }
+        String library = StringUtils.EMPTY;
+        int iPrefix = 0;
+        if (bibPrefixMandatory) {
+            library = splitName[0];
+            iPrefix = 1;
+        }
 
         int number = -1;
         final String prefix;
-        if (isPdfDelivery) {
+        final int piece;
+        if (isPdfDelivery || isJustOneEstampe) {
             // pas de sequence sur 1 pdf à priori.
-            prefix = String.join(seqSeparator, Arrays.copyOfRange(splitName, 1, splitName.length));
+            prefix = String.join(seqSeparator, Arrays.copyOfRange(splitName, iPrefix, splitName.length));
             number = 0;
         } else {
-            prefix = String.join(seqSeparator, Arrays.copyOfRange(splitName, 1, splitName.length - 1));
+            prefix = String.join(seqSeparator, Arrays.copyOfRange(splitName, iPrefix, splitName.length - 1));
             // check file sequence number
             number = -1;
             for (int position = splitName.length - 1; position > 0; position--) {
@@ -135,8 +163,25 @@ public class SplitFilename {
             }
         }
 
-        final SplitFilename splitFilename = new SplitFilename(splitName[0], prefix, number, nameAndExtension[nameAndExtension.length - 1]);
+        final SplitFilename splitFilename = new SplitFilename(library,
+                                                              prefix,
+                                                              number,
+                                                              nameAndExtension[nameAndExtension.length - 1],
+                                                              prefix,
+                                                              prefixDirectory);
         splitNames.put(filename, Optional.of(splitFilename));
         return splitFilename;
+    }
+
+    public static Set<String> getPiecesFromSplitNames(final Map<String, Optional<SplitFilename>> splitNames) {
+        return splitNames.values().stream().map(splitFilename -> splitFilename.map(SplitFilename::getPiece).orElse(null)).collect(Collectors.toSet());
+    }
+
+    public static Set<String> getPiecesFromDirectory(final Map<String, Optional<SplitFilename>> splitNames, final String directory) {
+        return splitNames.values()
+                         .stream()
+                         .filter(splitFilename -> splitFilename.map(filename -> filename.getDirectory().equals(directory)).orElse(false))
+                         .map(splitFilename2 -> splitFilename2.map(SplitFilename::getPiece).orElse(null))
+                         .collect(Collectors.toSet());
     }
 }

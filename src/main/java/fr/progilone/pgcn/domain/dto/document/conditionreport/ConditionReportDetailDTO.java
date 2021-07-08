@@ -1,9 +1,9 @@
 package fr.progilone.pgcn.domain.dto.document.conditionreport;
 
-import com.google.common.base.MoreObjects;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.google.common.base.MoreObjects;
 
 public class ConditionReportDetailDTO {
 
@@ -32,6 +32,8 @@ public class ConditionReportDetailDTO {
     private final List<ConditionReportValueDTO> body = new ArrayList<>();
     private final List<ConditionReportValueDTO> numberings = new ArrayList<>();
     private final List<ConditionReportValueDTO> vigilances = new ArrayList<>();
+    private final List<ConditionReportValueDTO> states = new ArrayList<>();
+    private final List<ConditionReportValueDTO> types = new ArrayList<>();
 
     public String getIdentifier() {
         return identifier;
@@ -220,6 +222,24 @@ public class ConditionReportDetailDTO {
     public void setNumberings(final List<ConditionReportValueDTO> numberings) {
         this.numberings.clear();
         this.numberings.addAll(numberings);
+    }
+
+    public List<ConditionReportValueDTO> getStates() {
+        return states;
+    }
+
+    public void setStates(final List<ConditionReportValueDTO> states) {
+        this.states.clear();
+        this.states.addAll(states);
+    }
+
+    public List<ConditionReportValueDTO> getTypes() {
+        return types;
+    }
+
+    public void setTypes(final List<ConditionReportValueDTO> types) {
+        this.types.clear();
+        this.types.addAll(types);
     }
 
     public String getInsurance() {

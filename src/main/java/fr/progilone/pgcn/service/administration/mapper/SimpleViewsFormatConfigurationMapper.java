@@ -7,9 +7,8 @@ import org.mapstruct.factory.Mappers;
 
 import fr.progilone.pgcn.domain.administration.viewsformat.ViewsFormatConfiguration;
 import fr.progilone.pgcn.domain.dto.administration.viewsFormat.SimpleViewsFormatConfigurationDTO;
-import fr.progilone.pgcn.service.library.mapper.LibraryMapper;
 
-@Mapper(uses = {LibraryMapper.class})
+@Mapper
 public interface SimpleViewsFormatConfigurationMapper {
     
     SimpleViewsFormatConfigurationMapper INSTANCE = Mappers.getMapper(SimpleViewsFormatConfigurationMapper.class);

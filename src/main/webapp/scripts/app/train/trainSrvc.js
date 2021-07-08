@@ -13,11 +13,19 @@
                             dto: true
                         }
                     },
-                    findByProjectIds: {
+                    dtoComplete: {
                         method: 'GET',
                         isArray: false,
                         params: {
-                            'filterByProjects': ""
+                            dto: true,
+                            complete: true
+                        }
+                    },
+                    findByProjectIds: {
+                        method: 'GET',
+                        isArray: true,
+                        params: {
+                            'filterByProjects': true
                         }
                     },
                     deleteSelection: {

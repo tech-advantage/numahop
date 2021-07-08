@@ -23,7 +23,6 @@
             { code: "rights", label: gettextCatalog.getString("Droits"), rank: 5 },
             { code: "planClassementPAC", label: gettextCatalog.getString("Pac"), rank: 6 },
             { code: "digitalId", label: gettextCatalog.getString("Radical"), rank: 7 },
-            { code: "publisher", label: gettextCatalog.getString("Publisher"), rank: 8 },
             { code: "format", label: gettextCatalog.getString("Format"), rank: 9 }];
         
         service.bibRecordFields = [

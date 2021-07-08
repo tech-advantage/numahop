@@ -109,10 +109,10 @@ public class ImageMagickService {
         LOG.info("[Livraison] Extraction des images depuis le fichier pdf {}", sourceFile.getName());
         List<File> files = new ArrayList<>();
         try {
-            final ProcessBuilder builder = new ProcessBuilder(IMConverterPath,                   
-                                         "+adjoin",
+            final ProcessBuilder builder = new ProcessBuilder(IMConverterPath,
+                                                              "+adjoin",
                                          "-density",
-                                         "300",
+                                                              "300",
                                          "-quality",
                                          "100",
                                          sourceFile.getAbsolutePath(), //NOSONAR
@@ -168,7 +168,7 @@ public class ImageMagickService {
         final List<File> files = new ArrayList<>();
         final Path dir = Paths.get(destFile).getParent();
         if (dir != null) {
-            try (DirectoryStream<Path> dirStream = Files.newDirectoryStream(dir, "*.jpg")) {
+            try (final DirectoryStream<Path> dirStream = Files.newDirectoryStream(dir, "*.jpg")) {
                 dirStream.forEach(file -> {
                     files.add(file.toFile());
                 });
@@ -230,7 +230,7 @@ public class ImageMagickService {
 
         if (sourceFile != null && destTmpFile != null && format != null) {
 
-            String dims;
+            final String dims;
             final int width =  masterDims[0].intValue();
             final int height =  masterDims[1].intValue();
             final boolean isXtraZoom = ViewsFormatConfiguration.FileFormat.XTRAZOOM.equals(format);
@@ -337,7 +337,7 @@ public class ImageMagickService {
             return Optional.empty();
         }
         
-        Map<String, String> metas;
+        final Map<String, String> metas;
         final String formatArgs = quoteDelim + "%b # %e # %h # %w # %x # %y # %z # %C # %[colorspace]\n" + quoteDelim; 
         final ProcessBuilder builder =
                                      new ProcessBuilder(IMIdentifyPath,
@@ -425,7 +425,7 @@ public class ImageMagickService {
 
             try (final InputStream is = process.getInputStream();
                  final InputStreamReader isr = new InputStreamReader(is);
-                 final BufferedReader br = new BufferedReader(isr);) {
+                 final BufferedReader br = new BufferedReader(isr)) {
 
                 String line;
                 final StringBuilder sb = new StringBuilder();
@@ -455,7 +455,7 @@ public class ImageMagickService {
         THUMBNAIL("-thumbnail"),
         RESIZE("-resize");
 
-        private String value;
+        private final String value;
 
         private IMOperations(final String value) {
             this.value = value;

@@ -3,7 +3,6 @@ package fr.progilone.pgcn.service.document.ui;
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
@@ -26,6 +25,7 @@ import fr.progilone.pgcn.domain.document.DigitalDocument.DigitalDocumentStatus;
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.document.conditionreport.ConditionReportDetail;
 import fr.progilone.pgcn.domain.dto.document.DigitalDocumentDTO;
+import fr.progilone.pgcn.domain.dto.document.LightDeliveredDigitalDocDTO;
 import fr.progilone.pgcn.domain.dto.document.SimpleDigitalDocumentDTO;
 import fr.progilone.pgcn.domain.dto.document.SimpleDocPageDTO;
 import fr.progilone.pgcn.domain.dto.document.SimpleListDigitalDocumentDTO;
@@ -214,9 +214,13 @@ public class UIDigitalDocumentService {
         final Page<SimpleListDigitalDocumentDTO> docDtos = docs.map(DigitalDocumentMapper.INSTANCE::digitalDocumentToSimpleListDigitalDocumentDTO);
         docDtos.forEach(doc-> {
             final Optional<ConditionReportDetail> det = reportDetailService.getLastDetailByDocUnitId(doc.getDocUnit().getIdentifier());
-            if (det.isPresent()) {
-                doc.setReportDetail(getLightReportDetail(det.get()));
-            }
+            det.ifPresent(conditionReportDetail -> doc.setReportDetail(getLightReportDetail(conditionReportDetail)));
+            final List<LightDeliveredDigitalDocDTO> deliveredDigitalDocDTOS = doc.getDeliveries()
+                                                                                 .stream()
+                                                                                 .sorted(Comparator.comparing(LightDeliveredDigitalDocDTO::getDeliveryDate)
+                                                                                                   .reversed())
+                                                                                 .collect(Collectors.toList());
+            doc.setDeliveries(deliveredDigitalDocDTOS);
         });
         return docDtos;
     }
@@ -315,9 +319,8 @@ public class UIDigitalDocumentService {
         
         // on met à jour le doc livré le plus récent
         final Optional<DeliveredDocument> lastDeliveredDoc = digitalDocument.getDeliveries()
-                       .stream()
-                       .sorted(Collections.reverseOrder(Comparator.nullsLast(Comparator.comparing(DeliveredDocument::getCreatedDate))))
-                       .findFirst();
+                                                                            .stream()
+                                                                            .max(Comparator.nullsLast(Comparator.comparing(DeliveredDocument::getCreatedDate)));
 
 
         lastDeliveredDoc.ifPresent(doc -> {

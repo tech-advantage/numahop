@@ -37,7 +37,7 @@ public class MultiLotsDelivery extends AbstractDomainObject {
     @Column(name = "delivery_status")
     //@Field(type = FieldType.String, analyzer = ANALYZER_KEYWORD)
     //@Audited
-    private DeliveryStatus status;
+    private Delivery.DeliveryStatus status;
 
     @Column(name = "delivery_method")
     //@Field(type = FieldType.String, analyzer = ANALYZER_KEYWORD)
@@ -92,11 +92,11 @@ public class MultiLotsDelivery extends AbstractDomainObject {
         this.payment = payment;
     }
 
-    public DeliveryStatus getStatus() {
+    public Delivery.DeliveryStatus getStatus() {
         return status;
     }
 
-    public void setStatus(final DeliveryStatus status) {
+    public void setStatus(final Delivery.DeliveryStatus status) {
         this.status = status;
     }
 
@@ -167,20 +167,6 @@ public class MultiLotsDelivery extends AbstractDomainObject {
     public enum DeliveryPayment {
         PAID,
         UNPAID
-    }
-
-    public enum DeliveryStatus {
-        SAVED,
-        DELIVERING,
-        DELIVERED,
-        TO_BE_CONTROLLED,
-        VALIDATED,
-        REJECTED,
-        BACK_TO_PROVIDER,
-        AUTOMATICALLY_REJECTED,
-        DELIVERED_AGAIN,
-        DELIVERING_ERROR,
-        TREATED
     }
 
     public enum DeliveryMethod {

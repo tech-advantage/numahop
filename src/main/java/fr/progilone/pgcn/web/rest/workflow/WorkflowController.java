@@ -27,6 +27,7 @@ import fr.progilone.pgcn.domain.dto.workflow.StateIsDoneDTO;
 import fr.progilone.pgcn.domain.workflow.WorkflowStateKey;
 import fr.progilone.pgcn.service.workflow.ui.UIWorkflowService;
 import fr.progilone.pgcn.web.rest.AbstractRestController;
+import fr.progilone.pgcn.web.rest.administration.security.AuthorizationConstants;
 import fr.progilone.pgcn.web.util.AccessHelper;
 
 @RestController
@@ -187,6 +188,42 @@ public class WorkflowController extends AbstractRestController {
             }
         }    
         uiService.massValidateCondReports(docUnitIds);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+    
+    /**
+     * Termine tous les docWorkflows des docUnits en parametre. 
+     * Les etapes en cours ou en attente sont annulées et chaque wkf est terminé.
+     * 
+     * @param docUnitIds
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.POST, params = {"endAllDocWorkflows"})
+    @ResponseStatus(HttpStatus.OK)
+    @RolesAllowed(AuthorizationConstants.SUPER_ADMIN)
+    @Timed
+    public ResponseEntity<?> endAllDocWorkflows(@RequestBody final List<String> docUnitIds) {
+        uiService.endAllDocWorkflows(docUnitIds);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+    
+    @RequestMapping(method = RequestMethod.POST, params = {"validDocWorkflowState"})
+    @ResponseStatus(HttpStatus.OK)
+    @RolesAllowed(AuthorizationConstants.SUPER_ADMIN)
+    public ResponseEntity<?> validDocWorkflowState(@RequestBody final List<String> docUnitIds) {
+        
+        final String stateId = docUnitIds.remove(docUnitIds.size()-1);
+        uiService.validDocWorkflowState(stateId, docUnitIds);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+    
+    @RequestMapping(method = RequestMethod.POST, params = {"reinitDocWorkflowState"})
+    @ResponseStatus(HttpStatus.OK)
+    @RolesAllowed(AuthorizationConstants.SUPER_ADMIN)
+    public ResponseEntity<?> reinitDocWorkflowState(@RequestBody final List<String> docUnitIds) {
+        
+        final String stateId = docUnitIds.remove(docUnitIds.size()-1);
+        uiService.reinitDocWorkflowState(stateId, docUnitIds);
         return new ResponseEntity<>(HttpStatus.OK);
     }
     

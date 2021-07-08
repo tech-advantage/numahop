@@ -168,21 +168,24 @@
                     property = {
                         "_name": "propertyFormCUSTOM" + $scope.indices[type]++,
                         "type": undefined,
-                        "record": { identifier: entity.identifier }
+                        "record": { identifier: entity.identifier },
+                        "rank": getCustomMaxRank(entity, "CUSTOM") + $scope.indices[type]++
                     };
                     break;
                 case "custom_cines":
                     property = {
                         "_name": "propertyFormCUSTOMCines" + $scope.indices[type]++,
                         "type": undefined,
-                        "record": { identifier: entity.identifier }
+                        "record": { identifier: entity.identifier },
+                        "rank": getCustomMaxRank(entity, "CUSTOM_CINES") + $scope.indices[type]++
                     };
                     break;
                 case "custom_archive":
                     property = {
                         "_name": "propertyFormCUSTOMArchive" + $scope.indices[type]++,
                         "type": undefined,
-                        "record": { identifier: entity.identifier }
+                        "record": { identifier: entity.identifier },
+                        "rank": getCustomMaxRank(entity, "CUSTOM_ARCHIVE") + $scope.indices[type]++
                     };
                     break;    
                     
@@ -208,6 +211,38 @@
                 return gettext(property.type.label);
             }
         }
+        
+        /**
+         * Pour conserver l'ordre de saisie des champs de type custom.
+         * 
+         * @param entity
+         * @param type
+         * @returns
+         */
+        function getCustomMaxRank(entity, type) {
+            var maxRank = 0;
+            var filtered = _.filter(entity.properties, function(elt) {return elt.type && elt.type.superType === type});
+            if (filtered && filtered.length > 0) {
+               var obj = _.max(filtered, function(elt) {return elt.rank});
+               maxRank = obj.rank;
+            } else {
+                switch (type) {
+                    case "CUSTOM":
+                        maxRank = 1000;
+                        break;
+                    case "CUSTOM_CINES":
+                        maxRank = 2000;
+                        break;
+                    case "CUSTOM_ARCHIVE":
+                        maxRank = 3000;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            return maxRank;
+        }
+        
         function selectDocUnit() {
             var params = { multiple: false };
             if ($scope.entity.docUnit) {
@@ -329,8 +364,8 @@
             initForm($scope.entity.record.dc, "propertyFormDC", "dc");
             initForm($scope.entity.record.dcq, "propertyFormDCQ", "dcq");
             initForm($scope.entity.record.custom, "propertyFormCUSTOM", "custom");
-            initForm($scope.entity.record.custom_cines, "propertyFormCUSTOMCines", "customCines");
-            initForm($scope.entity.record.custom_archive, "propertyFormCUSTOMArchive", "customArchive");
+            initForm($scope.entity.record.custom_cines, "propertyFormCUSTOMCines", "custom_cines");
+            initForm($scope.entity.record.custom_archive, "propertyFormCUSTOMArchive", "custom_archive");
         }
         function initForm(elements, formPrefix, indexName) {
             _.each(elements, function (element, idx) {

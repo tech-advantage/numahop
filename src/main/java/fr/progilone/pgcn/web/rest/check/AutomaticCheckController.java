@@ -1,6 +1,6 @@
 package fr.progilone.pgcn.web.rest.check;
 
-import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.DOC_UNIT_HAB4;
+import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.*;
 
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
@@ -53,7 +53,7 @@ public class AutomaticCheckController {
     @RequestMapping(method = RequestMethod.GET, params = {"facile"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @RolesAllowed({DOC_UNIT_HAB4})
     public ResponseEntity<?> checkFacile(final HttpServletRequest request, @RequestParam(value = "docUnit") final String docUnitId) {
-        final DocUnit docUnit = docUnitService.findOneWithAllDependencies(docUnitId);
+        final DocUnit docUnit = docUnitService.findOneWithAllDependencies(docUnitId, true);
         // Non trouvé
         if (docUnit == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

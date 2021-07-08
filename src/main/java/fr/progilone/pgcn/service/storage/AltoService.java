@@ -3,8 +3,11 @@ package fr.progilone.pgcn.service.storage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.xml.transform.OutputKeys;
@@ -30,8 +33,14 @@ public class AltoService {
 
     private static final Logger LOG = LoggerFactory.getLogger(AltoService.class);
 
+    public static final String ALTO_XML_FILE = "alto.xml";
+    public static final String OCR_TXT_FILE = "ocr.txt";
+
     @Value("classpath:config/xsl/hocr2alto2.1.xsl")
-    private Resource xslPath;
+    private Resource xslAltoPath;
+
+    @Value("classpath:config/xsl/hocr2text.1.xsl")
+    private Resource xslTextPath;
 
     @Value("${instance.libraries}")
     private String[] instanceLibraries;
@@ -39,7 +48,13 @@ public class AltoService {
     @Value("${services.archive.alto}")
     private String outputPath;
 
-    public AltoService() {
+    @Value("${services.archive.text}")
+    private String outputTextPath;
+
+    private final FileStorageManager fm;
+
+    public AltoService(final FileStorageManager fm) {
+        this.fm = fm;
     }
 
     @PostConstruct
@@ -67,7 +82,7 @@ public class AltoService {
         // Utilisation de Saxon car xslt2.0
         final TransformerFactory fact = TransformerFactoryImpl.newInstance();
 
-        try (InputStream xslInput = xslPath.getInputStream()) {
+        try (final InputStream xslInput = xslAltoPath.getInputStream()) {
 
             final Transformer transformer = fact.newTransformer(new StreamSource(xslInput));
 
@@ -86,7 +101,7 @@ public class AltoService {
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
             transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
             
-            final File xmlAlto = new File(Paths.get(outputPath, libraryId, prefix).toFile(), "alto.xml");
+            final File xmlAlto = new File(Paths.get(outputPath, libraryId, prefix).toFile(), ALTO_XML_FILE);
             if (hocr != null && hocr.isFile()) {
                 final Source hocrInput = new StreamSource(hocr);
                 final StreamResult altoOutput = new StreamResult(xmlAlto);
@@ -100,4 +115,77 @@ public class AltoService {
 
     }
 
+    /**
+     * Creation du fichier text par transformation depuis un hocr.
+     *
+     * @param hocr
+     * @param prefix
+     * @param libraryId
+     */
+    public void transformHocrToText(final File hocr, final String prefix, final String libraryId) {
+
+        // Utilisation de Saxon car xslt2.0
+        final TransformerFactory fact = TransformerFactoryImpl.newInstance();
+
+        try (final InputStream xslInput = xslTextPath.getInputStream()) {
+
+            final Transformer transformer = fact.newTransformer(new StreamSource(xslInput));
+
+            transformer.setURIResolver(new URIResolver() {
+                @Override
+                public Source resolve(final String href, final String base) throws TransformerException {
+                    try {
+                        return new StreamSource(this.getClass().getResource("/config/xsl/" + href).openStream());
+                    } catch (final Exception e) {
+                        LOG.error("Erreur avant la construction du fichier text", e);
+                        return null;
+                    }
+                }
+            });
+
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+
+            final File text = new File(Paths.get(outputTextPath, libraryId, prefix).toFile(), OCR_TXT_FILE);
+            if (hocr != null && hocr.isFile()) {
+                final Source hocrInput = new StreamSource(hocr);
+                final StreamResult altoOutput = new StreamResult(text);
+                transformer.transform(hocrInput, altoOutput);
+            }
+
+        } catch (final IOException | TransformerException e) {
+            LOG.error("Erreur lors de la construction du fichier text", e);
+            return;
+        }
+
+    }
+
+    /**
+     * Récupération du fichier alto.xml et text stocké
+     * pour un docUnit donné
+     *
+     * @param docUnit
+     * @return
+     */
+    public List<File> retrieveAlto(final String docUnit, final String libraryId, final boolean alto, final boolean text) {
+        final List<File> altoAndTxt = new ArrayList<>();
+        if (docUnit != null) {
+            if (alto) {
+                final Path rootAlto = Paths.get(outputPath, libraryId, docUnit);
+                final File altoFile = fm.retrieveFile(rootAlto.toFile(), ALTO_XML_FILE);
+                if (altoFile != null) {
+                    altoAndTxt.add(altoFile);
+                }
+            }
+            if (text) {
+                final Path rootOcr = Paths.get(outputTextPath, libraryId, docUnit);
+                final File textFile = fm.retrieveFile(rootOcr.toFile(), OCR_TXT_FILE);
+                if (textFile != null) {
+                    altoAndTxt.add(textFile);
+                }
+            }
+            return altoAndTxt;
+        }
+        return null;
+    }
 }

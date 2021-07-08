@@ -1,11 +1,18 @@
 package fr.progilone.pgcn.service.document.conditionreport;
 
-import fr.progilone.pgcn.domain.document.DocUnit;
-import fr.progilone.pgcn.domain.document.conditionreport.DescriptionProperty;
-import fr.progilone.pgcn.domain.document.conditionreport.DescriptionValue;
-import fr.progilone.pgcn.domain.document.conditionreport.PropertyConfiguration;
-import fr.progilone.pgcn.service.document.DocUnitService;
-import fr.progilone.pgcn.service.exchange.template.MessageService;
+import static fr.progilone.pgcn.service.document.conditionreport.ConditionReportExportService.WorkbookFormat.*;
+import static org.apache.poi.ss.usermodel.DataValidationConstraint.OperatorType.*;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFDataValidationHelper;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -34,18 +41,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static fr.progilone.pgcn.service.document.conditionreport.ConditionReportExportService.WorkbookFormat.*;
-import static org.apache.poi.ss.usermodel.DataValidationConstraint.OperatorType.*;
+import fr.progilone.pgcn.domain.document.DocUnit;
+import fr.progilone.pgcn.domain.document.conditionreport.DescriptionProperty;
+import fr.progilone.pgcn.domain.document.conditionreport.DescriptionValue;
+import fr.progilone.pgcn.domain.document.conditionreport.PropertyConfiguration;
+import fr.progilone.pgcn.service.document.DocUnitService;
+import fr.progilone.pgcn.service.exchange.template.MessageService;
 
 @Service
 public class ConditionReportExportService {
@@ -121,8 +122,8 @@ public class ConditionReportExportService {
         private final List<DescriptionValue> descValues = new ArrayList<>();
 
         private Workbook wb;
-        private Object validationHelper;
-        private Map<Style, CellStyle> styles = new HashMap<>();
+        private final Object validationHelper;
+        private final Map<Style, CellStyle> styles = new HashMap<>();
 
         private TemplateBuilder(final WorkbookFormat format) {
             this.format = format;
@@ -197,19 +198,32 @@ public class ConditionReportExportService {
             rowNb++;
 
             // Entête
-            Row row = sheet.createRow(rowNb++);
+            final Row row = sheet.createRow(rowNb++);
             createStyledCell(row, 3, messageService.getMessage("condreport", "column.value"), Style.BOLD);
             createStyledCell(row, 4, messageService.getMessage("condreport", "column.comment"), Style.BOLD);
 
             // Valeur d'assurance
             buildInsuranceBlock(sheet, rowNb);
             rowNb += 2;
-
+            // Type de document
+            rowNb = buildDetailBlock(sheet,
+                                     ++rowNb,
+                                     messageService.getMessage("condreport", "title.type"),
+                                     DescriptionProperty.Type.TYPE,
+                                     descProperties,
+                                     configurations);
             // Descriptions
             rowNb = buildDetailBlock(sheet,
                                      ++rowNb,
                                      messageService.getMessage("condreport", "title.description"),
                                      DescriptionProperty.Type.DESCRIPTION,
+                                     descProperties,
+                                     configurations);
+            // Etat du document
+            rowNb = buildDetailBlock(sheet,
+                                     ++rowNb,
+                                     messageService.getMessage("condreport", "title.state"),
+                                     DescriptionProperty.Type.STATE,
                                      descProperties,
                                      configurations);
             // Dimensions du document

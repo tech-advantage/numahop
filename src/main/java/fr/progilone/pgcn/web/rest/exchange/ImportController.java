@@ -123,6 +123,8 @@ public class ImportController {
                                                    @RequestParam(value = "dedup", defaultValue = "false") final boolean stepDeduplication,
                                                    @RequestParam(value = "dedupProcess", required = false)
                                                    final ImportedDocUnit.Process defaultDedupProcess,
+                                                   @RequestParam(value = "archivable", defaultValue = "false") final boolean archivable,
+                                                   @RequestParam(value = "distributable", defaultValue = "false") final boolean distributable,
                                                    @RequestParam(value = "prop_order", required = false, defaultValue = "BY_PROPERTY_TYPE")
                                                    final BibliographicRecord.PropertyOrder propertyOrder) {
         // Vérification des droits d'accès par rapport à la bibliothèque demandée
@@ -210,7 +212,9 @@ public class ImportController {
                                                   importReport,
                                                   stepValidation,
                                                   stepDeduplication,
-                                                  stepDeduplication ? defaultDedupProcess : null);
+                                                  stepDeduplication ? defaultDedupProcess : null,
+                                                  archivable,
+                                                  distributable);
                     break;
                 case EAD:
                     importEadService.importEadAsync(importFiles.get(0),
@@ -220,7 +224,9 @@ public class ImportController {
                                                     stepValidation,
                                                     stepDeduplication,
                                                     stepDeduplication ? defaultDedupProcess : null,
-                                                    propertyOrder);
+                                                    propertyOrder,
+                                                    archivable,
+                                                    distributable);
                     break;
                 case MARC:
                 case MARCJSON:
@@ -235,7 +241,9 @@ public class ImportController {
                                                       importReport,
                                                       stepValidation,
                                                       stepDeduplication,
-                                                      stepDeduplication ? defaultDedupProcess : null);
+                                                      stepDeduplication ? defaultDedupProcess : null,
+                                                      archivable,
+                                                      distributable);
                     break;
                 case CSV:
                     importCSVService.importCSVAsync(importFiles.get(0),
@@ -246,7 +254,9 @@ public class ImportController {
                                                     importReport,
                                                     stepValidation,
                                                     stepDeduplication,
-                                                    stepDeduplication ? defaultDedupProcess : null);
+                                                    stepDeduplication ? defaultDedupProcess : null,
+                                                    archivable,
+                                                    distributable);
                     break;
                 default:
                     LOG.error("Le format de fichier {} n'est pas supporté", fileFormat);

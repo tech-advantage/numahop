@@ -1,5 +1,29 @@
 package fr.progilone.pgcn.service.exchange.marc;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
+import org.marc4j.MarcJsonReader;
+import org.marc4j.MarcReader;
+import org.marc4j.MarcStreamReader;
+import org.marc4j.MarcXmlReader;
+import org.marc4j.converter.CharConverter;
+import org.marc4j.marc.Record;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+
 import fr.progilone.pgcn.domain.document.DocPropertyType;
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.exchange.DataEncoding;
@@ -22,29 +46,6 @@ import fr.progilone.pgcn.service.exchange.marc.mapping.CompiledMappingRule;
 import fr.progilone.pgcn.service.util.transaction.TransactionService;
 import fr.progilone.pgcn.service.util.transaction.TransactionalJobRunner;
 import fr.progilone.pgcn.web.websocket.WebsocketService;
-import org.apache.commons.lang3.StringUtils;
-import org.marc4j.MarcJsonReader;
-import org.marc4j.MarcReader;
-import org.marc4j.MarcStreamReader;
-import org.marc4j.MarcXmlReader;
-import org.marc4j.converter.CharConverter;
-import org.marc4j.marc.Record;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * Created by Sebastien on 22/11/2016.
@@ -95,7 +96,7 @@ public class ImportMarcService extends AbstractImportService {
     }
 
     /**
-     * Import asynchrone d'un flux de notices au format MARC
+     * Import asynchrone d'un flux de notices au format MARC.
      *
      * @param importFiles
      *         Fichier de notices à importer
@@ -115,6 +116,8 @@ public class ImportMarcService extends AbstractImportService {
      *         Étape de dédoublonnage
      * @param defaultDedupProcess
      *         Gestion de l'import des doublons, dans le cas où l'import se fait directement sans validation par l'utilisateur
+     * @param archivable
+     * @param distributable         
      */
     @Async
     public void importMarcAsync(final List<File> importFiles,
@@ -127,11 +130,21 @@ public class ImportMarcService extends AbstractImportService {
                                 ImportReport report,
                                 final boolean stepValidation,
                                 final boolean stepDeduplication,
-                                final ImportedDocUnit.Process defaultDedupProcess) {
+                                final ImportedDocUnit.Process defaultDedupProcess,
+                                final boolean archivable,
+ 							   	final boolean distributable) {
         try {
             /* Pré-import */
             for (final File importFile : importFiles) {
-                report = preimportFile(importFile, fileFormat, dataEncoding, mappingId, mappingChildId, parentKeyExpr, report);
+                report = preimportFile(importFile, 
+                						fileFormat, 
+                						dataEncoding, 
+                						mappingId, 
+                						mappingChildId, 
+                						parentKeyExpr, 
+                						report, 
+                						archivable, 
+                						distributable);
             }
             /* Poursuite du traitement des unités documentaires pré-importées: recherche de doublons, validation utilisateur, import */
             importDocUnit(report, parentReportId, stepValidation, stepDeduplication, defaultDedupProcess);
@@ -159,7 +172,9 @@ public class ImportMarcService extends AbstractImportService {
                                    final ImportReport report,
                                    final boolean stepValidation,
                                    final boolean stepDeduplication,
-                                   final ImportedDocUnit.Process defaultDedupProcess) {
+                                   final ImportedDocUnit.Process defaultDedupProcess,
+                                   final boolean archivable,
+                                   final boolean distributable) {
         importMarcAsync(importFiles,
                         FileFormat.MARCXML,
                         DataEncoding.UTF_8,
@@ -170,7 +185,9 @@ public class ImportMarcService extends AbstractImportService {
                         report,
                         stepValidation,
                         stepDeduplication,
-                        defaultDedupProcess);
+                        defaultDedupProcess,
+                        archivable,
+                        distributable);
     }
 
     /**
@@ -191,7 +208,10 @@ public class ImportMarcService extends AbstractImportService {
                                        final String mappingId,
                                        final String mappingChildId,
                                        final String parentKeyExpr,
-                                       final ImportReport report) throws PgcnTechnicalException {
+                                       final ImportReport report,
+                                       final boolean archivable,
+                                       final boolean distributable) throws PgcnTechnicalException {
+    	
         LOG.info("Pré-import du fichier {} {}", fileFormat, importFile.getAbsolutePath());
 
         // MARC
@@ -205,15 +225,33 @@ public class ImportMarcService extends AbstractImportService {
                                      mappingChildId,
                                      parentKeyExpr,
                                      in -> new MarcStreamReader(in, encoding),
-                                     report);
+                                     report,
+                                     archivable,
+                                     distributable);
         }
         // MARC JSON
         else if (fileFormat == FileFormat.MARCJSON) {
-            return importMarcRecords(importFile, dataEncoding, mappingId, mappingChildId, parentKeyExpr, MarcJsonReader::new, report);
+            return importMarcRecords(importFile, 
+            						 dataEncoding, 
+            						 mappingId, 
+            						 mappingChildId, 
+            						 parentKeyExpr, 
+            						 MarcJsonReader::new, 
+            						 report, 
+            						 archivable, 
+            						 distributable);
         }
         // MARC XML
         else if (fileFormat == FileFormat.MARCXML) {
-            return importMarcRecords(importFile, dataEncoding, mappingId, mappingChildId, parentKeyExpr, MarcXmlReader::new, report);
+            return importMarcRecords(importFile, 
+            						 dataEncoding, 
+            						 mappingId, 
+            						 mappingChildId, 
+            						 parentKeyExpr, 
+            						 MarcXmlReader::new, 
+            						 report, 
+            						 archivable, 
+            						 distributable);
         }
         // Non géré
         else {
@@ -242,14 +280,16 @@ public class ImportMarcService extends AbstractImportService {
                                            final String mappingChildId,
                                            final String parentKeyExpr,
                                            final Function<InputStream, MarcReader> readerBuilder,
-                                           ImportReport report) throws PgcnTechnicalException {
+                                           ImportReport report,
+                                           final boolean archivable,
+                                           final boolean distributable) throws PgcnTechnicalException {
 
         try (final InputStream fileIn = new FileInputStream(importFile); final InputStream in = new BufferedInputStream(fileIn)) {
 
             final MarcReader reader = readerBuilder.apply(in);
             final CharConverter charConverter = MarcUtils.getCharConverterToUnicode(dataEncoding);
 
-            report = importRecord(reader, charConverter, mappingId, mappingChildId, parentKeyExpr, report);
+            report = importRecord(reader, charConverter, mappingId, mappingChildId, parentKeyExpr, report, archivable, distributable);
             return report;
 
         } catch (final Exception e) {
@@ -271,7 +311,9 @@ public class ImportMarcService extends AbstractImportService {
                                       final String mappingId,
                                       final String mappingChildId,
                                       final String parentKeyExpr,
-                                      final ImportReport importReport) throws PgcnTechnicalException {
+                                      final ImportReport importReport,
+                                      final boolean archivable,
+                                      final boolean distributable) throws PgcnTechnicalException {
 
         final TransactionStatus status = transactionService.startTransaction(true);
 
@@ -321,7 +363,6 @@ public class ImportMarcService extends AbstractImportService {
             .setCommit(BULK_SIZE)
             // pas de parallélisation pour prévenir les transaction lock au moment de importDocUnitService.create
             .setMaxThreads(1)
-            // .setMaxThreads(Runtime.getRuntime().availableProcessors())
             // Traitement principal
             .forEach((record) -> {
                 try {
@@ -352,13 +393,16 @@ public class ImportMarcService extends AbstractImportService {
                     for (final DocUnitWrapper docUnitWrapper : docUnits) {
                         // Sauvegarde
                         final ImportedDocUnit imp = new ImportedDocUnit();
-                        imp.initDocUnitFields(docUnitWrapper.getDocUnit());
+                        final DocUnit createdUd = docUnitWrapper.getDocUnit();
+                        createdUd.setArchivable(archivable);
+                        createdUd.setDistributable(distributable);
+                        
+                        imp.initDocUnitFields(createdUd);
                         imp.setParentKey(docUnitWrapper.getParentKey());
                         imp.setReport(runningReport);
                         imp.setGroupCode(groupCode);
 
                         // Recopie des infos du parent
-                        @SuppressWarnings("ConstantConditions")
                         final DocUnit parent = imp.getDocUnit().getParent();
                         if (parent != null) {
                             imp.setParentDocUnit(parent.getIdentifier());
@@ -375,7 +419,7 @@ public class ImportMarcService extends AbstractImportService {
                     return true;
                 }
                 // Erreur imprévue
-                catch (Exception e) {
+                catch (final Exception e) {
                     LOG.error(e.getMessage(), e);
                     return false;
                 }

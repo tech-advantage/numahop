@@ -63,6 +63,8 @@
 					break;
 				case "omekaConfiguration": url = url + "platformconfiguration/omekaconfiguration";
 				    break;
+                case "digitalLibraryConfiguration": url = url + "platformconfiguration/digitallibraryconfiguration";
+                    break;
 				case "checkConfiguration": url = url + "checkconfiguration/checkconfiguration";
 					break;
 				case "ocrlangConfiguration": url = url + "ocrlangconfiguration/ocrlangconfiguration";

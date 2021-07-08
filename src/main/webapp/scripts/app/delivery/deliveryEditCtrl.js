@@ -158,6 +158,7 @@
         }
 
         function autoControlMessages() {
+            messageForCheck($scope.delivery.fileRadicalOK, "Radical des fichiers correct", "Radical des fichiers incorrect");
             messageForCheck($scope.delivery.numberOfFilesOK, "Nombre de fichiers correct", "Nombre de fichiers incorrect");
             messageForCheck($scope.delivery.fileFormatOK, "Format des fichiers correct", "Format des fichiers incorrect");
             messageForCheck($scope.delivery.sequentialNumbers, "Séquence des fichiers correcte", "Séquence des fichiers incorrecte");

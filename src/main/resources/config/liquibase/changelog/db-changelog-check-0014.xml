@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="pgcn-check-014" author="progilone">
+        <!-- Ajout controle / radical -->
+        <sql dbms="mysql">
+            INSERT INTO check_automatic_type
+            (identifier, label, type, active, version, configurable, check_automatic_type.order)
+            VALUES
+            ('automatic_file_radical',
+            'Contrôle du radical dans le nom des fichiers',
+            'FILE_RADICAL', 1, 0, 1, 6)
+        </sql>
+
+    </changeSet>
+</databaseChangeLog>

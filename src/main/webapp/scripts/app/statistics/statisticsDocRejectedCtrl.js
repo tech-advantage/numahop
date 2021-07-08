@@ -79,7 +79,7 @@
                     var searchParams = {
                         page: 0,
                         search: $select.search,
-                        active: true
+                        active: false
                     };
                     return ProjectSrvc.search(searchParams).$promise
                         .then(function (projects) {
@@ -143,8 +143,8 @@
 
         /**
          * Recherche  d'entités sur un changement de période
-         * @param {*} from 
-         * @param {*} to 
+         * @param {*} from
+         * @param {*} to
          */
         function searchValue(updatedField, updatedValue) {
             statCtrl.filters[updatedField] = updatedValue;

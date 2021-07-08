@@ -172,8 +172,12 @@
         CONF_DIFFUSION_OMEKA_HAB0: "CONF-DIFFUSION-OMEKA-HAB0",   // Habilitation configuration Omeka: lecture
         CONF_DIFFUSION_OMEKA_HAB1: "CONF-DIFFUSION-OMEKA-HAB1",   // Habilitation configuration Omeka: création / modification
         CONF_DIFFUSION_OMEKA_HAB2: "CONF-DIFFUSION-OMEKA-HAB2",   // Habilitation configuration Omeka: suppression
+        CONF_DIFFUSION_DIGITAL_LIBRARY_HAB0: "CONF-DIFFUSION-DIGITAL-LIBRARY-HAB0",   // Habilitation configuration bibliothèque numérique: lecture
+        CONF_DIFFUSION_DIGITAL_LIBRARY_HAB1: "CONF-DIFFUSION-DIGITAL-LIBRARY-HAB1",   // Habilitation configuration bibliothèque numérique: création / modification
+        CONF_DIFFUSION_DIGITAL_LIBRARY_HAB2: "CONF-DIFFUSION-DIGITAL-LIBRARY-HAB2",   // Habilitation configuration bibliothèque numérique: suppression
         EXPORT_INTERNET_ARCHIVE_HAB0: "EXPORT-INTERNET-ARCHIVE-HAB0",   // Autorisation export Internet Archive
         EXPORT_DIFFUSION_OMEKA_HAB0: "EXPORT-DIFFUSION-OMEKA-HAB0",   // Autorisation export Omeka
+        EXPORT_DIFFUSION_DIGITAL_LIBRARY_HAB0: "EXPORT-DIFFUSION-DIGITAL-LIBRARY-HAB0",   // Autorisation export bibliothèque numérique
         FILES_GEST_HAB0: "FILES-GEST-HAB0",     // Habilitation gestion des fichiers apres archivage
         IMG_FORMAT_HAB0: "IMG-FORMAT-HAB0",     // Habilitation gestion des formats des vues: visualisation
         IMG_FORMAT_HAB1: "IMG-FORMAT-HAB1",     // Habilitation gestion des formats des vues: création/modification

@@ -87,7 +87,7 @@
                     var searchParams = {
                         page: 0,
                         search: $select.search,
-                        active: true
+                        active: !statCtrl.filters.inactive
                     };
                     if (statCtrl.filters.project) {
                         searchParams["projects"] = _.pluck(statCtrl.filters.project, "identifier");
@@ -140,7 +140,7 @@
                     var searchParams = {
                         page: 0,
                         search: $select.search,
-                        active: true
+                        active: false
                     };
                     return ProjectSrvc.search(searchParams).$promise
                         .then(function (projects) {
@@ -254,7 +254,7 @@
                 project: _.pluck(statCtrl.filters.project, "identifier"),
                 lot: _.pluck(statCtrl.filters.lot, "identifier"),
                 train: _.pluck(statCtrl.filters.train, "identifier"),
-                state: _.pluck(statCtrl.filters.state, "identifier"),
+                state: _.pluck(statCtrl.columns, "identifier"),
                 from: statCtrl.filters.from,
                 to: statCtrl.filters.to
             };

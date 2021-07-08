@@ -1,11 +1,11 @@
 package fr.progilone.pgcn.service.es;
 
-import fr.progilone.pgcn.domain.AbstractDomainObject_;
-import fr.progilone.pgcn.domain.document.BibliographicRecord;
-import fr.progilone.pgcn.domain.document.DocUnit;
-import fr.progilone.pgcn.repository.document.BibliographicRecordRepository;
-import fr.progilone.pgcn.repository.es.EsBibliographicRecordRepository;
-import fr.progilone.pgcn.service.util.transaction.TransactionService;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -17,13 +17,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
+import fr.progilone.pgcn.domain.AbstractDomainObject_;
+import fr.progilone.pgcn.domain.document.BibliographicRecord;
+import fr.progilone.pgcn.domain.document.DocUnit;
+import fr.progilone.pgcn.repository.document.BibliographicRecordRepository;
+import fr.progilone.pgcn.repository.es.EsBibliographicRecordRepository;
+import fr.progilone.pgcn.service.util.transaction.TransactionService;
 
 @Service
 public class EsBibliographicRecordService extends AbstractElasticsearchOperations<BibliographicRecord> {
@@ -108,28 +109,34 @@ public class EsBibliographicRecordService extends AbstractElasticsearchOperation
      * @return
      */
     public long reindex(final String index) {
+        
         long nbImported = 0;
-        Page<BibliographicRecord> pageOfObjects = null;    // Chargement des objets par page de bulkSize éléments
 
+        final AtomicReference<Page<BibliographicRecord>> pageRef = new AtomicReference<>();
         do {
-            final TransactionStatus status = transactionService.startTransaction(true);
+            
+            final int result = transactionService.executeInNewTransactionWithReturn(() -> {
+                
+                // Chargement des objets
+                final Pageable pageable = pageRef.get() == null ?
+                                          new PageRequest(0, bulkSize, Sort.Direction.ASC, AbstractDomainObject_.identifier.getName()) :
+                                                  pageRef.get().nextPageable();
+                                          
+                final Page<BibliographicRecord> pageOfObjects = bibliographicRecordRepository.findAllByDocUnitState(DocUnit.State.AVAILABLE, pageable);
 
-            // Chargement des objets
-            final Pageable pageable = pageOfObjects == null ?
-                                      new PageRequest(0, bulkSize, Sort.Direction.ASC, AbstractDomainObject_.identifier.getName()) :
-                                      pageOfObjects.nextPageable();
-            pageOfObjects = bibliographicRecordRepository.findAllByDocUnitState(DocUnit.State.AVAILABLE, pageable);
+                // Traitement des unités documentaires
+                final List<BibliographicRecord> entities = pageOfObjects.getContent();
+                esBibliographicRecordRepository.index(index, entities);
+                
+                pageRef.set(pageOfObjects);
+                
+                return entities.size();
+            });
+            
+            nbImported += result;
+            LOG.trace("{} / {} éléments indexés", nbImported, pageRef.get().getTotalElements());
 
-            // Traitement des unités documentaires
-            final List<BibliographicRecord> entities = pageOfObjects.getContent();
-            esBibliographicRecordRepository.index(index, entities);
-
-            transactionService.commitTransaction(status);
-
-            nbImported += entities.size();
-            LOG.trace("{} / {} éléments indexés", nbImported, pageOfObjects.getTotalElements());
-
-        } while (pageOfObjects.hasNext());
+        } while (pageRef.get() != null && pageRef.get().hasNext());
 
         return nbImported;
     }

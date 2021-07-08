@@ -1,16 +1,13 @@
 package fr.progilone.pgcn.web.rest.checkconfiguration;
 
-import com.codahale.metrics.annotation.Timed;
+import static fr.progilone.pgcn.web.rest.checkconfiguration.security.AuthorizationConstants.*;
+import static fr.progilone.pgcn.web.rest.user.security.AuthorizationConstants.*;
 
-import fr.progilone.pgcn.domain.dto.checkconfiguration.AutomaticCheckRuleDTO;
-import fr.progilone.pgcn.domain.dto.checkconfiguration.CheckConfigurationDTO;
-import fr.progilone.pgcn.domain.dto.checkconfiguration.SimpleCheckConfigurationDTO;
-import fr.progilone.pgcn.exception.PgcnException;
-import fr.progilone.pgcn.service.checkconfiguration.AutomaticCheckRuleService;
-import fr.progilone.pgcn.service.checkconfiguration.CheckConfigurationService;
-import fr.progilone.pgcn.service.checkconfiguration.ui.UICheckConfigurationService;
-import fr.progilone.pgcn.web.rest.AbstractRestController;
-import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
+import java.util.List;
+
+import javax.annotation.security.RolesAllowed;
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -23,12 +20,17 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
+import com.codahale.metrics.annotation.Timed;
 
-import static fr.progilone.pgcn.web.rest.checkconfiguration.security.AuthorizationConstants.*;
-import static fr.progilone.pgcn.web.rest.user.security.AuthorizationConstants.USER_HAB0;
+import fr.progilone.pgcn.domain.dto.checkconfiguration.AutomaticCheckRuleDTO;
+import fr.progilone.pgcn.domain.dto.checkconfiguration.CheckConfigurationDTO;
+import fr.progilone.pgcn.domain.dto.checkconfiguration.SimpleCheckConfigurationDTO;
+import fr.progilone.pgcn.exception.PgcnException;
+import fr.progilone.pgcn.service.checkconfiguration.AutomaticCheckRuleService;
+import fr.progilone.pgcn.service.checkconfiguration.CheckConfigurationService;
+import fr.progilone.pgcn.service.checkconfiguration.ui.UICheckConfigurationService;
+import fr.progilone.pgcn.web.rest.AbstractRestController;
+import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
 
 @RestController
 @RequestMapping(value = "/api/rest/checkconfiguration")
@@ -108,7 +110,7 @@ public class CheckConfigurationController extends AbstractRestController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, params = {"duplicate"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed({USER_HAB0})
-    public ResponseEntity<CheckConfigurationDTO> duplicateCheckConfiguration(HttpServletRequest request, @PathVariable final String id) {
+    public ResponseEntity<CheckConfigurationDTO> duplicateCheckConfiguration(final HttpServletRequest request, @PathVariable final String id) {
         return new ResponseEntity<>(uiCheckConfigurationService.duplicateCheckConfiguration(id), HttpStatus.OK);
     }
     
@@ -116,7 +118,7 @@ public class CheckConfigurationController extends AbstractRestController {
     @RequestMapping(value = "/{idDocUnit}", method = RequestMethod.GET, params = {"docUnit"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed({USER_HAB0})
-    public ResponseEntity<CheckConfigurationDTO> getByDocUnit(HttpServletRequest request, @PathVariable final String idDocUnit) {
+    public ResponseEntity<CheckConfigurationDTO> getByDocUnit(final HttpServletRequest request, @PathVariable final String idDocUnit) {
         return new ResponseEntity<>(uiCheckConfigurationService.duplicateCheckConfiguration(idDocUnit), HttpStatus.OK);
     }
 
@@ -127,5 +129,13 @@ public class CheckConfigurationController extends AbstractRestController {
                                                         @RequestBody final CheckConfigurationDTO configuration) throws PgcnException {
         final CheckConfigurationDTO savedConfiguration = uiCheckConfigurationService.update(configuration);
         return new ResponseEntity<>(savedConfiguration, HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, params = {"add-radical-controle"})
+    @Timed
+    @RolesAllowed({CHECK_HAB1})
+    public ResponseEntity<CheckConfigurationDTO> updateCheckConfigurationAddRadicalControl() throws PgcnException {
+        checkConfigurationService.updateCheckConfigurationAddRadicalControl();
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

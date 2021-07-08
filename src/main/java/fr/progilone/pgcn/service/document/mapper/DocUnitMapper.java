@@ -19,6 +19,7 @@ import fr.progilone.pgcn.service.check.mapper.AutomaticCheckResultMapper;
 import fr.progilone.pgcn.service.library.mapper.LibraryMapper;
 import fr.progilone.pgcn.service.lot.mapper.LotMapper;
 import fr.progilone.pgcn.service.ocrlangconfiguration.mapper.OcrLanguageMapper;
+import fr.progilone.pgcn.service.project.mapper.ProjectMapper;
 import fr.progilone.pgcn.service.project.mapper.SimpleProjectMapper;
 import fr.progilone.pgcn.service.workflow.mapper.WorkflowMapper;
 
@@ -29,6 +30,7 @@ import fr.progilone.pgcn.service.workflow.mapper.WorkflowMapper;
                 LotMapper.class,
                 PhysicalDocumentMapper.class,
                 SimpleProjectMapper.class,
+                ProjectMapper.class,
                 InternetArchiveCollectionMapper.class,
                 CinesPACMapper.class,
                 WorkflowMapper.class,

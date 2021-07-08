@@ -175,8 +175,7 @@ public class DocUnitWorkflow extends AbstractDomainObject {
      */
     public boolean isDocumentRejected() {
         return states.stream()
-        .filter(state -> state.getKey().equals(WorkflowStateKey.VALIDATION_DOCUMENT) && state.isRejected())
-        .findFirst().isPresent();
+                     .anyMatch(state -> state.getKey().equals(WorkflowStateKey.VALIDATION_DOCUMENT) && state.isRejected());
     }
     
     /**
@@ -201,8 +200,21 @@ public class DocUnitWorkflow extends AbstractDomainObject {
      */
     public boolean isRapportSent() {
         return states.stream()
-        .filter(state -> state.getKey().equals(WorkflowStateKey.RAPPORT_CONTROLES) && state.isValidated())
-        .findFirst().isPresent();
+                     .filter(state -> state.getKey().equals(WorkflowStateKey.RAPPORT_CONTROLES) && state.isValidated())
+                     .findFirst()
+                     .isPresent();
+    }
+
+    /**
+     * Retourne vrai si le rapport de controles a échoué à l'envoi
+     * 
+     * @return
+     */
+    public boolean isRapportFailed() {
+        return states.stream()
+                     .filter(state -> state.getKey().equals(WorkflowStateKey.RAPPORT_CONTROLES) && state.isRejected())
+                     .findFirst()
+                     .isPresent();
     }
     
     /**

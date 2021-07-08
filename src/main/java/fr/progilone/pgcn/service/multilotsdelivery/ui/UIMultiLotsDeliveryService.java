@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import fr.progilone.pgcn.domain.delivery.Delivery;
 import fr.progilone.pgcn.domain.dto.delivery.SimpleDeliveryLotDTO;
 import fr.progilone.pgcn.domain.dto.document.PreDeliveryDocumentDTO;
 import fr.progilone.pgcn.domain.dto.document.PreDeliveryLockedDocsDTO;
@@ -24,7 +25,6 @@ import fr.progilone.pgcn.domain.dto.lot.SimpleLotForDeliveryDTO;
 import fr.progilone.pgcn.domain.dto.multilotsdelivery.MultiLotsDeliveryDTO;
 import fr.progilone.pgcn.domain.lot.Lot;
 import fr.progilone.pgcn.domain.multilotsdelivery.MultiLotsDelivery;
-import fr.progilone.pgcn.domain.multilotsdelivery.MultiLotsDelivery.DeliveryStatus;
 import fr.progilone.pgcn.domain.util.CustomUserDetails;
 import fr.progilone.pgcn.exception.PgcnTechnicalException;
 import fr.progilone.pgcn.exception.PgcnValidationException;
@@ -84,7 +84,7 @@ public class UIMultiLotsDeliveryService {
                                           final List<String> projects,
                                           final List<String> lots,
                                           final List<String> providers,
-                                          final List<DeliveryStatus> status,
+                                             final List<Delivery.DeliveryStatus> status,
                                           final LocalDate dateFrom,
                                           final LocalDate dateTo,
                                           final Integer page,

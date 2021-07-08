@@ -74,7 +74,7 @@ public class ImportDcService extends AbstractImportService {
     }
 
     /**
-     * Import asynchrone d'un flux de notices Dublin Core
+     * Import asynchrone d'un flux de notices Dublin Core.
      *
      * @param importFile
      *         Fichier de notices à importer
@@ -90,6 +90,8 @@ public class ImportDcService extends AbstractImportService {
      *         Étape de dédoublonnage
      * @param defaultDedupProcess
      *         Gestion de l'import des doublons, dans le cas où l'import se fait directement sans validation par l'utilisateur
+     * @param archivable
+     * @param distributable         
      */
     @Async
     public void importDcAsync(final File importFile,
@@ -99,7 +101,9 @@ public class ImportDcService extends AbstractImportService {
                               ImportReport report,
                               final boolean stepValidation,
                               final boolean stepDeduplication,
-                              final ImportedDocUnit.Process defaultDedupProcess) {
+                              final ImportedDocUnit.Process defaultDedupProcess,
+                              final boolean archivable,
+                              final boolean distributable) {
         try {
             /* Pré-import */
             LOG.info("Pré-import du fichier {} {}", fileFormat, importFile.getAbsolutePath());
@@ -107,7 +111,7 @@ public class ImportDcService extends AbstractImportService {
             if (fileFormat == FileFormat.DC) {
                 final ImportReport fReport = report;
                 report = transactionService.executeInNewTransactionWithReturnAndException(() -> {
-                    return importDcRecords(importFile, libraryId, mappingId, fReport);
+                    return importDcRecords(importFile, libraryId, mappingId, fReport, archivable, distributable);
                 });
             }
             // DCQ
@@ -145,8 +149,12 @@ public class ImportDcService extends AbstractImportService {
      * @throws PgcnTechnicalException
      * @see fr.progilone.pgcn.domain.jaxb.rdf.RDF
      */
-    private ImportReport importDcRecords(final File importFile, final String libraryId, String mappingId, ImportReport report) throws
-                                                                                                                               PgcnTechnicalException {
+    private ImportReport importDcRecords(final File importFile, 
+    									 final String libraryId, 
+    									 String mappingId, 
+    									 ImportReport report, 
+    									 final boolean archivable,
+    									 final boolean distributable) throws PgcnTechnicalException {
         try {
             // vérification bibliothèque
             final Library library = libraryService.findOne(libraryId);
@@ -168,6 +176,8 @@ public class ImportDcService extends AbstractImportService {
                         try {
                             // Conversion du XML en unité documentaire
                             final DocUnit docUnit = convertService.convert(oaidc, library, propertyTypes);
+                            docUnit.setArchivable(archivable);
+                            docUnit.setDistributable(distributable);
 
                             // Sauvegarde
                             final ImportedDocUnit imp = new ImportedDocUnit();
@@ -192,6 +202,8 @@ public class ImportDcService extends AbstractImportService {
                         try {
                             // Conversion du XML en unité documentaire
                             final DocUnit docUnit = convertService.convert(description, library, propertyTypes);
+                            docUnit.setArchivable(archivable);
+                            docUnit.setDistributable(distributable);
 
                             // Sauvegarde
                             final ImportedDocUnit imp = new ImportedDocUnit();

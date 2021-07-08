@@ -32,18 +32,17 @@ public class ArchiveItem extends AbstractDomainObject {
     private final Set<ArchiveSubject> subjects = new LinkedHashSet<>();
     @OneToMany(mappedBy = "item", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private final Set<ArchiveHeader> headers = new LinkedHashSet<>();
-
-    @Column(name="contributor")
-    private String contributor;
+    @OneToMany(mappedBy = "item", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private final Set<ArchiveCoverage> coverages = new LinkedHashSet<>();
+    @OneToMany(mappedBy = "item", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private final Set<ArchiveContributor> contributors = new LinkedHashSet<>();
+    @OneToMany(mappedBy = "item", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private final Set<ArchiveCreator> creators = new LinkedHashSet<>();
+    @OneToMany(mappedBy = "item", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private final Set<ArchiveLanguage> languages = new LinkedHashSet<>();
 
     @Column(name="archive_identifier")
     private String archiveIdentifier;
-
-    @Column(name="coverage")
-    private String coverage;
-
-    @Column(name="creator")
-    private String creator;
 
     @Column(name="credits")
     private String credits;
@@ -53,9 +52,6 @@ public class ArchiveItem extends AbstractDomainObject {
 
     @Column(name="description")
     private String description;
-
-    @Column(name="language")
-    private String language;
 
     @Column(name="license_url")
     private String licenseUrl;
@@ -111,28 +107,16 @@ public class ArchiveItem extends AbstractDomainObject {
         return headers;
     }
 
-    public String getContributor() {
-        return contributor;
+    public Set<ArchiveCoverage> getCoverages() {
+        return coverages;
     }
 
-    public void setContributor(final String contributor) {
-        this.contributor = contributor;
+    public Set<ArchiveContributor> getContributors() {
+        return contributors;
     }
 
-    public String getCoverage() {
-        return coverage;
-    }
-
-    public void setCoverage(final String coverage) {
-        this.coverage = coverage;
-    }
-
-    public String getCreator() {
-        return creator;
-    }
-
-    public void setCreator(final String creator) {
-        this.creator = creator;
+    public Set<ArchiveCreator> getCreators() {
+        return creators;
     }
 
     public String getCredits() {
@@ -159,12 +143,8 @@ public class ArchiveItem extends AbstractDomainObject {
         this.description = description;
     }
 
-    public String getLanguage() {
-        return language;
-    }
-
-    public void setLanguage(final String language) {
-        this.language = language;
+    public Set<ArchiveLanguage> getLanguages() {
+        return languages;
     }
 
     public String getLicenseUrl() {

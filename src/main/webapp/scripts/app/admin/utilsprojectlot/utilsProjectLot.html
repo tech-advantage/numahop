@@ -1,0 +1,132 @@
+<div class="row layout-columns">
+    <div class="col-sm-3 col-layout-columns">
+        <div class="panel panel-column-1">
+            <div class="panel-heading">
+                <div class="pull-right">
+                    <button type="button" class="btn btn-sem2 btn-xs" ng-click="reinitFilters(true)" 
+                            uib-tooltip="{{::'Réinitialiser les filtres de la recherche' | translate}}">
+                        <span class="glyphicon-halflings glyphicon-refresh"></span>
+                    </button>
+                </div>
+                <span translate>Outil (Dé) Clôture Lot</span>
+            </div>
+            <div class="panel-body">
+                
+                <!-- Bibliothèque  -->
+                <div class="filter-block">
+                    <div class="filter-title">{{::'Bibliothèque' | translate}}</div>
+	                <div class="filter-element">
+	                    <ui-select multiple ng-model="filters.libraries" theme="select2" on-select="doFilterLibrary()" on-remove="doFilterLibrary()"
+	                     class="form-control" mandatory="true">
+	                        <ui-select-match placeholder="{{::'Bibliothèque' | translate}}">{{$item.name}}</ui-select-match>
+	                        <ui-select-choices repeat="option in options.libraries | filter: $select.search track by option.identifier">
+	                            <div ng-bind-html="option.name | highlight: $select.search"></div>
+	                        </ui-select-choices>
+	                    </ui-select>
+	                </div>
+                </div>
+	            <!-- Projet -->
+	            <div class="filter-block">
+	                <div class="filter-title">{{::'Projet' | translate}}</div>
+	                <div class="filter-element">
+	                    <ui-select multiple ng-model="filters.projects" theme="select2" on-select="doFilterProject()" on-remove="doFilterProject()"
+	                     class="form-control"  mandatory="true">
+	                        <ui-select-match placeholder="{{::'Projet' | translate}}">{{$item.name}}</ui-select-match>
+	                        <ui-select-choices repeat="option in options.projects | filter: $select.search track by option.identifier">
+	                            <div ng-bind-html="option.name | highlight: $select.search"></div>
+	                        </ui-select-choices>
+	                    </ui-select>
+	                </div>
+	            </div>
+	            <!-- Lot -->
+	            <div class="filter-block">
+	                <div class="filter-title">{{::'Lot' | translate}}</div>
+	                <div class="filter-element">
+	                    <ui-select multiple ng-model="filters.lots" theme="select2" on-select="doFilterLot()" on-remove="doFilterLot()" class="form-control">
+	                        <ui-select-match placeholder="{{::'Lot' | translate}}">{{$item.label}}</ui-select-match>
+	                        <ui-select-choices repeat="option in options.lots | filter: $select.search track by option.identifier">
+	                            <div ng-bind-html="option.label | highlight: $select.search"></div>
+	                        </ui-select-choices>
+	                    </ui-select>
+	                </div>
+	            </div>           
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-9 col-sm-offset-3 col-layout-columns">
+        <div class="panel panel-column-2">
+            <div class="panel-heading">
+                <span translate></span>
+            </div>
+            <div class="panel-body">
+                      
+                <uib-accordion close-others="false">
+                    <!-- Configuration de l'unité doc -->
+                    <div class="margin-t20 formBlock" uib-accordion-group is-open="accordions.selection_UD">
+                        <uib-accordion-heading class="formBlockContent">
+                            <span class="pull-left glyphicon-halflings"
+                                    ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordions.selection_UD]">&nbsp;</span>
+                            <h5>{{ ::'Sélection des lots' | translate }}</h5>
+                        </uib-accordion-heading>
+                           
+                        <div class="well" ng-show="filters.lots.length === 0" translate>La sélection d'au moins un lot est obligatoire</div>
+                        <div>
+                            <div ng-repeat="lo in filters.lots" class="col-infinite-scroll">
+                                <div class="list">
+                                    <span class="second">[{{::lo.identifier}}]</span>&nbsp;
+                                    <span class="principal">{{lo.label}}</span>
+                                    <span class="second"> - [{{lo.status!==CLOTURE? 'En cours':'Clôturé' }}]</span>
+                                </div>
+                            </div>
+                        </div>                               
+                    </div>
+                    
+                    <div class="margin-t20 formBlock" uib-accordion-group is-open="accordions.unclose_lot">
+                       <uib-accordion-heading>
+                           <span class="pull-left glyphicon-halflings"
+                                   ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordions.close_lot]">&nbsp;</span>
+                           <h5>{{ ::'Déclôturer lot(s)' | translate }}</h5>
+                       </uib-accordion-heading>
+                       
+                       <span class="second margin-l50">Force la réouverture du(des) lot(s) sélectionné(s), ainsi que du projet parent.</span><br>
+                       <span class="second margin-l50">Les status des documents liés sont également mis à jour.</span>
+                       
+                       <div class="column-bottom-button text-right">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-sem4" ng-click="declotureLot()" ng-disabled="filters.lots.length===0">
+                                    <span class="glyphicon-regular download"></span> {{::'Déclôturer Lot' | translate}}
+                                </button>
+                            </div>
+                       </div>
+                   </div>
+                    
+                    <div class="margin-t20 formBlock" uib-accordion-group is-open="accordions.close_lot">
+                       <uib-accordion-heading>
+                           <span class="pull-left glyphicon-halflings"
+                                   ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordions.close_lot]">&nbsp;</span>
+                           <h5>{{ ::'Clôturer lot(s)' | translate }}</h5>
+                       </uib-accordion-heading>
+                       <span class="second margin-l50">Force la clôture du(des) lot(s) sélectionné(s), du projet parent si nécessaire, et met à jour les status des documents liés</span>
+                       <div class="column-bottom-button text-right">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-sem4" ng-click="closeLot()" ng-disabled="filters.lots.length===0">
+                                    <span class="glyphicon-regular download"></span> {{::'Clôturer Lot' | translate}}
+                                </button>
+                            </div>
+                       </div>
+                   </div>
+                </uib-accordion>
+                
+                <div class="well" ng-show="results.length > 0" translate>Résultats</div>
+                        <div>
+                            <div ng-repeat="r in results" class="col-infinite-scroll">
+                                <div class="list">
+                                    <span class="second">[{{::r.identifier}}]</span>&nbsp;<span class="principal" ng-class="{error: !r.success}">{{::r.msg}} --> {{::r.success?' OK':' Echec' | translate}}</span>
+                                </div>
+                            </div>
+                        </div>    
+
+            </div>
+        </div>
+    </div>
+</div>

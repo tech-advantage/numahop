@@ -1,13 +1,6 @@
 package fr.progilone.pgcn.domain.delivery;
 
-import static fr.progilone.pgcn.service.es.EsConstant.ANALYZER_CI_AI;
-import static fr.progilone.pgcn.service.es.EsConstant.ANALYZER_CI_AS;
-import static fr.progilone.pgcn.service.es.EsConstant.ANALYZER_KEYWORD;
-import static fr.progilone.pgcn.service.es.EsConstant.ANALYZER_PHRASE;
-import static fr.progilone.pgcn.service.es.EsConstant.SUBFIELD_CI_AI;
-import static fr.progilone.pgcn.service.es.EsConstant.SUBFIELD_CI_AS;
-import static fr.progilone.pgcn.service.es.EsConstant.SUBFIELD_PHRASE;
-import static fr.progilone.pgcn.service.es.EsConstant.SUBFIELD_RAW;
+import static fr.progilone.pgcn.service.es.EsConstant.*;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -181,6 +174,9 @@ public class Delivery extends AbstractDomainObject {
 
     @Column(name = "pdf_multi_ok")
     private boolean pdfMultiOK;
+
+    @Column(name = "file_radical_ok")
+    private boolean fileRadicalOK;
 
     @OneToOne(mappedBy = "delivery", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private DeliverySlip deliverySlip;
@@ -457,6 +453,14 @@ public class Delivery extends AbstractDomainObject {
         this.sequentialNumbers = sequentialNumbers;
     }
 
+    public boolean isFileRadicalOK() {
+        return fileRadicalOK;
+    }
+
+    public void setFileRadicalOK(final boolean fileRadicalOK) {
+        this.fileRadicalOK = fileRadicalOK;
+    }
+
     public Set<AutomaticCheckResult> getAutomaticCheckResults() {
         return automaticCheckResults;
     }
@@ -526,7 +530,8 @@ public class Delivery extends AbstractDomainObject {
         DELIVERED_AGAIN,
         DELIVERING_ERROR,
         TREATED,
-        CLOSED
+        CLOSED,
+        CANCELED
     }
 
     public enum DeliveryMethod {

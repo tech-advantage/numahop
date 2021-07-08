@@ -9,15 +9,16 @@ import org.mapstruct.factory.Mappers;
 
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.document.PhysicalDocument;
+import fr.progilone.pgcn.domain.dto.document.MinimalListDocUnitDTO;
 import fr.progilone.pgcn.domain.dto.document.SimpleDocUnitDTO;
 import fr.progilone.pgcn.domain.dto.document.SimpleListDocUnitDTO;
 import fr.progilone.pgcn.domain.dto.train.SimpleTrainDTO;
-import fr.progilone.pgcn.service.library.mapper.LibraryMapper;
+import fr.progilone.pgcn.service.library.mapper.SimpleLibraryMapper;
 import fr.progilone.pgcn.service.lot.mapper.SimpleLotMapper;
 import fr.progilone.pgcn.service.project.mapper.SimpleProjectMapper;
 import fr.progilone.pgcn.service.train.mapper.SimpleTrainMapper;
 
-@Mapper(uses = {LibraryMapper.class, SimpleProjectMapper.class, SimpleLotMapper.class})
+@Mapper(uses = {SimpleLibraryMapper.class, SimpleProjectMapper.class, SimpleLotMapper.class})
 public abstract class SimpleDocUnitMapper {
 
     public static final SimpleDocUnitMapper INSTANCE = Mappers.getMapper(SimpleDocUnitMapper.class);
@@ -26,6 +27,8 @@ public abstract class SimpleDocUnitMapper {
     public abstract SimpleDocUnitDTO docUnitToSimpleDocUnitDTO(DocUnit doc);
 
     public abstract SimpleListDocUnitDTO docUnitToSimpleListDocUnitDTO(DocUnit doc);
+    
+    public abstract MinimalListDocUnitDTO docUnitToMinimalListDocUnitDTO(DocUnit doc);
 
     /**
      * Alimentation des infos concernant la hiérarchie au statut AVAILABLE

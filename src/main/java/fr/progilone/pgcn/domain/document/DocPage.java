@@ -91,6 +91,12 @@ public class DocPage extends AbstractDomainObject {
     @Enumerated(EnumType.STRING)
     private PageStatus status;
 
+    @Column(name = "piece", columnDefinition = "text")
+    private String piece;
+
+    @Column(name = "piece_number")
+    private Integer pieceNumber;
+
     public DigitalDocument getDigitalDocument() {
         return digitalDocument;
     }
@@ -181,6 +187,22 @@ public class DocPage extends AbstractDomainObject {
             this.automaticCheckResults.add(result);
             result.setPage(this);
         }
+    }
+
+    public String getPiece() {
+        return piece;
+    }
+
+    public void setPiece(final String piece) {
+        this.piece = piece;
+    }
+
+    public Integer getPieceNumber() {
+        return pieceNumber;
+    }
+
+    public void setPieceNumber(final Integer pieceNumber) {
+        this.pieceNumber = pieceNumber;
     }
 
     /**

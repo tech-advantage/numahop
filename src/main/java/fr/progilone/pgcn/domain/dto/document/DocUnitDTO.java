@@ -62,6 +62,8 @@ public class DocUnitDTO extends AbstractVersionedDTO {
     private LocalDate answerDate;
     private String omekaExportStatus;
     private LocalDateTime omekaExportDate;
+    private String digLibExportStatus;
+    private LocalDateTime digLibExportDate;
     private OcrLanguageDTO activeOcrLanguage;
     
     // Retours de contrôles
@@ -111,7 +113,7 @@ public class DocUnitDTO extends AbstractVersionedDTO {
         return identifier;
     }
 
-    public final void setIdentifier(final String identifier) {
+    public void setIdentifier(final String identifier) {
         this.identifier = identifier;
     }
 
@@ -119,7 +121,7 @@ public class DocUnitDTO extends AbstractVersionedDTO {
         return library;
     }
 
-    public final void setLibrary(final LibraryDTO library) {
+    public void setLibrary(final LibraryDTO library) {
         this.library = library;
     }
 
@@ -127,7 +129,7 @@ public class DocUnitDTO extends AbstractVersionedDTO {
         return project;
     }
 
-    public final void setProject(final SimpleProjectDTO project) {
+    public void setProject(final SimpleProjectDTO project) {
         this.project = project;
     }
 
@@ -143,7 +145,7 @@ public class DocUnitDTO extends AbstractVersionedDTO {
         return records;
     }
 
-    public final void setRecords(final List<DocUnitBibliographicRecordDTO> records) {
+    public void setRecords(final List<DocUnitBibliographicRecordDTO> records) {
         this.records = records;
     }
 
@@ -151,7 +153,7 @@ public class DocUnitDTO extends AbstractVersionedDTO {
         return pgcnId;
     }
 
-    public final void setPgcnId(final String pgcnId) {
+    public void setPgcnId(final String pgcnId) {
         this.pgcnId = pgcnId;
     }
 
@@ -159,7 +161,7 @@ public class DocUnitDTO extends AbstractVersionedDTO {
         return type;
     }
 
-    public final void setType(final String type) {
+    public void setType(final String type) {
         this.type = type;
     }
 
@@ -167,7 +169,7 @@ public class DocUnitDTO extends AbstractVersionedDTO {
         return archivable;
     }
 
-    public final void setArchivable(final Boolean archivable) {
+    public void setArchivable(final Boolean archivable) {
         this.archivable = archivable;
     }
 
@@ -175,7 +177,7 @@ public class DocUnitDTO extends AbstractVersionedDTO {
         return distributable;
     }
 
-    public final void setDistributable(final Boolean distributable) {
+    public void setDistributable(final Boolean distributable) {
         this.distributable = distributable;
     }
 
@@ -183,7 +185,7 @@ public class DocUnitDTO extends AbstractVersionedDTO {
         return rights;
     }
 
-    public final void setRights(final RightsEnum rights) {
+    public void setRights(final RightsEnum rights) {
         this.rights = rights;
     }
 
@@ -191,7 +193,7 @@ public class DocUnitDTO extends AbstractVersionedDTO {
         return embargo;
     }
 
-    public final void setEmbargo(final LocalDate embargo) {
+    public void setEmbargo(final LocalDate embargo) {
         this.embargo = embargo;
     }
 
@@ -199,7 +201,7 @@ public class DocUnitDTO extends AbstractVersionedDTO {
         return checkDelay;
     }
 
-    public final void setCheckDelay(final Integer checkDelay) {
+    public void setCheckDelay(final Integer checkDelay) {
         this.checkDelay = checkDelay;
     }
 
@@ -207,7 +209,7 @@ public class DocUnitDTO extends AbstractVersionedDTO {
         return checkEndTime;
     }
 
-    public final void setCheckEndTime(final LocalDate checkEndTime) {
+    public void setCheckEndTime(final LocalDate checkEndTime) {
         this.checkEndTime = checkEndTime;
     }
 
@@ -223,7 +225,7 @@ public class DocUnitDTO extends AbstractVersionedDTO {
         return label;
     }
 
-    public final void setLabel(final String label) {
+    public void setLabel(final String label) {
         this.label = label;
     }
 
@@ -510,6 +512,22 @@ public class DocUnitDTO extends AbstractVersionedDTO {
 
     public void setOmekaExportDate(final LocalDateTime omekaExportDate) {
         this.omekaExportDate = omekaExportDate;
+    }
+
+    public String getDigLibExportStatus() {
+        return digLibExportStatus;
+    }
+
+    public void setDigLibExportStatus(final String digLibExportStatus) {
+        this.digLibExportStatus = digLibExportStatus;
+    }
+
+    public LocalDateTime getDigLibExportDate() {
+        return digLibExportDate;
+    }
+
+    public void setDigLibExportDate(final LocalDateTime digLibExportDate) {
+        this.digLibExportDate = digLibExportDate;
     }
 
     public OcrLanguageDTO getActiveOcrLanguage() {

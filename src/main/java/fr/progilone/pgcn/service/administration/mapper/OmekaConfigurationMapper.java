@@ -15,14 +15,14 @@ import fr.progilone.pgcn.domain.administration.omeka.OmekaConfiguration;
 import fr.progilone.pgcn.domain.administration.omeka.OmekaList.ListType;
 import fr.progilone.pgcn.domain.dto.administration.omeka.OmekaConfigurationDTO;
 import fr.progilone.pgcn.domain.dto.administration.omeka.OmekaListDTO;
-import fr.progilone.pgcn.service.library.mapper.LibraryMapper; 
+import fr.progilone.pgcn.service.library.mapper.SimpleLibraryMapper; 
 
 /**
  *
  * @author Progilone 
  * Créé le 29 aout 2018
  */
-@Mapper(uses = {LibraryMapper.class, OmekaListMapper.class})
+@Mapper(uses = {SimpleLibraryMapper.class, OmekaListMapper.class})
 public abstract class OmekaConfigurationMapper {
 
     public static final OmekaConfigurationMapper INSTANCE = Mappers.getMapper(OmekaConfigurationMapper.class);

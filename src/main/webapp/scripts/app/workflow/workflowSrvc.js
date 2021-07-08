@@ -90,6 +90,27 @@
                         params: {
                             'massValidate': true
                         } 
+                    },
+                    endAllDocWorkflows: {
+                        method: 'POST',
+                        isArray: false,
+                        params: {
+                            endAllDocWorkflows: true
+                        } 
+                    },
+                    validDocWorkflowState: {
+                        method: 'POST',
+                        isArray: false,
+                        params: {
+                            validDocWorkflowState: true
+                        } 
+                    },
+                    reinitDocWorkflowState: {
+                        method: 'POST',
+                        isArray: false,
+                        params: {
+                            reinitDocWorkflowState: true
+                        } 
                     }
                 });
 
@@ -113,8 +134,31 @@
                 "ARCHIVAGE_DOCUMENT",
                 "DIFFUSION_DOCUMENT",
                 "DIFFUSION_DOCUMENT_OMEKA",
+                "DIFFUSION_DOCUMENT_DIGITAL_LIBRARY",
                 "DIFFUSION_DOCUMENT_LOCALE",
                 "CLOTURE_DOCUMENT"];
+            
+            service.statesToForceValid = [
+                "VALIDATION_CONSTAT_ETAT",
+                "CONTROLE_QUALITE_EN_COURS",
+                "PREREJET_DOCUMENT",
+                "PREVALIDATION_DOCUMENT",
+                "VALIDATION_DOCUMENT",
+                "VALIDATION_NOTICES",
+                "RAPPORT_CONTROLES",
+                "ARCHIVAGE_DOCUMENT",
+                "DIFFUSION_DOCUMENT",
+                "DIFFUSION_DOCUMENT_OMEKA",
+                "DIFFUSION_DOCUMENT_DIGITAL_LIBRARY",
+                "DIFFUSION_DOCUMENT_LOCALE",
+                "CLOTURE_DOCUMENT"];
+            
+            service.statesToForceReinit = [
+                "VALIDATION_CONSTAT_ETAT",
+                "PREREJET_DOCUMENT",
+                "PREVALIDATION_DOCUMENT",
+                "VALIDATION_DOCUMENT",
+                "VALIDATION_NOTICES"];
 
             service.status = [
                 "NOT_STARTED",
@@ -127,6 +171,8 @@
                 "WAITING_NEXT_COMPLETED",
                 "SKIPPED",
                 "FINISHED"];
+            
+            
 
             service.getConfigStatus = function () {
                 return _.map(service.status, function (st) {
@@ -138,6 +184,22 @@
             };
             service.getConfigWorkflow = function () {
                 return _.map(service.states, function (state) {
+                    return {
+                        identifier: state,
+                        label: codeSrvc['workflow.model.' + state] || state
+                    };
+                });
+            };
+            service.getAdminStatesToValid = function () {
+                return _.map(service.statesToForceValid, function (state) {
+                    return {
+                        identifier: state,
+                        label: codeSrvc['workflow.model.' + state] || state
+                    };
+                });
+            };
+            service.getAdminStatesToReinit = function () {
+                return _.map(service.statesToForceReinit, function (state) {
                     return {
                         identifier: state,
                         label: codeSrvc['workflow.model.' + state] || state

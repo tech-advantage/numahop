@@ -1,10 +1,6 @@
 package fr.progilone.pgcn.web.rest.document.conditionreport;
 
-import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.COND_REPORT_HAB0;
-import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.COND_REPORT_HAB1;
-import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.COND_REPORT_HAB2;
-import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.COND_REPORT_HAB3;
-import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.COND_REPORT_HAB4;
+import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -353,7 +349,7 @@ public class ConditionReportController extends AbstractRestController {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             } else {
                 LOG.info("Import du fichier {} (taille {})", file.getOriginalFilename(), file.getSize());
-                try (InputStream in = file.getInputStream()) {
+                try (final InputStream in = file.getInputStream()) {
                     final List<ConditionReportImportService.ImportResult> importResults =
                         conditionReportImportService.importReport(in, docUnit -> accessHelper.checkDocUnit(docUnit.getIdentifier()));
                     // Indexation des constats importés
@@ -396,7 +392,7 @@ public class ConditionReportController extends AbstractRestController {
         } 
         final Map<String, String> results = conditionReportService.propagateReport(docUnitId, detailId);
         // es indexation des nouveaux reports 
-        esConditionReportService.indexAsync(results.keySet().stream().collect(Collectors.toList()));
+        esConditionReportService.indexAsync(new ArrayList<>(results.keySet()));
 
         return new ResponseEntity<>(results.values(), HttpStatus.OK);
     }
@@ -426,11 +422,11 @@ public class ConditionReportController extends AbstractRestController {
 
         public List<String> getProjects() { return projects; }
 
-        public void setProjects(List<String> projects) { this.projects = projects; }
+        public void setProjects(final List<String> projects) { this.projects = projects; }
 
         public List<String> getLots() { return lots; }
 
-        public void setLots(List<String> lots) { this.lots = lots; }
+        public void setLots(final List<String> lots) { this.lots = lots; }
 
         public DimensionFilter.Operator getOp() {
             return op;

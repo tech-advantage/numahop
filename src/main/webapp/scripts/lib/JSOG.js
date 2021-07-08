@@ -20,11 +20,7 @@
         sofar = {};
         idOf = function(obj) {
             if (!isDefined(obj.__jsogObjectId)) {
-                if (isDefined(obj.identifier)) {
-                    obj.__jsogObjectId = obj.identifier;
-                } else {
-                    obj.__jsogObjectId = "" + (nextId++);
-                }
+                obj.__jsogObjectId = "" + (nextId++);
             }
             return obj.__jsogObjectId;
         };

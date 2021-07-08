@@ -1,9 +1,6 @@
 package fr.progilone.pgcn.web.rest.document;
 
-import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.DOC_UNIT_HAB0;
-import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.DOC_UNIT_HAB1;
-import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.DOC_UNIT_HAB2;
-import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.DOC_UNIT_HAB3;
+import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -131,7 +128,7 @@ public class BibliographicRecordController extends AbstractRestController {
         filteredRecords.forEach(record -> {
             // Droit par rapport au workflow
             final DocUnit doc = bibliographicRecordService.findDocUnitByIdentifier(record.getIdentifier());
-            if (workflowAccessHelper.canRecordBeModified(doc.getIdentifier())) {
+            if (doc == null || workflowAccessHelper.canRecordBeModified(doc.getIdentifier())) {
                 filteredByWorkflow.add(record);
             }
         });

@@ -140,7 +140,8 @@ services:
         xsd:
            sip: /opt/pgcn/xsd/sip.xsd
     archive:
-        alto: /opt/pgcn/archive/alto           
+        alto: /opt/pgcn/archive/alto
+        text: /opt/pgcn/archive/text        
     metaDatas:
         path: /opt/pgcn/metadatas
     deliveryreporting:
@@ -149,4 +150,5 @@ services:
         cache: /opt/pgcn/omeka/cache
     ftpexport:
         cache: /opt/pgcn/ftpexport/cache        
-
+    digitalLibraryDiffusion:
+        cache: /opt/pgcn/digitalLibraryDiffusion/cache

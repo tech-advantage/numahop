@@ -123,6 +123,20 @@ public final class AuthorizationConstants {
      * Habilitation configuration OMEKA: supprimer
      */
     public static final String CONF_DIFFUSION_OMEKA_HAB2 = "CONF-DIFFUSION-OMEKA-HAB2";
+
+    /**
+     * Habilitation configuration bibliothèque numérique: lecture
+     */
+    public static final String CONF_DIFFUSION_DIGITAL_LIBRARY_HAB0 = "CONF-DIFFUSION-DIGITAL-LIBRARY-HAB0";
+
+    /**
+     * Habilitation configuration bibliothèque numérique: créer / modifier
+     */
+    public static final String CONF_DIFFUSION_DIGITAL_LIBRARY_HAB1 = "CONF-DIFFUSION-DIGITAL-LIBRARY-HAB1";
+    /**
+     * Habilitation configuration bibliothèque numérique: supprimer
+     */
+    public static final String CONF_DIFFUSION_DIGITAL_LIBRARY_HAB2 = "CONF-DIFFUSION-DIGITAL-LIBRARY-HAB2";
     
     /**
      * Habilitation serveurs Z39.50: lecture
@@ -152,6 +166,8 @@ public final class AuthorizationConstants {
         AuthorizationManager.setRequirements(CONF_INTERNET_ARCHIVE_HAB2, CONF_INTERNET_ARCHIVE_HAB0);
         AuthorizationManager.setRequirements(CONF_DIFFUSION_OMEKA_HAB1, CONF_DIFFUSION_OMEKA_HAB0);
         AuthorizationManager.setRequirements(CONF_DIFFUSION_OMEKA_HAB2, CONF_DIFFUSION_OMEKA_HAB0);
+        AuthorizationManager.setRequirements(CONF_DIFFUSION_DIGITAL_LIBRARY_HAB1, CONF_DIFFUSION_DIGITAL_LIBRARY_HAB0);
+        AuthorizationManager.setRequirements(CONF_DIFFUSION_DIGITAL_LIBRARY_HAB2, CONF_DIFFUSION_DIGITAL_LIBRARY_HAB0);
         AuthorizationManager.setRequirements(Z3950_HAB1, Z3950_HAB0);
         AuthorizationManager.setRequirements(Z3950_HAB2, Z3950_HAB0);
     }

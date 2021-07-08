@@ -51,7 +51,9 @@
             { code: "DESCRIPTION", label: gettextCatalog.getString("Description du document") },
             { code: "NUMBERING", label: gettextCatalog.getString("Numérotation") },
             { code: "BINDING", label: gettextCatalog.getString("État de la reliure") },
-            { code: "VIGILANCE", label: gettextCatalog.getString("Points de vigilance") }
+            { code: "VIGILANCE", label: gettextCatalog.getString("Points de vigilance") },
+            { code: "STATE", label: gettextCatalog.getString("État du document") },
+            { code: "TYPE", label: gettextCatalog.getString("Type de document") }
         ];
 
         service.getType = function (code) {

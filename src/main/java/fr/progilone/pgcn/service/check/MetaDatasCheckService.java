@@ -4,12 +4,12 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +23,9 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOCase;
+import org.apache.commons.io.filefilter.RegexFileFilter;
+import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.pdfbox.io.RandomAccessFile;
 import org.apache.pdfbox.pdfparser.PDFParser;
@@ -226,14 +229,11 @@ public class MetaDatasCheckService {
                 for (final File directory : subDirectories) {
                     // idDoc correspond au prefix => on ne cherche que ds les directories du document.
                     if (StringUtils.containsIgnoreCase(directory.getName(), idDoc)) {
-                        final File[] metaDataFiles = directory.listFiles(new FilenameFilter() {
-                            @Override
-                            public boolean accept(final File dir, final String name) {
-                                return StringUtils.equalsIgnoreCase(name, fileName);
-                            }
-                        });
-                        if (metaDataFiles != null && metaDataFiles.length > 0) {
-                            mdFiles.addAll(Arrays.asList(metaDataFiles));
+                        final Collection<File> metaDataFiles = FileUtils.listFiles(directory,
+                                                                                   new RegexFileFilter(fileName, IOCase.SENSITIVE),
+                                                                                   TrueFileFilter.TRUE);
+                        if (metaDataFiles.size() > 0) {
+                            mdFiles.addAll(metaDataFiles);
                         }
                     }
                 }
@@ -257,14 +257,11 @@ public class MetaDatasCheckService {
         final List<File> mdFiles = new ArrayList<>();
         listNames.forEach((fileName) -> {
             for (final File directory : subDirectories) {
-                final File[] metaDataFiles = directory.listFiles(new FilenameFilter() {
-                    @Override
-                    public boolean accept(final File dir, final String name) {
-                        return StringUtils.equalsIgnoreCase(name, fileName);
-                    }
-                });
-                if (metaDataFiles != null && metaDataFiles.length > 0) {
-                    mdFiles.addAll(Arrays.asList(metaDataFiles));
+                final Collection<File> metaDataFiles = FileUtils.listFiles(directory,
+                                                                           new RegexFileFilter(fileName, IOCase.SENSITIVE),
+                                                                           TrueFileFilter.TRUE);
+                if (metaDataFiles.size() > 0) {
+                    mdFiles.addAll(metaDataFiles);
                 }
             }
         });

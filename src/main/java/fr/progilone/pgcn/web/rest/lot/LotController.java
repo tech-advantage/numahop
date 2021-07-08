@@ -1,24 +1,21 @@
 package fr.progilone.pgcn.web.rest.lot;
 
-import com.codahale.metrics.annotation.Timed;
-import fr.progilone.pgcn.domain.AbstractDomainObject;
-import fr.progilone.pgcn.domain.dto.audit.AuditLotRevisionDTO;
-import fr.progilone.pgcn.domain.dto.lot.LotDTO;
-import fr.progilone.pgcn.domain.dto.lot.LotListDTO;
-import fr.progilone.pgcn.domain.dto.lot.LotWithConfigRulesDTO;
-import fr.progilone.pgcn.domain.dto.lot.SimpleLotDTO;
-import fr.progilone.pgcn.domain.lot.Lot;
-import fr.progilone.pgcn.exception.PgcnException;
-import fr.progilone.pgcn.exception.PgcnTechnicalException;
-import fr.progilone.pgcn.service.JasperReportsService;
-import fr.progilone.pgcn.service.es.EsLotService;
-import fr.progilone.pgcn.service.lot.LotService;
-import fr.progilone.pgcn.service.lot.ui.UILotService;
-import fr.progilone.pgcn.service.workflow.WorkflowService;
-import fr.progilone.pgcn.web.rest.AbstractRestController;
-import fr.progilone.pgcn.web.util.AccessHelper;
-import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
-import fr.progilone.pgcn.web.util.WorkflowAccessHelper;
+import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.*;
+import static fr.progilone.pgcn.web.rest.lot.security.AuthorizationConstants.*;
+
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.annotation.security.RolesAllowed;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,19 +33,28 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import com.codahale.metrics.annotation.Timed;
 
-import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.*;
-import static fr.progilone.pgcn.web.rest.lot.security.AuthorizationConstants.*;
+import fr.progilone.pgcn.domain.AbstractDomainObject;
+import fr.progilone.pgcn.domain.dto.audit.AuditLotRevisionDTO;
+import fr.progilone.pgcn.domain.dto.lot.LotDTO;
+import fr.progilone.pgcn.domain.dto.lot.LotListDTO;
+import fr.progilone.pgcn.domain.dto.lot.LotWithConfigRulesDTO;
+import fr.progilone.pgcn.domain.dto.lot.ResultAdminLotDTO;
+import fr.progilone.pgcn.domain.dto.lot.SimpleLotDTO;
+import fr.progilone.pgcn.domain.lot.Lot;
+import fr.progilone.pgcn.exception.PgcnException;
+import fr.progilone.pgcn.exception.PgcnTechnicalException;
+import fr.progilone.pgcn.service.JasperReportsService;
+import fr.progilone.pgcn.service.es.EsLotService;
+import fr.progilone.pgcn.service.lot.LotService;
+import fr.progilone.pgcn.service.lot.ui.UILotService;
+import fr.progilone.pgcn.service.workflow.WorkflowService;
+import fr.progilone.pgcn.web.rest.AbstractRestController;
+import fr.progilone.pgcn.web.rest.administration.security.AuthorizationConstants;
+import fr.progilone.pgcn.web.util.AccessHelper;
+import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
+import fr.progilone.pgcn.web.util.WorkflowAccessHelper;
 
 @RestController
 @RequestMapping(value = "/api/rest/lot")
@@ -138,7 +144,7 @@ public class LotController extends AbstractRestController {
     @Timed
     @RolesAllowed({LOT_HAB3})
     public ResponseEntity<Page<SimpleLotDTO>> search(final HttpServletRequest request,
-                                                     @RequestBody SearchRequest requestParams,
+                                                     @RequestBody final SearchRequest requestParams,
                                                      @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
                                                      @RequestParam(value = "size", required = false, defaultValue = "10") final Integer size,
                                                      @RequestParam(value = "sorts", required = false) final List<String> sorts) {
@@ -202,13 +208,29 @@ public class LotController extends AbstractRestController {
 
     @RequestMapping(method = RequestMethod.GET, params = {"dto", "libraries"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<Collection<LotListDTO>> findAllByLibraries(@RequestParam(required = false) final List<String> libraries) {
+    public ResponseEntity<Collection<LotListDTO>> findAllActiveByLibraries(@RequestParam(required = false) final List<String> libraries) {
         final Collection<LotListDTO> lots = uiLotService.findAllByLibraryIn(libraries);
         final Collection<LotListDTO> filteredLots = filterLotDTOs(lots, LotListDTO::getIdentifier);
         return createResponseEntity(filteredLots);
     }
 
     @RequestMapping(method = RequestMethod.GET, params = {"dto", "projects"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<Collection<LotListDTO>> findAllActiveByProjects(@RequestParam(required = false) final List<String> projects) {
+        final Collection<LotListDTO> lots = uiLotService.findAllByProjectIn(projects);
+        final Collection<LotListDTO> filteredLots = filterLotDTOs(lots, LotListDTO::getIdentifier);
+        return createResponseEntity(filteredLots);
+    }
+    
+    @RequestMapping(method = RequestMethod.GET, params = {"dto", "complete", "libraries"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<Collection<LotListDTO>> findAllByLibraries(@RequestParam(required = false) final List<String> libraries) {
+        final Collection<LotListDTO> lots = uiLotService.findAllByLibraryIn(libraries);
+        final Collection<LotListDTO> filteredLots = filterLotDTOs(lots, LotListDTO::getIdentifier);
+        return createResponseEntity(filteredLots);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, params = {"dto", "complete", "projects"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<Collection<LotListDTO>> findAllByProjects(@RequestParam(required = false) final List<String> projects) {
         final Collection<LotListDTO> lots = uiLotService.findAllByProjectIn(projects);
@@ -402,6 +424,46 @@ public class LotController extends AbstractRestController {
             throw new PgcnTechnicalException(e);
         }
     }
+    
+    /**
+     * Force la cloture des lots en parametre (si possible).
+     * 
+     * @param lotsIds
+     */
+    @RequestMapping(method = RequestMethod.POST, params = {"cloturelot"})
+    @Timed
+    @RolesAllowed(AuthorizationConstants.SUPER_ADMIN)
+    public ResponseEntity<List<ResultAdminLotDTO>> closeLot(@RequestBody final List<String> lotsIds) {
+        
+        final List<ResultAdminLotDTO> results = new ArrayList<>();
+        lotsIds.stream()
+                .forEach(id -> {
+                    
+                    results.add(lotService.preClotureLot(id));
+                    esLotService.indexAsync(id);
+                });
+        return new ResponseEntity<>(results, HttpStatus.OK);
+    }
+    
+    
+    /**
+     * Force la reouverture de lots clotures en parametre.
+     * 
+     * @param lotsIds
+     */
+    @RequestMapping(method = RequestMethod.POST, params = {"decloturelot"})
+    @Timed
+    @RolesAllowed(AuthorizationConstants.SUPER_ADMIN)
+    public ResponseEntity<List<ResultAdminLotDTO>> declotureLot(@RequestBody final List<String> lotsIds) {
+        final List<ResultAdminLotDTO> results = new ArrayList<>();
+        lotsIds.stream()
+                .forEach(id -> { 
+                    results.add(lotService.declotureLot(id));
+                    esLotService.indexAsync(id);
+                });
+        return new ResponseEntity<>(results, HttpStatus.OK);
+    }
+    
 
     /**
      * Filtrage d'une liste de LotDTO sur les droits d'accès de l'utilisateur

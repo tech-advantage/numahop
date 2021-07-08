@@ -38,6 +38,7 @@ public class RapportsControleState extends DocUnitState {
             states.add(getWorkflow().getFutureOrRunningByKey(WorkflowStateKey.ARCHIVAGE_DOCUMENT));
             states.add(getWorkflow().getFutureOrRunningByKey(WorkflowStateKey.DIFFUSION_DOCUMENT));
             states.add(getWorkflow().getFutureOrRunningByKey(WorkflowStateKey.DIFFUSION_DOCUMENT_OMEKA));
+            states.add(getWorkflow().getFutureOrRunningByKey(WorkflowStateKey.DIFFUSION_DOCUMENT_DIGITAL_LIBRARY));
             states.add(getWorkflow().getFutureOrRunningByKey(WorkflowStateKey.DIFFUSION_DOCUMENT_LOCALE));
         }
         cleanNullStates(states);

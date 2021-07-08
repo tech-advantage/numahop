@@ -53,7 +53,7 @@ public class UserCreationDTO extends UserDTO {
 		return password;
 	}
 
-	public final void setPassword(String password) {
+	public void setPassword(String password) {
 		this.password = password;
 	}
 

@@ -142,7 +142,9 @@ public class Z3950Controller extends AbstractRestController {
                                                      importReport,
                                                      stepValidation,
                                                      stepDeduplication,
-                                                     stepDeduplication ? defaultDedupProcess : null);
+                                                     stepDeduplication ? defaultDedupProcess : null,
+                                                     false,
+                                                     false);
                 return new ResponseEntity<>(importReport, HttpStatus.OK);
 
             } catch (final Exception e) {

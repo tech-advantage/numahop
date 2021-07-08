@@ -1,6 +1,6 @@
 package fr.progilone.pgcn.service.storage;
 
-import java.awt.Dimension;
+import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -267,7 +267,7 @@ public class BinaryStorageManager {
                 }
             } else {
                 // MASTERS
-                Optional<Map<String, String>> meta;
+                final Optional<Map<String, String>> meta;
                 // get metadatas of masters.
                 if (fileMetadatas == null) {
                     try {
@@ -285,9 +285,7 @@ public class BinaryStorageManager {
                                 .findFirst();
                 }
 
-                if (meta.isPresent()) {
-                    setMetadatas(meta.get(), storedFile);
-                }
+                meta.ifPresent(stringStringMap -> setMetadatas(stringStringMap, storedFile));
                 // text d'OCR s'il existe.
                 if ( ocrByPage.isPresent()) {
                     if ( ocrByPage.get().containsKey(page.getNumber())
@@ -485,7 +483,7 @@ public class BinaryStorageManager {
 
         // On evite ImageIO.read car + couteux (lecture de tout le fichier)...
         Dimension dim = null;
-        String typeMime;
+        final String typeMime;
         if (mimeType.isPresent()) {
             typeMime = mimeType.get();
         } else {
@@ -579,21 +577,27 @@ public class BinaryStorageManager {
         final Map<String, File> infos = storageInfos.get(library);
         if (infos != null) {
             return infos.get("tmpDir");
-        } else throw new RuntimeException("Bibliotheque non autorisee!");
+        } else {
+            throw new RuntimeException("Bibliotheque non autorisee!");
+        }
     }
     
     public File getStorageDir(final String library) {
         final Map<String, File> infos = storageInfos.get(library);
         if (infos != null) {
             return infos.get("storageDir");
-        } else throw new RuntimeException("Bibliotheque non autorisee!");    
+        } else {
+            throw new RuntimeException("Bibliotheque non autorisee!");
+        }
     }
     
     private File getFilesStorageDir(final String library) {
         final Map<String, File> infos = storageInfos.get(library);
         if (infos != null) {
             return infos.get("filesStorageDir");
-        } else throw new RuntimeException("Bibliotheque non autorisee!");    
+        } else {
+            throw new RuntimeException("Bibliotheque non autorisee!");
+        }
     }
     
     private String getUserLibraryId() {
@@ -747,7 +751,7 @@ public class BinaryStorageManager {
             // Do a copy through a tmp file on the same filesystem then
             // atomic rename.
             final File tmp = File.createTempFile(dest.getName(), ".tmp", dest.getParentFile());
-            try (InputStream in = new FileInputStream(source); OutputStream out = new FileOutputStream(tmp)) {
+            try (final InputStream in = new FileInputStream(source); final OutputStream out = new FileOutputStream(tmp)) {
                 IOUtils.copy(in, out);
             } finally {
                 // then do the atomic rename
@@ -793,7 +797,7 @@ public class BinaryStorageManager {
         PNG(".png"),
         JPG(".jpg");
 
-        private String extension;
+        private final String extension;
 
         FileExtension(final String extension) {
             this.extension = extension;
@@ -829,7 +833,7 @@ public class BinaryStorageManager {
                         });            
                   
             stream.close();
-        } catch (IOException | SecurityException e) {
+        } catch (final IOException | SecurityException e) {
             LOG.error("Erreur lors de la suppression des fichiers binaires dans {}", dest.toAbsolutePath().toString(), e);
         }
         

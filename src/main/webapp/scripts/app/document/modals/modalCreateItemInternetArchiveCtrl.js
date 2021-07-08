@@ -19,6 +19,14 @@
         mainCtrl.removeCollection = removeCollection;
         mainCtrl.addHeader = addHeader;
         mainCtrl.removeHeader = removeHeader;
+        mainCtrl.addCoverage = addCoverage;
+        mainCtrl.removeCoverage = removeCoverage;
+        mainCtrl.addContributor = addContributor;
+        mainCtrl.removeContributor = removeContributor;
+        mainCtrl.addCreator = addCreator;
+        mainCtrl.removeCreator = removeCreator;
+        mainCtrl.addLanguage = addLanguage;
+        mainCtrl.removeLanguage = removeLanguage;
 
         mainCtrl.options = DocUnitBaseService.options;
         mainCtrl.options.mediatypes = [{ id: 1, name: "texts" }, { id: 2, name: "image" }, { id: 3, name: "collection" }, { id: 4, name: "autre" }];
@@ -123,6 +131,87 @@
             }
         }
 
+
+        /**
+         * Gestion des coverages
+         */
+        function addCoverage(coverage) {
+            if (angular.isDefined(coverage)) {
+                if (mainCtrl.item.coverages.indexOf(coverage) === -1) {
+                    mainCtrl.item.coverages.push(coverage);
+                    mainCtrl.item.newCoverage = "";
+                }
+            }
+        }
+        function removeCoverage(coverage) {
+            if (angular.isDefined(coverage)) {
+                var index = mainCtrl.item.coverages.indexOf(coverage);
+                if (index > -1) {
+                    mainCtrl.item.coverages.splice(index, 1);
+                }
+            }
+        }
+
+        /**
+         * Gestion des contributors
+         */
+        function addContributor(contributor) {
+            if (angular.isDefined(contributor)) {
+                if (mainCtrl.item.contributors.indexOf(contributor) === -1) {
+                    mainCtrl.item.contributors.push(contributor);
+                    mainCtrl.item.newContributor = "";
+                }
+            }
+        }
+        function removeContributor(contributor) {
+            if (angular.isDefined(contributor)) {
+                var index = mainCtrl.item.contributors.indexOf(contributor);
+                if (index > -1) {
+                    mainCtrl.item.contributors.splice(index, 1);
+                }
+            }
+        }
+
+        /**
+         * Gestion des creators
+         */
+        function addCreator(creator) {
+            if (angular.isDefined(creator)) {
+                if (mainCtrl.item.creators.indexOf(creator) === -1) {
+                    mainCtrl.item.creators.push(creator);
+                    mainCtrl.item.newCreator = "";
+                }
+            }
+        }
+        function removeCreator(creator) {
+            if (angular.isDefined(creator)) {
+                var index = mainCtrl.item.creators.indexOf(creator);
+                if (index > -1) {
+                    mainCtrl.item.creators.splice(index, 1);
+                }
+            }
+        }
+
+        /**
+         * Gestion des languages
+         */
+        function addLanguage(langauge) {
+            if (angular.isDefined(langauge)) {
+                if (mainCtrl.item.languages.indexOf(langauge) === -1) {
+                    mainCtrl.item.languages.push(langauge);
+                    mainCtrl.item.newLangauge = "";
+                }
+            }
+        }
+        function removeLanguage(langauge) {
+            if (angular.isDefined(langauge)) {
+                var index = mainCtrl.item.languages.indexOf(langauge);
+                if (index > -1) {
+                    mainCtrl.item.languages.splice(index, 1);
+                }
+            }
+        }
+
         function setMediaTypeOfItemBeforeSaving(item) {
             mainCtrl.item.mediatype = item._mediatype.name;
         }
@@ -162,7 +251,7 @@
             }, mainCtrl.item, function () {
                 MessageSrvc.addSuccess(
                     gettextCatalog.getString("Les données d'export IA pour l'unité documentaire {{label}} ont été sauvegardées"),
-                    { label: mainCtrl.item.identifier });
+                    { label: mainCtrl.item.archiveIdentifier });
             });
         }
 

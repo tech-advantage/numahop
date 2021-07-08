@@ -305,10 +305,17 @@ public class AutomaticCheckService {
                                                             final List<String> fileNames,
                                                             final AutomaticCheckRule fileFormatRule) {
         result.setResult(AutoCheckResult.OK);
-        fileNames.addAll(findMastersOnly(files, format));
-        if (fileFormatRule.isActive() && fileNames.isEmpty()) {
-            result.setResult(fileFormatRule.isBlocking() ? AutoCheckResult.KO : AutoCheckResult.OTHER);
-            result.setMessage("Aucun fichier ne correspond au format attendu : " + format);
+        if (!files.isEmpty()) {
+            fileNames.addAll(findMastersOnly(files, format));
+            if (fileFormatRule.isActive() && fileNames.isEmpty()) {
+                result.setResult(fileFormatRule.isBlocking() ? AutoCheckResult.KO : AutoCheckResult.OTHER);
+                result.setMessage("Aucun fichier ne correspond au format attendu : " + format);
+            }
+        } else {
+            if (fileFormatRule.isActive()) {
+                result.setResult(fileFormatRule.isBlocking() ? AutoCheckResult.KO : AutoCheckResult.OTHER);
+                result.setMessage("Aucun fichier trouvé pour contrôler le format");
+            }
         }
         return save(result);
     }
@@ -334,9 +341,7 @@ public class AutomaticCheckService {
                                                           final String seqSeparator) {
         result.setResult(AutoCheckResult.OK);
         if (bibPrefixRule.isActive()) {
-            fileNames.stream().filter(name -> !StringUtils.startsWithIgnoreCase(name, bibPrefix.concat(seqSeparator))).forEach(name -> {
-                result.addErrorFile(name);
-            });
+            fileNames.stream().filter(name -> !StringUtils.startsWithIgnoreCase(name, bibPrefix.concat(seqSeparator))).forEach(result::addErrorFile);
         }
         if (CollectionUtils.isNotEmpty(result.getErrorFiles())) {
             result.setResult(bibPrefixRule.isBlocking() ? AutoCheckResult.KO : AutoCheckResult.OTHER);
@@ -842,52 +847,70 @@ public class AutomaticCheckService {
                                                     final AutomaticCheckRule fileSeqRule,
                                                     final boolean bibPrefixMandatory,
                                                     final String seqSeparator,
-                                                    final boolean isPdfDelivery) {
+                                                    final boolean isPdfDelivery,
+                                                    final boolean isJustOneEstampe,
+                                                    final String prefix) {
         result.setResult(AutoCheckResult.OK);
-        final List<Integer> fileNumbers = new ArrayList<>();
+        final Map<String, List<Integer>> filePiecesNumbers = new HashMap<>();
         final List<String> handledNames = new ArrayList<>();
         // on recupere les splitNames systematiquement.
         for (final String name : fileNames) {
-            SplitFilename splitName;
+            final SplitFilename splitName;
             try {
-                splitName = SplitFilename.split(name, splitNames, bibPrefixMandatory, seqSeparator, isPdfDelivery);
+                splitName = SplitFilename.split(name, splitNames, bibPrefixMandatory, seqSeparator, isPdfDelivery, isJustOneEstampe, prefix);
             } catch (final PgcnTechnicalException e) {
                 LOG.warn(e.getMessage()); // NOSONAR
                 continue;
             }
             // ajout du numéro de séquence
-            fileNumbers.add(splitName.getNumber());
+            if (filePiecesNumbers.containsKey(splitName.getPiece())) {
+                filePiecesNumbers.get(splitName.getPiece()).add(splitName.getNumber());
+            } else {
+                final List<Integer> numbers = new ArrayList<>(Collections.singletonList(splitName.getNumber()));
+                filePiecesNumbers.put(splitName.getPiece(), numbers);
+            }
             handledNames.add(name);
         }
-        // par contre, on ne verifie la sequence que si le controle est actif.
-        if (fileSeqRule.isActive()) {
+        // par contre, on ne verifie la sequence que si le controle est actif et que ce n'est pas 1 estampe unique non sequencée.
+        if (fileSeqRule.isActive() && !isJustOneEstampe ) {
             // vérification numéros en séquence
-            Collections.sort(fileNumbers);
-            if (!fileNumbers.isEmpty()) {
-                // On vérifie que la séquence commence par 0 ou 1
-                if (fileNumbers.get(0) != 0 && fileNumbers.get(0) != 1) {
-                    result.setResult(fileSeqRule.isBlocking() ? AutoCheckResult.KO : AutoCheckResult.OTHER);
-                    result.setMessage("Séquence erronée : elle doit commencer par 0 ou 1");
-                } else {
-                    // Remise en ordre de la pagination au besoin
-                    if (fileNumbers.get(0) == 0) {
-                        handledNames.forEach(key -> {
-                            if (splitNames.get(key).isPresent()) {
-                                splitNames.get(key).get().setNumber(splitNames.get(key).get().getNumber() + 1);
+            for (final Map.Entry<String, List<Integer>> entry : filePiecesNumbers.entrySet()) {
+                final List<Integer> fileNumbers = entry.getValue();
+                Collections.sort(fileNumbers);
+                if (!fileNumbers.isEmpty()) {
+                    // On vérifie que la séquence commence par 0 ou 1
+                    if (fileNumbers.get(0) != 0 && fileNumbers.get(0) != 1) {
+                        result.setResult(fileSeqRule.isBlocking() ? AutoCheckResult.KO : AutoCheckResult.OTHER);
+                        result.setMessage("Séquence erronée : elle doit commencer par 0 ou 1"
+                                          + " pour la pièce "
+                                          + entry.getKey());
+                    } else {
+                        // Remise en ordre de la pagination au besoin
+                        if (fileNumbers.get(0) == 0) {
+                            handledNames.forEach(key -> {
+                                if (splitNames.get(key).isPresent()) {
+                                    splitNames.get(key).get().setNumber(splitNames.get(key).get().getNumber() + 1);
+                                }
+                            });
+                        }
+                        for (int i = 1; i < fileNumbers.size(); i++) {
+                            if (fileNumbers.get(i) != fileNumbers.get(i - 1) + 1) {
+                                result.setResult(fileSeqRule.isBlocking() ? AutoCheckResult.KO : AutoCheckResult.OTHER);
+                                result.setMessage("Séquence erronée entre " + fileNumbers.get(i - 1)
+                                                  + " et "
+                                                  + fileNumbers.get(i)
+                                                  + " pour la pièce "
+                                                  + entry.getKey());
+                                break;
                             }
-                        });
-                    }
-                    for (int i = 1; i < fileNumbers.size(); i++) {
-                        if (fileNumbers.get(i) != fileNumbers.get(i - 1) + 1) {
-                            result.setResult(fileSeqRule.isBlocking() ? AutoCheckResult.KO : AutoCheckResult.OTHER);
-                            result.setMessage("Séquence erronée entre " + fileNumbers.get(i - 1) + " et " + fileNumbers.get(i));
-                            break;
                         }
                     }
+                } else {
+                    result.setResult(fileSeqRule.isBlocking() ? AutoCheckResult.KO : AutoCheckResult.OTHER);
+                    result.setMessage("Contrôle de séquence impossible : aucune séquence trouvée"
+                                      + " pour la pièce "
+                                      + entry.getKey());
                 }
-            } else {
-                result.setResult(fileSeqRule.isBlocking() ? AutoCheckResult.KO : AutoCheckResult.OTHER);
-                result.setMessage("Contrôle de séquence impossible : aucune séquence trouvée");
             }
         }
         return save(result);
@@ -896,18 +919,11 @@ public class AutomaticCheckService {
     /**
      * Vérification de la conformité entre le nombre de pages attendu (doc physique)
      * et le nombre de pages reçues
-     *
-     * @param result
-     * @param fileNames
-     * @param prefixedDoc
-     * @param prefix
-     * @return
      */
     @Transactional
     public AutomaticCheckResult checkTotalFileNumber(final AutomaticCheckResult result,
                                                      final List<String> fileNames,
                                                      final PrefixedDocuments prefixedDoc,
-                                                     final String prefix,
                                                      final AutomaticCheckRule nbFilesRule) {
         result.setResult(AutoCheckResult.OK);
         if (prefixedDoc == null || prefixedDoc.getPhysicalDocuments().isEmpty() || prefixedDoc.getPhysicalDocuments().get(0).getTotalPage() == null) {
@@ -921,6 +937,25 @@ public class AutomaticCheckService {
             // Il y a plus de pages livrées : acceptable
         } else if (Integer.valueOf(fileNames.size()).compareTo(prefixedDoc.getPhysicalDocuments().get(0).getTotalPage()) > 0) {
             result.setMessage("Nombre de pages livrées supérieur au nombre attendu");
+        }
+        return save(result);
+    }
+
+    public AutomaticCheckResult checkRadicalFile(final AutomaticCheckResult result,
+                                                final Collection<File> files,
+                                                 final AutomaticCheckRule radicalRule,
+                                                 final String prefix) {
+        result.setResult(AutoCheckResult.OK);
+        if (radicalRule != null && radicalRule.isActive()) {
+            if (files.isEmpty()) {
+                if (radicalRule.isBlocking()) {
+                    result.setResult(AutoCheckResult.KO);
+                    result.setMessage("Aucun fichier ne correspond au préfix " + prefix);
+                } else {
+                    result.setResult(AutoCheckResult.OTHER);
+                    result.setMessage("Aucun fichier ne correspond au préfix " + prefix);
+                }
+            }
         }
         return save(result);
     }

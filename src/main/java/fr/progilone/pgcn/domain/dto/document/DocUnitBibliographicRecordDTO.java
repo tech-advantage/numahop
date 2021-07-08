@@ -37,7 +37,7 @@ public class DocUnitBibliographicRecordDTO extends AbstractDTO {
 		return properties;
 	}
 
-	public final void setProperties(List<DocPropertyDTO> properties) {
+	public void setProperties(List<DocPropertyDTO> properties) {
 		this.properties = properties;
 	}
 	
@@ -45,7 +45,7 @@ public class DocUnitBibliographicRecordDTO extends AbstractDTO {
 		return identifier;
 	}
 
-	public final void setIdentifier(String identifier) {
+	public void setIdentifier(String identifier) {
 		this.identifier = identifier;
 	}
 
@@ -53,7 +53,7 @@ public class DocUnitBibliographicRecordDTO extends AbstractDTO {
 		return title;
 	}
 
-	public final void setTitle(String title) {
+	public void setTitle(String title) {
 		this.title = title;
 	}
 
@@ -61,7 +61,7 @@ public class DocUnitBibliographicRecordDTO extends AbstractDTO {
 		return calames;
 	}
 
-	public final void setCalames(String calames) {
+	public void setCalames(String calames) {
 		this.calames = calames;
 	}
 
@@ -69,7 +69,7 @@ public class DocUnitBibliographicRecordDTO extends AbstractDTO {
 		return sigb;
 	}
 
-	public final void setSigb(String sigb) {
+	public void setSigb(String sigb) {
 		this.sigb = sigb;
 	}
 
@@ -77,7 +77,7 @@ public class DocUnitBibliographicRecordDTO extends AbstractDTO {
 		return sudoc;
 	}
 
-	public final void setSudoc(String sudoc) {
+	public void setSudoc(String sudoc) {
 		this.sudoc = sudoc;
 	}
 

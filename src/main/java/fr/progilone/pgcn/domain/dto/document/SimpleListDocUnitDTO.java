@@ -62,7 +62,7 @@ public class SimpleListDocUnitDTO extends AbstractDTO {
         return identifier;
     }
 
-    public final void setIdentifier(final String identifier) {
+    public void setIdentifier(final String identifier) {
         this.identifier = identifier;
     }
 
@@ -70,7 +70,7 @@ public class SimpleListDocUnitDTO extends AbstractDTO {
         return pgcnId;
     }
 
-    public final void setPgcnId(final String pgcnId) {
+    public void setPgcnId(final String pgcnId) {
         this.pgcnId = pgcnId;
     }
 
@@ -78,7 +78,7 @@ public class SimpleListDocUnitDTO extends AbstractDTO {
         return label;
     }
 
-    public final void setLabel(final String label) {
+    public void setLabel(final String label) {
         this.label = label;
     }
 
@@ -86,7 +86,7 @@ public class SimpleListDocUnitDTO extends AbstractDTO {
         return library;
     }
 
-    public final void setLibrary(final SimpleLibraryDTO library) {
+    public void setLibrary(final SimpleLibraryDTO library) {
         this.library = library;
     }
 
@@ -94,7 +94,7 @@ public class SimpleListDocUnitDTO extends AbstractDTO {
         return project;
     }
 
-    public final void setProject(final SimpleProjectDTO project) {
+    public void setProject(final SimpleProjectDTO project) {
         this.project = project;
     }
 

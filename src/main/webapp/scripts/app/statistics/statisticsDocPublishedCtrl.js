@@ -116,7 +116,7 @@
                     var searchParams = {
                         page: 0,
                         search: $select.search,
-                        active: true
+                        active: false
                     };
                     return ProjectSrvc.search(searchParams).$promise
                         .then(function (projects) {
@@ -142,7 +142,7 @@
                     var searchParams = {
                         page: 0,
                         search: $select.search,
-                        active: true
+                        active: !statCtrl.filters.inactive
                     };
                     if (statCtrl.filters.project) {
                         searchParams["projects"] = _.pluck(statCtrl.filters.project, "identifier");
@@ -218,6 +218,7 @@
             statCtrl.filters.lot = [];
             statCtrl.filters.collection = [];
             statCtrl.filters.type = [];
+            statCtrl.filters.inactive = false;
             delete statCtrl.filters.publishedFrom;
             delete statCtrl.filters.publishedTo;
 
@@ -236,8 +237,8 @@
 
         /**
          * Recherche  d'entités sur un changement de période
-         * @param {*} from 
-         * @param {*} to 
+         * @param {*} from
+         * @param {*} to
          */
         function searchValue(updatedField, updatedValue) {
             statCtrl.filters[updatedField] = updatedValue;

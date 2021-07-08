@@ -1,10 +1,6 @@
 package fr.progilone.pgcn.web.rest.document;
 
-import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.DOC_UNIT_HAB0;
-import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.DOC_UNIT_HAB1;
-import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.DOC_UNIT_HAB2;
-import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.DOC_UNIT_HAB3;
-import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.DOC_UNIT_HAB4;
+import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.*;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -40,6 +36,7 @@ import fr.progilone.pgcn.domain.dto.document.DocUnitDTO;
 import fr.progilone.pgcn.domain.dto.document.DocUnitDeletedReportDTO;
 import fr.progilone.pgcn.domain.dto.document.DocUnitMassUpdateDTO;
 import fr.progilone.pgcn.domain.dto.document.DocUnitUpdateErrorDTO;
+import fr.progilone.pgcn.domain.dto.document.MinimalListDocUnitDTO;
 import fr.progilone.pgcn.domain.dto.document.SimpleDocUnitDTO;
 import fr.progilone.pgcn.domain.dto.document.SimpleListDocUnitDTO;
 import fr.progilone.pgcn.domain.dto.document.SummaryDocUnitDTO;
@@ -107,12 +104,10 @@ public class DocUnitController extends AbstractRestController {
         
         
         docCheckHistoryService.retrieveCheckHistory(libraryId);
-
         return new ResponseEntity<>(HttpStatus.OK);
     }
     
     
-
     @RequestMapping(method = RequestMethod.POST)
     @Timed
     @RolesAllowed(DOC_UNIT_HAB1)
@@ -323,6 +318,21 @@ public class DocUnitController extends AbstractRestController {
                                                                   page,
                                                                   size,
                                                                   sorts), HttpStatus.OK);
+    }
+    
+    
+    @RequestMapping(method = RequestMethod.POST, params = {"searchAsMinList"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    @RolesAllowed({DOC_UNIT_HAB0})
+    public ResponseEntity<List<MinimalListDocUnitDTO>> searchAsMinList(final HttpServletRequest request,
+                                                                   @RequestBody final SearchRequest requestParams) {
+        
+        return new ResponseEntity<>(uiDocUnitService.searchAsMinList(requestParams.getSearch(),
+                                                                     requestParams.getLibraries(),
+                                                                     requestParams.getProjects(),
+                                                                     requestParams.getLots(),
+                                                                     requestParams.getTrains(),
+                                                                     requestParams.getStatuses()), HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.GET, params = {"dto"}, produces = MediaType.APPLICATION_JSON_VALUE)

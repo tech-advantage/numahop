@@ -147,7 +147,8 @@ services:
         xsd:
            sip: src/main/resources/config/xsd/sip.xsd
     archive:
-        alto: C://Temp/pgcn/archive/alto   
+        alto: C://Temp/pgcn/archive/alto
+        text: C://Temp/pgcn/archive/text        
     metaDatas :
         path: C://Temp/pgcn/metadatas
     deliveryreporting :
@@ -156,6 +157,8 @@ services:
         cache: C://Temp/pgcn/omeka/cache
     ftpexport:
         cache: C://Temp/pgcn/ftpexport/cache
+    digitalLibraryDiffusion:
+        cache: C://Temp/pgcn/digitalLibraryDiffusion/cache
     
 admin:
     login: admin

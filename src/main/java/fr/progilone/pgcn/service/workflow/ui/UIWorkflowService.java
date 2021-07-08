@@ -191,6 +191,7 @@ public class UIWorkflowService {
         });
     }
     
+    
     /**
      * 
      * @param docUnitId
@@ -201,5 +202,99 @@ public class UIWorkflowService {
     public boolean areStatesRunning(final String docUnitId, final WorkflowStateKey... keys) {
         return service.areStatesRunning(docUnitId, keys);
     }
+    
+    
+    /* ========= ADMIN UTILS ================= */
+    /**
+     * ADMIN only : annule tout
+     * !! AUCUN CONTROLE
+     * @param docUnitIds
+     */
+    @Transactional
+    public void endAllDocWorkflows(final List<String> docUnitIds) {
+        
+        docUnitIds.forEach(id -> {
+            service.endWorkflowForDocUnit(id);
+        });
+    }
+    
+    
+    /**
+     * ADMIN only : Force la validation d'une etape et avance...
+     * !! AUCUN CONTROLE
+     * @param docUnitIds
+     */
+    public void validDocWorkflowState(final String stateId, final List<String> docUnitIds) {
+        
+        final WorkflowStateKey keyState = WorkflowStateKey.valueOf(WorkflowStateKey.class, stateId);
+        docUnitIds.forEach(id -> {
+            
+            final DocUnit doc = docUnitService.findOneWithAllDependenciesForWorkflow(id);
+            doc.getWorkflow().getStates().stream()
+                    .filter(state -> state.getKey() == keyState)
+                    .filter(state -> state.isRunning() && state.isCurrentState())
+                    .forEach(state -> {
+                        service.processAutomaticState(id, state.getKey());
+            });
+        });   
+    }
+    
+    /**
+     * ADMIN only : Reinitialisation d'une etape
+     * Possible uniquement si :
+     *    - l'étape est passée
+     *    - l'étape qui suit est en cours ou en attente.
+     *    
+     * @param docUnitIds
+     */
+    public void reinitDocWorkflowState(final String stateId, final List<String> docUnitIds) {
+        
+        final WorkflowStateKey keyState = WorkflowStateKey.valueOf(WorkflowStateKey.class, stateId);
+        docUnitIds.forEach(id -> {
+            
+            final DocUnit doc = docUnitService.findOneWithAllDependenciesForWorkflow(id);
+            final DocUnitWorkflow workflow = doc.getWorkflow(); 
+            
+            workflow.getStates().stream()
+                    .filter(state -> state.getKey() == keyState)
+                    .filter(state -> state.isDone())
+                    .filter(state -> {
+                        if (WorkflowStateKey.VALIDATION_CONSTAT_ETAT == keyState) {
+                            return service.areStatesRunning(id, 
+                                                            WorkflowStateKey.VALIDATION_BORDEREAU_CONSTAT_ETAT,
+                                                            WorkflowStateKey.CONSTAT_ETAT_AVANT_NUMERISATION, 
+                                                            WorkflowStateKey.NUMERISATION_EN_ATTENTE,
+                                                            WorkflowStateKey.CONSTAT_ETAT_APRES_NUMERISATION,
+                                                            WorkflowStateKey.LIVRAISON_DOCUMENT_EN_COURS);
+                        
+                        } else if (WorkflowStateKey.PREREJET_DOCUMENT  == keyState) {
+                            return service.areStatesRunning(id, WorkflowStateKey.VALIDATION_DOCUMENT);
+                            
+                        } else if (WorkflowStateKey.PREVALIDATION_DOCUMENT  == keyState) {
+                            return service.areStatesRunning(id, WorkflowStateKey.VALIDATION_DOCUMENT);
+                            
+                        } else if (WorkflowStateKey.VALIDATION_DOCUMENT  == keyState) {
+                            return service.areStatesRunning(id, WorkflowStateKey.RAPPORT_CONTROLES);
+                            
+                        } else if (WorkflowStateKey.VALIDATION_NOTICES  == keyState) {
+                            final boolean archived = service.isStateValidated(id, WorkflowStateKey.ARCHIVAGE_DOCUMENT)
+                                                || service.isStateValidated(id, WorkflowStateKey.DIFFUSION_DOCUMENT)
+                                                || service.isStateValidated(id, WorkflowStateKey.DIFFUSION_DOCUMENT_OMEKA)
+                                                     || service.isStateValidated(id, WorkflowStateKey.DIFFUSION_DOCUMENT_DIGITAL_LIBRARY)
+                                                || service.isStateValidated(id, WorkflowStateKey.DIFFUSION_DOCUMENT_LOCALE);
+                            return !archived;
+                            
+                        } else {
+                            return false;
+                        }
+                        
+                    })
+                    .forEach(state -> {
+                        service.forceReinitState(id, state);
+            });
+        });         
+
+    }
+    
     
 }

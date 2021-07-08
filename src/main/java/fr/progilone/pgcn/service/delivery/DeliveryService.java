@@ -1,8 +1,6 @@
 package fr.progilone.pgcn.service.delivery;
 
-import static com.opencsv.CSVWriter.DEFAULT_ESCAPE_CHARACTER;
-import static com.opencsv.CSVWriter.DEFAULT_QUOTE_CHARACTER;
-import static com.opencsv.CSVWriter.RFC4180_LINE_END;
+import static com.opencsv.CSVWriter.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,12 +45,14 @@ import fr.progilone.pgcn.domain.delivery.DeliverySlipLine;
 import fr.progilone.pgcn.domain.document.DigitalDocument;
 import fr.progilone.pgcn.domain.dto.document.ValidatedDeliveredDocumentDTO;
 import fr.progilone.pgcn.domain.library.Library;
+import fr.progilone.pgcn.domain.multilotsdelivery.MultiLotsDelivery;
 import fr.progilone.pgcn.exception.PgcnBusinessException;
 import fr.progilone.pgcn.exception.PgcnException;
 import fr.progilone.pgcn.exception.PgcnTechnicalException;
 import fr.progilone.pgcn.exception.PgcnValidationException;
 import fr.progilone.pgcn.repository.delivery.DeliveryRepository;
 import fr.progilone.pgcn.repository.delivery.helper.DeliverySearchBuilder;
+import fr.progilone.pgcn.repository.multilotsdelivery.MultiLotsDeliveryRepository;
 import fr.progilone.pgcn.service.JasperReportsService;
 import fr.progilone.pgcn.service.document.mapper.DeliveredDocumentMapper;
 import fr.progilone.pgcn.service.es.EsDeliveryService;
@@ -75,18 +75,21 @@ public class DeliveryService {
     private final LibraryService libraryService;
     private final DeliveryConfigurationService deliveryConfigurationService;
     private final JasperReportsService jasperReportService;
+    private final MultiLotsDeliveryRepository multiLotsDeliveryRepository;
 
     @Autowired
     public DeliveryService(final DeliveryRepository deliveryRepository,
                            final EsDeliveryService esDeliveryService,
                            final LibraryService libraryService,
                            final DeliveryConfigurationService deliveryConfigurationService,
-                           final JasperReportsService jasperReportService) {
+                           final JasperReportsService jasperReportService,
+                           final MultiLotsDeliveryRepository multiLotsDeliveryRepository) {
         this.deliveryRepository = deliveryRepository;
         this.esDeliveryService = esDeliveryService;
         this.libraryService = libraryService;
         this.deliveryConfigurationService = deliveryConfigurationService;
         this.jasperReportService = jasperReportService;
+        this.multiLotsDeliveryRepository = multiLotsDeliveryRepository;
     }
 
     /**
@@ -205,6 +208,11 @@ public class DeliveryService {
             delivery.setStatus(DeliveryStatus.SAVED);
             setDefaultValues(delivery);
         }
+        if (delivery.getMultiLotsDelivery() != null) {
+            final MultiLotsDelivery multiLotsDelivery = delivery.getMultiLotsDelivery();
+            multiLotsDelivery.setStatus(delivery.getStatus());
+            multiLotsDeliveryRepository.save(multiLotsDelivery);
+        }
         final Delivery savedDelivery = deliveryRepository.save(delivery);
         return getOne(savedDelivery.getIdentifier());
     }
@@ -261,7 +269,7 @@ public class DeliveryService {
         if (deliverySlip == null) {
             return;
         }
-        List<CSVColumn> columns;
+        final List<CSVColumn> columns;
         if (configuration.isPresent()) {
             columns = CSVColumn.getColumnsFromConfiguration(configuration.get());
         } else {
@@ -466,6 +474,7 @@ public class DeliveryService {
         delivery.setFileIntegrityOk(true);
         delivery.setFileBibPrefixOK(true);
         delivery.setFileCaseOK(true);
+        delivery.setFileRadicalOK(true);
     }
 
     public List<Delivery> findAllByProjectId(final String projectId) {

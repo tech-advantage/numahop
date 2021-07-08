@@ -3,33 +3,25 @@ package fr.progilone.pgcn.domain.dto.library;
 import java.time.LocalDateTime;
 import java.util.Set;
 
-import fr.progilone.pgcn.domain.dto.AbstractVersionedDTO;
 import fr.progilone.pgcn.domain.dto.administration.viewsFormat.SimpleViewsFormatConfigurationDTO;
 import fr.progilone.pgcn.domain.dto.checkconfiguration.SimpleCheckConfigurationDTO;
 import fr.progilone.pgcn.domain.dto.ftpconfiguration.SimpleFTPConfigurationDTO;
 import fr.progilone.pgcn.domain.dto.ocrlangconfiguration.SimpleOcrLangConfigDTO;
 import fr.progilone.pgcn.domain.dto.user.AddressDTO;
-import fr.progilone.pgcn.domain.dto.user.RoleDTO;
 
 /**
  * DTO représentant une bibliothèque
  */
-public class LibraryDTO extends AbstractVersionedDTO {
+public class LibraryDTO extends SimpleLibraryDTO {
 
-    private String identifier;
-    private String name;
     private String website;
     private String phoneNumber;
     private String email;
-    private String prefix;
     private String number;
     private boolean active;
     private String institution;
     private AddressDTO address;
     // responsable bibliotheque
-    private String libRespName;
-    private String libRespPhone;
-    private String libRespEmail;
     private String cinesService;
     private Set<SimpleFTPConfigurationDTO> ftpConfigurations;
     private SimpleFTPConfigurationDTO activeFTPConfiguration;
@@ -40,8 +32,6 @@ public class LibraryDTO extends AbstractVersionedDTO {
     private Set<SimpleOcrLangConfigDTO> ocrLangConfigurations;
     private SimpleOcrLangConfigDTO activeOcrLangConfiguration;
     
-    
-    private RoleDTO defaultRole;
     /**
      * Ajout des infos de création
      */
@@ -56,35 +46,19 @@ public class LibraryDTO extends AbstractVersionedDTO {
     public LibraryDTO() {
     }
 
-    public String getIdentifier() {
-        return identifier;
-    }
-
-    public String getName() {
-        return name;
-    }
-
     public final String getWebsite() {
         return website;
     }
 
-    public final void setWebsite(final String website) {
+    public void setWebsite(final String website) {
         this.website = website;
-    }
-
-    public final void setIdentifier(final String identifier) {
-        this.identifier = identifier;
-    }
-
-    public final void setName(final String name) {
-        this.name = name;
     }
 
     public final String getPhoneNumber() {
         return phoneNumber;
     }
 
-    public final void setPhoneNumber(final String phoneNumber) {
+    public void setPhoneNumber(final String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
@@ -92,23 +66,15 @@ public class LibraryDTO extends AbstractVersionedDTO {
         return email;
     }
 
-    public final void setEmail(final String email) {
+    public void setEmail(final String email) {
         this.email = email;
-    }
-
-    public final String getPrefix() {
-        return prefix;
-    }
-
-    public final void setPrefix(final String prefix) {
-        this.prefix = prefix;
     }
 
     public final String getNumber() {
         return number;
     }
 
-    public final void setNumber(final String number) {
+    public void setNumber(final String number) {
         this.number = number;
     }
 
@@ -116,7 +82,7 @@ public class LibraryDTO extends AbstractVersionedDTO {
         return active;
     }
 
-    public final void setActive(final boolean active) {
+    public void setActive(final boolean active) {
         this.active = active;
     }
 
@@ -124,39 +90,15 @@ public class LibraryDTO extends AbstractVersionedDTO {
         return address;
     }
 
-    public final void setAddress(final AddressDTO address) {
+    public void setAddress(final AddressDTO address) {
         this.address = address;
-    }
-
-    public String getLibRespName() {
-        return libRespName;
-    }
-
-    public void setLibRespName(String libRespName) {
-        this.libRespName = libRespName;
-    }
-
-    public String getLibRespPhone() {
-        return libRespPhone;
-    }
-
-    public void setLibRespPhone(String libRespPhone) {
-        this.libRespPhone = libRespPhone;
-    }
-
-    public String getLibRespEmail() {
-        return libRespEmail;
-    }
-
-    public void setLibRespEmail(String libRespEmail) {
-        this.libRespEmail = libRespEmail;
     }
 
     public final String getCinesService() {
         return cinesService;
     }
 
-    public final void setCinesService(final String cinesService) {
+    public void setCinesService(final String cinesService) {
         this.cinesService = cinesService;
     }
 
@@ -190,14 +132,6 @@ public class LibraryDTO extends AbstractVersionedDTO {
 
     public void setActiveCheckConfiguration(final SimpleCheckConfigurationDTO activeCheckConfiguration) {
         this.activeCheckConfiguration = activeCheckConfiguration;
-    }
-
-    public RoleDTO getDefaultRole() {
-        return defaultRole;
-    }
-
-    public void setDefaultRole(final RoleDTO defaultRole) {
-        this.defaultRole = defaultRole;
     }
 
     public String getCreatedBy() {

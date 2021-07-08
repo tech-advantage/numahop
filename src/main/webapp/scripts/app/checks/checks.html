@@ -304,10 +304,10 @@
         <div class="panel panel-column-2 panel-column-first panel-column-end">
             <div class="panel-heading">
                 <!-- Barre de recherche -->
-                <button type="button" class="btn btn-sem2 btn-xs pull-right" 
-                    ng-click="mainCtrl.reinitFilters()" 
-                    uib-tooltip="{{::'Réinitialiser les filtres de la recherche' | translate}}">
-                <span class="glyphicon-halflings glyphicon-refresh"></span>
+                <button type="button" class="btn btn-sem2 btn-xs pull-right"
+                        ng-click="mainCtrl.reinitFilters(true)"
+                        uib-tooltip="{{::'Réinitialiser les filtres de la recherche' | translate}}">
+                    <span class="glyphicon-halflings glyphicon-refresh"></span>
                 </button>
                 <div class="input-group padding-r20">
                     <input class="form-control sem-input-xs" type="text" id="searchInput" 

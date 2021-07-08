@@ -25,10 +25,8 @@ public interface ProjectRepository extends JpaRepository<Project, String>, Proje
            + "from Project p "
            + "left join fetch p.library "
            + "left join fetch p.associatedLibraries "
-           + "left join fetch p.trains "
            + "left join fetch p.lots "
            + "left join fetch p.associatedPlatforms "
-           + "left join fetch p.docUnits "
            + "left join fetch p.associatedUsers "
            + "left join fetch p.activeFTPConfiguration "
            + "where p.identifier in ?1 ")
@@ -100,6 +98,8 @@ public interface ProjectRepository extends JpaRepository<Project, String>, Proje
 
     List<Project> findAllByActiveAndLibraryIdentifierIn(boolean active, List<String> libraries);
     
+    List<Project> findAllByLibraryIdentifierIn(List<String> libraries);
+    
     List<Project> findAllByLibraryIdentifier(String library);
 
     List<Project> findAllByAssociatedLibraries(Library library);
@@ -147,5 +147,11 @@ public interface ProjectRepository extends JpaRepository<Project, String>, Proje
             + "left join fetch p.trains "
             + "where du.identifier = ?1 ")
     Project findOneByDocUnitId(String identifier);
+    
+    @Query("from Project p "
+            + "left join fetch p.lots lo "
+            + "left join fetch p.trains "
+            + "where lo.identifier = ?1 ")
+    Project findOneByLotId(String identifier);
     
 }

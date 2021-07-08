@@ -1,6 +1,8 @@
 package fr.progilone.pgcn.domain.dto.administration.omeka;
 
-public class OmekaListDTO {
+import fr.progilone.pgcn.domain.dto.AbstractVersionedDTO;
+
+public class OmekaListDTO extends AbstractVersionedDTO {
 
     private String identifier;
     private String name;

@@ -1,9 +1,7 @@
 package fr.progilone.pgcn.web.rest.document;
 
-import static fr.progilone.pgcn.web.rest.checkconfiguration.security.AuthorizationConstants.CHECK_HAB3;
-import static fr.progilone.pgcn.web.rest.checkconfiguration.security.AuthorizationConstants.CHECK_HAB4;
-import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.DOC_UNIT_HAB0;
-import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.DOC_UNIT_HAB2;
+import static fr.progilone.pgcn.web.rest.checkconfiguration.security.AuthorizationConstants.*;
+import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.*;
 
 import java.io.File;
 import java.time.LocalDate;
@@ -473,5 +471,22 @@ public class DigitalDocumentController extends AbstractRestController {
                            .filter(Optional::isPresent)
                            .map(Optional::get)
                            .collect(Collectors.toList());
+    }
+
+    /**
+     * 
+     * @param request
+     * @param identifier
+     * @return
+     */
+    @RequestMapping(value = "/{identifier}", method = RequestMethod.GET, params = {"nbPieces"})
+    @Timed
+    public ResponseEntity<Map<String, String>> getPiecesNumber(final HttpServletRequest request, @PathVariable final String identifier) {
+        if (!accessHelper.checkDigitalDocument(identifier)) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+        final Map<String, String> m = new HashMap<>();
+        m.put("nbPieces", String.valueOf(digitalDocumentService.getPiecesNames(identifier).size()));
+        return new ResponseEntity<>(m, HttpStatus.OK);
     }
 }

@@ -177,8 +177,8 @@
 					case "CONSTAT_ETAT_AVANT_NUMERISATION":
 					case "DIFFUSION_DOCUMENT":
 					case "DIFFUSION_DOCUMENT_OMEKA":
+					case "DIFFUSION_DOCUMENT_DIGITAL_LIBRARY":
 					case "DIFFUSION_DOCUMENT_LOCALE":
-					case "GENERATION_BORDEREAU":
 					case "PREREJET_DOCUMENT":
 					case "PREVALIDATION_DOCUMENT":
 					case "VALIDATION_CONSTAT_ETAT":
@@ -202,6 +202,9 @@
 					case "VALIDATION_NOTICES":
 						list.push({ code: "REQUIRED", label: codeSrvc["workflow.type.REQUIRED"] });
 						break;
+					case "GENERATION_BORDEREAU":
+                        list.push({ code: "TO_SKIP", label: codeSrvc["workflow.type.TO_SKIP"] });
+                        break;
 				}
 				return list;
 			};

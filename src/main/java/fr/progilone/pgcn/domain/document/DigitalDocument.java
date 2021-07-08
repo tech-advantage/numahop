@@ -114,7 +114,7 @@ public class DigitalDocument extends AbstractDomainObject {
      * Liste des pages
      */
     @OneToMany(mappedBy = "digitalDocument", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<DocPage> pages = new HashSet<>();
+    private final Set<DocPage> pages = new HashSet<>();
 
     public Set<DocPage> getPages() {
         return pages;
@@ -316,7 +316,11 @@ public class DigitalDocument extends AbstractDomainObject {
         /**
          *  Pré validé
          */
-        PRE_VALIDATED;
+        PRE_VALIDATED,
+        /**
+         *  Annulé
+         */
+        CANCELED
     }
 
     public List<DocPage> getOrderedPages() {
@@ -326,7 +330,7 @@ public class DigitalDocument extends AbstractDomainObject {
     }
     
     public int getPageNumber() {
-        return pages.size();
+        return (int) pages.stream().filter(docPage -> docPage.getNumber() != null).count();
     }
 
     public static final class ComparableComparator<T extends Comparable<DocPage>> implements Comparator<DocPage> {

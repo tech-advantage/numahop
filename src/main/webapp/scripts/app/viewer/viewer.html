@@ -67,26 +67,32 @@
                     <!-- Livraisons precedentes -->
                     <div class="panel panel-column-3 no-margin no-padding">
 	                    <div class="row text-left panel-heading padding-l5" ng-if="previousDelivs.length > 0">
-                              <label labelfor="previousDeliv" translate>Résultats précédents &nbsp;</label>
-                              <a ng-click="downloadCheckSlip(selPreviousDelivery)" ng-disabled="!selPreviousDelivery" 
-                                     uib-tooltip="{{::'Télécharger le résultat des contrôles' | translate}}">
-                                  <span class="glyphicon-halflings glyphicon-download-alt"></span>
-                              </a>
-                              <select id="previousDeliv" name="previousDeliv" class="form-control input-previousres"
-                                   ng-model="selPreviousDelivery"
-                                   ng-options="del.identifier as del.label for del in previousDelivs"
-                                   ng-change="changeSelectedDelivery(selPreviousDelivery)">
-                             </select>
+                            <label labelfor="previousDeliv" translate>Résultats précédents &nbsp;</label>
+                            <a ng-click="downloadCheckSlip(selPreviousDelivery)" ng-disabled="!selPreviousDelivery"
+                               uib-tooltip="{{::'Télécharger le résultat des contrôles' | translate}}">
+                                <span class="glyphicon-halflings glyphicon-download-alt"></span>
+                            </a>
+                            <select id="previousDeliv" name="previousDeliv" class="form-control input-previousres"
+                                    ng-model="selPreviousDelivery"
+                                    ng-options="del.identifier as del.label for del in previousDelivs"
+                                    ng-change="changeSelectedDelivery(selPreviousDelivery)">
+                            </select>
                         </div>
 
                     </div>
-                    <div class="row text-center">
-                        <h5 translate>Notes de livraison</h5>
-                            {{deliveryNotes}}
+                    <div class="row">
+                        <div translate class="col-xs-6">Notes de livraison</div>
+                        <div class="col-xs-6">{{deliveryNotes}}</div>
                     </div>
-                    <div ng_if="!sampling" class="row text-center">
-                        <h5 translate>Informations de contrôle</h5>
-                       {{digitalDocument.docUnit.digitizingNotes}}
+                    <HR>
+                    <div ng_if="!sampling" class="row">
+                        <div translate class="col-xs-6">Informations de contrôle</div>
+                        <div class="col-xs-6">{{digitalDocument.docUnit.digitizingNotes}}</div>
+                    </div>
+                    <HR>
+                    <div ng_if="nbPieces > 1" class="row">
+                        <div translate class="col-xs-6">Nombre de pièces</div>
+                        <div class="col-xs-6">{{nbPieces}}</div>
                     </div>
                     <div class="row text-center">
                         <h5 ng_if="!sampling" translate>Note de contrôle globale</h5>
@@ -94,7 +100,7 @@
                     </div>
                     <div class="row">
                         <textarea ng_if="!sampling" ng-disabled="!isAuthorized([userRoles.CHECK_HAB4])" class="form-control" rows="5" ng-model="digitalDocument.checkNotes" maxlength="2000"></textarea>
-                        <textarea ng_if="sampling"  ng-disabled="!isAuthorized([userRoles.CHECK_HAB4])" class="form-control" rows="3" ng-model="sample.delivery.controlNotes" maxlength="255"></textarea>
+                        <textarea ng_if="sampling" ng-disabled="!isAuthorized([userRoles.CHECK_HAB4])" class="form-control" rows="3" ng-model="sample.delivery.controlNotes" maxlength="255"></textarea>
                     </div>
                     <div class="row">
                         <label>Erreurs globales</label>

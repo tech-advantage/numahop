@@ -5,6 +5,7 @@
     angular.module('numaHopApp.service').factory('ExportCinesSrvc', ExportCinesSrvc);
     angular.module('numaHopApp.service').factory('ExportInternetArchiveSrvc', ExportInternetArchiveSrvc);
     angular.module('numaHopApp.service').factory('ExportOmekaSrvc', ExportOmekaSrvc);
+    angular.module('numaHopApp.service').factory('ExportDigitalLibrarySrvc', ExportDigitalLibrarySrvc);
 
 
     function ExportSrvc(CONFIGURATION, $resource) {
@@ -25,6 +26,14 @@
                     params: {
                         svc: 'omeka',
                         sendomeka: true
+                    }
+                },
+                toDigitalLibrary: {
+                    method: 'POST',
+                    isArray: false,
+                    params: {
+                        svc: 'digitalLibrary',
+                        send: true
                     }
                 },
                 getAip: {
@@ -56,6 +65,27 @@
                     params: {
                         svc: 'cines',
                         sip: true
+                    },
+                    transformResponse: function (data) {
+                        var xml;
+                        if (data) {
+                            xml = new Blob([data], {
+                                type: 'application/xml'
+                            });
+                        }
+                        return {
+                            response: xml
+                        };
+                    }
+                },
+                getMets: {
+                    method: 'GET',
+                    isArray: false,
+                    headers: { 'Accept': 'application/xml' },
+                    responseType: 'arraybuffer',
+                    params: {
+                        svc: 'cines',
+                        mets: true
                     },
                     transformResponse: function (data) {
                         var xml;
@@ -190,6 +220,32 @@
                         save: true
                     }
                 },
+                massExport: {
+                    method: 'GET',
+                    isArray: false,
+                    params: {
+                        mass_export: true
+                    }
+                }
+            });
+
+        service.config = {
+            status: [
+                { identifier: "EXPORTING", label: codeSrvc["EXPORTING"] },
+                { identifier: "SENDING", label: codeSrvc["SENDING"] },
+                { identifier: "SENT", label: codeSrvc["SENT"] },
+                { identifier: "ARCHIVED", label: codeSrvc["ARCHIVED"] },
+                { identifier: "FAILED", label: codeSrvc["FAILED"] }
+            ]
+        };
+        return service;
+    }
+
+    function ExportDigitalLibrarySrvc($resource, codeSrvc, CONFIGURATION) {
+        var service = $resource(CONFIGURATION.numahop.url + 'api/rest/export/digitalLibrary/:id', {
+               id: '@identifier'
+           }, {
+
                 massExport: {
                     method: 'GET',
                     isArray: false,

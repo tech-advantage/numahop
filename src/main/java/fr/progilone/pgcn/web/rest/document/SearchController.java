@@ -1,18 +1,18 @@
 package fr.progilone.pgcn.web.rest.document;
 
-import com.codahale.metrics.annotation.Timed;
-import fr.progilone.pgcn.domain.AbstractDomainObject;
-import fr.progilone.pgcn.exception.PgcnException;
-import fr.progilone.pgcn.service.es.AbstractElasticsearchOperations.SearchEntity;
-import fr.progilone.pgcn.service.es.EsConditionReportService;
-import fr.progilone.pgcn.service.es.EsDeliveryService;
-import fr.progilone.pgcn.service.es.EsDocUnitService;
-import fr.progilone.pgcn.service.es.EsLotService;
-import fr.progilone.pgcn.service.es.EsProjectService;
-import fr.progilone.pgcn.service.es.EsTrainService;
-import fr.progilone.pgcn.service.es.IndexManagerService;
-import fr.progilone.pgcn.web.rest.AbstractRestController;
-import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
+import static fr.progilone.pgcn.service.es.EsConstant.*;
+import static fr.progilone.pgcn.web.rest.administration.security.AuthorizationConstants.*;
+import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.*;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.annotation.security.RolesAllowed;
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,17 +27,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletRequest;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import com.codahale.metrics.annotation.Timed;
 
-import static fr.progilone.pgcn.service.es.EsConstant.*;
-import static fr.progilone.pgcn.web.rest.administration.security.AuthorizationConstants.*;
-import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.*;
+import fr.progilone.pgcn.domain.AbstractDomainObject;
+import fr.progilone.pgcn.exception.PgcnException;
+import fr.progilone.pgcn.service.es.AbstractElasticsearchOperations.SearchEntity;
+import fr.progilone.pgcn.service.es.EsConditionReportService;
+import fr.progilone.pgcn.service.es.EsDeliveryService;
+import fr.progilone.pgcn.service.es.EsDocUnitService;
+import fr.progilone.pgcn.service.es.EsLotService;
+import fr.progilone.pgcn.service.es.EsProjectService;
+import fr.progilone.pgcn.service.es.EsTrainService;
+import fr.progilone.pgcn.service.es.IndexManagerService;
+import fr.progilone.pgcn.web.rest.AbstractRestController;
+import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
 
 @RestController
 @RequestMapping(value = "/api/rest/search")
@@ -76,7 +79,7 @@ public class SearchController extends AbstractRestController {
     @RequestMapping(method = RequestMethod.GET, params = {"index"})
     @ResponseStatus(HttpStatus.OK)
     @Timed
-    @RolesAllowed({ADMINISTRATION_LIB})
+    @RolesAllowed({SUPER_ADMIN})
     public void index() throws PgcnException {
         indexManagerService.indexAsync();
     }

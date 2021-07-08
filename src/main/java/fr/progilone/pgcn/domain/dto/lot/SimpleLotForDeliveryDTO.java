@@ -48,15 +48,15 @@ public class SimpleLotForDeliveryDTO {
         return identifier;
     }
 
-    public final void setIdentifier(String identifier) {
+    public void setIdentifier(String identifier) {
         this.identifier = identifier;
     }
 
-    public final void setLabel(String label) {
+    public void setLabel(String label) {
         this.label = label;
     }
 
-    public final void setCode(String code) {
+    public void setCode(String code) {
         this.code = code;
     }
 

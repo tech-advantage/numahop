@@ -87,43 +87,43 @@ public class AddressDTO{
 		return version;
 	}
     
-	public final void setIdentifier(String identifier) {
+	public void setIdentifier(String identifier) {
 		this.identifier = identifier;
 	}
 
-	public final void setLabel(String label) {
+	public void setLabel(String label) {
 		this.label = label;
 	}
 
-	public final void setAddress1(String address1) {
+	public void setAddress1(String address1) {
 		this.address1 = address1;
 	}
 
-	public final void setAddress2(String address2) {
+	public void setAddress2(String address2) {
 		this.address2 = address2;
 	}
 
-	public final void setAddress3(String address3) {
+	public void setAddress3(String address3) {
 		this.address3 = address3;
 	}
 
-	public final void setComplement(String complement) {
+	public void setComplement(String complement) {
 		this.complement = complement;
 	}
 
-	public final void setPostcode(String postcode) {
+	public void setPostcode(String postcode) {
 		this.postcode = postcode;
 	}
 
-	public final void setCity(String city) {
+	public void setCity(String city) {
 		this.city = city;
 	}
 
-	public final void setCountry(String country) {
+	public void setCountry(String country) {
 		this.country = country;
 	}
 
-	public final void setVersion(Long version) {
+	public void setVersion(Long version) {
 		this.version = version;
 	}
 

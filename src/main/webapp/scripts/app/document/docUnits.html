@@ -47,7 +47,7 @@
                      translate>Aucune unité documentaire n'a été trouvée
                 </div>
                 <div>
-                    <div ng-repeat="docUnit in pagination.items" class="col-infinite-scroll">
+                    <div ng-repeat="docUnit in pagination.items" class="col-infinite-scroll" ng-if="docUnit.parentIdentifier === null">
                         <div ng-show="$index === 0 || getFirstLetter(docUnit) != getFirstLetter(pagination.items[$index-1])"
                              class="pagination-break">{{docUnit[filters.sortModel]|initial:'OTHER'}}
                         </div>
@@ -57,9 +57,10 @@
                             </a>
                         </div>
                         <div ng-repeat="child in docUnit.children" class="col-infinite-scroll margin-l15" ng-init="childIndex = $index">
-                            <div class="list" ng-class="{active: child._selected && !docUnit._slected, inactive: true}">
+                            <div class="list" ng-class="{active: child._selected && !docUnit._selected, inactive: true}">
                                 <a ng-click="edit(child, childIndex)">
-                                   <span class="glyphicon-halflings glyphicon-option-horizontal"></span> <span class="second">[{{child.pgcnId}}]</span>&nbsp;<span class="principal">{{child.label}}</span>
+                                    <span class="glyphicon-halflings glyphicon-option-horizontal"></span> <span class="second">[{{child.pgcnId}}]</span>&nbsp;<span
+                                        class="principal">{{child.label}}</span>
                                 </a>
                             </div>
                         </div>

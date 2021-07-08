@@ -2,17 +2,24 @@ package fr.progilone.pgcn.service.document.ui;
 
 import java.time.LocalDate;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import fr.progilone.pgcn.domain.document.BibliographicRecord;
+import fr.progilone.pgcn.domain.document.DocPropertyType;
 import fr.progilone.pgcn.domain.document.DocUnit;
+import fr.progilone.pgcn.domain.document.ExportData;
+import fr.progilone.pgcn.domain.document.ExportProperty;
 import fr.progilone.pgcn.domain.dto.document.BibliographicRecordDTO;
 import fr.progilone.pgcn.domain.dto.document.BibliographicRecordDcDTO;
 import fr.progilone.pgcn.domain.dto.document.DocPropertyDTO;
@@ -36,6 +43,8 @@ import fr.progilone.pgcn.service.util.transaction.VersionValidationService;
  */
 @Service
 public class UIBibliographicRecordService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(UIBibliographicRecordService.class);
 
     private final BibliographicRecordService bibliographicRecordService;
     private final UIBibliographicRecordMapper uiBibliographicRecordMapper;
@@ -248,5 +257,43 @@ public class UIBibliographicRecordService {
     public BibliographicRecordDTO duplicate(final String id) {
         final BibliographicRecord duplRecord = bibliographicRecordService.duplicate(id);
         return getOne(duplRecord.getIdentifier());
+    }
+
+    /**
+     * On a besoin de la notice.
+     *
+     * @param docUnit
+     * @return
+     */
+    @Transactional
+    public BibliographicRecordDcDTO getBibliographicRecordDcDTOFromDocUnit(final DocUnit docUnit) {
+        final ExportData ed = docUnit.getExportData();
+        final BibliographicRecordDcDTO dto;
+        if (ed != null) {
+            dto = new BibliographicRecordDcDTO();
+            ed.getProperties()
+              .stream()
+              .filter(p -> p.getType().getSuperType() == DocPropertyType.DocPropertySuperType.DC)
+              .sorted(Comparator.comparing(ExportProperty::getRank))
+              .forEach(p -> {
+                  try {
+                      final String dcProperty = p.getType().getIdentifier();
+                      final List<String> current = (List<String>) PropertyUtils.getSimpleProperty(dto, dcProperty);
+                      current.add(p.getValue());
+
+                  } catch (final ReflectiveOperationException | IllegalArgumentException e) {
+                      LOG.error(e.getMessage(), e);
+                  }
+              });
+
+        } else {
+            if (docUnit.getRecords().iterator().hasNext()) {
+                final BibliographicRecord record = docUnit.getRecords().iterator().next();
+                dto = getOneDc(record.getIdentifier());
+            } else {
+                dto = null;
+            }
+        }
+        return dto;
     }
 }

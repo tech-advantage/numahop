@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -267,7 +268,7 @@ public class LibraryService {
         final List<OcrLanguageDTO> langDtos = new ArrayList<OcrLanguageDTO>();
         
         if (lib != null && lib.getActiveOcrLangConfiguration() != null) {
-            final List<ActivatedOcrLanguage> activated = lib.getActiveOcrLangConfiguration().getActivatedOcrLanguages();            
+            final Set<ActivatedOcrLanguage> activated = lib.getActiveOcrLangConfiguration().getActivatedOcrLanguages();
             langDtos.addAll( activated.stream()
                              .map(ActivatedOcrLanguage::getOcrLanguage)    
                                 .map(OcrLanguageMapper.INSTANCE::objToDTO)
@@ -339,7 +340,7 @@ public class LibraryService {
     }
 
     private void uploadImage(final Library library, final MultipartFile file, final ViewsFormatConfiguration.FileFormat format) {
-        try (InputStream in = file.getInputStream()) {
+        try (final InputStream in = file.getInputStream()) {
             fm.createThumbnail(in, file.getContentType(), format, libraryDir, null, format.label() + "." + library.getIdentifier());
             LOG.debug("Le logo de la bibliothèque {} ({}) a été importé: {} (format {})",
                       library.getName(),

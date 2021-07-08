@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.nio.file.Paths;
+import java.text.Normalizer;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -49,8 +50,12 @@ import fr.progilone.pgcn.domain.AbstractDomainObject;
 import fr.progilone.pgcn.domain.administration.InternetArchiveConfiguration;
 import fr.progilone.pgcn.domain.administration.viewsformat.ViewsFormatConfiguration;
 import fr.progilone.pgcn.domain.document.ArchiveCollection;
+import fr.progilone.pgcn.domain.document.ArchiveContributor;
+import fr.progilone.pgcn.domain.document.ArchiveCoverage;
+import fr.progilone.pgcn.domain.document.ArchiveCreator;
 import fr.progilone.pgcn.domain.document.ArchiveHeader;
 import fr.progilone.pgcn.domain.document.ArchiveItem;
+import fr.progilone.pgcn.domain.document.ArchiveLanguage;
 import fr.progilone.pgcn.domain.document.ArchiveSubject;
 import fr.progilone.pgcn.domain.document.BibliographicRecord;
 import fr.progilone.pgcn.domain.document.DigitalDocument;
@@ -64,6 +69,7 @@ import fr.progilone.pgcn.domain.storage.StoredFile;
 import fr.progilone.pgcn.domain.workflow.DocUnitWorkflow;
 import fr.progilone.pgcn.domain.workflow.WorkflowStateKey;
 import fr.progilone.pgcn.exception.PgcnTechnicalException;
+import fr.progilone.pgcn.repository.document.DocPropertyTypeRepository;
 import fr.progilone.pgcn.repository.storage.BinaryRepository;
 import fr.progilone.pgcn.service.administration.InternetArchiveConfigurationService;
 import fr.progilone.pgcn.service.document.DocUnitService;
@@ -73,6 +79,7 @@ import fr.progilone.pgcn.service.exchange.internetarchive.InternetArchiveItemDTO
 import fr.progilone.pgcn.service.exchange.internetarchive.InternetArchiveItemDTO.MediaType;
 import fr.progilone.pgcn.service.exchange.internetarchive.mapper.ArchiveItemMapper;
 import fr.progilone.pgcn.service.library.LibraryService;
+import fr.progilone.pgcn.service.storage.AltoService;
 import fr.progilone.pgcn.service.storage.BinaryStorageManager;
 import fr.progilone.pgcn.service.util.CryptoService;
 import fr.progilone.pgcn.service.util.DateIso8601Util;
@@ -104,8 +111,12 @@ public class InternetArchiveService {
     private final LibraryService libraryService;
     private final TransactionService transactionService;
     private final WorkflowService workflowService;
+    private final DocPropertyTypeRepository docPropertyTypeRepository;
+    private final AltoService altoService;
 
     private final ArchiveItemMapper archiveItemMapper = ArchiveItemMapper.INSTANCE;
+    
+    private final long TIME_SECONDS_BEFORE_RETRY = 60;
 
     @Autowired
     public InternetArchiveService(final BinaryStorageManager bm,
@@ -118,7 +129,9 @@ public class InternetArchiveService {
                                   final BinaryRepository binaryRepository,
                                   final LibraryService libraryService,
                                   final TransactionService transactionService,
-                                  final WorkflowService workflowService) {
+                                  final WorkflowService workflowService,
+                                  final DocPropertyTypeRepository docPropertyTypeRepository,
+                                  final AltoService altoService) {
         this.bm = bm;
         this.cryptoService = cryptoService;
         this.docUnitService = docUnitService;
@@ -130,6 +143,8 @@ public class InternetArchiveService {
         this.libraryService = libraryService;
         this.transactionService = transactionService;
         this.workflowService = workflowService;
+        this.docPropertyTypeRepository = docPropertyTypeRepository;
+        this.altoService = altoService;
     }
 
     /**
@@ -141,12 +156,16 @@ public class InternetArchiveService {
         
         final DocUnit docUnit = docUnitService.findOneWithAllDependencies(docUnitId);
         
-        InternetArchiveItemDTO item;
+        final InternetArchiveItemDTO item;
         final String libraryId = docUnit.getLibrary().getIdentifier();
         if (docUnit.getArchiveItem() != null) {
             item = archiveItemMapper.archiveItemToInternetArchiveItemDTO(docUnit.getArchiveItem());
             item.setSubjects(docUnit.getArchiveItem().getSubjects().stream().map(ArchiveSubject::getValue).collect(Collectors.toList()));
             item.setCollections(docUnit.getArchiveItem().getCollections().stream().map(ArchiveCollection::getValue).collect(Collectors.toList()));
+            item.setCoverages(docUnit.getArchiveItem().getCoverages().stream().map(ArchiveCoverage::getValue).collect(Collectors.toList()));
+            item.setContributors(docUnit.getArchiveItem().getContributors().stream().map(ArchiveContributor::getValue).collect(Collectors.toList()));
+            item.setCreators(docUnit.getArchiveItem().getCreators().stream().map(ArchiveCreator::getValue).collect(Collectors.toList()));
+            item.setLanguages(docUnit.getArchiveItem().getLanguages().stream().map(ArchiveLanguage::getValue).collect(Collectors.toList()));
             for (final ArchiveHeader archiveHeader : docUnit.getArchiveItem().getHeaders()) {
                 final InternetArchiveItemDTO.CustomHeader customHeader = new InternetArchiveItemDTO.CustomHeader();
                 customHeader.setValue(archiveHeader.getValue());
@@ -184,15 +203,17 @@ public class InternetArchiveService {
             final BibliographicRecord record = docUnit.getRecords().iterator().next();
 
             // Récupération langue par défaut : avec le plus bas rang
-            final Optional<DocProperty> languageProperty = record.getProperties().stream().filter(property -> {
+            final List<DocProperty> languageProperties = record.getProperties().stream().filter(property -> {
                 final DocPropertyType type = property.getType();
                 return type.getSuperType() == DocPropertyType.DocPropertySuperType.DC && "language".equals(type.getIdentifier());
-            }).reduce((a, b) -> a.getRank() < b.getRank() ? a : b);
-            String languageIso = "fre";
-            if (languageProperty.isPresent()) {
-                languageIso = languageCodeService.getIso6393BForLanguage(languageProperty.get().getValue());
+            }).collect(Collectors.toList());
+            final String languageIso = "fre";
+            item.setLanguages(new ArrayList<>());
+            if (!languageProperties.isEmpty()) {
+                languageProperties.forEach(docProperty -> item.addLanguage(languageCodeService.getIso6393BForLanguage(docProperty.getValue())));
+            } else {
+                item.addLanguage(languageIso);
             }
-            item.setLanguage(languageIso);
 
             // Remplissage avec les propriétés
             for (final DocProperty docProperty : record.getProperties()) {
@@ -213,16 +234,16 @@ public class InternetArchiveService {
                             item.setPublisher(docProperty.getValue());
                             break;
                         case "contributor":
-                            item.setContributor(docProperty.getValue());
+                            item.addContributor(docProperty.getValue());
                             break;
                         case "creator":
-                            item.setCreator(docProperty.getValue());
+                            item.addCreator(docProperty.getValue());
                             break;
                         case "date":
                             item.setDate(DateIso8601Util.importedDateToIso8601(docProperty.getValue()));
                             break;
                         case "coverage":
-                            item.setCoverage(docProperty.getValue());
+                            item.addCoverage(docProperty.getValue());
                             break;
                         case "rights":
                             item.setRights(docProperty.getValue());
@@ -239,26 +260,45 @@ public class InternetArchiveService {
                     }
                 } else if (type.getSuperType() == DocPropertyType.DocPropertySuperType.CUSTOM_ARCHIVE 
                         || type.getSuperType() == DocPropertyType.DocPropertySuperType.CUSTOM) {
-                    
-                    type.getDocProperties().stream()
+                	// on charge les dependances du type
+                	final Set<DocProperty> dProperties = docPropertyTypeRepository
+                										.findOneWithDependencies(type.getIdentifier())
+                										.getDocProperties();
+                	dProperties.stream()
                             .filter(dp -> StringUtils.equals(record.getIdentifier(), dp.getRecord().getIdentifier()))
                             .filter( dp -> StringUtils.equals(dp.getType().getIdentifier(), type.getIdentifier()))
                             .sorted(Comparator.comparing(DocProperty::getRank))
                             .forEach(dp -> {
                                 final CustomHeader header = new CustomHeader();
-                                header.setType(dp.getType().getLabel());
+                                header.setType(normalizeLabel(dp.getType().getLabel()));
                                 header.setValue(dp.getValue());
                                 item.getCustomHeaders().add(header);
                             });
-                     
                 }
             }
         }
         item.setDescription(String.join("\n", item.getDescriptions().values()));
         // Ajout nb pages
         item.setTotal(getFilesForDocUnit(docUnit, ViewsFormatConfiguration.FileFormat.VIEW, libraryId).size());
+        // Ajout URL de la license
+        if(docUnit.getProject().getLicenseUrl() != null){
+            item.setLicenseUrl(docUnit.getProject().getLicenseUrl());
+        }
 
         return item;
+    }
+    
+    /**
+     * Supprime espace, accents etc..
+     * 
+     * @param label
+     * @return
+     */
+    private String normalizeLabel(final String label) {
+    	String norm = Normalizer.normalize(label, Normalizer.Form.NFD);
+    	norm = norm.replaceAll("[^\\p{ASCII}]", "");
+    	norm.trim().replace("_", "-");
+    	return norm.trim().replace(" ", "-");
     }
 
     public InternetArchiveReport createItem(final String docUnitId, final boolean automaticExport) {
@@ -278,7 +318,7 @@ public class InternetArchiveService {
 
         // TODO FIXME : choix / config par défaut (à paramétrer)
         final Set<InternetArchiveConfiguration> confs = confService.findByLibraryAndActive(docUnit.getLibrary(), true);
-        InternetArchiveReport resultReport;
+        final InternetArchiveReport resultReport;
         
         if (CollectionUtils.isNotEmpty(confs)) {
             final InternetArchiveConfiguration conf = confs.iterator().next();
@@ -326,6 +366,7 @@ public class InternetArchiveService {
                                          final InternetArchiveConfiguration conf,
                                          final ViewsFormatConfiguration.FileFormat format,
                                          InternetArchiveReport report) {
+    	
         try {
             final BasicAWSCredentials awsCreds = new BasicAWSCredentials(conf.getAccessKey(), cryptoService.decrypt(conf.getSecretKey()));
             final AmazonS3 s3Client = AmazonS3ClientBuilder.standard()
@@ -339,14 +380,14 @@ public class InternetArchiveService {
             metadata.setHeader("x-amz-auto-make-bucket", 1);
 
             metadata.setHeader("x-archive-meta-title", getUTF8String(item.getTitle()));
-            if (StringUtils.isNotBlank(item.getContributor())) {
-                metadata.setHeader("x-archive-meta-contributor", getUTF8String(item.getContributor()));
+            if (item.getContributors() != null && !item.getContributors().isEmpty()) {
+                metadata.setHeader("x-archive-meta-contributor", getUTF8String(StringUtils.join(item.getContributors(), ';')));
             }
-            if (StringUtils.isNotBlank(item.getCoverage())) {
-                metadata.setHeader("x-archive-meta-coverage", getUTF8String(item.getCoverage()));
+            if (item.getCoverages() != null && !item.getCoverages().isEmpty()) {
+                metadata.setHeader("x-archive-meta-coverage", getUTF8String(StringUtils.join(item.getCoverages(), ';')));
             }
-            if (StringUtils.isNotBlank(item.getCreator())) {
-                metadata.setHeader("x-archive-meta-creator", getUTF8String(item.getCreator()));
+            if (item.getCreators() != null && !item.getCreators().isEmpty()) {
+                metadata.setHeader("x-archive-meta-creator", getUTF8String(StringUtils.join(item.getCreators(), ';')));
             }
             if (StringUtils.isNotBlank(item.getCredits())) {
                 metadata.setHeader("x-archive-meta-credits", getUTF8String(item.getCredits()));
@@ -357,8 +398,8 @@ public class InternetArchiveService {
             if (StringUtils.isNotBlank(item.getDescription())) {
                 metadata.setHeader("x-archive-meta-description", getUTF8String(item.getDescription()));
             }
-            if (StringUtils.isNotBlank(item.getLanguage())) {
-                metadata.setHeader("x-archive-meta-language", getUTF8String(item.getLanguage()));
+            if (item.getLanguages() != null && !item.getLanguages().isEmpty()) {
+                metadata.setHeader("x-archive-meta-language", getUTF8String(StringUtils.join(item.getLanguages(), ';')));
             }
             if (StringUtils.isNotBlank(item.getLicenseUrl())) {
                 metadata.setHeader("x-archive-meta-licenseurl", getUTF8String(item.getLicenseUrl()));
@@ -385,7 +426,7 @@ public class InternetArchiveService {
             if (StringUtils.isNotBlank(item.getSource())) {
                 metadata.setHeader("x-archive-meta-source", getUTF8String(item.getSource()));
             }
-
+            
             // Collections
             int count = 1;
             for (final String collection : item.getCollections()) {
@@ -400,8 +441,6 @@ public class InternetArchiveService {
             if (item.getSubjects() != null && !item.getSubjects().isEmpty()) {
                 metadata.setHeader("x-archive-meta-subject", getUTF8String(StringUtils.join(item.getSubjects(), ';')));
             }
-            
-            // Champs personnalisés ARCHIVE
 
             // Champs personnalisés
             if (item.getCustomHeaders() != null && !item.getCustomHeaders().isEmpty()) {
@@ -423,7 +462,7 @@ public class InternetArchiveService {
 
             report = iaReportService.setReportSending(report, files.size());
             
-            LOG.info("Export => Internet Archive: Debut upload doc {}", docUnit.getPgcnId());
+            LOG.info("Export => Internet Archive: Debut upload doc {} - docType: {}", docUnit.getPgcnId(), item.getType());
             int cpt = 0; 
             
             for (final Entry<String, File> entry : files.entrySet()) {
@@ -439,10 +478,33 @@ public class InternetArchiveService {
                 try (final FileInputStream in = new FileInputStream(file)) {
                     metadata.setContentLength(in.available());
                     if (file.length() != in.available()) {
-                        LOG.info("Attention: differnce file.length : {} vs input stream available : {}", file.length(), metadata.getContentLength());
+                        LOG.info("Attention: difference file.length : {} vs input stream available : {}", file.length(), metadata.getContentLength());
                     }
-                    s3Client.putObject(new PutObjectRequest(item.getArchiveIdentifier(), sfName, in, metadata));  
-                   LOG.debug(sfName); 
+                    final PutObjectRequest por = new PutObjectRequest(item.getArchiveIdentifier(), sfName, in, metadata);
+                    try {
+                    	
+                    	s3Client.putObject(por);
+                    } 
+                    catch (final AmazonServiceException ase) {
+                    	// cas particulier erreur 503 SlowDown => on pause 30sec et on re essaie 1 fois....
+                    	if (ase.getStatusCode() == 503 
+                    			&& StringUtils.contains(ase.getErrorCode(), "SlowDown")) {
+                    		
+                    		LOG.error("Caught AmazonServiceException 503 : SlowDown - retries to put file {} in {} seconds", sfName, TIME_SECONDS_BEFORE_RETRY);
+                    		try {
+								TimeUnit.SECONDS.sleep(TIME_SECONDS_BEFORE_RETRY);
+                            } catch (final InterruptedException e) {
+								LOG.error("InterruptedException when retries to put {} in S3", sfName);
+								throw ase;
+							}
+                    		// tentative 2 apres 1 pause
+                    		s3Client.putObject(por);
+                    		LOG.info("{} put successfully in S3 after retry", sfName);
+                    		
+                    	} else {
+                    		throw ase;
+                    	}
+                  }	 
                 } 
                 report = iaReportService.updateReport(report, 1);
             }
@@ -551,10 +613,9 @@ public class InternetArchiveService {
             altoFile = Optional.empty();
         } else {
             final DigitalDocument dd = doc.getDigitalDocuments().iterator().next();            
-            final File xmlAlto = new File(Paths.get(outputPath, libraryId,
-                                                    dd.getDigitalId()).toFile(), "alto.xml");
-            if(xmlAlto != null && xmlAlto.isFile() && xmlAlto.canRead()) {
-                altoFile = Optional.of(xmlAlto);
+            final List<File> xmlAlto = altoService.retrieveAlto(dd.getDigitalId(), libraryId, true, false);
+            if (!xmlAlto.isEmpty()) {
+                altoFile = xmlAlto.stream().findFirst();
             } else {
                 altoFile = Optional.empty();
             }

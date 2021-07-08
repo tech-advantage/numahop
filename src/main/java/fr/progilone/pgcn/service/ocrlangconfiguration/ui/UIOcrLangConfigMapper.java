@@ -1,7 +1,8 @@
 package fr.progilone.pgcn.service.ocrlangconfiguration.ui;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
@@ -10,7 +11,7 @@ import fr.progilone.pgcn.domain.dto.ocrlangconfiguration.OcrLangConfigurationDTO
 import fr.progilone.pgcn.domain.dto.ocrlangconfiguration.OcrLanguageDTO;
 import fr.progilone.pgcn.domain.ocrlangconfiguration.ActivatedOcrLanguage;
 import fr.progilone.pgcn.domain.ocrlangconfiguration.OcrLangConfiguration;
-import fr.progilone.pgcn.service.library.mapper.LibraryMapper;
+import fr.progilone.pgcn.service.library.mapper.SimpleLibraryMapper;
 import fr.progilone.pgcn.service.ocrlangconfiguration.mapper.OcrLanguageMapper;
 
 @Component
@@ -20,10 +21,10 @@ public class UIOcrLangConfigMapper {
        updated.setIdentifier(dto.getIdentifier());
        updated.setLabel(dto.getLabel());
        updated.setActive(dto.isActive());
-       updated.setLibrary(LibraryMapper.INSTANCE.dtoToLibrary(dto.getLibrary()));
+       updated.setLibrary(SimpleLibraryMapper.INSTANCE.dtoToLibrary(dto.getLibrary()));
        updated.setVersion(dto.getVersion());
        
-       final List<ActivatedOcrLanguage> list = new ArrayList<>();
+        final Set<ActivatedOcrLanguage> list = new HashSet<>();
        
        dto.getOcrLanguages().stream()
                             .map(OcrLanguageMapper.INSTANCE::dtoToObject)
@@ -40,7 +41,7 @@ public class UIOcrLangConfigMapper {
        dto.setIdentifier(config.getIdentifier());
        dto.setLabel(config.getLabel());
        dto.setActive(config.isActive());
-       dto.setLibrary(LibraryMapper.INSTANCE.libraryToSimpleLibraryDTO(config.getLibrary()));
+       dto.setLibrary(SimpleLibraryMapper.INSTANCE.libraryToSimpleLibraryDTO(config.getLibrary()));
        dto.setVersion(config.getVersion());
        
        final List<OcrLanguageDTO> languages = config.getActivatedOcrLanguages().stream()

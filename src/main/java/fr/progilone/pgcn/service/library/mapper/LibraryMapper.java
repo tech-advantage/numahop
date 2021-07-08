@@ -1,12 +1,9 @@
 package fr.progilone.pgcn.service.library.mapper;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
 import fr.progilone.pgcn.domain.dto.library.LibraryDTO;
-import fr.progilone.pgcn.domain.dto.library.SimpleLibraryDTO;
 import fr.progilone.pgcn.domain.library.Library;
 import fr.progilone.pgcn.service.administration.mapper.SimpleViewsFormatConfigurationMapper;
 import fr.progilone.pgcn.service.checkconfiguration.mapper.SimpleCheckConfigurationMapper;
@@ -21,10 +18,6 @@ public interface LibraryMapper {
 
     LibraryMapper INSTANCE = Mappers.getMapper(LibraryMapper.class);
 
-    SimpleLibraryDTO libraryToSimpleLibraryDTO(Library library);
-
     LibraryDTO libraryToLibraryDTO(Library library);
 
-    @Mappings({@Mapping(ignore=true, target="defaultRole")})
-    Library dtoToLibrary(SimpleLibraryDTO dto);
 }

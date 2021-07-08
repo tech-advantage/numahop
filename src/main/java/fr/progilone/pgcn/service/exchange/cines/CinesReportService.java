@@ -63,7 +63,7 @@ public class CinesReportService {
      * @param docUnit
      * @return
      */
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public CinesReport createCinesReport(final DocUnit docUnit) {
         final CinesReport report = new CinesReport();
         report.setDocUnit(docUnit);
@@ -81,7 +81,7 @@ public class CinesReportService {
      * @param report
      * @return
      */
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public CinesReport setReportSending(final CinesReport report) {
         report.setStatus(CinesReport.Status.SENDING);
         report.setDateSent(LocalDateTime.now());
@@ -98,7 +98,7 @@ public class CinesReportService {
      * @param report
      * @return
      */
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public CinesReport setReportSent(final CinesReport report) {
         report.setStatus(CinesReport.Status.SENT);
         report.setDateSent(LocalDateTime.now());
@@ -186,12 +186,14 @@ public class CinesReportService {
      */
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public CinesReport failReport(final CinesReport report, final String message) {
+    	
+    	final CinesReport reloaded = cinesReportRepository.findByIdentifier(report.getIdentifier());
 
-        report.setMessage("Arrêt imprévu du traitement au statut " + report.getStatus() + " avec l'erreur: " + message);
-        report.setStatus(CinesReport.Status.FAILED);
-        report.setDateSent(LocalDateTime.now());
+    	reloaded.setMessage("Arrêt imprévu du traitement au statut " + reloaded.getStatus() + " avec l'erreur: " + message);
+    	reloaded.setStatus(CinesReport.Status.FAILED);
+    	reloaded.setDateSent(LocalDateTime.now());
 
-        final CinesReport savedReport = cinesReportRepository.save(report);
+        final CinesReport savedReport = cinesReportRepository.save(reloaded);
         sendUpdate(savedReport);
         return savedReport;
     }

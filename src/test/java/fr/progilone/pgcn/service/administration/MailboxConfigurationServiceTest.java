@@ -1,15 +1,21 @@
 package fr.progilone.pgcn.service.administration;
 
-import fr.progilone.pgcn.domain.administration.MailboxConfiguration;
-import fr.progilone.pgcn.domain.dto.administration.MailboxConfigurationDTO;
-import fr.progilone.pgcn.domain.library.Library;
-import fr.progilone.pgcn.exception.PgcnTechnicalException;
-import fr.progilone.pgcn.exception.PgcnValidationException;
-import fr.progilone.pgcn.repository.administration.MailboxConfigurationRepository;
-import fr.progilone.pgcn.service.administration.mapper.MailboxConfigurationMapper;
-import fr.progilone.pgcn.service.library.mapper.LibraryMapper;
-import fr.progilone.pgcn.service.util.CryptoService;
-import fr.progilone.pgcn.util.TestUtil;
+import static fr.progilone.pgcn.exception.message.PgcnErrorCode.CONF_SFTP_LABEL_MANDATORY;
+import static fr.progilone.pgcn.exception.message.PgcnErrorCode.CONF_SFTP_LIBRARY_MANDATORY;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,18 +24,16 @@ import org.mockito.internal.stubbing.answers.ReturnsArgumentAt;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import static fr.progilone.pgcn.exception.message.PgcnErrorCode.CONF_SFTP_LABEL_MANDATORY;
-import static fr.progilone.pgcn.exception.message.PgcnErrorCode.CONF_SFTP_LIBRARY_MANDATORY;
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import fr.progilone.pgcn.domain.administration.MailboxConfiguration;
+import fr.progilone.pgcn.domain.dto.administration.MailboxConfigurationDTO;
+import fr.progilone.pgcn.domain.library.Library;
+import fr.progilone.pgcn.exception.PgcnTechnicalException;
+import fr.progilone.pgcn.exception.PgcnValidationException;
+import fr.progilone.pgcn.repository.administration.MailboxConfigurationRepository;
+import fr.progilone.pgcn.service.administration.mapper.MailboxConfigurationMapper;
+import fr.progilone.pgcn.service.library.mapper.SimpleLibraryMapper;
+import fr.progilone.pgcn.service.util.CryptoService;
+import fr.progilone.pgcn.util.TestUtil;
 
 /**
  * Created by Sebastien on 30/12/2016.
@@ -47,7 +51,7 @@ public class MailboxConfigurationServiceTest {
     @Before
     public void setUp() {
         final MailboxConfigurationMapper mapper = MailboxConfigurationMapper.INSTANCE;
-        ReflectionTestUtils.setField(mapper, "libraryMapper", LibraryMapper.INSTANCE);
+        ReflectionTestUtils.setField(mapper, "simpleLibraryMapper", SimpleLibraryMapper.INSTANCE);
         service = new MailboxConfigurationService(mailboxConfigurationRepository, cryptoService);
     }
 
@@ -107,9 +111,9 @@ public class MailboxConfigurationServiceTest {
         try {
             service.save(mailboxConfiguration);
             fail("test Save should have failed !");
-        } catch (PgcnTechnicalException e) {
+        } catch (final PgcnTechnicalException e) {
             fail("test Save should have failed with PgcnTechnicalException !");
-        } catch (PgcnValidationException e) {
+        } catch (final PgcnValidationException e) {
             TestUtil.checkPgcnException(e, CONF_SFTP_LABEL_MANDATORY, CONF_SFTP_LIBRARY_MANDATORY);
         }
 
@@ -118,7 +122,7 @@ public class MailboxConfigurationServiceTest {
         final Library lib = new Library();
         lib.setIdentifier("LIB-001");
         mailboxConfiguration.setLibrary(lib);
-        MailboxConfiguration actual = service.save(mailboxConfiguration);
+        final MailboxConfiguration actual = service.save(mailboxConfiguration);
 
         assertEquals(mailboxConfiguration.getIdentifier(), actual.getIdentifier());
         assertNotNull(actual.getLabel());

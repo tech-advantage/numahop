@@ -108,11 +108,8 @@ public interface LotRepository extends JpaRepository<Lot, String>, LotRepository
     List<Lot> findAllByActiveAndTypeAndStatus(boolean active, Lot.Type type, Lot.LotStatus status);
     
     @Query("from Lot lo "
-            + "left join fetch lo.provider "
-            + "left join fetch lo.docUnits du "
-            + "left join fetch du.workflow  "
             + "where (lo.type = 'PHYSICAL' and lo.status = 'ONGOING') "
-            + "or  (lo.type = 'DIGITAL') "
+           + "or  (lo.type = 'DIGITAL' and lo.status != 'CLOSED') "
             + "and lo.active = ?1")
     List<Lot> findAllByActiveForDelivery(boolean active);
     
@@ -130,6 +127,8 @@ public interface LotRepository extends JpaRepository<Lot, String>, LotRepository
     List<Lot> findAllByActiveAndProjectLibraryIdentifierIn(boolean active, List<String> libraries);
     
     List<Lot> findAllByActiveAndProjectIdentifierIn(boolean active, List<String> projects);
+    
+    List<Lot> findAllByProjectIdentifierIn(List<String> projects);
 
     Long countByActiveFTPConfiguration(FTPConfiguration conf);
     
@@ -142,6 +141,7 @@ public interface LotRepository extends JpaRepository<Lot, String>, LotRepository
     Long countByProvider(User user);
 
     Long countByWorkflowModel(WorkflowModel model);
+    
     /* attention : recupere aussi lots inactifs pour la reprise de données */
     List<Lot> findAllByProjectLibraryIdentifierIn(List<String> libraries);
 

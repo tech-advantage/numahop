@@ -1,13 +1,16 @@
 package fr.progilone.pgcn.service.train;
 
-import fr.progilone.pgcn.domain.document.DocUnit;
-import fr.progilone.pgcn.domain.document.PhysicalDocument;
-import fr.progilone.pgcn.domain.dto.train.SimpleTrainDTO;
-import fr.progilone.pgcn.domain.train.Train;
-import fr.progilone.pgcn.exception.PgcnTechnicalException;
-import fr.progilone.pgcn.repository.train.TrainRepository;
-import fr.progilone.pgcn.service.document.conditionreport.ConditionReportService;
-import fr.progilone.pgcn.service.es.EsTrainService;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.servlet.ServletOutputStream;
+
 import org.apache.commons.collections4.IterableUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,15 +20,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.ServletOutputStream;
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
+import fr.progilone.pgcn.domain.document.DocUnit;
+import fr.progilone.pgcn.domain.document.PhysicalDocument;
+import fr.progilone.pgcn.domain.dto.train.SimpleTrainDTO;
+import fr.progilone.pgcn.domain.train.Train;
+import fr.progilone.pgcn.exception.PgcnTechnicalException;
+import fr.progilone.pgcn.repository.train.TrainRepository;
+import fr.progilone.pgcn.service.document.conditionreport.ConditionReportService;
+import fr.progilone.pgcn.service.es.EsTrainService;
 
 @Service
 public class TrainService {
@@ -122,9 +124,14 @@ public class TrainService {
     public List<Train> findAllByActive(final boolean active) {
         return trainRepository.findAllByActive(active);
     }
+    
+    @Transactional(readOnly = true)
+    public List<Train> findAll() {
+        return trainRepository.findAll();
+    }
 
     @Transactional
-    public Train save(Train train) {
+    public Train save(final Train train) {
         return trainRepository.save(train);
     }
 
@@ -136,7 +143,7 @@ public class TrainService {
     }
 
     @Transactional(readOnly = true)
-    public List<Train> findAllForProject(String id) {
+    public List<Train> findAllForProject(final String id) {
         return trainRepository.findAllByProjectIdentifier(id);
     }
 

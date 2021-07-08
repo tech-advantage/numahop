@@ -43,15 +43,15 @@ public class StatisticsProjectDTO extends AbstractDTO {
         return description;
     }
 
-    public final void setDescription(String description) {
+    public void setDescription(String description) {
         this.description = description;
     }
 
-    public final void setIdentifier(String identifier) {
+    public void setIdentifier(String identifier) {
         this.identifier = identifier;
     }
 
-    public final void setName(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 

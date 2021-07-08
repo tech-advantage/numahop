@@ -114,19 +114,14 @@
          */
         function getSearchParams() {
             var params = {};
-            // params["available"] = true;
+            params["active"] = true;
 
             // Bibliothèque
             if (mainCtrl.library) {
                 params["libraries"] = [mainCtrl.library];
             }
-            // Projet
-            // if (mainCtrl.filters.projects) {
-            //     var projectsIds = _.pluck(mainCtrl.filters.projects, "identifier");
-            //     params["projects"] = projectsIds;
-            // }
 
-            params["searchAsList"] = mainCtrl.searchRequest || "";
+            params["search"] = mainCtrl.searchRequest || "";
             return params;
         }
 

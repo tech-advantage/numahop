@@ -200,4 +200,29 @@
             return service;
         });
 
+    angular.module('numaHopApp.service')
+        .factory('DigitalLibraryConfigurationSrvc', function ($resource, CONFIGURATION) {
+            var service = $resource(CONFIGURATION.numahop.url + 'api/rest/conf_digital_library/:id', {
+                id: '@identifier'
+            }, {
+                    search: {
+                        method: 'GET',
+                        isArray: false,
+                        params: {
+                            search: true,
+                            size: 50
+                        }
+                    },
+                });
+
+            service.config = {
+                recordFormats: {
+                    EAD: "EAD",
+                    MARC: "MARC",
+                    CSV: "CSV"
+                }
+            };
+            return service;
+        });
+
 })();

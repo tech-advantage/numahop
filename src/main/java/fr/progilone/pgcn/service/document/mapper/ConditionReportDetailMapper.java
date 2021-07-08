@@ -1,13 +1,11 @@
 package fr.progilone.pgcn.service.document.mapper;
 
-import fr.progilone.pgcn.domain.document.conditionreport.ConditionReportDetail;
-import fr.progilone.pgcn.domain.document.conditionreport.Description;
-import fr.progilone.pgcn.domain.document.conditionreport.DescriptionProperty;
-import fr.progilone.pgcn.domain.document.conditionreport.DescriptionValue;
-import fr.progilone.pgcn.domain.dto.document.conditionreport.ConditionReportDetailDTO;
-import fr.progilone.pgcn.domain.dto.document.conditionreport.ConditionReportDetailVelocityDTO;
-import fr.progilone.pgcn.domain.dto.document.conditionreport.ConditionReportValueDTO;
-import fr.progilone.pgcn.domain.dto.document.conditionreport.ConditionReportValueVelocityDTO;
+import static fr.progilone.pgcn.domain.dto.document.conditionreport.ConditionReportValueVelocityDTO.ValueType.*;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
@@ -16,11 +14,14 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import static fr.progilone.pgcn.domain.dto.document.conditionreport.ConditionReportValueVelocityDTO.ValueType.*;
+import fr.progilone.pgcn.domain.document.conditionreport.ConditionReportDetail;
+import fr.progilone.pgcn.domain.document.conditionreport.Description;
+import fr.progilone.pgcn.domain.document.conditionreport.DescriptionProperty;
+import fr.progilone.pgcn.domain.document.conditionreport.DescriptionValue;
+import fr.progilone.pgcn.domain.dto.document.conditionreport.ConditionReportDetailDTO;
+import fr.progilone.pgcn.domain.dto.document.conditionreport.ConditionReportDetailVelocityDTO;
+import fr.progilone.pgcn.domain.dto.document.conditionreport.ConditionReportValueDTO;
+import fr.progilone.pgcn.domain.dto.document.conditionreport.ConditionReportValueVelocityDTO;
 
 @Mapper(uses = {ConditionReportValueMapper.class})
 public abstract class ConditionReportDetailMapper {
@@ -36,17 +37,19 @@ public abstract class ConditionReportDetailMapper {
     public abstract ConditionReportDetailVelocityDTO detailToVelocityDTO(ConditionReportDetail detail);
 
     @AfterMapping
-    protected void updateDTO(ConditionReportDetail detail, @MappingTarget ConditionReportDetailDTO dto) {
+    protected void updateDTO(final ConditionReportDetail detail, @MappingTarget final ConditionReportDetailDTO dto) {
         final List<ConditionReportValueDTO> reducedDescriptions = joinValuesByProperty(dto.getDescriptions());
 
         dto.setBindings(getDescriptionList(reducedDescriptions, DescriptionProperty.Type.BINDING));
         dto.setDescriptions(getDescriptionList(reducedDescriptions, DescriptionProperty.Type.DESCRIPTION));
         dto.setNumberings(getDescriptionList(reducedDescriptions, DescriptionProperty.Type.NUMBERING));
         dto.setVigilances(getDescriptionList(reducedDescriptions, DescriptionProperty.Type.VIGILANCE));
+        dto.setTypes(getDescriptionList(reducedDescriptions, DescriptionProperty.Type.TYPE));
+        dto.setStates(getDescriptionList(reducedDescriptions, DescriptionProperty.Type.STATE));
     }
 
     @AfterMapping
-    protected void updateDTO(ConditionReportDetail detail, @MappingTarget ConditionReportDetailVelocityDTO dto) {
+    protected void updateDTO(final ConditionReportDetail detail, @MappingTarget final ConditionReportDetailVelocityDTO dto) {
         detail.getDescriptions().stream().collect(Collectors.groupingBy(Description::getProperty))
               // Descriptions regroupées par propriétés
               .forEach((property, descriptions) -> {
@@ -116,6 +119,10 @@ public abstract class ConditionReportDetailMapper {
                 return dto.getBindings();
             case NUMBERING:
                 return dto.getNumberings();
+            case TYPE:
+                return dto.getTypes();
+            case STATE:
+                return dto.getStates();
             case DESCRIPTION:
             default:
                 return dto.getDescriptions();

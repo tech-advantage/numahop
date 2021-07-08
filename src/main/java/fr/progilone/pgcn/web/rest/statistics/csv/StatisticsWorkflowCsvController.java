@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.security.PermitAll;
 import javax.servlet.http.HttpServletRequest;
@@ -34,6 +35,7 @@ import fr.progilone.pgcn.domain.dto.statistics.WorkflowUserProgressDTO;
 import fr.progilone.pgcn.domain.dto.statistics.csv.WorkflowDeliveryProgressCsvDTO;
 import fr.progilone.pgcn.domain.dto.statistics.csv.WorkflowDocUnitProgressCsvDTO;
 import fr.progilone.pgcn.domain.workflow.WorkflowStateKey;
+import fr.progilone.pgcn.domain.workflow.WorkflowStateStatus;
 import fr.progilone.pgcn.exception.PgcnTechnicalException;
 import fr.progilone.pgcn.service.exchange.csv.ExportCSVService;
 import fr.progilone.pgcn.service.statistics.mapper.StatisticsMapper;
@@ -86,7 +88,18 @@ public class StatisticsWorkflowCsvController extends AbstractRestController {
                                                                                                                         toDate,
                                                                                                                         0,
                                                                                                                         Integer.MAX_VALUE);
-        final List<WorkflowDeliveryProgressCsvDTO> dtos = StatisticsMapper.toWorkflowDeliveryProgressCsvDTO(result.getBody().getContent());
+
+        final List<WorkflowDeliveryProgressDTO> body =
+                                                     result.getBody()
+                                                           .getContent()
+                                                           .stream()
+                                                           .peek(workflowDeliveryProgress -> workflowDeliveryProgress.setWorkflow(workflowDeliveryProgress.getWorkflow()
+                                                                                                                                                          .stream()
+                                                                                                                                                          .filter(state -> states.contains(state.getKey()))
+                                                                                                                                                          .collect(Collectors.toList())))
+                                                           .collect(Collectors.toList());
+
+        final List<WorkflowDeliveryProgressCsvDTO> dtos = StatisticsMapper.toWorkflowDeliveryProgressCsvDTO(body);
 
         try {
             writeResponseHeaderForDownload(response, "text/csv; charset=" + encoding, null, FILENAME);
@@ -109,6 +122,7 @@ public class StatisticsWorkflowCsvController extends AbstractRestController {
                                                      @RequestParam(value = "train", required = false) final List<String> trains,
                                                      @RequestParam(value = "pgcnid", required = false) final String pgcnId,
                                                      @RequestParam(value = "state", required = false) final List<WorkflowStateKey> states,
+                                                     @RequestParam(value = "status", required = false) final List<WorkflowStateStatus> status,
                                                      @RequestParam(value = "mine", required = false, defaultValue = "false") final boolean onlyMine,
                                                      @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "from", required = false)
                                                      final LocalDate fromDate,
@@ -120,16 +134,28 @@ public class StatisticsWorkflowCsvController extends AbstractRestController {
         final ResponseEntity<Page<WorkflowDocUnitProgressDTO>> result = delegate.getWorkflowDocUnitProgressStatistics(request,
                                                                                                                       libraries,
                                                                                                                       projects,
+                                                                                                                      false,
                                                                                                                       lots,
                                                                                                                       trains,
                                                                                                                       pgcnId,
                                                                                                                       states,
+                                                                                                                      status,
                                                                                                                       onlyMine,
                                                                                                                       fromDate,
                                                                                                                       toDate,
                                                                                                                       0,
                                                                                                                       Integer.MAX_VALUE);
-        final List<WorkflowDocUnitProgressCsvDTO> dtos = StatisticsMapper.toWorkflowDocUnitProgressCsvDTO(result.getBody().getContent());
+
+        final List<WorkflowDocUnitProgressDTO> body =
+                                                    result.getBody()
+                                                          .getContent()
+                                                          .stream()
+                                                          .peek(workflowProgress -> workflowProgress.setWorkflow(workflowProgress.getWorkflow()
+                                                                                                                                 .stream()
+                                                                                                                                 .filter(state -> states.contains(state.getKey()))
+                                                                                                                                 .collect(Collectors.toList())))
+                                                          .collect(Collectors.toList());
+        final List<WorkflowDocUnitProgressCsvDTO> dtos = StatisticsMapper.toWorkflowDocUnitProgressCsvDTO(body);
 
         try {
             writeResponseHeaderForDownload(response, "text/csv; charset=" + encoding, null, FILENAME);

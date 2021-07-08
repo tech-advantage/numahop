@@ -47,15 +47,15 @@ public class SimpleUserDTO {
         return identifier;
     }
 
-    public final void setIdentifier(String identifier) {
+    public void setIdentifier(String identifier) {
         this.identifier = identifier;
     }
 
-    public final void setSurname(String surname) {
+    public void setSurname(String surname) {
         this.surname = surname;
     }
 
-    public final void setFirstname(String firstname) {
+    public void setFirstname(String firstname) {
         this.firstname = firstname;
     }
 

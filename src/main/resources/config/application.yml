@@ -93,12 +93,15 @@ cron:
     rebuildIndex: 0 40 0 * * *
     cleanDeliveryFiles: 0 0 1 * * ?
     cinesExport: 0 30 1 * * ?
+    localExport: 0 0 4 * * ?
     cleanTemporaryFiles: 0 0 2 * * ?
     internetArchiveExport: 0 30 2 * * ?
-    gestDeliveredFiles: 0 30 3 * * ?
+    gestDeliveredFiles: 0 00 18 * * SAT
     cinesUpdateStatus: 0 10 * * * *
     omekaExport: 0 0 3 * * ?
     cleanExportCaches: 0 30 6 * * ?
+    docUnitUpdateArk: 0 0 6 * * ?
+    digitalLibraryExport: 0 0 3 * * ?
  
 admin:
     login: admin

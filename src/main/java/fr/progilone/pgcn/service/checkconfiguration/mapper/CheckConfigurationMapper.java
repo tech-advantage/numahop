@@ -6,12 +6,12 @@ import org.mapstruct.factory.Mappers;
 import fr.progilone.pgcn.domain.checkconfiguration.CheckConfiguration;
 import fr.progilone.pgcn.domain.dto.checkconfiguration.CheckConfigurationDTO;
 import fr.progilone.pgcn.service.check.mapper.AutomaticCheckTypeMapper;
-import fr.progilone.pgcn.service.library.mapper.LibraryMapper;
+import fr.progilone.pgcn.service.library.mapper.SimpleLibraryMapper;
 
 /**
  * Created by lebouchp on 03/02/2017.
  */
-@Mapper(uses = {AutomaticCheckRuleMapper.class, AutomaticCheckTypeMapper.class, LibraryMapper.class})
+@Mapper(uses = {AutomaticCheckRuleMapper.class, AutomaticCheckTypeMapper.class, SimpleLibraryMapper.class})
 public interface CheckConfigurationMapper {
 
     CheckConfigurationMapper INSTANCE = Mappers.getMapper(CheckConfigurationMapper.class);

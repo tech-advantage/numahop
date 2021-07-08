@@ -103,8 +103,7 @@ public class DeliveryProcessService {
     private final WorkflowAccessHelper workflowAccessHelper;
     private final WorkflowService workflowService;
     private final ConditionReportService conditionReportService;
-    //private final ProjectService projectService;
-    private BinaryStorageManager bm;
+    private final BinaryStorageManager bm;
     
     @Autowired
     public DeliveryProcessService(final PhysicalDocumentRepository physicalDocumentRepository,
@@ -188,23 +187,38 @@ public class DeliveryProcessService {
                                         .mapToLong(p -> p.toFile().length())
                                         .sum();
             } catch(final IOException e) {
-                LOG.error("Erreur evaluation taille directory {}", directory.getName(), e.getMessage());
+                LOG.error("Erreur evaluation taille directory {}, erreur {}", directory.getName(), e.getMessage());
             }
             
             // Traitement des fichiers au format attendu (FIXME : master et non master au même format)
             final List<String> fileNames = autoCheckService.findMastersOnly(filesToHandle, format);
             int pageCount = 0;
+            final Set<String> pieces = new HashSet<>();
+
+            // #4993 - Cas des estampes : 1 seul fichier master, pas forcément besoin de sequence..
+            final boolean isJustOneFileEstampe = fileNames.size() == 1
+                                                 && StringUtils.equalsIgnoreCase(fileNames.get(0), (prefix + "." + format));
+
             for (final String name : fileNames) {
+                final SplitFilename splitFileName;
                 try {
-                    SplitFilename.split(name, splitNames, bibPrefixMandatory, seqSeparator, EXTENSION_FORMAT_PDF.equalsIgnoreCase(format));
+
+                    splitFileName = SplitFilename.split(name,
+                                                        splitNames,
+                                                        bibPrefixMandatory,
+                                                        seqSeparator,
+                                                        EXTENSION_FORMAT_PDF.equalsIgnoreCase(format),
+                                                        isJustOneFileEstampe,
+                                                        prefix);
                 } catch (final PgcnTechnicalException e) {
                     LOG.warn(e.getMessage()); // NOSONAR
                     continue;
                 }
                 pageCount++;
+                pieces.add(splitFileName.getPiece());
             }
 
-            final PreDeliveryDocumentDTO pddto = new PreDeliveryDocumentDTO(prefix, 0, new HashSet<>());
+            final PreDeliveryDocumentDTO pddto = new PreDeliveryDocumentDTO(prefix, 0, pieces, new HashSet<>());
 
             // Traitement des fichiers non masters.
             final List<String> fileNamesOthers = autoCheckService.findNonMaster(filesToHandle, format);
@@ -262,7 +276,7 @@ public class DeliveryProcessService {
         final AutomaticCheckRule masterRule = checkingRules.get(AutoCheckType.WITH_MASTER);
         if (masterRule.isActive() && splitNames.isEmpty()) {
             // aucun master trouvé, on empeche la livraison
-            LOG.error("Aucun fichier à livrer => livraison stoppée");
+            LOG.warn("Aucun fichier à livrer => livraison stoppée");
             preDeliveryDTO.addError(buildError(DELIVERY_NO_MASTER_FOUND));
         }
         // On effectue le contrôle après : les dossiers non correspondants sont simplement ignorés
@@ -338,9 +352,14 @@ public class DeliveryProcessService {
         physicalDocuments.forEach(physicalDoc -> {
             // Vérification de la possibilité de livrer le document
             if (workflowAccessHelper.canDocUnitBeDelivered(physicalDoc.getDocUnit().getIdentifier())) {
-                final PrefixedDocuments prefixedDocs = new PrefixedDocuments();
-                prefixedDocs.addPhysicalDocument(physicalDoc);
-                documentsForPrefix.put(physicalDoc.getDigitalId(), prefixedDocs);
+                if (physicalDoc.getDigitalId().isEmpty()) {
+                    LOG.info("Le document ayant pour PGCN id {} ne peut pas être livré (aucun radical n'est configuré)",
+                             physicalDoc.getDocUnit().getPgcnId());
+                } else {
+                    final PrefixedDocuments prefixedDocs = new PrefixedDocuments();
+                    prefixedDocs.addPhysicalDocument(physicalDoc);
+                    documentsForPrefix.put(physicalDoc.getDigitalId(), prefixedDocs);
+                }
             } else {
                 LOG.info("Le document ayant pour préfixe {} ne peut pas être livré (workflow)", physicalDoc.getDigitalId());
             }
@@ -409,7 +428,7 @@ public class DeliveryProcessService {
                      .map(dto -> {
                          
                          // La docUnit existe en cas de relivraison
-                         final DocUnit alreadyHere = docUnitService.findOneByPgcnId(dto.getDigitalId());
+                         final DocUnit alreadyHere = docUnitService.findOneByPgcnIdAndState(dto.getDigitalId());
                          final DocUnit docUnit = alreadyHere == null ? new DocUnit() : alreadyHere;
                          docUnit.setPgcnId(dto.getDigitalId());
                          docUnit.setLibrary(library);
@@ -684,8 +703,7 @@ public class DeliveryProcessService {
     
     /**
      * Controle si espace disque suffisant pour la livraison à venir.
-     * 
-     * @param delivery
+     *
      * @param totalMastersSize
      * @return
      */

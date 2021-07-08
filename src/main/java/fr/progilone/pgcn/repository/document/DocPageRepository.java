@@ -1,6 +1,7 @@
 package fr.progilone.pgcn.repository.document;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -68,4 +69,8 @@ public interface DocPageRepository extends JpaRepository<DocPage, String> {
     int countDocPageWithMajorErrorsForSample(String sampleIdentifier);
 
     int countDocPageByDigitalDocumentIdentifier(String digitalDocumentIdentifier);
+
+    @Query("select distinct p.piece from DocPage p "
+           + "where p.digitalDocument.identifier = ?1 ")
+    Set<String> getAllPieceByDigitalDocumentIdentifier(String identifier);
 }

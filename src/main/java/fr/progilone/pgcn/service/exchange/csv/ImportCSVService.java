@@ -4,12 +4,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -103,6 +100,8 @@ public class ImportCSVService extends AbstractImportService {
      * @param stepDeduplication
      *         Étape de dédoublonnage
      * @param defaultDedupProcess
+     * @param archivable
+     * @param distributable
      */
     @Async
     public void importCSVAsync(final File importFile,
@@ -113,11 +112,13 @@ public class ImportCSVService extends AbstractImportService {
                                ImportReport report,
                                final boolean stepValidation,
                                final boolean stepDeduplication,
-                               final ImportedDocUnit.Process defaultDedupProcess) {
+                               final ImportedDocUnit.Process defaultDedupProcess,
+                               final boolean archivable,
+                               final boolean distributable) {
         try {
             /* Pré-import */
             LOG.info("Pré-import du fichier {} {}", fileFormat, importFile.getAbsolutePath());
-            report = importCSVRecords(importFile, report, mappingId, parentKeyExpr);
+            report = importCSVRecords(importFile, report, mappingId, parentKeyExpr, archivable, distributable);
 
             /* Poursuite du traitement des unités documentaires pré-importées: recherche de doublons, validation utilisateur, import */
             importDocUnit(report, parentReportId, stepValidation, stepDeduplication, defaultDedupProcess);
@@ -137,11 +138,15 @@ public class ImportCSVService extends AbstractImportService {
      * @param mappingId
      * @param parentKeyExpr
      */
-    private ImportReport importCSVRecords(final File importFile, final ImportReport report, final String mappingId, final String parentKeyExpr) throws
-                                                                                                                                                PgcnTechnicalException {
+    private ImportReport importCSVRecords(final File importFile, 
+    										final ImportReport report, 
+    										final String mappingId, 
+    										final String parentKeyExpr,
+    										final boolean archivable,
+    										final boolean distributable) throws PgcnTechnicalException {
 
         try (final FileReader in = new FileReader(importFile)) {
-            return importRecord(in, report, mappingId, parentKeyExpr);
+            return importRecord(in, report, mappingId, parentKeyExpr, archivable, distributable);
 
         } catch (final Exception e) {
             throw new PgcnTechnicalException(e);
@@ -156,8 +161,12 @@ public class ImportCSVService extends AbstractImportService {
      * @param mappingId
      * @param parentKeyExpr
      */
-    private ImportReport importRecord(final Reader in, final ImportReport importReport, final String mappingId, final String parentKeyExpr) throws
-                                                                                                                                            PgcnTechnicalException {
+    private ImportReport importRecord(final Reader in, 
+    								  final ImportReport importReport, 
+    								  final String mappingId, 
+    								  final String parentKeyExpr,
+    								  final boolean archivable,
+									  final boolean distributable) throws PgcnTechnicalException {
         final TransactionStatus status = transactionService.startTransaction(true);
 
         // Chargement du mapping
@@ -176,19 +185,17 @@ public class ImportCSVService extends AbstractImportService {
         // Lecture de l'entête
         final Iterator<CSVRecord> recordIterator = parser.iterator();
         final CSVRecord header = recordIterator.next();
-        final List<String> entetes = new ArrayList<>();
-        //header.iterator().forEachRemaining(entetes::add);
-        
-        //CSVRecord copyHeader = new CSVRecord();
-        
-        
-        final List<String> propertyNames = new ArrayList<>();
+        final Map<Integer, String> entetes = new HashMap<>();
+        final Map<String, String> propertyNames = new HashMap<>();
 
-        for (final String key : header) {
+        for (int i = 0; i < header.size(); i++) {
+            final String key = header.get(i);
             if (key.startsWith("dc:")) {
-                propertyNames.add(key.substring(3));
-                entetes.add(key);
+                propertyNames.put(key.substring(3), key.substring(3));
+                entetes.put(i, key);
             
+            } else if (key.equals(parentKeyExpr)) {
+                entetes.put(i, key);
             } else {
                 // champs custom
                 final String keyRule = mapping.getRules().stream()
@@ -197,19 +204,21 @@ public class ImportCSVService extends AbstractImportService {
                                     .map(DocPropertyType::getIdentifier)
                                     .findAny().orElse(null);
                                     //.ifPresent(keyRule -> propertyNames.add(keyRule));
-                if (StringUtils.isNotEmpty(keyRule)) {
-                    propertyNames.add(keyRule);
-                    entetes.add(keyRule);
+                if (keyRule != null) {
+                    propertyNames.put(keyRule, key);
+                    entetes.put(i, key);
                 }
                 
             }
         }
 
-        // Chargement des types de propriété
-        final Map<String, DocPropertyType> propertyTypes = docPropertyTypeService.findAllByIdentifierIn(propertyNames)
-                                                                                 .stream()
-                                                                                 .collect(Collectors.toMap(DocPropertyType::getIdentifier,
-                                                                                                           Function.identity()));
+        // Chargement des types de propriété - Map : valeur définie dans le mapping (colonne) / docPropertyType
+        final Map<String, DocPropertyType> propertyTypes = new HashMap<>();
+        for (final String property : propertyNames.keySet()) {
+            if (docPropertyTypeService.findOne(property) != null) {
+                propertyTypes.put(propertyNames.get(property), docPropertyTypeService.findOne(property));
+            }
+        }
         
         
         // Résumé d'exécution
@@ -226,7 +235,7 @@ public class ImportCSVService extends AbstractImportService {
             .forEach((record) -> {
                 try {
                     // Conversion du record en unité documentaire
-                    final DocUnitWrapper wrapper = csvToDocUnitConvertService.convert(record, mapping, header, parentKeyExpr, propertyTypes, entetes);
+                    final DocUnitWrapper wrapper = csvToDocUnitConvertService.convert(record, mapping, header, parentKeyExpr, propertyTypes, entetes, archivable, distributable);
 
                     // Sauvegarde
                     final ImportedDocUnit imp = new ImportedDocUnit();

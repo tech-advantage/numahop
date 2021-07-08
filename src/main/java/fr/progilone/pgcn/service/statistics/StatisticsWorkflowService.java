@@ -1,5 +1,31 @@
 package fr.progilone.pgcn.service.statistics;
 
+import static fr.progilone.pgcn.domain.workflow.WorkflowStateKey.*;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import fr.progilone.pgcn.domain.delivery.Delivery;
 import fr.progilone.pgcn.domain.document.BibliographicRecord;
 import fr.progilone.pgcn.domain.document.DigitalDocument;
@@ -35,31 +61,6 @@ import fr.progilone.pgcn.service.document.conditionreport.ConditionReportService
 import fr.progilone.pgcn.service.statistics.mapper.StatisticsWorkflowMapper;
 import fr.progilone.pgcn.service.user.UserService;
 import fr.progilone.pgcn.service.workflow.WorkflowService;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import static fr.progilone.pgcn.domain.workflow.WorkflowStateKey.*;
 
 @Service
 public class StatisticsWorkflowService {
@@ -92,10 +93,12 @@ public class StatisticsWorkflowService {
     @Transactional(readOnly = true)
     public Page<WorkflowDocUnitProgressDTO> getDocUnitProgressReport(final List<String> libraries,
                                                                      final List<String> projects,
+                                                                     final boolean projetActive,
                                                                      final List<String> lots,
                                                                      final List<String> trains,
                                                                      final String pgcnId,
                                                                      final List<WorkflowStateKey> states,
+                                                                     final List<WorkflowStateStatus> status,
                                                                      final List<String> users,
                                                                      final LocalDate fromDate,
                                                                      final LocalDate toDate,
@@ -106,10 +109,12 @@ public class StatisticsWorkflowService {
         
         return docUnitWorkflowRepository.findDocUnitProgressStats(libraries,
                                                                   projects,
+                                                                  projetActive,
                                                                   lots,
                                                                   trains,
                                                                   pgcnId,
                                                                   states,
+                                                                  status,
                                                                   users,
                                                                   fromDate,
                                                                   toDate,
@@ -605,19 +610,19 @@ public class StatisticsWorkflowService {
             }
 
             // Workflow
-            List<DocUnitState> docUnitStates = workflow.getStates().stream()
-                    // étapes de workflow en cours
-                    .filter(state -> state.getStartDate() != null && state.getEndDate() == null)
-                    .collect(Collectors.toList());
+            final List<DocUnitState> docUnitStates = workflow.getStates().stream()
+                                                             // étapes de workflow en cours
+                                                             .filter(state -> state.getStartDate() != null && state.getEndDate() == null)
+                                                             .collect(Collectors.toList());
 
             // Toutes les étapes sont terminées
             if(docUnitStates.size() == 0) {
                 // dernière étape terminée
                 // (souvent la diffusion et la cloture se termine en même temps, on trie par Key pour faire remonter la cloture avant)
-                Optional<DocUnitState> docUnitState = workflow.getStates().stream()
-                                                              .filter(state -> state.getEndDate() != null)
-                                                              .sorted((s1,s2)-> s2.getKey().compareTo(s1.getKey()))
-                                                              .max(Comparator.comparing(DocUnitState::getEndDate));
+                final Optional<DocUnitState> docUnitState = workflow.getStates().stream()
+                                                                    .filter(state -> state.getEndDate() != null)
+                                                                    .sorted((s1,s2)-> s2.getKey().compareTo(s1.getKey()))
+                                                                    .max(Comparator.comparing(DocUnitState::getEndDate));
 
                 if (docUnitState.isPresent()) {
                     final DocUnitState state = docUnitState.get();

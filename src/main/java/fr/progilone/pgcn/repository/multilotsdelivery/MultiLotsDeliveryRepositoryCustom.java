@@ -6,8 +6,8 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import fr.progilone.pgcn.domain.delivery.Delivery;
 import fr.progilone.pgcn.domain.multilotsdelivery.MultiLotsDelivery;
-import fr.progilone.pgcn.domain.multilotsdelivery.MultiLotsDelivery.DeliveryStatus;
 import fr.progilone.pgcn.domain.workflow.WorkflowStateKey;
 
 public interface MultiLotsDeliveryRepositoryCustom {
@@ -33,7 +33,7 @@ public interface MultiLotsDeliveryRepositoryCustom {
                           List<String> lots,
                           List<String> deliveries,
                           List<String> providers,
-                          List<DeliveryStatus> status,
+                                   List<Delivery.DeliveryStatus> status,
                           LocalDate dateFrom,
                           LocalDate dateTo,
                           List<WorkflowStateKey> docUnitStates,

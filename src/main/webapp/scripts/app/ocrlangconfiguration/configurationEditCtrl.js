@@ -17,6 +17,7 @@
         $scope.validation = ValidationSrvc;
         $scope.readOnlyCheck = false;
         $scope.configuration = undefined;
+        $scope.displayBoolean = DocUnitBaseService.displayBoolean;
 
         // toggle switch label ON/OFF
         $scope.onLabelActiv = gettextCatalog.getString("Activé");
@@ -97,13 +98,12 @@
             if (lang.active) {
                 $scope.configuration.ocrLanguages.push(lang);
             } else {
-                var idx = $scope.configuration.ocrLanguages.indexOf(lang);
+                var idx = $scope.configuration.ocrLanguages.map(function(l) { return l.identifier; }).indexOf(lang.identifier);
                 if (idx > -1) {
                     $scope.configuration.ocrLanguages.splice(idx, 1);
                 }
             }
-            console.log($scope.configuration.ocrLanguages);
-        };        
+        };
 
         /**
          * Initialisation des langues activées en modif.

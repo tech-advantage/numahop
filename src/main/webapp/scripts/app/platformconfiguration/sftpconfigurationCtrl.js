@@ -4,7 +4,7 @@
     angular.module('numaHopApp.controller')
         .controller('SFTPConfigurationCtrl', SFTPConfigurationCtrl);
 
-    function SFTPConfigurationCtrl($location, $scope, $timeout, $q, NumahopStorageService, NumaHopInitializationSrvc, SFTPConfigurationSrvc, StringTools) {
+    function SFTPConfigurationCtrl($location, $scope, $timeout, $q, NumahopStorageService, NumaHopInitializationSrvc, SFTPConfigurationSrvc, StringTools, gettext) {
 
         $scope.applyFilter = applyFilter;
         $scope.clearSelection = clearSelection;
@@ -30,7 +30,11 @@
          */
         $scope.options = {
             institutions: [],
-            libraries: []
+            libraries: [],
+            boolean: {
+                "true": gettext('Oui'),
+                "false": gettext('Non')
+            }
         };
         $scope.pagination = {
             items: [],

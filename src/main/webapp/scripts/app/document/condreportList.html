@@ -141,7 +141,7 @@
                             </button>
                             <ul class="dropdown-menu dropdown-menu-right" uib-dropdown-menu role="menu">
                                 <!-- Ajouter la sélection à un train -->
-                                <li role="menuitem">
+                                <li role="menuitem" sem-roles-allowed="DOC_UNIT_HAB2">
                                     <a ng-click="mainCtrl.addSelectionToTrain()" class="btn-xs">
                                         <span class="glyphicon-halflings glyphicon-plus"></span>
                                         {{::'Ajouter à un train existant' | translate}}
@@ -161,13 +161,13 @@
                                         {{::'Valider la sélection' | translate}}
                                     </a>
                                 </li>
-                                <li role="menuitem">
+                                <li role="menuitem" sem-roles-allowed="COND_REPORT_HAB4">
                                     <a ng-click="mainCtrl.downloadSlip('csv')" class="btn-xs">
                                         <span class="glyphicon-halflings glyphicon-plus"></span>
                                         {{::'Télécharger le bordereau CSV' | translate}}
                                     </a>
                                 </li>
-                                <li role="menuitem">
+                                <li role="menuitem" sem-roles-allowed="COND_REPORT_HAB4">
                                     <a ng-click="mainCtrl.downloadSlip('pdf')" class="btn-xs">
                                         <span class="glyphicon-halflings glyphicon-plus"></span>
                                         {{::'Télécharger le bordereau PDF' | translate}}

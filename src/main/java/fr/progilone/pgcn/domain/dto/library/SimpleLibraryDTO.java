@@ -1,11 +1,12 @@
 package fr.progilone.pgcn.domain.dto.library;
 
+import fr.progilone.pgcn.domain.dto.AbstractVersionedDTO;
 import fr.progilone.pgcn.domain.dto.user.RoleDTO;
 
 /**
  * DTO représentant une library
  */
-public class SimpleLibraryDTO {
+public class SimpleLibraryDTO extends AbstractVersionedDTO {
 
     private String identifier;
     private String name;
@@ -40,7 +41,7 @@ public class SimpleLibraryDTO {
         return identifier;
     }
 
-    public final void setIdentifier(String identifier) {
+    public void setIdentifier(final String identifier) {
         this.identifier = identifier;
     }
 
@@ -48,7 +49,7 @@ public class SimpleLibraryDTO {
         return name;
     }
 
-    public final void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -56,7 +57,7 @@ public class SimpleLibraryDTO {
         return prefix;
     }
 
-    public void setPrefix(String prefix) {
+    public void setPrefix(final String prefix) {
         this.prefix = prefix;
     }
 
@@ -64,7 +65,7 @@ public class SimpleLibraryDTO {
         return defaultRole;
     }
 
-    public void setDefaultRole(RoleDTO defaultRole) {
+    public void setDefaultRole(final RoleDTO defaultRole) {
         this.defaultRole = defaultRole;
     }
 
@@ -72,7 +73,7 @@ public class SimpleLibraryDTO {
         return libRespName;
     }
 
-    public void setLibRespName(String libRespName) {
+    public void setLibRespName(final String libRespName) {
         this.libRespName = libRespName;
     }
 
@@ -80,7 +81,7 @@ public class SimpleLibraryDTO {
         return libRespPhone;
     }
 
-    public void setLibRespPhone(String libRespPhone) {
+    public void setLibRespPhone(final String libRespPhone) {
         this.libRespPhone = libRespPhone;
     }
 
@@ -88,7 +89,7 @@ public class SimpleLibraryDTO {
         return libRespEmail;
     }
 
-    public void setLibRespEmail(String libRespEmail) {
+    public void setLibRespEmail(final String libRespEmail) {
         this.libRespEmail = libRespEmail;
     }
 
@@ -126,27 +127,27 @@ public class SimpleLibraryDTO {
             return this;
         }
 
-        public Builder setPrefix(String prefix) {
+        public Builder setPrefix(final String prefix) {
             this.prefix = prefix;
             return this;
         }
 
-        public Builder setDefaultRole(RoleDTO defaultRole) {
+        public Builder setDefaultRole(final RoleDTO defaultRole) {
             this.defaultRole = defaultRole;
             return this;
         }
 
-        public Builder setLibRespName(String libRespName) {
+        public Builder setLibRespName(final String libRespName) {
             this.libRespName = libRespName;
             return this;
         }
 
-        public Builder setLibRespPhone(String libRespPhone) {
+        public Builder setLibRespPhone(final String libRespPhone) {
             this.libRespPhone = libRespPhone;
             return this;
         }
 
-        public Builder setLibRespEmail(String libRespEmail) {
+        public Builder setLibRespEmail(final String libRespEmail) {
             this.libRespEmail = libRespEmail;
             return this;
         }

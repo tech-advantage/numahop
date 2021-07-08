@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Mise à jour des libellés et descriptions des rôles -->
+    <changeSet author="progilone" id="pgcn-create-user-11">
+        <sql>UPDATE user_authorization SET label='Administration - gestion des configurations Internet Omeka: création/modification', description='Administration - gestion des configurations Internet
+            Omeka: création/modification' where identifier='CONF-DIFFUSION-OMEKA-HAB1'
+        </sql>
+
+        <!-- Configuration diffusion bibliothèque numérique -->
+        <sql>
+            INSERT INTO user_authorization(module,identifier,code,label,description,version)
+            VALUES
+            ('ADMINISTRATION','CONF-DIFFUSION-DIGITAL-LIBRARY-HAB0','CONF-DIFFUSION-DIGITAL-LIBRARY-HAB0','Administration: gestion des configurations de diffusion sur une bibliothèque
+            numérique: lecture','Habilitation à la visualisation des données de configurations de diffusion sur une bibliothèque numérique',0),
+            ('ADMINISTRATION','CONF-DIFFUSION-DIGITAL-LIBRARY-HAB1','CONF-DIFFUSION-DIGITAL-LIBRARY-HAB1','Administration: gestion des configurations de diffusion sur une bibliothèque
+            numérique: création/modification','Habilitation à la création et modification des données de configurations de diffusion sur une bibliothèque numérique',0),
+            ('ADMINISTRATION','CONF-DIFFUSION-DIGITAL-LIBRARY-HAB2','CONF-DIFFUSION-DIGITAL-LIBRARY-HAB2','Administration: gestion des configurations de diffusion sur une bibliothèque
+            numérique: suppression','Habilitation à la suppression des données de configurations de diffusion sur une bibliothèque numérique',0),
+            ('ADMINISTRATION','EXPORT-DIFFUSION-DIGITAL-LIBRARY-HAB0','EXPORT-DIFFUSION-DIGITAL-LIBRARY-HAB0','Autorisation de diffusion sur une bibliothèque numérique','Habilitation à la diffusion
+            sur une bibliothèque numérique',0)
+        </sql>
+
+    </changeSet>
+
+</databaseChangeLog>

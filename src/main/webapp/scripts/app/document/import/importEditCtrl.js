@@ -133,7 +133,8 @@
                     var searchParams = {
                         page: 0,
                         search: $select.search,
-                        active: true
+                        active: true,
+                        statuses: "CREATED"
                     };
                     if (editCtrl.report.project) {
                         searchParams["projects"] = editCtrl.report.project.identifier;
@@ -332,6 +333,8 @@
             editCtrl.import.validation = ImportSrvc.getParam("validation", editCtrl.import.validation);
             editCtrl.import.dedup = ImportSrvc.getParam("dedup", editCtrl.import.dedup);
             editCtrl.import.dedupProcess = ImportSrvc.getParam("dedupProcess", editCtrl.import.dedupProcess);
+			editCtrl.report.archivable = ImportSrvc.getParam("archivable", editCtrl.report.archivable);
+			editCtrl.report.distributable = ImportSrvc.getParam("archivable", editCtrl.report.distributable);
 
             clearPagination();
 
@@ -635,6 +638,15 @@
                 formData.append("project", editCtrl.report.project.identifier);
                 ImportSrvc.setParam("project", editCtrl.report.project);
             }
+			if (editCtrl.report.archivable) {
+                formData.append("archivable", editCtrl.report.archivable);
+                ImportSrvc.setParam("archivable", editCtrl.report.archivable);
+			}
+			if (editCtrl.report.distributable) {
+                formData.append("distributable", editCtrl.report.distributable);
+                ImportSrvc.setParam("distributable", editCtrl.report.distributable);
+			}
+
             // Lot
             if (editCtrl.report.lot) {
                 formData.append("lot", editCtrl.report.lot.identifier);

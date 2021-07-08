@@ -57,7 +57,11 @@ public final class AuthorizationConstants {
      * Habilitation export Omeka
      */
     public static final String EXPORT_DIFFUSION_OMEKA_HAB0 = "EXPORT-DIFFUSION-OMEKA-HAB0";
-    
+
+    /**
+     * Habilitation export bibliothèque numérique
+     */
+    public static final String EXPORT_DIFFUSION_DIGITAL_LIBRARY_HAB0 = "EXPORT-DIFFUSION-DIGITAL-LIBRARY-HAB0";
 
     // ne pas oublier de placer l'annotation @AuthorizationManager.Init sur la classe pour initialiser les relations entre autorisations
     static {

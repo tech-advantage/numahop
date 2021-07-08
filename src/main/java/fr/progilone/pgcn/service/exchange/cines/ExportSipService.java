@@ -86,6 +86,7 @@ public class ExportSipService {
     private static final String STRUCTURE_FICHIER_TYPE_XSD = "XSD";
     private static final ObjectFactory SIP_FACTORY = new ObjectFactory();
     private static final String SIP_SCHEMA_LOCATION = "http://www.cines.fr/pac/sip http://www.cines.fr/pac/sip.xsd";
+    //private static final String SIP_SCHEMA_LOCATION = "http://www.cines.fr/pactest/sip http://www.cines.fr/pactest/sip.xsd";
     
     public static final String AIP_XML_FILE = "aip.xml";
     
@@ -716,6 +717,7 @@ public class ExportSipService {
                        .stream()
                        .map(LibraryParameterValueCines.class::cast)
                        .filter(param -> param.getType() == type)
+                       .filter(param -> param.getValue() != null)
                        .findFirst()
                        .orElse(null);
     }

@@ -28,7 +28,7 @@ public class DocUnitDeletedReportDTO extends AbstractDTO {
 		return identifier;
 	}
 
-	public final void setIdentifier(String identifier) {
+	public void setIdentifier(String identifier) {
 		this.identifier = identifier;
 	}
 
@@ -36,7 +36,7 @@ public class DocUnitDeletedReportDTO extends AbstractDTO {
 		return label;
 	}
 
-	public final void setLabel(String label) {
+	public void setLabel(String label) {
 		this.label = label;
 	}
 

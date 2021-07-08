@@ -8,9 +8,9 @@ import fr.progilone.pgcn.domain.document.BibliographicRecord;
 import fr.progilone.pgcn.domain.dto.document.BibliographicRecordDTO;
 import fr.progilone.pgcn.domain.dto.document.DocUnitBibliographicRecordDTO;
 import fr.progilone.pgcn.domain.dto.document.SimpleBibliographicRecordDTO;
-import fr.progilone.pgcn.service.library.mapper.LibraryMapper;
+import fr.progilone.pgcn.service.library.mapper.SimpleLibraryMapper;
 
-@Mapper(uses = {DocPropertyMapper.class, SimpleDocUnitMapper.class, LibraryMapper.class})
+@Mapper(uses = {DocPropertyMapper.class, SimpleDocUnitMapper.class, SimpleLibraryMapper.class})
 @DecoratedWith(BibliographicRecordMapperDecorator.class)
 public interface BibliographicRecordMapper {
 

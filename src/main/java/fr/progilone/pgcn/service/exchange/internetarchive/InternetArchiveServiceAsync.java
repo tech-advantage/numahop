@@ -45,7 +45,7 @@ public class InternetArchiveServiceAsync {
         esIaReportService.indexAsync(report.getIdentifier());
     }
 
-
+    @Async
     public void createItem(final DocUnit docUnit, final InternetArchiveItemDTO item, final String userId) {
         
         final InternetArchiveReport report = internetArchiveService.createItem(docUnit, item, false, userId);

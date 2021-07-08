@@ -25,7 +25,7 @@ public class SimpleBibliographicRecordDTO {
 		return identifier;
 	}
 
-	public final void setIdentifier(String identifier) {
+	public void setIdentifier(String identifier) {
 		this.identifier = identifier;
 	}
 
@@ -33,7 +33,7 @@ public class SimpleBibliographicRecordDTO {
 		return title;
 	}
 
-	public final void setTitle(String title) {
+	public void setTitle(String title) {
 		this.title = title;
 	}
 

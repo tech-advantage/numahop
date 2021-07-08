@@ -196,7 +196,7 @@ public class ProjectController extends AbstractRestController {
     @RequestMapping(method = RequestMethod.GET, params = {"dto"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed({PROJ_HAB7})
-    public ResponseEntity<Collection<SimpleProjectDTO>> findAllDTO(final HttpServletRequest request) {
+    public ResponseEntity<Collection<SimpleProjectDTO>> findAllActiveDTO(final HttpServletRequest request) {
         Collection<SimpleProjectDTO> simpleProjectDTOs = uiProjectService.findAllActiveDTO();
         // Droits d'accès
         simpleProjectDTOs = libraryAccesssHelper.filterObjectsByLibrary(request, simpleProjectDTOs, dto -> dto.getLibrary().getIdentifier());
@@ -208,11 +208,33 @@ public class ProjectController extends AbstractRestController {
 
     @RequestMapping(method = RequestMethod.GET, params = {"dto", "libraries"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
+    public ResponseEntity<Collection<SimpleProjectDTO>> findAllActiveDTO(final HttpServletRequest request, @RequestParam final List<String> libraries) {
+        Collection<SimpleProjectDTO> simpleProjectDTOs = uiProjectService.findAllActiveByLibraryIn(libraries);
+        simpleProjectDTOs = libraryAccesssHelper.filterObjectsByLibrary(request, simpleProjectDTOs, dto -> dto.getLibrary().getIdentifier());
+        return createResponseEntity(simpleProjectDTOs);
+    }
+    
+    @RequestMapping(method = RequestMethod.GET, params = {"dto2"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    @RolesAllowed({PROJ_HAB7})
+    public ResponseEntity<Collection<SimpleProjectDTO>> findAllDTO(final HttpServletRequest request) {
+        Collection<SimpleProjectDTO> simpleProjectDTOs = uiProjectService.findAllDTO();
+        // Droits d'accès
+        simpleProjectDTOs = libraryAccesssHelper.filterObjectsByLibrary(request, simpleProjectDTOs, dto -> dto.getLibrary().getIdentifier());
+        // controle suppl pour le user
+        final Collection<SimpleProjectDTO> filteredProjects = simpleProjectDTOs.stream().filter(proj -> accessHelper.checkProject(proj.getIdentifier()))
+                                                                                        .collect(Collectors.toList());
+        return createResponseEntity(filteredProjects);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, params = {"dto2", "libraries"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
     public ResponseEntity<Collection<SimpleProjectDTO>> findAllDTO(final HttpServletRequest request, @RequestParam final List<String> libraries) {
         Collection<SimpleProjectDTO> simpleProjectDTOs = uiProjectService.findAllByLibraryIn(libraries);
         simpleProjectDTOs = libraryAccesssHelper.filterObjectsByLibrary(request, simpleProjectDTOs, dto -> dto.getLibrary().getIdentifier());
         return createResponseEntity(simpleProjectDTOs);
     }
+    
 
     @RequestMapping(value = "/{id}", method = RequestMethod.POST)
     @Timed

@@ -41,6 +41,7 @@
         $scope.canExportToCines = false;
         $scope.canExportToInternetArchive = false;
         $scope.canExportToOmeka = false;
+        $scope.canExportToDigitalLibrary = false;
         // Statut du doc num
         $scope.canDigitalDocBeViewed = NumaHopStatusService.isDigitalDocAvailable;
         $scope.downloadCheckSlip = downloadCheckSlip;
@@ -258,6 +259,7 @@
             sortedStates.push(_.where(states, { key: "ARCHIVAGE_DOCUMENT" })[0]);
             sortedStates.push(_.where(states, { key: "DIFFUSION_DOCUMENT" })[0]);
             sortedStates.push(_.where(states, { key: "DIFFUSION_DOCUMENT_OMEKA" })[0]);
+            sortedStates.push(_.where(states, { key: "DIFFUSION_DOCUMENT_DIGITAL_LIBRARY" })[0]);
             sortedStates.push(_.where(states, { key: "DIFFUSION_DOCUMENT_LOCALE" })[0]);
             sortedStates.push(_.where(states, { key: "CLOTURE_DOCUMENT" })[0]);
             return sortedStates;
@@ -533,6 +535,18 @@
                 $scope.canExportToOmeka = true;
                 $scope.omekaDistribStatus = 'Non';
             }
+            if (entity.digLibExportStatus) {
+
+                if (entity.digLibExportStatus === 'IN_PROGRESS') {
+                    $scope.canExportToDigitalLibrary = false;
+                } else if (entity.digLibExportStatus === 'SENT') {
+                    $scope.canExportToDigitalLibrary = true;
+                } else if (entity.digLibExportStatus === 'FAILED') {
+                    $scope.canExportToDigitalLibrary = true;
+                }
+            } else {
+                $scope.canExportToDigitalLibrary = true;
+            }
             if (angular.isDefined(entity.cinesReports) && entity.cinesReports.length > 0) {
                 var reportCinesValue = _.find(entity.cinesReports, function (report) {
                     if (report.certificate !== null) {
@@ -689,7 +703,20 @@
                         MessageSrvc.addFailure(ErreurSrvc.getMessage(error.data.status));
                         MessageSrvc.addError(gettext(error.data.message));
                     });
-                    break; 
+                    break;
+                case "digitallibrary":
+                    var params = {
+                                  docUnit: docUnit.identifier
+                              };
+                    ExportSrvc.toDigitalLibrary(params, {}, null, null).$promise
+                        .then(function () {
+                            MessageSrvc.addSuccess(gettext("L'export sur bibliothèque numérique est en cours"));
+                    })
+                    .catch(function (error) {
+                        MessageSrvc.addFailure(ErreurSrvc.getMessage(error.data.status));
+                        MessageSrvc.addError(gettext(error.data.message));
+                    });
+                    break;
             }
         }
 

@@ -170,7 +170,7 @@ public class FileCleaningManager {
                 LOG.debug(delivPath.toAbsolutePath().toString());
                 try {
                     Files.walk(delivPath, FileVisitOption.FOLLOW_LINKS).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
-                } catch (IOException | SecurityException e) {
+                } catch (final IOException | SecurityException e) {
                     LOG.error("Erreur lors de la suppression des documents livrés dans {} - {}", delivPath.toAbsolutePath().toString(), e);
                 }
             }
@@ -216,10 +216,7 @@ public class FileCleaningManager {
     
     
     /**
-     * Purge directory. 
-     * 
-     * @param tmpRoot
-     * @param timeLimit
+     * Purge directory.
      */
     private void purgeDirectory(final Path dirRoot, final long timeLimit) {
         
@@ -253,6 +250,7 @@ public class FileCleaningManager {
 
                     final List<Project> projets = projectService.getClosedProjectsByLibrary(conf.getLibrary().getIdentifier(), conf.getDelay());
                     projets.forEach(p -> {
+                        LOG.debug("Suppression / sauvegarde des fichiers après clôture du projet {}", p.getName());
                         final Map<String, List<DocPage>> pages = docPageService.getPagesByProjectId(p.getIdentifier());
                         final String proj = StringUtils.isNotBlank(p.getName()) ? p.getName() : p.getIdentifier();
                         
@@ -267,6 +265,7 @@ public class FileCleaningManager {
 
                     final List<Lot> lots = lotService.getClosedLotsByLibrary(conf.getLibrary().getIdentifier(), conf.getDelay());
                     lots.forEach(l -> {
+                        LOG.debug("Suppression / sauvegarde des fichiers après clôture du lot {}", l.getLabel());
                         final Map<String, List<DocPage>> pages = docPageService.getPagesByLotId(l.getIdentifier());
                         String proj = "";
                         if (StringUtils.isBlank(l.getProject().getName())) {
@@ -326,10 +325,7 @@ public class FileCleaningManager {
     }
     
     /**
-     * 
-     * @param pgcnId
-     * @param pagesId
-     * @param cleanOcr
+     *
      */
     private void cleanOcr(final String pgcnId, final List<String> pagesId) {
                
@@ -387,7 +383,7 @@ public class FileCleaningManager {
         
         if (!dest.toFile().mkdirs()) {
             // Pb de droits d'ecriture
-            LOG.error("Creation du repertoire impossible dans {} - Probleme de permissions ? ", conf.getDestinationDir());
+            LOG.error("Creation du repertoire impossible dans {} - Probleme de permissions ? ", dest.toAbsolutePath());
             LOG.trace("Sauvegarde de {}/{} annulée", project, pgcnId);
             return;
         }      
@@ -405,13 +401,15 @@ public class FileCleaningManager {
         }
         if ((conf.isSavePdf() || conf.isDeletePdf()) && pdfPageId != null) {
             final StoredFile sf = binaryRepository.getOneByPageIdentifierAndFileFormat(pdfPageId, ViewsFormatConfiguration.FileFormat.MASTER);
-            if (conf.isSavePdf()) {
-                savePdfMaster(sf, dest, libraryId);
-            }
-            if (conf.isDeletePdf()) {
-                final List<StoredFile> pdfs = new ArrayList<>();
-                pdfs.add(sf);
-                suppressFiles(pdfs, libraryId);
+            if (sf != null) {
+                if (conf.isSavePdf()) {
+                    savePdfMaster(sf, dest, libraryId);
+                }
+                if (conf.isDeletePdf()) {
+                    final List<StoredFile> pdfs = new ArrayList<>();
+                    pdfs.add(sf);
+                    suppressFiles(pdfs, libraryId);
+                }
             }
         }
         if (conf.isSavePrint() || conf.isDeletePrint()) {
@@ -443,7 +441,7 @@ public class FileCleaningManager {
             }
         }
         
-        final DocUnit docUnit = docUnitRepository.getOneByPgcnIdAndState(pgcnId, DocUnit.State.AVAILABLE);
+        final DocUnit docUnit = docUnitRepository.getOneByPgcnId(pgcnId);
         if (docUnit != null) {
             
             if (conf.isSaveAipSip()) {
@@ -475,7 +473,7 @@ public class FileCleaningManager {
             try (final OutputStream out = new FileOutputStream(metsPath.toFile()); final OutputStream bufOut = new BufferedOutputStream(out)) {
                 exportMetsService.writeMetadata(bufOut, docUnit, noticeDto, false, checkSums);
                 bufOut.flush();
-            } catch (JAXBException | SAXException e) {
+            } catch (final JAXBException | SAXException e) {
                 LOG.error("Error when generating mets file for doc {}", docUnit.getPgcnId());
             } 
         }
@@ -605,7 +603,7 @@ public class FileCleaningManager {
             LOG.trace("Archive ZIP {} créée dans le dossier {}", toZip.getName(), dest.toString());
             zipped = true;
 
-        } catch (IOException | SecurityException e) {
+        } catch (final IOException | SecurityException e) {
             LOG.error("Erreur lors de la compression des fichiers sauvegardes", e);
             // on ne bloque pas le process
         }
@@ -643,7 +641,7 @@ public class FileCleaningManager {
     
                 stream.sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
                 stream.close();
-            } catch (IOException | SecurityException e) {
+            } catch (final IOException | SecurityException e) {
                 LOG.error("Erreur lors de la suppression des documents livrés dans {}", dest.toAbsolutePath().toString(), e);
             }
         }

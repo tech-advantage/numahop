@@ -81,8 +81,8 @@ public class ExportMetsService {
     private static final String ID_DMD_SEC_EAD = "DMD-EAD";
     private static final ObjectFactory DC_FACTORY = new ObjectFactory();
     private static final fr.progilone.pgcn.domain.jaxb.mets.ObjectFactory METS_FACTORY = new fr.progilone.pgcn.domain.jaxb.mets.ObjectFactory();
-    private static final String METS_SCHEMA_VALIDATION = "http://www.loc.gov/standards/mets/mets.xsd";
-    private static final String METS_SCHEMA_LOCATION = "http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd";
+    private static final String METS_SCHEMA_VALIDATION = "https://www.loc.gov/standards/mets/mets.xsd";
+    private static final String METS_SCHEMA_LOCATION = "http://www.loc.gov/METS/ https://www.loc.gov/standards/mets/mets.xsd";
     // #4412 aout 2019 - changement au cines  (bien formé, mais pas valide White spaces are required between publicId and systemId)...                                                   
     //+ "http://purl.org/dc/elements/1.1/ http://dublincore.org/schemas/xmls/simpledc20021212.xsd";
 
@@ -146,7 +146,7 @@ public class ExportMetsService {
         });
 
         // Inventaire des fichiers
-        mets.setFileSec(getFileSec(listStoredFiles));
+        mets.setFileSec(getFileSec(listStoredFiles, docUnit.getLot().getRequiredFormat()));
 
         // Structure du document (TOC)
         mdSecs.forEach(mdSec -> mets.getStructMap().add(getStructMap(mdSec, docUnit, listStoredFiles, mets.getFileSec())));
@@ -307,32 +307,41 @@ public class ExportMetsService {
      * @param listStoredFiles
      * @return
      */
-    private FileSec getFileSec(final List<CheckSummedStoredFile> listStoredFiles) {
+    private FileSec getFileSec(final List<CheckSummedStoredFile> listStoredFiles, final String format) {
         final FileSec fileSec = METS_FACTORY.createMetsTypeFileSec();
         fileSec.setID("FILESEC1");
         final FileGrp fileGrp = METS_FACTORY.createMetsTypeFileSecFileGrp();
         fileGrp.setUSE("master");
 
-        final List<CheckSummedStoredFile> realListStoredFiles = listStoredFiles.stream()
-                .filter(cssf-> cssf.getStoredFile().getPage().getNumber() != null) // elimine le master pdf
-                .collect(Collectors.toList());
+        List<CheckSummedStoredFile> realListStoredFiles = listStoredFiles;
+        if (!format.equals("PDF")) {
+            // elimine le master pdf
+            realListStoredFiles = listStoredFiles.stream()
+                                                 .filter(cssf -> cssf.getStoredFile().getPage().getNumber() != null)
+                                                 .collect(Collectors.toList());
+        }
 
+        final List<CheckSummedStoredFile> finalRealListStoredFiles = realListStoredFiles;
         IntStream.range(0, realListStoredFiles.size())
-                            .forEach(idx -> {
-            final CheckSummedStoredFile cSStoredFile = realListStoredFiles.get(idx);
-            final FileType file = METS_FACTORY.createFileType();
-            file.setID("master_000" + idx); // todo completion de zeros avant l'index
-            file.setCHECKSUMTYPE(cSStoredFile.getCheckSumType().getValue());
-            file.setCHECKSUM(cSStoredFile.getCheckSum());
-            file.setMIMETYPE(cSStoredFile.getStoredFile().getMimetype());
-            final FLocat fileLoc = METS_FACTORY.createFileTypeFLocat();
-            fileLoc.setLOCTYPE("URL");
-            fileLoc.setHref(cSStoredFile.getStoredFile().getFilename());
-            file.getFLocat().add(fileLoc);
-            fileGrp.getFile().add(file);
-        });
+                 .forEach(idx -> {
+                     final CheckSummedStoredFile cSStoredFile = finalRealListStoredFiles.get(idx);
+                     fileGrp.getFile().add(buildFileGrp(cSStoredFile, idx));
+                 });
         fileSec.getFileGrp().add(fileGrp);
         return fileSec;
+    }
+
+    private FileType buildFileGrp(final CheckSummedStoredFile cSStoredFile, final int idx) {
+        final FileType file = METS_FACTORY.createFileType();
+        file.setID("master_000" + idx); // todo completion de zeros avant l'index
+        file.setCHECKSUMTYPE(cSStoredFile.getCheckSumType().getValue());
+        file.setCHECKSUM(cSStoredFile.getCheckSum());
+        file.setMIMETYPE(cSStoredFile.getStoredFile().getMimetype());
+        final FLocat fileLoc = METS_FACTORY.createFileTypeFLocat();
+        fileLoc.setLOCTYPE("URL");
+        fileLoc.setHref(cSStoredFile.getStoredFile().getFilename());
+        file.getFLocat().add(fileLoc);
+        return file;
     }
 
     /**

@@ -55,7 +55,7 @@ public class Dao {
     protected String xpointer;
     @XmlAttribute(name = "type", namespace = "http://www.w3.org/1999/xlink")
     protected String type;
-    @XmlAttribute(name = "href", namespace = "http://www.w3.org/1999/xlink")
+    @XmlAttribute(name = "href")
     @XmlSchemaType(name = "anyURI")
     protected String href;
     @XmlAttribute(name = "role", namespace = "http://www.w3.org/1999/xlink")
@@ -100,7 +100,7 @@ public class Dao {
      *     {@link Daodesc }
      *     
      */
-    public void setDaodesc(Daodesc value) {
+    public void setDaodesc(final Daodesc value) {
         this.daodesc = value;
     }
 
@@ -124,7 +124,7 @@ public class Dao {
      *     {@link String }
      *     
      */
-    public void setEntityref(String value) {
+    public void setEntityref(final String value) {
         this.entityref = value;
     }
 
@@ -148,7 +148,7 @@ public class Dao {
      *     {@link String }
      *     
      */
-    public void setXpointer(String value) {
+    public void setXpointer(final String value) {
         this.xpointer = value;
     }
 
@@ -176,7 +176,7 @@ public class Dao {
      *     {@link String }
      *     
      */
-    public void setType(String value) {
+    public void setType(final String value) {
         this.type = value;
     }
 
@@ -200,7 +200,7 @@ public class Dao {
      *     {@link String }
      *     
      */
-    public void setHref(String value) {
+    public void setHref(final String value) {
         this.href = value;
     }
 
@@ -224,7 +224,7 @@ public class Dao {
      *     {@link String }
      *     
      */
-    public void setRole(String value) {
+    public void setRole(final String value) {
         this.role = value;
     }
 
@@ -248,7 +248,7 @@ public class Dao {
      *     {@link String }
      *     
      */
-    public void setArcrole(String value) {
+    public void setArcrole(final String value) {
         this.arcrole = value;
     }
 
@@ -272,7 +272,7 @@ public class Dao {
      *     {@link String }
      *     
      */
-    public void setTitle(String value) {
+    public void setTitle(final String value) {
         this.title = value;
     }
 
@@ -296,7 +296,7 @@ public class Dao {
      *     {@link String }
      *     
      */
-    public void setShow(String value) {
+    public void setShow(final String value) {
         this.show = value;
     }
 
@@ -320,7 +320,7 @@ public class Dao {
      *     {@link String }
      *     
      */
-    public void setActuate(String value) {
+    public void setActuate(final String value) {
         this.actuate = value;
     }
 
@@ -344,7 +344,7 @@ public class Dao {
      *     {@link String }
      *     
      */
-    public void setId(String value) {
+    public void setId(final String value) {
         this.id = value;
     }
 
@@ -368,7 +368,7 @@ public class Dao {
      *     {@link String }
      *     
      */
-    public void setAltrender(String value) {
+    public void setAltrender(final String value) {
         this.altrender = value;
     }
 
@@ -392,7 +392,7 @@ public class Dao {
      *     {@link String }
      *     
      */
-    public void setAudience(String value) {
+    public void setAudience(final String value) {
         this.audience = value;
     }
 

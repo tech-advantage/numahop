@@ -67,7 +67,10 @@
             };
 
 			var loadWorkflowModels = function (library) {
-				return WorkflowModelSrvc.models({ library: library }).$promise;
+                if(AuthenticationSharedService.isAuthorized(USER_ROLES.WORKFLOW_HAB4)){
+                    return WorkflowModelSrvc.models({ library: library }).$promise;
+                }
+                return $q.when();
 			};
 
 			var loadWorkflowGroups = function (library) {
@@ -140,6 +143,52 @@
 					return TrainSrvc.query({ dto: "true" }).$promise;
 				}
 			};
+			
+			
+	         var loadCompleteLots = function (libraries, projects, screenTarget) {
+	                if (projects && projects.length) {
+	                    return LotSrvc.query({ dto: "true", complete: "true", projects: projects }).$promise
+	                        .then(function (lots) {
+	                            return _.sortBy(lots, function (lot) {
+	                                return lot.label.toLowerCase();
+	                            });
+	                        });
+	                } else if (libraries && libraries.length) {
+	                    return LotSrvc.query({ dto: "true", complete: "true", libraries: libraries }).$promise
+	                        .then(function (lots) {
+	                            return _.sortBy(lots, function (lot) {
+	                                return lot.label.toLowerCase();
+	                            });
+	                        });
+	                } else {
+	                    return LotSrvc.query({ dto: "true", complete: "true", target: screenTarget }).$promise
+	                        .then(function (lots) {
+	                            return _.sortBy(lots, function (lot) {
+	                                return lot.label.toLowerCase();
+	                            });
+	                        });
+	                }
+	            };
+	            
+	            var loadCompleteProjects = function (libraries) {
+                    return ProjectSrvc.query({ dto2: "true", complete: "true", libraries: libraries }).$promise
+                        .then(function (projects) {
+                            return _.sortBy(projects, function (pj) {
+                                return pj.name.toLowerCase();
+                            });
+                        });
+                };
+
+	            var loadCompleteTrains = function (libraries, projects) {
+	                if (projects && projects.length) {
+	                    return TrainSrvc.query({ dto: "true", complete: "true", projects: projects }).$promise;
+	                } else if (libraries && libraries.length) {
+	                    return TrainSrvc.query({ dto: "true", complete: "true", libraries: libraries }).$promise;
+	                } else {
+	                    return TrainSrvc.query({ dto: "true", complete: "true" }).$promise;
+	                }
+	            };
+
 
 			var loadCreatedProjects = function () {
 				return ProjectSrvc.query({ loadCreatedProjects: "true" }).$promise;
@@ -179,12 +228,15 @@
 			};
 			
 			var loadOcrLanguagesForLibrary = function (library) {
-                return OcrLanguageSrvc.langs({ library: library }).$promise
-                    .then(function (langs) {
-                        return _.sortBy(langs, function (la) {
-                            return la.label ? la.label.toLowerCase() : la;
+			    if(AuthenticationSharedService.isAuthorized(USER_ROLES.OCR_LANG_HAB0)){
+                    return OcrLanguageSrvc.langs({ library: library }).$promise
+                        .then(function (langs) {
+                            return _.sortBy(langs, function (la) {
+                                return la.label ? la.label.toLowerCase() : la;
+                            });
                         });
-                    });
+                }
+                return $q.when();
             };
 
 			return {
@@ -198,11 +250,14 @@
 				loadRoles: loadRoles,
 				loadLibraries: loadLibraries,
 				loadProjects: loadProjects,
+				loadCompleteProjects: loadCompleteProjects,
 				loadCreatedProjects: loadCreatedProjects,
 				loadDocPropertyTypes: loadPropertyTypes,
 				loadLots: loadLots,
+				loadCompleteLots: loadCompleteLots,
 				loadDocUnits: loadDocUnits,
 				loadTrains: loadTrains,
+				loadCompleteTrains: loadCompleteTrains,
 				loadUsers: loadUsers,
 				loadProviders: loadProviders,
 				loadAuthorizations: loadAuthorizations,

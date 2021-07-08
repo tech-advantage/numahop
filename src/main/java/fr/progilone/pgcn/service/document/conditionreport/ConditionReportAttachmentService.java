@@ -104,14 +104,14 @@ public class ConditionReportAttachmentService {
             attachment.setReport(report);
             attachment.setFileSize(file.getSize());
             attachment.setOriginalFilename(new File(file.getOriginalFilename()).getName());
-            LOG.debug("Téléversement de la pièce jointe {}", attachments);
+            LOG.debug("Téléversement de la pièce jointe {}", attachment.getOriginalFilename());
 
             final ConditionReportAttachment savedAttachment = conditionReportAttachmentRepository.save(attachment);
             attachments.add(savedAttachment);
 
             // Copie du fichier uploadé
             File attachmentFile;
-            try (InputStream in = file.getInputStream()) {
+            try (final InputStream in = file.getInputStream()) {
                 attachmentFile = uploadAttachmentFile(in, attachment);
 
             } catch (final IOException e) {

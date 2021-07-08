@@ -48,7 +48,7 @@ public class BibliographicRecordDTO extends AbstractVersionedDTO {
 		return docUnit;
 	}
 
-	public final void setDocUnit(SimpleDocUnitDTO docUnit) {
+	public void setDocUnit(SimpleDocUnitDTO docUnit) {
 		this.docUnit = docUnit;
 	}
 
@@ -56,7 +56,7 @@ public class BibliographicRecordDTO extends AbstractVersionedDTO {
 		return properties;
 	}
 
-	public final void setProperties(List<DocPropertyDTO> properties) {
+	public void setProperties(List<DocPropertyDTO> properties) {
 		this.properties = properties;
 	}
 
@@ -64,7 +64,7 @@ public class BibliographicRecordDTO extends AbstractVersionedDTO {
 		return identifier;
 	}
 
-	public final void setIdentifier(String identifier) {
+	public void setIdentifier(String identifier) {
 		this.identifier = identifier;
 	}
 
@@ -72,7 +72,7 @@ public class BibliographicRecordDTO extends AbstractVersionedDTO {
 		return title;
 	}
 
-	public final void setTitle(String title) {
+	public void setTitle(String title) {
 		this.title = title;
 	}
 
@@ -80,7 +80,7 @@ public class BibliographicRecordDTO extends AbstractVersionedDTO {
 		return calames;
 	}
 
-	public final void setCalames(String calames) {
+	public void setCalames(String calames) {
 		this.calames = calames;
 	}
 
@@ -88,7 +88,7 @@ public class BibliographicRecordDTO extends AbstractVersionedDTO {
 		return sigb;
 	}
 
-	public final void setSigb(String sigb) {
+	public void setSigb(String sigb) {
 		this.sigb = sigb;
 	}
 
@@ -96,7 +96,7 @@ public class BibliographicRecordDTO extends AbstractVersionedDTO {
 		return sudoc;
 	}
 
-	public final void setSudoc(String sudoc) {
+	public void setSudoc(String sudoc) {
 		this.sudoc = sudoc;
 	}
 

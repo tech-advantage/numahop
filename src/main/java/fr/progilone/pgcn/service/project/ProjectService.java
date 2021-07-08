@@ -13,6 +13,8 @@ import javax.inject.Inject;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,7 +23,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import fr.progilone.pgcn.domain.document.DocUnit;
+import fr.progilone.pgcn.domain.lot.Lot;
+import fr.progilone.pgcn.domain.lot.Lot.LotStatus;
 import fr.progilone.pgcn.domain.project.Project;
+import fr.progilone.pgcn.domain.project.Project.ProjectStatus;
+import fr.progilone.pgcn.domain.train.Train.TrainStatus;
 import fr.progilone.pgcn.exception.PgcnBusinessException;
 import fr.progilone.pgcn.exception.PgcnListValidationException;
 import fr.progilone.pgcn.exception.PgcnValidationException;
@@ -38,6 +44,8 @@ import fr.progilone.pgcn.service.util.SortUtils;
 
 @Service
 public class ProjectService {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(ProjectService.class);
 
     private final DocUnitService docUnitService;
     private final ImportReportService importReportService;
@@ -256,6 +264,16 @@ public class ProjectService {
     public Project findByDocUnitIdentifier(final String identifier) {
         return projectRepository.findOneByDocUnitId(identifier);
     }
+    
+    /**
+     * Récupère le projet auquel appartient le lot
+     *
+     * @param identifier
+     */
+    @Transactional(readOnly = true)
+    public Project findByLotId(final String identifier) {
+        return projectRepository.findOneByLotId(identifier);
+    }
 
     /**
      * Recherche les projets par bibliothèque, groupés par statut
@@ -322,8 +340,13 @@ public class ProjectService {
     }
 
     @Transactional(readOnly = true)
-    public List<Project> findAllByLibraryIn(final List<String> libraries) {
+    public List<Project> findAllByActiveAndLibraryIn(final List<String> libraries) {
         return projectRepository.findAllByActiveAndLibraryIdentifierIn(true, libraries);
+    }
+    
+    @Transactional(readOnly = true)
+    public List<Project> findAllByLibraryIn(final List<String> libraries) {
+        return projectRepository.findAllByLibraryIdentifierIn(libraries);
     }
     
     @Transactional(readOnly = true)
@@ -336,6 +359,52 @@ public class ProjectService {
         final Project project = findByIdentifier(projectId);
         project.setFilesArchived(true);
         save(project);
+    }
+    
+    /**
+     * Close le projet si les conditions sont reunies.
+     * 
+     * @param project
+     */
+    @Transactional
+    public void checkAndCloseProject(final Project project) {
+        
+        final List<Lot> processingLots = project.getLots()
+                                                .stream()
+                                                .filter(lp -> !LotStatus.CLOSED.equals(lp.getStatus()))
+                                                .collect(Collectors.toList());
+        if (processingLots.isEmpty()) {
+            // Tous les lots sont finis, on termine aussi le projet et les trains du coup
+            project.setRealEndDate(LocalDate.now());
+            project.setStatus(ProjectStatus.CLOSED);
+            project.setActive(false);
+            project.getTrains().forEach(train -> {
+                train.setActive(false);
+                train.setStatus(TrainStatus.CLOSED);
+            });
+            save(project);
+            LOG.info("CLOTURE PROJET : Mise à jour du project {} => status : CLOSED", project.getName());
+        }
+    }
+    
+    /**
+     * Décloture le projet et ses trains éventuels.
+     * 
+     * @param project
+     */
+    @Transactional
+    public void declotureProject(final Project project) {
+        
+        // Tous les lots sont finis, on termine aussi le projet et les trains du coup
+        project.setRealEndDate(null);
+        project.setStatus(ProjectStatus.ONGOING);
+        project.setActive(true);
+        project.getTrains().forEach(train -> {
+            train.setActive(true);
+            train.setStatus(TrainStatus.CREATED);
+        });
+        save(project);
+        LOG.info("DECLOTURE PROJET : Mise à jour du project {} => status : ONGOING", project.getName());
     }
 
 }

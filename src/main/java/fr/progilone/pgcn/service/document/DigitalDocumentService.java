@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -232,7 +233,7 @@ public class DigitalDocumentService {
     @Transactional(readOnly = true)
     public String getDeliveryNotes(final String identifier) {
         final DigitalDocument doc = findOne(identifier);
-        final DeliveredDocument deliv = Collections.max(doc.getDeliveries(), Comparator.comparing(d->d.getLastModifiedDate()));
+        final DeliveredDocument deliv = Collections.max(doc.getDeliveries(), Comparator.comparing(AbstractDomainObject::getLastModifiedDate));
 
         return deliv!=null?deliv.getDelivery().getDigitizingNotes():null;
     }
@@ -251,8 +252,10 @@ public class DigitalDocumentService {
         final DocPage master = docPageRepository.getMasterPdfByDigitalDocumentIdentifier(identifier);
         if (master != null) {
             final StoredFile sf = binaryRepository.getOneByPageIdentifierAndFileFormat(master.getIdentifier(), FileFormat.MASTER);
-            res[0] = sf.getFilename();
-            res[1] = String.valueOf(sf.getLength());
+            if (sf != null) {
+            	res[0] = sf.getFilename();
+            	res[1] = String.valueOf(sf.getLength());
+            }
         }
 
         return res;
@@ -425,10 +428,7 @@ public class DigitalDocumentService {
         final Optional<DocPage> page = doc.getOrderedPages().stream()
                                         .filter(p -> p.getNumber() != null && pageNumber == p.getNumber())
                                         .findFirst();
-        if (page.isPresent()) {
-            return page.get();
-        }
-        return null;
+        return page.orElse(null);
     }
 
     /**
@@ -444,10 +444,7 @@ public class DigitalDocumentService {
         final Optional<DocPage> page = doc.getOrderedPages().stream()
                                         .filter(p -> p.getNumber() == null)
                                         .findFirst();
-        if (page.isPresent()) {
-            return page.get();
-        }
-        return null;
+        return page.orElse(null);
     }
 
     /**
@@ -634,5 +631,16 @@ public class DigitalDocumentService {
     @Transactional(readOnly = true)
     public DocUnit findDocUnitByIdentifier(final String identifier) {
         return digitalDocumentRepository.findDocUnitByIdentifier(identifier);
+    }
+
+    /**
+     * Récupère les noms des différentes pièces du document
+     * 
+     * @param identifier
+     *            digitalDocument identifier
+     * @return noms des pièces
+     */
+    public Set<String> getPiecesNames(final String identifier) {
+        return docPageRepository.getAllPieceByDigitalDocumentIdentifier(identifier).stream().filter(Objects::nonNull).collect(Collectors.toSet());
     }
 }

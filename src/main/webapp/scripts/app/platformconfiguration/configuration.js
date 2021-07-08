@@ -53,6 +53,16 @@
                     authorizedRoles: [USER_ROLES.CONF_DIFFUSION_OMEKA_HAB0]
                 }
             });
+
+            $routeProvider.when('/platformconfiguration/digitallibraryconfiguration', {
+                templateUrl: 'scripts/app/platformconfiguration/digitallibraryconfiguration/digitalLibraryConfiguration.html',
+                controller: 'DigitalLibraryConfigurationCtrl',
+                title: gettext("Configurations diffusion sur une biblothèque numérique"),
+                reloadOnSearch: false,
+                access: {
+                    authorizedRoles: [USER_ROLES.CONF_DIFFUSION_DIGITAL_LIBRARY_HAB0]
+                }
+            });
             
         });
 })();

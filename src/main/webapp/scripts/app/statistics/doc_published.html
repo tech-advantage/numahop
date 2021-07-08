@@ -41,6 +41,13 @@
                                         ng-change="statCtrl.searchValue('publishedTo', $data)"></sem-datepicker>
                     </div>
                 </numa-filter-field>
+                <!-- Lots inactifs -->
+                <div class="filter-block padding-l20">
+                    <div class="checkbox checkbox-sid-main">
+                        <input id="filterInactive" type="checkbox" ng-model="statCtrl.filters.inactive" ng-change="statCtrl.search()" />
+                        <label for="filterInactive" translate>Voir les lots inactifs</label>
+                    </div>
+                </div>
             </numa-filter>
             <div class="panel-heading">
                 <div class="pull-right">

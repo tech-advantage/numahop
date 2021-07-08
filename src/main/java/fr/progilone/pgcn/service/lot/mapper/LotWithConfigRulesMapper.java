@@ -12,7 +12,6 @@ import fr.progilone.pgcn.service.administration.mapper.SimpleViewsFormatConfigur
 import fr.progilone.pgcn.service.checkconfiguration.mapper.CheckConfigurationMapper;
 import fr.progilone.pgcn.service.document.mapper.SimpleDocUnitMapper;
 import fr.progilone.pgcn.service.ftpconfiguration.mapper.SimpleFTPConfigurationMapper;
-import fr.progilone.pgcn.service.library.mapper.LibraryMapper;
 import fr.progilone.pgcn.service.ocrlangconfiguration.mapper.OcrLanguageMapper;
 import fr.progilone.pgcn.service.project.mapper.SimpleProjectMapper;
 import fr.progilone.pgcn.service.user.mapper.AddressMapper;
@@ -20,7 +19,6 @@ import fr.progilone.pgcn.service.user.mapper.UserMapper;
 import fr.progilone.pgcn.service.workflow.mapper.SimpleWorkflowMapper;
 
 @Mapper(uses = {AddressMapper.class,
-                LibraryMapper.class,
                 SimpleDocUnitMapper.class,
                 SimpleProjectMapper.class,
                 SimpleFTPConfigurationMapper.class,
@@ -28,10 +26,10 @@ import fr.progilone.pgcn.service.workflow.mapper.SimpleWorkflowMapper;
                 SimpleViewsFormatConfigurationMapper.class,
                 UserMapper.class,
                 OcrLanguageMapper.class,
-    InternetArchiveCollectionMapper.class,
-    CinesPACMapper.class,
-    SimpleWorkflowMapper.class,
-    OmekaListMapper.class})
+                InternetArchiveCollectionMapper.class,
+                CinesPACMapper.class,
+                SimpleWorkflowMapper.class,
+                OmekaListMapper.class})
 public interface LotWithConfigRulesMapper {
 
     LotWithConfigRulesMapper INSTANCE = Mappers.getMapper(LotWithConfigRulesMapper.class);

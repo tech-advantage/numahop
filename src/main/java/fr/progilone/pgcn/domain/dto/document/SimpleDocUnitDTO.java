@@ -40,7 +40,7 @@ public class SimpleDocUnitDTO extends AbstractDTO {
         return identifier;
     }
 
-    public final void setIdentifier(final String identifier) {
+    public void setIdentifier(final String identifier) {
         this.identifier = identifier;
     }
 
@@ -48,7 +48,7 @@ public class SimpleDocUnitDTO extends AbstractDTO {
         return pgcnId;
     }
 
-    public final void setPgcnId(final String pgcnId) {
+    public void setPgcnId(final String pgcnId) {
         this.pgcnId = pgcnId;
     }
 
@@ -56,7 +56,7 @@ public class SimpleDocUnitDTO extends AbstractDTO {
         return label;
     }
 
-    public final void setLabel(final String label) {
+    public void setLabel(final String label) {
         this.label = label;
     }
 

@@ -31,13 +31,6 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,11 +54,13 @@ import fr.progilone.pgcn.domain.document.DigitalDocument;
 import fr.progilone.pgcn.domain.document.DocPage;
 import fr.progilone.pgcn.domain.document.DocSibling;
 import fr.progilone.pgcn.domain.document.DocUnit;
+import fr.progilone.pgcn.domain.document.PhysicalDocument;
 import fr.progilone.pgcn.domain.dto.document.BibliographicRecordDcDTO;
 import fr.progilone.pgcn.domain.dto.document.DocUnitDTO;
 import fr.progilone.pgcn.domain.dto.document.DocUnitDeletedReportDTO;
 import fr.progilone.pgcn.domain.dto.document.DocUnitMassUpdateDTO;
 import fr.progilone.pgcn.domain.dto.document.DocUnitUpdateErrorDTO;
+import fr.progilone.pgcn.domain.dto.document.MinimalListDocUnitDTO;
 import fr.progilone.pgcn.domain.dto.document.SimpleDocUnitDTO;
 import fr.progilone.pgcn.domain.dto.document.SimpleListDocUnitDTO;
 import fr.progilone.pgcn.domain.dto.document.SummaryDocUnitDTO;
@@ -103,6 +98,7 @@ import fr.progilone.pgcn.service.exchange.internetarchive.ui.UIInternetArchiveRe
 import fr.progilone.pgcn.service.exchange.ssh.SftpService;
 import fr.progilone.pgcn.service.exportftpconfiguration.ExportFTPConfigurationService;
 import fr.progilone.pgcn.service.ocrlangconfiguration.mapper.OcrLanguageMapper;
+import fr.progilone.pgcn.service.storage.AltoService;
 import fr.progilone.pgcn.service.storage.BinaryStorageManager;
 import fr.progilone.pgcn.service.util.CryptoService;
 import fr.progilone.pgcn.service.util.DateUtils;
@@ -144,6 +140,7 @@ public class UIDocUnitService {
     private final LotRepository lotRepository;
     private final DeliveryService deliveryService;
     private final DigitalDocumentService digitalDocumentService;
+    private final AltoService altoService;
 
     @Autowired
     public UIDocUnitService(final DocUnitService docUnitService,
@@ -161,9 +158,10 @@ public class UIDocUnitService {
                             final ExportFTPConfigurationService exportFTPConfigurationService,
                             final SftpService sftpService,
                             final CryptoService cryptoService,
-                            final LotRepository lotRepository, 
+                            final LotRepository lotRepository,
                             final DeliveryService deliveryService,
-                            final DigitalDocumentService digitalDocumentService) {
+                            final DigitalDocumentService digitalDocumentService,
+                            final AltoService altoService) {
         this.docUnitService = docUnitService;
         this.exportEadService = exportEadService;
         this.uiDocUnitMapper = uiDocUnitMapper;
@@ -182,11 +180,12 @@ public class UIDocUnitService {
         this.lotRepository = lotRepository;
         this.deliveryService = deliveryService;
         this.digitalDocumentService = digitalDocumentService;
+        this.altoService = altoService;
     }
 
     @PostConstruct
     public void initialize() {
-        // 1 disk space per library 
+        // 1 disk space per library
         Arrays.asList(instanceLibraries).forEach(lib -> {
             try {
                 FileUtils.forceMkdir(new File(ftpExportCacheDir, lib));
@@ -223,7 +222,7 @@ public class UIDocUnitService {
      * Mise à jour d'une unité documentaire
      *
      * @param request
-     *         un objet contenant les informations necessaires à l'enregistrement d'une unité doc
+     *            un objet contenant les informations necessaires à l'enregistrement d'une unité doc
      * @return l'unité doc nouvellement créée ou mise à jour
      * @throws PgcnValidationException
      */
@@ -281,8 +280,9 @@ public class UIDocUnitService {
         // Recuperation url ark si besoin et non deja renseignee.
         if (StringUtils.isBlank(doc.getArkUrl()) && CollectionUtils.isNotEmpty(iareports)) {
             final InternetArchiveReportDTO lastModified = iareports.get(0);
-            if (StringUtils.equals("ARCHIVED", lastModified.getStatus())) {
-                dto.setArkUrl(getIaArkUrl(lastModified.getInternetArchiveIdentifier()));
+            final LocalDateTime dateFrom = LocalDateTime.now().minusDays(7L);
+            if (StringUtils.equals("ARCHIVED", lastModified.getStatus()) && lastModified.getDateArchived().isAfter(dateFrom)) {
+                dto.setArkUrl(uiIAReportService.getIaArkUrl(lastModified.getInternetArchiveIdentifier()));
             }
         }
 
@@ -357,9 +357,9 @@ public class UIDocUnitService {
      * Retourne les identifiants des entités qui ne sont pas présents dans la liste des rapports d'erreurs
      *
      * @param entityIds
-     *         une liste d'identifiants d'entités
+     *            une liste d'identifiants d'entités
      * @param entityDeletedReports
-     *         une liste de rapport d'erreurs
+     *            une liste de rapport d'erreurs
      * @return la différence entre les deux listes
      */
     private ImmutableCollection<String> difference(final List<String> entityIds, final Collection<DocUnitDeletedReportDTO> entityDeletedReports) {
@@ -508,88 +508,105 @@ public class UIDocUnitService {
         return docs.map(SimpleDocUnitMapper.INSTANCE::docUnitToSimpleListDocUnitDTO);
     }
 
+    @Transactional(readOnly = true)
+    public List<MinimalListDocUnitDTO> searchAsMinList(final String search,
+                                                       final List<String> libraries,
+                                                       final List<String> projects,
+                                                       final List<String> lots,
+                                                       final List<String> trains,
+                                                       final List<String> statuses) {
+
+        final List<DocUnit> docs = docUnitService.searchMinList(search,
+                                                                libraries,
+                                                                projects,
+                                                                lots,
+                                                                trains,
+                                                                statuses);
+
+        return docs.stream().map(SimpleDocUnitMapper.INSTANCE::docUnitToMinimalListDocUnitDTO).collect(Collectors.toList());
+    }
+
     @Transactional
     public void setProjectAndLot(final List<String> docs, final String project, final String lot, final String train) {
-      
-        
+
         final Lot l = StringUtils.isBlank(lot) ? null : lotRepository.findOne(lot);
         final Set<DocUnit> dus = docUnitService.findByIdentifierInWithDocs(docs);
-               
+
         // En cas de lot renum, il faut s'assurer que les workflows des autres docs en cours ne restent pas bloqués...
         if (isLotRenum(dus, l)) {
-            checkWorkflowStateforRenum(dus); 
+            checkWorkflowStateforRenum(dus);
         }
-        
+
         docUnitService.setProjectAndLot(dus, project, l, train);
     }
-    
+
     /**
      * Retourne vrai si on cree un lot de renumerisation.
-     * 
+     *
      * @param dus
      * @param lot
      * @return
      */
     protected boolean isLotRenum(final Set<DocUnit> dus, final Lot lot) {
-        
-        return lot != null && 
-                dus.stream()
-                    .filter(du -> du.getLot() != null
-                        && ! du.getLot().getIdentifier().equals(lot.getIdentifier()))
-                    .findFirst().isPresent();
+
+        return lot != null &&
+               dus.stream()
+                  .filter(du -> du.getLot() != null
+                                && !du.getLot().getIdentifier().equals(lot.getIdentifier()))
+                  .findFirst()
+                  .isPresent();
     }
-    
-    
+
     /**
      * Appelée uniquement à la création d'un train de renumérisation.
-     * 
+     *
      * @param docUnitIds
      */
     @Transactional
     public void checkWorkflowStateforTrainRenum(final List<String> docUnitIds) {
         checkWorkflowStateforRenum(docUnitService.findByIdentifierInWithDocs(docUnitIds));
     }
-    
-    
+
     /**
      * Appelée uniquement à la création d'un train/lot de renumérisation
-     * pour vérifier que le changement de delivery des docs à renumeriser 
-     * ne puisse pas provoquer le blocage de workflows des autres docs de la livraison... 
-     * Si c'est le cas => on fait avancer les workflows concernés (processe l'envoi du rapport) 
-     * 
+     * pour vérifier que le changement de delivery des docs à renumeriser
+     * ne puisse pas provoquer le blocage de workflows des autres docs de la livraison...
+     * Si c'est le cas => on fait avancer les workflows concernés (processe l'envoi du rapport)
+     *
      * @param dus
      */
     protected void checkWorkflowStateforRenum(final Set<DocUnit> dus) {
-        
+
         final Set<String> renumDocUnitIds = dus.stream().map(d -> d.getIdentifier()).collect(Collectors.toSet());
         final Set<String> deliveriesToCheck = new HashSet<>();
-        
+
         // recupere les livraisons concernées par ces mouvement de docUnits.
-        dus.stream().forEach(du -> {
-           
-                final DigitalDocument digDoc = du.getDigitalDocuments().stream().findFirst().orElse(null);
-                // find delivery from last delivereddoc
-                final String lastDelivId = digDoc.getDeliveries()
-                         .stream()
-                         .filter(deliv -> deliv.getDelivery() != null)
-                         .sorted(Collections.reverseOrder(Comparator.nullsLast(Comparator.comparing(DeliveredDocument::getCreatedDate))))
-                         .map(deliv -> deliv.getDelivery().getIdentifier())
-                         .findFirst().orElse(null);
-                
-                deliveriesToCheck.add(lastDelivId);    
+        dus.forEach(du -> {
+
+            final DigitalDocument digDoc = du.getDigitalDocuments().stream().findFirst().orElse(null);
+            // find delivery from last delivereddoc
+            final String lastDelivId = digDoc.getDeliveries()
+                                             .stream()
+                                             .filter(deliv -> deliv.getDelivery() != null)
+                                             .sorted(Collections.reverseOrder(Comparator.nullsLast(Comparator.comparing(DeliveredDocument::getCreatedDate))))
+                                             .map(deliv -> deliv.getDelivery().getIdentifier())
+                                             .findFirst()
+                                             .orElse(null);
+
+            deliveriesToCheck.add(lastDelivId);
         });
-      
+
         // Dans chacune de ces livraisons...
         deliveriesToCheck.forEach(deliveryId -> {
-            
+
             final Set<String> possibleRunningStates = new HashSet<>();
             final Map<String, Optional<DeliveredDocument>> docUnitIdsToTreat = new HashMap<>();
-            final Delivery delivery = deliveryService.findOneWithDep(deliveryId); 
-            
+            final Delivery delivery = deliveryService.findOneWithDep(deliveryId);
+
             for (final DeliveredDocument delivered : delivery.getDocuments()) {
-                
-                if (delivered.getDigitalDocument() == null 
-                        || delivered.getDigitalDocument().getDocUnit() == null) {
+
+                if (delivered.getDigitalDocument() == null
+                    || delivered.getDigitalDocument().getDocUnit() == null) {
                     continue;
                 }
                 final String docUnitId = delivered.getDigitalDocument().getDocUnit().getIdentifier();
@@ -597,11 +614,11 @@ public class UIDocUnitService {
                     continue;
                 }
                 docUnitIdsToTreat.put(docUnitId, Optional.of(delivered));
-                
+
                 // ... on verifie si au moins une etape susceptible de faire avancer le workflow est accessible....
-                if (workflowService.areStatesRunning(docUnitId, 
+                if (workflowService.areStatesRunning(docUnitId,
                                                      WorkflowStateKey.CONTROLE_QUALITE_EN_COURS,
-                                                     WorkflowStateKey.PREREJET_DOCUMENT, 
+                                                     WorkflowStateKey.PREREJET_DOCUMENT,
                                                      WorkflowStateKey.PREVALIDATION_DOCUMENT,
                                                      WorkflowStateKey.VALIDATION_DOCUMENT)) {
                     possibleRunningStates.add(docUnitId);
@@ -609,18 +626,15 @@ public class UIDocUnitService {
                     break;
                 }
             }
-            
-            // Sinon, le workflow ne pourra pas avancer, il faut le debloquer en déclenchant l'envoi du rapport... 
+
+            // Sinon, le workflow ne pourra pas avancer, il faut le debloquer en déclenchant l'envoi du rapport...
             if (possibleRunningStates.isEmpty()) {
-                docUnitIdsToTreat.forEach((docUnitId, optDelivered) -> {
-                    digitalDocumentService.generateAndSendCheckSlip(docUnitId, optDelivered);
-               });            
+                docUnitIdsToTreat.forEach(digitalDocumentService::generateAndSendCheckSlip);
             }
-        });        
-        
+        });
+
     }
-    
-    
+
     @Transactional
     public void setTrain(final List<String> docs, final String train) {
         docUnitService.setTrain(docs, train);
@@ -668,7 +682,7 @@ public class UIDocUnitService {
 
         // PgcnId est unique
         if (StringUtils.isNotBlank(dto.getPgcnId())) {
-            final DocUnit duplicate = docUnitService.findOneByPgcnId(dto.getPgcnId());
+            final DocUnit duplicate = docUnitService.findOneByPgcnIdAndState(dto.getPgcnId());
             if (duplicate != null && (dto.getIdentifier() == null || !duplicate.getIdentifier().equalsIgnoreCase(dto.getIdentifier()))) {
                 errors.add(builder.reinit().setCode(PgcnErrorCode.DOC_UNIT_DUPLICATE_PGCN_ID).setField("pgcnId").build());
             }
@@ -764,40 +778,6 @@ public class UIDocUnitService {
                              .collect(Collectors.toList());
     }
 
-    /**
-     * Interroge Internet Archive pour recuperer l'url ARK.
-     *
-     * @param aiIdentifier
-     * @return
-     */
-    public String getIaArkUrl(final String aiIdentifier) {
-        final String idArkUrl = "https://archive.org/metadata/" + aiIdentifier + "/metadata/identifier-ark";
-        final HttpClient client = HttpClientBuilder.create().build();
-        final HttpGet request = new HttpGet(idArkUrl);
-
-        String arkUrl = null;
-        try {
-            final HttpResponse response = client.execute(request);
-            final String json = EntityUtils.toString(response.getEntity());
-            final JSONObject jsonObject = new JSONObject(json);
-
-            if (jsonObject.has("error")) {
-                LOG.error("L'appel de l'url Internet Archive {} a renvoyé une erreur, détail: {}", idArkUrl, jsonObject.get("error"));
-
-            } else if (jsonObject.has("result")) {
-                arkUrl = (String) jsonObject.get("result");
-            }
-
-        } catch (final IOException e) {
-            LOG.error("Erreur de communication avec Internet Archive lors de l'appel de l'url {}, détail: {}", idArkUrl, e.getMessage());
-
-        } catch (final JSONException e) {
-            LOG.error("Erreur de lecture de la réponse d'Internet Archive lors de l'appel de l'url {}, détail: {} ", idArkUrl, e.getMessage());
-        }
-
-        return arkUrl;
-    }
-
     @Transactional
     public void addSibling(final String id, final List<String> siblingIds) {
         final DocUnit docUnit = docUnitService.findOneWithAllDependencies(id);
@@ -832,8 +812,8 @@ public class UIDocUnitService {
     }
 
     @Transactional
-    public boolean massExportToFtp(final Collection<String> docUnitIdentifiers, final List<String> exportTypes, final Library lib) throws
-                                                                                                                                   IOException {
+    public boolean
+           massExportToFtp(final Collection<String> docUnitIdentifiers, final List<String> exportTypes, final Library lib) throws IOException {
 
         boolean exported = false;
         // Création du fichier zip global
@@ -854,7 +834,7 @@ public class UIDocUnitService {
             return exported;
         }
 
-        try (final FileOutputStream fos = new FileOutputStream(zipFile);) {
+        try (final FileOutputStream fos = new FileOutputStream(zipFile)) {
             massExport(fos, docUnitIdentifiers, exportTypes);
         } catch (final IOException e) {
             LOG.error("Erreur lors de la compression des fichiers d'export", e);
@@ -897,7 +877,6 @@ public class UIDocUnitService {
     public void massExport(final OutputStream out, final Collection<String> docUnitIdentifiers, final List<String> exportTypes) throws IOException {
 
         final Collection<DocUnit> docUnits = docUnitService.findAllById(docUnitIdentifiers);
-
         try (final ZipOutputStream zos = new ZipOutputStream(out)) {
 
             for (final DocUnit du : docUnits) {
@@ -908,6 +887,7 @@ public class UIDocUnitService {
                 final List<CheckSummedStoredFile> cssfs = new ArrayList<>();
                 zos.putNextEntry(new ZipEntry(directory));
                 zos.closeEntry();
+                
 
                 // Export des images / format.
                 for (final DigitalDocument dd : du.getDigitalDocuments()) {
@@ -987,7 +967,7 @@ public class UIDocUnitService {
                     final boolean metaEad = exportTypes.contains("EAD");
                     try {
                         exportMetsService.writeMetadata(zos, du, noticeDto, metaEad, cssfs);
-                    } catch (JAXBException | SAXException e) {
+                    } catch (final JAXBException | SAXException e) {
                         LOG.error(e.getMessage(), e);
                     }
                     zos.closeEntry();
@@ -1012,6 +992,25 @@ public class UIDocUnitService {
                         try (final FileInputStream fis = new FileInputStream(sipFile)) {
                             IOUtils.copy(fis, zos);
                             zos.closeEntry();
+                        }
+                    }
+                }
+
+                if (exportTypes.contains("ALTO")) {
+                    // alto.xml
+                    final Optional<PhysicalDocument> physicalDocument = du.getPhysicalDocuments().stream().findFirst();
+
+                    if (physicalDocument.isPresent()) {
+                        final List<File> altoTextFiles = altoService.retrieveAlto(physicalDocument.get().getDigitalId(), libraryId, true, true);
+                        if (altoTextFiles != null) {
+                            for (final File file : altoTextFiles) {
+                                zos.putNextEntry(new ZipEntry(directory.concat(file.getName())));
+
+                                try (final FileInputStream fis = new FileInputStream(file)) {
+                                    IOUtils.copy(fis, zos);
+                                    zos.closeEntry();
+                                }
+                            }
                         }
                     }
                 }

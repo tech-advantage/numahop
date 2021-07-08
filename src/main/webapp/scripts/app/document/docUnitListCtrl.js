@@ -7,7 +7,7 @@
     function DocUnitListCtrl($http, $httpParamSerializer, $q, $location, $routeParams, CONFIGURATION,
         DocUnitBaseService, DocUnitSrvc, DtoService, ErreurSrvc, FileSaver, gettext, gettextCatalog, HistorySrvc,
         NumahopUrlService, MessageSrvc, ModalSrvc, NumaHopInitializationSrvc, NumahopStorageService, ExportCinesSrvc,
-        SelectionSrvc, ExportInternetArchiveSrvc, ExportOmekaSrvc, DateUtils) {
+        SelectionSrvc, ExportInternetArchiveSrvc, ExportOmekaSrvc, ExportDigitalLibrarySrvc, DateUtils) {
 
         var mainCtrl = this;
 
@@ -53,6 +53,7 @@
         mainCtrl.massCines = massCines;
         mainCtrl.massIA = massIA;
         mainCtrl.massOmeka = massOmeka;
+        mainCtrl.massDigitalLibrary = massDigitalLibrary;
 
         var PAGE_START = 1;
         var FILTER_STORAGE_SERVICE_KEY = "doc_unit_list";
@@ -428,7 +429,7 @@
                 params["trains"] = trainsIds;
             }
             // statut
-            if (mainCtrl.filters.statuses) {
+            if (mainCtrl.filters.wkf_statuses) {
                 var statuses = _.pluck(mainCtrl.filters.wkf_statuses, "identifier");
                 params["statuses"] = statuses;
             }
@@ -1035,6 +1036,38 @@
             ExportInternetArchiveSrvc.massExport(params).$promise
                 .then(function () {
                     MessageSrvc.addSuccess(gettext("La diffusion IA des documents a été effectuée. Pour plus de détails, consultez la page des documents concernés"));
+                });
+        }
+
+        /**
+        * diffusion sur la bibliothèque numérique
+        */
+        function massDigitalLibrary(){
+            if (mainCtrl.selectedLength === 0) {
+                MessageSrvc.addWarn(gettext("La sélection est vide"), {}, false);
+                return;
+            }
+            var notValids = _.filter(mainCtrl.selection, function (ud) {
+                return ud.digitalDocumentStatus !== 'VALIDATED';
+            });
+            var params = {
+                "docs": _.pluck(_.difference(mainCtrl.selection, notValids), "identifier")
+            };
+            if (notValids.length > 0) {
+                // seuls les docs validés peuvent etre archivés.
+                if (params.docs.length === 0) {
+                    MessageSrvc.addWarn(gettext("Aucun document n'est validé. La diffusion sur la bibliothèque numérique est impossible."), {}, false, 30000);
+                    return;
+                } else {
+                    _.each(notValids, function (nv) {
+                        MessageSrvc.addWarn(gettext("Le document [{{id}}]{{name}} n'est pas validé. Il ne sera pas diffusé."), { id: nv.pgcnId, name: nv.label }, false, 30000);
+                    });
+                }
+            }
+            MessageSrvc.addSuccess(gettext("Lancement de la diffusion des documents sur la bibliothèque numérique"), {}, false, 10000);
+            ExportDigitalLibrarySrvc.massExport(params).$promise
+                .then(function () {
+                    MessageSrvc.addSuccess(gettext("La diffusion des documents sur la bibliothèque numérique a été effectuée. Pour plus de détails, consultez la page des documents concernés"));
                 });
         }
 

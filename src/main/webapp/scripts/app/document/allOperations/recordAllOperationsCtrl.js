@@ -195,21 +195,24 @@
                         property = {
                             "_name": "propertyFormCUSTOM" + self.indices[type]++,
                             "type": undefined,
-                            "record": { identifier: entity.identifier }
+                            "record": { identifier: entity.identifier },
+                            "rank": getCustomMaxRank(entity, "CUSTOM") + self.indices[type]++
                         };
                         break;
                     case "custom_cines":
                         property = {
                             "_name": "propertyFormCUSTOMCines" +self.indices[type]++,
                             "type": undefined,
-                            "record": { identifier: entity.identifier }
+                            "record": { identifier: entity.identifier },
+                            "rank": getCustomMaxRank(entity, "CUSTOM_CINES") + self.indices[type]++
                         };
                         break;
                     case "custom_archive":
                         property = {
                             "_name": "propertyFormCUSTOMArchive" + self.indices[type]++,
                             "type": undefined,
-                            "record": { identifier: entity.identifier }
+                            "record": { identifier: entity.identifier },
+                            "rank": getCustomMaxRank(entity, "CUSTOM_ARCHIVE") + self.indices[type]++
                         };
                         break;         
                 }
@@ -236,6 +239,37 @@
                 } else {
                     return gettext(property.type.label);
                 }
+            }
+            
+            /**
+             * Pour conserver l'ordre de saisie des champs de type custom.
+             * 
+             * @param entity
+             * @param type
+             * @returns
+             */
+            function getCustomMaxRank(entity, type) {
+                var maxRank = 0;
+                var filtered = _.filter(entity.properties, function(elt) {return elt.type && elt.type.superType === type});
+                if (filtered && filtered.length > 0) {
+                   var obj = _.max(filtered, function(elt) {return elt.rank});
+                   maxRank = obj.rank;
+                } else {
+                    switch (type) {
+                        case "CUSTOM":
+                            maxRank = 1000;
+                            break;
+                        case "CUSTOM_CINES":
+                            maxRank = 2000;
+                            break;
+                        case "CUSTOM_ARCHIVE":
+                            maxRank = 3000;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                return maxRank;
             }
 
             function mergePropertiesBeforeSave(entity) {

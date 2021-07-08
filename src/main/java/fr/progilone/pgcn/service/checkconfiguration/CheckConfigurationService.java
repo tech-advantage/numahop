@@ -9,12 +9,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import fr.progilone.pgcn.domain.check.AutomaticCheckType;
 import fr.progilone.pgcn.domain.checkconfiguration.AutomaticCheckRule;
 import fr.progilone.pgcn.domain.checkconfiguration.CheckConfiguration;
 import fr.progilone.pgcn.exception.PgcnValidationException;
 import fr.progilone.pgcn.exception.message.PgcnError;
 import fr.progilone.pgcn.exception.message.PgcnErrorCode;
 import fr.progilone.pgcn.exception.message.PgcnList;
+import fr.progilone.pgcn.repository.check.AutomaticCheckTypeRepository;
 import fr.progilone.pgcn.repository.checkconfiguration.CheckConfigurationRepository;
 import fr.progilone.pgcn.repository.library.LibraryRepository;
 import fr.progilone.pgcn.repository.lot.LotRepository;
@@ -36,6 +38,8 @@ public class CheckConfigurationService {
     private ProjectRepository projectRepository;
     @Autowired
     private AutomaticCheckRuleService automaticCheckRuleService;
+    @Autowired
+    private AutomaticCheckTypeRepository checkTypeRepository;
 
     /**
      * Suppression
@@ -133,5 +137,32 @@ public class CheckConfigurationService {
         for(final AutomaticCheckRule acr : source.getAutomaticCheckRules()) {
             destination.getAutomaticCheckRules().add(automaticCheckRuleService.duplicateAutomaticCheckRule(acr));
         }
+    }
+
+    /**
+     * Permet d'ajouter le controle du radical dans toutes les configurations de contrôles
+     */
+    @Transactional
+    public void updateCheckConfigurationAddRadicalControl() {
+
+        final List<CheckConfiguration> checkConfigurations = checkConfigurationRepository.findAll();
+
+        checkConfigurations.forEach(checkConfiguration -> {
+            final List<AutomaticCheckRule> automaticCheckRules = checkConfiguration.getAutomaticCheckRules();
+            final AutomaticCheckRule fileRadicalRule = automaticCheckRules.stream()
+                                                                          .filter(rule -> rule.getAutomaticCheckType()
+                                                                                              .getType()
+                                                                                              .equals(AutomaticCheckType.AutoCheckType.FILE_RADICAL))
+                                                                          .findAny()
+                                                                          .orElse(null);
+
+            if (fileRadicalRule == null) {
+                final AutomaticCheckRule newFileRadicalRule = new AutomaticCheckRule();
+                newFileRadicalRule.setActive(true);
+                newFileRadicalRule.setBlocking(true);
+                newFileRadicalRule.setAutomaticCheckType(checkTypeRepository.findOne("automatic_file_radical"));
+                checkConfiguration.addAutomaticCheckRule(newFileRadicalRule);
+            }
+        });
     }
 }
