@@ -1035,6 +1035,14 @@
                     <fork>true</fork>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+                <configuration>
+                    <verbose>false</verbose>
+					<failNoGitDirectory>false</failNoGitDirectory>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     <profiles>
