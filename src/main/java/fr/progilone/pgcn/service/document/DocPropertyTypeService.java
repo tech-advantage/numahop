@@ -45,7 +45,8 @@ public class DocPropertyTypeService {
         
         final DocPropertyType.DocPropertySuperType[] customTypes = {DocPropertySuperType.CUSTOM, 
                                                                     DocPropertySuperType.CUSTOM_ARCHIVE, 
-                                                                    DocPropertySuperType.CUSTOM_CINES};
+                                                                    DocPropertySuperType.CUSTOM_CINES,
+                                                                    DocPropertySuperType.CUSTOM_OMEKA};
         return docPropertyTypeRepository.findAllBySuperTypeIn(Arrays.asList(customTypes));
     }
 

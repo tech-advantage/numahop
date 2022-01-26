@@ -55,6 +55,9 @@ public interface DocUnitRepositoryCustom {
                             List<String> lots,
                             List<String> trains,
                             List<String> statuses);
+    
+    Page<DocUnit> searchAllForProject(String projectId,
+                         @PageableDefault(size = Integer.MAX_VALUE) final Pageable pageable);
 
     /**
      * Recherche d'unités documentaires correspondant à l'un des identifiants, pour un état donné et par rapport à une unité documentaire de référence

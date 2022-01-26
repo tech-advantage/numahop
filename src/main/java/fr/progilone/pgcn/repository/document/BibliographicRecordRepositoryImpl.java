@@ -9,10 +9,13 @@ import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import fr.progilone.pgcn.domain.library.QLibrary;
+import fr.progilone.pgcn.domain.user.QUser;
 import fr.progilone.pgcn.domain.workflow.QDocUnitState;
 import fr.progilone.pgcn.domain.workflow.QDocUnitWorkflow;
 import fr.progilone.pgcn.domain.workflow.WorkflowStateKey;
 import fr.progilone.pgcn.domain.workflow.WorkflowStateStatus;
+import fr.progilone.pgcn.repository.util.QueryDSLBuilderUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -60,10 +63,13 @@ public class BibliographicRecordRepositoryImpl implements BibliographicRecordRep
 
         final QBibliographicRecord qRecord = QBibliographicRecord.bibliographicRecord;
         final QDocUnit qDocUnit = QDocUnit.docUnit;
+        final QLibrary qLibrary = QLibrary.library;
         final QProject qProject = QProject.project;
         final QLot qLot = QLot.lot;
         final QDocUnitWorkflow qWorkflow = QDocUnitWorkflow.docUnitWorkflow;
         final QDocUnitState qState = QDocUnitState.docUnitState;
+        final QLibrary qAssociatedLibrary = QLibrary.library;
+        final QUser qAssociatedUser = QUser.user;
 
         final BooleanBuilder builder = new BooleanBuilder();
 
@@ -72,11 +78,6 @@ public class BibliographicRecordRepositoryImpl implements BibliographicRecordRep
             builder.andAnyOf(nameFilter);
         }
 
-        // Bibliothèques
-        if (CollectionUtils.isNotEmpty(libraries)) {
-            final BooleanExpression sitesFilter = qRecord.library.identifier.in(libraries);
-            builder.and(sitesFilter);
-        }
         // Projets
         if (CollectionUtils.isNotEmpty(projects)) {
             final BooleanExpression projectsFilter = qDocUnit.project.identifier.in(projects);
@@ -139,6 +140,9 @@ public class BibliographicRecordRepositoryImpl implements BibliographicRecordRep
         // UD Disponibles ou notices non rattachées
         builder.and(qDocUnit.state.isNull().or(qDocUnit.state.eq(DocUnit.State.AVAILABLE)));
 
+        // provider
+        QueryDSLBuilderUtils.addAccessFilters(builder, qLibrary, qLot, qProject, qAssociatedLibrary, qAssociatedUser, libraries, null);
+
         final JPQLQuery baseQuery = new JPAQuery(em);
         final JPQLQuery countQuery = new JPAQuery(em);
 
@@ -149,7 +153,10 @@ public class BibliographicRecordRepositoryImpl implements BibliographicRecordRep
 
         final long total = countQuery.from(qRecord)
                                      .leftJoin(qRecord.docUnit, qDocUnit)
+                                     .leftJoin(qDocUnit.library, qLibrary)
                                      .leftJoin(qDocUnit.project, qProject)
+                                     .leftJoin(qProject.associatedLibraries, qAssociatedLibrary)
+                                     .leftJoin(qProject.associatedUsers, qAssociatedUser)
                                      .leftJoin(qDocUnit.lot, qLot)
                                      .leftJoin(qDocUnit.workflow, qWorkflow)
                                      .leftJoin(qWorkflow.states, qState)
@@ -158,7 +165,10 @@ public class BibliographicRecordRepositoryImpl implements BibliographicRecordRep
         final List<BibliographicRecord> result = baseQuery.from(qRecord)
                                                           .leftJoin(qRecord.docUnit, qDocUnit)
                                                           .fetch()
+                                                          .leftJoin(qDocUnit.library, qLibrary)
                                                           .leftJoin(qDocUnit.project, qProject)
+                                                          .leftJoin(qProject.associatedLibraries, qAssociatedLibrary)
+                                                          .leftJoin(qProject.associatedUsers, qAssociatedUser)
                                                           .leftJoin(qDocUnit.lot, qLot)
                                                           .leftJoin(qDocUnit.workflow, qWorkflow)
                                                           .leftJoin(qWorkflow.states, qState)

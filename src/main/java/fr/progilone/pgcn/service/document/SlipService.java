@@ -76,32 +76,30 @@ public class SlipService {
         this.jasperReportService = jasperReportService;
         this.checkSlipRepository = checkSlipRepository;
     }
-    
+
     /**
      * Vrai si au moins 1 doc de la livraison n'est pas controlé.
-     * 
+     *
      * @param delivery
      * @return
      */
     private boolean isDeliveryChecksUncompleted(final Delivery delivery) {
         return delivery.getDocuments().stream()
-                        .filter(delivDoc -> DigitalDocumentStatus.REJECTED != delivDoc.getStatus()
+                       .anyMatch(delivDoc -> DigitalDocumentStatus.REJECTED != delivDoc.getStatus()
                                 && DigitalDocumentStatus.PRE_REJECTED != delivDoc.getStatus()
-                                && DigitalDocumentStatus.VALIDATED != delivDoc.getStatus())
-                        .findAny().isPresent();
+                                && DigitalDocumentStatus.VALIDATED != delivDoc.getStatus());
     }
-    
+
     /**
      * Faux si si bordereau de controle a deja ete cree.
-     * 
+     *
      * @param delivery
      * @return
      */
     private boolean isCheckSlipAbsent(final Delivery delivery) {
-        
+
         return delivery.getDocuments().stream()
-                    .filter(delivDoc -> delivDoc.getCheckSlip() == null)
-                    .findAny().isPresent();
+                       .anyMatch(delivDoc -> delivDoc.getCheckSlip() == null);
     }
 
     /**
@@ -117,11 +115,11 @@ public class SlipService {
             // Recup config bordereau de controle
             final Optional<CheckSlipConfiguration> config =
                     checkSlipConfigurationService.getOneByLibrary(library.getIdentifier());
-            // Si 1ere fois ou si livraison pas completement controlee, on construit le bordereau. 
+            // Si 1ere fois ou si livraison pas completement controlee, on construit le bordereau.
             if (isCheckSlipAbsent(delivery) || isDeliveryChecksUncompleted(delivery)) {
                 createCheckSlip(deliveryId);
             }
-            
+
             writeCsv(out, getSlipParams(delivery, config, false, null), encoding, separator, config);
         } else {
             LOG.warn("Aucune bibliothèque rattachée à cette livraison: le bordereau ne peut pas être généré");
@@ -268,7 +266,7 @@ public class SlipService {
                 if (records.isEmpty()) {
                     slipLine.setTitle(doc.getDocUnit().getLabel());
                 } else {
-                    slipLine.setTitle(records.iterator().next().getTitle());
+                    slipLine.setTitle(StringUtils.abbreviate(records.iterator().next().getTitle(), 255));
                 }
             }
             if (!config.isPresent() || config.get().isState()) {

@@ -1,13 +1,6 @@
 package fr.progilone.pgcn.domain.lot;
 
-import static fr.progilone.pgcn.service.es.EsConstant.ANALYZER_CI_AI;
-import static fr.progilone.pgcn.service.es.EsConstant.ANALYZER_CI_AS;
-import static fr.progilone.pgcn.service.es.EsConstant.ANALYZER_KEYWORD;
-import static fr.progilone.pgcn.service.es.EsConstant.ANALYZER_PHRASE;
-import static fr.progilone.pgcn.service.es.EsConstant.SUBFIELD_CI_AI;
-import static fr.progilone.pgcn.service.es.EsConstant.SUBFIELD_CI_AS;
-import static fr.progilone.pgcn.service.es.EsConstant.SUBFIELD_PHRASE;
-import static fr.progilone.pgcn.service.es.EsConstant.SUBFIELD_RAW;
+import static fr.progilone.pgcn.service.es.EsConstant.*;
 
 import java.time.LocalDate;
 import java.util.Date;
@@ -44,6 +37,7 @@ import com.google.common.base.MoreObjects;
 import fr.progilone.pgcn.domain.AbstractDomainObject;
 import fr.progilone.pgcn.domain.administration.CinesPAC;
 import fr.progilone.pgcn.domain.administration.InternetArchiveCollection;
+import fr.progilone.pgcn.domain.administration.omeka.OmekaConfiguration;
 import fr.progilone.pgcn.domain.administration.omeka.OmekaList;
 import fr.progilone.pgcn.domain.administration.viewsformat.ViewsFormatConfiguration;
 import fr.progilone.pgcn.domain.checkconfiguration.CheckConfiguration;
@@ -285,6 +279,12 @@ public class Lot extends AbstractDomainObject {
     @Column(name = "files_archived")
     private boolean filesArchived;
 
+    /**
+     * Configuration Omeka
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "omeka_configuration")
+    private OmekaConfiguration omekaConfiguration;
 
 
 
@@ -443,7 +443,7 @@ public class Lot extends AbstractDomainObject {
         /**
          * Clôturé
          */
-        CLOSED;
+        CLOSED
     }
 
     /**
@@ -598,6 +598,14 @@ public class Lot extends AbstractDomainObject {
 
     public void setOmekaItem(final OmekaList omekaItem) {
         this.omekaItem = omekaItem;
+    }
+
+    public OmekaConfiguration getOmekaConfiguration() {
+        return omekaConfiguration;
+    }
+
+    public void setOmekaConfiguration(final OmekaConfiguration omekaConfiguration) {
+        this.omekaConfiguration = omekaConfiguration;
     }
 
     public ExportFTPConfiguration getActiveExportFTPConfiguration() {

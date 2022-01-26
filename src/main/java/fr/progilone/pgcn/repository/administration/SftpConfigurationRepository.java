@@ -40,7 +40,6 @@ public interface SftpConfigurationRepository extends JpaRepository<SftpConfigura
     @Query("select c "
            + "from SftpConfiguration c "
            + "join fetch c.library "
-           + "left join fetch c.pacs "
            + "where c.identifier = ?1")
     SftpConfiguration findOneWithDependencies(String id);
 

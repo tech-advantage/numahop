@@ -11,5 +11,6 @@ public interface OmekaConfigurationRepositoryCustom {
 
     Page<OmekaConfiguration> search(String search,
                                   final List<String> libraries,
+                                    final Boolean omekas,
                                   Pageable pageable);
 }

@@ -10,6 +10,11 @@ import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import com.mysema.query.types.path.SetPath;
+import fr.progilone.pgcn.domain.library.Library;
+import fr.progilone.pgcn.domain.library.QLibrary;
+import fr.progilone.pgcn.domain.user.QUser;
+import fr.progilone.pgcn.repository.util.QueryDSLBuilderUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Hibernate;
@@ -82,6 +87,9 @@ public class DocUnitRepositoryImpl implements DocUnitRepositoryCustom {
         final QLot lot = QLot.lot;
         final QDocUnitWorkflow workflow = QDocUnitWorkflow.docUnitWorkflow;
         final QDocUnitState state = QDocUnitState.docUnitState;
+        final QLibrary associatedLibrary = QLibrary.library;
+        final QUser associatedUser = QUser.user;
+        final QLibrary library = doc.library;
 
         final QCinesReport cinesReport = QCinesReport.cinesReport;
         final QInternetArchiveReport iaReport = QInternetArchiveReport.internetArchiveReport;
@@ -133,10 +141,6 @@ public class DocUnitRepositoryImpl implements DocUnitRepositoryCustom {
         } else if (nonDistributable && !distributable) {
             builder.and(doc.distributable.isFalse());
         }
-        if (CollectionUtils.isNotEmpty(libraries)) {
-            final BooleanExpression sitesFilter = doc.library.identifier.in(libraries);
-            builder.and(sitesFilter);
-        }
         if (CollectionUtils.isNotEmpty(projects)) {
             final BooleanExpression projectFilter = project.identifier.in(projects);
             builder.and(projectFilter);
@@ -150,19 +154,17 @@ public class DocUnitRepositoryImpl implements DocUnitRepositoryCustom {
             final BooleanExpression trainFilter = qpd.isNotNull().and(qpd.train.identifier.in(trains));
             builder.and(trainFilter);
         }
-        // Droits d'accès
-        final CustomUserDetails currentUser = SecurityUtils.getCurrentUser();
-        if (currentUser != null) {
-            // Prestataires
-            if (currentUser.getCategory() == User.Category.PROVIDER) {
-                final BooleanExpression providerFilter =
-                                                       // prestataire sur le projet
-                                                       project.provider.identifier.eq(currentUser.getIdentifier())
-                                                                                  // prestataire sur un lot du projet
-                                                                                  .or(lot.provider.identifier.eq(currentUser.getIdentifier()));
-                builder.and(providerFilter);
-            }
-        }
+
+        // provider, library
+        QueryDSLBuilderUtils.addAccessFilters(builder,
+                                              library,
+                                              lot,
+                                              project,
+                                              associatedLibrary,
+                                              associatedUser,
+                                              libraries,
+                                              null);
+
         // Statuts de workflow
         if (CollectionUtils.isNotEmpty(statuses)) {
             final List<WorkflowStateKey> wkfStates = statuses.stream().map(WorkflowStateKey::valueOf).collect(Collectors.toList());
@@ -214,20 +216,20 @@ public class DocUnitRepositoryImpl implements DocUnitRepositoryCustom {
                                               .leftJoin(doc.library)
                                               .fetch()
                                               .leftJoin(doc.project, project)
+                                              .leftJoin(project.associatedLibraries, associatedLibrary)
+                                              .leftJoin(project.associatedUsers, associatedUser)
                                               .leftJoin(doc.lot, lot)
                                               .leftJoin(doc.workflow, workflow)
                                               .leftJoin(workflow.states, state)
                                               .where(builder.getValue())
-                                              .orderBy(doc.label.asc())
-                                              .orderBy(doc.pgcnId.asc())
                                               .distinct()
                                               .list(doc);
         final long total = baseQuery.count();
 
         return new PageImpl<>(result, pageable, total);
     }
-    
-    
+
+
     @Override
     public List<DocUnit> minSearch(final String search,
                                 final List<String> libraries,
@@ -243,7 +245,7 @@ public class DocUnitRepositoryImpl implements DocUnitRepositoryCustom {
         final QDocUnitState state = QDocUnitState.docUnitState;
 
         final BooleanBuilder builder = new BooleanBuilder();
-        
+
         if (StringUtils.isNotBlank(search)) {
             final BooleanExpression nameFilter = doc.label.containsIgnoreCase(search).or(doc.pgcnId.containsIgnoreCase(search));
             builder.andAnyOf(nameFilter);
@@ -263,13 +265,13 @@ public class DocUnitRepositoryImpl implements DocUnitRepositoryCustom {
             final BooleanExpression lotFilter = lot.identifier.in(lots);
             builder.and(lotFilter);
         }
-        
+
         if (CollectionUtils.isNotEmpty(trains)) {
             final QPhysicalDocument qpd = doc.docUnit.physicalDocuments.any();
             final BooleanExpression trainFilter = qpd.isNotNull().and(qpd.train.identifier.in(trains));
             builder.and(trainFilter);
         }
-        
+
         // Statuts de workflow
         if (CollectionUtils.isNotEmpty(statuses)) {
             final List<WorkflowStateKey> wkfStates = statuses.stream().map(WorkflowStateKey::valueOf).collect(Collectors.toList());
@@ -309,8 +311,55 @@ public class DocUnitRepositoryImpl implements DocUnitRepositoryCustom {
 
         return result;
     }
-
     
+    @Override
+    public Page<DocUnit> searchAllForProject(final String projectId, final Pageable pageable) {
+        
+        final QDocUnit doc = QDocUnit.docUnit;
+        final QProject project = QProject.project;
+        final QLot lot = QLot.lot;
+        
+        final BooleanBuilder builder = new BooleanBuilder();
+        // filtrage des unités documentaires disponibles
+        if (!projectId.isEmpty()) {
+            final BooleanExpression projectFilter = project.identifier.eq(projectId);
+            builder.and(projectFilter);
+        }
+        // Droits d'accès
+        final CustomUserDetails currentUser = SecurityUtils.getCurrentUser();
+        if (currentUser != null) {
+            // Prestataires
+            if (currentUser.getCategory() == User.Category.PROVIDER) {
+                final BooleanExpression providerFilter =
+                        // prestataire sur le projet
+                        project.provider.identifier.eq(currentUser.getIdentifier())
+                                                   // prestataire sur un lot du projet
+                                                   .or(lot.provider.identifier.eq(currentUser.getIdentifier()));
+                builder.and(providerFilter);
+            }
+        }
+        
+        final JPQLQuery baseQuery = new JPAQuery(em);
+        
+        if (pageable != null) {
+            baseQuery.offset(pageable.getOffset()).limit(pageable.getPageSize());
+            applySorting(pageable.getSort(), baseQuery, doc, project, lot);
+        }
+        
+        final List<DocUnit> result = baseQuery.from(doc)
+                                              .leftJoin(doc.library)
+                                              .fetch()
+                                              .leftJoin(doc.project, project)
+                                              .leftJoin(doc.lot, lot)
+                                              .where(builder.getValue())
+                                              .orderBy(doc.label.asc())
+                                              .orderBy(doc.pgcnId.asc())
+                                              .distinct()
+                                              .list(doc);
+        final long total = baseQuery.count();
+        
+        return new PageImpl<>(result, pageable, total);
+    }
 
     /**
      * Gère le tri
@@ -389,16 +438,16 @@ public class DocUnitRepositoryImpl implements DocUnitRepositoryCustom {
         // Recherche
         return query.list(qDocUnit);
     }
-    
-    
-    
+
+
+
     public DocUnit findOneWithAllDependencies(final String identifier) {
         return findOneWithAllDependencies(identifier, false);
     }
-    
+
     @Override
     public DocUnit findOneWithAllDependencies(final String identifier, final boolean initFiles) {
-        
+
         final QDocUnit qDocUnit = QDocUnit.docUnit;
         final DocUnit doc = new JPAQuery(em).from(qDocUnit).where(qDocUnit.identifier.eq(identifier)).uniqueResult(qDocUnit);
         if (doc != null) {
@@ -408,7 +457,7 @@ public class DocUnitRepositoryImpl implements DocUnitRepositoryCustom {
             Hibernate.initialize(doc.getPhysicalDocuments());
             Hibernate.initialize(doc.getDigitalDocuments());
             Hibernate.initialize(doc.getActiveOcrLanguage());
-            
+
             doc.getDigitalDocuments().forEach(dd -> {
                 Hibernate.initialize(dd.getPages());
                 if (initFiles) {
@@ -417,10 +466,10 @@ public class DocUnitRepositoryImpl implements DocUnitRepositoryCustom {
                     });
                 }
             });
-            
+
             Hibernate.initialize(doc.getProject());
             Hibernate.initialize(doc.getLot());
-            
+
             if (doc.getPlanClassementPAC() == null) {
                 if (doc.getLot() != null) {
                     if (doc.getLot().getPlanClassementPAC() == null) {
@@ -434,7 +483,7 @@ public class DocUnitRepositoryImpl implements DocUnitRepositoryCustom {
             } else {
             	Hibernate.initialize(doc.getPlanClassementPAC());
             }
-      
+
             Hibernate.initialize(doc.getRecords());
             doc.getRecords().forEach(not -> {
             	if (not != null) {
@@ -444,11 +493,11 @@ public class DocUnitRepositoryImpl implements DocUnitRepositoryCustom {
             		}
             	}
             });
-            
+
             if (doc.getExportData() != null) {
                 Hibernate.initialize(doc.getExportData().getProperties());
             }
-            
+
             if (doc.getArchiveItem() != null) {
                 Hibernate.initialize(doc.getArchiveItem().getCollections());
                 Hibernate.initialize(doc.getArchiveItem().getSubjects());
@@ -461,5 +510,5 @@ public class DocUnitRepositoryImpl implements DocUnitRepositoryCustom {
         }
         return doc;
     }
-    
+
 }

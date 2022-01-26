@@ -115,7 +115,7 @@ public class DigitalDocumentService {
     public File getThumbnail(final String identifier, final int page) {
         final DocPage dp = getPage(identifier, page);
         final StoredFile sf = binaryRepository.getOneByPageIdentifierAndFileFormat(dp.getIdentifier(), ViewsFormatConfiguration.FileFormat.THUMB);
-        return bm.getFileForStoredFile(sf);
+        return bm.getFileForStoredFile(sf,dp.getDigitalDocument().getDocUnit().getLibrary().getIdentifier());
     }
 
     /**
@@ -129,7 +129,7 @@ public class DigitalDocumentService {
     public File getView(final String identifier, final int page) {
         final DocPage dp = getPage(identifier, page);
         final StoredFile sf = binaryRepository.getOneByPageIdentifierAndFileFormat(dp.getIdentifier(), ViewsFormatConfiguration.FileFormat.VIEW);
-        return bm.getFileForStoredFile(sf);
+        return bm.getFileForStoredFile(sf,dp.getDigitalDocument().getDocUnit().getLibrary().getIdentifier());
     }
 
     /**
@@ -143,7 +143,7 @@ public class DigitalDocumentService {
     public File getPrint(final String identifier, final int page) {
         final DocPage dp = getPage(identifier, page);
         final StoredFile sf = binaryRepository.getOneByPageIdentifierAndFileFormat(dp.getIdentifier(), ViewsFormatConfiguration.FileFormat.PRINT);
-        return bm.getFileForStoredFile(sf);
+        return bm.getFileForStoredFile(sf,dp.getDigitalDocument().getDocUnit().getLibrary().getIdentifier());
     }
 
     /**
@@ -157,7 +157,7 @@ public class DigitalDocumentService {
     public File getMaster(final String identifier, final int page) {
         final DocPage dp = getPage(identifier, page);
         final StoredFile sf = binaryRepository.getOneByPageIdentifierAndFileFormat(dp.getIdentifier(), ViewsFormatConfiguration.FileFormat.MASTER);
-        return bm.getFileForStoredFile(sf);
+        return bm.getFileForStoredFile(sf,dp.getDigitalDocument().getDocUnit().getLibrary().getIdentifier());
     }
 
     /**
@@ -170,7 +170,7 @@ public class DigitalDocumentService {
     public File getPdfMaster(final String identifier) {
         final DocPage dp = getPdfPage(identifier);
         final StoredFile sf = binaryRepository.getOneByPageIdentifierAndFileFormat(dp.getIdentifier(), ViewsFormatConfiguration.FileFormat.MASTER);
-        return bm.getFileForStoredFile(sf);
+        return bm.getFileForStoredFile(sf,dp.getDigitalDocument().getDocUnit().getLibrary().getIdentifier());
     }
 
 
@@ -185,7 +185,7 @@ public class DigitalDocumentService {
     public File getZoom(final String identifier, final int page) {
         final DocPage dp = getPage(identifier, page);
         final StoredFile sf = binaryRepository.getOneByPageIdentifierAndFileFormat(dp.getIdentifier(), ViewsFormatConfiguration.FileFormat.ZOOM);
-        return bm.getFileForStoredFile(sf);
+        return bm.getFileForStoredFile(sf,dp.getDigitalDocument().getDocUnit().getLibrary().getIdentifier());
     }
 
     /**
@@ -212,7 +212,7 @@ public class DigitalDocumentService {
         if (sf == null) {
             sf = binaryRepository.getOneByPageIdentifierAndFileFormat(dp.getIdentifier(), ViewsFormatConfiguration.FileFormat.ZOOM);
         }
-        return bm.getFileForStoredFile(sf);
+        return bm.getFileForStoredFile(sf, sf.getPage().getDigitalDocument().getDocUnit().getLibrary().getIdentifier());
     }
 
 
@@ -298,7 +298,7 @@ public class DigitalDocumentService {
     public DigitalDocument getOneWithDocUnitAndPages(final String id) {
         return digitalDocumentRepository.getOneWithDocUnitAndPages(id);
     }
-    
+
     @Transactional(readOnly = true)
     public List<DigitalDocument> getAllByDigitalIdAndLotIdentifier(final String prefix, final String identifier) {
         return digitalDocumentRepository.getAllByDigitalIdAndLotIdentifier(prefix, identifier);
@@ -372,9 +372,9 @@ public class DigitalDocumentService {
                             .filter(ddId -> ddId != null)
                             .map(ddId -> findDocUnitByIdentifier(ddId))
                             .forEach(dUnit -> {
-                        
+
 //                        final DocUnit du = findDocUnitByIdentifier(doc.getIdentifier());
-                        
+
                         if(sent) {
                             workflowService.processAutomaticState(dUnit.getIdentifier(), WorkflowStateKey.RAPPORT_CONTROLES);
                         } else {
@@ -576,7 +576,7 @@ public class DigitalDocumentService {
     public DigitalDocument findOne(final String identifier) {
         return digitalDocumentRepository.findOne(identifier);
     }
-    
+
     @Transactional(readOnly = true)
     public List<DigitalDocument> getAllByDigitalId(final String digitalId) {
         return digitalDocumentRepository.getAllByDigitalId(digitalId);
@@ -635,7 +635,7 @@ public class DigitalDocumentService {
 
     /**
      * Récupère les noms des différentes pièces du document
-     * 
+     *
      * @param identifier
      *            digitalDocument identifier
      * @return noms des pièces

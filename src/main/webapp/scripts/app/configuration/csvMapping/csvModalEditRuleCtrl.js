@@ -2,7 +2,7 @@
     'use strict';
 
     angular.module("numaHopApp.controller")
-        .controller("CSVModalEditRuleCtrl", function ($uibModalInstance, CSVMappingSrvc, MappingSrvc, DocPropertyTypeSrvc, gettextCatalog, options) {
+        .controller("CSVModalEditRuleCtrl", function ($uibModalInstance, MappingSrvc, DocPropertyTypeSrvc, gettextCatalog, options) {
 
             var mainCtrl = this;
             mainCtrl.ok = ok;
@@ -12,7 +12,7 @@
 
             /** Configuration des listes */
             mainCtrl.config = {
-                docUnitFields: CSVMappingSrvc.docUnitFields,
+                docUnitFields: MappingSrvc.docUnitFields,
                 bibRecordFields: MappingSrvc.bibRecordFields
             };
 

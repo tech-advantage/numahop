@@ -7,6 +7,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import fr.progilone.pgcn.domain.user.QUser;
 import fr.progilone.pgcn.domain.workflow.QDocUnitState;
 import fr.progilone.pgcn.domain.workflow.QDocUnitWorkflow;
 import fr.progilone.pgcn.domain.workflow.WorkflowStateKey;
@@ -82,7 +83,9 @@ public class DigitalDocumentRepositoryImpl implements DigitalDocumentRepositoryC
         final QDocUnitWorkflow workflow = QDocUnitWorkflow.docUnitWorkflow;
         final QDocUnitState docUnitState = QDocUnitState.docUnitState;
         final QDelivery delivery = QDelivery.delivery;
-        final QDeliveredDocument deliveredDocument = QDeliveredDocument.deliveredDocument; 
+        final QDeliveredDocument deliveredDocument = QDeliveredDocument.deliveredDocument;
+        final QLibrary qAssociatedLibrary = QLibrary.library;
+        final QUser qAssociatedUser = QUser.user;
 
         final BooleanBuilder builder = new BooleanBuilder();
 
@@ -110,7 +113,7 @@ public class DigitalDocumentRepositoryImpl implements DigitalDocumentRepositoryC
         }
 
         // provider
-        QueryDSLBuilderUtils.addAccessFilters(builder, library, lot, project, libraries, null);
+        QueryDSLBuilderUtils.addAccessFilters(builder, library, lot, project, qAssociatedLibrary, qAssociatedUser, libraries, null);
 
         if (CollectionUtils.isNotEmpty(deliveries)) {
             final BooleanExpression delivFilter = (delivery.identifier.in(deliveries).and(delivery.lot.identifier.eq(doc.docUnit.lot.identifier)));
@@ -221,6 +224,8 @@ public class DigitalDocumentRepositoryImpl implements DigitalDocumentRepositoryC
                     .leftJoin(doc.docUnit, docUnit)
                     .leftJoin(doc.docUnit.library, library)
                     .leftJoin(doc.docUnit.project, project)
+                    .leftJoin(project.associatedLibraries, qAssociatedLibrary)
+                    .leftJoin(project.associatedUsers, qAssociatedUser)
                     .leftJoin(docUnit.workflow, workflow)
                     .leftJoin(workflow.states, docUnitState)
                     .leftJoin(doc.deliveries, deliveredDocument)
@@ -234,6 +239,8 @@ public class DigitalDocumentRepositoryImpl implements DigitalDocumentRepositoryC
                     .leftJoin(doc.docUnit, docUnit)
                     .leftJoin(doc.docUnit.library, library)
                     .leftJoin(doc.docUnit.project, project)
+                    .leftJoin(project.associatedLibraries, qAssociatedLibrary)
+                    .leftJoin(project.associatedUsers, qAssociatedUser)
                     .leftJoin(doc.docUnit.lot, lot)
                     .leftJoin(docUnit.workflow, workflow)
                     .leftJoin(workflow.states, docUnitState)

@@ -26,7 +26,9 @@
             { code: "digitalId", label: gettextCatalog.getString("Radical"), rank: 7 },
             { code: "archivable", label: gettextCatalog.getString("Archivable"), rank: 8 },
             { code: "distributable", label: gettextCatalog.getString("Diffusable"), rank: 9 },
-            { code: "condReportType", label: gettextCatalog.getString("Type de constat d'état"), rank: 10 }];
+            { code: "condReportType", label: gettextCatalog.getString("Type de constat d'état"), rank: 10 },
+            { code: "omekaCollection", label: gettextCatalog.getString("Collection Omeka"), rank: 11 },
+            { code: "omekaItem", label: gettextCatalog.getString("Type d'item Omeka"), rank: 12 }];
 
         service.bibRecordFields = [
             { code: null, label: "", rank: 0 },

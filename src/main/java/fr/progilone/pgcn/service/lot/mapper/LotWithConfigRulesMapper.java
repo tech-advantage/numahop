@@ -7,6 +7,7 @@ import fr.progilone.pgcn.domain.dto.lot.LotWithConfigRulesDTO;
 import fr.progilone.pgcn.domain.lot.Lot;
 import fr.progilone.pgcn.service.administration.mapper.CinesPACMapper;
 import fr.progilone.pgcn.service.administration.mapper.InternetArchiveCollectionMapper;
+import fr.progilone.pgcn.service.administration.mapper.OmekaConfigurationMapper;
 import fr.progilone.pgcn.service.administration.mapper.OmekaListMapper;
 import fr.progilone.pgcn.service.administration.mapper.SimpleViewsFormatConfigurationMapper;
 import fr.progilone.pgcn.service.checkconfiguration.mapper.CheckConfigurationMapper;
@@ -29,7 +30,8 @@ import fr.progilone.pgcn.service.workflow.mapper.SimpleWorkflowMapper;
                 InternetArchiveCollectionMapper.class,
                 CinesPACMapper.class,
                 SimpleWorkflowMapper.class,
-                OmekaListMapper.class})
+                OmekaListMapper.class,
+                OmekaConfigurationMapper.class})
 public interface LotWithConfigRulesMapper {
 
     LotWithConfigRulesMapper INSTANCE = Mappers.getMapper(LotWithConfigRulesMapper.class);

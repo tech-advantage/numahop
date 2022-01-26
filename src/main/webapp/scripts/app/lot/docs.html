@@ -5,7 +5,7 @@
                 <div class="pull-right">
                     <button type="button" class="btn btn-sem2 btn-xs"
                             uib-tooltip="{{::'Ajouter des unités documentaires au lot' | translate}}"
-                            ng-disabled="docCtrl.isLotLocked(docCtrl.lot)"
+                            ng-disabled="docCtrl.isLotLocked(docCtrl.lot) || docCtrl.lot.status == 'ONGOING'"
                             sem-roles-allowed="DOC_UNIT_HAB2" ng-click="docCtrl.addDocUnits()">
                         <span class="glyphicon-halflings glyphicon-plus"></span>
                     </button>

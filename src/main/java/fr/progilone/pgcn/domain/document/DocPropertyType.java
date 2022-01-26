@@ -87,6 +87,7 @@ public class DocPropertyType extends AbstractDomainObject {
         DCQ, /* champs du dublin core qualified */
         CUSTOM, /* champs ajoutés (général) */
         CUSTOM_CINES, /* champs ajoutés (sp. CINES) */
-        CUSTOM_ARCHIVE ; /* champs ajoutés (sp. Archive) */
+        CUSTOM_ARCHIVE, /* champs ajoutés (sp. Archive) */
+        CUSTOM_OMEKA /* champs ajoutés (sp. Omeka) */
     }
 }

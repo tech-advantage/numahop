@@ -23,7 +23,7 @@
                     },
                     findByProjectIdsLotsIds: {
                         method: 'GET',
-                        isArray: false,
+                        isArray: true,
                         params: {
                             'filterByProjectsLots': ""
                         }
@@ -123,7 +123,7 @@
                         isArray: true,
                         params: {
                             delivprogress: true
-                        } 
+                        }
                     },
                     saveDeliveryProgress: {
                         method: 'POST',
@@ -138,16 +138,11 @@
                         params: {
                             diskspace: true,
                             widget: true
-                        } 
+                        }
                     }
                 });
 
             service.config = {
-                method: {
-                    "FTP": gettextCatalog.getString('FTP'),
-                    "DISK": gettextCatalog.getString('Disque'),
-                    "OTHER": gettextCatalog.getString('Autre')
-                },
                 payment: {
                     "PAID": gettextCatalog.getString('Payé'),
                     "UNPAID": gettextCatalog.getString('Non payé')
@@ -161,9 +156,8 @@
                 status: [
                     { identifier: "SAVED", label: gettextCatalog.getString('Sauvegardé') },
                     { identifier: "DELIVERING", label: gettextCatalog.getString('En cours de livraison') },
+                    { identifier: "DELIVERING_ERROR", label: gettextCatalog.getString('Erreur de livraison') },
                     { identifier: "TO_BE_CONTROLLED", label: gettextCatalog.getString('À contrôler') },
-                    { identifier: "VALIDATED", label: gettextCatalog.getString('Validé') },
-                    { identifier: "REJECTED", label: gettextCatalog.getString('Rejeté') },
                     { identifier: "AUTOMATICALLY_REJECTED", label: gettextCatalog.getString('Rejeté automatiquement') },
                     { identifier: "TREATED", label: gettextCatalog.getString('Traité') },
                     { identifier: "CLOSED", label: gettextCatalog.getString('Clôturé') }]

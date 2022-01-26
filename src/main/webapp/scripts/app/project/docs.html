@@ -39,7 +39,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="item in docCtrl.docUnits | orderBy:orderBy">
+                <tr ng-repeat="item in docCtrl.pagination.items | orderBy:orderBy">
                     <td class="select-col">
                         <div class="checkbox checkbox-sid-main no-margin">
                             <input type="checkbox" ng-model="item.checked" ng-change="docCtrl.changeItem(item)"/>
@@ -70,6 +70,14 @@
                 </tr>
                 </tbody>
             </table>
+            <div class="row" ng-show="docCtrl.pagination.size && docCtrl.pagination.totalItems > docCtrl.pagination.size">
+                <div class="col-sm-12">
+                    <div class="text-center">
+                        <ul uib-pagination num-pages="docCtrl.pagination.totalPages" total-items="docCtrl.pagination.totalItems" items-per-page="docCtrl.pagination.size"
+                            ng-change="docCtrl.getPage()" ng-model="docCtrl.pagination.page" class="pagination-sm"></ul>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

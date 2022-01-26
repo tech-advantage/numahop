@@ -5,9 +5,11 @@ import fr.progilone.pgcn.domain.document.conditionreport.DescriptionProperty;
 import fr.progilone.pgcn.domain.document.conditionreport.PropertyConfiguration;
 import fr.progilone.pgcn.domain.dto.document.conditionreport.PropertyConfigurationDTO;
 import fr.progilone.pgcn.domain.library.Library;
+import fr.progilone.pgcn.domain.project.Project;
 import fr.progilone.pgcn.exception.PgcnException;
 import fr.progilone.pgcn.service.document.conditionreport.ui.UiPropertyConfigurationService;
 import fr.progilone.pgcn.web.rest.AbstractRestController;
+import fr.progilone.pgcn.web.util.AccessHelper;
 import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,12 +32,15 @@ import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstant
 public class PropertyConfigurationController extends AbstractRestController {
 
     private final LibraryAccesssHelper libraryAccesssHelper;
+    private final AccessHelper accessHelper;
     private final UiPropertyConfigurationService propertyConfigurationService;
 
     @Autowired
     public PropertyConfigurationController(final LibraryAccesssHelper libraryAccesssHelper,
+                                           final AccessHelper accessHelper,
                                            final UiPropertyConfigurationService propertyConfigurationService) {
         this.libraryAccesssHelper = libraryAccesssHelper;
+        this.accessHelper = accessHelper;
         this.propertyConfigurationService = propertyConfigurationService;
     }
 
@@ -55,9 +60,10 @@ public class PropertyConfigurationController extends AbstractRestController {
     @Timed
     @RolesAllowed({COND_REPORT_HAB0})
     public ResponseEntity<List<PropertyConfigurationDTO>> findByLibrary(final HttpServletRequest request,
-                                                                        @RequestParam(name = "library") final Library library) {
+                                                                        @RequestParam(name = "library") final Library library,
+                                                                        @RequestParam(name = "project") final Project project) {
         // Vérification des droits d'accès par rapport à la bibliothèque demandée
-        if (!libraryAccesssHelper.checkLibrary(request, library)) {
+        if (!libraryAccesssHelper.checkLibrary(request, library) && !accessHelper.checkProject(project.getIdentifier())) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         return createResponseEntity(propertyConfigurationService.findByLibrary(library));

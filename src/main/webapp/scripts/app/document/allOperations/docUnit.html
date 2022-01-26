@@ -1,163 +1,177 @@
 <div ng-controller="DocUnitAllOperationsCtrl as docUnitCtrl" ng-init="docUnitCtrl.init(mainCtrl)">
     <div class="panel-body">
-        <form editable-form name="entityForm" onaftersave="docUnitCtrl.saveEntity(docUnitCtrl.entity)" onshow="!formRO && docUnitCtrl.lock(docUnitCtrl.entity)" 
-                ng-init="formRO = !isAuthorized([userRoles.DOC_UNIT_HAB1, userRoles.DOC_UNIT_HAB2])" ng-show="docUnitCtrl.loaded">                
+        <form editable-form name="entityForm" onaftersave="docUnitCtrl.saveEntity(docUnitCtrl.entity)" onshow="!formRO && docUnitCtrl.lock(docUnitCtrl.entity)"
+              ng-init="formRO = !isAuthorized([userRoles.DOC_UNIT_HAB1, userRoles.DOC_UNIT_HAB2])" ng-show="docUnitCtrl.loaded">
 
-                <numa-editable-field title="{{::'Libellé' | translate}}" placeholder="{{::'Libellé' | translate}}" form="entityForm" 
-                                        model="docUnitCtrl.entity.label" numa-readonly="formRO" 
-                                        errors="{{ docUnitCtrl.errors.label }}" onbeforesave="validation.required($data)"></numa-editable-field>
-                <numa-editable-field title="{{::'Identifiant PGCN' | translate}}" placeholder="{{::'Identifiant PGCN' | translate}}" 
-                                        form="entityForm" onbeforesave="validation.required($data)" 
-                                        model="docUnitCtrl.entity.pgcnId" numa-readonly="formRO" errors="{{ docUnitCtrl.errors.pgcnId }}"></numa-editable-field>
-                <numa-editable-field title="{{::'Type' | translate}}" placeholder="{{::'Type' | translate}}" form="entityForm" 
-                                        model="docUnitCtrl.entity.type" numa-readonly="formRO" errors="{{ docUnitCtrl.errors.type }}"></numa-editable-field>
-               <!-- Link -->
-                <numa-editable-field title="{{::'Bibliothèque' | translate}}" type="select" form="entityForm" 
-                                        model="docUnitCtrl.entity.library" errors="{{ docUnitCtrl.errors.library }}" 
-                                        numa-readonly="formRO" onbeforesave="validation.required($data)" 
-                                        config="{ data: mainCtrl.sel2Libraries, 
-                                                display: 'name', 
-                                                query: 'o.name for o in $ctrl.config.data track by o.identifier' }"
-                                        link="{ type: 'library', parameters: {'id': docUnitCtrl.entity.library.identifier} }"></numa-editable-field>               
-                <numa-editable-field title="{{::'Projet' | translate}}" type="select" form="entityForm" 
-                                        model="docUnitCtrl.entity.project" numa-readonly="formRO" errors="{{ docUnitCtrl.errors.project }}" 
-                                        config="{data: docUnitCtrl.options.projects,
-                                                display: 'name', 
-                                                query: 'o.name for o in $ctrl.config.data track by o.identifier' }" 
-                                        numa-onchange="docUnitCtrl.onchangeProject($data)"
-                                        link="{ type: 'project', parameters: {'id': docUnitCtrl.entity.project.identifier} }"></numa-editable-field>                                       
-                                                                               
-                <numa-editable-field title="{{::'Lot' | translate}}" type="select" form="entityForm" 
-                                        model="docUnitCtrl.entity.lot" numa-readonly="formRO" errors="{{ docUnitCtrl.errors.lot }}" 
-                                        config="{data: docUnitCtrl.options.lots,
-                                                display: 'label',
-                                                query: 'o.label for o in $ctrl.config.data track by o.identifier' }"
-                                        link="{ type: 'lot', parameters: {'id': docUnitCtrl.entity.lot.identifier} }"></numa-editable-field>
-                                        
-                <numa-editable-field title="{{::'Train' | translate}}" type="select" form="entityForm" 
-                                        model="docUnitCtrl.entity.physicalDocuments[0].train" numa-readonly="formRO" 
-                                        config="{ data: [{label: ''}].concat(docUnitCtrl.options.trains), 
-                                                  display: 'label',
-                                                  query: 'o.label for o in $ctrl.config.data track by o.identifier' }" 
-                                        link="{ type: 'train', parameters: {'id': docUnitCtrl.entity.physicalDocuments[0].train.identifier} }"></numa-editable-field>                        
-                                        
-                <numa-editable-field title="{{::'Radical' | translate}}" placeholder="{{::'Radical' | translate}}" form="entityForm"
-                                        model="docUnitCtrl.entity.digitalId" numa-readonly="formRO" errors="{{ docUnitCtrl.errors.digitalId }}"></numa-editable-field>
-                <numa-editable-field data-title="{{::'Langage OCR' | translate}}" type="select" form="entityForm" 
-                                        model="docUnitCtrl.entity.activeOcrLanguage" numa-readonly="formRO" errors="{{ docUnitCtrl.errors.activeOcrLanguage }}"
-                                        config="{ data: [{label: ''}].concat(docUnitCtrl.options.languagesOcr),
-                                        display: 'label',
-                                        query: 'o.label for o in $ctrl.config.data track by o.identifier'}"> </numa-editable-field>                         
-                
-                <uib-accordion close-others="false">                        
-                
-                    <div class="margin-t20 margin-l50" uib-accordion-group is-open="docUnitCtrl.accordions.archiv">
-                        <uib-accordion-heading>
-                            <span class="pull-left glyphicon-halflings"
-                                    ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[docUnitCtrl.accordions.archiv]">&nbsp;</span>
-                            <h5>{{ ::'Archivage de l\'unité documentaire' | translate }} </h5>
-                        </uib-accordion-heading>
+            <numa-editable-field title="{{::'Libellé' | translate}}" placeholder="{{::'Libellé' | translate}}" form="entityForm"
+                                 model="docUnitCtrl.entity.label" numa-readonly="formRO"
+                                 errors="{{ docUnitCtrl.errors.label }}" onbeforesave="validation.required($data)"></numa-editable-field>
+            <numa-editable-field title="{{::'Identifiant PGCN' | translate}}" placeholder="{{::'Identifiant PGCN' | translate}}"
+                                 form="entityForm" onbeforesave="validation.required($data)"
+                                 model="docUnitCtrl.entity.pgcnId" numa-readonly="formRO" errors="{{ docUnitCtrl.errors.pgcnId }}"></numa-editable-field>
+            <numa-editable-field title="{{::'Type' | translate}}" placeholder="{{::'Type' | translate}}" form="entityForm"
+                                 model="docUnitCtrl.entity.type" numa-readonly="formRO" errors="{{ docUnitCtrl.errors.type }}"></numa-editable-field>
+            <!-- Link -->
+            <numa-editable-field title="{{::'Bibliothèque' | translate}}" type="select" form="entityForm"
+                                 model="docUnitCtrl.entity.library" errors="{{ docUnitCtrl.errors.library }}"
+                                 numa-readonly="formRO" onbeforesave="validation.required($data)"
+                                 config="{ data: mainCtrl.sel2Libraries,
+                                            display: 'name',
+                                            query: 'o.name for o in $ctrl.config.data track by o.identifier' }"
+                                 link="{ type: 'library', parameters: {'id': docUnitCtrl.entity.library.identifier} }"></numa-editable-field>
+            <numa-editable-field title="{{::'Projet' | translate}}" type="select" form="entityForm"
+                                 model="docUnitCtrl.entity.project" numa-readonly="formRO" errors="{{ docUnitCtrl.errors.project }}"
+                                 config="{data: docUnitCtrl.options.projects,
+                                            display: 'name',
+                                            query: 'o.name for o in $ctrl.config.data track by o.identifier' }"
+                                 numa-onchange="docUnitCtrl.onchangeProject($data)"
+                                 link="{ type: 'project', parameters: {'id': docUnitCtrl.entity.project.identifier} }"></numa-editable-field>
 
+            <numa-editable-field title="{{::'Lot' | translate}}" type="select" form="entityForm"
+                                 model="docUnitCtrl.entity.lot" numa-readonly="formRO" errors="{{ docUnitCtrl.errors.lot }}"
+                                 config="{data: docUnitCtrl.options.lots,
+                                            display: 'label',
+                                            query: 'o.label for o in $ctrl.config.data track by o.identifier' }"
+                                 link="{ type: 'lot', parameters: {'id': docUnitCtrl.entity.lot.identifier} }"></numa-editable-field>
+
+            <numa-editable-field title="{{::'Train' | translate}}" type="select" form="entityForm"
+                                 model="docUnitCtrl.entity.physicalDocuments[0].train" numa-readonly="formRO"
+                                 config="{ data: [{label: ''}].concat(docUnitCtrl.options.trains),
+                                              display: 'label',
+                                              query: 'o.label for o in $ctrl.config.data track by o.identifier' }"
+                                 link="{ type: 'train', parameters: {'id': docUnitCtrl.entity.physicalDocuments[0].train.identifier} }"></numa-editable-field>
+
+            <numa-editable-field title="{{::'Radical' | translate}}" placeholder="{{::'Radical' | translate}}" form="entityForm"
+                                 model="docUnitCtrl.entity.digitalId" numa-readonly="formRO" errors="{{ docUnitCtrl.errors.digitalId }}"></numa-editable-field>
+            <numa-editable-field data-title="{{::'Langage OCR' | translate}}" type="select" form="entityForm"
+                                 model="docUnitCtrl.entity.activeOcrLanguage" numa-readonly="formRO" errors="{{ docUnitCtrl.errors.activeOcrLanguage }}"
+                                 config="{ data: [{label: ''}].concat(docUnitCtrl.options.languagesOcr),
+                                    display: 'label',
+                                    query: 'o.label for o in $ctrl.config.data track by o.identifier'}"></numa-editable-field>
+
+            <uib-accordion close-others="false">
+
+                <div class="formBlock">
+                    <div class="formBlockTitle">
+                        <span translate>Configurations CINES</span>
+                    </div>
+                    <div class="formBlockContent">
                         <numa-editable-field title="{{::'Plan de classement PAC' | translate}}" type="select" form="entityForm"
-                        model="docUnitCtrl.entity.planClassementPAC" numa-readonly="formRO" errors="{{ docUnitCtrl.errors.planClassementPAC }}"
-                        config="{ data: docUnitCtrl.options.pacs,
-                        display: 'name',
-                        query: 'o.name for o in $ctrl.config.data track by o.identifier'}"> </numa-editable-field>
-                        
+                                             model="docUnitCtrl.entity.planClassementPAC" numa-readonly="formRO" errors="{{ docUnitCtrl.errors.planClassementPAC }}"
+                                             config="{ data: docUnitCtrl.options.pacs,
+                            display: 'name',
+                            query: 'o.name for o in $ctrl.config.data track by o.identifier'}"></numa-editable-field>
+
                         <span ng-if="docUnitCtrl.dateFacileResults">
-                            <numa-editable-field title="{{::'Validation FACILE' | translate}}" type="readonly" 
-                                             value="{{ ::docUnitCtrl.facileResults | translate }} le {{:: docUnitCtrl.dateFacileResults | moment:'L LT'}}"></numa-editable-field>
-                        </span>
+                                <numa-editable-field title="{{::'Validation FACILE' | translate}}" type="readonly"
+                                                     value="{{ ::docUnitCtrl.facileResults | translate }} le {{:: docUnitCtrl.dateFacileResults | moment:'L LT'}}"></numa-editable-field>
+                            </span>
                         <span ng-if="!docUnitCtrl.dateFacileResults">
-                            <numa-editable-field title="{{::'Validation FACILE' | translate}}" type="readonly" 
-                                             value="{{ ::docUnitCtrl.facileResults | translate }}"></numa-editable-field>
-                        </span>
+                                <numa-editable-field title="{{::'Validation FACILE' | translate}}" type="readonly"
+                                                     value="{{ ::docUnitCtrl.facileResults | translate }}"></numa-editable-field>
+                            </span>
                         <numa-editable-field title="{{::'Archivable' | translate}}" type="radiolist" id="archivable" model="docUnitCtrl.entity.archivable" form="entityForm"
                                              config="{ data: mainCtrl.options.booleanObj, displayFn: mainCtrl.displayBoolean,
-                                                query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }"
+                                                    query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }"
                                              numa-readonly="formRO" errors="{{ docUnitCtrl.errors.archivable }}"></numa-editable-field>
 
                         <numa-editable-field title="{{::'Archivé au Cines' | translate}}" type="radiolist" id="cinesArchived" model="docUnitCtrl.cinesArchived" form="entityForm"
-                                             config="{ data: mainCtrl.options.booleanObj, displayFn: mainCtrl.displayBoolean, 
-                                                       query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }"
+                                             config="{ data: mainCtrl.options.booleanObj, displayFn: mainCtrl.displayBoolean,
+                                                           query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }"
                                              numa-readonly="true"></numa-editable-field>
                     </div>
-                    
-                    <div class="margin-t20 margin-l50" uib-accordion-group is-open="docUnitCtrl.accordions.distrib">
-                       <uib-accordion-heading>
-                           <span class="pull-left glyphicon-halflings"
-                                   ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[docUnitCtrl.accordions.distrib]">&nbsp;</span>
-                           <h5>{{ ::'Diffusion l\'unité documentaire' | translate }}</h5>
-                       </uib-accordion-heading>
-                       
-                        <numa-editable-field title="{{::'Collection Internet Archive' | translate}}" type="select" form="entityForm" 
-                        model="docUnitCtrl.entity.collectionIA" numa-readonly="formRO" errors="{{ docUnitCtrl.errors.collectionIA }}"
-                        config="{ data: docUnitCtrl.options.ia,
-                                  display: 'name',
-                                  query: 'o.name for o in $ctrl.config.data track by o.identifier'}"> </numa-editable-field>
-                        
-                        <numa-editable-field title="{{::'Collection Omeka' | translate}}" type="select" form="entityForm" 
-                        model="docUnitCtrl.entity.omekaCollection" numa-readonly="formRO" errors="{{ docUnitCtrl.errors.omekaCollection }}"
-                        config="{ data: [{name: ''}].concat(docUnitCtrl.options.omekaCollections),
-                                  display: 'name',
-                                  query: 'o.name for o in $ctrl.config.data track by o.identifier'}"> </numa-editable-field>
-                            
-                        <numa-editable-field title="{{::'Type d\'item Omeka' | translate}}" type="select" form="entityForm"
-                                             model="docUnitCtrl.entity.omekaItem" numa-readonly="formRO" errors="{{ docUnitCtrl.errors.omekaItem }}"
-                                             config="{ data: [{name: ''}].concat(docUnitCtrl.options.omekaItems),
-                                  display: 'name',
-                                  query: 'o.name for o in $ctrl.config.data track by o.identifier'}"></numa-editable-field>
+                </div>
 
+                <div class="formBlock">
+                    <div class="formBlockTitle">
+                        <span translate>Configurations de diffusion</span>
+                    </div>
+                    <div class="formBlockContent">
                         <numa-editable-field title="{{::'Diffusable' | translate}}" type="radiolist" id="distributable"
                                              model="docUnitCtrl.entity.distributable" numa-readonly="formRO" form="entityForm"
                                              config="{ data: mainCtrl.options.booleanObj, displayFn: mainCtrl.displayBoolean,
-                                                query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }"
+                                            query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }"
                                              errors="{{ docUnitCtrl.errors.distributable }}"></numa-editable-field>
+
+                        <numa-editable-field title="{{::'Droits de diffusion' | translate}}" type="select" form="entityForm"
+                                             model="docUnitCtrl.entity.rights" numa-readonly="formRO" errors="{{ docUnitCtrl.errors.rights }}"
+                                             config="{ data: mainCtrl.options.rights,
+                                            displayFn: mainCtrl.displayRight,
+                                            query: 'key as value for (key, value) in $ctrl.config.data' }"></numa-editable-field>
+
+                        <numa-editable-field title="{{::'Référence auteur trouvée' | translate}}" type="radiolist"
+                                             model="docUnitCtrl.entity.foundRefAuthor" numa-readonly="formRO" form="entityForm"
+                                             config="{ data: mainCtrl.options.booleanObj, displayFn: mainCtrl.displayBoolean,
+                                                  query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }"
+                                             errors="{{ docUnitCtrl.errors.distributable }}"></numa-editable-field>
+
+                        <numa-editable-field title="{{::'Etat de la demande' | translate}}" type="select" form="entityForm"
+                                             model="docUnitCtrl.entity.progressStatus" numa-readonly="formRO" errors="{{ errors.progressStatus }}"
+                                             config="{ data: mainCtrl.options.progressStatuses,
+                                                displayFn: mainCtrl.displayProgressStatus,
+                                                query: 'key as value for (key, value) in $ctrl.config.data'}"></numa-editable-field>
+
+                        <numa-editable-field title="{{::'Date de la demande' | translate}}" type="datepicker" form="entityForm"
+                                             model="docUnitCtrl.entity.requestDate" numa-readonly="formRO" errors="{{ docUnitCtrl.errors.requestDate }}"></numa-editable-field>
+                        <numa-editable-field title="{{::'Date de réponse' | translate}}" type="datepicker" form="entityForm"
+                                             model="docUnitCtrl.entity.answerDate" numa-readonly="formRO" errors="{{ docUnitCtrl.errors.answerDate }}"></numa-editable-field>
+
+
+                        <numa-editable-field title="{{::'Date d\'embargo' | translate}}" type="datepicker" form="entityForm"
+                                             model="docUnitCtrl.entity.embargo" numa-readonly="formRO" errors="{{ docUnitCtrl.errors.embargo }}"></numa-editable-field>
+                    </div>
+                </div>
+
+                <div class="formBlock">
+                    <div class="formBlockTitle">
+                        <span translate>Configurations Omeka</span>
+                    </div>
+                    <div class="formBlockContent">
+                        <numa-editable-field title="{{::'Collection Omeka' | translate}}" type="select" form="entityForm"
+                                             model="docUnitCtrl.entity.omekaCollection" numa-readonly="formRO" errors="{{ docUnitCtrl.errors.omekaCollection }}"
+                                             config="{ data: [{name: ''}].concat(docUnitCtrl.options.omekaCollections),
+                              display: 'name',
+                              query: 'o.name for o in $ctrl.config.data track by o.identifier'}"></numa-editable-field>
+
+                        <numa-editable-field title="{{::'Type d\'item Omeka' | translate}}" type="select" form="entityForm"
+                                             model="docUnitCtrl.entity.omekaItem" numa-readonly="formRO" errors="{{ docUnitCtrl.errors.omekaItem }}"
+                                             config="{ data: [{name: ''}].concat(docUnitCtrl.options.omekaItems),
+                              display: 'name',
+                              query: 'o.name for o in $ctrl.config.data track by o.identifier'}"></numa-editable-field>
+
+                        <numa-editable-field title="{{::'Diffusé sur Omeka' | translate}}" type="text" model="docUnitCtrl.omekaDistribStatus"
+                                             numa-readonly="true"></numa-editable-field>
+                    </div>
+                </div>
+
+                <div class="formBlock">
+                    <div class="formBlockTitle">
+                        <span translate>Configurations Internet Archive</span>
+                    </div>
+                    <div class="formBlockContent">
+                        <numa-editable-field title="{{::'Collection Internet Archive' | translate}}" type="select" form="entityForm"
+                                             model="docUnitCtrl.entity.collectionIA" numa-readonly="formRO" errors="{{ docUnitCtrl.errors.collectionIA }}"
+                                             config="{ data: docUnitCtrl.options.ia,
+                              display: 'name',
+                              query: 'o.name for o in $ctrl.config.data track by o.identifier'}"></numa-editable-field>
 
                         <numa-editable-field title="{{::'Diffusé sur Internet Archive' | translate}}" type="radiolist" id="iaArchived"
                                              model="docUnitCtrl.iaArchived" form="entityForm"
                                              config="{ data: mainCtrl.options.booleanObj, displayFn: mainCtrl.displayBoolean,
-                                                      query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }"
+                                                  query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }"
                                              numa-readonly="true"></numa-editable-field>
-                        <numa-editable-field title="{{::'Diffusé sur Omeka' | translate}}" type="text" model="docUnitCtrl.omekaDistribStatus"
-                                             numa-readonly="true"></numa-editable-field>
-                        <numa-editable-field title="{{::'Droits de diffusion' | translate}}" type="select" form="entityForm"
-                                             model="docUnitCtrl.entity.rights" numa-readonly="formRO" errors="{{ docUnitCtrl.errors.rights }}"
-                                             config="{ data: mainCtrl.options.rights,
-                                                displayFn: mainCtrl.displayRight,
-                                                query: 'key as value for (key, value) in $ctrl.config.data' }"></numa-editable-field>
-                       
-                       <numa-editable-field title="{{::'Référence auteur trouvée' | translate}}" type="radiolist" 
-                                            model="docUnitCtrl.entity.foundRefAuthor" numa-readonly="formRO" form="entityForm"
-                                            config="{ data: mainCtrl.options.booleanObj, displayFn: mainCtrl.displayBoolean, 
-                                                      query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }" 
-                                            errors="{{ docUnitCtrl.errors.distributable }}"></numa-editable-field>                               
-                       
-                       <numa-editable-field title="{{::'Etat de la demande' | translate}}" type="select" form="entityForm" 
-                                    model="docUnitCtrl.entity.progressStatus" numa-readonly="formRO" errors="{{ errors.progressStatus }}"
-                                    config="{ data: mainCtrl.options.progressStatuses,
-                                                    displayFn: mainCtrl.displayProgressStatus,
-                                                    query: 'key as value for (key, value) in $ctrl.config.data'}"> </numa-editable-field>
-                       
-                       <numa-editable-field title="{{::'Date de la demande' | translate}}" type="datepicker" form="entityForm"
-                                            model="docUnitCtrl.entity.requestDate" numa-readonly="formRO" errors="{{ docUnitCtrl.errors.requestDate }}"></numa-editable-field>
-                       <numa-editable-field title="{{::'Date de réponse' | translate}}" type="datepicker" form="entityForm"
-                                            model="docUnitCtrl.entity.answerDate" numa-readonly="formRO" errors="{{ docUnitCtrl.errors.answerDate }}"></numa-editable-field>                         
-                                                
-                                                
-                       <numa-editable-field title="{{::'Date d\'embargo' | translate}}" type="datepicker" form="entityForm"
-                                        model="docUnitCtrl.entity.embargo" numa-readonly="formRO" errors="{{ docUnitCtrl.errors.embargo }}"></numa-editable-field>
-                    </div>   
-                
-                    <div class="margin-t20 margin-l50" uib-accordion-group is-open="docUnitCtrl.accordions.control">
-                       <uib-accordion-heading>
+                    </div>
+                </div>
+
+                <div class="margin-t20 margin-l50" uib-accordion-group is-open="docUnitCtrl.accordions.control">
+                    <uib-accordion-heading>
                            <span class="pull-left glyphicon-halflings"
-                                   ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[docUnitCtrl.accordions.control]">&nbsp;</span>
-                           <h5>{{ ::'Contrôle de l\'unité documentaire' | translate }}</h5>
-                       </uib-accordion-heading>
-                       
-                        <numa-editable-field title="{{::'Délai avant contrôle (jours)' | translate}}" type="number" form="entityForm" 
-                                        model="docUnitCtrl.entity.checkDelay" numa-readonly="formRO" errors="{{ docUnitCtrl.errors.checkDelay }}"></numa-editable-field>
+                                 ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[docUnitCtrl.accordions.control]">&nbsp;</span>
+                        <h5>{{ ::'Contrôle de l\'unité documentaire' | translate }}</h5>
+                    </uib-accordion-heading>
+
+                    <numa-editable-field title="{{::'Délai avant contrôle (jours)' | translate}}" type="number" form="entityForm"
+                                         model="docUnitCtrl.entity.checkDelay" numa-readonly="formRO" errors="{{ docUnitCtrl.errors.checkDelay }}"></numa-editable-field>
                         <numa-editable-field title="{{::'Date de fin de contrôle prévue' | translate}}" type="readonly" form="entityForm"
                                         value="{{docUnitCtrl.entity.checkEndTime | moment}}" tooltip="{{::'Date de fin de contrôle calculée' | translate}}"></numa-editable-field>
 

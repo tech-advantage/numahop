@@ -165,7 +165,7 @@ public class ProjectController extends AbstractRestController {
         return new ResponseEntity<>(uiProjectService.loadCreatedProjects(searchProject, initiale, filteredLibraries, statuses, active),
                                     HttpStatus.OK);
     }
-    
+
     @RequestMapping(method = RequestMethod.GET, params = {"widget", "from"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed({PROJ_HAB7})
@@ -180,7 +180,7 @@ public class ProjectController extends AbstractRestController {
         // Réponse
         return new ResponseEntity<>(revisions, HttpStatus.OK);
     }
-    
+
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed({PROJ_HAB7})
@@ -199,7 +199,7 @@ public class ProjectController extends AbstractRestController {
     public ResponseEntity<Collection<SimpleProjectDTO>> findAllActiveDTO(final HttpServletRequest request) {
         Collection<SimpleProjectDTO> simpleProjectDTOs = uiProjectService.findAllActiveDTO();
         // Droits d'accès
-        simpleProjectDTOs = libraryAccesssHelper.filterObjectsByLibrary(request, simpleProjectDTOs, dto -> dto.getLibrary().getIdentifier());
+        //simpleProjectDTOs = libraryAccesssHelper.filterObjectsByLibrary(request, simpleProjectDTOs, dto -> dto.getLibrary().getIdentifier());
         // controle suppl pour le user
         final Collection<SimpleProjectDTO> filteredProjects = simpleProjectDTOs.stream().filter(proj -> accessHelper.checkProject(proj.getIdentifier()))
                                                                                         .collect(Collectors.toList());
@@ -213,7 +213,7 @@ public class ProjectController extends AbstractRestController {
         simpleProjectDTOs = libraryAccesssHelper.filterObjectsByLibrary(request, simpleProjectDTOs, dto -> dto.getLibrary().getIdentifier());
         return createResponseEntity(simpleProjectDTOs);
     }
-    
+
     @RequestMapping(method = RequestMethod.GET, params = {"dto2"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed({PROJ_HAB7})
@@ -234,7 +234,7 @@ public class ProjectController extends AbstractRestController {
         simpleProjectDTOs = libraryAccesssHelper.filterObjectsByLibrary(request, simpleProjectDTOs, dto -> dto.getLibrary().getIdentifier());
         return createResponseEntity(simpleProjectDTOs);
     }
-    
+
 
     @RequestMapping(value = "/{id}", method = RequestMethod.POST)
     @Timed
@@ -266,7 +266,7 @@ public class ProjectController extends AbstractRestController {
         esProjectService.indexAsync(savedProject.getIdentifier());  // Moteur de recherche
         return new ResponseEntity<>(savedProject, HttpStatus.OK);
     }
-    
+
     @RequestMapping(value = "/{id}", method = RequestMethod.POST, params = {"cancelProj"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed({PROJ_HAB6})
@@ -275,10 +275,10 @@ public class ProjectController extends AbstractRestController {
         if (!accessHelper.checkProject(id) || !StringUtils.equals(projectDTO.getStatus(), "CANCELED")) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
-        final ProjectDTO canceled = uiProjectService.cancelProject(projectDTO);       
+        final ProjectDTO canceled = uiProjectService.cancelProject(projectDTO);
         return new ResponseEntity<>(canceled, HttpStatus.OK);
     }
-    
+
     @RequestMapping(value = "/{id}", method = RequestMethod.POST, params = {"suspendProj"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed({PROJ_HAB5})
@@ -287,10 +287,10 @@ public class ProjectController extends AbstractRestController {
         if (!accessHelper.checkProject(id) || !StringUtils.equals(projectDTO.getStatus(), "PENDING")) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
-        final ProjectDTO suspended = uiProjectService.suspendProject(projectDTO);       
+        final ProjectDTO suspended = uiProjectService.suspendProject(projectDTO);
         return new ResponseEntity<>(suspended, HttpStatus.OK);
     }
-    
+
     @RequestMapping(value = "/{id}", method = RequestMethod.POST, params = {"reactivProj"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed({PROJ_HAB5})
@@ -299,7 +299,7 @@ public class ProjectController extends AbstractRestController {
         if (!accessHelper.checkProject(id) || !StringUtils.equals(projectDTO.getStatus(), "PENDING")) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
-        final ProjectDTO activated = uiProjectService.reactivateProject(projectDTO);       
+        final ProjectDTO activated = uiProjectService.reactivateProject(projectDTO);
         return new ResponseEntity<>(activated, HttpStatus.OK);
     }
 }

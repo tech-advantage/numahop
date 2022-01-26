@@ -141,6 +141,8 @@ public class TesseractService {
                         if (hocr.exists() && hocr.canRead()) {
                             altoService.transformHocrToAlto(hocr, prefix, libraryId);
                             altoService.transformHocrToText(hocr, prefix, libraryId);
+                        } else {
+                            LOG.info("[Tesseract] Unable to generate alto {}", outputName + ".hocr");
                         }
 
                     } else {

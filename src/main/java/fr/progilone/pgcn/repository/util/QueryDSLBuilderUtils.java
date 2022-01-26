@@ -6,6 +6,7 @@ import com.mysema.query.types.path.StringPath;
 import fr.progilone.pgcn.domain.library.QLibrary;
 import fr.progilone.pgcn.domain.lot.QLot;
 import fr.progilone.pgcn.domain.project.QProject;
+import fr.progilone.pgcn.domain.user.QUser;
 import fr.progilone.pgcn.domain.user.User;
 import fr.progilone.pgcn.domain.util.CustomUserDetails;
 import fr.progilone.pgcn.security.SecurityUtils;
@@ -56,6 +57,8 @@ public final class QueryDSLBuilderUtils {
                                         final QLibrary qLibrary,
                                         final QLot qLot,
                                         final QProject qProject,
+                                        final QLibrary qAssociatedLibrary,
+                                        final QUser qAssociatedUser,
                                         final List<String> libraries,
                                         final List<String> providers) {
         final CustomUserDetails currentUser = SecurityUtils.getCurrentUser();
@@ -70,7 +73,17 @@ public final class QueryDSLBuilderUtils {
         // Sinon on applique les filtres demandés
         else {
             if (CollectionUtils.isNotEmpty(libraries)) {
-                builder.and(qLibrary.identifier.in(libraries));
+                builder.and(
+                    qLibrary.identifier.in(libraries)
+                    // bibliothèque du projet
+                    .or(qProject.library.identifier.in(libraries)
+                                               // bibliothèque partenaire
+                                               .or(qAssociatedLibrary.identifier.in(libraries)
+                                                                                // pas d'intervenant défini
+                                                                                .and(qAssociatedUser.isNull()
+                                                                                                    // l'utilisateur fait partie des intervenants
+                                                                                                    .or(qAssociatedUser.identifier.contains(
+                                                                                                        currentUser.getIdentifier()))))));
             }
             if (CollectionUtils.isNotEmpty(providers)) {
                 builder.and(qLot.provider.identifier.in(providers)

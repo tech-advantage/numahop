@@ -281,6 +281,19 @@ public class DocUnitController extends AbstractRestController {
                                                             size,
                                                             sorts), HttpStatus.OK);
     }
+    
+    @RequestMapping(method = RequestMethod.GET, params = {"searchAllForProject", "project"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    @RolesAllowed({DOC_UNIT_HAB0})
+    public ResponseEntity<Page<SummaryDocUnitWithLotDTO>> searchAllForProject(final HttpServletRequest request,
+                                                         @RequestParam(value = "project", required = false) final String projectId,
+                                                         @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
+                                                         @RequestParam(value = "size", required = false, defaultValue = "" + Integer.MAX_VALUE)
+                                                         final Integer size) {
+        return new ResponseEntity<>(uiDocUnitService.searchAllForProject(projectId,
+                                                            page,
+                                                            size), HttpStatus.OK);
+    }
 
     @RequestMapping(method = RequestMethod.POST, params = {"searchAsList"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed

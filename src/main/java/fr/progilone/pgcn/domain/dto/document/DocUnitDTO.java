@@ -12,6 +12,7 @@ import fr.progilone.pgcn.domain.document.DocUnit.RightsEnum;
 import fr.progilone.pgcn.domain.dto.AbstractVersionedDTO;
 import fr.progilone.pgcn.domain.dto.administration.CinesPACDTO;
 import fr.progilone.pgcn.domain.dto.administration.InternetArchiveCollectionDTO;
+import fr.progilone.pgcn.domain.dto.administration.omeka.OmekaConfigurationDTO;
 import fr.progilone.pgcn.domain.dto.administration.omeka.OmekaListDTO;
 import fr.progilone.pgcn.domain.dto.check.AutomaticCheckResultDTO;
 import fr.progilone.pgcn.domain.dto.exchange.CinesReportDTO;
@@ -54,6 +55,7 @@ public class DocUnitDTO extends AbstractVersionedDTO {
     private String digitizingNotes;
     private String cancelingComment;
     private String state;
+    private OmekaConfigurationDTO omekaConfiguration;
     private OmekaListDTO omekaCollection;
     private OmekaListDTO omekaItem;
     private Boolean foundRefAuthor;
@@ -426,9 +428,6 @@ public class DocUnitDTO extends AbstractVersionedDTO {
         return digitizingNotes;
     }
 
-    /**
-     * @param digitizingNote the digitizingNote to set
-     */
     public void setDigitizingNotes(final String digitizingNotes) {
         this.digitizingNotes = digitizingNotes;
     }
@@ -447,6 +446,14 @@ public class DocUnitDTO extends AbstractVersionedDTO {
 
     public void setState(final String state) {
         this.state = state;
+    }
+
+    public OmekaConfigurationDTO getOmekaConfiguration() {
+        return omekaConfiguration;
+    }
+
+    public void setOmekaConfiguration(final OmekaConfigurationDTO omekaConfiguration) {
+        this.omekaConfiguration = omekaConfiguration;
     }
 
     public OmekaListDTO getOmekaCollection() {

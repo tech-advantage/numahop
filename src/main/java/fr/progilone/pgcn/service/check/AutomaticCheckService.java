@@ -569,11 +569,11 @@ public class AutomaticCheckService {
             }
 
         });
-        allResults.add(finalizeResult(resultCompType, sbCompType, seqSeparator));
-        allResults.add(finalizeResult(resultCompRate, sbCompRate, seqSeparator));
-        allResults.add(finalizeResult(resultResolution, sbResolution, seqSeparator));
-        allResults.add(finalizeResult(resultColorspace, sbColorspace, seqSeparator));
-        allResults.add(finalizeResult(resultIntegrity, sbIntegrity, seqSeparator));
+        allResults.add(finalizeResult(resultCompType, sbCompType, seqSeparator, format));
+        allResults.add(finalizeResult(resultCompRate, sbCompRate, seqSeparator, format));
+        allResults.add(finalizeResult(resultResolution, sbResolution, seqSeparator, format));
+        allResults.add(finalizeResult(resultColorspace, sbColorspace, seqSeparator, format));
+        allResults.add(finalizeResult(resultIntegrity, sbIntegrity, seqSeparator, format));
         return allResults;
     }
 
@@ -675,11 +675,13 @@ public class AutomaticCheckService {
      * @param msg
      * @return
      */
-    private AutomaticCheckResult finalizeResult(final AutomaticCheckResult result, final StringBuilder msg, final String seqSeparator) {
+    private AutomaticCheckResult finalizeResult(final AutomaticCheckResult result, final StringBuilder msg, final String seqSeparator, final String format) {
         if (!AutoCheckResult.OK.equals(result.getResult())) {
             final String digitalId = result.getDigitalDocument().getDigitalId();
+            // Nom du fichier à rechercher dans les fichiers en erreur
+            final String searchFile = StringUtils.equalsIgnoreCase(format, "PDF") ? digitalId : digitalId.concat(seqSeparator);
             final int concernedFiles =
-                result.getErrorFiles().stream().filter(f -> StringUtils.contains(f, digitalId.concat(seqSeparator))).collect(Collectors.toList()).size();
+                result.getErrorFiles().stream().filter(f -> StringUtils.contains(f, searchFile)).collect(Collectors.toList()).size();
             if (concernedFiles > 0) {
                 result.setMessage(msg.append(String.valueOf(concernedFiles)).toString());
             } else {
@@ -711,85 +713,100 @@ public class AutomaticCheckService {
                                                                final Map<String, List<MdSecType>> extractedDmdSec) {
 
         final List<AutomaticCheckResult> allResults = new ArrayList<>();
+    
+        // Format de fichier metadonnee
+        AutomaticCheckResult tocResult = initializeAutomaticCheckResult(AutoCheckType.METADATA_FILE);
+        handleLinkResultMetaDatas(tocResult, delivery, digitalIdDoc);
+        tocResult.setResult(AutoCheckResult.OK);
+        // Idem pour pdf/a
+        AutomaticCheckResult pdfResult = initializeAutomaticCheckResult(AutoCheckType.FILE_PDF_MULTI);
+        handleLinkResultMetaDatas(pdfResult, delivery, digitalIdDoc);
+        pdfResult.setResult(AutoCheckResult.OK);
 
-        metaDatasDTO.forEach((dto) -> {
-            // Format de fichier metadonnee
-            AutomaticCheckResult tocResult = initializeAutomaticCheckResult(AutoCheckType.METADATA_FILE);
-            handleLinkResultMetaDatas(tocResult, delivery, digitalIdDoc);
-            tocResult.setResult(AutoCheckResult.OK);
-            // Idem pour pdf/a
-            AutomaticCheckResult pdfResult = initializeAutomaticCheckResult(AutoCheckType.FILE_PDF_MULTI);
-            handleLinkResultMetaDatas(pdfResult, delivery, digitalIdDoc);
-            pdfResult.setResult(AutoCheckResult.OK);
-
-
-            switch (dto.getRole()) {
-                case METS:
-                    // validation xml METS
-                    final Optional<File> metsToCheck =
-                        files.stream().filter(file -> StringUtils.equalsIgnoreCase(file.getName(), dto.getName())).findFirst();
-                    tocResult = metaCheckService.checkMetaDataFileFormat(tocResult,
-                                                                         metsToCheck,
-                                                                         MetaDatasCheckService.METS_FILE_FORMAT,
-                                                                         MetaDatasCheckService.METS_MIME_TYPE,
-                                                                         FileRoleEnum.METS,
-                                                                         extractedDmdSec);
-
-                    break;
-                case EXCEL:
-                    // validation table des matieres excel.
-                    final Optional<File> excelToCheck =
-                        files.stream().filter(file -> StringUtils.equalsIgnoreCase(file.getName(), dto.getName())).findFirst();
-
-                    if (excelToCheck.isPresent()) {
-                        if (excelToCheck.get().getName().endsWith(".xlsx")) {
-                            tocResult = metaCheckService.checkMetaDataFileFormat(tocResult,
-                                                                                 excelToCheck,
-                                                                                 MetaDatasCheckService.EXCEL_FILE_FORMAT,
-                                                                                 MetaDatasCheckService.EXCEL_MIME_TYPE,
-                                                                                 FileRoleEnum.EXCEL,
-                                                                                 extractedDmdSec);
-                        } else {
-                            tocResult = metaCheckService.checkMetaDataFileFormat(tocResult,
-                                                                                 excelToCheck,
-                                                                                 MetaDatasCheckService.EXCEL_FILE_FORMAT2,
-                                                                                 MetaDatasCheckService.EXCEL_MIME_TYPE2,
-                                                                                 FileRoleEnum.EXCEL,
-                                                                                 extractedDmdSec);
+        if(!metaDatasDTO.isEmpty()){
+            for(PreDeliveryDocumentFileDTO dto : metaDatasDTO) {
+                switch (dto.getRole()) {
+                    case METS:
+                        // validation xml METS
+                        final Optional<File> metsToCheck =
+                                files.stream().filter(file -> StringUtils.equalsIgnoreCase(file.getName(), dto.getName())).findFirst();
+                        tocResult = metaCheckService.checkMetaDataFileFormat(tocResult,
+                                                                             metsToCheck,
+                                                                             MetaDatasCheckService.METS_FILE_FORMAT,
+                                                                             MetaDatasCheckService.METS_MIME_TYPE,
+                                                                             FileRoleEnum.METS,
+                                                                             extractedDmdSec);
+                
+                        break;
+                    case EXCEL:
+                        // validation table des matieres excel.
+                        final Optional<File> excelToCheck =
+                                files.stream().filter(file -> StringUtils.equalsIgnoreCase(file.getName(), dto.getName())).findFirst();
+                
+                        if (excelToCheck.isPresent()) {
+                            if (excelToCheck.get().getName().endsWith(".xlsx")) {
+                                tocResult = metaCheckService.checkMetaDataFileFormat(tocResult,
+                                                                                     excelToCheck,
+                                                                                     MetaDatasCheckService.EXCEL_FILE_FORMAT,
+                                                                                     MetaDatasCheckService.EXCEL_MIME_TYPE,
+                                                                                     FileRoleEnum.EXCEL,
+                                                                                     extractedDmdSec);
+                            } else {
+                                tocResult = metaCheckService.checkMetaDataFileFormat(tocResult,
+                                                                                     excelToCheck,
+                                                                                     MetaDatasCheckService.EXCEL_FILE_FORMAT2,
+                                                                                     MetaDatasCheckService.EXCEL_MIME_TYPE2,
+                                                                                     FileRoleEnum.EXCEL,
+                                                                                     extractedDmdSec);
+                            }
                         }
-                    }
-
-                    break;
-                case PDF_MULTI:
-                    // Validation pdf/A ocr.
-                    final Optional<File> pdfToCheck =
-                        files.stream().filter(file -> StringUtils.equalsIgnoreCase(file.getName(), dto.getName())).findFirst();
-                    pdfResult = metaCheckService.checkMetaDataFileFormat(pdfResult,
-                                                                         pdfToCheck,
-                                                                         MetaDatasCheckService.PDF_FILE_FORMAT,
-                                                                         MetaDatasCheckService.PDF_MIME_TYPE,
-                                                                         FileRoleEnum.PDF_MULTI,
-                                                                         extractedDmdSec);
-
-                    break;
-                case OTHER:
-                    // rien pour le moment....
-                    break;
-                default:
-                    // ?? COLOR, ?... Valider les elements de l'enum
-                    break;
+                
+                        break;
+                    case PDF_MULTI:
+                        // Validation pdf/A ocr.
+                        final Optional<File> pdfToCheck =
+                                files.stream().filter(file -> StringUtils.equalsIgnoreCase(file.getName(), dto.getName())).findFirst();
+                        pdfResult = metaCheckService.checkMetaDataFileFormat(pdfResult,
+                                                                             pdfToCheck,
+                                                                             MetaDatasCheckService.PDF_FILE_FORMAT,
+                                                                             MetaDatasCheckService.PDF_MIME_TYPE,
+                                                                             FileRoleEnum.PDF_MULTI,
+                                                                             extractedDmdSec);
+                
+                        break;
+                    case OTHER:
+                        // rien pour le moment....
+                        break;
+                    default:
+                        // ?? COLOR, ?... Valider les elements de l'enum
+                        break;
+                }
+        
+                if (isTocBlocking && tocResult.getResult().compareTo(AutoCheckResult.OK) != 0) {
+                    delivery.setTableOfContentsOK(false);
+                }
+                if (isPdfBlocking && pdfResult.getResult().compareTo(AutoCheckResult.OK) != 0) {
+                    delivery.setPdfMultiOK(false);
+                }
+        
+                allResults.add(save(tocResult));
+                allResults.add(save(pdfResult));
             }
-
+        } else {
+            tocResult.setResult(AutoCheckResult.OTHER);
+            tocResult.setMessage("Table des matières introuvable");
+            pdfResult.setResult(AutoCheckResult.OTHER);
+            pdfResult.setMessage("PDF multicouches introuvable");
+            
             if (isTocBlocking && tocResult.getResult().compareTo(AutoCheckResult.OK) != 0) {
                 delivery.setTableOfContentsOK(false);
             }
             if (isPdfBlocking && pdfResult.getResult().compareTo(AutoCheckResult.OK) != 0) {
                 delivery.setPdfMultiOK(false);
             }
-
             allResults.add(save(tocResult));
             allResults.add(save(pdfResult));
-        });
+        }
         return allResults;
     }
 

@@ -222,6 +222,8 @@ public class DocUnitWorkflowService {
             reinitializeState(workflow, WorkflowStateKey.CONTROLES_AUTOMATIQUES_EN_COURS, NOT_STARTED);
             // reinitialise aussi un eventuel controle qualité en cours
             reinitializeState(workflow, WorkflowStateKey.CONTROLE_QUALITE_EN_COURS, NOT_STARTED);
+            // reinitialise aussi un eventuel rapport de contrôle en cours
+            reinitializeState(workflow, WorkflowStateKey.RAPPORT_CONTROLES, TO_WAIT);
     
             save(workflow);
         }
@@ -350,6 +352,9 @@ public class DocUnitWorkflowService {
         if (state != null) {
             state.setStatus(status);
             state.setEndDate(null);
+            if(!status.equals(PENDING)){
+                state.setStartDate(null);
+            }
         }
     }
     

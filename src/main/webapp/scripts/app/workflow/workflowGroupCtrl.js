@@ -19,6 +19,7 @@
         $scope.getFirstLetter = getFirstLetter;
         $scope.nextPage = nextPage;
         $scope.unfilterInitial = unfilterInitial;
+        $scope.doFilterLibrary= doFilterLibrary;
 
         $scope.detail = "scripts/app/workflow/groupEdit.html";
         $scope.group = null;
@@ -124,6 +125,10 @@
                 doFilter();
             }
 
+        }
+        function doFilterLibrary() {
+            var librariesIds = _.pluck($scope.filters.libraries, "identifier");
+            doFilter();
         }
         function applyFilter(filterWith, event) {
             if (event.type === "keypress" && event.keyCode === 13) {

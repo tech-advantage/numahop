@@ -1,14 +1,15 @@
 package fr.progilone.pgcn.service.administration.omeka;
 
-import fr.progilone.pgcn.domain.administration.InternetArchiveConfiguration;
-import fr.progilone.pgcn.domain.administration.omeka.OmekaList;
-import fr.progilone.pgcn.repository.administration.omeka.OmekaListRepository;
-import org.apache.commons.collections4.CollectionUtils;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import fr.progilone.pgcn.domain.administration.InternetArchiveConfiguration;
+import fr.progilone.pgcn.domain.administration.omeka.OmekaList;
+import fr.progilone.pgcn.repository.administration.omeka.OmekaListRepository;
+import fr.progilone.pgcn.security.SecurityUtils;
 
 /**
  * Service de gestion des {@link InternetArchiveConfiguration}
@@ -32,6 +33,11 @@ public class OmekaListService {
     }
 
     @Transactional(readOnly = true)
+    public List<OmekaList> findAllByConfOmekaAndType(final String identifier, final OmekaList.ListType type) {
+        return omekaListRepository.findAllByConfOmekaAndType(identifier, type);
+    }
+
+    @Transactional(readOnly = true)
     public List<OmekaList> findAllByLibraryAndType(final String identifier, final OmekaList.ListType type) {
         return omekaListRepository.findAllByLibraryAndType(identifier, type);
     }
@@ -39,5 +45,11 @@ public class OmekaListService {
     @Transactional
     public void delete(final List<OmekaList> ols) {
         omekaListRepository.delete(ols);
+    }
+
+    @Transactional
+    public OmekaList findByName(final String name) {
+        final String libraryId = SecurityUtils.getCurrentUserLibraryId();
+        return omekaListRepository.findByNameAndLibrary(name, libraryId);
     }
 }

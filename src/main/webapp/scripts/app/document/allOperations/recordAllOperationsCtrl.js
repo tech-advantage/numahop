@@ -24,7 +24,8 @@
                 dcq: true,
                 custom: true,
                 custom_cines: true,
-                custom_archive: true
+                custom_archive: true,
+                custom_omeka: true,
             };
 
             loadOptions();
@@ -90,6 +91,7 @@
                         self.sel2DocProperties.custom = [];
                         self.sel2DocProperties.custom_cines = [];
                         self.sel2DocProperties.custom_archive = [];
+                        self.sel2DocProperties.custom_omeka = [];
                         
                         _.each(self.sel2DocProperties, function (type) {
                             switch (type.superType) {
@@ -100,7 +102,9 @@
                                 case "CUSTOM_CINES": NumahopEditService.insertBasedOnRank(self.sel2DocProperties.custom_cines, type);
                                     break;
                                 case "CUSTOM_ARCHIVE": NumahopEditService.insertBasedOnRank(self.sel2DocProperties.custom_archive, type);
-                                    break;      
+                                    break;
+                                case "CUSTOM_OMEKA": NumahopEditService.insertBasedOnRank(self.sel2DocProperties.custom_omeka, type);
+                                    break;
                                 default: NumahopEditService.insertBasedOnRank(self.sel2DocProperties.custom, type);
                             }
                         });
@@ -214,7 +218,15 @@
                             "record": { identifier: entity.identifier },
                             "rank": getCustomMaxRank(entity, "CUSTOM_ARCHIVE") + self.indices[type]++
                         };
-                        break;         
+                        break;
+                    case "custom_omeka":
+                        property = {
+                            "_name": "propertyFormCUSTOMOmeka" + self.indices[type]++,
+                            "type": undefined,
+                            "record": { identifier: entity.identifier },
+                            "rank": getCustomMaxRank(entity, "CUSTOM_OMEKA") + self.indices[type]++
+                        };
+                        break;
                 }
 
                 entity.record[type].push(property);
@@ -265,6 +277,9 @@
                         case "CUSTOM_ARCHIVE":
                             maxRank = 3000;
                             break;
+                        case "CUSTOM_OMEKA":
+                            maxRank = 3000;
+                            break;
                         default:
                             break;
                     }
@@ -284,6 +299,8 @@
                 newProperties = addNewProperties(newProperties, entity.custom_cines, entity.properties);
                 // Custom ARCHIVE
                 newProperties = addNewProperties(newProperties, entity.custom_archive, entity.properties);
+                // Custom OMEKA
+                newProperties = addNewProperties(newProperties, entity.custom_omeka, entity.properties);
 
                 _.each(newProperties, function (property) {
                     entity.properties.push(property);
@@ -369,6 +386,7 @@
                 initForm(self.entity.record.custom, "propertyFormCUSTOM", "custom");
                 initForm(self.entity.record.custom, "propertyFormCUSTOMCines", "custom_cines");
                 initForm(self.entity.record.custom, "propertyFormCUSTOMArchive", "custom_archive");
+                initForm(self.entity.record.custom, "propertyFormCUSTOMOmeka", "custom_omeka");
             }
             function initForm(elements, formPrefix, indexName) {
                 _.each(elements, function (element, idx) {
@@ -402,6 +420,7 @@
                 entity.record.custom = [];
                 entity.record.custom_cines = [];
                 entity.record.custom_archive = [];
+                entity.record.custom_omeka = [];
                 
                 _.each(entity.properties, function (property) {
                     switch (property.type.superType) {
@@ -412,7 +431,9 @@
                         case "CUSTOM_CINES": NumahopEditService.insertBasedOnRank(entity.record.custom_cines, property, "weightedRank");
                             break;
                         case "CUSTOM_ARCHIVE": NumahopEditService.insertBasedOnRank(entity.record.custom_archive, property, "weightedRank");
-                            break;          
+                            break;
+                        case "CUSTOM_OMEKA": NumahopEditService.insertBasedOnRank(entity.record.custom_omeka, property, "weightedRank");
+                            break;
                         default: NumahopEditService.insertBasedOnRank(entity.record.custom, property, property, "weightedRank");
                     }
                 });

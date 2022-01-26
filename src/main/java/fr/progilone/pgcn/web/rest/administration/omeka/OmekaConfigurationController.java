@@ -1,9 +1,7 @@
 package fr.progilone.pgcn.web.rest.administration.omeka;
 
-import static fr.progilone.pgcn.web.rest.administration.security.AuthorizationConstants.CONF_DIFFUSION_OMEKA_HAB0;
-import static fr.progilone.pgcn.web.rest.administration.security.AuthorizationConstants.CONF_DIFFUSION_OMEKA_HAB1;
-import static fr.progilone.pgcn.web.rest.administration.security.AuthorizationConstants.CONF_DIFFUSION_OMEKA_HAB2;
-import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.DOC_UNIT_HAB0;
+import static fr.progilone.pgcn.web.rest.administration.security.AuthorizationConstants.*;
+import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.*;
 
 import java.util.Collection;
 import java.util.List;
@@ -12,6 +10,7 @@ import java.util.Set;
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 
+import fr.progilone.pgcn.web.util.AccessHelper;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -32,6 +31,7 @@ import fr.progilone.pgcn.domain.administration.omeka.OmekaList;
 import fr.progilone.pgcn.domain.dto.administration.omeka.OmekaConfigurationDTO;
 import fr.progilone.pgcn.domain.library.Library;
 import fr.progilone.pgcn.exception.PgcnTechnicalException;
+import fr.progilone.pgcn.domain.project.Project;
 import fr.progilone.pgcn.service.administration.omeka.OmekaConfigurationService;
 import fr.progilone.pgcn.service.administration.omeka.OmekaListService;
 import fr.progilone.pgcn.service.administration.omeka.UIOmekaConfigurationService;
@@ -46,16 +46,19 @@ public class OmekaConfigurationController extends AbstractRestController {
     private final OmekaConfigurationService omekaConfigurationService;
     private final LibraryAccesssHelper libraryAccesssHelper;
     private final OmekaListService omekaListService;
+    private final AccessHelper accessHelper;
 
     @Autowired
     public OmekaConfigurationController(final UIOmekaConfigurationService uiOmekaConfigurationService,
                                         final OmekaConfigurationService omekaConfigurationService,
                                         final LibraryAccesssHelper libraryAccesssHelper,
-                                        final OmekaListService omekaListService) {
+                                        final OmekaListService omekaListService,
+                                        final AccessHelper accessHelper) {
         this.uiOmekaConfigurationService = uiOmekaConfigurationService;
         this.omekaConfigurationService = omekaConfigurationService;
         this.libraryAccesssHelper = libraryAccesssHelper;
         this.omekaListService = omekaListService;
+        this.accessHelper = accessHelper;
     }
 
     @RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -94,27 +97,42 @@ public class OmekaConfigurationController extends AbstractRestController {
     @Timed
     @RolesAllowed({CONF_DIFFUSION_OMEKA_HAB0, DOC_UNIT_HAB0})
     public ResponseEntity<Collection<OmekaList>> findCollections(final HttpServletRequest request,
-                                                           @RequestParam(name = "library", required = false) final String libraryId) {
+                                                           @RequestParam(name = "omekaConf", required = false) final String omekaConf,
+                                                           @RequestParam(name = "project", required = false) final String projectId) {
 
-        if (StringUtils.isNotBlank(libraryId) && !libraryAccesssHelper.checkLibrary(request, libraryId)) {
+        OmekaConfiguration omekaConfiguration = omekaConfigurationService.findOne(omekaConf);
+        if(omekaConfiguration == null){
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        // L'usager est autorisé à accéder aux infos de la bibliothèque ou les infos du projet
+        if ((StringUtils.isNotBlank(omekaConfiguration.getLibrary().getIdentifier()) && !libraryAccesssHelper.checkLibrary(request, omekaConfiguration.getLibrary().getIdentifier())) &&
+            (StringUtils.isNotBlank(projectId) && !accessHelper.checkProject(projectId))) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
-        final Collection<OmekaList> lists = omekaListService.findAllByLibraryAndType(libraryId, OmekaList.ListType.COLLECTION);
+        final Collection<OmekaList> lists = omekaListService.findAllByLibraryAndType(omekaConfiguration.getLibrary().getIdentifier(), OmekaList.ListType.COLLECTION);
         // Réponse
         return new ResponseEntity<>(lists, HttpStatus.OK);
     }
     
-    @RequestMapping(method = RequestMethod.GET, params = {"items", "library"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.GET, params = {"items"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed({CONF_DIFFUSION_OMEKA_HAB0, DOC_UNIT_HAB0})
     public ResponseEntity<Collection<OmekaList>> findItems(final HttpServletRequest request,
-                                                                          @RequestParam(name = "library", required = false) final String libraryId) {
-        
-        if (StringUtils.isNotBlank(libraryId) && !libraryAccesssHelper.checkLibrary(request, libraryId)) {
+                                                           @RequestParam(name = "omekaConf", required = false) final String omekaConf,
+                                                           @RequestParam(name = "project", required = false) final String projectId) {
+    
+        OmekaConfiguration omekaConfiguration = omekaConfigurationService.findOne(omekaConf);
+        if(omekaConfiguration == null){
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        // L'usager est autorisé à accéder aux infos de la bibliothèque ou les infos du projet
+        if ((StringUtils.isNotBlank(omekaConfiguration.getLibrary().getIdentifier())
+                        && !libraryAccesssHelper.checkLibrary(request, omekaConfiguration.getLibrary().getIdentifier()))
+                        && (StringUtils.isNotBlank(projectId) && !accessHelper.checkProject(projectId))) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         // Chargement des configurations
-        final Collection<OmekaList> lists = omekaListService.findAllByLibraryAndType(libraryId, OmekaList.ListType.ITEM);
+        final Collection<OmekaList> lists = omekaListService.findAllByLibraryAndType(omekaConfiguration.getLibrary().getIdentifier(), OmekaList.ListType.ITEM);
         // Réponse
         return new ResponseEntity<>(lists, HttpStatus.OK);
     }
@@ -132,14 +150,15 @@ public class OmekaConfigurationController extends AbstractRestController {
         return new ResponseEntity<>(confs, HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.GET, params = {"configuration", "library"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.GET, params = {"configuration", "library", "project"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed({CONF_DIFFUSION_OMEKA_HAB0})
     public ResponseEntity<Set<OmekaConfigurationDTO>> findByLibrary(final HttpServletRequest request,
                                                                     @RequestParam(value = "library") final Library library,
+                                                                    @RequestParam(value = "project") final Project project,
                                                                     @RequestParam(name = "active", required = false) final Boolean active) {
         // Vérification des droits d'accès par rapport à la bibliothèque de l'utilisateur
-        if (!libraryAccesssHelper.checkLibrary(request, library)) {
+        if (!libraryAccesssHelper.checkLibrary(request, library) && (StringUtils.isNotBlank(project.getIdentifier()) && !accessHelper.checkProject(project.getIdentifier()))) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         // Réponse
@@ -152,13 +171,14 @@ public class OmekaConfigurationController extends AbstractRestController {
     public ResponseEntity<Page<OmekaConfigurationDTO>> search(final HttpServletRequest request,
                                                               @RequestParam(value = "search", required = false) final String search,
                                                               @RequestParam(value = "libraries", required = false) final List<String> libraries,
+                                                              @RequestParam(value = "omekas", required = false) final Boolean omekas,
                                                               @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
                                                               @RequestParam(value = "size", required = false, defaultValue = "10")
                                                               final Integer size) {
         // Recherche suivant les droits de l'utilisateur
         final List<String> filteredLibraries = libraryAccesssHelper.getLibraryFilter(request, libraries);
         // Recherche
-        final Page<OmekaConfigurationDTO> results = omekaConfigurationService.search(search, filteredLibraries, page, size);
+        final Page<OmekaConfigurationDTO> results = omekaConfigurationService.search(search, filteredLibraries, omekas, page, size);
         return new ResponseEntity<>(results, HttpStatus.OK);
     }
 

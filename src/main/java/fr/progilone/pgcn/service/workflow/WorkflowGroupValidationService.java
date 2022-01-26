@@ -52,19 +52,19 @@ public class WorkflowGroupValidationService {
         }
 
         // Vérification des utilisateurs (même bibliothèque)
-        if (!group.getUsers().isEmpty()) {
-            Library lib = null;
-            for (User user : group.getUsers()) {
-                if (lib == null) {
-                    lib = user.getLibrary();
-                } else {
-                    if (!StringUtils.equals(lib.getIdentifier(), user.getLibrary().getIdentifier())) {
-                        errors.add(builder.reinit().setCode(PgcnErrorCode.WORKFLOW_GROUP_MIXED_USERS).build());
-                        break;
-                    }
-                }
-            }
-        }
+//        if (!group.getUsers().isEmpty()) {
+//            Library lib = null;
+//            for (User user : group.getUsers()) {
+//                if (lib == null) {
+//                    lib = user.getLibrary();
+//                } else {
+//                    if (!StringUtils.equals(lib.getIdentifier(), user.getLibrary().getIdentifier())) {
+//                        errors.add(builder.reinit().setCode(PgcnErrorCode.WORKFLOW_GROUP_MIXED_USERS).build());
+//                        break;
+//                    }
+//                }
+//            }
+//        }
 
         /* Retour **/
         if (!errors.isEmpty()) {

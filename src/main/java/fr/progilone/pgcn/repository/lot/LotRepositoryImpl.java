@@ -9,6 +9,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
+import fr.progilone.pgcn.domain.user.QUser;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -66,10 +67,12 @@ public class LotRepositoryImpl implements LotRepositoryCustom {
         final QLibrary qLibrary = QLibrary.library;
         final QLot qLot = QLot.lot;
         final QProject qProject = QProject.project;
+        final QLibrary qAssociatedLibrary = QLibrary.library;
+        final QUser qAssociatedUser = QUser.user;
 
         final BooleanBuilder builder = new BooleanBuilder();
         // provider, library
-        QueryDSLBuilderUtils.addAccessFilters(builder, qLibrary, qLot, qProject, libraries, null);
+        QueryDSLBuilderUtils.addAccessFilters(builder, qLibrary, qLot, qProject, qAssociatedLibrary, qAssociatedUser, libraries, null);
 
         // project
         if (CollectionUtils.isNotEmpty(projects)) {
@@ -79,7 +82,9 @@ public class LotRepositoryImpl implements LotRepositoryCustom {
         // query
         return new JPAQuery(em).from(qLot)
                                .leftJoin(qLot.project, qProject)
-                               .leftJoin(qProject.library, qLibrary)
+                               .leftJoin(qProject.library)
+                               .leftJoin(qProject.associatedLibraries, qAssociatedLibrary)
+                               .leftJoin(qProject.associatedUsers, qAssociatedUser)
                                .where(builder)
                                .groupBy(qLot.status)
                                .list(qLot.status, qLot.identifier.countDistinct())
@@ -94,6 +99,8 @@ public class LotRepositoryImpl implements LotRepositoryCustom {
         final QLibrary qLibrary = QLibrary.library;
         final QLot qLot = QLot.lot;
         final QProject qProject = QProject.project;
+        final QLibrary qAssociatedLibrary = QLibrary.library;
+        final QUser qAssociatedUser = QUser.user;
 
         final BooleanBuilder builder = new BooleanBuilder();
 
@@ -112,6 +119,8 @@ public class LotRepositoryImpl implements LotRepositoryCustom {
                                               qLibrary,
                                               qLot,
                                               qProject,
+                                              qAssociatedLibrary,
+                                              qAssociatedUser,
                                               searchBuilder.getLibraries().orElse(null),
                                               searchBuilder.getProviders().orElse(null));
 
@@ -153,7 +162,13 @@ public class LotRepositoryImpl implements LotRepositoryCustom {
         });
 
         JPQLQuery baseQuery =
-            new JPAQuery(em).from(qLot).leftJoin(qLot.project, qProject).leftJoin(qProject.library, qLibrary).where(builder.getValue()).distinct();
+            new JPAQuery(em).from(qLot)
+                            .leftJoin(qLot.project, qProject)
+                            .leftJoin(qProject.associatedLibraries, qAssociatedLibrary)
+                            .leftJoin(qProject.associatedUsers, qAssociatedUser)
+                            .leftJoin(qProject.library)
+                            .where(builder.getValue())
+                            .distinct();
 
         if (pageable != null) {
             final long total = baseQuery.count();

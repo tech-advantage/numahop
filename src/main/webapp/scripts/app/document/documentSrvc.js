@@ -42,6 +42,14 @@
                             size: 50
                         }
                     },
+                    searchAllForProject: {
+                        method: 'GET',
+                        isArray: false,
+                        params: {
+                            searchAllForProject: true,
+                            size: 50
+                        }
+                    },
                     searchAsList: {
                         method: 'POST',
                         isArray: false,

@@ -44,9 +44,9 @@
 
         /**
          * Chargement des valeurs de la propriété prop
-         * 
-         * @param {any} prop 
-         * @returns 
+         *
+         * @param {any} prop
+         * @returns
          */
         function loadValues(prop) {
             editCtrl.loaded = false;
@@ -56,6 +56,7 @@
                 editCtrl.prop = prop;
 
                 editCtrl.isSuperAdmin = Principal.isInRole(USER_ROLES.SUPER_ADMIN);
+                editCtrl.administrationLib = Principal.isInRole(USER_ROLES.ADMINISTRATION_LIB);
                 editCtrl.library = Principal.library();
                 editCtrl.internal = !!prop.fake;
 
@@ -102,7 +103,7 @@
 
         /**
          * Création d'une nouvelle valeur rattachée à la propriété en cours d'édition
-         * 
+         *
          */
         function newValue() {
             if (editCtrl.values) {
@@ -116,8 +117,8 @@
 
         /**
          * Suppression de la valeur
-         * 
-         * @param {any} value 
+         *
+         * @param {any} value
          */
         function removeValue(value) {
             removeFromList(value, editCtrl.values);
@@ -130,9 +131,9 @@
 
         /**
          * Suppression d'un élément appartenant à une liste
-         * 
-         * @param {any} value 
-         * @param {any} list 
+         *
+         * @param {any} value
+         * @param {any} list
          */
         function removeFromList(value, list) {
             var idx = list.indexOf(value);
@@ -143,7 +144,7 @@
 
         /**
          * Suppresion de la propriété en cours d'édition, et de toutes ses valeurs
-         * 
+         *
          */
         function removeProperty() {
             if (editCtrl.prop) {
@@ -176,8 +177,8 @@
 
         /**
          * Pointage des valeurs modifiées pour sauvegarde ultérieure
-         * 
-         * @param {any} value 
+         *
+         * @param {any} value
          */
         function valueChanged(value) {
             if (updatedValues.indexOf(value) < 0) {
@@ -187,7 +188,7 @@
 
         /**
          * Annulation de l'édition en cours
-         * 
+         *
          */
         function cancel() {
             updatedProperty = false;
@@ -208,8 +209,8 @@
 
         /**
          * Sauvegarde des modifications apportées dans l'édition en cours
-         * 
-         * @returns 
+         *
+         * @returns
          */
         function saveValues() {
             if (!updatedProperty && !updatedPropConf && !deletedValues.length && !updatedValues.length) {
@@ -279,8 +280,8 @@
 
         /**
          * Sélection d'une bibliothèque
-         * 
-         * @param {any} newLib 
+         *
+         * @param {any} newLib
          */
         function onchangeLibrary(newLib) {
             if (newLib && editCtrl.prop.identifier) {
@@ -315,9 +316,9 @@
 
         /**
          * Conversion liste d'enum de type de constats vers les objets utilisés dans la liste de types
-         * 
-         * @param {any} types 
-         * @returns 
+         *
+         * @param {any} types
+         * @returns
          */
         function typesToObj(types) {
             return _.map(types, function (type) {
@@ -329,8 +330,8 @@
 
         /**
          * Conversion liste d'objets utilisés dans la liste de types vers les enum de type de constats
-         * 
-         * @param {any} arr 
+         *
+         * @param {any} arr
          */
         function objToTypes(arr) {
             return _.pluck(arr, "identifier");

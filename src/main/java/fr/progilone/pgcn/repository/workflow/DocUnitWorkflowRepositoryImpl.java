@@ -8,6 +8,9 @@ import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import fr.progilone.pgcn.domain.library.QLibrary;
+import fr.progilone.pgcn.domain.lot.QLot;
+import fr.progilone.pgcn.domain.project.QProject;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
@@ -63,10 +66,14 @@ public class DocUnitWorkflowRepositoryImpl implements DocUnitWorkflowRepositoryC
         final QDocUnitState qDocUnitState = QDocUnitState.docUnitState;
         final QWorkflowModelState qWorkflowModelState = QWorkflowModelState.workflowModelState;
         final QDocUnit qDocUnit = QDocUnit.docUnit;
+        final QLibrary qAssociatedLibrary = QLibrary.library;
+        final QUser qAssociatedUser = QUser.user;
+        final QProject qProject = QProject.project;
+        final QLot qLot = QLot.lot;
         final BooleanBuilder builder = new BooleanBuilder();
 
         // Droits d'accès
-        QueryDSLBuilderUtils.addAccessFilters(builder, qDocUnit.library, qDocUnit.project, libraries, null);
+        //QueryDSLBuilderUtils.addAccessFilters(builder, qDocUnit.library, qDocUnit.project, libraries, null);
 
         // UD
         if (StringUtils.isNotBlank(pgcnId)) {
@@ -105,11 +112,22 @@ public class DocUnitWorkflowRepositoryImpl implements DocUnitWorkflowRepositoryC
         if (CollectionUtils.isNotEmpty(status)) {
             builder.and(qDocUnitState.status.in(status));
         }
+
+        // provider, library
+        QueryDSLBuilderUtils.addAccessFilters(builder,
+                                              qDocUnit.library,
+                                              qDocUnit.lot,
+                                              qDocUnit.project,
+                                              qAssociatedLibrary,
+                                              qAssociatedUser,
+                                              libraries,
+                                              null);
+
         // Utilisateurs
         if (CollectionUtils.isNotEmpty(users)) {
             final QWorkflowGroup qWorkflowGroup = QWorkflowGroup.workflowGroup;
             final QUser qUser = QUser.user;
-            // les utilisateurs recherchés font partie des groupes de workflow des étapes                
+            // les utilisateurs recherchés font partie des groupes de workflow des étapes
             builder.and(new JPASubQuery().from(qUser)
                                          .innerJoin(qUser.groups, qWorkflowGroup)
                                          .where(new BooleanBuilder().and(qUser.login.in(users)).and(qWorkflowGroup.eq(qWorkflowModelState.group)))
@@ -122,6 +140,10 @@ public class DocUnitWorkflowRepositoryImpl implements DocUnitWorkflowRepositoryC
                  .leftJoin(qDocUnitWorkflow.states, qDocUnitState)
                  .leftJoin(qDocUnitState.modelState, qWorkflowModelState)
                  .leftJoin(qDocUnit.records)
+                 .leftJoin(qDocUnit.project, qProject)
+                 .leftJoin(qProject.associatedLibraries, qAssociatedLibrary)
+                 .leftJoin(qProject.associatedUsers, qAssociatedUser)
+                 .leftJoin(qDocUnit.lot, qLot)
                  .fetchAll()
                  .where(builder.getValue());
 
@@ -394,15 +416,15 @@ public class DocUnitWorkflowRepositoryImpl implements DocUnitWorkflowRepositoryC
 
         final List<WorkflowStateKey> wkfStates = new ArrayList<>();
         wkfStates.add(WorkflowStateKey.DIFFUSION_DOCUMENT);
-       
+
         // etape controle qualite en cours
         builder.and(qDocUnitState.discriminator.in(wkfStates))
                .and(qDocUnitState.status.eq(WorkflowStateStatus.PENDING))
                .and(qDocUnitState.endDate.isNull());
-        
+
         // docUnit diffusable
         builder.and(qDocUnit.distributable.isTrue()).and(qDocUnitWorkflow.endDate.isNull());
-       
+
         builder.and(qDocUnit.library.identifier.eq(library));
 
         // Requête
@@ -416,7 +438,7 @@ public class DocUnitWorkflowRepositoryImpl implements DocUnitWorkflowRepositoryC
     }
 
     /**
-     * 
+     *
      * @param library
      *            String
      * @return

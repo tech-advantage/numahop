@@ -1,6 +1,6 @@
 package fr.progilone.pgcn.web.rest.exchange.omeka;
 
-import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.DOC_UNIT_HAB4;
+import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.*;
 
 import java.util.Collection;
 import java.util.List;
@@ -90,7 +90,7 @@ public class ExportOmekaController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND); 
         }
         final String currentUserId = SecurityUtils.getCurrentUserId(); 
-        omekaRequestHandlerService.exportDocToOmeka(docUnit, currentUserId, false, false, true);
+        omekaRequestHandlerService.exportDocToOmeka(docUnit, currentUserId, false, true, true);
         return new ResponseEntity<>(HttpStatus.OK); 
     }
     
@@ -116,15 +116,17 @@ public class ExportOmekaController {
             if(++i == filteredDocUnits.size()) {
                 lastDoc = true;
             } 
-            exportOmeka(request, docUnit, lastDoc, i==0);
+            exportOmeka(request, docUnit, lastDoc, i == 1);
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
-    
+
     /**
      * 
      * @param request
-     * @param docUnitId
+     * @param docUnit
+     * @param lastDoc
+     * @param firstDoc
      */
     private void exportOmeka(final HttpServletRequest request, final DocUnit docUnit, final boolean lastDoc, final boolean firstDoc) {
         

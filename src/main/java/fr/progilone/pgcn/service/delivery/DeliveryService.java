@@ -20,6 +20,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import fr.progilone.pgcn.repository.sample.SampleRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
@@ -76,6 +77,7 @@ public class DeliveryService {
     private final DeliveryConfigurationService deliveryConfigurationService;
     private final JasperReportsService jasperReportService;
     private final MultiLotsDeliveryRepository multiLotsDeliveryRepository;
+    private final SampleRepository sampleRepository;
 
     @Autowired
     public DeliveryService(final DeliveryRepository deliveryRepository,
@@ -83,13 +85,15 @@ public class DeliveryService {
                            final LibraryService libraryService,
                            final DeliveryConfigurationService deliveryConfigurationService,
                            final JasperReportsService jasperReportService,
-                           final MultiLotsDeliveryRepository multiLotsDeliveryRepository) {
+                           final MultiLotsDeliveryRepository multiLotsDeliveryRepository,
+                           final SampleRepository sampleRepository) {
         this.deliveryRepository = deliveryRepository;
         this.esDeliveryService = esDeliveryService;
         this.libraryService = libraryService;
         this.deliveryConfigurationService = deliveryConfigurationService;
         this.jasperReportService = jasperReportService;
         this.multiLotsDeliveryRepository = multiLotsDeliveryRepository;
+        this.sampleRepository = sampleRepository;
     }
 
     /**
@@ -220,6 +224,9 @@ public class DeliveryService {
     @Transactional
     public void delete(final String identifier) {
         final Delivery delivery = deliveryRepository.findOne(identifier);
+        if(sampleRepository.findByDeliveryIdentifier(identifier) != null){
+            sampleRepository.delete(sampleRepository.findByDeliveryIdentifier(identifier).getIdentifier());
+        }
         deliveryRepository.delete(identifier);
         esDeliveryService.deleteAsync(delivery);
     }

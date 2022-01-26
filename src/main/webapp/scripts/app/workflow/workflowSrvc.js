@@ -91,6 +91,13 @@
                             'massValidate': true
                         } 
                     },
+                    massValidateRecords: {
+                        method: 'POST',
+                        isArray: false,
+                        params: {
+                            'massValidateRecords': true
+                        }
+                    },
                     endAllDocWorkflows: {
                         method: 'POST',
                         isArray: false,

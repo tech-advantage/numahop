@@ -7,6 +7,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import fr.progilone.pgcn.domain.user.QUser;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
@@ -53,11 +54,13 @@ public class MultiLotsDeliveryRepositoryImpl implements MultiLotsDeliveryReposit
         final QProject qProject = QProject.project;
         final QLot qLot = QLot.lot;
         final QRole qRole = QRole.role;
+        final QLibrary qAssociatedLibrary = QLibrary.library;
+        final QUser qAssociatedUser = QUser.user;
 
         final BooleanBuilder builder = new BooleanBuilder();
 
         // Prestataires
-        QueryDSLBuilderUtils.addAccessFilters(builder, qLibrary, qLot, qProject, libraries, providers);
+        QueryDSLBuilderUtils.addAccessFilters(builder, qLibrary, qLot, qProject, qAssociatedLibrary, qAssociatedUser, libraries, providers);
 
         // Libellé
         if (StringUtils.isNotBlank(search)) {
@@ -100,6 +103,8 @@ public class MultiLotsDeliveryRepositoryImpl implements MultiLotsDeliveryReposit
                  .leftJoin(qMulti.deliveries, qDelivery).fetch()
                  .leftJoin(qDelivery.lot, qLot).fetch()
                  .leftJoin(qLot.project, qProject).fetch()
+                 .leftJoin(qProject.associatedUsers, qAssociatedUser)
+                 .leftJoin(qProject.associatedLibraries, qAssociatedLibrary)
                  .leftJoin(qProject.library, qLibrary).fetch()
                  .leftJoin(qLibrary.defaultRole, qRole)
                  .where(builder.getValue())

@@ -55,22 +55,11 @@ public class RapportsControleState extends DocUnitState {
     }
 
     private void handleWorkflow() {
-        if(getWorkflow().isDocumentRejected()) {
-            // On annule toutes les étapes (courantes et à venir)
-            getWorkflow().getCurrentStates().forEach(state -> state.initializeState(null, null, WorkflowStateStatus.CANCELED));
-            getNextStates().forEach(state -> state.initializeState(null, null, WorkflowStateStatus.CANCELED));
-            // On clôture le workflow
-            final DocUnitState cloture = getWorkflow().getFutureOrRunningByKey(WorkflowStateKey.CLOTURE_DOCUMENT);
-            cloture.initializeState(null, null, WorkflowStateStatus.FINISHED);
-        } else {
-            // Initialisation de la prochaine étape si applicable (aucune étape en cours)
-            if(getWorkflow().getCurrentStates().isEmpty() 
-                    && getWorkflow().isDocumentValidated() 
+        if(getWorkflow().getCurrentStates().isEmpty()
                     && getWorkflow().isNoticeValidated()) {
                 getNextStates().stream()
                     .filter(Objects::nonNull)
                     .forEach(state -> state.initializeState(null, null, null));
-            }
         }
     }
 

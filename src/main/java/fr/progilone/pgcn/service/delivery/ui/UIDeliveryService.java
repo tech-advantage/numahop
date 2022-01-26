@@ -339,7 +339,7 @@ public class UIDeliveryService {
                                                                         final LocalDate toDate) {
         return deliveryService.findByProviders(libraries,
                                                providers,
-                                               Arrays.asList(DeliveryStatus.DELIVERED, DeliveryStatus.DELIVERED_AGAIN),
+                                               Arrays.asList(DeliveryStatus.TO_BE_CONTROLLED, DeliveryStatus.DELIVERING, DeliveryStatus.DELIVERING_ERROR,DeliveryStatus.AUTOMATICALLY_REJECTED),
                                                fromDate,
                                                toDate).stream()
                               // la livraison a un lot, un projet, une bibliothèque

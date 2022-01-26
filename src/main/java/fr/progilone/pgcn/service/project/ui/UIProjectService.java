@@ -278,7 +278,7 @@ public class UIProjectService {
 
     @Transactional(readOnly = true)
     public ProjectDTO getOne(final String id) {
-        final Project project = projectService.findByIdentifierWithDependencies(id);
+        final Project project = projectService.findByIdentifier(id);
         if(project == null) {
             return null;
         }
@@ -286,16 +286,16 @@ public class UIProjectService {
         final ProjectDTO toReturn = ProjectMapper.INSTANCE.projectToProjectDTO(project);
         toReturn.setOtherProviders(new ArrayList<>());
 
-        for (final Lot lot : project.getLots()) {
-            if (lot.getProvider() != null
-                && toReturn.getOtherProviders()
-                           .stream()
-                           .noneMatch(dto -> StringUtils.equals(dto.getIdentifier(), lot.getProvider().getIdentifier()))
-                && !Objects.equals(lot.getProvider(), project.getProvider())) {
-
-                toReturn.addOtherProvider(UserMapper.INSTANCE.userToSimpleUserDTO(lot.getProvider()));
-            }
-        }
+//        for (final Lot lot : project.getLots()) {
+//            if (lot.getProvider() != null
+//                && toReturn.getOtherProviders()
+//                           .stream()
+//                           .noneMatch(dto -> StringUtils.equals(dto.getIdentifier(), lot.getProvider().getIdentifier()))
+//                && !Objects.equals(lot.getProvider(), project.getProvider())) {
+//
+//                toReturn.addOtherProvider(UserMapper.INSTANCE.userToSimpleUserDTO(lot.getProvider()));
+//            }
+//        }
         return toReturn;
     }
 
@@ -309,7 +309,7 @@ public class UIProjectService {
         final List<Project> projects = projectService.findAllByActive(true);
         return projects.stream().map(SimpleProjectMapper.INSTANCE::projectToSimpleProjectDTO).collect(Collectors.toList());
     }
-    
+
     @Transactional(readOnly = true)
     public List<SimpleProjectDTO> findAllDTO() {
         final List<Project> projects = projectService.findAll();
@@ -321,7 +321,7 @@ public class UIProjectService {
         final List<Project> projects = projectService.findAllByActiveAndLibraryIn(libraries);
         return projects.stream().map(SimpleProjectMapper.INSTANCE::projectToSimpleProjectDTO).collect(Collectors.toList());
     }
-    
+
     @Transactional(readOnly = true)
     public List<SimpleProjectDTO> findAllByLibraryIn(final List<String> libraries) {
         final List<Project> projects = projectService.findAllByLibraryIn(libraries);

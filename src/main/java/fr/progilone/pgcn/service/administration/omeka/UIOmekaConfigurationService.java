@@ -20,7 +20,7 @@ import fr.progilone.pgcn.service.library.LibraryService;
 
 @Service
 public class UIOmekaConfigurationService {
-    
+
     private final OmekaConfigurationService omekaConfigurationService;
     private final LibraryService libraryService;
 
@@ -33,30 +33,30 @@ public class UIOmekaConfigurationService {
 
     @Transactional
     public OmekaConfigurationDTO getById(final String confId) {
-        
+
         final OmekaConfiguration conf = omekaConfigurationService.findOne(confId);
         return OmekaConfigurationMapper.INSTANCE.confOmekaToDto(conf);
     }
-    
+
     @Transactional
     public OmekaConfigurationDTO create(final OmekaConfigurationDTO dto) throws PgcnTechnicalException {
         fusionLists(dto);
         final OmekaConfiguration saved = omekaConfigurationService.save(OmekaConfigurationMapper.INSTANCE.dtoToConfOmeka(dto));
         return OmekaConfigurationMapper.INSTANCE.confOmekaToDto(saved);
     }
-    
+
     @Transactional
     public OmekaConfigurationDTO update(final OmekaConfigurationDTO dto) throws PgcnTechnicalException {
-        
+
         // Charge existant
-        final OmekaConfiguration conf = omekaConfigurationService.findOne(dto.getIdentifier());   
+        final OmekaConfiguration conf = omekaConfigurationService.findOne(dto.getIdentifier());
         fusionLists(dto);
         updateProperties(dto, conf);
         return OmekaConfigurationMapper.INSTANCE.confOmekaToDto(omekaConfigurationService.save(conf));
     }
-    
+
     /**
-     * 
+     *
      * @param dto
      */
     private void fusionLists(final OmekaConfigurationDTO dto) {
@@ -76,18 +76,18 @@ public class UIOmekaConfigurationService {
                                             .filter(ol-> ol.getName() != null)
                                             .collect(Collectors.toList());
             dto.getOmekaLists().addAll(itms);
-        }  
+        }
     }
-    
+
     /**
-     * MAJ des propriétés 
+     * MAJ des propriétés
      * @param src
      * @param dest
      */
     private void updateProperties(final OmekaConfigurationDTO srcDto, final OmekaConfiguration dest) {
         dest.setActive(srcDto.isActive());
         dest.setLabel(srcDto.getLabel());
-        
+
         if (! StringUtils.equals(srcDto.getLibrary().getIdentifier(), dest.getLibrary().getIdentifier())) {
             dest.setLibrary(libraryService.findOne(srcDto.getLibrary().getIdentifier()));
         }
@@ -98,14 +98,14 @@ public class UIOmekaConfigurationService {
         dest.setAddress(srcDto.getAddress());
         dest.setAccessUrl(srcDto.getAccessUrl());
         dest.setMailCsv(srcDto.getMailCsv());
-        
+
         dest.setExportMets(srcDto.isExportMets());
         dest.setExportMaster(srcDto.isExportMaster());
         dest.setExportView(srcDto.isExportView());
         dest.setExportThumb(srcDto.isExportThumb());
         dest.setExportPdf(srcDto.isExportPdf());
-        
-        
+
+
         // Liste de collections et d'items
         final List<OmekaList> neueList = OmekaListMapper.INSTANCE.dtosToObjs(srcDto.getOmekaLists());
         final List<String> toDel = dest.getOmekaLists().stream().filter(ol -> !neueList.contains(ol))
@@ -116,7 +116,7 @@ public class UIOmekaConfigurationService {
         copy.forEach(ol -> {
             if (toDel.contains(ol.getIdentifier())) {
                 dest.getOmekaLists().remove(ol);
-            } 
+            }
         });
         // to maj
         dest.getOmekaLists().forEach(ol -> {
@@ -124,7 +124,7 @@ public class UIOmekaConfigurationService {
             final OmekaList nouv = neueList.stream()
                                     .filter(nl -> StringUtils.equals(nl.getIdentifier(), ol.getIdentifier()))
                                     .findFirst().orElse(null);
-                    ol.setName(nouv.getName());  
+                    ol.setName(nouv.getName());
         });
         // to add
         neueList.forEach(ol -> {
@@ -133,6 +133,9 @@ public class UIOmekaConfigurationService {
                 dest.getOmekaLists().add(ol);
             }
         });
+
+        dest.setOmekas(srcDto.isOmekas());
+        dest.setSftp(srcDto.isSftp());
     }
-    
+
 }

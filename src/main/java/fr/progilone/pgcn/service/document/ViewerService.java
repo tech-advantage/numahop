@@ -143,7 +143,7 @@ public class ViewerService {
                 sf = binaryRepository.getOneByPageIdentifierAndFileFormat(dp.getIdentifier(), ViewsFormatConfiguration.FileFormat.PRINT);
             }
         }
-        final File f = bsm.getFileForStoredFile(sf);
+        final File f = bsm.getFileForStoredFile(sf, sf.getPage().getDigitalDocument().getDocUnit().getLibrary().getIdentifier());
         final int[] dims = new int[2];
         if (sf.getHeight()==null || sf.getWidth() == null) {
             final Optional<Dimension> dim =  bsm.getImgDimension(f, Optional.empty());
@@ -303,10 +303,10 @@ public class ViewerService {
         }
         return excel;
     }
-    
+
     /**
      * Récupération du fichier de TDM (TOC) excel, ou à défaut mets.
-     * 
+     *
      * @param identifier
      * @return
      */

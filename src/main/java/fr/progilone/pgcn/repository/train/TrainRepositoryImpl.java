@@ -8,6 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
+import fr.progilone.pgcn.domain.user.QUser;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
@@ -86,16 +87,17 @@ public class TrainRepositoryImpl implements TrainRepositoryCustom {
         final QLibrary qLibrary = QLibrary.library;
         final QProject qProject = QProject.project;
         final BooleanBuilder builder = new BooleanBuilder();
+        final QLibrary qAssociatedLibrary = QLibrary.library;
+        final QUser qAssociatedUser = QUser.user;
 
         if (StringUtils.isNotBlank(search)) {
             final BooleanExpression nameFilter = qTrain.label.containsIgnoreCase(search);
             builder.andAnyOf(nameFilter);
         }
-        
+
         // active
         final boolean effectiveActive;
-        if (CollectionUtils.isNotEmpty(statuses) 
-                && (statuses.contains(TrainStatus.CLOSED) || statuses.contains(TrainStatus.CLOSED))) {
+        if (CollectionUtils.isNotEmpty(statuses) && statuses.contains(TrainStatus.CLOSED)) {
             effectiveActive = false;
         } else {
             effectiveActive = active;
@@ -107,16 +109,25 @@ public class TrainRepositoryImpl implements TrainRepositoryCustom {
         final CustomUserDetails currentUser = SecurityUtils.getCurrentUser();
 
         // Prestataire: voit les projets sur lesquels il est prestataires + les données de sa bibliothèque
-        if (currentUser != null && currentUser.getCategory() == User.Category.PROVIDER) {
-            builder.and(qProject.provider.identifier.eq(currentUser.getIdentifier()).and(qLibrary.identifier.eq(currentUser.getLibraryId())))
-                   .or(qTrain.createdBy.eq(currentUser.getLogin()));
-        }
-        // Sinon on applique les filtres demandés
-        else {
-            if (CollectionUtils.isNotEmpty(libraries)) {
-                builder.and(qLibrary.identifier.in(libraries));
-            }
-        }
+//        if (currentUser != null && currentUser.getCategory() == User.Category.PROVIDER) {
+//            builder.and(qProject.provider.identifier.eq(currentUser.getIdentifier()).and(qLibrary.identifier.eq(currentUser.getLibraryId())))
+//                   .or(qTrain.createdBy.eq(currentUser.getLogin()));
+//        }
+//        // Sinon on applique les filtres demandés
+//        else {
+//            if (CollectionUtils.isNotEmpty(libraries)) {
+//                builder.and(qLibrary.identifier.in(libraries));
+//            }
+//        }
+        // provider, library
+        QueryDSLBuilderUtils.addAccessFilters(builder,
+                                              qLibrary,
+                                              null,
+                                              qProject,
+                                              qAssociatedLibrary,
+                                              qAssociatedUser,
+                                              libraries,
+                                              null);
 
         // projets
         if (CollectionUtils.isNotEmpty(projects)) {
@@ -160,7 +171,9 @@ public class TrainRepositoryImpl implements TrainRepositoryCustom {
 
         final List<String> trainsIdentifiers = countQuery.from(qTrain)
                                                          .leftJoin(qTrain.project, qProject)
-                                                         .leftJoin(qProject.library, qLibrary)
+                                                         .leftJoin(qProject.associatedLibraries, qAssociatedLibrary)
+                                                         .leftJoin(qProject.associatedUsers, qAssociatedUser)
+                                                         .leftJoin(qProject.library)
                                                          .groupBy(qTrain.identifier)
                                                          .where(builder.getValue())
                                                          .distinct()
@@ -169,7 +182,9 @@ public class TrainRepositoryImpl implements TrainRepositoryCustom {
 
         final List<Train> result = baseQuery.from(qTrain)
                                             .leftJoin(qTrain.project, qProject)
-                                            .leftJoin(qProject.library, qLibrary)
+                                            .leftJoin(qProject.associatedLibraries, qAssociatedLibrary)
+                                            .leftJoin(qProject.associatedUsers, qAssociatedUser)
+                                            .leftJoin(qProject.library)
                                             .where(builder.getValue())
                                             .distinct()
                                             .orderBy(qTrain.label.asc())

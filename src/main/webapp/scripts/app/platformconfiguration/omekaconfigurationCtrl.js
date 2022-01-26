@@ -4,8 +4,8 @@
     angular.module('numaHopApp.controller')
         .controller('OmekaConfigurationCtrl', OmekaConfigurationCtrl);
 
-    function OmekaConfigurationCtrl($location, $scope, $timeout, $q,
-        OmekaConfigurationSrvc, StringTools, NumahopStorageService, NumaHopInitializationSrvc) {
+    function OmekaConfigurationCtrl($location, $scope, $timeout, $q, gettextCatalog,
+        OmekaConfigurationSrvc, StringTools, NumahopStorageService, NumaHopInitializationSrvc, HistorySrvc) {
 
         $scope.applyFilter = applyFilter;
         $scope.clearSelection = clearSelection;
@@ -94,6 +94,15 @@
             if ($scope.filters.libraries) {
                 var librariesIds = _.pluck($scope.filters.libraries, "identifier");
                 searchParams["libraries"] = librariesIds;
+            }
+            if ($scope.filters.omekas) {
+                searchParams["omekas"] = true;
+
+                if($scope.filters.omeka){
+                    searchParams["omekas"] = null;
+                }
+            } else if($scope.filters.omeka){
+                searchParams["omekas"] = false;
             }
 
             return OmekaConfigurationSrvc.search(searchParams).$promise;

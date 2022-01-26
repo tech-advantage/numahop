@@ -221,7 +221,7 @@ public class LotController extends AbstractRestController {
         final Collection<LotListDTO> filteredLots = filterLotDTOs(lots, LotListDTO::getIdentifier);
         return createResponseEntity(filteredLots);
     }
-    
+
     @RequestMapping(method = RequestMethod.GET, params = {"dto", "complete", "libraries"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<Collection<LotListDTO>> findAllByLibraries(@RequestParam(required = false) final List<String> libraries) {
@@ -321,7 +321,8 @@ public class LotController extends AbstractRestController {
     @RolesAllowed({LOT_HAB0})
     public ResponseEntity<LotDTO> create(final HttpServletRequest request, @RequestBody final LotDTO lot) throws PgcnException {
         // Droit d'accès à la bibliothèque
-        if (lot.getProject() != null && !libraryAccesssHelper.checkLibrary(request, lot.getProject().getLibrary().getIdentifier())) {
+        if (lot.getProject() != null && !libraryAccesssHelper.checkLibrary(request, lot.getProject().getLibrary().getIdentifier())
+        && !accessHelper.checkProject(lot.getProject().getIdentifier())) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         final LotDTO savedLot = uiLotService.create(lot);
@@ -424,31 +425,31 @@ public class LotController extends AbstractRestController {
             throw new PgcnTechnicalException(e);
         }
     }
-    
+
     /**
      * Force la cloture des lots en parametre (si possible).
-     * 
+     *
      * @param lotsIds
      */
     @RequestMapping(method = RequestMethod.POST, params = {"cloturelot"})
     @Timed
     @RolesAllowed(AuthorizationConstants.SUPER_ADMIN)
     public ResponseEntity<List<ResultAdminLotDTO>> closeLot(@RequestBody final List<String> lotsIds) {
-        
+
         final List<ResultAdminLotDTO> results = new ArrayList<>();
         lotsIds.stream()
                 .forEach(id -> {
-                    
+
                     results.add(lotService.preClotureLot(id));
                     esLotService.indexAsync(id);
                 });
         return new ResponseEntity<>(results, HttpStatus.OK);
     }
-    
-    
+
+
     /**
      * Force la reouverture de lots clotures en parametre.
-     * 
+     *
      * @param lotsIds
      */
     @RequestMapping(method = RequestMethod.POST, params = {"decloturelot"})
@@ -456,14 +457,13 @@ public class LotController extends AbstractRestController {
     @RolesAllowed(AuthorizationConstants.SUPER_ADMIN)
     public ResponseEntity<List<ResultAdminLotDTO>> declotureLot(@RequestBody final List<String> lotsIds) {
         final List<ResultAdminLotDTO> results = new ArrayList<>();
-        lotsIds.stream()
-                .forEach(id -> { 
+        lotsIds.forEach(id -> {
                     results.add(lotService.declotureLot(id));
                     esLotService.indexAsync(id);
                 });
         return new ResponseEntity<>(results, HttpStatus.OK);
     }
-    
+
 
     /**
      * Filtrage d'une liste de LotDTO sur les droits d'accès de l'utilisateur

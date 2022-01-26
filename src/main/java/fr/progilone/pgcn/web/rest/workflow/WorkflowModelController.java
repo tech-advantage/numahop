@@ -13,6 +13,8 @@ import java.util.stream.Collectors;
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 
+import fr.progilone.pgcn.web.util.AccessHelper;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -41,14 +43,17 @@ public class WorkflowModelController extends AbstractRestController {
 
     private final WorkflowModelService service;
     private final UIWorkflowModelService uiService;
-    private final LibraryAccesssHelper accessHelper;
+    private final LibraryAccesssHelper libraryAccesssHelper;
+    private final AccessHelper accessHelper;
 
     @Autowired
     public WorkflowModelController(final WorkflowModelService service,
-            final UIWorkflowModelService uiService,
-            final LibraryAccesssHelper accessHelper) {
+                                   final UIWorkflowModelService uiService,
+                                   final LibraryAccesssHelper libraryAccesssHelper,
+                                   final AccessHelper accessHelper) {
         this.service = service;
         this.uiService = uiService;
+        this.libraryAccesssHelper = libraryAccesssHelper;
         this.accessHelper = accessHelper;
     }
 
@@ -57,7 +62,7 @@ public class WorkflowModelController extends AbstractRestController {
     @RolesAllowed({WORKFLOW_HAB1})
     public ResponseEntity<WorkflowModelDTO> create(final HttpServletRequest request,
                                                       @RequestBody final WorkflowModelDTO dto) throws PgcnException {
-        if (dto.getLibrary() != null && !accessHelper.checkLibrary(request, dto.getLibrary().getIdentifier())) {
+        if (dto.getLibrary() != null && !libraryAccesssHelper.checkLibrary(request, dto.getLibrary().getIdentifier())) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         final WorkflowModelDTO saved = uiService.create(dto);
@@ -81,11 +86,11 @@ public class WorkflowModelController extends AbstractRestController {
                                                                   @RequestParam(value = "libraries", required = false) final List<String> libraries,
                                                                   @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
                                                                   @RequestParam(value = "size", required = false, defaultValue = "10") final Integer size,
-                                                                  @RequestParam(value = "sorts", required = false) final List<String> sorts) 
+                                                                  @RequestParam(value = "sorts", required = false) final List<String> sorts)
     {
         List<String> filteredLibraries = new ArrayList<>();
         if(libraries != null && !libraries.isEmpty()) {
-            filteredLibraries = libraries.stream().filter(lib -> accessHelper.checkLibrary(request, lib)).collect(Collectors.toList());
+            filteredLibraries = libraries.stream().filter(lib -> libraryAccesssHelper.checkLibrary(request, lib)).collect(Collectors.toList());
         }
         return new ResponseEntity<>(uiService.search(search, initiale, filteredLibraries, page, size, sorts), HttpStatus.OK);
     }
@@ -103,18 +108,24 @@ public class WorkflowModelController extends AbstractRestController {
     @RolesAllowed({WORKFLOW_HAB2})
     public ResponseEntity<WorkflowModelDTO> update(final HttpServletRequest request,
                                                       @RequestBody final WorkflowModelDTO dto) throws PgcnException {
-        if (dto.getLibrary() != null && !accessHelper.checkLibrary(request, dto.getLibrary().getIdentifier())) {
+        if (dto.getLibrary() != null && !libraryAccesssHelper.checkLibrary(request, dto.getLibrary().getIdentifier())) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         final WorkflowModelDTO saved = uiService.update(dto);
         return new ResponseEntity<>(saved, HttpStatus.OK);
     }
-    
+
     @RequestMapping(method = RequestMethod.GET, params = {"models", "library"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed({WORKFLOW_HAB4})
     public ResponseEntity<Collection<SimpleWorkflowModelDTO>> findModelsByLibrary(final HttpServletRequest request,
-                                                         @RequestParam(name = "library", required = true) final String libraryId) {
+                                                         @RequestParam(name = "library", required = true) final String libraryId,
+                                                         @RequestParam(name = "project", required = false) final String projectId) {
+        // L'usager est autorisé à accéder aux infos de la bibliothèque ou les infos du projet
+        if ((StringUtils.isNotBlank(libraryId) && !libraryAccesssHelper.checkLibrary(request, libraryId)) &&
+            (StringUtils.isNotBlank(projectId) && !accessHelper.checkProject(projectId))) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
         // Réponse
         return new ResponseEntity<>(uiService.findAllForLibrary(libraryId), HttpStatus.OK);
     }

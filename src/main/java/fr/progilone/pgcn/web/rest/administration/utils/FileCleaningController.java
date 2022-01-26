@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -47,8 +48,9 @@ public class FileCleaningController extends AbstractRestController {
      */
     @RequestMapping(value = "/deleteorphans", method = RequestMethod.GET)
     @Timed
+    @Async
     @RolesAllowed(AuthorizationConstants.FILES_GEST_HAB0)
-    public ResponseEntity<?> initDocCheckHistory(final HttpServletRequest request, 
+    public ResponseEntity<?> cleanOrphanFiles(final HttpServletRequest request,
                                                  @RequestParam(name = "library") final String libraryId) throws PgcnException {
         
         fileCleaningManager.cleanOrphanFiles(libraryId);

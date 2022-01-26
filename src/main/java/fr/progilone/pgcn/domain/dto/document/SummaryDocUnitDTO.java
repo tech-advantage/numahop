@@ -13,27 +13,30 @@ import fr.progilone.pgcn.domain.dto.library.LibraryDTO;
 public class SummaryDocUnitDTO extends AbstractDTO {
 
     private String identifier;
-    private LibraryDTO library;
     private String pgcnId;
     private String label;
     private String type;
     private Boolean archivable;
     private Boolean distributable;
-
+    
+    public SummaryDocUnitDTO() {
+    }
+    
+    public SummaryDocUnitDTO(String identifier, String pgcnId, String label, String type, Boolean archivable, Boolean distributable) {
+        this.identifier = identifier;
+        this.pgcnId = pgcnId;
+        this.label = label;
+        this.type = type;
+        this.archivable = archivable;
+        this.distributable = distributable;
+    }
+    
     public String getIdentifier() {
         return identifier;
     }
 
     public void setIdentifier(String identifier) {
         this.identifier = identifier;
-    }
-
-    public LibraryDTO getLibrary() {
-        return library;
-    }
-
-    public void setLibrary(LibraryDTO library) {
-        this.library = library;
     }
 
     public String getPgcnId() {

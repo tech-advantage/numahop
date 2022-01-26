@@ -52,7 +52,7 @@ public class StatisticsWorkflowController {
 
     public StatisticsWorkflowController(final AccessHelper accessHelper,
                                         final LibraryAccesssHelper libraryAccesssHelper,
-                                        final StatisticsWorkflowService workflowProgressReportService, 
+                                        final StatisticsWorkflowService workflowProgressReportService,
                                         final DocCheckHistoryService docCheckHistoryService) {
         this.accessHelper = accessHelper;
         this.libraryAccesssHelper = libraryAccesssHelper;
@@ -131,7 +131,7 @@ public class StatisticsWorkflowController {
 
     /**
      * Suivi de l'avancement des docUnitWorkflows selon les criteres passes en parametre.
-     * 
+     *
      * @param request
      * @param libraries
      * @param projects
@@ -175,24 +175,24 @@ public class StatisticsWorkflowController {
                                                                                                  @RequestParam(value = "page",
                                                                                                                defaultValue = "0",
                                                                                                                required = false) final int page,
-                                                                                                 @RequestParam(value = "size",
+                                                                                                  @RequestParam(value = "size",
                                                                                                                defaultValue = "10",
                                                                                                                required = false) final int size) {
         // Droits d'accès
         final List<String> filteredLibraries = libraryAccesssHelper.getLibraryFilter(request, libraries);
         final List<String> filteredProjects =
             accessHelper.filterProjects(projects).stream().map(AbstractDomainObject::getIdentifier).collect(Collectors.toList());
-        
+
         final List<String> filteredLots = accessHelper.filterLots(lots).stream().map(AbstractDomainObject::getIdentifier).collect(Collectors.toList());
 
         List<String> users = null;
-        if (onlyMine) {  // on recupere le user => on n'aura en retour que les etapes sur lesquelles le user peut agir ! 
+        if (onlyMine) {  // on recupere le user => on n'aura en retour que les etapes sur lesquelles le user peut agir !
             final CustomUserDetails currentUser = SecurityUtils.getCurrentUser();
             if (currentUser != null && !StringUtils.equals(currentUser.getIdentifier(), UserService.SUPER_ADMIN_ID)) {
                 users = Collections.singletonList(currentUser.getLogin());
             }
         }
-        
+
         return new ResponseEntity<>(workflowProgressReportService.getDocUnitProgressReport(filteredLibraries,
                                                                                            filteredProjects,
                                                                                            projetActive,
@@ -281,7 +281,7 @@ public class StatisticsWorkflowController {
         if (accessHelper.checkUserIsPresta()) { //  no presta
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
-        final List<String> filteredLibraries = libraryAccesssHelper.getLibraryFilter(request, libraries);       
+        final List<String> filteredLibraries = libraryAccesssHelper.getLibraryFilter(request, libraries);
         return new ResponseEntity<>(docCheckHistoryService.getWorkflowUsersStatistics(filteredLibraries,
                                                                                              projects,
                                                                                              lots,

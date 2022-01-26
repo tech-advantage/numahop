@@ -25,7 +25,7 @@ public class StatisticsProjectDTO extends AbstractDTO {
     private LocalDate forecastEndDate;
     private LocalDate realEndDate;
     private String status;
-    private Set<SimpleDocUnitDTO> docUnits;
+    private int nbDocUnits;
     private SimpleUserDTO provider;
     private List<SimpleUserDTO> otherProviders;
 
@@ -103,12 +103,12 @@ public class StatisticsProjectDTO extends AbstractDTO {
         this.status = status;
     }
 
-    public Set<SimpleDocUnitDTO> getDocUnits() {
-        return docUnits;
+    public int getNbDocUnits() {
+        return nbDocUnits;
     }
 
-    public void setDocUnits(Set<SimpleDocUnitDTO> docUnits) {
-        this.docUnits = docUnits;
+    public void setNbDocUnits(int docUnits) {
+        this.nbDocUnits = docUnits;
     }
 
     public SimpleUserDTO getProvider() {

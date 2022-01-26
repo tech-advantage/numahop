@@ -102,11 +102,12 @@ public class OmekaConfigurationService {
      * @return
      */
     @Transactional(readOnly = true)
-    public Page<OmekaConfigurationDTO> search(final String search, final List<String> libraries, final Integer page, final Integer size) {
+    public Page<OmekaConfigurationDTO>
+           search(final String search, final List<String> libraries, final Boolean omekas, final Integer page, final Integer size) {
 
         final Pageable pageRequest = new PageRequest(page, size);
 
-        final Page<OmekaConfiguration> configurations = omekaConfigurationRepository.search(search, libraries, pageRequest);
+        final Page<OmekaConfiguration> configurations = omekaConfigurationRepository.search(search, libraries, omekas, pageRequest);
 
         final List<OmekaConfigurationDTO>
                 results =

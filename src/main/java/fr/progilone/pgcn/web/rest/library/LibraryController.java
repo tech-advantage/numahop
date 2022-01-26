@@ -13,6 +13,7 @@ import fr.progilone.pgcn.service.library.LibraryService;
 import fr.progilone.pgcn.service.library.ui.UILibraryService;
 import fr.progilone.pgcn.service.user.ui.UIUserService;
 import fr.progilone.pgcn.web.rest.AbstractRestController;
+import fr.progilone.pgcn.web.rest.administration.security.AuthorizationConstants;
 import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -36,12 +37,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import static fr.progilone.pgcn.domain.user.User.Category.*;
 import static fr.progilone.pgcn.web.rest.library.security.AuthorizationConstants.*;
@@ -74,9 +70,8 @@ public class LibraryController extends AbstractRestController {
 
     @RequestMapping(method = RequestMethod.POST)
     @Timed
-    @RolesAllowed({LIB_HAB1})
+    @RolesAllowed({AuthorizationConstants.SUPER_ADMIN})
     public ResponseEntity<LibraryDTO> create(final HttpServletRequest request, @RequestBody final LibraryDTO library) throws PgcnException {
-        // TODO restrict to superadmin
         final LibraryDTO savedLibrary = uiLibraryService.create(library);
         return new ResponseEntity<>(savedLibrary, HttpStatus.CREATED);
     }
@@ -131,7 +126,7 @@ public class LibraryController extends AbstractRestController {
     @RolesAllowed({LIB_HAB5, LIB_HAB6, LIB_HAB7})
     public ResponseEntity<LibraryDTO> getById(final HttpServletRequest request, @PathVariable final String id) {
         if (!libraryAccesssHelper.checkLibrary(request, id)) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            return createResponseEntity(new LibraryDTO());
         }
         final LibraryDTO library = uiLibraryService.getOneDTO(id);
         return createResponseEntity(library);
@@ -142,7 +137,7 @@ public class LibraryController extends AbstractRestController {
     @RolesAllowed({LIB_HAB5, LIB_HAB6, LIB_HAB7})
     public ResponseEntity<Collection<SimpleUserDTO>> getProviders(final HttpServletRequest request, @PathVariable final String id) {
         if (!libraryAccesssHelper.checkLibrary(request, id)) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            return createResponseEntity(new ArrayList<>());
         }
         final CustomUserDetails currentUser = SecurityUtils.getCurrentUser();
         // Un prestataire ne peut pas voir les autres prestataires
@@ -154,7 +149,7 @@ public class LibraryController extends AbstractRestController {
             return createResponseEntity(users);
         }
     }
-    
+
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, params = {"users"})
     @Timed
     @RolesAllowed({LIB_HAB5, LIB_HAB6, LIB_HAB7})

@@ -39,7 +39,6 @@ public class ControlesQualiteState extends DocUnitState {
             if(preVal.isSkippedOrCanceled()) {
                 final DocUnitState valState = getWorkflow().getFutureOrRunningByKey(WorkflowStateKey.VALIDATION_DOCUMENT);
                 if(valState != null) {
-                    preRej.initializeState(null, null, WorkflowStateStatus.CANCELED);
                     valState.initializeState(null, null, null);
                     valState.process(user);
                 }
@@ -69,7 +68,7 @@ public class ControlesQualiteState extends DocUnitState {
         // Si on passe directement à l'étape de rejet, c'est rejeté
         if(preRej.isSkippedOrCanceled()) {
             final DocUnitState val = getWorkflow().getFutureOrRunningByKey(WorkflowStateKey.VALIDATION_DOCUMENT);
-            val.initializeState(null, null, WorkflowStateStatus.FAILED);
+            val.reject(user);
         }
     }
 
