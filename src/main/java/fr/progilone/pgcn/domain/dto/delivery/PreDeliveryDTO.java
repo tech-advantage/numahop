@@ -5,6 +5,7 @@ import java.util.Set;
 
 import fr.progilone.pgcn.domain.dto.AbstractDTO;
 import fr.progilone.pgcn.domain.dto.document.DigitalDocumentDTO;
+import fr.progilone.pgcn.domain.dto.document.PhysicalDocumentDTO;
 import fr.progilone.pgcn.domain.dto.document.PreDeliveryDocumentDTO;
 
 /**
@@ -12,7 +13,8 @@ import fr.progilone.pgcn.domain.dto.document.PreDeliveryDocumentDTO;
  */
 public class PreDeliveryDTO extends AbstractDTO {
     private Set<PreDeliveryDocumentDTO> documents = new HashSet<>();
-    private Set<DigitalDocumentDTO> lockedDigitalDocuments = new HashSet<>();
+    private final Set<DigitalDocumentDTO> lockedDigitalDocuments = new HashSet<>();
+    private Set<PhysicalDocumentDTO> undeliveredDocuments = new HashSet<>();
 
     public PreDeliveryDTO(final Set<PreDeliveryDocumentDTO> documents) {
         this.documents = documents;
@@ -49,6 +51,20 @@ public class PreDeliveryDTO extends AbstractDTO {
     public void addLockedDigitalDocument(final DigitalDocumentDTO digitalDocument) {
         if(digitalDocument != null) {
             this.lockedDigitalDocuments.add(digitalDocument);
+        }
+    }
+
+    public Set<PhysicalDocumentDTO> getUndeliveredDocuments() {
+        return undeliveredDocuments;
+    }
+
+    public void setUndeliveredDocuments(final Set<PhysicalDocumentDTO> undeliveredDocuments) {
+        this.undeliveredDocuments = undeliveredDocuments;
+    }
+
+    public void addUndeliveredDigitalDocument(final PhysicalDocumentDTO physicalDocument) {
+        if (physicalDocument != null) {
+            this.undeliveredDocuments.add(physicalDocument);
         }
     }
 }

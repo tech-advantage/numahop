@@ -237,9 +237,8 @@
                 // Livraisons
                 { code: "DELIVERY:status-SAVED", label: gettextCatalog.getString('Sauvegardé') },
                 { code: "DELIVERY:status-DELIVERING", label: gettextCatalog.getString('En cours de livraison') },
+                { code: "DELIVERY:status-DELIVERING_ERROR", label: gettextCatalog.getString('Erreur de livraison') },
                 { code: "DELIVERY:status-TO_BE_CONTROLLED", label: gettextCatalog.getString('À contrôler') },
-                { code: "DELIVERY:status-VALIDATED", label: gettextCatalog.getString('Validé') },
-                { code: "DELIVERY:status-REJECTED", label: gettextCatalog.getString('Rejeté') },
                 { code: "DELIVERY:status-AUTOMATICALLY_REJECTED", label: gettextCatalog.getString('Rejeté automatiquement') },
                 { code: "DELIVERY:status-TREATED", label: gettextCatalog.getString('Traité') },
                 { code: "DELIVERY:method-FTP", label: gettextCatalog.getString('FTP') },

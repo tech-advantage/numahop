@@ -386,9 +386,6 @@ public class InternetArchiveService {
             if (item.getCoverages() != null && !item.getCoverages().isEmpty()) {
                 metadata.setHeader("x-archive-meta-coverage", getUTF8String(StringUtils.join(item.getCoverages(), ';')));
             }
-            if (item.getCreators() != null && !item.getCreators().isEmpty()) {
-                metadata.setHeader("x-archive-meta-creator", getUTF8String(StringUtils.join(item.getCreators(), ';')));
-            }
             if (StringUtils.isNotBlank(item.getCredits())) {
                 metadata.setHeader("x-archive-meta-credits", getUTF8String(item.getCredits()));
             }
@@ -425,6 +422,17 @@ public class InternetArchiveService {
             }
             if (StringUtils.isNotBlank(item.getSource())) {
                 metadata.setHeader("x-archive-meta-source", getUTF8String(item.getSource()));
+            }
+    
+            // Creator
+            int countCreator = 1;
+            for (final String creator : item.getCreators()) {
+                if (countCreator < 10) {
+                    metadata.setHeader("x-archive-meta0" + countCreator + "-creator", getUTF8String(creator));
+                } else {
+                    metadata.setHeader("x-archive-meta" + countCreator + "-creator", getUTF8String(creator));
+                }
+                countCreator++;
             }
             
             // Collections

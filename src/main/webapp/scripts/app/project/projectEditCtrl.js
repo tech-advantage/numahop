@@ -24,6 +24,7 @@
         $scope.libraryReadOnly = libraryReadOnly;
         $scope.listOtherProviders = listOtherProviders;
         $scope.onChangeLibrary = onChangeLibrary;
+        $scope.onChangeOmekaConf = onChangeOmekaConf;
         $scope.semCodes = codeSrvc;
         $scope.validation = ValidationSrvc;
         $scope.openForm = openForm;
@@ -55,7 +56,9 @@
                         });
                 },
                 "refresh-delay": 300
-            }
+            },
+            omekaCollections:[],
+            omekaItems:[]
         };
 
         $scope.translate = {
@@ -177,8 +180,11 @@
                     // Load other
                     loadPACS($scope.project.library);
                     loadCollections($scope.project.library);
-                    loadOmekaCollections($scope.project.library);
-                    loadOmekaItems($scope.project.library);
+                    loadOmekaConfigurations($scope.project.library);
+                    if($scope.project.omekaConfiguration){
+                        loadOmekaCollections($scope.project.omekaConfiguration);
+                        loadOmekaItems($scope.project.omekaConfiguration);
+                    }
                     loadProviders($scope.project.library);
                     loadWorkflowModels($scope.project.library);
                     loadConfigurationSelect();
@@ -220,14 +226,14 @@
          * Chargement des lots
          */
         function loadLots(projectId) {
-            return LotSrvc.query({ project: projectId });
+            return LotSrvc.findSimpleByProject({ project: projectId });
         }
 
         /**
          * Chargement des trains
          */
         function loadTrains(projectId) {
-            return TrainSrvc.query({ project: projectId });
+            return TrainSrvc.findSimpleByProject({ project: projectId });
         }
 
         /**
@@ -243,7 +249,7 @@
                 $scope.canDisableProj = false;
             }
 
-            var deliveries = DeliverySrvc.query({ project: projectId },
+            var deliveries = DeliverySrvc.findByProjectIdsLotsIds({ filteredProjects: [projectId] },
                 function (delivs) {
                     if ($scope.canCancelProj) {
                         // Droits d'annulation : une livraison est commencée => niet !
@@ -289,7 +295,7 @@
                 $scope.options.pacs = [];
                 return;
             }
-            NumaHopInitializationSrvc.loadPACS(library.identifier)
+            NumaHopInitializationSrvc.loadPACS(library.identifier, $scope.project.identifier)
                 .then(function (data) {
                     $scope.options.pacs = data;
                 });
@@ -303,33 +309,43 @@
                 $scope.options.collections = [];
                 return;
             }
-            NumaHopInitializationSrvc.loadCollections(library.identifier)
+            NumaHopInitializationSrvc.loadCollections(library.identifier, $scope.project.identifier)
                 .then(function (data) {
                     $scope.options.collections = data;
                 });
         }
-        
-        function loadOmekaCollections(library) {
-            if (!library) {
-                library = $scope.project.library;
+
+        function loadOmekaConfigurations(library) {
+            NumaHopInitializationSrvc.loadOmekaConfigurations(library, $scope.project)
+                .then(function (data) {
+                    $scope.options.omekaConfigurations = data;
+                });
+        }
+
+        function loadOmekaCollections(omekaConf) {
+            if (!omekaConf) {
+                omekaConf = $scope.project.omekaConfiguration;
             }
-            if (!library) {
+            if (!omekaConf.identifier) {
+                $scope.options.omekaCollections = [];
                 return;
             }
-            NumaHopInitializationSrvc.loadOmekaCollections(library.identifier)
+            NumaHopInitializationSrvc.loadOmekaCollections(omekaConf.identifier, $scope.project.identifier)
                 .then(function (data) {
                     $scope.options.omekaCollections = data;
                 });
         }
-        
-        function loadOmekaItems(library) {
-            if (!library) {
-                library = $scope.project.library;
+
+
+        function loadOmekaItems(omekaConf) {
+            if (!omekaConf) {
+                omekaConf = $scope.project.omekaConfiguration;
             }
-            if (!library) {
+            if (!omekaConf.identifier) {
+                $scope.options.omekaItems = [];
                 return;
             }
-            NumaHopInitializationSrvc.loadOmekaItems(library.identifier)
+            NumaHopInitializationSrvc.loadOmekaItems(omekaConf.identifier, $scope.project.identifier)
                 .then(function (data) {
                     $scope.options.omekaItems = data;
                 });
@@ -343,7 +359,7 @@
                 $scope.options.workflowModels = [];
                 return;
             }
-            NumaHopInitializationSrvc.loadWorkflowModels(library.identifier)
+            NumaHopInitializationSrvc.loadWorkflowModels(library.identifier, $scope.project.identifier)
                 .then(function (data) {
                     $scope.options.workflowModels = data;
                 });
@@ -363,10 +379,14 @@
             loadConfigurationSelect(library);
             loadPACS(library);
             loadCollections(library);
-            loadOmekaCollections(library);
-            loadOmekaItems(library);
+            loadOmekaConfigurations(library);
             loadWorkflowModels(library);
             loadResponsableLibrary(library);
+        }
+
+        function onChangeOmekaConf(omekaConf) {
+            loadOmekaCollections(omekaConf);
+            loadOmekaItems(omekaConf);
         }
 
         function addLibrary() {
@@ -536,7 +556,7 @@
 
         /**
          * Suppression du projet
-         * @param {*} project 
+         * @param {*} project
          */
         function deleteProject(project) {
             ModalSrvc.confirmDeletion(gettextCatalog.getString("du projet {{name}}", project))
@@ -558,7 +578,7 @@
 
         /**
          * Annulation du projet.
-         * @param {*} project 
+         * @param {*} project
          */
         function cancelProject(project) {
 
@@ -659,11 +679,11 @@
 
         /**
          * Filtrage de la liste des bibliothèques partenaires par rapport à celles déjà sélectionnées
-         * 
-         * @param {any} value 
-         * @param {any} index 
-         * @param {any} array 
-         * @returns 
+         *
+         * @param {any} value
+         * @param {any} index
+         * @param {any} array
+         * @returns
          */
         function filterAssociatedLibraries(value) {
             // la bibliothèque n'est pas celle du projet
@@ -676,11 +696,11 @@
 
         /**
          * Filtrage de la liste des intervenants par rapport à ceux déjà sélectionnés
-         * 
-         * @param {any} value 
-         * @param {any} index 
-         * @param {any} array 
-         * @returns 
+         *
+         * @param {any} value
+         * @param {any} index
+         * @param {any} array
+         * @returns
          */
         function filterAssociatedUsers(value) {
             // l'intervenant n'est pas déjà sélectionné

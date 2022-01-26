@@ -5,31 +5,29 @@
         </div>
         <div class="panel-body" ng-show="loaded" id="deliveryDetails">
             <div>
-                <div ng-if="!_createDocs && (!authorizedDelivery || !availableSpaceOnDisk || emptyDocs.length > 0)">
+                <div ng-if="!_createDocs && ( predelivery.errors.length > 0 || emptyDocs.length > 0)">
                     <div class="formBlock ng-scope" aria-hidden="false" style="margin-bottom: 20px;">
                         <div class="formBlockTitle">
                             <span translate=""><span class="warn">Attention</span></span>
                         </div>
                         <div class="formBlockContent">
-	                        <div class="row ng-scope">
-	                            <div class="col-xs-12">
-	                                <div class="col-xs-4">
-	                                    <label ng-if="!authorizedDelivery"><span class="alert-warn" translate>Aucun document à livrer n'a été détecté</span></label>
-	                                    <label ng-if="emptyDocs.length > 0"><span class="warn" translate>Certains documents ne contiennent aucun livrable</span></label>
-	                                    <label ng-if="!availableSpaceOnDisk"><span class="error" translate>Espace disque insuffisant pour cette livraison</span></label>
-	                                </div>
-	                                <div class="col-xs-6">
-	                                    <label><span translate>Veuillez vérifier :</span></label>
-		                                <ul>
-					                        <li><span translate>l'état du workflow des documents</span></li>
-					                        <li><span translate>la présence de fichiers sur le ftp</span></li>
-					                        <li><span translate>la cohérence entre le radical et le nom du dossier sur le ftp</span></li>
-					                        <li><span translate>etc..</span></li>
-					                    </ul>
-	                                </div>
-	                            </div>
-	                        </div>
-	                    </div>
+                            <div class="row ng-scope">
+                                <div class="col-xs-12">
+                                    <div class="col" ng-repeat="error in predelivery.errors">
+                                        <label><span class="error" translate>{{ getError(error.code) }}</span></label>
+                                    </div>
+                                    <div class="col-xs-6" ng-if="emptyDelivery">
+                                        <label><span translate>Veuillez vérifier :</span></label>
+                                        <ul>
+                                            <li><span translate>l'état du workflow des documents</span></li>
+                                            <li><span translate>la présence de fichiers sur le ftp</span></li>
+                                            <li><span translate>la cohérence entre le radical et le nom du dossier sur le ftp</span></li>
+                                            <li><span translate>etc..</span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
@@ -54,6 +52,11 @@
                                 <td>{{doc.digitalId}}</td>
                                 <td>{{semCodes['digitalDocument.' + doc.status]}}</td>
                                 <td>{{getCommentForStatus(doc.status)}}</td>
+                            </tr>
+                            <tr ng-repeat="doc in predelivery.undeliveredDocuments">
+                                <td>{{doc.identifier}}</td>
+                                <td>{{semCodes['physicalDocument.' + doc.status]}}</td>
+                                <td>{{doc.commentaire}}</td>
                             </tr>
                             </tbody>
                         </table>

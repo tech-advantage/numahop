@@ -1,6 +1,7 @@
 package fr.progilone.pgcn.web.rest.workflow;
 
 import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.COND_REPORT_HAB2;
+import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.DOC_UNIT_HAB3;
 
 import java.util.List;
 
@@ -188,6 +189,30 @@ public class WorkflowController extends AbstractRestController {
             }
         }    
         uiService.massValidateCondReports(docUnitIds);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+    
+    /**
+     * Validation constats d'etat en masse.
+     *
+     * @param request
+     * @param datas
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.POST, params = {"massValidateRecords"})
+    @ResponseStatus(HttpStatus.OK)
+    @Timed
+    @RolesAllowed(DOC_UNIT_HAB3)
+    public ResponseEntity<?> massValidateRecords(final HttpServletRequest request,
+                                          @RequestBody final List<String> docUnitIds) {
+        
+        // droits d'accès à l'ud
+        for (final String docUnitId:docUnitIds) {
+            if (!accessHelper.checkDocUnit(docUnitId)) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+        }
+        uiService.massValidateRecords(docUnitIds);
         return new ResponseEntity<>(HttpStatus.OK);
     }
     

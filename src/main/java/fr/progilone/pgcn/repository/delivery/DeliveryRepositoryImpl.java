@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import fr.progilone.pgcn.domain.user.QUser;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -49,11 +50,13 @@ public class DeliveryRepositoryImpl implements DeliveryRepositoryCustom {
         final QLibrary qLibrary = QLibrary.library;
         final QLot qLot = QLot.lot;
         final QProject qProject = QProject.project;
+        final QLibrary qAssociatedLibrary = QLibrary.library;
+        final QUser qAssociatedUser = QUser.user;
 
         final BooleanBuilder builder = new BooleanBuilder();
 
         // provider
-        QueryDSLBuilderUtils.addAccessFilters(builder, qLibrary, qLot, qProject, libraries, null);
+        QueryDSLBuilderUtils.addAccessFilters(builder, qLibrary, qLot, qProject, qAssociatedLibrary, qAssociatedUser, libraries, null);
 
         // project
         if (CollectionUtils.isNotEmpty(projects)) {
@@ -71,7 +74,9 @@ public class DeliveryRepositoryImpl implements DeliveryRepositoryCustom {
         return new JPAQuery(em).from(qDelivery)
                                .leftJoin(qDelivery.lot, qLot)
                                .leftJoin(qLot.project, qProject)
-                               .leftJoin(qProject.library, qLibrary)
+                               .leftJoin(qProject.associatedLibraries, qAssociatedLibrary)
+                               .leftJoin(qProject.associatedUsers, qAssociatedUser)
+                               .leftJoin(qProject.library)
                                .where(builder)
                                .groupBy(qDelivery.status)
                                .list(qDelivery.status, qDelivery.identifier.countDistinct())
@@ -87,6 +92,8 @@ public class DeliveryRepositoryImpl implements DeliveryRepositoryCustom {
         final QLibrary qLibrary = QLibrary.library;
         final QProject qProject = QProject.project;
         final QLot qLot = QLot.lot;
+        final QLibrary qAssociatedLibrary = QLibrary.library;
+        final QUser qAssociatedUser = QUser.user;
 
         final BooleanBuilder builder = new BooleanBuilder();
 
@@ -95,6 +102,8 @@ public class DeliveryRepositoryImpl implements DeliveryRepositoryCustom {
                                               qLibrary,
                                               qLot,
                                               qProject,
+                                              qAssociatedLibrary,
+                                              qAssociatedUser,
                                               searchBuilder.getLibraries().orElse(null),
                                               searchBuilder.getProviders().orElse(null));
 
@@ -138,7 +147,9 @@ public class DeliveryRepositoryImpl implements DeliveryRepositoryCustom {
         baseQuery.from(qDelivery)
                  .innerJoin(qDelivery.lot, qLot)
                  .innerJoin(qLot.project, qProject)
-                 .innerJoin(qProject.library, qLibrary)
+                 .leftJoin(qProject.associatedLibraries, qAssociatedLibrary)
+                 .leftJoin(qProject.associatedUsers, qAssociatedUser)
+                 .innerJoin(qProject.library)
                  .where(builder.getValue())
                  .distinct();
 

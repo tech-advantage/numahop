@@ -24,7 +24,7 @@ public class OmekaConfigurationRepositoryImpl implements OmekaConfigurationRepos
     private EntityManager em;
 
     @Override
-    public Page<OmekaConfiguration> search(final String search, final List<String> libraries, final Pageable pageable) {
+    public Page<OmekaConfiguration> search(final String search, final List<String> libraries, final Boolean omekas, final Pageable pageable) {
 
         final QOmekaConfiguration configuration = QOmekaConfiguration.omekaConfiguration;
 
@@ -37,6 +37,10 @@ public class OmekaConfigurationRepositoryImpl implements OmekaConfigurationRepos
         if (libraries != null && !libraries.isEmpty()) {
             final BooleanExpression libraryFilter = configuration.library.identifier.in(libraries);
             builder.and(libraryFilter);
+        }
+        if (omekas != null) {
+            final BooleanExpression omekasFilter = configuration.omekas.eq(omekas);
+            builder.and(omekasFilter);
         }
 
         final JPQLQuery baseQuery = new JPAQuery(em);

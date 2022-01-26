@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
+import fr.progilone.pgcn.domain.project.Project;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -79,10 +80,10 @@ public class DeliveryReportingService {
         this.deliveryService = deliveryService;
         this.mailService = mailService;
     }
-    
+
     @PostConstruct
     public void initialize() {
-        
+
         Arrays.asList(instanceLibraries).forEach(lib -> {
             try {
                 FileUtils.forceMkdir(new File(deliveryReportingDirectory, lib));
@@ -93,7 +94,7 @@ public class DeliveryReportingService {
 
     }
 
-    
+
 
     /**
      * Construction du rapport de livraison.
@@ -122,7 +123,7 @@ public class DeliveryReportingService {
                 .append("] DEBUT LIVRAISON")
                 .append(LINE_SEP).append(LINE_SEP)
                 .append("DOCUMENTS: ").append(LINE_SEP);
-        
+
         // Documents concernés.
         final Set<DeliveredDocument> documents = deliveryService.getDigitalDocumentsByDelivery(delivery.getIdentifier());
         documents.stream()
@@ -221,7 +222,7 @@ public class DeliveryReportingService {
      * @param dtHr
      * @param text
      */
-    public void updateReport(final Delivery delivery, final Optional<LocalDateTime> start, 
+    public void updateReport(final Delivery delivery, final Optional<LocalDateTime> start,
                              final Optional<LocalDateTime> dtHr, final String text,
                              final String libraryId) {
 
@@ -260,9 +261,6 @@ public class DeliveryReportingService {
 
     /**
      * Assure le stockage physique du rapport de la livraison.
-     *
-     * @param delivery
-     * @param report
      */
     private void handleDeliveryReportFile(final Delivery delivery, final InputStream reportInput, final String libraryId) {
 
@@ -280,9 +278,10 @@ public class DeliveryReportingService {
      * @param deliveryId
      * @return
      */
+    @Transactional
     public File getDeliveryReportForDelivery(final String deliveryId) {
- 
-        final Path root = Paths.get(deliveryReportingDirectory, fm.getUserLibraryId(), deliveryId, REPORT_NAME);
+        Project project = deliveryService.findOneWithDep(deliveryId).getLot().getProject();
+        final Path root = Paths.get(deliveryReportingDirectory, project.getLibrary().getIdentifier(), deliveryId, REPORT_NAME);
         if(root != null) {
             return root.toFile();
         }

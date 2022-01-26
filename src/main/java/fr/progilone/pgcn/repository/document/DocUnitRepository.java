@@ -3,6 +3,7 @@ package fr.progilone.pgcn.repository.document;
 import java.util.List;
 import java.util.Set;
 
+import fr.progilone.pgcn.domain.dto.document.SummaryDocUnitDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -44,7 +45,6 @@ public interface DocUnitRepository extends JpaRepository<DocUnit, String>, DocUn
            + "from DocUnit d "
            + "left join fetch d.library "
            + "left join fetch d.workflow w "
-           + "left join fetch w.model "
            + "where d.identifier = ?1")
     DocUnit findOneWithAllDependenciesForWorkflow(String identifier);
     
@@ -158,6 +158,10 @@ public interface DocUnitRepository extends JpaRepository<DocUnit, String>, DocUn
     List<DocUnit> findAllByProjectIdentifier(String identifier);
 
     List<DocUnit> findAllByLotIdentifier(String identifier);
+    
+    @Query("select new fr.progilone.pgcn.domain.dto.document.SummaryDocUnitDTO(du.identifier, du.pgcnId, du.label, du.type, du.archivable, du.distributable) " +
+            "from DocUnit du where du.lot.identifier = ?1")
+    List<SummaryDocUnitDTO> findAllSummaryByLotId(String identifier);
 
     DocUnit getOneByPgcnId(String pgcnId);
     

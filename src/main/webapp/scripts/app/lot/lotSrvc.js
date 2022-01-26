@@ -138,7 +138,23 @@
                     { identifier: "TIFF", label: gettextCatalog.getString('TIFF (Tagged Image File Format)') },
                     { identifier: "TIF", label: gettextCatalog.getString('TIF (Tagged Image File Format)') },
                     { identifier: "PDF", label: gettextCatalog.getString('PDF') }
-                ]
+                ],
+                colorspace: {
+                    "sRGB": gettextCatalog.getString('profil sRGB'),
+                    "Adobe RGB": gettextCatalog.getString('profil Adobe RGB (1998)')
+                },
+                boolean: {
+                    "true": gettextCatalog.getString('Oui'),
+                    "false": gettextCatalog.getString('Non')
+                },
+                category: {
+                    "PROVIDER": gettextCatalog.getString('Prestataire'),
+                    "OTHER": gettextCatalog.getString('Utilisateur')
+                },
+                type: {
+                    "PHYSICAL": gettextCatalog.getString('Physique'),
+                    "DIGITAL": gettextCatalog.getString('Numérique')
+                }
             };
 
             return service;

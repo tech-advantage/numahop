@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
@@ -49,7 +51,7 @@ public class ImageMagickServiceTest {
 
     /**
      * Test thumbnail generation
-     * 
+     *
      * @throws IOException
      * @throws PgcnTechnicalException
      */
@@ -65,7 +67,7 @@ public class ImageMagickServiceTest {
 //                .thenReturn(f);
 
         if (service.isConfigured()) {
-            
+
             final File sourceFile = new File(SRC_FILE);
             if (sourceFile == null || !sourceFile.exists()) {
                 fail("Unable to load " + SRC_FILE);
@@ -75,7 +77,7 @@ public class ImageMagickServiceTest {
             assertTrue(destTmpFile.length() == 0L);
 
          // Define format
-            final ViewsFormatConfiguration.FileFormat formatThumb = ViewsFormatConfiguration.FileFormat.THUMB; 
+            final ViewsFormatConfiguration.FileFormat formatThumb = ViewsFormatConfiguration.FileFormat.THUMB;
             final ViewsFormatConfiguration conf = new ViewsFormatConfiguration();
             conf.setThumbHeight(100L);
             conf.setThumbWidth(100L);
@@ -124,7 +126,7 @@ public class ImageMagickServiceTest {
 
     /**
      * Test IM getting metadatas
-     * 
+     *
      * @throws IOException
      * @throws PgcnTechnicalException
      */
@@ -164,7 +166,7 @@ public class ImageMagickServiceTest {
                 destTmpFileImgScalr.deleteOnExit();
             }
             // Define format
-            final ViewsFormatConfiguration.FileFormat formatView = ViewsFormatConfiguration.FileFormat.VIEW; 
+            final ViewsFormatConfiguration.FileFormat formatView = ViewsFormatConfiguration.FileFormat.VIEW;
             final ViewsFormatConfiguration conf = new ViewsFormatConfiguration();
             conf.setViewHeight(100L);
             conf.setViewWidth(100L);
@@ -194,5 +196,69 @@ public class ImageMagickServiceTest {
         } else {
             fail("Image Magick not configured");
         }
+    }
+
+    @Test
+    public void testAlphanumericSort(){
+        List<File> files = new ArrayList<>();
+
+        final File file1 = new File("src/files/GB_000040_001_0200.jpg");
+        files.add(file1);
+        final File file2 = new File("src/files/GB_000040_001_1000.jpg");
+        files.add(file2);
+        final File file3 = new File("src/files/GB_000040_001_0020.jpg");
+        files.add(file3);
+        final File file4 = new File("src/files/GB_000040_001_1034.jpg");
+        files.add(file4);
+        final File file5 = new File("src/files/GB_000040_001_0001.jpg");
+        files.add(file5);
+        final File file6 = new File("src/files/GB_000040_001_0999.jpg");
+        files.add(file6);
+        final File file7 = new File("src/files/GB_000040_001_0010.jpg");
+        files.add(file7);
+        final File file8 = new File("src/files/GB_000040_001_0100.jpg");
+        files.add(file8);
+
+        final Pattern p = Pattern.compile("\\d+");
+        files.sort((f1, f2) -> {
+            String name1 = f1.getName();
+            String name2 = f2.getName();
+            Matcher m = p.matcher(name1);
+            Integer number1 = null;
+            if (!m.find()) {
+                return name1.compareTo(name2);
+            } else {
+                Integer number2 = null;
+                while (m.find()) {
+                    number1 = Integer.parseInt(m.group());
+                }
+                m = p.matcher(name2);
+                if (!m.find()) {
+                    return name1.compareTo(name2);
+                } else {
+                    while (m.find()) {
+                        number2 = Integer.parseInt(m.group());
+                    }
+                    int comparison = 0;
+                    if(number2 != null){
+                        comparison = number1.compareTo(number2);
+                    }
+                    if (comparison != 0) {
+                        return comparison;
+                    } else {
+                        return name1.compareTo(name2);
+                    }
+                }
+            }
+        });
+
+        assertEquals(files.get(0), file5);
+        assertEquals(files.get(1), file7);
+        assertEquals(files.get(2), file3);
+        assertEquals(files.get(3), file8);
+        assertEquals(files.get(4), file1);
+        assertEquals(files.get(5), file6);
+        assertEquals(files.get(6), file2);
+        assertEquals(files.get(7), file4);
     }
 }

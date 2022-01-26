@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import fr.progilone.pgcn.domain.dto.document.SummaryDocUnitDTO;
+import fr.progilone.pgcn.domain.dto.document.SummaryDocUnitWithLotDTO;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -479,7 +481,13 @@ public class DocUnitService {
                                         statuses);
     }
 
-    
+    @Transactional(readOnly = true)
+    public Page<DocUnit> searchAllForProject(final String projectId, final Integer page, final Integer size){
+        Sort sort = new Sort(DocUnit_.pgcnId.getName());
+        
+        final Pageable pageRequest = new PageRequest(page, size, sort);
+        return docUnitRepository.searchAllForProject(projectId, pageRequest);
+    }
 
     @Transactional
     public void delete(final String identifier) {
@@ -761,6 +769,11 @@ public class DocUnitService {
     public List<DocUnit> findAllByLotId(final String lotId) {
         return docUnitRepository.findAllByLotIdentifier(lotId);
     }
+    
+    @Transactional(readOnly = true)
+    public List<SummaryDocUnitDTO> findAllSummaryByLotId(final String lotId) {
+        return docUnitRepository.findAllSummaryByLotId(lotId);
+    }
 
     @Transactional(readOnly = true)
     public DocUnit findOneByLotIdAndDigitalId(final String lotId, final String digitalId) {
@@ -856,7 +869,18 @@ public class DocUnitService {
     }
 
     /**
-     * Mise à jour des ark s'il n'a été mis à jour après l'export
+     * tentative de fix pb saut de ligne 
+     * notamment pour qq caracteres arabes entre crochets !!
+     * 
+     * @param value
+     * @return
+     */
+    public String deleteUnwantedCrLf(final String value) {
+        return (value.replace("\n", " ")).replace("\r", "");
+    }
+
+    /**
+     * Mise à jour des ark s'il n'a été mis à jour après l'export (diffusion datant de moins d'une semaine)
      */
     @Scheduled(cron = "${cron.docUnitUpdateArk}")
     @Transactional

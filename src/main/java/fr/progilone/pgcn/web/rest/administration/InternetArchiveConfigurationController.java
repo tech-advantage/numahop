@@ -9,7 +9,9 @@ import fr.progilone.pgcn.exception.PgcnTechnicalException;
 import fr.progilone.pgcn.service.administration.InternetArchiveCollectionService;
 import fr.progilone.pgcn.service.administration.InternetArchiveConfigurationService;
 import fr.progilone.pgcn.web.rest.AbstractRestController;
+import fr.progilone.pgcn.web.util.AccessHelper;
 import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -44,14 +46,17 @@ public class InternetArchiveConfigurationController extends AbstractRestControll
     private final InternetArchiveConfigurationService iaConfigurationService;
     private final LibraryAccesssHelper libraryAccesssHelper;
     private final InternetArchiveCollectionService iaCollectionService;
+    private final AccessHelper accessHelper;
 
     @Autowired
     public InternetArchiveConfigurationController(final InternetArchiveConfigurationService iaConfigurationService,
                                                   final LibraryAccesssHelper libraryAccesssHelper,
-                                                  final InternetArchiveCollectionService iaCollectionService) {
+                                                  final InternetArchiveCollectionService iaCollectionService,
+                                                  final AccessHelper accessHelper) {
         this.iaConfigurationService = iaConfigurationService;
         this.libraryAccesssHelper = libraryAccesssHelper;
         this.iaCollectionService = iaCollectionService;
+        this.accessHelper = accessHelper;
     }
 
     @RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -90,8 +95,12 @@ public class InternetArchiveConfigurationController extends AbstractRestControll
     @Timed
     @RolesAllowed({CONF_INTERNET_ARCHIVE_HAB0, DOC_UNIT_HAB0})
     public ResponseEntity<Collection<InternetArchiveCollection>> findIA(final HttpServletRequest request,
-                                                                        @RequestParam(name = "library", required = false)
-                                                                        final List<String> libraries) {
+                                                                        @RequestParam(name = "library", required = false) final List<String> libraries,
+                                                                        @RequestParam(name = "project", required = false) final String projectId) {
+        // L'usager est autorisé à accéder aux infos de la bibliothèque ou les infos du projet
+        if (StringUtils.isNotBlank(projectId) && !accessHelper.checkProject(projectId)) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
         final List<String> filteredLibraries = libraryAccesssHelper.getLibraryFilter(request, libraries);
         // Chargement des collections IA
         final Collection<InternetArchiveCollection> collections = iaCollectionService.findAll(filteredLibraries);

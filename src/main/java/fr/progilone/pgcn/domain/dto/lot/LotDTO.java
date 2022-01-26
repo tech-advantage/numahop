@@ -6,6 +6,7 @@ import java.util.Set;
 import fr.progilone.pgcn.domain.dto.AbstractVersionedDTO;
 import fr.progilone.pgcn.domain.dto.administration.CinesPACDTO;
 import fr.progilone.pgcn.domain.dto.administration.InternetArchiveCollectionDTO;
+import fr.progilone.pgcn.domain.dto.administration.omeka.OmekaConfigurationDTO;
 import fr.progilone.pgcn.domain.dto.administration.omeka.OmekaListDTO;
 import fr.progilone.pgcn.domain.dto.administration.viewsFormat.SimpleViewsFormatConfigurationDTO;
 import fr.progilone.pgcn.domain.dto.checkconfiguration.SimpleCheckConfigurationDTO;
@@ -51,6 +52,7 @@ public class LotDTO extends AbstractVersionedDTO {
     private String requiredResolution;
     private String requiredColorspace;
     private SimpleWorkflowModelDTO workflowModel;
+    private OmekaConfigurationDTO omekaConfiguration;
     private OmekaListDTO omekaCollection;
     private OmekaListDTO omekaItem;
     private OcrLanguageDTO activeOcrLanguage;
@@ -79,6 +81,7 @@ public class LotDTO extends AbstractVersionedDTO {
                   final Integer requiredTauxCompression,
                   final String requiredResolution,
                   final String requiredColorspace,
+                  final OmekaConfigurationDTO omekaConfiguration,
                   final OmekaListDTO omekaCollection,
                   final OmekaListDTO omekaItem,
                   final OcrLanguageDTO activeOcrLanguage) {
@@ -106,6 +109,7 @@ public class LotDTO extends AbstractVersionedDTO {
         this.requiredTauxCompression = requiredTauxCompression;
         this.requiredResolution = requiredResolution;
         this.requiredColorspace = requiredColorspace;
+        this.omekaConfiguration = omekaConfiguration;
         this.omekaCollection = omekaCollection;
         this.omekaItem = omekaItem;
         this.activeOcrLanguage = activeOcrLanguage;
@@ -314,6 +318,14 @@ public class LotDTO extends AbstractVersionedDTO {
         this.workflowModel = workflowModel;
     }
 
+    public OmekaConfigurationDTO getOmekaConfiguration() {
+        return omekaConfiguration;
+    }
+
+    public void setOmekaConfiguration(final OmekaConfigurationDTO omekaConfiguration) {
+        this.omekaConfiguration = omekaConfiguration;
+    }
+
     public OmekaListDTO getOmekaCollection() {
         return omekaCollection;
     }
@@ -370,6 +382,7 @@ public class LotDTO extends AbstractVersionedDTO {
         private Integer requiredTauxCompression;
         private String requiredResolution;
         private String requiredColorspace;
+        private OmekaConfigurationDTO omekaConfiguration;
         private OmekaListDTO omekaCollection;
         private OmekaListDTO omekaItem;
         private OcrLanguageDTO activeOcrLanguage;
@@ -398,6 +411,7 @@ public class LotDTO extends AbstractVersionedDTO {
             this.requiredTauxCompression = null;
             this.requiredResolution = null;
             this.requiredColorspace = null;
+            this.omekaConfiguration = null;
             this.omekaCollection = null;
             this.omekaItem = null;
             this.activeOcrLanguage = null;
@@ -493,6 +507,11 @@ public class LotDTO extends AbstractVersionedDTO {
             this.collectionIA = collectionIA;
             return this;
         }
+
+        public Builder setOmekaConfiguration(final OmekaConfigurationDTO omekaConfiguration) {
+            this.omekaConfiguration = omekaConfiguration;
+            return this;
+        }
         
         public Builder setOmekaCollection(final OmekaListDTO omekaCollection) {
             this.omekaCollection = omekaCollection;
@@ -564,6 +583,7 @@ public class LotDTO extends AbstractVersionedDTO {
                               requiredTauxCompression,
                               requiredResolution,
                               requiredColorspace,
+                              omekaConfiguration,
                               omekaCollection,
                               omekaItem,
                               activeOcrLanguage);

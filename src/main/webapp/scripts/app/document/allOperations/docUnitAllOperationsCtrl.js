@@ -54,13 +54,18 @@
 
 
         function loadOptions(libraryId, projectId) {
+            var omekaConf;
+            if(self.parent.docUnit.omekaConfiguration != null){
+                omekaConf = self.parent.docUnit.omekaConfiguration.identifier;
+            }
             $q.all([NumaHopInitializationSrvc.loadPACS(libraryId),
             NumaHopInitializationSrvc.loadCollections(libraryId),
             NumaHopInitializationSrvc.loadProjects(libraryId),
             NumaHopInitializationSrvc.loadLots(libraryId, projectId),
             NumaHopInitializationSrvc.loadTrains(libraryId, projectId),
-            NumaHopInitializationSrvc.loadOmekaCollections(libraryId),
+            NumaHopInitializationSrvc.loadOmekaCollections(libraryId, projectId),
             NumaHopInitializationSrvc.loadOmekaItems(libraryId),
+
             NumaHopInitializationSrvc.loadOcrLanguagesForLibrary(libraryId)])
                 .then(function (data) {
                     // PAC
@@ -97,7 +102,7 @@
                         delete t.physicalDocuments;
                         self.options.trains.push(t);
                     });
-                    
+
                     self.options.omekaCollections = data[5];
                     self.options.omekaItems = data[6];
                     self.options.languagesOcr = data[7];
@@ -181,8 +186,8 @@
 
         /**
          * Réinitialisation de la liste de lots au changement de projet
-         * 
-         * @param {any} newValue 
+         *
+         * @param {any} newValue
          */
         function onchangeProject(newValue) {
             var newProj = newValue || null;

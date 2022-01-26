@@ -76,6 +76,13 @@
                             pacs: true
                         }
                     },
+                    confPacs: {
+                        method: 'GET',
+                        isArray: true,
+                        params: {
+                            pacs: true
+                        }
+                    },
                     uploadDpdi: {
                         method: 'POST',
                         transformRequest: angular.identity,
@@ -161,7 +168,7 @@
                     method: 'GET',
                     isArray: true,
                     params: {
-                        configurations: true
+                        configuration: true
                     }
                 },
                 omekaitems: {

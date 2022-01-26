@@ -310,10 +310,6 @@ public class UIDocUnitService {
         return result;
     }
 
-    private SummaryDocUnitDTO mapIntoSummaryDTO(final DocUnit doc) {
-        return DocUnitMapper.INSTANCE.docUnitToDocUnitSummaryDTO(doc);
-    }
-
     @Transactional
     public DocUnitDeletedReportDTO delete(final String id) throws PgcnBusinessException {
         final DocUnitDeletedReportDTO entityDeletedReport = Iterables.getOnlyElement(docUnitService.canDocUnitBeDeleted(Collections.singleton(id)));
@@ -525,6 +521,12 @@ public class UIDocUnitService {
 
         return docs.stream().map(SimpleDocUnitMapper.INSTANCE::docUnitToMinimalListDocUnitDTO).collect(Collectors.toList());
     }
+    
+    @Transactional(readOnly = true)
+    public Page<SummaryDocUnitWithLotDTO> searchAllForProject(final String projectId, final Integer page, final Integer size) {
+        final Page<DocUnit> docs = docUnitService.searchAllForProject(projectId, page, size);
+        return docs.map(DocUnitMapper.INSTANCE::docUnitToDocUnitSummaryWithLotDTO);
+    }
 
     @Transactional
     public void setProjectAndLot(final List<String> docs, final String project, final String lot, final String train) {
@@ -549,12 +551,9 @@ public class UIDocUnitService {
      */
     protected boolean isLotRenum(final Set<DocUnit> dus, final Lot lot) {
 
-        return lot != null &&
-               dus.stream()
-                  .filter(du -> du.getLot() != null
-                                && !du.getLot().getIdentifier().equals(lot.getIdentifier()))
-                  .findFirst()
-                  .isPresent();
+        return lot != null && dus.stream()
+           .anyMatch(du -> du.getLot() != null
+                         && !du.getLot().getIdentifier().equals(lot.getIdentifier()));
     }
 
     /**
@@ -585,15 +584,18 @@ public class UIDocUnitService {
 
             final DigitalDocument digDoc = du.getDigitalDocuments().stream().findFirst().orElse(null);
             // find delivery from last delivereddoc
-            final String lastDelivId = digDoc.getDeliveries()
-                                             .stream()
-                                             .filter(deliv -> deliv.getDelivery() != null)
-                                             .sorted(Collections.reverseOrder(Comparator.nullsLast(Comparator.comparing(DeliveredDocument::getCreatedDate))))
-                                             .map(deliv -> deliv.getDelivery().getIdentifier())
-                                             .findFirst()
-                                             .orElse(null);
-
-            deliveriesToCheck.add(lastDelivId);
+            if(digDoc != null){
+                final String lastDelivId = digDoc.getDeliveries()
+                                                 .stream()
+                                                 .filter(deliv -> deliv.getDelivery() != null)
+                                                 .sorted(Collections.reverseOrder(Comparator.nullsLast(Comparator.comparing(DeliveredDocument::getCreatedDate))))
+                                                 .map(deliv -> deliv.getDelivery().getIdentifier())
+                                                 .findFirst()
+                                                 .orElse(null);
+                if(lastDelivId != null){
+                    deliveriesToCheck.add(lastDelivId);
+                }
+            }
         });
 
         // Dans chacune de ces livraisons...
@@ -668,8 +670,7 @@ public class UIDocUnitService {
 
     @Transactional(readOnly = true)
     public List<SummaryDocUnitDTO> findAllForLot(final String lotId) {
-        final List<DocUnit> docs = docUnitService.findAllByLotId(lotId);
-        return docs.stream().map(this::mapIntoSummaryDTO).collect(Collectors.toList());
+        return docUnitService.findAllSummaryByLotId(lotId);
     }
 
     /**
@@ -890,64 +891,77 @@ public class UIDocUnitService {
                 
 
                 // Export des images / format.
-                for (final DigitalDocument dd : du.getDigitalDocuments()) {
-
-                    for (final DocPage dp : dd.getOrderedPages()) {
-
-                        final Optional<StoredFile> master = dp.getMaster();
-                        if (master.isPresent()) {
-                            final StoredFile sf = master.get();
-                            final File file = bm.getFileForStoredFile(sf, libraryId);
-                            final CheckSummedStoredFile cssf = exportMetsService.getCheckSummedStoredFile(sf, file);
-                            cssfs.add(cssf);
-
-                            if (exportTypes.contains("MASTER") && dp.getNumber() != null) {
-                                zos.putNextEntry(new ZipEntry(directory + "master/" + sf.getFilename()));
-
-                                try (final FileInputStream fis = new FileInputStream(file)) {
-                                    IOUtils.copy(fis, zos);
-                                    zos.closeEntry();
-                                }
-                            }
-                            if (exportTypes.contains("PDF") && dp.getNumber() == null) {
+                if(exportTypes.contains("METS") || exportTypes.contains("MASTER") || exportTypes.contains("PDF") || exportTypes.contains("VIEW") || exportTypes.contains("THUMBNAIL")){
+                    for (final DigitalDocument dd : du.getDigitalDocuments()) {
+                        
+                        // PDF
+                        if (exportTypes.contains("PDF")) {
+                            DocPage pdfPage = digitalDocumentService.getPdfPage(dd.getIdentifier());
+                            final Optional<StoredFile> master = pdfPage.getMaster();
+                            if (master.isPresent()) {
+                                final StoredFile sf = master.get();
+                                final File file = bm.getFileForStoredFile(sf, libraryId);
                                 zos.putNextEntry(new ZipEntry(directory + "pdf/" + sf.getFilename()));
-
+    
                                 try (final FileInputStream fis = new FileInputStream(file)) {
                                     IOUtils.copy(fis, zos);
                                     zos.closeEntry();
                                 }
                             }
                         }
-
-                        if (exportTypes.contains("VIEW")) {
-                            final Optional<StoredFile> view = dp.getDerivedForFormat(ViewsFormatConfiguration.FileFormat.VIEW);
-                            if (view.isPresent()) {
-                                final StoredFile sf = view.get();
-                                final File file = bm.getFileForStoredFile(sf, libraryId);
-                                final String fileName = sf.getFilename().substring(0, sf.getFilename().lastIndexOf("."));
-                                zos.putNextEntry(new ZipEntry(directory.concat("view/").concat(fileName).concat(".").concat(ImageUtils.FORMAT_JPG)));
-
-                                try (final FileInputStream fis = new FileInputStream(file)) {
-                                    IOUtils.copy(fis, zos);
-                                    zos.closeEntry();
+                        
+                        if(exportTypes.contains("METS") || exportTypes.contains("MASTER") ||  exportTypes.contains("VIEW") || exportTypes.contains("THUMBNAIL")) {
+    
+                            for (final DocPage dp : dd.getOrderedPages()) {
+        
+                                final Optional<StoredFile> master = dp.getMaster();
+                                if (master.isPresent()) {
+                                    final StoredFile sf = master.get();
+                                    final File file = bm.getFileForStoredFile(sf, libraryId);
+            
+                                    if (exportTypes.contains("METS")) {
+                                        final CheckSummedStoredFile cssf = exportMetsService.getCheckSummedStoredFile(sf, file);
+                                        cssfs.add(cssf);
+                                    }
+            
+                                    if (exportTypes.contains("MASTER") && dp.getNumber() != null) {
+                                        zos.putNextEntry(new ZipEntry(directory + "master/" + sf.getFilename()));
+                
+                                        try (final FileInputStream fis = new FileInputStream(file)) {
+                                            IOUtils.copy(fis, zos);
+                                            zos.closeEntry();
+                                        }
+                                    }
                                 }
-                            }
-                        }
-
-                        if (exportTypes.contains("THUMBNAIL")) {
-                            final Optional<StoredFile> thumb = dp.getDerivedForFormat(ViewsFormatConfiguration.FileFormat.THUMB);
-                            if (thumb.isPresent()) {
-                                final StoredFile sf = thumb.get();
-                                final File file = bm.getFileForStoredFile(sf, libraryId);
-                                final String fileName = sf.getFilename().substring(0, sf.getFilename().lastIndexOf("."));
-                                zos.putNextEntry(new ZipEntry(directory.concat("vignettes/")
-                                                                       .concat(fileName)
-                                                                       .concat(".")
-                                                                       .concat(ImageUtils.FORMAT_JPG)));
-
-                                try (final FileInputStream fis = new FileInputStream(file)) {
-                                    IOUtils.copy(fis, zos);
-                                    zos.closeEntry();
+        
+                                if (exportTypes.contains("VIEW")) {
+                                    final Optional<StoredFile> view = dp.getDerivedForFormat(ViewsFormatConfiguration.FileFormat.VIEW);
+                                    if (view.isPresent()) {
+                                        final StoredFile sf = view.get();
+                                        final File file = bm.getFileForStoredFile(sf, libraryId);
+                                        final String fileName = sf.getFilename().substring(0, sf.getFilename().lastIndexOf("."));
+                                        zos.putNextEntry(new ZipEntry(directory.concat("view/").concat(fileName).concat(".").concat(ImageUtils.FORMAT_JPG)));
+                
+                                        try (final FileInputStream fis = new FileInputStream(file)) {
+                                            IOUtils.copy(fis, zos);
+                                            zos.closeEntry();
+                                        }
+                                    }
+                                }
+        
+                                if (exportTypes.contains("THUMBNAIL")) {
+                                    final Optional<StoredFile> thumb = dp.getDerivedForFormat(ViewsFormatConfiguration.FileFormat.THUMB);
+                                    if (thumb.isPresent()) {
+                                        final StoredFile sf = thumb.get();
+                                        final File file = bm.getFileForStoredFile(sf, libraryId);
+                                        final String fileName = sf.getFilename().substring(0, sf.getFilename().lastIndexOf("."));
+                                        zos.putNextEntry(new ZipEntry(directory.concat("vignettes/").concat(fileName).concat(".").concat(ImageUtils.FORMAT_JPG)));
+                
+                                        try (final FileInputStream fis = new FileInputStream(file)) {
+                                            IOUtils.copy(fis, zos);
+                                            zos.closeEntry();
+                                        }
+                                    }
                                 }
                             }
                         }

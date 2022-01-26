@@ -2,8 +2,8 @@
 	'use strict';
 
 	angular.module('numaHopApp.service')
-		.factory('NumaHopInitializationSrvc', function ($q, AuthenticationSharedService, CheckConfigurationSrvc, DocPropertyTypeSrvc, DocUnitSrvc, 
-			FTPConfigurationSrvc, IAConfigurationSrvc, LibraryParameterSrvc, LibrarySrvc, LotSrvc, OmekaConfigurationSrvc, ProjectSrvc, SFTPConfigurationSrvc, 
+		.factory('NumaHopInitializationSrvc', function ($q, AuthenticationSharedService, CheckConfigurationSrvc, DocPropertyTypeSrvc, DocUnitSrvc,
+			FTPConfigurationSrvc, IAConfigurationSrvc, LibraryParameterSrvc, LibrarySrvc, LotSrvc, OmekaConfigurationSrvc, ProjectSrvc, SFTPConfigurationSrvc,
 			TrainSrvc, USER_ROLES, UserAuthorizationSrvc, UserRoleSrvc, UserSrvc, ViewsFormatSrvc, WorkflowGroupSrvc, WorkflowModelSrvc, OcrLanguageSrvc) {
 
 			var loadRoles = function () {
@@ -23,8 +23,8 @@
 				return UserSrvc.query({ dto: "true" }).$promise;
 			};
 
-			var loadPACS = function (library) {
-				return SFTPConfigurationSrvc.pacs({ library: library }).$promise
+			var loadPACS = function (library, project) {
+				return SFTPConfigurationSrvc.pacs({ library: library, project : project }).$promise
 					.then(function (pacs) {
 						return _.sortBy(pacs, function (pa) {
 							return pa.name ? pa.name.toLowerCase() : pa;
@@ -39,26 +39,26 @@
 					});
 			};
 
-			var loadCollections = function (library) {
-				return IAConfigurationSrvc.collections({ library: library }).$promise
+			var loadCollections = function (library, project) {
+				return IAConfigurationSrvc.collections({ library: library, project : project }).$promise
 					.then(function (ias) {
 						return _.sortBy(ias, function (ia) {
 							return ia.name ? ia.name.toLowerCase() : ia;
 						});
 					});
 			};
-			
-	        var loadOmekaCollections = function (library) {
-                return OmekaConfigurationSrvc.omekacollections({ library: library }).$promise
+
+	        var loadOmekaCollections = function (omekaConf, project) {
+                return OmekaConfigurationSrvc.omekacollections({ omekaConf: omekaConf, project: project }).$promise
                     .then(function (colls) {
                         return _.sortBy(colls, function (col) {
                             return col.name ? col.name.toLowerCase() : col;
                         });
                     });
             };
-            
-            var loadOmekaItems = function (library) {
-                return OmekaConfigurationSrvc.omekaitems({ library: library }).$promise
+
+            var loadOmekaItems = function (omekaConf, project) {
+                return OmekaConfigurationSrvc.omekaitems({ omekaConf: omekaConf, project: project }).$promise
                     .then(function (items) {
                         return _.sortBy(items, function (it) {
                             return it.name ? it.name.toLowerCase() : it;
@@ -66,11 +66,20 @@
                     });
             };
 
-			var loadWorkflowModels = function (library) {
+            var loadOmekaConfigurations = function (library, project) {
+                return OmekaConfigurationSrvc.configurations({ library: library, project: project, active: true }).$promise
+                    .then(function (items) {
+                        return _.sortBy(items, function (it) {
+                            return it.name ? it.name.toLowerCase() : it;
+                        });
+                    });
+            };
+
+			var loadWorkflowModels = function (library, project) {
                 if(AuthenticationSharedService.isAuthorized(USER_ROLES.WORKFLOW_HAB4)){
-                    return WorkflowModelSrvc.models({ library: library }).$promise;
+                    return WorkflowModelSrvc.models({ library: library, project : project }).$promise;
                 }
-                return $q.when();
+                return $q.when([]);
 			};
 
 			var loadWorkflowGroups = function (library) {
@@ -81,7 +90,7 @@
 				if (library) {
 					return LibrarySrvc.providers({ id: library }).$promise;
 				}
-				return $q.when();
+				return $q.when([]);
 			};
 
 			var loadUsersForLibrary = function (library) {
@@ -93,7 +102,7 @@
 							});
 						});
 				}
-				return $q.when();
+				return $q.when([]);
 			};
 
 			var loadLibraries = function () {
@@ -143,8 +152,8 @@
 					return TrainSrvc.query({ dto: "true" }).$promise;
 				}
 			};
-			
-			
+
+
 	         var loadCompleteLots = function (libraries, projects, screenTarget) {
 	                if (projects && projects.length) {
 	                    return LotSrvc.query({ dto: "true", complete: "true", projects: projects }).$promise
@@ -169,7 +178,7 @@
 	                        });
 	                }
 	            };
-	            
+
 	            var loadCompleteProjects = function (libraries) {
                     return ProjectSrvc.query({ dto2: "true", complete: "true", libraries: libraries }).$promise
                         .then(function (projects) {
@@ -210,23 +219,23 @@
 				if (project && AuthenticationSharedService.isAuthorized(USER_ROLES.FTP_HAB0)) {
 					return FTPConfigurationSrvc.query({ project: project }).$promise;
 				}
-				return $q.when();
+				return $q.when([]);
 			};
 
 			var loadCheckConfigurationForProject = function (project) {
 				if (project && AuthenticationSharedService.isAuthorized(USER_ROLES.CHECK_HAB0)) {
 					return CheckConfigurationSrvc.query({ project: project }).$promise;
 				}
-				return $q.when();
+				return $q.when([]);
 			};
 
 			var loadFormatConfigurationForProject = function (project) {
 				if (project && AuthenticationSharedService.isAuthorized(USER_ROLES.IMG_FORMAT_HAB0)) {
 					return ViewsFormatSrvc.query({ project: project }).$promise;
 				}
-				return $q.when();
+				return $q.when([]);
 			};
-			
+
 			var loadOcrLanguagesForLibrary = function (library) {
 			    if(AuthenticationSharedService.isAuthorized(USER_ROLES.OCR_LANG_HAB0)){
                     return OcrLanguageSrvc.langs({ library: library }).$promise
@@ -236,14 +245,15 @@
                             });
                         });
                 }
-                return $q.when();
+                return $q.when([]);
             };
 
 			return {
 				// promises
 				loadCollections: loadCollections,
+				loadOmekaConfigurations: loadOmekaConfigurations,
 				loadOmekaCollections: loadOmekaCollections,
-			    loadOmekaItems: loadOmekaItems, 
+			    loadOmekaItems: loadOmekaItems,
 				loadWorkflowModels: loadWorkflowModels,
 				loadWorkflowGroups: loadWorkflowGroups,
 				loadPACS: loadPACS,
@@ -267,7 +277,7 @@
 				loadCheckConfigurationForProject: loadCheckConfigurationForProject,
 				loadFormatConfigurationForProject: loadFormatConfigurationForProject,
 				loadCinesParamsDefaultValues: loadCinesParamsDefaultValues,
-				loadOcrLanguagesForLibrary: loadOcrLanguagesForLibrary 
+				loadOcrLanguagesForLibrary: loadOcrLanguagesForLibrary
 			};
 		});
 })();

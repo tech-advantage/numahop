@@ -190,7 +190,7 @@ public class DocUnit extends AbstractDomainObject {
     @JoinColumn(name = "collection_ia")
     @Field(type = FieldType.Object)
     private InternetArchiveCollection collectionIA;
-    
+
     /**
      * Collections Omeka pour la diffusion.
      */
@@ -865,10 +865,24 @@ public class DocUnit extends AbstractDomainObject {
     public void setMasterSize(final Long masterSize) {
         this.masterSize = masterSize;
     }
-    
 
     public OmekaList getOmekaCollection() {
-        return omekaCollection;
+        if (omekaCollection != null) {
+            return omekaCollection;
+        }
+        // TODO: gérer l'initialisation au niveau du service, ou au moins pas dans le getter
+        try {
+            if (!Hibernate.isInitialized(lot)) {
+                Hibernate.initialize(lot);
+            }
+            if (getLot() == null) {
+                return null;
+            }
+            return getLot().getOmekaCollection();
+        } catch (final LazyInitializationException e) { // NOSONAR pour pas pourrir les logs car c'est qd mm souvent que ....
+            LOG.warn("Problème d'initialisation: {}", e.getMessage());
+            return null;
+        }
     }
 
     public void setOmekaCollection(final OmekaList omekaCollection) {
@@ -876,7 +890,22 @@ public class DocUnit extends AbstractDomainObject {
     }
 
     public OmekaList getOmekaItem() {
-        return omekaItem;
+        if (omekaItem != null) {
+            return omekaItem;
+        }
+        // TODO: gérer l'initialisation au niveau du service, ou au moins pas dans le getter
+        try {
+            if (!Hibernate.isInitialized(lot)) {
+                Hibernate.initialize(lot);
+            }
+            if (getLot() == null) {
+                return null;
+            }
+            return getLot().getOmekaItem();
+        } catch (final LazyInitializationException e) { // NOSONAR pour pas pourrir les logs car c'est qd mm souvent que ....
+            LOG.warn("Problème d'initialisation: {}", e.getMessage());
+            return null;
+        }
     }
 
     public void setOmekaItem(final OmekaList omekaItem) {

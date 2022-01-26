@@ -31,33 +31,39 @@
                         <span class="glyphicon-halflings glyphicon-align-justify"></span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-right" role="menu" uib-dropdown-menu>
-                        <li ng-class="{ 'disabled': !loaded || !lot || !lot.identifier }" 
+                        <li ng-class="{ 'disabled': !loaded || !lot || !lot.identifier }"
                             ng-show="!lotForm.$visible" sem-roles-allowed="LOT_HAB2">
                             <a ng-click="!(!loaded || !lot || !lot.identifier) && delete(lot)">
                                 <span class="glyphicon-halflings glyphicon-trash"></span> {{ ::'Supprimer' | translate }}
                             </a>
                         </li>
+                        <li ng-if="lot.status == 'CREATED' && docUnits.length > 0">
+                            <a ng-click="validateLot(lot)">
+                                <span class="glyphicon-halflings glyphicon-check"></span>{{ ::' Démarrer le workflow' | translate }}
+                            </a>
+                        </li>
                         <li role="separator" class="divider" ng-show="!lotForm.$visible" sem-roles-allowed="LOT_HAB2"></li>
                         <li>
                             <a ng-click="downloadSlip('pdf')">
-                               <span class="glyphicon-halflings glyphicon-export"></span> {{ ::'Liste des unités documentaires PDF' | translate }}
+                                <span class="glyphicon-halflings glyphicon-export"></span> {{ ::'Liste des unités documentaires PDF' | translate }}
                             </a>
                         </li>
                         <li>
                             <a ng-click="downloadSlip('csv')">
-                               <span class="glyphicon-halflings glyphicon-export"></span> {{ ::'Liste des unités documentaires CSV' | translate }}
+                                <span class="glyphicon-halflings glyphicon-export"></span> {{ ::'Liste des unités documentaires CSV' | translate }}
                             </a>
                         </li>
-                        <li>
-                            <a ng-click="downloadCheckSlip('pdf')">
-                                <span class="glyphicon-halflings glyphicon-export"></span> {{ ::'Bordereau de contrôle PDF' | translate }}
-                            </a>
-                        </li>
-                        <li>
-                            <a ng-click="downloadCheckSlip('csv')">
-                                <span class="glyphicon-halflings glyphicon-export"></span> {{ ::'Bordereau de contrôle CSV' | translate }}
-                            </a>
-                        </li>
+                        
+<!--                        <li>-->
+<!--                            <a ng-click="downloadCheckSlip('pdf')">-->
+<!--                                <span class="glyphicon-halflings glyphicon-export"></span> {{ ::'Bordereau de contrôle PDF' | translate }}-->
+<!--                            </a>-->
+<!--                        </li>-->
+<!--                        <li>-->
+<!--                            <a ng-click="downloadCheckSlip('csv')">-->
+<!--                                <span class="glyphicon-halflings glyphicon-export"></span> {{ ::'Bordereau de contrôle CSV' | translate }}-->
+<!--                            </a>-->
+<!--                        </li>-->
                         <li>
                             <a ng-click="downloadDeliverySlip('pdf')">
                                 <span class="glyphicon-halflings glyphicon-export"></span> {{ ::'Bordereau de livraison PDF' | translate }}
@@ -84,20 +90,19 @@
                     <div uib-accordion-group is-open="accordions.lot">
                         <uib-accordion-heading>
                             <span class="pull-left glyphicon-halflings"
-                                ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordions.lot]">&nbsp;</span>
+                                  ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordions.lot]">&nbsp;</span>
                             <h4 translate>Lot</h4>
                         </uib-accordion-heading>
-
                         <numa-editable-field data-title="{{::'Libellé' | translate}}" placeholder="{{::'Libellé' | translate}}" mandatory="true"
-                        form="lotForm" model="lot.label" numa-readonly="formRO" errors="{{ errors.label }}" onbeforesave="validation.required($data)"> </numa-editable-field>
+                                             form="lotForm" model="lot.label" numa-readonly="formRO" errors="{{ errors.label }}" onbeforesave="validation.required($data)"></numa-editable-field>
 
-                        <numa-editable-field data-title="{{::'Projet' | translate}}" type="select" form="lotForm" 
-                        onbeforesave="validation.required($data)" mandatory="true"
-                        model="lot.project" numa-readonly="formRO" errors="{{ errors.project }}"
-                        config="{ data: sel2Projects,
+                        <numa-editable-field data-title="{{::'Projet' | translate}}" type="select" form="lotForm"
+                                             onbeforesave="validation.required($data)" mandatory="true"
+                                             model="lot.project" numa-readonly="formRO" errors="{{ errors.project }}"
+                                             config="{ data: sel2Projects,
                         display: 'name',
                         query: 'o.name for o in $ctrl.config.data track by o.identifier'}"
-                        numa-onchange="reloadSelects($data)"
+                                             numa-onchange="reloadSelects($data)"
                         link="{ type: 'project', parameters: {'id': lot.project.identifier} }"> </numa-editable-field>
 
                         <numa-editable-field data-title="{{::'Prestataire' | translate}}" type="select" form="lotForm" 
@@ -133,110 +138,164 @@
                         </div>
 
                         <numa-editable-field data-title="{{::'Format demandé' | translate}}" type="select" form="lotForm" numa-onchange="loadTypeCompr($data)"
-                        model="lot.requiredFormat" numa-readonly="formRO" errors="{{ errors.requiredFormat }}" onbeforesave="validation.required($data)" mandatory="true"
-                        config="{ data: options.format,
+                                             model="lot.requiredFormat" numa-readonly="formRO" errors="{{ errors.requiredFormat }}" onbeforesave="validation.required($data)" mandatory="true"
+                                             config="{ data: options.format,
                         displayFn: displayFormat,
-                        query: 'key as value for (key, value) in $ctrl.config.data'}" > </numa-editable-field>
-                        
-                        <numa-editable-field data-title="{{::'Type de compression attendu' | translate}}" form="lotForm"
-                        model="lot.requiredTypeCompression" numa-readonly="true" errors="{{ errors.requiredTypeCompression }}" > </numa-editable-field>
-                        
-                        <numa-editable-field data-title="{{::'Compression attendue (bits depth)' | translate}}" placeholder="{{::'Compression maximale' | translate}}" 
-                        form="lotForm" model="lot.requiredTauxCompression" numa-readonly="formRO" errors="{{ errors.requiredTauxCompression }}" > </numa-editable-field>
-                        
-                        <numa-editable-field data-title="{{::'Résolution minimale attendue' | translate}}" placeholder="{{::'Résolution minimale attendue (dpi)' | translate}}" 
-                        form="lotForm" model="lot.requiredResolution" numa-readonly="formRO" errors="{{ errors.requiredResolution }}" > </numa-editable-field>
-                        
-                        <numa-editable-field data-title="{{::'Profil colorimétrique attendu' | translate}}" type="select" form="lotForm" 
-                        model="lot.requiredColorspace" numa-readonly="formRO" errors="{{ errors.requiredColorspace }}" 
-                        config="{ data: options.colorspace,
-                        displayFn: displayColorspace,
-                        query: 'key as value for (key, value) in $ctrl.config.data'}" > </numa-editable-field>
-                        
-                        <numa-editable-field data-title="{{::'Configuration FTP' | translate}}" type="select" form="lotForm"
-                        default-text="{{ lot.project.activeFTPConfiguration != null ? lot.project.activeFTPConfiguration.label : 'Non renseigné' }}"
-                        model="lot.activeFTPConfiguration" numa-readonly="formRO" errors="{{ errors.activeFTPConfiguration }}"
-                        config="{ data: [{label: ''}].concat(options.ftp),
-                        display: 'label',
-                        query: 'o.label for o in $ctrl.config.data track by o.identifier'}"
-                        link="{ type: 'ftpConfiguration', parameters: {'id': lot.activeFTPConfiguration.identifier} }"> </numa-editable-field>
+                        query: 's.identifier as s.label for s in $ctrl.config.data'}"></numa-editable-field>
 
-                        <numa-editable-field data-title="{{::'Configuration contrôles' | translate}}" type="select" form="lotForm"
-                        default-text="{{ lot.project.activeCheckConfiguration != null ? lot.project.activeCheckConfiguration.label : 'Non renseigné' }}"
-                        model="lot.activeCheckConfiguration" numa-readonly="formRO" errors="{{ errors.activeCheckConfiguration }}"
-                        config="{ data: [{label: ''}].concat(options.check),
+                        <numa-editable-field data-title="{{::'Configuration FTP' | translate}}" type="select" form="lotForm"
+                                             default-text="{{ lot.project.activeFTPConfiguration != null ? lot.project.activeFTPConfiguration.label : 'Non renseigné' }}"
+                                             model="lot.activeFTPConfiguration" numa-readonly="formRO" errors="{{ errors.activeFTPConfiguration }}"
+                                             config="{ data: [{label: ''}].concat(options.ftp),
                         display: 'label',
                         query: 'o.label for o in $ctrl.config.data track by o.identifier'}"
-                        link="{ type: 'checkConfiguration', parameters: {'id': lot.activeCheckConfiguration.identifier} }"> </numa-editable-field>
-                        
-                        <numa-editable-field data-title="{{::'Langage OCR' | translate}}" type="select" form="lotForm" 
-                        model="lot.activeOcrLanguage" numa-readonly="formRO" errors="{{ errors.activeOcrLanguage }}"
-                        config="{ data: [{label: ''}].concat(options.languagesOcr),
+                                             link="{ type: 'ftpConfiguration', parameters: {'id': lot.activeFTPConfiguration.identifier} }"></numa-editable-field>
+
+                        <numa-editable-field data-title="{{::'Langage OCR' | translate}}" type="select" form="lotForm"
+                                             model="lot.activeOcrLanguage" numa-readonly="formRO" errors="{{ errors.activeOcrLanguage }}"
+                                             config="{ data: [{label: ''}].concat(options.languagesOcr),
                         display: 'label',
-                        query: 'o.label for o in $ctrl.config.data track by o.identifier'}"> </numa-editable-field>
-                        
+                        query: 'o.label for o in $ctrl.config.data track by o.identifier'}"></numa-editable-field>
+
                         <numa-editable-field data-title="{{::'Configuration format images' | translate}}" type="select" form="lotForm"
-                        default-text="{{ lot.project.activeFormatConfiguration != null ? lot.project.activeFormatConfiguration.label : 'Non renseigné' }}"
-                        model="lot.activeFormatConfiguration" numa-readonly="formRO" errors="{{ errors.activeFormatConfiguration }}"
-                        config="{ data: [{label: ''}].concat(options.imgFormat),
+                                             default-text="{{ lot.project.activeFormatConfiguration != null ? lot.project.activeFormatConfiguration.label : 'Non renseigné' }}"
+                                             model="lot.activeFormatConfiguration" numa-readonly="formRO" errors="{{ errors.activeFormatConfiguration }}"
+                                             config="{ data: [{label: ''}].concat(options.imgFormat),
                         display: 'label',
                         query: 'o.label for o in $ctrl.config.data track by o.identifier'}"
-                        link="{ type: 'formatConfiguration', parameters: {'id': lot.activeFormatConfiguration.identifier} }"> </numa-editable-field>
-                                                
-                        <numa-editable-field data-title="{{::'Workflow' | translate}}" type="select" form="lotForm" model="lot.workflowModel" 
-                                numa-readonly="lot.status!=='CREATED'" errors="{{ errors.workflowModel }}"
-                                default-text="{{ lot.project.workflowModel != null ? lot.project.workflowModel.name : 'Non renseigné' }}"
-                                config="{ data: [{name: ''}].concat(options.workflowModels),
+                                             link="{ type: 'formatConfiguration', parameters: {'id': lot.activeFormatConfiguration.identifier} }"></numa-editable-field>
+
+                        <numa-editable-field data-title="{{::'Workflow' | translate}}" type="select" form="lotForm" model="lot.workflowModel"
+                                             numa-readonly="lot.status!=='CREATED'" errors="{{ errors.workflowModel }}"
+                                             default-text="{{ lot.project.workflowModel != null ? lot.project.workflowModel.name : 'Non renseigné' }}"
+                                             config="{ data: [{name: ''}].concat(options.workflowModels),
                                 display: 'name',
-                                query: 'o.name for o in $ctrl.config.data track by o.identifier'}" 
-                                link="{ type: 'workflowModel', parameters: {'id': lot.workflowModel.identifier} }">
+                                query: 'o.name for o in $ctrl.config.data track by o.identifier'}"
+                                             link="{ type: 'workflowModel', parameters: {'id': lot.workflowModel.identifier} }">
                         </numa-editable-field>
-                        
+
                         <numa-editable-field data-title="{{::'Notes concernant le conditionnement' | translate}}" numa-type="textarea"
-                        placeholder="{{::'Notes concernant le conditionnement' | translate}}"
-                        form="lotForm" model="lot.condNotes" numa-readonly="formRO" errors="{{ errors.condNotes }}"> </numa-editable-field>
+                                             placeholder="{{::'Notes concernant le conditionnement' | translate}}"
+                                             form="lotForm" model="lot.condNotes" numa-readonly="formRO" errors="{{ errors.condNotes }}"></numa-editable-field>
 
                         <numa-editable-field data-title="{{::'Notes concernant la numérisation' | translate}}" numa-type="textarea"
-                        placeholder="{{::'Notes concernant la numérisation' | translate}}"
-                        form="lotForm" model="lot.numNotes" numa-readonly="formRO" errors="{{ errors.numNotes }}"> </numa-editable-field>
+                                             placeholder="{{::'Notes concernant la numérisation' | translate}}"
+                                             form="lotForm" model="lot.numNotes" numa-readonly="formRO" errors="{{ errors.numNotes }}"></numa-editable-field>
 
-
-                        <numa-editable-field title="{{::'Collection Internet Archive' | translate}}" type="select" form="lotForm" 
-                        model="lot.collectionIA" numa-readonly="formRO" errors="{{ errors.collectionIA }}"
-                        default-text="{{ lot.project.collectionIA != null ? lot.project.collectionIA.name : 'Non renseigné' }}"
-                        config="{ data: [{name: ''}].concat(options.collections),
-                        display: 'name',
-                        query: 'o.name for o in $ctrl.config.data track by o.identifier'}"> </numa-editable-field>
-
-                        <numa-editable-field title="{{::'Plan de classement PAC' | translate}}" type="select" form="lotForm" 
-                        model="lot.planClassementPAC" numa-readonly="formRO" errors="{{ errors.planClassementPAC }}"
-                        default-text="{{ lot.project.planClassementPAC != null ? lot.project.planClassementPAC.name : 'Non renseigné' }}"
-                        config="{ data: [{name: ''}].concat(options.pacs),
-                        display: 'name',
-                        query: 'o.name for o in $ctrl.config.data track by o.identifier'}"> </numa-editable-field>
-                        
-                        <numa-editable-field title="{{::'Collection Omeka' | translate}}" type="select" form="lotForm" 
-                            model="lot.omekaCollection" numa-readonly="formRO" errors="{{ errors.omekaCollection }}"
-                            config="{ data: [{name: ''}].concat(options.omekaCollections),
-                            display: 'name',
-                            query: 'o.name for o in $ctrl.config.data track by o.identifier'}"> </numa-editable-field>
-                            
-                        <numa-editable-field title="{{::'Type d\'item Omeka' | translate}}" type="select" form="lotForm" 
-                            model="lot.omekaItem" numa-readonly="formRO" errors="{{ errors.omekaItem }}"
-                            config="{ data: [{name: ''}].concat(options.omekaItems),
-                            display: 'name',
-                            query: 'o.name for o in $ctrl.config.data track by o.identifier'}"> </numa-editable-field>
                     </div>
-                    
-                    
+
+                    <!-- Contrôles -->
+                    <div class="formBlock">
+                        <div class="formBlockTitle">
+                            <span translate>Configurations de contrôles</span>
+                        </div>
+                        <div class="formBlockContent">
+                            <div class="row">
+                                <div class="col-sm-8">
+                                    <numa-editable-field data-title="{{::'Configuration contrôles' | translate}}" type="select" form="lotForm"
+                                                         default-text="{{ lot.project.activeCheckConfiguration != null ? lot.project.activeCheckConfiguration.label : 'Non renseigné' }}"
+                                                         model="lot.activeCheckConfiguration" numa-readonly="formRO" errors="{{ errors.activeCheckConfiguration }}"
+                                                         config="{ data: [{label: ''}].concat(options.check),
+                                                                display: 'label',
+                                                                query: 'o.label for o in $ctrl.config.data track by o.identifier'}"
+                                                         link="{ type: 'checkConfiguration', parameters: {'id': lot.activeCheckConfiguration.identifier} }"></numa-editable-field>
+                                    <numa-editable-field data-title="{{::'Type de compression attendu' | translate}}" form="lotForm"
+                                                         model="lot.requiredTypeCompression" numa-readonly="true" errors="{{ errors.requiredTypeCompression }}"></numa-editable-field>
+
+                                    <numa-editable-field data-title="{{::'Compression attendue (bits depth)' | translate}}" placeholder="{{::'Compression maximale' | translate}}"
+                                                         form="lotForm" model="lot.requiredTauxCompression" numa-readonly="formRO" errors="{{ errors.requiredTauxCompression }}"></numa-editable-field>
+
+                                    <numa-editable-field data-title="{{::'Résolution minimale attendue' | translate}}" placeholder="{{::'Résolution minimale attendue (dpi)' | translate}}"
+                                                         form="lotForm" model="lot.requiredResolution" numa-readonly="formRO" errors="{{ errors.requiredResolution }}"></numa-editable-field>
+
+                                    <numa-editable-field data-title="{{::'Profil colorimétrique attendu' | translate}}" type="select" form="lotForm"
+                                                         model="lot.requiredColorspace" numa-readonly="formRO" errors="{{ errors.requiredColorspace }}"
+                                                         config="{ data: options.colorspace, displayFn: displayColorspace,
+                                                            query: 'key as value for (key, value) in $ctrl.config.data'}"></numa-editable-field>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cines -->
+                    <div class="formBlock">
+                        <div class="formBlockTitle">
+                            <span translate>Configurations CINES</span>
+                        </div>
+                        <div class="formBlockContent">
+                            <div class="row">
+                                <div class="col-sm-8">
+                                    <numa-editable-field title="{{::'Plan de classement PAC' | translate}}" type="select" form="lotForm"
+                                                         model="lot.planClassementPAC" numa-readonly="formRO" errors="{{ errors.planClassementPAC }}"
+                                                         default-text="{{ lot.project.planClassementPAC != null ? lot.project.planClassementPAC.name : 'Non renseigné' }}"
+                                                         config="{ data: [{name: ''}].concat(options.pacs),
+                        display: 'name',
+                        query: 'o.name for o in $ctrl.config.data track by o.identifier'}"></numa-editable-field>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Internet Archive -->
+                    <div class="formBlock">
+                        <div class="formBlockTitle">
+                            <span translate>Configurations Internet Archive</span>
+                        </div>
+                        <div class="formBlockContent">
+                            <div class="row">
+                                <div class="col-sm-8">
+                                    <numa-editable-field title="{{::'Collection Internet Archive' | translate}}" type="select" form="lotForm"
+                                                         model="lot.collectionIA" numa-readonly="formRO" errors="{{ errors.collectionIA }}"
+                                                         default-text="{{ lot.project.collectionIA != null ? lot.project.collectionIA.name : 'Non renseigné' }}"
+                                                         config="{ data: [{name: ''}].concat(options.collections),
+                                                            display: 'name',
+                                                            query: 'o.name for o in $ctrl.config.data track by o.identifier'}"></numa-editable-field>
+                                    <numa-editable-field title="{{::'URL de la licence' | translate}}" placeholder="{{::'URL de la licence pour Internet Archive' | translate}}" form="lotForm"
+                                                         model="lot.licenseUrl" numa-readonly="formRO" errors="{{ errors.licenseUrl }}"></numa-editable-field>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Omeka -->
+                    <div class="formBlock">
+                        <div class="formBlockTitle">
+                            <span translate>Configurations Omeka</span>
+                        </div>
+                        <div class="formBlockContent">
+                            <div class="row">
+                                <div class="col-sm-8">
+                                    <numa-editable-field title="{{::'Configuration Omeka' | translate}}" type="select" form="lotForm"
+                                                         model="lot.omekaConfiguration" numa-readonly="formRO" errors="{{ errors.omekaConfiguration }}"
+                                                         numa-onchange="onChangeOmekaConf($data)"
+                                                         config="{ data: [{label: ''}].concat(options.omekaConfigurations),
+                                                                display: 'label',
+                                                                query: 'o.label for o in $ctrl.config.data track by o.identifier'}"></numa-editable-field>
+
+                                    <numa-editable-field title="{{::'Collection Omeka' | translate}}" type="select" form="lotForm"
+                                                         model="lot.omekaCollection" numa-readonly="formRO" errors="{{ errors.omekaCollection }}"
+                                                         config="{ data: [{name: ''}].concat(options.omekaCollections),
+                                                        display: 'name',
+                                                        query: 'o.name for o in $ctrl.config.data track by o.identifier'}"></numa-editable-field>
+
+                                    <numa-editable-field title="{{::'Type d\'item Omeka' | translate}}" type="select" form="lotForm"
+                                                         model="lot.omekaItem" numa-readonly="formRO" errors="{{ errors.omekaItem }}"
+                                                         config="{ data: [{name: ''}].concat(options.omekaItems),
+                                                        display: 'name',
+                                                        query: 'o.name for o in $ctrl.config.data track by o.identifier'}"></numa-editable-field>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Livraisons -->
                     <div class="row" ng-if="lot.identifier">
                         <div class="col-sm-12">
                             <div uib-accordion-group is-open="accordions.delivery">
                                 <uib-accordion-heading>
                                     <span class="pull-left glyphicon-halflings"
-                                            ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordions.delivery]">&nbsp;</span>
-                                    <h4>{{ 'Livraisons' | translate }} 
+                                          ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordions.delivery]">&nbsp;</span>
+                                    <h4>{{ 'Livraisons' | translate }}
                                         <span class="badge btn-sem2">{{ deliveries.length }}</span>
                                     </h4>
                                 </uib-accordion-heading>

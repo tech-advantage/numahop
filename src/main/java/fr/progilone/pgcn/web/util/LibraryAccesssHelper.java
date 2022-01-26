@@ -77,8 +77,9 @@ public class LibraryAccesssHelper {
                                     final Function<T, Library> getLibraryFn,
                                     final String... bypassRoles) {
         // On ne contrôle pas la bibliothèque pour les utilisateurs ayant un rôle dans bypassRoles
-        final String[] roles = Arrays.copyOf(bypassRoles, bypassRoles.length + 1);
+        final String[] roles = Arrays.copyOf(bypassRoles, bypassRoles.length + 2);
         roles[roles.length - 1] = AuthorizationConstants.SUPER_ADMIN;
+        roles[roles.length - 2] = AuthorizationConstants.ADMINISTRATION_LIB;
 
         if (Stream.of(roles).anyMatch(request::isUserInRole)) {
             return true;
@@ -106,8 +107,9 @@ public class LibraryAccesssHelper {
     @Transactional(readOnly = true)
     public List<String> getLibraryFilter(final HttpServletRequest request, final List<String> libraryFilter, final String... bypassRoles) {
         // On ne contrôle pas la bibliothèque pour les utilisateurs ayant un rôle dans bypassRoles
-        final String[] roles = Arrays.copyOf(bypassRoles, bypassRoles.length + 1);
+        final String[] roles = Arrays.copyOf(bypassRoles, bypassRoles.length + 2);
         roles[roles.length - 1] = AuthorizationConstants.SUPER_ADMIN;
+        roles[roles.length - 2] = AuthorizationConstants.ADMINISTRATION_LIB;
 
         if (Stream.of(roles).anyMatch(request::isUserInRole)) {
             return libraryFilter != null ? libraryFilter : Collections.emptyList();
@@ -136,8 +138,9 @@ public class LibraryAccesssHelper {
                                                     final Function<T, String> getLibraryIdFn,
                                                     final String... bypassRoles) {
         // On ne contrôle pas la bibliothèque pour les utilisateurs ayant un rôle dans bypassRoles
-        final String[] roles = Arrays.copyOf(bypassRoles, bypassRoles.length + 1);
+        final String[] roles = Arrays.copyOf(bypassRoles, bypassRoles.length + 2);
         roles[roles.length - 1] = AuthorizationConstants.SUPER_ADMIN;
+        roles[roles.length - 2] = AuthorizationConstants.ADMINISTRATION_LIB;
 
         if (Stream.of(roles).anyMatch(request::isUserInRole)) {
             return objects;

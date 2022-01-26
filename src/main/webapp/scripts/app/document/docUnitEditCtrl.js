@@ -106,23 +106,28 @@
         function loadOptions(project, library) {
             var libraryId = library ? [library.identifier] : $scope.docUnit.library ? [$scope.docUnit.library.identifier] : [];
             var projectId = project ? [project.identifier] : $scope.docUnit.project ? [$scope.docUnit.project.identifier] : [];
-            
+
             if (project && !library) {
                 libraryId = project.libraryId;
             }
-            
+
             if (libraryId) {
                 loadOcrLanguages(libraryId);
             }
 
+            var omekaConf;
+            if($scope.docUnit.omekaConfiguration != null){
+                omekaConf = $scope.docUnit.omekaConfiguration.identifier;
+            }
+
             $q.all([NumaHopInitializationSrvc.loadLibraries(),
-            NumaHopInitializationSrvc.loadProjects(libraryId),
+            NumaHopInitializationSrvc.loadProjects(),
             NumaHopInitializationSrvc.loadLots(libraryId, projectId),
             NumaHopInitializationSrvc.loadTrains(libraryId, projectId),
-            NumaHopInitializationSrvc.loadPACS(libraryId),
-            NumaHopInitializationSrvc.loadCollections(libraryId),
-            NumaHopInitializationSrvc.loadOmekaCollections(libraryId),
-            NumaHopInitializationSrvc.loadOmekaItems(libraryId)])
+            NumaHopInitializationSrvc.loadPACS(libraryId, projectId),
+            NumaHopInitializationSrvc.loadCollections(libraryId, projectId),
+            NumaHopInitializationSrvc.loadOmekaCollections(omekaConf, projectId),
+            NumaHopInitializationSrvc.loadOmekaItems(omekaConf, projectId)])
                 .then(function (data) {
                     $scope.sel2Libraries.length = 0;
                     [].push.apply($scope.sel2Libraries, data[0]);
@@ -168,13 +173,16 @@
                     $scope.options.omekaItems = data[7];
                 });
         }
-        
+
         function loadOcrLanguages(libraryId) {
                var deferred = $q.defer();
                $timeout(function () {
                    var promise = NumaHopInitializationSrvc.loadOcrLanguagesForLibrary(libraryId);
                    promise.then(function (value) {
-                       $scope.options.languagesOcr = value;
+                       $scope.options.languagesOcr = [];
+                       if(angular.isDefined(value)){
+                           $scope.options.languagesOcr = value;
+                       }
                        deferred.resolve(value);
                    }).catch(function (value) {
                        deferred.reject(value);
@@ -190,7 +198,7 @@
             }
             loadOptions(project);
         }
-        
+
         function onchangeLibrary(library) {
             $scope.docUnit.collectionIA = null;
             $scope.docUnit.planClassementPAC = null;
@@ -211,9 +219,9 @@
 
         /**
          * Initialise des champs de l'entité à partir de ceux de son parent
-         * 
-         * @param {any} entity 
-         * @returns 
+         *
+         * @param {any} entity
+         * @returns
          */
         function initEntityFromParent(entity) {
             if ($routeParams.parent) {
@@ -266,7 +274,7 @@
         }
 
         /**
-         * Etat workflow : récupère le 1er statut en cours s'il y a lieu. 
+         * Etat workflow : récupère le 1er statut en cours s'il y a lieu.
          */
         function loadWorkflowState(docUnit) {
             if (!docUnit) {
@@ -335,7 +343,7 @@
                 $scope.facileResults = "Vérifications en cours";
                 return;
             }
-            
+
             var resKo = _.filter(docUnit.automaticCheckResults, function (res) {
                 if (!$scope.dateFacileResults) {
                     $scope.dateFacileResults = res.createdDate;
@@ -352,7 +360,7 @@
             }
         }
 
-        
+
         function getFacileErrors() {
             if ($scope.facileErrors) {
                 return $scope.facileErrors.join(', ');
@@ -514,13 +522,13 @@
                 };
                 MessageSrvc.addWarn(gettext("Cette unité documentaire ne définit pas de notices.<br/>{{startLink}}&nbsp;Ajouter une notice{{endLink}}"), msgParam, true);
             }
-            
+
             // ... puis on gère la validation facile
             loadFacileResults($scope.docUnit);
 
             // ... puis on gère les plateformes de diffusion & archivage
             if (entity.omekaExportStatus) {
-                
+
                 if (entity.omekaExportStatus === 'IN_PROGRESS') {
                     $scope.canExportToOmeka = false;
                     $scope.omekaDistribStatus = 'En cours';
@@ -594,8 +602,8 @@
             } else {
                 $scope.canExportToInternetArchive = true;
             }
-            
-            
+
+
             // ... puis on affiche les infos de modification ...
             if (angular.isDefined(entity.lastModifiedDate)) {
                 var dateModif = new Date(entity.lastModifiedDate);
@@ -629,7 +637,6 @@
         function afterLoadingEntity(entity) {
             loadWorkflowState(entity);
             loadFlagInactivation(entity);
-            //loadFacileResults(entity);
             loadOptions();
             loadAll(entity);
         }
@@ -740,10 +747,10 @@
          * Téléchargement d'une archive pour l'export local / SFTP d'une UD.
          */
         function massExport() {
-            
+
             ModalSrvc.selectExportTypes()
                 .then(function (types) {
-                     
+
                     var ftpExport = types.ftpExport === "true";
                     var params = {
                         "docs": $scope.docUnit.identifier,
@@ -757,18 +764,18 @@
                         params.export = true;
                     }
                     var url = 'api/rest/docunit?' + $httpParamSerializer(params);
-                    
+
                     // on met la réponse dans un arraybuffer pour conserver l'encodage original dans le fichier sauvegardé
                     $http.get(url, { responseType: 'arraybuffer' })
                         .then(function (response) {
                             if (ftpExport) {
                                 MessageSrvc.addSuccess(gettext("[" + $scope.docUnit.pgcnId +  "] L'export FTP est en cours"));
-                            } else {    
+                            } else {
                                 var filename = DateUtils.getFormattedDateYearMonthDayHourMinSec(new Date()) + "_" + $scope.docUnit.pgcnId + "_export.zip";
                                 var blob = new Blob([response.data], { type: response.headers("content-type") });
                                 FileSaver.saveAs(blob, filename);
                             }
-                            
+
                         });
                 });
         }

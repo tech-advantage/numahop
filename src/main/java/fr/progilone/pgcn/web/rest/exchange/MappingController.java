@@ -98,7 +98,7 @@ public class MappingController extends AbstractRestController {
                                                                        @RequestParam(value = "library", required = false) Library library,
                                                                        @RequestParam(value = "type", required = false) final Mapping.Type type) {
         // Vérification des droits d'accès par rapport à la bibliothèque de l'utilisateur
-        if (library != null && !libraryAccesssHelper.checkLibrary(request, library, ADMINISTRATION_LIB)) {
+        if (library != null && !libraryAccesssHelper.checkLibrary(request, library)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         // Un des paramètres doit être renseigné
@@ -113,7 +113,7 @@ public class MappingController extends AbstractRestController {
             mappingDTOS = mappingService.findByType(type);
             // Filtrage des mappings par rapport à la bibliothèque de l'utilisateur, pour les non-admin
             mappingDTOS =
-                libraryAccesssHelper.filterObjectsByLibrary(request, mappingDTOS, dto -> dto.getLibrary().getIdentifier(), ADMINISTRATION_LIB);
+                libraryAccesssHelper.filterObjectsByLibrary(request, mappingDTOS, dto -> dto.getLibrary().getIdentifier());
         }
         // Par bibliothèque
         else if (type == null) {
@@ -133,7 +133,7 @@ public class MappingController extends AbstractRestController {
     @RolesAllowed({MAP_HAB0})
     public ResponseEntity<Set<MappingDTO>> findUsableByLibrary(final HttpServletRequest request, @RequestParam(value = "library") Library library) {
         // Vérification des droits d'accès par rapport à la bibliothèque de l'utilisateur
-        if (!libraryAccesssHelper.checkLibrary(request, library, ADMINISTRATION_LIB)) {
+        if (!libraryAccesssHelper.checkLibrary(request, library)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         // Réponse
@@ -147,7 +147,7 @@ public class MappingController extends AbstractRestController {
         // Chargement des mappings
         Collection<MappingDTO> mappingDTOS = mappingService.findAllUsable();
         // Filtrage des mappings par rapport à la bibliothèque de l'utilisateur, pour les non-admin
-        mappingDTOS = libraryAccesssHelper.filterObjectsByLibrary(request, mappingDTOS, dto -> dto.getLibrary().getIdentifier(), ADMINISTRATION_LIB);
+        mappingDTOS = libraryAccesssHelper.filterObjectsByLibrary(request, mappingDTOS, dto -> dto.getLibrary().getIdentifier());
         // Réponse
         return new ResponseEntity<>(mappingDTOS, HttpStatus.OK);
     }
@@ -163,7 +163,7 @@ public class MappingController extends AbstractRestController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         // Vérification des droits d'accès par rapport à la bibliothèque de l'utilisateur
-        if (!libraryAccesssHelper.checkLibrary(request, mapping, Mapping::getLibrary, ADMINISTRATION_LIB)) {
+        if (!libraryAccesssHelper.checkLibrary(request, mapping, Mapping::getLibrary)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         // Réponse
@@ -187,7 +187,7 @@ public class MappingController extends AbstractRestController {
             // la bib n'est pas renseignée: accès en lecture + écriture à la bib du mapping
             !libraryAccesssHelper.checkLibrary(request, mapping, Mapping::getLibrary) :
             // la bib est pas renseignée: accès en lecture à la bib du mapping + accès en écriture à la bib renseignée
-            !libraryAccesssHelper.checkLibrary(request, mapping, Mapping::getLibrary, ADMINISTRATION_LIB) || !libraryAccesssHelper.checkLibrary(
+            !libraryAccesssHelper.checkLibrary(request, mapping, Mapping::getLibrary) || !libraryAccesssHelper.checkLibrary(
                 request,
                 library)) {
 
@@ -241,7 +241,7 @@ public class MappingController extends AbstractRestController {
             return;
         }
         // Vérification des droits d'accès par rapport à la bibliothèque de l'utilisateur
-        if (!libraryAccesssHelper.checkLibrary(request, mapping, Mapping::getLibrary, ADMINISTRATION_LIB)) {
+        if (!libraryAccesssHelper.checkLibrary(request, mapping, Mapping::getLibrary)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return;
         }

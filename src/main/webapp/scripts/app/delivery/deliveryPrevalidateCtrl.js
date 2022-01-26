@@ -5,13 +5,14 @@
         .controller('DeliveryPrevalidateCtrl', DeliveryPrevalidateCtrl);
 
     function DeliveryPrevalidateCtrl($routeParams, $scope, DeliverySrvc, codeSrvc,
-        gettextCatalog, MessageSrvc, ModalSrvc, ValidationSrvc) {
+        gettextCatalog, MessageSrvc, ModalSrvc, ValidationSrvc, ErreurSrvc) {
 
         $scope.semCodes = codeSrvc;
         $scope.validation = ValidationSrvc;
         $scope.authorizedDelivery = true;
         $scope.availableSpaceOnDisk = true;
         $scope.prefixToExclude = [];
+        $scope.getError = ErreurSrvc.getMessage;
 
         // Gestion des vues
         $scope.viewModes = {
@@ -107,19 +108,14 @@
             DeliverySrvc.predeliver({ id: $routeParams.id, create_docs: $scope._createDocs }, function (predelivery) {
                 $scope.predelivery = predelivery;
                 if (predelivery.errors && predelivery.errors.length > 0) {
-                    for (var i = 0; i < $scope.predelivery.errors.length; i++) {
-                        if ('DELIVERY_NO_MASTER_FOUND' === $scope.predelivery.errors[i].code) {
-                            $scope.authorizedDelivery = false;
-                            MessageSrvc.addWarn(gettextCatalog.getString("Aucun document à livrer ne correspond à cette livraison"));
-                        }
-                        if ('DELIVERY_NOT_ENOUGH_AVAILABLE_SPACE' === $scope.predelivery.errors[i].code) {
-                            $scope.availableSpaceOnDisk = false;
-                            MessageSrvc.addWarn(gettextCatalog.getString("Espace disque insuffisant pour cette livraison"));
-                        }
-                    }
-                } else if (predelivery.lockedDigitalDocuments.length > 0) {
+                    $scope.emptyDelivery = _.filter(predelivery.errors,
+                    function(error){ return error.code == "DELIVERY_NO_MATCHING_PREFIX" || error.code == "DELIVERY_NO_MASTER_FOUND"; }).length > 0;
+                }
+                if (predelivery.lockedDigitalDocuments.length > 0) {
                     MessageSrvc.addWarn(gettextCatalog.getString("Certains documents ne peuvent pas être livrés"));
-                    $scope.accordions.digitalDoc = false;
+                    $scope.accordions.lockedDoc = true;
+                }
+                if (predelivery.undeliveredDocuments.length > 0) {
                     $scope.accordions.lockedDoc = true;
                 }
 

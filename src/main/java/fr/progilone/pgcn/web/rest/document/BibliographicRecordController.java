@@ -353,7 +353,7 @@ public class BibliographicRecordController extends AbstractRestController {
         }
         lockService.releaseLock(record);
     }
-
+    
     /**
      * Filtrage d'une liste de LotDTO sur les droits d'accès de l'utilisateur.
      *

@@ -6,7 +6,7 @@
 
     function RecordListCtrl($q, $scope, DocUnitBaseService, gettext, gettextCatalog, HistorySrvc,
         NumahopUrlService, MessageSrvc, ModalSrvc, NumaHopInitializationSrvc, NumahopStorageService, RecordSrvc,
-        DocUnitSrvc) {
+        DocUnitSrvc, WorkflowSrvc) {
 
         $scope.doFilter = search;
         $scope.doFilterLibrary = searchLibrary;
@@ -40,6 +40,7 @@
         /** others actions **/
         mainCtrl.updateSelection = updateSelection;
         mainCtrl.deleteSelection = deleteSelection;
+        mainCtrl.validateSelection = validateSelection;
 
         mainCtrl.getPage = getPage;
         mainCtrl.getUrl = NumahopUrlService.getUrlRecord;
@@ -402,6 +403,33 @@
                     RecordSrvc.deleteSelection({}, _.keys(mainCtrl.selection), function () {
                         MessageSrvc.addSuccess(gettext("Les notices ont été supprimées"));
                         search();
+                    });
+                });
+        }
+
+        function validateSelection(){
+            if (mainCtrl.selectedLength === 0) {
+                MessageSrvc.addWarn(gettext("La sélection est vide"), {}, false);
+                return;
+            }
+            mainCtrl.selection = _.filter(mainCtrl.selection, function (selection){ return selection.lot != null; });
+            if(mainCtrl.selection.length == 0){
+                MessageSrvc.addWarn(gettext("Aucun des documents n'appartient à un lot"), {}, false);
+                return;
+            }
+            ModalSrvc.confirmAction(gettextCatalog.getString("valider ") + gettextCatalog.getPlural(mainCtrl.selectedLength,
+                "la notice sélectionnée",
+                "les {{n}} notices sélectionnées", { n: mainCtrl.selectedLength }))
+                .then(function () {
+                    var docUnitIds = _.map(mainCtrl.selection, function (selection){ return selection.docUnit.identifier; });
+                    var lotStatus = _.map(mainCtrl.selection, function (selection){ return selection.lot.status; });
+                    WorkflowSrvc.massValidateRecords({massValidateRecords: true}, docUnitIds).$promise
+                        .then(function () {
+                            if(_.contains(lotStatus, "CREATED")){
+                                MessageSrvc.addWarn(gettextCatalog.getString("Certains des documents n'appartiennent à un lot en cours"));
+                            }
+                            MessageSrvc.addSuccess(gettextCatalog.getString("La sélection a été validée"));
+                            search();
                     });
                 });
         }

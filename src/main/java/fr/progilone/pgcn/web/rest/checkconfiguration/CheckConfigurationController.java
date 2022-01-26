@@ -113,8 +113,8 @@ public class CheckConfigurationController extends AbstractRestController {
     public ResponseEntity<CheckConfigurationDTO> duplicateCheckConfiguration(final HttpServletRequest request, @PathVariable final String id) {
         return new ResponseEntity<>(uiCheckConfigurationService.duplicateCheckConfiguration(id), HttpStatus.OK);
     }
-    
-    
+
+
     @RequestMapping(value = "/{idDocUnit}", method = RequestMethod.GET, params = {"docUnit"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed({USER_HAB0})
@@ -127,6 +127,9 @@ public class CheckConfigurationController extends AbstractRestController {
     @RolesAllowed({CHECK_HAB1})
     public ResponseEntity<CheckConfigurationDTO> update(final HttpServletRequest request,
                                                         @RequestBody final CheckConfigurationDTO configuration) throws PgcnException {
+        if(!libraryAccesssHelper.checkLibrary(request, configuration.getLibrary().getIdentifier())){
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
         final CheckConfigurationDTO savedConfiguration = uiCheckConfigurationService.update(configuration);
         return new ResponseEntity<>(savedConfiguration, HttpStatus.OK);
     }

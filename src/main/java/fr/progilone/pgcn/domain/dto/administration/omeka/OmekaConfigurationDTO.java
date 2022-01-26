@@ -30,7 +30,10 @@ public class OmekaConfigurationDTO {
     private boolean exportView;
     private boolean exportThumb;
     private boolean exportPdf;
-    
+
+    private boolean omekas;
+    private boolean sftp;
+    private boolean zip;
 
     public String getIdentifier() {
         return identifier;
@@ -187,12 +190,38 @@ public class OmekaConfigurationDTO {
         this.omekaLists = omekaLists;
     }
 
+    public boolean isOmekas() {
+        return omekas;
+    }
+
+    public void setOmekas(final boolean omekas) {
+        this.omekas = omekas;
+    }
+
+    public boolean isSftp() {
+        return sftp;
+    }
+
+    public void setSftp(final boolean sftp) {
+        this.sftp = sftp;
+    }
+
+    public boolean isZip() {
+        return zip;
+    }
+
+    public void setZip(final boolean zip) {
+        this.zip = zip;
+    }
+
     @Override
     public boolean equals(final Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
-        if (o == null || getClass() != o.getClass())
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
+        }
         final OmekaConfigurationDTO that = (OmekaConfigurationDTO) o;
         return Objects.equals(identifier, that.identifier);
     }

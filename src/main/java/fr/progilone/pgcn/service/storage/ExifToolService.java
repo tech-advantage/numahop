@@ -66,7 +66,9 @@ public class ExifToolService {
             return Optional.empty();
         }
         Map<String, String> metas;
-        final String args = quoteDelim + "$FileSize # $FileType # $ProfileDescription # $BitsPerComponent # $XResolution # $YResolution # $ImageHeight # $ImageWidth" + quoteDelim;
+        final String args = quoteDelim + "$FileSize # $FileType # $ProfileDescription # $BitsPerComponent # " +
+                "$XResolution # $YResolution # $DisplayXResolution # $DisplayYResolution # $DisplayXResolutionUnit # " +
+                "$ImageHeight # $ImageWidth" + quoteDelim;
         
         final ProcessBuilder builder =
                                      new ProcessBuilder(exifProcessPath,
@@ -118,8 +120,8 @@ public class ExifToolService {
         IOUtils.readLines(is, StandardCharsets.UTF_8)
                .forEach(ligne -> {
                    if (! StringUtils.containsIgnoreCase(ligne, "warning")) {
-                       final String[] tab = StringUtils.split(ligne, "#", 8);
-                       if (tab.length != 8) {
+                       final String[] tab = StringUtils.split(ligne, "#", 11);
+                       if (tab.length != 11) {
                            return;
                        }
                        final String format = StringUtils.trim(tab[1]);
@@ -141,9 +143,18 @@ public class ExifToolService {
                        } else {
                            metas.put(StringUtils.trim(METAS_TO_CHECK[4]), "non renseigné");  // quality => Bit Depth
                        }
-                       metas.put(StringUtils.trim(METAS_TO_CHECK[5]), StringUtils.trim(tab[4]) + "x" + StringUtils.trim(tab[5]));  // resolution
-                       metas.put(StringUtils.trim(METAS_TO_CHECK[6]), StringUtils.trim(tab[6]));  // height
-                       metas.put(StringUtils.trim(METAS_TO_CHECK[7]), StringUtils.trim(tab[7]));  // width
+                       
+                       // Resolution
+                       if(!StringUtils.trim(tab[4]).isEmpty() || !StringUtils.trim(tab[5]).isEmpty()){
+                           metas.put(StringUtils.trim(METAS_TO_CHECK[5]), StringUtils.trim(tab[4]) + "x" + StringUtils.trim(tab[5]));  // resolution
+                       
+                       // Display Resolution / Display Resolution Unit
+                       } else if((!StringUtils.trim(tab[6]).isEmpty() || !StringUtils.trim(tab[7]).isEmpty()) && !StringUtils.trim(tab[8]).isEmpty()){
+                           metas.put(StringUtils.trim(METAS_TO_CHECK[5]), StringUtils.trim(getResolution(tab[6], tab[8])) + "x" + StringUtils.trim(getResolution(tab[7], tab[8])));
+                       }
+                       
+                       metas.put(StringUtils.trim(METAS_TO_CHECK[6]), StringUtils.trim(tab[9]));  // height
+                       metas.put(StringUtils.trim(METAS_TO_CHECK[7]), StringUtils.trim(tab[10]));  // width
                    }
                });
         return metas;
@@ -184,6 +195,40 @@ public class ExifToolService {
         }
         return false;
     }
+    
+    /**
+     * tableau de conversion pour la métadonnée Display Resolution en pouce
+     * L'unité est présente dans la métadonnée Display X Resolution Unit
+     */
+    private Map<String, Double> unitMapResolutionConversion(){
+        Map<String, Double> conversion = new HashMap<>();
+        conversion.put("km", 0.00001);
+        conversion.put("100 m", 0.0001);
+        conversion.put("10 m", 0.001);
+        conversion.put("m", 0.01);
+        conversion.put("10 cm", 0.1);
+        conversion.put("cm", 1.0);
+        conversion.put("mm", 10.0);
+        conversion.put("0.1 mm", 100.0);
+        conversion.put("0.01 mm", 1000.0);
+        conversion.put("um", 10000.0);
+        return conversion;
+    }
+    
+    /**
+     * Calcul de la resolution
+     * 2.54 conversion pouce / cm
+     * @param resolution métadonnée Display Resolution
+     * @param resolutionUnit métadonnée Display Resolution Unit
+     */
+    private String getResolution(final String resolution,final String resolutionUnit){
+        Double conversion = unitMapResolutionConversion().get(StringUtils.trim(resolutionUnit));
+        if(conversion != null){
+            return String.valueOf(conversion * 2.54 * Double.parseDouble(resolution));
+        }
+        return "";
+    }
+    
 
     protected boolean isConfigured() {
         return isConfigured;

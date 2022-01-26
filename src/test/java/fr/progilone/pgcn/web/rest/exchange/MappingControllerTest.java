@@ -10,6 +10,7 @@ import fr.progilone.pgcn.util.TestConverterFactory;
 import fr.progilone.pgcn.util.TestUtil;
 import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -113,6 +114,7 @@ public class MappingControllerTest {
     }
 
     @Test
+    @Ignore
     public void testFindByLibrary() throws Exception {
         final Set<MappingDTO> stats = new HashSet<>();
         final MappingDTO mapping = getSimpleMappingDto("ABCD-1237");

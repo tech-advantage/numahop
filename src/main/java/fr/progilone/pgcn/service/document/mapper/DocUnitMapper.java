@@ -14,6 +14,7 @@ import fr.progilone.pgcn.domain.dto.document.SummaryDocUnitDTO;
 import fr.progilone.pgcn.domain.dto.document.SummaryDocUnitWithLotDTO;
 import fr.progilone.pgcn.service.administration.mapper.CinesPACMapper;
 import fr.progilone.pgcn.service.administration.mapper.InternetArchiveCollectionMapper;
+import fr.progilone.pgcn.service.administration.mapper.OmekaConfigurationMapper;
 import fr.progilone.pgcn.service.administration.mapper.OmekaListMapper;
 import fr.progilone.pgcn.service.check.mapper.AutomaticCheckResultMapper;
 import fr.progilone.pgcn.service.library.mapper.LibraryMapper;
@@ -35,6 +36,7 @@ import fr.progilone.pgcn.service.workflow.mapper.WorkflowMapper;
                 CinesPACMapper.class,
                 WorkflowMapper.class,
                 OmekaListMapper.class,
+                OmekaConfigurationMapper.class,
                 OcrLanguageMapper.class})
 public abstract class DocUnitMapper {
 
@@ -43,7 +45,8 @@ public abstract class DocUnitMapper {
     @Mappings({@Mapping(target = "parentIdentifier", ignore = true),
                @Mapping(target = "parentPgcnId", ignore = true),
                @Mapping(target = "parentLabel", ignore = true),
-               @Mapping(target = "nbChildren", ignore = true)})
+               @Mapping(target = "nbChildren", ignore = true),
+               @Mapping(target = "omekaConfiguration", source = "doc.lot.omekaConfiguration")})
     public abstract DocUnitDTO docUnitToDocUnitDTO(DocUnit doc);
 
     public abstract SummaryDocUnitDTO docUnitToDocUnitSummaryDTO(DocUnit doc);

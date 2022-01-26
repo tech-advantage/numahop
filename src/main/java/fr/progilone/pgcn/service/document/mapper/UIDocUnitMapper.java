@@ -31,6 +31,7 @@ import fr.progilone.pgcn.domain.train.Train;
 import fr.progilone.pgcn.repository.document.BibliographicRecordRepository;
 import fr.progilone.pgcn.service.administration.CinesPACService;
 import fr.progilone.pgcn.service.administration.InternetArchiveCollectionService;
+import fr.progilone.pgcn.service.administration.omeka.OmekaConfigurationService;
 import fr.progilone.pgcn.service.administration.omeka.OmekaListService;
 import fr.progilone.pgcn.service.library.LibraryService;
 import fr.progilone.pgcn.service.lot.LotService;
@@ -46,9 +47,10 @@ public class UIDocUnitMapper {
     private final LotService lotService;
     private final ProjectService projectService;
     private final TrainService trainService;
-    private final InternetArchiveCollectionService iaCollectionService;;
+    private final InternetArchiveCollectionService iaCollectionService;
     private final CinesPACService cinesPACService;
     private final OmekaListService omekaListService;
+    private final OmekaConfigurationService omekaConfigurationService;
     private final OcrLanguageService ocrLanguageService;
 
     @Autowired
@@ -60,6 +62,7 @@ public class UIDocUnitMapper {
                            final InternetArchiveCollectionService iaCollectionService,
                            final CinesPACService cinesPACService,
                            final OmekaListService omekaListService,
+                           final OmekaConfigurationService omekaConfigurationService,
                            final OcrLanguageService ocrLanguageService) {
         this.libraryService = libraryService;
         this.projectService = projectService;
@@ -69,6 +72,7 @@ public class UIDocUnitMapper {
         this.iaCollectionService = iaCollectionService;
         this.cinesPACService = cinesPACService;
         this.omekaListService = omekaListService;
+        this.omekaConfigurationService = omekaConfigurationService;
         this.ocrLanguageService = ocrLanguageService;
     }
 

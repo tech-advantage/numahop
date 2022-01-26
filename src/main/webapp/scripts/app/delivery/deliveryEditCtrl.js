@@ -13,7 +13,6 @@
         $scope.codes = codeSrvc;
         $scope.delete = deleteDelivery;
         $scope.displayPayment = displayPayment;
-        $scope.displayMethod = displayMethod;
         $scope.isDeliveryLocked = NumaHopStatusService.isDeliveryLocked;
         $scope.isUnexpectedError = false;
         $scope.saveDelivery = saveDelivery;
@@ -42,11 +41,10 @@
                 true: gettextCatalog.getString('Oui'),
                 false: gettextCatalog.getString('Non')
             },
-            method: DeliverySrvc.config.method,
             payment: DeliverySrvc.config.payment,
             sampleMode: DeliverySrvc.config.sampleMode
         };
-                
+
         $scope.currentUser =  Principal.identity().then(function (usr) {
             return usr;
         });
@@ -59,7 +57,7 @@
 
         /** Initialisation */
         function init() {
-            
+
             $scope.loaded = false;
             $scope.digitalDocuments = [];
 
@@ -150,10 +148,12 @@
         }
 
         function messageForCheck(check, successMsg, failureMsg) {
-            if (check) {
-                MessageSrvc.addSuccess(successMsg, null, true);
-            } else {
-                MessageSrvc.addFailure(failureMsg, null, true);
+            if(angular.isDefined(check)){
+                if (check) {
+                    MessageSrvc.addSuccess(successMsg, null, true);
+                } else {
+                    MessageSrvc.addFailure(failureMsg, null, true);
+                }
             }
         }
 
@@ -221,7 +221,7 @@
             subscriberPromise
                 // initialisation de l'abonnement en cours
                 .then(function (s) { $scope.subscriber = s; });
-            
+
             $scope.$on("$locationChangeStart", unsubscribeDelivery);
         }
 
@@ -289,7 +289,7 @@
                 }
             });
         }
-        
+
         function loadDeliveryProgress(digitalId) {
               return DeliverySrvc.getDeliveryProgress({id: $routeParams.id, digitalId: digitalId}).$promise.then(function (value) {
                     return value;
@@ -502,37 +502,40 @@
             $scope.delivered = delivery.status !== "SAVED";
             var notCheckedStatus = ["TO_BE_CONTROLLED", "SAVED", "DELIVERING"];
             $scope.deliveryNotChecked = notCheckedStatus.indexOf(delivery.status) > -1;
-            
+
             $scope.userIsPresta = $scope.currentUser.category === "PROVIDER" && $scope.isAuthorized($scope.userRoles.DEL_HAB2);
             // un presta n'a plus la possibilité de modifier une livraison demarrée.
-            $scope.formRO = $scope.delivery.status !== 'SAVED' 
+            $scope.formRO = $scope.delivery.status !== 'SAVED'
                                 && ($scope.userIsPresta || !$scope.isAuthorized($scope.userRoles.DEL_HAB8));
-            
+
             // un presta peut supprimer une livraison si créée par lui-meme et non demarrée.
-            $scope.canDeleteDelivery = $scope.delivery.status === 'SAVED' && $scope.isAuthorized($scope.userRoles.DEL_HAB3)
+            $scope.canDeleteDelivery = $scope.isAuthorized($scope.userRoles.DEL_HAB3)
                                 && ( !$scope.userIsPresta ||
                                         ($scope.userIsPresta && $scope.currentUser.login === delivery.createdBy)
                                    );
-            
+
             addMessagesForLoadedDelivery();
             if (angular.isDefined($scope.delivery.lot)) {
                 $scope.pdfExtracted = $scope.delivery.lot.requiredFormat === 'PDF';
                 $scope.canChangeLot = $scope.delivery.status === 'SAVED';
             }
         }
-        
+
         /* Chargement Config de controle active */
         function loadCheckConfiguration() {
             if (angular.isDefined($routeParams.id)) {
                 DeliverySrvc.getActiveCheckConfig({
                     id: $routeParams.id
                 }, function (config) {
-                    config.sampleModeLabel = displaySampleMode(config.sampleMode);
-                    if ('NO_SAMPLE' !== config.sampleMode) {
-                        config.sampleModeLabel += ' (' + config.sampleRate * 100 + '%)';
+                    if(angular.isDefined(config.sampleMode)){
+                        config.sampleModeLabel = displaySampleMode(config.sampleMode);
+                        if ('NO_SAMPLE' !== config.sampleMode) {
+                            config.sampleModeLabel += ' (' + config.sampleRate * 100 + '%)';
+                        }
+                        $scope.checkConfiguration = config;
+                    } else {
+                        MessageSrvc.addWarn("Aucune configuration de contrôles paramétrée sur le lot", null, true);
                     }
-                    $scope.checkConfiguration = config;
-
                 });
             }
         }
@@ -550,10 +553,10 @@
                 var cpt = 0;
                 _.each(digitalDocuments, function (doc) {
                     // Récupération de la présence de workflow (isWorkflowStarted.done est true si un workflow est démarré)
-                    doc.isWorkflowStarted = WorkflowHandleSrvc.isWorkflowStarted(doc.identifier);
+                    doc.isWorkflowStarted = $scope.delivery.lot.status == "ONGOING";
                     totalPages += doc.nbPages;
                     if ($scope.delivering) {
-                        if (doc.status === 'TO_CHECK' || doc.status === 'CHECKING' 
+                        if (doc.status === 'TO_CHECK' || doc.status === 'CHECKING'
                                 || doc.status === 'PRE_REJECTED' || doc.status === 'REJECTED') {
                             doc.progress = 100;
                             saveDeliveryProgress(doc.digitalId, 100);
@@ -561,7 +564,7 @@
                             loadDeliveryProgress(doc.digitalId).then(function(val) {
                                 doc.progress = Number(val[0]);
                             });
-                             
+
                         }
                     }
                     cpt++;
@@ -569,6 +572,7 @@
                 $scope.delivery.totalPages = totalPages;
                 initStatusForDigitalDocument($scope.digitalDocuments);
                 $scope.isUnexpectedError = isDeliveryInUnexpectedError();
+                $scope.canDeleteDelivery = $scope.canDeleteDelivery && $scope.digitalDocuments.length == 0;
             });
         }
 
@@ -656,9 +660,7 @@
 
         function isDeliveryInUnexpectedError() {
 
-            if ($scope.delivery.status === "DELIVERING_ERROR") {
-                return true;
-            } else if ($scope.delivery.status === "DELIVERING" || $scope.delivery.status === "SAVED") {
+            if ($scope.delivery.status === "DELIVERING" || $scope.delivery.status === "SAVED") {
                 var isInError = undefined;
                 var sinceLastModif = Date.now() - (new Date($scope.delivery.lastModifiedDate)).getTime();
                 var hours = Math.floor(sinceLastModif / 3600000);
@@ -684,13 +686,8 @@
 
         }
 
-
         function displayPayment(payment) {
             return $scope.options.payment[payment] || payment;
-        }
-
-        function displayMethod(method) {
-            return $scope.options.method[method] || method;
         }
 
         function displaySampleMode(sampleMode) {

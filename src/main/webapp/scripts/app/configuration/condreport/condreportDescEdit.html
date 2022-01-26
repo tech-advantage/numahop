@@ -1,5 +1,5 @@
-<div class="col-sm-8 col-lg-9 col-sm-offset-4 col-lg-offset-3 col-layout-columns" 
-     ng-controller="CondreportDescEditCtrl as editCtrl" 
+<div class="col-sm-8 col-lg-9 col-sm-offset-4 col-lg-offset-3 col-layout-columns"
+     ng-controller="CondreportDescEditCtrl as editCtrl"
      ng-init="editCtrl.init(mainCtrl.editedProp)">
 
     <div class="panel panel-column-2 panel-column-end">
@@ -16,56 +16,56 @@
                     <span class="glyphicon-halflings glyphicon-trash"></span>
                 </button>
             </div>
-            <span ng-show="editCtrl.prop"><b>{{editCtrl.getTypeLabel(editCtrl.prop.type)}}</b> : 
+            <span ng-show="editCtrl.prop"><b>{{editCtrl.getTypeLabel(editCtrl.prop.type)}}</b> :
                 {{editCtrl.prop.label || ('Nouvelle propriété' | translate)}}</span>
         </div>
         <div class="panel-body">
             <form editable-form name="valuesForm" onaftersave="editCtrl.saveValues()" ng-show="editCtrl.loaded">
-                <numa-editable-field title="{{::'Libellé' | translate}}" placeholder="{{::'Libellé de la propriété' | translate}}" form="valuesForm" 
-                                     model="editCtrl.prop.label" onbeforesave="editCtrl.validation.required($data)" 
+                <numa-editable-field title="{{::'Libellé' | translate}}" placeholder="{{::'Libellé de la propriété' | translate}}" form="valuesForm"
+                                     model="editCtrl.prop.label" onbeforesave="editCtrl.validation.required($data)"
                                      numa-onchange="editCtrl.propertyChanged()" numa-readonly="!editCtrl.admin || editCtrl.internal"></numa-editable-field>
-                <numa-editable-field data-title="{{::'Code' | translate}}" placeholder="{{::'Code de la propriété' | translate}}" form="valuesForm" 
-                                     tooltip="{{::'Le code est utilisé pour identifier cette propriété dans l\'export PDF de constats d\'état' | translate}}" 
-                                     model="editCtrl.prop.code" numa-onchange="editCtrl.propertyChanged()" 
-                                     numa-readonly="!editCtrl.admin || editCtrl.internal"></numa-editable-field>                   
+                <numa-editable-field data-title="{{::'Code' | translate}}" placeholder="{{::'Code de la propriété' | translate}}" form="valuesForm"
+                                     tooltip="{{::'Le code est utilisé pour identifier cette propriété dans l\'export PDF de constats d\'état' | translate}}"
+                                     model="editCtrl.prop.code" numa-onchange="editCtrl.propertyChanged()"
+                                     numa-readonly="!editCtrl.admin || editCtrl.internal"></numa-editable-field>
                 <numa-editable-field type="number" title="{{::'Ordre' | translate}}" placeholder="{{::'Ordre d\'affichage' | translate}}" form="valuesForm"
-                                     tooltip="{{::'Ordre d\'affichage de la propriété' | translate}}" 
+                                     tooltip="{{::'Ordre d\'affichage de la propriété' | translate}}"
                                      model="editCtrl.prop.order" numa-onchange="editCtrl.propertyChanged()"
                                      numa-readonly="!editCtrl.admin || editCtrl.internal"></numa-editable-field>
 
                 <div class="formBlock" style="max-width: 640px; margin-top: 50px; margin-left: auto; margin-right: auto">
                     <div class="formBlockTitle" style="margin-top: -18px">
                         <numa-editable-field type="select" form="valuesForm" field-class="col-xs-5"
-                                            model="editCtrl._propLibrary" errors="{{ errors.library }}" 
+                                            model="editCtrl._propLibrary" errors="{{ errors.library }}"
                                             tooltip="{{::'Ces paramètres sont propres à cette bibliothèque' | translate}}"
                                             numa-readonly="formRO" numa-onchange="editCtrl.onchangeLibrary($data)"
-                                            config="{ data: editCtrl.options.libraries, 
-                                                    display: 'name', 
+                                            config="{ data: editCtrl.options.libraries,
+                                                    display: 'name',
                                                     query: 'o.name for o in $ctrl.config.data track by o.identifier' }"
-                                            ng-if="::editCtrl.isSuperAdmin"></numa-editable-field>
-                        <numa-editable-field type="readonly" form="valuesForm" value="{{::editCtrl._propLibrary.name}}" 
+                                            ng-if="::editCtrl.administrationLib"></numa-editable-field>
+                        <numa-editable-field type="readonly" form="valuesForm" value="{{::editCtrl._propLibrary.name}}"
                                             tooltip="{{::'Ces paramètres sont propres à cette bibliothèque' | translate}}"
-                                            ng-if="::!editCtrl.isSuperAdmin"></numa-editable-field> 
+                                            ng-if="::!editCtrl.administrationLib"></numa-editable-field>
                     </div>
                     <div class="formBlockContent">
-                        <numa-editable-field data-title="{{::'Obligatoire' | translate}}" type="radiolist" data-id="conf_required" 
+                        <numa-editable-field data-title="{{::'Obligatoire' | translate}}" type="radiolist" data-id="conf_required"
                                             form="valuesForm" model="editCtrl.propConf.required"
                                             tooltip="{{::'Rendre ce champ obligatoire lors de la saisie d\'un constat d\'état' | translate}}"
                                             numa-onchange="editCtrl.propertyConfChanged()"
-                                            config="{ data: editCtrl.options.boolean, displayFn: editCtrl.displayBoolean, 
-                                                    query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }"></numa-editable-field> 
-                        <numa-editable-field data-title="{{::'Commentaire' | translate}}" type="radiolist" data-id="conf_comment" 
+                                            config="{ data: editCtrl.options.boolean, displayFn: editCtrl.displayBoolean,
+                                                    query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }"></numa-editable-field>
+                        <numa-editable-field data-title="{{::'Commentaire' | translate}}" type="radiolist" data-id="conf_comment"
                                             form="valuesForm" model="editCtrl.propConf.allowComment"
                                             tooltip="{{::'Autoriser la saisie de texte libre sur cette propriété' | translate}}"
-                                            numa-onchange="editCtrl.propertyConfChanged()" ng-if="!editCtrl.propConf.internalProperty" 
-                                            config="{ data: editCtrl.options.boolean, displayFn: editCtrl.displayBoolean, 
-                                                    query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }"></numa-editable-field> 
-                        <numa-editable-field data-title="{{::'Création' | translate}}" type="radiolist" data-id="conf_creation" 
+                                            numa-onchange="editCtrl.propertyConfChanged()" ng-if="!editCtrl.propConf.internalProperty"
+                                            config="{ data: editCtrl.options.boolean, displayFn: editCtrl.displayBoolean,
+                                                    query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }"></numa-editable-field>
+                        <numa-editable-field data-title="{{::'Création' | translate}}" type="radiolist" data-id="conf_creation"
                                             form="valuesForm" model="editCtrl.propConf.showOnCreation"
                                             tooltip="{{::'Ajouter automatiquement ce champ à la création d\'un constat d\'état' | translate}}"
                                             numa-onchange="editCtrl.propertyConfChanged()"
-                                            config="{ data: editCtrl.options.boolean, displayFn: editCtrl.displayBoolean, 
-                                                    query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }"></numa-editable-field> 
+                                            config="{ data: editCtrl.options.boolean, displayFn: editCtrl.displayBoolean,
+                                                    query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }"></numa-editable-field>
                         <numa-editable-field type="uiselect" form="valuesForm" data-title="{{::'Type de constat d\'état' | translate}}"
                                              model="editCtrl.propConf._types" config="editCtrl.options.types"
                                              tooltip="{{::'Ajouter automatiquement ce champ à la création des constats d\'état de ces types' | translate}}"
@@ -84,8 +84,8 @@
                         <tbody>
                             <tr ng-repeat="val in editCtrl.values | orderBy:'label'">
                                 <td>
-                                    <numa-editable-field class="full-width" placeholder="Valeur" 
-                                                        model="val.label" form="valuesForm" 
+                                    <numa-editable-field class="full-width" placeholder="Valeur"
+                                                        model="val.label" form="valuesForm"
                                                         onbeforesave="editCtrl.validation.required($data)"
                                                         numa-onchange="editCtrl.valueChanged(val)"
                                                         numa-readonly="!editCtrl.admin"></numa-editable-field>

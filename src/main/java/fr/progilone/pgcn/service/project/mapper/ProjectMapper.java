@@ -1,6 +1,6 @@
 package fr.progilone.pgcn.service.project.mapper;
 
-import org.mapstruct.Mapper;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
 import fr.progilone.pgcn.domain.dto.project.ProjectDTO;
@@ -9,6 +9,7 @@ import fr.progilone.pgcn.domain.dto.statistics.StatisticsProjectDTO;
 import fr.progilone.pgcn.domain.project.Project;
 import fr.progilone.pgcn.service.administration.mapper.CinesPACMapper;
 import fr.progilone.pgcn.service.administration.mapper.InternetArchiveCollectionMapper;
+import fr.progilone.pgcn.service.administration.mapper.OmekaConfigurationMapper;
 import fr.progilone.pgcn.service.administration.mapper.OmekaListMapper;
 import fr.progilone.pgcn.service.administration.mapper.SimpleViewsFormatConfigurationMapper;
 import fr.progilone.pgcn.service.checkconfiguration.mapper.SimpleCheckConfigurationMapper;
@@ -33,7 +34,8 @@ import fr.progilone.pgcn.service.workflow.mapper.SimpleWorkflowMapper;
                 UserMapper.class,
                 InternetArchiveCollectionMapper.class,
                 CinesPACMapper.class,
-                OmekaListMapper.class})
+                OmekaListMapper.class,
+                OmekaConfigurationMapper.class})
 public interface ProjectMapper {
 
     ProjectMapper INSTANCE = Mappers.getMapper(ProjectMapper.class);
@@ -42,5 +44,11 @@ public interface ProjectMapper {
 
     ProjectDTO projectToProjectDTO(Project project);
 
+    @Mappings({@Mapping(target = "nbDocUnits", ignore = true)})
     StatisticsProjectDTO projectToStatProjectDTO(Project project);
+    
+    @AfterMapping
+    default void calculateDocUnits(Project project, @MappingTarget StatisticsProjectDTO dto) {
+        dto.setNbDocUnits(project.getDocUnits().size());
+    }
 }

@@ -9,9 +9,11 @@ import org.springframework.stereotype.Component;
 
 import fr.progilone.pgcn.domain.administration.CinesPAC;
 import fr.progilone.pgcn.domain.administration.InternetArchiveCollection;
+import fr.progilone.pgcn.domain.administration.omeka.OmekaConfiguration;
 import fr.progilone.pgcn.domain.administration.omeka.OmekaList;
 import fr.progilone.pgcn.domain.dto.administration.CinesPACDTO;
 import fr.progilone.pgcn.domain.dto.administration.InternetArchiveCollectionDTO;
+import fr.progilone.pgcn.domain.dto.administration.omeka.OmekaConfigurationDTO;
 import fr.progilone.pgcn.domain.dto.administration.omeka.OmekaListDTO;
 import fr.progilone.pgcn.domain.dto.document.SimpleDocUnitDTO;
 import fr.progilone.pgcn.domain.dto.lot.LotDTO;
@@ -22,6 +24,7 @@ import fr.progilone.pgcn.repository.ocrlangconfiguration.OcrLanguageRepository;
 import fr.progilone.pgcn.repository.project.ProjectRepository;
 import fr.progilone.pgcn.service.administration.CinesPACService;
 import fr.progilone.pgcn.service.administration.InternetArchiveCollectionService;
+import fr.progilone.pgcn.service.administration.omeka.OmekaConfigurationService;
 import fr.progilone.pgcn.service.administration.omeka.OmekaListService;
 import fr.progilone.pgcn.service.administration.viewsformat.ViewsFormatConfigurationService;
 import fr.progilone.pgcn.service.checkconfiguration.CheckConfigurationService;
@@ -52,6 +55,8 @@ public class UILotMapper {
     private CinesPACService cinesPACService;
     @Autowired
     private OmekaListService omekaListService;
+    @Autowired
+    private OmekaConfigurationService omekaConfigurationService;
     @Autowired
     private OcrLanguageRepository ocrLangRepository; 
 
@@ -129,6 +134,14 @@ public class UILotMapper {
             lot.setOmekaItem(omekaItem);
         } else {
             lot.setOmekaItem(null);
+        }
+
+        final OmekaConfigurationDTO omekaConfDTO = lotDTO.getOmekaConfiguration();
+        if (omekaConfDTO != null && omekaConfDTO.getIdentifier() != null) {
+            final OmekaConfiguration omekaConf = omekaConfigurationService.findOne(omekaConfDTO.getIdentifier());
+            lot.setOmekaConfiguration(omekaConf);
+        } else {
+            lot.setOmekaConfiguration(null);
         }
 
         final SimpleUserDTO providerDto = lotDTO.getProvider();

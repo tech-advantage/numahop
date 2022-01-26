@@ -23,9 +23,9 @@ import fr.progilone.pgcn.domain.library.Library;
 @Entity
 @Table(name = OmekaConfiguration.TABLE_NAME)
 public class OmekaConfiguration extends AbstractDomainObject {
-    
+
     public static final String TABLE_NAME = "conf_omeka";
-    
+
     /**
      * Libellé
      */
@@ -44,23 +44,23 @@ public class OmekaConfiguration extends AbstractDomainObject {
      */
     @Column(name = "active", nullable = false)
     private boolean active = true;
-    
+
     /**
      * serveur de stockage Omeka
      */
     @Column(name = "storage_server")
     private String storageServer;
-    
+
     /**
      * port pour acces au serveur de stockage Omeka
      */
     @Column(name = "port")
     private String port;
-    
+
     /**
      * Serveur de dépot FTP
      */
-    @Column(name = "address") 
+    @Column(name = "address")
     private String address;
 
     /**
@@ -74,20 +74,25 @@ public class OmekaConfiguration extends AbstractDomainObject {
      */
     @Column(name = "password")
     private String password;
-    
+
     /**
      * Url d'acces aux fichiers via Omeka.
      */
     @Column(name = "access_url")
     private String accessUrl;
-    
+
     /**
      * mail destination du fichier csv.
      */
     @Column(name = "mail_csv")
     private String mailCsv;
-    
-    
+
+    /**
+     * envoi des fichiers en SFTP
+     */
+    @Column(name = "sftp")
+    private boolean sftp;
+
     /**
      * Types de fichiers à exporter.
      */
@@ -101,13 +106,14 @@ public class OmekaConfiguration extends AbstractDomainObject {
     private boolean exportThumb;
     @Column(name = "export_pdf")
     private boolean exportPdf;
-    
+
 
     @OneToMany(mappedBy = "confOmeka", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OmekaList> omekaLists;
-    
 
-    
+    @Column(name = "omekas")
+    private boolean omekas;
+
     public String getLabel() {
         return label;
     }
@@ -139,7 +145,7 @@ public class OmekaConfiguration extends AbstractDomainObject {
     public void setStorageServer(final String storageServer) {
         this.storageServer = storageServer;
     }
-  
+
     public String getPort() {
         return port;
     }
@@ -234,6 +240,22 @@ public class OmekaConfiguration extends AbstractDomainObject {
 
     public void setOmekaLists(final List<OmekaList> omekaLists) {
         this.omekaLists = omekaLists;
+    }
+
+    public boolean isOmekas() {
+        return omekas;
+    }
+
+    public void setOmekas(final boolean omekas) {
+        this.omekas = omekas;
+    }
+
+    public boolean isSftp() {
+        return sftp;
+    }
+
+    public void setSftp(final boolean sftp) {
+        this.sftp = sftp;
     }
 
     @Override

@@ -11,13 +11,9 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.io.IOUtils;
@@ -47,15 +43,15 @@ public class ImageMagickService {
 
     @Autowired
     private DefaultFileFormats defaultFileFormats;
-    
-    public static final String META_DATAS_SEPARATOR = " # "; 
-    
+
+    public static final String META_DATAS_SEPARATOR = " # ";
+
     @Value("${exifTool.quot_char}")
     protected String quoteDelim;
 
     /* Metadatas dont on a besoin */
     private static final String[] METAS_TO_CHECK = {"Filesize", "Format", "Colorspace",
-                                                    "Compression", "Quality", "Resolution", 
+                                                    "Compression", "Quality", "Resolution",
                                                     "height", "width"};
 
     protected String IMConverterPath;
@@ -109,49 +105,66 @@ public class ImageMagickService {
         LOG.info("[Livraison] Extraction des images depuis le fichier pdf {}", sourceFile.getName());
         List<File> files = new ArrayList<>();
         try {
-            final ProcessBuilder builder = new ProcessBuilder(IMConverterPath,
-                                                              "+adjoin",
-                                         "-density",
-                                                              "300",
-                                         "-quality",
-                                         "100",
-                                         sourceFile.getAbsolutePath(), //NOSONAR
-                                         destFile); //NOSONAR
-
             final int nbPages = getPdfPageNumber(sourceFile.getAbsolutePath());
             LOG.debug("$$PDF_DEBUG - nb pages donné par PdfReader = {}", nbPages);
 
-            builder.redirectError(Redirect.INHERIT);
-            builder.redirectOutput(Redirect.INHERIT);
-            final Process process = builder.start();
-            if (process.waitFor() == 0) {
-                
-                // ok, convert is done
-                files = getExtractedFiles(destFile);
-                if (files.isEmpty()) {
-                    LOG.info("[ImageMagick] Unable to extract images from pdf file {}");
-                } else {
-                    LOG.debug("PDF - Process *NORMAL* nb pages extraites du pdf = {}", files.size()); 
-                }
-                
-            } else {
-                if (process.isAlive()) {
-                    process.destroyForcibly().waitFor();
-                }
-                // Les fichiers sont quand même générés mais le process est bloqué par des warnings
-                files = getExtractedFiles(destFile);
-                if (files.isEmpty()) {
-                    LOG.info("[ImageMagick] Unable to extract images from pdf file {}", process.isAlive() ? "processus still running..." : process.exitValue());
-                } else {
-                    LOG.debug("PDF - Process *BLOCAGES PAR WARNINGS* nb pages extraites du pdf = {}", files.size());
-                }
-                
-                final List<String> errors = IOUtils.readLines(process.getErrorStream(), StandardCharsets.UTF_8);
-                if (!errors.isEmpty()) {
-                    LOG.error("[ImageMagick] Error during images extraction : {}", errors);
+            int intervalPage = 10;
+            int quotient = nbPages / intervalPage;
+            int rest = nbPages % intervalPage;
+
+            if(nbPages > 0){
+                for(int i=0 ; i <= quotient ; i++){
+                    List<File> filesInterval = new ArrayList<>();
+        
+                    String interval = "[" + intervalPage*i + "-" + (intervalPage*(i+1) - 1) + "]";
+                    if(i == quotient){
+                        interval = "[" + intervalPage*i + "-" + (intervalPage*i + (rest - 1)) + "]";
+                    }
+        
+                    LOG.info("[ImageMagick] Extract images from pdf file {} {}", sourceFile, interval);
+        
+                    final ProcessBuilder builder = new ProcessBuilder(IMConverterPath,
+                                                                      "+adjoin",
+                                                                      "-density",
+                                                                      "300",
+                                                                      "-quality",
+                                                                      "100",
+                                                                      sourceFile.getAbsolutePath()+ interval, //NOSONAR
+                                                                      destFile); //NOSONA
+        
+                    builder.redirectError(Redirect.INHERIT);
+                    builder.redirectOutput(Redirect.INHERIT);
+                    final Process process = builder.start();
+                    if (process.waitFor() == 0) {
+            
+                        // ok, convert is done
+                        filesInterval = getExtractedFiles(destFile);
+                        if (filesInterval.isEmpty()) {
+                            LOG.info("[ImageMagick] Unable to extract images from pdf file {} - interval {}", sourceFile, interval);
+                        } else {
+                            LOG.debug("PDF - Process *NORMAL* nb pages extraites du pdf = {}", filesInterval.size());
+                        }
+            
+                    } else {
+                        if (process.isAlive()) {
+                            process.destroyForcibly().waitFor();
+                        }
+                        // Les fichiers sont quand même générés mais le process est bloqué par des warnings
+                        filesInterval = getExtractedFiles(destFile);
+                        if (filesInterval.isEmpty()) {
+                            LOG.info("[ImageMagick] Unable to extract images from pdf file {} - interval:{} - {}", sourceFile, interval, process.isAlive() ? "processus still running..." : process.exitValue());
+                        } else {
+                            LOG.debug("PDF - Process *BLOCAGES PAR WARNINGS* nb pages extraites du pdf = {}", filesInterval.size());
+                        }
+            
+                        final List<String> errors = IOUtils.readLines(process.getErrorStream(), StandardCharsets.UTF_8);
+                        if (!errors.isEmpty()) {
+                            LOG.error("[ImageMagick] Error during images extraction : {}", errors);
+                        }
+                    }
                 }
             }
-
+            files = getExtractedFiles(destFile);
         } catch(final IOException | InterruptedException e) {
             LOG.error("[ImageMagick] Unable to extract images from pdf file", e);
         }
@@ -173,21 +186,19 @@ public class ImageMagickService {
                     files.add(file.toFile());
                 });
             }
-            Collections.sort(files);
         }
         return files;
     }
 
     /**
      * Retourne le nbre de pages du fichier pdf.
-     * @see iText
      *
      * @param pdfFilePath
      * @return
      */
     private int  getPdfPageNumber(final String pdfFilePath) {
         PdfReader reader = null;
-        int nbPages = 1;
+        int nbPages = 0;
         try {
             reader = new PdfReader(pdfFilePath);
             nbPages = reader.getNumberOfPages();
@@ -336,9 +347,9 @@ public class ImageMagickService {
             LOG.info("Can't get metadatas of null file");
             return Optional.empty();
         }
-        
+
         final Map<String, String> metas;
-        final String formatArgs = quoteDelim + "%b # %e # %h # %w # %x # %y # %z # %C # %[colorspace]\n" + quoteDelim; 
+        final String formatArgs = quoteDelim + "%b # %e # %h # %w # %x # %y # %z # %C # %[colorspace]\n" + quoteDelim;
         final ProcessBuilder builder =
                                      new ProcessBuilder(IMIdentifyPath,
                                                         "-quiet",
@@ -385,7 +396,7 @@ public class ImageMagickService {
      * @throws IOException
      */
     private Map<String, String> collectMetadatas(final InputStream is) throws IOException {
-        
+
         final Map<String, String> metas = new HashMap<>();
         IOUtils.readLines(is, StandardCharsets.UTF_8)
                .forEach(ligne -> {
@@ -396,7 +407,7 @@ public class ImageMagickService {
                    Arrays.asList(tab).stream().filter(line -> StringUtils.isEmpty(line)).forEach(line -> {
                        LOG.debug("$$$$$$$$$ ::: " + line);
                    });
-                   
+
                    metas.put(StringUtils.trim(METAS_TO_CHECK[0]), StringUtils.trim(tab[0]));  // filesize
                    metas.put(StringUtils.trim(METAS_TO_CHECK[1]), StringUtils.trim(tab[1]));  // format
                    metas.put(StringUtils.trim(METAS_TO_CHECK[2]), StringUtils.trim(tab[8]));  // colorspace

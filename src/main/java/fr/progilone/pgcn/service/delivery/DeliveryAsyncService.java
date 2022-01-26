@@ -26,6 +26,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -247,21 +248,21 @@ public class DeliveryAsyncService {
                 deliveredDocument.setDelivery(delivery);
                 deliveredDocument.setDigitalDocument(dd);
                 deliveredDocument.setStatus(DigitalDocument.DigitalDocumentStatus.DELIVERING);
-    
+
                 dd.setStatus(DigitalDocument.DigitalDocumentStatus.DELIVERING);
-    
+
                 digitalDocumentService.save(dd);
             });
-    
+
             return deliveryService.save(delivery);
         });
 
     }
-    
+
 
     /**
      * Traitement de la livraison technique : contrôles, stockage des fichiers, dérivés.
-     * 
+     *
      * Passe par ExecutorService => empêche les livraisons successives de se téléscoper.
      *
      * @param identifier
@@ -270,11 +271,11 @@ public class DeliveryAsyncService {
      *            DeliveryProcessResults
      */
     public void processDelivery(final String identifier, final DeliveryProcessResults processElement) throws PgcnTechnicalException {
-        
+
         executorService.submit(new DelegatingSecurityContextCallable<>(Executors.callable(() -> {
-            
+
             final String libraryId = processElement.getLibraryId();
-            
+
             final Map<String, PrefixedDocuments> documentsForPrefix = getDocumentsForPrefix(processElement);
             final Delivery delivery = initializeDelivery(identifier, documentsForPrefix);
             final LocalDateTime dtHrDeliv = LocalDateTime.now();
@@ -373,14 +374,14 @@ public class DeliveryAsyncService {
                 final Map<String, PrefixedDocuments> documentsToTreat = new HashMap<>();
                 mapResults.forEach((key, value) -> {
                     // Récupération de l'identifiant du docUnit
-                    final String docUnitId = 
+                    final String docUnitId =
                             digitalDocumentService.findDocUnitByIdentifier(Iterables.getOnlyElement(documentsForPrefix.get(key)
                                                                                                     .getDigitalDocuments()).getIdentifier())
                                                                                                .getIdentifier();
                     if (value.stream().anyMatch(res -> AutoCheckResult.KO.equals(res.getResult()))) {
                         documentsToReject.put(key, documentsForPrefix.get(key));
                         // # 3644 Lot numerique : on peut avoir 1 workflow si relivraison !
-                        if (workflowService.isWorkflowRunning(docUnitId)) {  
+                        if (workflowService.isWorkflowRunning(docUnitId)) {
                             // On rejete la tâche
                             workflowService.rejectAutomaticState(
                                                                  docUnitId,
@@ -416,7 +417,7 @@ public class DeliveryAsyncService {
                     // On ajoute au système de fichiers
                     final LocalDateTime startTrt = LocalDateTime.now();
                     LOG.info("Ajout des fichiers au système de fichiers");
-                    reportService.updateReport(delivery, Optional.empty(), Optional.of(LocalDateTime.now()), 
+                    reportService.updateReport(delivery, Optional.empty(), Optional.of(LocalDateTime.now()),
                                                "DEBUT GENERATION FICHIERS DERIVES", libraryId);
 
                     if (isPdfDelivery) {
@@ -436,41 +437,39 @@ public class DeliveryAsyncService {
                                     libraryId);
                     }
                     LOG.info("Fin de l'ajout des fichiers au système de fichiers");
-                    reportService.updateReport(delivery, Optional.of(startTrt), Optional.of(LocalDateTime.now()), 
+                    reportService.updateReport(delivery, Optional.of(startTrt), Optional.of(LocalDateTime.now()),
                                                "FIN GENERATION FICHIERS DERIVES", libraryId);
                     deliveryProgressService.deliveryProgress(delivery, null, TYP_MSG_INFO, "DELIVERING", 0, "Fin Traitement Images");
                 }
 
                 // TOC/OCR treatment.
-               // if (!deliveryRefused) {
-                    // Ajout des fichiers de metadonnees TOC.
-                    LOG.info("Ajout des fichiers de table des matieres au système de fichiers");
-                    reportService.updateReport(delivery,
-                                               Optional.empty(),
-                                               Optional.of(LocalDateTime.now()),
-                                               "DEBUT TRAITEMENT TABLE DES MATIERES / OCR",
-                                               libraryId);
-                    if (isPdfDelivery) {
-                        extractTextFromPdf(filesForOcr, delivery);
-                    } else {
-                        // Avec génération PDF/OCR.
-                        if (isOcrPdfGeneration) {
-                            multiPdfs = generateOcrPdf(documentsToTreat, libraryId);
+                // Ajout des fichiers de metadonnees TOC.
+                LOG.info("Ajout des fichiers de table des matieres au système de fichiers");
+                reportService.updateReport(delivery,
+                                           Optional.empty(),
+                                           Optional.of(LocalDateTime.now()),
+                                           "DEBUT TRAITEMENT TABLE DES MATIERES / OCR",
+                                           libraryId);
+                if (isPdfDelivery) {
+                    extractTextFromPdf(filesForOcr, delivery, libraryId);
+                } else {
+                    // Avec génération PDF/OCR.
+                    if (isOcrPdfGeneration) {
+                        multiPdfs = generateOcrPdf(documentsToTreat, libraryId);
 
-                            // Extraction text ocr des pdfs multi.
-                            extractTextFromPdf(multiPdfs, delivery);
-                        }
-                        
-                        storeMetaDataFiles(delivery, processElement.getMetadatasDTOForPrefix(), multiPdfs, tocFiles, libraryId, documentsToTreat.keySet());
+                        // Extraction text ocr des pdfs multi.
+                        extractTextFromPdf(multiPdfs, delivery, libraryId);
                     }
-                    reportService.updateReport(delivery,
-                                               Optional.empty(),
-                                               Optional.of(LocalDateTime.now()),
-                                               "FIN TRAITEMENT TABLE DES MATIERES / OCR",
-                                               libraryId);
-                    deliveryProgressService.deliveryProgress(delivery, null, TYP_MSG_INFO, "DELIVERING", 95, "Fin Traitement Table des Matières");
-               // }
 
+                    storeMetaDataFiles(delivery, processElement.getMetadatasDTOForPrefix(), multiPdfs, tocFiles, libraryId, documentsToTreat.keySet());
+                }
+                reportService.updateReport(delivery,
+                                           Optional.empty(),
+                                           Optional.of(LocalDateTime.now()),
+                                           "FIN TRAITEMENT TABLE DES MATIERES / OCR",
+                                           libraryId);
+                deliveryProgressService.deliveryProgress(delivery, null, TYP_MSG_INFO, "DELIVERING", 95, "Fin Traitement Table des Matières");
+                
                 if (!isMasterActive) {
                     // Livraison sans master => il faut qd mm finaliser la livraison des documents non rejetes.
                     documentsToTreat.forEach((prefix, prefixedDoc) -> {
@@ -497,7 +496,7 @@ public class DeliveryAsyncService {
                     // Rejet auto : il faut forcer la creation du bordereau de controle
                     slipService.createCheckSlip(savedDelivery.getIdentifier());
                     uidigitalDocumentService.endAutoChecks(savedDelivery);
-                    reportService.updateReport(delivery, Optional.of(dtHrDeliv), Optional.of(LocalDateTime.now()), 
+                    reportService.updateReport(delivery, Optional.of(dtHrDeliv), Optional.of(LocalDateTime.now()),
                                                "LIVRAISON TERMINEE", libraryId);
 
                 } else {
@@ -505,10 +504,10 @@ public class DeliveryAsyncService {
                     if (isMasterActive && !NO_SAMPLING.equals(processElement.getSamplingMode())) {
                         LOG.info("Echantillonnage  [{}]", processElement.getSamplingMode());
                         createSample(delivery, processElement, documentsToTreat);
-                        reportService.updateReport(delivery, Optional.empty(), Optional.of(LocalDateTime.now()), 
+                        reportService.updateReport(delivery, Optional.empty(), Optional.of(LocalDateTime.now()),
                                                    "ECHANTILLON CREE", libraryId);
                     } else {
-                        reportService.updateReport(delivery, Optional.empty(), Optional.of(LocalDateTime.now()), 
+                        reportService.updateReport(delivery, Optional.empty(), Optional.of(LocalDateTime.now()),
                                                    "PAS D'ECHANTILLONNAGE", libraryId);
                     }
 
@@ -522,15 +521,15 @@ public class DeliveryAsyncService {
                                                              100,
                                                              "Livraison acceptée",
                                                              true);
-                    reportService.updateReport(savedDelivery, Optional.of(dtHrDeliv), Optional.of(LocalDateTime.now()), 
+                    reportService.updateReport(savedDelivery, Optional.of(dtHrDeliv), Optional.of(LocalDateTime.now()),
                                                "LIVRAISON TERMINEE", libraryId);
                 }
 
             } catch (final Exception e) {
                 // a reprendre plus propre...
                 LOG.info("[LIVRAISON] REJET - Exception au cours de la livraison : {}", e.getLocalizedMessage());
-                reportService.updateReport(delivery, Optional.of(dtHrDeliv), Optional.of(LocalDateTime.now()), 
-                                           "LIVRAISON REJETEE - ERREUR", libraryId);
+                reportService.updateReport(delivery, Optional.of(dtHrDeliv), Optional.of(LocalDateTime.now()),
+                                           "LIVRAISON REJETEE - ERREUR: " +e.getLocalizedMessage(), libraryId);
                 LOG.error(e.getMessage(), e);
                 setDeliveryError(delivery);
             }
@@ -567,7 +566,7 @@ public class DeliveryAsyncService {
      */
     private Map<File, Optional<Map<String, String>>> getMetadatas(final List<File> files, final String format, final Delivery delivery) {
 
-        final int step = files.size() > 500 ? 50 : 
+        final int step = files.size() > 500 ? 50 :
                                             files.size() > 200 ? 20 : files.size() > 100 ? 10 : 5;
 
         final Map<File, Optional<Map<String, String>>> metadatasByFiles = new HashMap<>();
@@ -657,7 +656,7 @@ public class DeliveryAsyncService {
     /**
      * Creation fichier txt contenant la liste des images à OCRiser.
      */
-    private File createTextPathsFile(final String prefix, final String tmpDir, 
+    private File createTextPathsFile(final String prefix, final String tmpDir,
                                      final List<StoredFile> storedFiles, final String libraryId) throws IOException {
 
         // recopie/renomme les fichiers
@@ -684,7 +683,7 @@ public class DeliveryAsyncService {
                                                 final boolean isPdfDelivery,
                                                 final boolean isRadicalActive,
                                                 final String expectedFormat) {
-        
+
         final List<File> allDeliveryFiles = new ArrayList<>();
 
         final String deliveryFolder = getFolderPath(delivery);
@@ -778,15 +777,13 @@ public class DeliveryAsyncService {
         if ((tocRule != null && tocRule.isActive())
             || (pdfRule != null && pdfRule.isActive())) {
             metaDataFiles.forEach((digitalIdDoc, files) -> {
-                if (CollectionUtils.isNotEmpty(files)) {
-                    allResults.addAll(autoCheckService.checkMetaDataFilesFormat(delivery,
-                                                                                digitalIdDoc,
-                                                                                metaDatasDTO.get(digitalIdDoc),
-                                                                                files,
-                                                                                tocRule != null && tocRule.isBlocking(),
-                                                                                pdfRule.isBlocking(),
-                                                                                extractedDmdSec));
-                }
+                allResults.addAll(autoCheckService.checkMetaDataFilesFormat(delivery,
+                                                                            digitalIdDoc,
+                                                                            metaDatasDTO.get(digitalIdDoc),
+                                                                            files,
+                                                                            tocRule != null && tocRule.isBlocking(),
+                                                                            pdfRule.isBlocking(),
+                                                                            extractedDmdSec));
             });
         }
         return allResults;
@@ -848,7 +845,7 @@ public class DeliveryAsyncService {
                                     final Set<String> prefixToTreat) {
 
         if (CollectionUtils.isEmpty(tocFiles.keySet())) {
-            reportService.updateReport(delivery, Optional.empty(), Optional.empty(), 
+            reportService.updateReport(delivery, Optional.empty(), Optional.empty(),
                                        "Aucun fichier de table des matières trouvé.", libraryId);
         } else {
             // enregistrement fichiers TOC.
@@ -856,7 +853,7 @@ public class DeliveryAsyncService {
         }
 
         if (CollectionUtils.isEmpty(multiPdfs.keySet())) {
-            reportService.updateReport(delivery, Optional.empty(), Optional.empty(), 
+            reportService.updateReport(delivery, Optional.empty(), Optional.empty(),
                                        "Aucun fichier pdf d'ocr trouvé.", libraryId);
         } else {
             // enregistrement pdf ocr.
@@ -919,12 +916,12 @@ public class DeliveryAsyncService {
     /**
      * Extrait le texte par page du doc pdf multicouches.
      */
-    private void extractTextFromPdf(final Map<String, List<File>> multiPdfs, final Delivery delivery) {
+    private void extractTextFromPdf(final Map<String, List<File>> multiPdfs, final Delivery delivery, final String libraryId) {
 
         final TransactionStatus status = transactionService.startTransaction(false);
-            
+
             multiPdfs.forEach((key, value) -> {
-    
+
                 final List<DigitalDocument> docs = digitalDocumentService.getAllByDigitalIdAndLotIdentifier(key, delivery.getLot().getIdentifier());
                 final DigitalDocument dDoc = Iterables.getOnlyElement(docs);
                 final List<String> pageIds = docPageService.getAllPageIdsByDigitalDocumentId(dDoc.getIdentifier());
@@ -932,22 +929,22 @@ public class DeliveryAsyncService {
                                                pageIds.isEmpty() ? Collections.emptyList()
                                                                  : binaryRepository.getAllByPageIdentifiersAndFileFormat(pageIds,
                                                                                                                          ViewsFormatConfiguration.FileFormat.MASTER);
-    
+
                 if (value.size() == 1) {
-    
+
                     final File pdfFile = Iterables.getOnlyElement(value);
                     // passe par un fichier temporaire pour eviter d'exploser la ram.
                     try (final PDDocument doc = PDDocument.load(pdfFile, MemoryUsageSetting.setupTempFileOnly())) {
                         final PDFTextStripper stripper = new PDFTextStripper();
                         if (!doc.isEncrypted()) {
                             doc.getPages().forEach(pg -> {
-    
+
                                 if (pg.hasContents()) {
                                     final int noPage = doc.getPages().indexOf(pg) + 1;
                                     stripper.setStartPage(noPage);
                                     stripper.setEndPage(noPage);
                                     final Optional<StoredFile> sf = masters.stream().filter(f -> f.getPage().getNumber() == noPage).findAny();
-    
+
                                     if (sf.isPresent()) {
                                         try {
                                             sf.get().setTextOcr(stripper.getText(doc));
@@ -958,16 +955,28 @@ public class DeliveryAsyncService {
                                         }
                                     }
                                 }
-    
+
                             });
+                        } else {
+                            reportService.updateReport(delivery,
+                                                       Optional.empty(),
+                                                       Optional.of(LocalDateTime.now()),
+                                                       "LE  PDF " + pdfFile.getName() + " EST CRYPTE - RECUPERATION DE L'OCR IMPOSSIBLE",
+                                                       libraryId);
                         }
                         doc.close();
                     } catch (final IOException e) {
                         LOG.error("[LIVRAISON - OCR] Erreur lors de l'extraction de texte du PDF : {}", e.getLocalizedMessage(), e);
                         transactionService.rollbackTransaction(status);
+    
+                        reportService.updateReport(delivery,
+                                                   Optional.empty(),
+                                                   Optional.of(LocalDateTime.now()),
+                                                   "Erreur lors de l'extraction de texte du PDF :" + pdfFile.getName(),
+                                                   libraryId);
                     }
                 }
-    
+
         });
         transactionService.commitTransaction(status);
     }
@@ -980,12 +989,12 @@ public class DeliveryAsyncService {
                               final Map<String, PrefixedDocuments> documentsToTreat) {
 
         transactionService.executeInNewTransaction(() -> {
-        
+
             final Delivery delivery = deliveryService.findOneWithDep(deliv.getIdentifier());
             final Sample sample = new Sample();
             sample.setDelivery(delivery);
             sample.setSamplingMode(processElements.getSamplingMode());
-    
+
             final List<DocPage> pages = new ArrayList<>();
             switch (processElements.getSamplingMode()) {
                 case SAMPLING_DOC_DELIV:
@@ -1024,7 +1033,7 @@ public class DeliveryAsyncService {
                     documentsToTreat.forEach((prefix, prefixedDoc) -> {
                         final DigitalDocument unitializedDigitalDoc = Iterables.getOnlyElement(prefixedDoc.getDigitalDocuments());
                         final DigitalDocument digitalDoc = digitalDocumentService.findOne(unitializedDigitalDoc.getIdentifier());
-    
+
                         randomCollect(new ArrayList<>(digitalDoc.getPages()), processElements.getSamplingRate())
                                                                                                                 .stream()
                                                                                                                 .filter(docPage -> ((DocPage) docPage).getNumber() != null)
@@ -1036,7 +1045,7 @@ public class DeliveryAsyncService {
                 default:
                     break;
             }
-    
+
             sample.getPages().addAll(pages);
             pages.forEach(p -> p.setSample(sample));
             sampleService.save(sample);
@@ -1075,25 +1084,25 @@ public class DeliveryAsyncService {
     private Map<String, List<File>> managePdfFiles(final Delivery delivery,
                                                    final List<AutomaticCheckResult> results,
                                                    final Map<String, PrefixedDocuments> documentsForPrefix,
-                                                   final Map<String, List<MdSecType>> extractedDmdSec, 
+                                                   final Map<String, List<MdSecType>> extractedDmdSec,
                                                    final String libraryId) throws PgcnTechnicalException {
 
         final List<Path> directoriesToTreat = new ArrayList<>();
         final Map<String, List<File>> filesForOcr = new HashMap<>();
 
         documentsForPrefix.forEach((prefix, prefixedDoc) -> {
-            
+
             transactionService.executeInNewTransaction(() -> {
-            
+
                 final File srcFile = Iterables.getOnlyElement(prefixedDoc.getFiles());
                 final Path tmpDir = getTemporaryDirectory(prefix, libraryId);
                 final String destFile = tmpDir.toString()
                                               .concat(System.getProperty("file.separator"))
                                               .concat(prefix)
                                               .concat("_%03d.jpg");
-    
+
                 directoriesToTreat.add(tmpDir);
-    
+
                 // decoupage du pdf en images JPG
                 final List<File> files = imService.extractImgFromPdf(srcFile, destFile);
                 final DigitalDocument unitializedDigitalDoc = Iterables.getOnlyElement(prefixedDoc.getDigitalDocuments());
@@ -1113,21 +1122,21 @@ public class DeliveryAsyncService {
                 }
                 digitalDoc.setPages(new HashSet<>());
                 digitalDoc.setTotalLength(srcFile.length());
-    
+
                 final List<File> pdfs = new ArrayList<>();
                 pdfs.add(srcFile);
                 filesForOcr.put(digitalDoc.getDigitalId(), pdfs);
-    
+
                 final Map<Integer, File> filesForDoc = new LinkedHashMap<>();
                 int cpt = 0;
                 for (final File f : files) {
                     filesForDoc.put(cpt, f);
                     cpt++;
                 }
-    
+
                 // Creation des pages logiques
                 prepareCreatePagesPdf(srcFile, filesForDoc, digitalDoc, libraryId);
-    
+
                 // Mapping digitalDoc / physicalDoc
                 final Set<PhysicalDocument> physicalDocumentsForLot =
                                                                     physicalDocumentRepository.getAllByDigitalIdAndLotIdentifier(prefix,
@@ -1173,7 +1182,7 @@ public class DeliveryAsyncService {
                                       } catch (final IOException e) {
                                           LOG.error("[LIVRAISON PDF] Erreur lors de la récupération des fichiers extraits du pdf", e);
                                       }
-                                      Collections.sort(files);
+                                      sortWithSequence(files);
                                       int i = 1;
                                       for (final File f : files) {
                                           filesForDoc.put(i, f);
@@ -1200,11 +1209,11 @@ public class DeliveryAsyncService {
 
         LOG.info("Enregistrement PDF OCR");
         multiPdfs.forEach((key, value) -> {
-            
+
             if (prefixToTreat.contains(key)) {
-                
+
                 transactionService.executeInNewTransaction(() -> {
-                
+
                     if (value.size() > 0) {
                         final File srcFile = value.get(0);
                         final List<DigitalDocument> docs =
@@ -1243,7 +1252,7 @@ public class DeliveryAsyncService {
                     }
                 });
            }
-            
+
         });
     }
 
@@ -1278,12 +1287,12 @@ public class DeliveryAsyncService {
 
         documentsForPrefix.forEach((prefix, prefixedDoc) -> {
 
-            transactionService.executeInNewTransaction(() -> {     
+            transactionService.executeInNewTransaction(() -> {
 
                 final List<File> filesForDigitalDoc = prefixedDoc.getFiles();
                 final DigitalDocument unitializedDigitalDoc = Iterables.getOnlyElement(prefixedDoc.getDigitalDocuments());
                 final DigitalDocument digitalDoc = digitalDocumentService.findOne(unitializedDigitalDoc.getIdentifier());
-    
+
                 for (final DocPage page : digitalDoc.getPages()) {
                     try {
                         docPageService.delete(page, libraryId);
@@ -1293,10 +1302,10 @@ public class DeliveryAsyncService {
                 }
                 digitalDoc.setPages(new HashSet<>());
                 digitalDoc.setTotalLength(0L);
-    
+
                 // Creation logique des pages en DB
                 prepareCreatePages(filesForDigitalDoc, digitalDoc, splitNames);
-    
+
                 // Mapping digitalDoc / physicalDoc
                 final Set<PhysicalDocument> physicalDocumentsForLot =
                                                                     physicalDocumentRepository.getAllByDigitalIdAndLotIdentifier(prefix,
@@ -1313,7 +1322,7 @@ public class DeliveryAsyncService {
                         }
                     }
                 }
-    
+
                 finalizeDelivery(digitalDoc, delivery, false, extractedDmdSec, libraryId);
             });
         });
@@ -1352,12 +1361,20 @@ public class DeliveryAsyncService {
      * Changement du statut des document à A contrôler
      */
     private void changeDocumentStatus(final DigitalDocument digitalDoc, final Delivery delivery) {
-        
+
         transactionService.executeInNewTransaction(() -> {
             final DigitalDocument doc = digitalDocumentService.findOne(digitalDoc.getIdentifier());
-            doc.setStatus(DigitalDocument.DigitalDocumentStatus.TO_CHECK);
+            if(digitalDoc.getPageNumber() > 0){
+                doc.setStatus(DigitalDocument.DigitalDocumentStatus.TO_CHECK);
+            } else {
+                doc.setStatus(DigitalDocument.DigitalDocumentStatus.DELIVERING_ERROR);
+            }
             final DeliveredDocument deliveredDoc = digitalDocumentService.getDeliveredDocument(doc, delivery);
-            deliveredDoc.setStatus(DigitalDocument.DigitalDocumentStatus.TO_CHECK);
+            if(digitalDoc.getPageNumber() > 0){
+                deliveredDoc.setStatus(DigitalDocument.DigitalDocumentStatus.TO_CHECK);
+            } else {
+                deliveredDoc.setStatus(DigitalDocument.DigitalDocumentStatus.DELIVERING_ERROR);
+            }
             digitalDocumentService.save(doc);
         });
     }
@@ -1487,12 +1504,12 @@ public class DeliveryAsyncService {
     private Delivery autoRejectDelivery(final Delivery deliv, final Set<String> rejectedDocs) {
 
         return transactionService.executeInNewTransactionWithReturn(() -> {
-        
+
             // il faut recharger
             final Delivery delivery = deliveryService.findOneWithDep(deliv.getIdentifier());
             // et mettre à jour les flags de deliv => delivery
             updateCheckFlags(deliv, delivery);
-    
+
             final Set<DeliveredDocument> documents = delivery.getDocuments();
             if (documents.size() == rejectedDocs.size()) {
                 // tous les docs sont rejetes
@@ -1501,7 +1518,7 @@ public class DeliveryAsyncService {
                 // au moins un doc à controler..
                 delivery.setStatus(DeliveryStatus.TO_BE_CONTROLLED);
             }
-    
+
             documents.stream()
                      .filter(doc -> rejectedDocs.contains(doc.getDigitalDocument().getDigitalId()))
                      .forEach(doc -> {
@@ -1528,12 +1545,12 @@ public class DeliveryAsyncService {
                                                                   "Rejet du document " + dd.getDigitalId(),
                                                                   true);
                      });
-    
+
             return deliveryService.save(delivery);
         });
     }
 
-    
+
     private void updateCheckFlags(final Delivery src, final Delivery target) {
         target.setAltoPresent(src.isAltoPresent());
         target.setColorspaceOK(src.isColorspaceOK());
@@ -1562,12 +1579,12 @@ public class DeliveryAsyncService {
     private void setDeliveryError(final Delivery deliv) {
 
         transactionService.executeInNewTransaction(() -> {
-            
+
             // il faut recharger
             final Delivery delivery = deliveryService.findOneWithDep(deliv.getIdentifier());
             final Set<DeliveredDocument> documents = delivery.getDocuments();
             delivery.setStatus(DeliveryStatus.DELIVERING_ERROR);
-    
+
             // On passe en erreur les docs non encore passés
             documents.stream()
                      .filter(doc -> DigitalDocument.DigitalDocumentStatus.DELIVERING == doc.getStatus()
@@ -1583,7 +1600,7 @@ public class DeliveryAsyncService {
                          doc.setTotalLength(dd.getTotalLength());
                          digitalDocumentService.save(dd);
                      });
-    
+
             deliveryService.save(delivery);
         });
     }
@@ -1673,11 +1690,11 @@ public class DeliveryAsyncService {
                                filesForDigitalDoc.size() > 500 ? 50 : filesForDigitalDoc.size() > 200 ? 20 : filesForDigitalDoc.size() > 50 ? 10 : 5;
         final double pgProgress = 65 / (filesForDigitalDoc.size() + 1);
         final AtomicInteger globalCpt = new AtomicInteger(0);
-               
-        
+
+
        // JobRunner plutot que parallelStream => on maitrise le nbre de proc utilises
        new JobRunner<File>(filesForDigitalDoc.iterator()).autoSetMaxThreads().setElementName("fichiers").forEach(file -> {
-           
+
            if (splitNames.get(file.getName()).isPresent()) {
                final SplitFilename splitName = splitNames.get(file.getName()).get();
                 // Liste des pages associées à une pièce
@@ -1757,11 +1774,11 @@ public class DeliveryAsyncService {
         final Set<DocPage> docPages = digitalDoc.getPages();
         final Set<DocPage> treated = new HashSet<>();
 
-        // Puis on derive les images extraites du pdf.. 
+        // Puis on derive les images extraites du pdf..
         // JobRunner plutot que parallelStream => on maitrise le nbre de proc utilises
         new JobRunner<Entry<Integer, File>>(filesForDigitalDoc.entrySet().iterator())
                                             .autoSetMaxThreads().setElementName("fichiers").forEach(entry -> {
-            
+
             final Optional<DocPage> page = docPages.stream()
                     .filter(pg -> pg.getNumber() != null
                                   && entry.getKey().intValue() == pg.getNumber().intValue())
@@ -1790,7 +1807,7 @@ public class DeliveryAsyncService {
             }
             return false;
         }).process();
-           
+
     }
 
     /**
@@ -1994,8 +2011,6 @@ public class DeliveryAsyncService {
                || refuseDeliveryForRule(checkingRules.get(AutoCheckType.FILE_TAUX_COMPR), delivery.isCompressionRateOK())
                || refuseDeliveryForRule(checkingRules.get(AutoCheckType.FILE_RESOLUTION), delivery.isResolutionOK())
                || refuseDeliveryForRule(checkingRules.get(AutoCheckType.FILE_COLORSPACE), delivery.isColorspaceOK())
-               || refuseDeliveryForRule(checkingRules.get(AutoCheckType.METADATA_FILE), delivery.isTableOfContentsOK())
-               || refuseDeliveryForRule(checkingRules.get(AutoCheckType.FILE_PDF_MULTI), delivery.isPdfMultiOK())
                || refuseDeliveryForRule(checkingRules.get(AutoCheckType.FILE_RADICAL), delivery.isFileRadicalOK());
     }
 
@@ -2175,4 +2190,43 @@ public class DeliveryAsyncService {
         return realNames.size() == 1 && StringUtils.equalsIgnoreCase(realNames.get(0), (prefix + "." + format));
     }
 
+    /**
+     * Tri une liste de fichiers en fonction de sa séquence
+     * @param files
+     */
+    private void sortWithSequence(final List<File> files){
+        // Tri des fichiers (alphanumérique, image_001, image_002 ...)
+        final Pattern p = Pattern.compile("\\d+");
+        files.sort((f1, f2) -> {
+            String name1 = f1.getName();
+            String name2 = f2.getName();
+            Matcher m = p.matcher(name1);
+            Integer number1 = null;
+            if (!m.find()) {
+                return name1.compareTo(name2);
+            } else {
+                Integer number2 = null;
+                while (m.find()) {
+                    number1 = Integer.parseInt(m.group());
+                }
+                m = p.matcher(name2);
+                if (!m.find()) {
+                    return name1.compareTo(name2);
+                } else {
+                    while (m.find()) {
+                        number2 = Integer.parseInt(m.group());
+                    }
+                    int comparaison = 0;
+                    if(number2 != null && number1 != null){
+                        comparaison = number1.compareTo(number2);
+                    }
+                    if (comparaison != 0) {
+                        return comparaison;
+                    } else {
+                        return name1.compareTo(name2);
+                    }
+                }
+            }
+        });
+    }
 }

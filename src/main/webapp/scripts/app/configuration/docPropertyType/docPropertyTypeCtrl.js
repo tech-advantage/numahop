@@ -33,6 +33,10 @@
             code: "CUSTOM_ARCHIVE",
             label: gettextCatalog.getString("Personnalisé INTERNET ARCHIVE"),
             editable: true
+        } , {
+            code: "CUSTOM_OMEKA",
+            label: gettextCatalog.getString("Personnalisé OMEKA"),
+            editable: true
         }];
 
         init();

@@ -99,7 +99,7 @@ public class SplitFilename {
         if (filename == null) {
             throw new PgcnTechnicalException("[Livraison] Nom de fichier nul");
         }
-        
+
         final Optional<SplitFilename> cache = splitNames.get(filename);
         if (cache != null) {
             if (cache.isPresent()) {
@@ -128,7 +128,7 @@ public class SplitFilename {
         // check separator
         final String seqSep = Pattern.quote(seqSeparator);
         final String[] splitName = rebuildedName.toString().split(seqSep);
-        final int minNbParts = bibPrefixMandatory ? 3 : 2;
+        final int minNbParts = bibPrefixMandatory ? isPdfDelivery ? 2 : 3 : isPdfDelivery ? 1 : 2;
         if (splitName.length < minNbParts) {
             splitNames.put(filename, Optional.empty());
             throw new PgcnTechnicalException("[Livraison] Mauvais format de nom de fichier : " + filename);
@@ -171,10 +171,6 @@ public class SplitFilename {
                                                               prefixDirectory);
         splitNames.put(filename, Optional.of(splitFilename));
         return splitFilename;
-    }
-
-    public static Set<String> getPiecesFromSplitNames(final Map<String, Optional<SplitFilename>> splitNames) {
-        return splitNames.values().stream().map(splitFilename -> splitFilename.map(SplitFilename::getPiece).orElse(null)).collect(Collectors.toSet());
     }
 
     public static Set<String> getPiecesFromDirectory(final Map<String, Optional<SplitFilename>> splitNames, final String directory) {

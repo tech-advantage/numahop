@@ -117,7 +117,7 @@
                             </div>
 
                             <numa-editable-field title="{{::'Workflow' | translate}}" type="select" form="projectForm" model="project.workflowModel"
-                                numa-readonly="formRO" errors="{{ errors.workflowModel }}"
+                                numa-readonly="formRO || options.workflowModels.length == 0" errors="{{ errors.workflowModel }}"
                                 config="{ data: [{name: ''}].concat(options.workflowModels),
                             display: 'name',
                             query: 'o.name for o in $ctrl.config.data track by o.identifier'}" link="{ type: 'workflowModel', parameters: {'id': project.workflowModel.identifier} }">
@@ -138,40 +138,82 @@
                             </numa-editable-field>
 
                             <numa-editable-field title="{{::'Configuration format images' | translate}}" type="select" form="projectForm" model="project.activeFormatConfiguration"
-                                numa-readonly="formRO" errors="{{ errors.activeFormatConfiguration }}"
-                                config="{ data: [{label: ''}].concat(options.format),
+                                                 numa-readonly="formRO" errors="{{ errors.activeFormatConfiguration }}"
+                                                 config="{ data: [{label: ''}].concat(options.format),
                             display: 'label',
-                            query: 'o.label for o in $ctrl.config.data track by o.identifier'}" link="{ type: 'formatConfiguration', parameters: {'id': project.activeFormatConfiguration.identifier} }">
+                            query: 'o.label for o in $ctrl.config.data track by o.identifier'}"
+                                                 link="{ type: 'formatConfiguration', parameters: {'id': project.activeFormatConfiguration.identifier} }">
                             </numa-editable-field>
 
-                            <numa-editable-field title="{{::'Collection Internet Archive' | translate}}" type="select" form="projectForm"
-                            model="project.collectionIA" numa-readonly="formRO" errors="{{ errors.collectionIA }}"
-                            config="{ data: [{name: ''}].concat(options.collections),
+                        </div>
+
+                        <!-- Cines -->
+                        <div class="formBlock">
+                            <div class="formBlockTitle">
+                                <span translate>Configurations CINES</span>
+                            </div>
+                            <div class="formBlockContent">
+                                <div class="row">
+                                    <div class="col-sm-8">
+                                        <numa-editable-field title="{{::'Plan de classement PAC' | translate}}" type="select" form="projectForm"
+                                                             model="project.planClassementPAC" numa-readonly="formRO" errors="{{ errors.planClassementPAC }}"
+                                                             config="{ data: [{name: ''}].concat(options.pacs),
                             display: 'name',
-                            query: 'o.name for o in $ctrl.config.data track by o.identifier'}"> </numa-editable-field>
+                            query: 'o.name for o in $ctrl.config.data track by o.identifier'}"></numa-editable-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-                            <numa-editable-field title="{{::'URL de la licence' | translate}}" placeholder="{{::'URL de la licence pour Internet Archive' | translate}}" form="projectForm"
-                                                 model="project.licenseUrl" numa-readonly="formRO" errors="{{ errors.licenseUrl }}"> </numa-editable-field>
+                        <!-- Internet Archive -->
+                        <div class="formBlock">
+                            <div class="formBlockTitle">
+                                <span translate>Configurations Internet Archive</span>
+                            </div>
+                            <div class="formBlockContent">
+                                <div class="row">
+                                    <div class="col-sm-8">
+                                        <numa-editable-field title="{{::'Collection Internet Archive' | translate}}" type="select" form="projectForm"
+                                                             model="project.collectionIA" numa-readonly="formRO" errors="{{ errors.collectionIA }}"
+                                                             config="{ data: [{name: ''}].concat(options.collections),
+                                                                    display: 'name',
+                                                                    query: 'o.name for o in $ctrl.config.data track by o.identifier'}"></numa-editable-field>
+                                        <numa-editable-field title="{{::'URL de la licence' | translate}}" placeholder="{{::'URL de la licence pour Internet Archive' | translate}}" form="projectForm"
+                                                             model="project.licenseUrl" numa-readonly="formRO" errors="{{ errors.licenseUrl }}"></numa-editable-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-                            <numa-editable-field title="{{::'Plan de classement PAC' | translate}}" type="select" form="projectForm"
-                            model="project.planClassementPAC" numa-readonly="formRO" errors="{{ errors.planClassementPAC }}"
-                            config="{ data: [{name: ''}].concat(options.pacs),
-                            display: 'name',
-                            query: 'o.name for o in $ctrl.config.data track by o.identifier'}"> </numa-editable-field>
+                        <!-- Omeka -->
+                        <div class="formBlock">
+                            <div class="formBlockTitle">
+                                <span translate>Configurations Omeka</span>
+                            </div>
+                            <div class="formBlockContent">
+                                <div class="row">
+                                    <div class="col-sm-8">
+                                        <numa-editable-field title="{{::'Configuration Omeka' | translate}}" type="select" form="projectForm"
+                                                             model="project.omekaConfiguration" numa-readonly="formRO" errors="{{ errors.omekaConfiguration }}"
+                                                             numa-onchange="onChangeOmekaConf($data)"
+                                                             config="{ data: [{label: ''}].concat(options.omekaConfigurations),
+                                                                display: 'label',
+                                                                query: 'o.label for o in $ctrl.config.data track by o.identifier'}"></numa-editable-field>
 
-                            <numa-editable-field title="{{::'Collection Omeka' | translate}}" type="select" form="projectForm"
-                            model="project.omekaCollection" numa-readonly="formRO" errors="{{ errors.omekaCollection }}"
-                            config="{ data: [{name: ''}].concat(options.omekaCollections),
-                            display: 'name',
-                            query: 'o.name for o in $ctrl.config.data track by o.identifier'}"> </numa-editable-field>
+                                        <numa-editable-field title="{{::'Collection Omeka' | translate}}" type="select" form="projectForm"
+                                                             model="project.omekaCollection" numa-readonly="formRO" errors="{{ errors.omekaCollection }}"
+                                                             config="{ data: [{name: ''}].concat(options.omekaCollections),
+                                                                display: 'name',
+                                                                query: 'o.name for o in $ctrl.config.data track by o.identifier'}"></numa-editable-field>
 
-
-                            <numa-editable-field title="{{::'Type d\'item Omeka' | translate}}" type="select" form="projectForm"
-                            model="project.omekaItem" numa-readonly="formRO" errors="{{ errors.omekaItem }}"
-                            config="{ data: [{name: ''}].concat(options.omekaItems),
-                            display: 'name',
-                            query: 'o.name for o in $ctrl.config.data track by o.identifier'}"> </numa-editable-field>
-
+                                        <numa-editable-field title="{{::'Type d\'item Omeka' | translate}}" type="select" form="projectForm"
+                                                             model="project.omekaItem" numa-readonly="formRO" errors="{{ errors.omekaItem }}"
+                                                             config="{ data: [{name: ''}].concat(options.omekaItems),
+                                                                display: 'name',
+                                                                query: 'o.name for o in $ctrl.config.data track by o.identifier'}"></numa-editable-field>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Contact -->
@@ -183,11 +225,11 @@
                                 <div class="row">
                                     <div class="col-sm-8">
                                         <numa-editable-field title="{{::'Nom' | translate}}" placeholder="{{::'Nom' | translate}}"
-                                                             form="projectForm" model="project.libRespName" numa-readonly="formRO" errors="{{ errors.libRespName }}"> </numa-editable-field>
+                                                             form="projectForm" model="project.libRespName" numa-readonly="formRO" errors="{{ errors.libRespName }}"></numa-editable-field>
                                         <numa-editable-field title="{{::'Tél' | translate}}" placeholder="{{::'Tél' | translate}}"
-                                                             form="projectForm" model="project.libRespPhone" numa-readonly="formRO" errors="{{ errors.libRespPhone }}"> </numa-editable-field>
+                                                             form="projectForm" model="project.libRespPhone" numa-readonly="formRO" errors="{{ errors.libRespPhone }}"></numa-editable-field>
                                         <numa-editable-field title="{{::'Email' | translate}}" placeholder="{{::'Email' | translate}}"
-                                                             form="projectForm" model="project.libRespEmail" numa-readonly="formRO" errors="{{ errors.libRespEmail }}"> </numa-editable-field>
+                                                             form="projectForm" model="project.libRespEmail" numa-readonly="formRO" errors="{{ errors.libRespEmail }}"></numa-editable-field>
                                     </div>
                                 </div>
                             </div>

@@ -190,6 +190,28 @@ public class UIWorkflowService {
             
         });
     }
+    /**
+     * Validation en masse des notices
+     *
+     * @param docUnitIds
+     * @return
+     */
+    public void massValidateRecords(final List<String> docUnitIds) {
+        
+        docUnitIds.forEach(id -> {
+            
+            final DocUnit doc = docUnitService.findOneWithAllDependenciesForWorkflow(id);
+            if(doc.getWorkflow() != null){
+                doc.getWorkflow().getStates().stream()
+                   .filter(state -> WorkflowStateKey.VALIDATION_NOTICES == state.getKey())
+                   .filter(state -> state.isRunning() && state.isCurrentState())
+                   .forEach(state -> {
+                       processState(id, state.getKey());
+                   });
+            }
+        });
+    }
+    
     
     
     /**

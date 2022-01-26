@@ -38,10 +38,6 @@
 
                 <numa-editable-field title="{{::'Nom' | translate}}" placeholder="{{::'Nom' | translate}}" form="libraryForm" model="library.name"
                     numa-readonly="formRO" errors="{{ errors.label }}" onbeforesave="validation.required($data)" mandatory="true"></numa-editable-field>
-
-                <!-- <numa-editable-field title="{{::'Institution' | translate}}" placeholder="{{::'Institution' | translate}}" type="select" form="libraryForm" model="library.institution"
-                config="{ display: 'value', query:'key as value for (key, value) in $ctrl.config.data', data: options.institution }"
-                 numa-readonly="formRO" errors="{{ errors.institution }}" onbeforesave="validation.required($data)"></numa-editable-field> -->
                     <numa-editable-field title="{{::'Website' | translate}}" placeholder="{{::'Website' | translate}}" type="url"
                     form="libraryForm" model="library.website" numa-readonly="formRO" errors="{{ errors.website }}"> </numa-editable-field>
 
@@ -54,7 +50,7 @@
                     <numa-editable-field title="{{::'Préfixe' | translate}}" placeholder="{{::'Préfixe' | translate}}"
                     form="libraryForm" model="library.prefix" numa-readonly="formRO" errors="{{ errors.prefix }}"> </numa-editable-field>
 
-                    <numa-editable-field title="{{::'Configuration FTP' | translate}}" type="select" form="libraryForm" 
+                    <numa-editable-field title="{{::'Configuration FTP' | translate}}" type="select" form="libraryForm"
                     model="library.activeFTPConfiguration" numa-readonly="formRO" errors="{{ errors.activeFTPConfiguration }}"
                     config="{ data: options.ftp,
                     display: 'label',
@@ -63,34 +59,34 @@
 
                     <numa-editable-field title="{{::'Identifiant service versant Cines' | translate}}"
                     form="libraryForm" model="library.cinesService" numa-readonly="formRO" errors="{{ errors.cinesService }}"> </numa-editable-field>
-                    
-                    <numa-editable-field title="{{::'Configuration contrôles' | translate}}" type="select" form="libraryForm" 
+
+                    <numa-editable-field title="{{::'Configuration contrôles' | translate}}" type="select" form="libraryForm"
                     model="library.activeCheckConfiguration" numa-readonly="formRO" errors="{{ errors.activeCheckConfiguration }}"
                     config="{ data: options.check,
                     display: 'label',
                     query: 'o.label for o in $ctrl.config.data track by o.identifier'}"
                     link="{ type: 'checkConfiguration', parameters: {'id': library.activeCheckConfiguration.identifier} }"> </numa-editable-field>
-                    
-                    <numa-editable-field title="{{::'Configuration langages ocr' | translate}}" type="select" form="libraryForm" 
+
+                    <numa-editable-field title="{{::'Configuration langages ocr' | translate}}" type="select" form="libraryForm"
                     model="library.activeOcrLangConfiguration" numa-readonly="formRO" errors="{{ errors.activeOcrLangConfiguration }}"
                     config="{ data: options.ocrLang,
                     display: 'label',
                     query: 'o.label for o in $ctrl.config.data track by o.identifier'}"
                     link="{ type: 'ocrlangConfiguration', parameters: {'id': library.activeOcrLangConfiguration.identifier} }"> </numa-editable-field>
-                    
-                    <numa-editable-field title="{{::'Configuration format images' | translate}}" type="select" form="libraryForm" 
+
+                    <numa-editable-field title="{{::'Configuration format images' | translate}}" type="select" form="libraryForm"
                     model="library.activeFormatConfiguration" numa-readonly="formRO" errors="{{ errors.activeViewsFormatConfiguration }}"
                     config="{ data: options.format,
                     display: 'label',
                     query: 'o.label for o in $ctrl.config.data track by o.identifier'}"
                     link="{ type: 'formatConfiguration', parameters: {'id': library.activeFormatConfiguration.identifier} }"> </numa-editable-field>
 
-                    <numa-editable-field title="{{::'Actif' | translate}}" type="radiolist" form="libraryForm" 
+                    <numa-editable-field title="{{::'Actif' | translate}}" type="radiolist" form="libraryForm"
                     model="library.active" numa-readonly="formRO" errors="{{ errors.active }}"
-                    config="{ data: options.boolean, displayFn: displayBoolean, 
+                    config="{ data: options.boolean, displayFn: displayBoolean,
                     query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }" > </numa-editable-field>
 
-                    <numa-editable-field title="{{::'Profil par défaut' | translate}}" type="select" form="libraryForm" 
+                    <numa-editable-field title="{{::'Profil par défaut' | translate}}" type="select" form="libraryForm"
                     model="library.defaultRole" numa-readonly="formRO" errors="{{ errors.defaultRole }}"
                     config="{ data: options.role,
                     display: 'label',

@@ -1,9 +1,6 @@
 package fr.progilone.pgcn.service.delivery;
 
-import static fr.progilone.pgcn.exception.message.PgcnErrorCode.DELIVERY_NOT_ENOUGH_AVAILABLE_SPACE;
-import static fr.progilone.pgcn.exception.message.PgcnErrorCode.DELIVERY_NO_MASTER_FOUND;
-import static fr.progilone.pgcn.exception.message.PgcnErrorCode.DELIVERY_NO_MATCHING_PREFIX;
-import static fr.progilone.pgcn.exception.message.PgcnErrorCode.DELIVERY_WRONG_FOLDER;
+import static fr.progilone.pgcn.exception.message.PgcnErrorCode.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,6 +48,7 @@ import fr.progilone.pgcn.domain.document.conditionreport.ConditionReportDetail.T
 import fr.progilone.pgcn.domain.dto.check.SplitFilename;
 import fr.progilone.pgcn.domain.dto.delivery.PreDeliveryDTO;
 import fr.progilone.pgcn.domain.dto.document.DigitalDocumentDTO;
+import fr.progilone.pgcn.domain.dto.document.PhysicalDocumentDTO;
 import fr.progilone.pgcn.domain.dto.document.PreDeliveryDocumentDTO;
 import fr.progilone.pgcn.domain.dto.document.PreDeliveryDocumentFileDTO;
 import fr.progilone.pgcn.domain.dto.document.PreDeliveryDocumentFileDTO.FileRoleEnum;
@@ -72,6 +70,7 @@ import fr.progilone.pgcn.service.delivery.mapper.PrefixedDocumentsMapper;
 import fr.progilone.pgcn.service.document.DigitalDocumentService;
 import fr.progilone.pgcn.service.document.DocUnitService;
 import fr.progilone.pgcn.service.document.conditionreport.ConditionReportService;
+import fr.progilone.pgcn.service.document.mapper.PhysicalDocumentMapper;
 import fr.progilone.pgcn.service.lot.LotService;
 import fr.progilone.pgcn.service.storage.BinaryStorageManager;
 import fr.progilone.pgcn.service.workflow.WorkflowService;
@@ -150,6 +149,13 @@ public class DeliveryProcessService {
 
         // Separateur de sequence et prefixe de bibliotheque
         final Lot lot = lotService.getOneWithConfigRules(delivery.getLot().getIdentifier());
+
+        // La configuration de contrôle n'est pas presente
+        if (lot.getActiveCheckConfiguration() == null) {
+            LOG.error("Aucune configuration de contrôle n'est paramétrée sur le lot {} pour la livraison  {}", lot.getLabel(), delivery.getLabel());
+            preDeliveryDTO.addError(buildError(DELIVERY_NO_CHECK_CONFIGURATION_FOUND));
+            return preDeliveryDTO;
+        }
         final String seqSeparator = lot.getActiveCheckConfiguration().getSeparators();
         final String bibPrefix = lot.getProject().getLibrary().getPrefix();
         final AutomaticCheckRule bibPrefixRule = getCheckingRulesConfig(lot).get(AutoCheckType.FILE_BIB_PREFIX);
@@ -352,7 +358,11 @@ public class DeliveryProcessService {
         physicalDocuments.forEach(physicalDoc -> {
             // Vérification de la possibilité de livrer le document
             if (workflowAccessHelper.canDocUnitBeDelivered(physicalDoc.getDocUnit().getIdentifier())) {
-                if (physicalDoc.getDigitalId().isEmpty()) {
+                if (physicalDoc.getDigitalId() == null || physicalDoc.getDigitalId().isEmpty()) {
+                    final PhysicalDocumentDTO physicalDocDTO = PhysicalDocumentMapper.INSTANCE.physicalDocumentToPhysicalDocumentDTO(physicalDoc);
+                    physicalDocDTO.setCommentaire("Aucun radical n'est configuré sur le document");
+                    physicalDocDTO.setIdentifier(physicalDoc.getDocUnit().getPgcnId());
+                    preDeliveryDTO.addUndeliveredDigitalDocument(physicalDocDTO);
                     LOG.info("Le document ayant pour PGCN id {} ne peut pas être livré (aucun radical n'est configuré)",
                              physicalDoc.getDocUnit().getPgcnId());
                 } else {
@@ -361,6 +371,10 @@ public class DeliveryProcessService {
                     documentsForPrefix.put(physicalDoc.getDigitalId(), prefixedDocs);
                 }
             } else {
+                final PhysicalDocumentDTO physicalDocDTOWorkflow = PhysicalDocumentMapper.INSTANCE.physicalDocumentToPhysicalDocumentDTO(physicalDoc);
+                physicalDocDTOWorkflow.setCommentaire("L'état du workflow du document ne correspond pas à la livraison");
+                physicalDocDTOWorkflow.setIdentifier(physicalDoc.getDocUnit().getPgcnId());
+                preDeliveryDTO.addUndeliveredDigitalDocument(physicalDocDTOWorkflow);
                 LOG.info("Le document ayant pour préfixe {} ne peut pas être livré (workflow)", physicalDoc.getDigitalId());
             }
         });
@@ -480,7 +494,7 @@ public class DeliveryProcessService {
 
         // Fichiers associés à un préfixe
         final Map<String, PrefixedDocuments> documentsForPrefix = new HashMap<>();
-        final Set<PhysicalDocument> physicalDocuments = physicalDocumentRepository.findAllByLot(delivery.getLot().getIdentifier());        
+        final Set<PhysicalDocument> physicalDocuments = physicalDocumentRepository.findAllByLotDigitalIdNotNull(delivery.getLot().getIdentifier());
         final List<String> digitalIdstoDeliver = metaDatas.stream().map(PreDeliveryDocumentDTO::getDigitalId).collect(Collectors.toList());
         // les docs marqués à exclure ne seront pas livrés.
         physicalDocuments.stream()
@@ -732,18 +746,7 @@ public class DeliveryProcessService {
 
     private PgcnError buildError(final PgcnErrorCode pgcnErrorCode) {
         final PgcnError.Builder builder = new PgcnError.Builder();
-        switch (pgcnErrorCode) {
-            case DELIVERY_NO_MATCHING_PREFIX:
-            case DELIVERY_NO_MASTER_FOUND:
-                builder.setCode(pgcnErrorCode);
-                break;
-            case DELIVERY_WRONG_FOLDER:
-            case DELIVERY_NOT_ENOUGH_AVAILABLE_SPACE:
-                builder.setCode(pgcnErrorCode);
-                break;
-            default:
-                break;
-        }
+        builder.setCode(pgcnErrorCode);
         return builder.build();
     }
 }

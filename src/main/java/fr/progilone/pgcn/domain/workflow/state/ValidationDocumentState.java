@@ -49,7 +49,10 @@ public class ValidationDocumentState extends DocUnitState {
         failStatus();
         
      // Initialisation de la prochaine étape si applicable (aucune étape en cours)
-        if(getWorkflow().getCurrentStates().isEmpty()) {
+        final List<DocUnitState> currentStates = getWorkflow().getCurrentStates();
+        if(currentStates.isEmpty()
+                || (currentStates.size() == 1
+                && WorkflowStateKey.VALIDATION_NOTICES == currentStates.get(0).getKey())) {
             getNextStates().forEach(state -> state.initializeState(null, null, null));
         }
 

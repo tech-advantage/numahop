@@ -11,7 +11,7 @@
                 <span translate>Gestion des configurations pour Omeka</span>
             </div>
             <div class="panel-body">
-                <!-- IsActive -->
+                <!-- Bibliothèque -->
                 <div class="filter-block">
                     <div class="filter-title">{{::'Bibliothèque' | translate}}</div>
                     <div class="filter-element">
@@ -21,6 +21,16 @@
                                 <div ng-bind-html="library.name | highlight: $select.search"></div>
                             </ui-select-choices>
                         </ui-select>
+                    </div>
+                </div>
+                <!-- Omekas -->
+                <div class="filter-block">
+                    <div class="filter-title">{{::'Configuration OmekaS' | translate}}</div>
+                    <div class="checkbox checkbox-sid-main">
+                        <input id="filterOmekas" type="checkbox" ng-model="filters.omekas" ng-change="doFilter()"/>
+                        <label for="filterOmekas" style="min-width: 80px;" class="margin-r40" translate>OmekaS</label>
+                        <input id="filterOmeka" type="checkbox" ng-model="filters.omeka" ng-change="doFilter()"/>
+                        <label for="filterOmeka" translate>Omeka</label>
                     </div>
                 </div>
             </div>

@@ -19,6 +19,7 @@ import fr.progilone.pgcn.domain.library.Library;
 import fr.progilone.pgcn.domain.project.Project;
 import fr.progilone.pgcn.service.administration.CinesPACService;
 import fr.progilone.pgcn.service.administration.InternetArchiveCollectionService;
+import fr.progilone.pgcn.service.administration.omeka.OmekaConfigurationService;
 import fr.progilone.pgcn.service.administration.omeka.OmekaListService;
 import fr.progilone.pgcn.service.administration.viewsformat.ViewsFormatConfigurationService;
 import fr.progilone.pgcn.service.checkconfiguration.CheckConfigurationService;
@@ -48,6 +49,8 @@ public class UIProjectMapper {
     private CinesPACService cinesPACService;
     @Autowired
     private OmekaListService omekaListService;
+    @Autowired
+    private OmekaConfigurationService omekaConfigurationService;
 
     public void mapInto(final ProjectDTO projectDTO, final Project project) {
         // Library
@@ -91,6 +94,9 @@ public class UIProjectMapper {
         }
         if (projectDTO.getWorkflowModel() != null) {
             project.setWorkflowModel(workflowModelService.getOne(projectDTO.getWorkflowModel().getIdentifier()));
+        }
+        if (projectDTO.getOmekaConfiguration() != null) {
+            project.setOmekaConfiguration(omekaConfigurationService.findOne(projectDTO.getOmekaConfiguration().getIdentifier()));
         }
 
         final InternetArchiveCollectionDTO iaCollection = projectDTO.getCollectionIA();

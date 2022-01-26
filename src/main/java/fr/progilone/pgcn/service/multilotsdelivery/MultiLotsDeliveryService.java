@@ -96,10 +96,12 @@ public class MultiLotsDeliveryService {
     public void closeMultiLotDelivery(final Delivery delivery) {
         final MultiLotsDelivery multiLotsDelivery = delivery.getMultiLotsDelivery();
 
-        final List<Delivery> deliveries = multiLotsDelivery.getDeliveries();
-        if (deliveries.stream().noneMatch(del -> del.getStatus() != Delivery.DeliveryStatus.CLOSED)) {
-            multiLotsDelivery.setStatus(Delivery.DeliveryStatus.CLOSED);
-            save(multiLotsDelivery);
+        if (multiLotsDelivery != null) {
+            final List<Delivery> deliveries = multiLotsDelivery.getDeliveries();
+            if (deliveries.stream().noneMatch(del -> del.getStatus() != Delivery.DeliveryStatus.CLOSED)) {
+                multiLotsDelivery.setStatus(Delivery.DeliveryStatus.CLOSED);
+                save(multiLotsDelivery);
+            }
         }
     }
 }

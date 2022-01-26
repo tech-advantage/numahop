@@ -190,7 +190,7 @@
                 </div>
             </div>
             
-            <!-- Propriétés Personnalisées -->
+            <!-- Propriétés Personnalisées CINES -->
             <div class="formBlock" ng-show="recordCtrl.showType.custom_cines">
                 <div class="formBlockTitle" translate>Champs personnalisés CINES</div>
                 <div class="formBlockContent">
@@ -235,8 +235,8 @@
                     </table>
                 </div>
             </div>
-            
-            <!-- Propriétés Personnalisées -->
+
+            <!-- Propriétés Personnalisées ARCHIVE -->
             <div class="formBlock" ng-show="recordCtrl.showType.custom_archive">
                 <div class="formBlockTitle" translate>Champs personnalisés ARCHIVE</div>
                 <div class="formBlockContent">
@@ -277,6 +277,52 @@
                                     </span>
                                 </td>
                             </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Propriétés Personnalisées OMEKA -->
+            <div class="formBlock" ng-show="recordCtrl.showType.custom_omeka">
+                <div class="formBlockTitle" translate>Champs personnalisés OMEKA</div>
+                <div class="formBlockContent">
+                    <table class="table table-condensed no-border">
+                        <tbody>
+                        <tr ng-repeat="property in recordCtrl.entity.record.custom_omeka | orderBy: 'weightedRank'">
+                            <td style="width: 40px" ng-show="entityForm.$visible">
+                                    <span class="btn-group-xs margin-l15" ng-show="entityForm.$visible">
+                                        <button type="button" class="btn btn-sem1 btn-removable" uib-tooltip="{{::'Supprimer' | translate}}"
+                                                ng-click="recordCtrl.deleteProperty(recordCtrl.entity, 'custom_omeka', property)" ng-disabled="formRO">
+                                            <span class="glyphicon-halflings glyphicon-trash"></span>
+                                        </button>
+                                    </span>
+                            </td>
+                            <td style="width: 30%">
+                                <numa-editable-field type="select" form="entityForm" model="property.type" onbeforesave="validation.required($data)"
+                                                     numa-readonly="property.identifier || formRO"
+                                                     config="{ data: recordCtrl.sel2DocProperties.custom_omeka,
+                                                                    display: 'label',
+                                                                    query: 'o.label for o in $ctrl.config.data track by o.identifier' }"></numa-editable-field>
+                            </td>
+                            <td>
+                                <numa-editable-field placeholder="{{::'Valeur' | translate}}" form="entityForm"
+                                                     model="property.value" numa-readonly="formRO"
+                                                     onbeforesave="validation.required($data)"></numa-editable-field>
+                            </td>
+                        </tr>
+                        </tbody>
+                        <tfoot ng-show="entityForm.$visible">
+                        <tr>
+                            <td colspan="3">
+                                    <span class="btn-group-xs margin-l15">
+                                        <button type="button" class="btn btn-sem1" uib-tooltip="{{::'Ajouter' | translate}}"
+                                                ng-click="recordCtrl.addProperty(recordCtrl.entity,'custom_omeka')" ng-disabled="formRO">
+                                            <span class="glyphicon-halflings glyphicon-plus"></span>
+                                            <i translate>Ajouter une nouvelle propriété</i>
+                                        </button>
+                                    </span>
+                            </td>
+                        </tr>
                         </tfoot>
                     </table>
                 </div>

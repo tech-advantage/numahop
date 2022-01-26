@@ -9,6 +9,7 @@ import fr.progilone.pgcn.service.administration.SftpConfigurationService;
 import fr.progilone.pgcn.service.exchange.ssh.SftpService;
 import fr.progilone.pgcn.util.TestConverterFactory;
 import fr.progilone.pgcn.util.TestUtil;
+import fr.progilone.pgcn.web.util.AccessHelper;
 import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,6 +51,8 @@ public class SftpConfigurationControllerTest {
     private SftpService sftpService;
     @Mock
     private CinesPACService cinesPACService;
+    @Mock
+    private AccessHelper accessHelper;
 
     private MockMvc restMockMvc;
 
@@ -57,7 +60,7 @@ public class SftpConfigurationControllerTest {
 
     @Before
     public void setUp() throws Exception {
-        final SftpConfigurationController controller = new SftpConfigurationController(sftpConfigurationService, sftpService, libraryAccesssHelper, cinesPACService);
+        final SftpConfigurationController controller = new SftpConfigurationController(sftpConfigurationService, sftpService, libraryAccesssHelper, cinesPACService, accessHelper);
 
         final FormattingConversionService convService = new DefaultFormattingConversionService();
         convService.addConverter(String.class, Library.class, TestConverterFactory.getConverter(Library.class));

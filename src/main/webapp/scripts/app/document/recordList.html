@@ -49,6 +49,13 @@
                                 </a>
                             </li>
                             <li role="separator" class="divider" sem-roles-allowed="DOC_UNIT_HAB3"></li>
+                            <!-- Validation en masse -->
+                            <li role="menuitem" sem-roles-allowed="DOC_UNIT_HAB2">
+                                <a ng-click="mainCtrl.validateSelection()" class="btn-xs">
+                                    <span class="glyphicon-halflings glyphicon-check"></span>
+                                    {{::'Valider la selection' | translate}}
+                                </a>
+                            </li>
                             <!-- Suppression de la sélection -->
                             <li role="menuitem" sem-roles-allowed="DOC_UNIT_HAB3">
                                 <a ng-click="mainCtrl.deleteSelection()" class="btn-xs">

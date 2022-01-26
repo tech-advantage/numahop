@@ -2,7 +2,9 @@ package fr.progilone.pgcn.domain.util;
 
 import fr.progilone.pgcn.domain.user.Lang;
 import fr.progilone.pgcn.domain.user.User;
+import net.bytebuddy.dynamic.ClassFileLocator;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -21,7 +23,7 @@ public class CustomUserDetails implements UserDetails {
     private Lang lang;
     private final String libraryId;
     private final boolean superuser;
-    private User.Category category;
+    private final User.Category category;
 
     public CustomUserDetails(String identifier,
                              String login,
@@ -103,5 +105,11 @@ public class CustomUserDetails implements UserDetails {
 
     public User.Category getCategory() {
         return category;
+    }
+
+    public boolean isUserInRole(String role){
+        final String prefix = "ROLE_";
+        final SimpleGrantedAuthority authority = new SimpleGrantedAuthority(prefix + role);
+        return role == null || authorities.contains(authority);
     }
 }

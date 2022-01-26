@@ -24,7 +24,7 @@ public class UIDeliveryMapper {
         final SimpleLotDTO lotDTO = deliveryDTO.getLot();
         if (lotDTO != null && lotDTO.getIdentifier() != null) {
             //Récupère bibliotheque depuis repository
-            final Lot lot = lotService.getOne(lotDTO.getIdentifier());
+            final Lot lot = lotService.findByIdentifier(lotDTO.getIdentifier());
             delivery.setLot(lot);
         }
         delivery.setLabel(deliveryDTO.getLabel());

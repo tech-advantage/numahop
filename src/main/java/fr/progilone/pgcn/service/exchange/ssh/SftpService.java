@@ -53,6 +53,9 @@ public class SftpService {
     @Value("${export.ssh.knownHosts}")
     private String knownHosts;
 
+    @Value("${export.sftp.privateKey}")
+    private String privateKey;
+
     /**
      * Vérification de la clé du serveur yes / no<br/>
      * - yes (conseillé): les connexions aux serveurs absents du fichier knownHosts sont rejetées
@@ -107,7 +110,7 @@ public class SftpService {
             session = openSession(conf, true);
             return Optional.empty();
 
-        } catch (JSchException | PgcnTechnicalException e) {
+        } catch (final JSchException | PgcnTechnicalException e) {
             LOG.error(e.getMessage());
             return Optional.of(e.getMessage());
         } finally {
@@ -155,7 +158,7 @@ public class SftpService {
                     putPathRecursively(localSource.toFile(), channelSftp);
                 }
 
-            } catch (JSchException | SftpException e) {
+            } catch (final JSchException | SftpException e) {
                 throw new PgcnTechnicalException(e);
             } finally {
                 LOG.debug("Transfert de {} terminé; fermeture de la connexion SFTP vers {}@{}:{}",
@@ -223,12 +226,12 @@ public class SftpService {
         // Fichier: transfert dans le répertoire distant courant
         else if (localSource.isFile()) {
             // Copie du fichier
-            try (InputStream in = new FileInputStream(localSource)) {
+            try (final InputStream in = new FileInputStream(localSource)) {
                 LOG.debug("Envoi de {} vers {} ({})", localSource.getAbsolutePath(), targetName, channelSftp.pwd());
                 channelSftp.put(in, targetName);
-                channelSftp.chmod(0660, targetName);    // permission en octal
+                channelSftp.chmod(0755, targetName);    // permission en octal
 
-            } catch (IOException | SftpException e) {
+            } catch (final IOException | SftpException e) {
                 LOG.error("Une erreur s'est produite lors de la copie du fichier {} vers {}: {}",
                           localSource.getAbsolutePath(),
                           targetName,
@@ -254,6 +257,9 @@ public class SftpService {
         if (conf.getPassword() != null) {
             session.setPassword(cryptoService.decrypt(conf.getPassword()));
         }
+
+        // Private key
+        jSch.addIdentity(privateKey);
 
         // StrictHostKeyChecking
         if (disableKeyCheck) {

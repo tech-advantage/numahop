@@ -19,6 +19,7 @@
         $scope.openForm = openForm;
         $scope.delete = deleteLot;
         $scope.saveLot = saveLot;
+        $scope.validateLot = validateLot;
 
         $scope.displayBoolean = DocUnitBaseService.displayBoolean;
         $scope.displayStatus = displayStatus;
@@ -29,44 +30,16 @@
         $scope.downloadSlip = downloadSlip;
         $scope.downloadCheckSlip = downloadCheckSlip;
         $scope.downloadDeliverySlip = downloadDeliverySlip;
+        $scope.onChangeOmekaConf= onChangeOmekaConf;
 
         // Définition des listes déroulantes
         $scope.options = {
-            boolean: {
-                "true": gettextCatalog.getString('Oui'),
-                "false": gettextCatalog.getString('Non')
-            },
-            category: {
-                "PROVIDER": gettextCatalog.getString('Prestataire'),
-                "OTHER": gettextCatalog.getString('Utilisateur')
-            },
-            type: {
-                "PHYSICAL": gettextCatalog.getString('Physique'),
-                "DIGITAL": gettextCatalog.getString('Numérique')
-            },
-            status: {
-                "CREATED": gettextCatalog.getString('Créé'),
-                "ONGOING": gettextCatalog.getString('En cours'),
-                "PENDING": gettextCatalog.getString('En attente'),
-                "CANCELED": gettextCatalog.getString('Annulé'),
-                "CLOSED": gettextCatalog.getString('Clôturé')
-            },
-            format: {
-                "JP2": gettextCatalog.getString('JP2 (JPEG-2000 File Format Syntax)'),
-                "JPEG": gettextCatalog.getString('JPEG (Joint Photographic Experts Group JFIF format)'),
-                "JPG": gettextCatalog.getString('JPG'),
-                "PNG": gettextCatalog.getString('PNG (Portable Network Graphics)'),
-                "GIF": gettextCatalog.getString('GIF (Graphics Interchange Format)'),
-                "SVG": gettextCatalog.getString('SVG (Scalable Vector Graphic)'),
-                "TIFF": gettextCatalog.getString('TIFF (Tagged Image File Format)'),
-                "TIF": gettextCatalog.getString('TIF (Tagged Image File Format)'),
-                "PDF": gettextCatalog.getString('PDF')
-            },
-            colorspace: {
-                "NULL": gettextCatalog.getString(' '),
-                "sRGB": gettextCatalog.getString('profil sRGB'),
-                "Adobe RGB": gettextCatalog.getString('profil Adobe RGB (1998)')
-            }
+            boolean: LotSrvc.config.boolean,
+            category: LotSrvc.config.category,
+            type: LotSrvc.config.type,
+            status: LotSrvc.config.status,
+            format: LotSrvc.config.fileFormat,
+            colorspace: LotSrvc.config.colorspace,
         };
 
 
@@ -205,6 +178,9 @@
                 $scope.options.workflowModels = [];
                 $scope.options.imgFormat = [];
                 $scope.options.languagesOcr = [];
+                $scope.options.omekaConfigurations = [];
+                $scope.options.omekaCollections = [];
+                $scope.options.omekaItems = [];
 
                 loadAll(lot);
             }
@@ -214,11 +190,39 @@
         }
 
         function loadDeliveries(lotId) {
-            return DeliverySrvc.query({ lot: lotId });
+            return DeliverySrvc.findByProjectIdsLotsIds({ filteredLots: [lotId] });
         }
 
         function loadDocUnits(lotId) {
             return DocUnitSrvc.query({ lot: lotId });
+        }
+
+        function loadOmekaCollections(omekaConf) {
+            if (!omekaConf) {
+                omekaConf = $scope.lot.omekaConfiguration;
+            }
+            if (!omekaConf) {
+                $scope.options.omekaCollections = [];
+                return;
+            }
+            NumaHopInitializationSrvc.loadOmekaCollections(omekaConf.identifier)
+                .then(function (data) {
+                    $scope.options.omekaCollections = data;
+                });
+        }
+
+        function loadOmekaItems(omekaConf) {
+            if (!omekaConf) {
+                omekaConf = $scope.lot.omekaConfiguration;
+            }
+            if (!omekaConf) {
+                $scope.options.omekaItems = [];
+                return;
+            }
+            NumaHopInitializationSrvc.loadOmekaItems(omekaConf.identifier)
+                .then(function (data) {
+                    $scope.options.omekaItems = data;
+                });
         }
 
         function reloadSelects(project) {
@@ -226,12 +230,11 @@
                 $q.all([NumaHopInitializationSrvc.loadProvidersForLibrary(project.library.identifier),
                 NumaHopInitializationSrvc.loadFTPConfigurationForProject(project.identifier),
                 NumaHopInitializationSrvc.loadCheckConfigurationForProject(project.identifier),
-                NumaHopInitializationSrvc.loadPACS(project.library.identifier),
-                NumaHopInitializationSrvc.loadCollections(project.library.identifier),
-                NumaHopInitializationSrvc.loadWorkflowModels(project.library.identifier),
+                NumaHopInitializationSrvc.loadPACS(project.library.identifier, project.identifier),
+                NumaHopInitializationSrvc.loadCollections(project.library.identifier, project.identifier),
+                NumaHopInitializationSrvc.loadWorkflowModels(project.library.identifier, project.identifier),
                 NumaHopInitializationSrvc.loadFormatConfigurationForProject(project.identifier),
-                NumaHopInitializationSrvc.loadOmekaCollections(project.library.identifier),
-                NumaHopInitializationSrvc.loadOmekaItems(project.library.identifier),
+                NumaHopInitializationSrvc.loadOmekaConfigurations(project.library, project),
                 NumaHopInitializationSrvc.loadOcrLanguagesForLibrary(project.library.identifier)
                 ])
                     .then(function (data) {
@@ -242,9 +245,8 @@
                         $scope.options.collections = data[4];
                         $scope.options.workflowModels = data[5];
                         $scope.options.imgFormat = data[6];
-                        $scope.options.omekaCollections = data[7];
-                        $scope.options.omekaItems = data[8];
-                        $scope.options.languagesOcr = data[9];
+                        $scope.options.omekaConfigurations = data[7];
+                        $scope.options.languagesOcr = data[8];
                         $scope.options.providers.forEach(function (provider) {
                             provider.fullName = provider.firstname + " " + provider.surname;
                         });
@@ -273,6 +275,13 @@
                     if(!$scope.lot.collectionIA && projectDto.collectionIA){
                        $scope.lot.collectionIA = projectDto.collectionIA;
                     }
+                    if(!$scope.lot.omekaConfiguration  && projectDto.omekaConfiguration){
+                       $scope.lot.omekaConfiguration = projectDto.omekaConfiguration;
+                       $scope.lot.omekaItem = projectDto.omekaItem;
+                       $scope.lot.omekaCollection = projectDto.omekaCollection;
+                    }
+                    loadOmekaCollections();
+                    loadOmekaItems();
                 });
             }
             else {
@@ -377,8 +386,8 @@
         /**
          * Sélection d'une regle à partir de son type.
          * Vrai si la regle est active.
-         * 
-         * @param {any} type 
+         *
+         * @param {any} type
          */
         function selectRuleActive(type) {
             if (type) {
@@ -459,10 +468,15 @@
             });
         }
 
+        function onChangeOmekaConf(omekaConf) {
+            loadOmekaCollections(omekaConf);
+            loadOmekaItems(omekaConf);
+        }
+
         /**
          * Suppression d'un lot
-         * 
-         * @param {any} lot 
+         *
+         * @param {any} lot
          */
         function deleteLot(lot) {
             ModalSrvc.confirmDeletion(gettextCatalog.getString("le lot {{label}}", lot))
@@ -559,6 +573,16 @@
                         FileSaver.saveAs(blob, filename);
                     });
             }
+        }
+
+        function validateLot(lot) {
+            ModalSrvc.confirmAction(gettextCatalog.getString("valider le lot suivant :  {{label}}", { label: lot.label }))
+                .then(function () {
+                    LotSrvc.validate(lot).$promise.then(function () {
+                        MessageSrvc.addSuccess(gettextCatalog.getString("Le lot {{label}} a été validé", { label: lot.label }));
+                        lot.status = 'ONGOING';
+                    });
+                });
         }
     }
 })();

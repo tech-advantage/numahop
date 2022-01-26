@@ -30,6 +30,12 @@ public interface PhysicalDocumentRepository extends JpaRepository<PhysicalDocume
            + "left join du.lot l "
            + "where l.identifier = ?1 "
            + "and pd.digitalId IS NOT NULL")
+    Set<PhysicalDocument> findAllByLotDigitalIdNotNull(String identifier);
+
+    @Query("select distinct pd from PhysicalDocument pd "
+           + "left join pd.docUnit du "
+           + "left join du.lot l "
+           + "where l.identifier = ?1 ")
     Set<PhysicalDocument> findAllByLot(String identifier);
 
     List<PhysicalDocument> findByTrainIdentifier(String identifier);

@@ -12,18 +12,64 @@
         docCtrl.canRemoveFromProject = DocUnitBaseService.canRemoveProject;
         docCtrl.changeItem = changeItem;
         docCtrl.checkAll = checkAll;
+        docCtrl.getPage = getPage;
         docCtrl.init = loadDocUnits;
+        docCtrl.isDocUnitLocked = isDocUnitLocked;
         docCtrl.removeItem = removeItem;
         docCtrl.removeMultipleItems = removeMultipleItems;
         docCtrl.uncheckAll = uncheckAll;
-        docCtrl.isDocUnitLocked = isDocUnitLocked;
 
+        var PAGE_START = 1;
         docCtrl.selectedIds = [];
+
+        /**
+         * Objet de pagination
+         * @type {Object}
+         */
+        docCtrl.pagination = {
+            items: [],
+            totalItems: 0,
+            busy: false,
+            page: PAGE_START,
+            size: 50
+        };
 
 
         function loadDocUnits(projectId) {
             docCtrl.projectId = projectId;
-            docCtrl.docUnits = DocUnitSrvc.query({ project: projectId });
+
+            getPage().then(function () {
+                docCtrl.loaded = true;
+            });
+        }
+
+        function getPage(){
+           docCtrl.pagination.busy = true;
+           var params = {};
+           params["page"] = docCtrl.pagination.page - 1;
+           params["project"] = docCtrl.projectId;
+           return DocUnitSrvc.searchAllForProject(params).$promise.then(handlePageOfItems);
+        }
+
+        /**
+         * handlePageOfItems - Gestion d'une page d'entités
+         *
+         * @param  {type} pageOfReserves la page avec les entités
+         */
+        function handlePageOfItems(pageOfItems) {
+            docCtrl.pagination.totalItems = pageOfItems.totalElements;
+            docCtrl.pagination.totalPages = pageOfItems.totalPages;
+            docCtrl.pagination.items = pageOfItems.content;
+
+            _.each(docCtrl.pagination.items, function (item) {
+                // l'item est sélectionné
+                item.checked = angular.isDefined(docCtrl.selectedIds[item.identifier]);
+                // mise à jour de la sélection
+                if (item.checked) {
+                    docCtrl.selectedIds[item.identifier] = item;
+                }
+            });
+            docCtrl.pagination.busy = false;
         }
 
         function addDocUnits() {
@@ -51,11 +97,11 @@
                 { n: itemArray.length }))
                 .then(function () {
                     _.each(itemArray, function (id) {
-                        var item = _.findWhere(docCtrl.docUnits, { identifier: id });
+                        var item = _.findWhere(docCtrl.pagination.items, { identifier: id });
 
                         DocUnitBaseService.removeProject(item, function () {
                             MessageSrvc.addSuccess(gettextCatalog.getString("l'unité documentaire {{doc}} a été retirée du projet.", { doc: item.pgcnId }));
-                            docCtrl.docUnits = _.without(docCtrl.docUnits, _.findWhere(docCtrl.docUnits, { identifier: id }));
+                            docCtrl.pagination.items = _.without(docCtrl.pagination.items, _.findWhere(docCtrl.pagination.items, { identifier: id }));
                         });
                     });
                     uncheckAll();
@@ -67,7 +113,7 @@
          */
         function isDocUnitLocked() {
             _.each(docCtrl.selectedIds, function (id) {
-                var item = _.findWhere(docCtrl.docUnits, { identifier: id });
+                var item = _.findWhere(docCtrl.pagination.items, { identifier: id });
                 if (WorkflowLotHandleSrvc.isDocFromLotLocked(item)) {
                     return true;
                 }
@@ -86,7 +132,7 @@
         }
 
         function checkAll() {
-            _.each(docCtrl.docUnits, function (item) {
+            _.each(docCtrl.pagination.items, function (item) {
                 if (docCtrl.selectedIds.indexOf(item.identifier) < 0) {
                     docCtrl.selectedIds.push(item.identifier);
                     item.checked = true;
@@ -96,7 +142,7 @@
 
         function uncheckAll() {
             docCtrl.selectedIds = [];
-            _.each(docCtrl.docUnits, function (item) {
+            _.each(docCtrl.pagination.items, function (item) {
                 item.checked = false;
             });
         }

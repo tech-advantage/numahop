@@ -14,7 +14,7 @@
 
         function loadLots(projectId) {
             lotCtrl.projectId = projectId;
-            lotCtrl.lots = LotSrvc.query({ project: projectId });
+            lotCtrl.lots = LotSrvc.findSimpleByProject({ project: projectId });
         }
 
         function validateLot(lot) {

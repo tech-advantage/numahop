@@ -98,10 +98,6 @@ public class WorkflowGroupService {
         final Sort sort = SortUtils.getSort(sorts);
         final Pageable pageRequest = new PageRequest(page, size, sort);
 
-        if (libraries.isEmpty() && SecurityUtils.getCurrentUser().getLibraryId() != null) {
-            libraries.add(SecurityUtils.getCurrentUser().getLibraryId());
-        }
-
         return repository.search(search, initiale, libraries, pageRequest);
     }
 
@@ -114,66 +110,12 @@ public class WorkflowGroupService {
     public void delete(final String identifier) {
         repository.delete(identifier);
     }
-    
-    /**
-     * Validation
-     * @param group
-     * @return
-     * @throws PgcnValidationException
-     */
-    @Transactional(readOnly = true)
-    public PgcnList<PgcnError> validate(final WorkflowGroup group) throws PgcnValidationException {
-        final PgcnList<PgcnError> errors = new PgcnList<>();
-        final PgcnError.Builder builder = new PgcnError.Builder();
-        final String name = group.getName();
-
-        // le nom est obligatoire
-        if (StringUtils.isBlank(name)) {
-            errors.add(builder.reinit().setCode(PgcnErrorCode.WORKFLOW_GROUP_NAME_MANDATORY).setField("name").build());
-        }
-        // nom unique
-        else {
-            final Long countDuplicates = group.getIdentifier() == null ?
-                    repository.countByName(name) :
-                    repository.countByNameAndIdentifierNot(name, group.getIdentifier());
-            if (countDuplicates > 0) {
-                errors.add(builder.reinit()
-                                  .setCode(PgcnErrorCode.WORKFLOW_GROUP_DUPLICATE_NAME)
-                                  .setField("name")
-                                  .build());
-            }
-        }
-        
-        // Vérification des utilisateurs (même bibliothèque)
-        if(!group.getUsers().isEmpty()) {
-            Library lib = null;
-            for(final User user : group.getUsers()) {
-                if(lib == null) {
-                    lib = user.getLibrary();
-                } else {
-                    if(!StringUtils.equals(lib.getIdentifier(), user.getLibrary().getIdentifier())) {
-                        errors.add(builder.reinit()
-                                .setCode(PgcnErrorCode.WORKFLOW_GROUP_MIXED_USERS)
-                                .build());
-                        break;
-                    }
-                }
-            }
-        }
-
-        /** Retour **/
-        if (!errors.isEmpty()) {
-            group.setErrors(errors);
-            throw new PgcnValidationException(group, errors);
-        }
-        return errors;
-    }
 
     @Transactional(readOnly = true)
     public Collection<WorkflowGroup> findAllForLibrary(final String identifier) {
         return repository.findAllByLibraryIdentifier(identifier);
     }
-    
+
     public List<WorkflowGroup> findAllGroupsByUser(final User user) {
         return repository.findAllGroupsByUser(user);
     }

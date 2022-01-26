@@ -100,4 +100,15 @@ public final class SecurityUtils {
             }
         }
     }
+
+    /**
+     * @return Get the current user library.
+     */
+    public static String getCurrentUserLibraryId() {
+        final CustomUserDetails user = getCurrentUser();
+        if (user != null) {
+            return user.getLibraryId();
+        }
+        return null;
+    }
 }

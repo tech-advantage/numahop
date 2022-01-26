@@ -11,6 +11,7 @@ package fr.progilone.pgcn.domain.jaxb.ead;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -111,7 +112,7 @@ public class Title {
     @XmlAttribute(name = "href", namespace = "http://www.w3.org/1999/xlink")
     @XmlSchemaType(name = "anyURI")
     protected String href;
-    @XmlAttribute(name = "role", namespace = "http://www.w3.org/1999/xlink")
+    @XmlAttribute(name = "role")
     protected String role;
     @XmlAttribute(name = "arcrole", namespace = "http://www.w3.org/1999/xlink")
     protected String arcrole;
@@ -177,7 +178,7 @@ public class Title {
      *     {@link AvRender }
      *
      */
-    public void setRender(AvRender value) {
+    public void setRender(final AvRender value) {
         this.render = value;
     }
 
@@ -201,7 +202,7 @@ public class Title {
      *     {@link String }
      *
      */
-    public void setEntityref(String value) {
+    public void setEntityref(final String value) {
         this.entityref = value;
     }
 
@@ -225,7 +226,7 @@ public class Title {
      *     {@link String }
      *
      */
-    public void setXpointer(String value) {
+    public void setXpointer(final String value) {
         this.xpointer = value;
     }
 
@@ -249,7 +250,7 @@ public class Title {
      *     {@link String }
      *
      */
-    public void setEncodinganalog(String value) {
+    public void setEncodinganalog(final String value) {
         this.encodinganalog = value;
     }
 
@@ -273,7 +274,7 @@ public class Title {
      *     {@link String }
      *
      */
-    public void setId(String value) {
+    public void setId(final String value) {
         this.id = value;
     }
 
@@ -297,7 +298,7 @@ public class Title {
      *     {@link String }
      *
      */
-    public void setAltrender(String value) {
+    public void setAltrender(final String value) {
         this.altrender = value;
     }
 
@@ -321,7 +322,7 @@ public class Title {
      *     {@link String }
      *
      */
-    public void setAudience(String value) {
+    public void setAudience(final String value) {
         this.audience = value;
     }
 
@@ -345,7 +346,7 @@ public class Title {
      *     {@link String }
      *
      */
-    public void setSource(String value) {
+    public void setSource(final String value) {
         this.source = value;
     }
 
@@ -369,7 +370,7 @@ public class Title {
      *     {@link String }
      *
      */
-    public void setRules(String value) {
+    public void setRules(final String value) {
         this.rules = value;
     }
 
@@ -393,7 +394,7 @@ public class Title {
      *     {@link String }
      *
      */
-    public void setAuthfilenumber(String value) {
+    public void setAuthfilenumber(final String value) {
         this.authfilenumber = value;
     }
 
@@ -417,7 +418,7 @@ public class Title {
      *     {@link String }
      *
      */
-    public void setNormal(String value) {
+    public void setNormal(final String value) {
         this.normal = value;
     }
 
@@ -445,7 +446,7 @@ public class Title {
      *     {@link String }
      *
      */
-    public void setType(String value) {
+    public void setType(final String value) {
         this.type = value;
     }
 
@@ -469,7 +470,7 @@ public class Title {
      *     {@link String }
      *
      */
-    public void setHref(String value) {
+    public void setHref(final String value) {
         this.href = value;
     }
 
@@ -493,7 +494,7 @@ public class Title {
      *     {@link String }
      *
      */
-    public void setRole(String value) {
+    public void setRole(final String value) {
         this.role = value;
     }
 
@@ -517,7 +518,7 @@ public class Title {
      *     {@link String }
      *
      */
-    public void setArcrole(String value) {
+    public void setArcrole(final String value) {
         this.arcrole = value;
     }
 
@@ -541,7 +542,7 @@ public class Title {
      *     {@link String }
      *
      */
-    public void setTitle(String value) {
+    public void setTitle(final String value) {
         this.title = value;
     }
 
@@ -565,7 +566,7 @@ public class Title {
      *     {@link String }
      *
      */
-    public void setShow(String value) {
+    public void setShow(final String value) {
         this.show = value;
     }
 
@@ -589,7 +590,7 @@ public class Title {
      *     {@link String }
      *
      */
-    public void setActuate(String value) {
+    public void setActuate(final String value) {
         this.actuate = value;
     }
 

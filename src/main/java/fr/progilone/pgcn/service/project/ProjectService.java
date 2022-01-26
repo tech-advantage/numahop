@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
+import javax.print.Doc;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.IterableUtils;
@@ -44,7 +45,7 @@ import fr.progilone.pgcn.service.util.SortUtils;
 
 @Service
 public class ProjectService {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(ProjectService.class);
 
     private final DocUnitService docUnitService;
@@ -218,7 +219,7 @@ public class ProjectService {
     public Project findOneWithFTPConfiguration(final String identifier) {
         return projectRepository.findOneWithFTPConfiguration(identifier);
     }
-    
+
     @Transactional(readOnly = true)
     public Project findOneWithExportFTPConfiguration(final String identifier) {
         return projectRepository.findOneWithExportFTPConfiguration(identifier);
@@ -264,7 +265,7 @@ public class ProjectService {
     public Project findByDocUnitIdentifier(final String identifier) {
         return projectRepository.findOneByDocUnitId(identifier);
     }
-    
+
     /**
      * Récupère le projet auquel appartient le lot
      *
@@ -343,12 +344,12 @@ public class ProjectService {
     public List<Project> findAllByActiveAndLibraryIn(final List<String> libraries) {
         return projectRepository.findAllByActiveAndLibraryIdentifierIn(true, libraries);
     }
-    
+
     @Transactional(readOnly = true)
     public List<Project> findAllByLibraryIn(final List<String> libraries) {
         return projectRepository.findAllByLibraryIdentifierIn(libraries);
     }
-    
+
     @Transactional(readOnly = true)
     public List<Project> findAllByLibraryIdentifier(final String library) {
         return projectRepository.findAllByLibraryIdentifier(library);
@@ -360,20 +361,26 @@ public class ProjectService {
         project.setFilesArchived(true);
         save(project);
     }
-    
+
     /**
      * Close le projet si les conditions sont reunies.
-     * 
+     *
      * @param project
      */
     @Transactional
     public void checkAndCloseProject(final Project project) {
-        
+        // Lots non cloturés
         final List<Lot> processingLots = project.getLots()
                                                 .stream()
                                                 .filter(lp -> !LotStatus.CLOSED.equals(lp.getStatus()))
                                                 .collect(Collectors.toList());
-        if (processingLots.isEmpty()) {
+
+        // Documents non attachés à un lot
+        final List<DocUnit> processingDocs = docUnitService.findAllByProjectId(project.getIdentifier())
+                                                    .stream()
+                                                    .filter(doc -> doc.getLot() == null)
+                                                    .collect(Collectors.toList());
+        if (processingLots.isEmpty() && processingDocs.isEmpty()) {
             // Tous les lots sont finis, on termine aussi le projet et les trains du coup
             project.setRealEndDate(LocalDate.now());
             project.setStatus(ProjectStatus.CLOSED);
@@ -386,15 +393,15 @@ public class ProjectService {
             LOG.info("CLOTURE PROJET : Mise à jour du project {} => status : CLOSED", project.getName());
         }
     }
-    
+
     /**
      * Décloture le projet et ses trains éventuels.
-     * 
+     *
      * @param project
      */
     @Transactional
     public void declotureProject(final Project project) {
-        
+
         // Tous les lots sont finis, on termine aussi le projet et les trains du coup
         project.setRealEndDate(null);
         project.setStatus(ProjectStatus.ONGOING);

@@ -1,12 +1,7 @@
 package fr.progilone.pgcn.service.workflow;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -324,13 +319,13 @@ public class WorkflowService {
         final DocUnit doc = docUnitService.findOneWithAllDependenciesForWorkflow(docUnitId);
         final DocUnitWorkflow workflow = doc.getWorkflow();
         if (workflow == null) {
-            LOG.warn("Aucun workflow sur le document : impossible de réaliser automatiquement l'étape {}", key.name());
+            LOG.warn("Aucun workflow sur le document {} : impossible de réaliser automatiquement l'étape {}", doc.getPgcnId(), key.name());
         } else {
             final DocUnitState currentState = workflow.getCurrentStateByKey(key);
             if (currentState != null && currentState.isWaiting()) {
                 currentState.process(null);
             } else {
-                LOG.error("Impossible de valider automatiquement la tâche");
+                LOG.error("Impossible de valider automatiquement la tâche {} pour le document {}", key.name(), doc.getPgcnId());
             }
             // init historique controle.
             if (key == WorkflowStateKey.CONTROLES_AUTOMATIQUES_EN_COURS) {
@@ -760,8 +755,8 @@ public class WorkflowService {
      */
     @Transactional(readOnly = true)
     public boolean isWorkflowRunning(final String docUnitId) {
-        final DocUnit docUnit = docUnitService.findOneWithAllDependenciesForWorkflow(docUnitId);
-        return docUnit != null && docUnit.getWorkflow() != null;
+        final List<DocUnitWorkflow> workflow = docUnitWorkflowRepository.findByDocUnitIdentifierIn(Collections.singletonList(docUnitId));
+        return workflow != null && !workflow.isEmpty();
     }
 
     /**
@@ -772,9 +767,9 @@ public class WorkflowService {
      */
     @Transactional(readOnly = true)
     public boolean isCheckInProgress(final String docUnitId) {
-        final DocUnit docUnit = docUnitService.findOneWithAllDependenciesForWorkflow(docUnitId);
-        if (docUnit != null && docUnit.getWorkflow() != null) {
-            final DocUnitWorkflow workflow = docUnit.getWorkflow();
+        final List<DocUnitWorkflow> workflows = docUnitWorkflowRepository.findByDocUnitIdentifierIn(Collections.singletonList(docUnitId));
+        if (workflows != null && !workflows.isEmpty()) {
+            final DocUnitWorkflow workflow = workflows.get(0);
             final ArrayList<WorkflowStateKey> keys = new ArrayList<>(Arrays.asList(WorkflowStateKey.CONTROLE_QUALITE_EN_COURS,
                                                                                    WorkflowStateKey.PREVALIDATION_DOCUMENT,
                                                                                    WorkflowStateKey.PREREJET_DOCUMENT,

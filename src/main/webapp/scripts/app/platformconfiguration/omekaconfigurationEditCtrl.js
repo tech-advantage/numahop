@@ -6,19 +6,18 @@
 
     function OmekaConfigurationEditCtrl($location, $q, $routeParams, $scope, $timeout, OmekaConfigurationSrvc, codeSrvc,
         gettext, gettextCatalog, HistorySrvc, ListTools, NumahopEditService,
-        MessageSrvc, ModalSrvc, NumaHopInitializationSrvc, ValidationSrvc) {
+        MessageSrvc, ModalSrvc, NumaHopInitializationSrvc, ValidationSrvc, DocUnitBaseService) {
 
         $scope.semCodes = codeSrvc;
         $scope.preventDefault = NumahopEditService.preventDefault;
         $scope.viewModes = NumahopEditService.viewModes;
         $scope.validation = ValidationSrvc;
+        $scope.displayBoolean = DocUnitBaseService.displayBoolean;
+        $scope.saveConfiguration= saveConfiguration;
 
         // Définition des listes déroulantes
         $scope.options = {
-            boolean: {
-                "true": gettext('Oui'),
-                "false": gettext('Non')
-            }
+            boolean: DocUnitBaseService.options.booleanObj,
         };
 
         $scope.viewMode = $routeParams.mode || $scope.viewModes.VIEW;
@@ -80,7 +79,7 @@
 
                 if ($scope.viewMode === $scope.viewModes.EDIT) {
                     savePromise.then(function (value) {
-                        $scope.setViewMode($scope.viewModes.VIEW);
+                        $scope.configurationForm.$cancel();
                     }).catch(function (value) {
                         openForm();
                     });
@@ -96,11 +95,6 @@
         /****************************************************************/
         /** Actions *****************************************************/
         /****************************************************************/
-        $scope.save = function () {
-            if (angular.isDefined($scope.configurationForm)) {
-                $scope.configurationForm.$submit();
-            }
-        };
         $scope.delete = function (configuration) {
             ModalSrvc.confirmDeletion(configuration.name)
                 .then(function () {
@@ -128,7 +122,12 @@
             }
         };
         $scope.cancel = function () {
-            $scope.setViewMode($scope.viewModes.VIEW);
+            if ($routeParams.new) {
+                backToList();
+            }
+            else {
+                $scope.configurationForm.$cancel();
+            }
         };
         $scope.backToList = function () {
             $scope.loaded = false;
@@ -136,41 +135,37 @@
             $location.search({});
             $location.path("/platformconfiguration/omekaconfiguration");
         };
-        $scope.setViewMode = function (mode) {
-            if (angular.isDefined($scope.configuration.identifier)) {
-                $scope.loaded = false;
-                $location.search({ id: $scope.configuration.identifier, mode: mode });
-            } else {
-                $scope.backToList();
-            }
-        };
 
         /****************************************************************/
         /** Fonctions ***************************************************/
         /****************************************************************/
         // Sauvegarde une configuration
-        function saveConfiguration(configuration) {
-            var creation = angular.isUndefined(configuration.identifier) || configuration.identifier === null;
-            var deferred = $q.defer();
+        function saveConfiguration() {
+            delete $scope.errors;
 
-            configuration.$save({},
-                function (value) {
-                    MessageSrvc.addSuccess(gettext("La configuration {{name}} a été sauvegardée"), { name: value.name });
-                    onSuccess(value);
-                    deferred.resolve($scope.configuration);
-                    // si création, on ajoute à la liste, sinon, on essaye de MAJ les infos dans la colonne du milieu
-                    if (creation) {
-                        $scope.clearSelection();
-                        NumahopEditService.addNewEntityToList(value, $scope.newConfigurations, $scope.pagination.items, ["label"]);
-                    } else {
-                        NumahopEditService.updateMiddleColumn($scope.configuration, $scope.pagination.items, $scope.newConfigurations);
-                    }
-                },
-                function (httpResponse) {
-                    ObjectTools.setObjectErrors($scope.configuration, httpResponse.data);
-                    deferred.reject(httpResponse.data);
-                });
-            return deferred.promise;
+            $timeout(function () {
+                var creation = angular.isUndefined($scope.configuration.identifier) || $scope.configuration.identifier === null;
+                var deferred = $q.defer();
+
+                $scope.configuration.$save({},
+                    function (value) {
+                        MessageSrvc.addSuccess(gettext("La configuration {{name}} a été sauvegardée"), { name: value.name });
+                        onSuccess(value);
+                        deferred.resolve($scope.configuration);
+                        // si création, on ajoute à la liste, sinon, on essaye de MAJ les infos dans la colonne du milieu
+                        if (creation) {
+                            $scope.clearSelection();
+                            NumahopEditService.addNewEntityToList(value, $scope.newConfigurations, $scope.pagination.items, ["label"]);
+                        } else {
+                            NumahopEditService.updateMiddleColumn($scope.configuration, $scope.pagination.items, $scope.newConfigurations);
+                        }
+                    },
+                    function (httpResponse) {
+                        ObjectTools.setObjectErrors($scope.configuration, httpResponse.data);
+                        deferred.reject(httpResponse.data);
+                    });
+                return deferred.promise;
+            });
         }
 
         function loadLibrarySelect() {
@@ -209,15 +204,9 @@
             // ... puis rien pour l'instant
         }
 
-        // Initialisation une fois qu'on a reçu toutes les données du serveur
-        function loadAll(value) {
-            onSuccess(value);
-            openForm();
-            $scope.loaded = true;
-        }
-
         function afterLoadingConfiguration(configuration) {
-            loadAll(configuration);
+            onSuccess(configuration);
+            $scope.loaded = true;
         }
 
         function loadConfiguration() {
@@ -240,8 +229,10 @@
                 HistorySrvc.add(gettext("Nouvelle configuration"));
                 $scope.configuration = new OmekaConfigurationSrvc();
                 $scope.configuration.active = true;
+                $scope.configuration.omekas = true;
                 $scope.configuration.exportView = true;
                 afterLoadingConfiguration($scope.configuration);
+                openForm();
             }
         }
 

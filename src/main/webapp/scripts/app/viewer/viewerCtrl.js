@@ -22,7 +22,7 @@
         $scope.accToc2 = true;
         $scope.accOcr1 = false;
         $scope.accOcr2 = false;
-        
+
         $scope.sample = undefined;
         $scope.sampling = false;
 
@@ -32,6 +32,7 @@
         $scope.downloadCheckSlip = downloadCheckSlip;
         $scope.downloadToc = downloadToc;
         $scope.changeSelectedDelivery = changeSelectedDelivery;
+        $scope.convertLineBreak = convertLineBreak;
 
         $scope.select = {};
         $scope.select.selectedErrors = [];
@@ -103,7 +104,7 @@
             if ($scope.sampling) {
                 // MODE ECHANTILLONNAGE
 
-                // chargement du sample avec ses pages (1->n docs possibles). 
+                // chargement du sample avec ses pages (1->n docs possibles).
                 SampleSrvc.get(params, function (value) {
 
                     $scope.sample = value;
@@ -202,7 +203,7 @@
             var typeView = 'ThumbnailsView';
             $scope.currentPage = 1;
             if (angular.isDefined($routeParams.page)) {
-                $scope.currentPage = $routeParams.page;
+                $scope.currentPage = parseInt($routeParams.page, 10);
             }
             if (angular.isDefined($routeParams.typeView)) {
                 typeView = $routeParams.typeView;
@@ -241,7 +242,7 @@
                 return;
             }
             $scope.typeView = e.detail.currentTypeView;
-            $scope.currentPage = e.detail.canvasId;
+            $scope.currentPage = parseInt(e.detail.canvasId, 10);
             $scope.bookView = 'BookView' === e.detail.currentTypeView;
             if (prevTypeView === 'ThumbnailsView') {
                 // entree en controle
@@ -338,12 +339,16 @@
         }
 
         function loadPage(pageNumber, msgView) {
-            
+
             var numPage = parseInt(pageNumber, 10);
             // En mode Book, on se repositionne sur la 1ere image affichée (page de gauche)
+            // La seconde page sera toujours positionnée à n + 1, qque soit le déplacement (ascendant ou en descendant)
+            // -> vaut aussi pour l'ordre des metadatas
             if ($scope.bookView && numPage > 1 && !isLastPage() && $scope.imgDoublePaged) {
                 if (numPage % 2 !== 0) {
                     numPage = numPage - 1;
+                    // On met à jour la nouvelle valeur de la page courante
+                    $scope.currentPage = numPage;
                 }
             }
             loadPageMetaData(numPage);
@@ -406,16 +411,17 @@
 
         /**
          * Chargement metadonnees de chaque page.
+         * 
+         * 2 metadatas si mode bookView
+         * 
+         * En mode double, quelque soit le déplacement (ascendant ou descendant), on garde le même ordre pour les metadata
+         * -> Index de la seconde page à n+1
+         * 
          */
         function loadPageMetaData(pageNumber) {
             $scope.data.metadataFile = $scope.metadata[pageNumber - 1];
             if ($scope.bookView && $scope.imgDoublePaged && pageNumber > 1) {
-                if ($scope.ascending) {
-                    $scope.data.metadataFile2 = $scope.metadata[pageNumber];
-                } else {
-                    $scope.data.metadataFile = $scope.metadata[pageNumber - 1];
-                    $scope.data.metadataFile2 = $scope.metadata[pageNumber];
-                }
+                $scope.data.metadataFile2 = $scope.metadata[pageNumber];
             }
         }
 
@@ -424,10 +430,10 @@
             var numId = parseInt(canvasId, 10);
             if ($scope.currentPage < numId + 1) {
                 $scope.ascending = true;
-                nextPage(canvasId);
+                nextPage(numId);
             } else {
                 $scope.ascending = false;
-                previousPage(canvasId);
+                previousPage(numId);
             }
         }
 
@@ -631,7 +637,7 @@
 
         /**
          * (Pre)Rejet du document selon modele de workflow.
-         * 
+         *
          */
         function reject(noConfirm) {
             var params = {
@@ -646,7 +652,7 @@
                 promise.then(function (definitive) {
                     deferred.resolve(definitive);
                     if (definitive.done) {
-                        
+
                         if (noConfirm) {
                             DigitalDocumentSrvc.reject(params, {}, function () {
                                 $location.path("/checks/checks");
@@ -655,19 +661,22 @@
                             });
                         } else {
                             var label1 = " cette opération est définitive.";
-                            var confirmLabel = "Êtes-vous sûr de vouloir rejeter le document ["
-                                    + $scope.digitalDocument.docUnit.pgcnId + "] " + $scope.digitalDocument.docUnit.label + " ?";
-                            
+                            var confirmLabel = "Êtes-vous sûr de vouloir rejeter l'échantillon ?";
+                            if(!$scope.sampling){
+                                confirmLabel = "Êtes-vous sûr de vouloir rejeter le document ["
+                                        + $scope.digitalDocument.docUnit.pgcnId + "] " + $scope.digitalDocument.docUnit.label + " ?";
+                            }
+
                             ModalSrvc.confirmAcceptReject("Rejet Document", label1, confirmLabel, "Rejeter").then(function () {
                                 DigitalDocumentSrvc.reject(params, {}, function () {
                                     $location.path("/checks/checks");
                                     $location.search("");
                                     MessageSrvc.addSuccess(gettextCatalog.getString("Document numérique rejeté"));
                                 });
-                            }); 
+                            });
                         }
-                        
-                    } else {  
+
+                    } else {
                         if (noConfirm) {
                             DigitalDocumentSrvc.reject(params, {}, function () {
                                 $location.path("/checks/checks");
@@ -675,18 +684,18 @@
                                 MessageSrvc.addSuccess(gettextCatalog.getString("Document numérique pré-rejeté"));
                             });
                         } else {
-                            var confirmLabel = "Êtes-vous sûr de vouloir pré-rejeter le document ["
-                                + $scope.digitalDocument.docUnit.pgcnId + "] " + $scope.digitalDocument.docUnit.label + "?";
-                            
+                            var doc = $scope.sampling ? " l'échantillon " : " le document ";
+                            var confirmLabel = "Êtes-vous sûr de vouloir pré-rejeter" + doc +"?";
+
                             ModalSrvc.confirmAcceptReject("Pré-rejet Document", undefined, confirmLabel, "Rejeter").then(function () {
                                 DigitalDocumentSrvc.reject(params, {}, function () {
                                     $location.path("/checks/checks");
                                     $location.search("");
                                     MessageSrvc.addSuccess(gettextCatalog.getString("Document numérique pré-rejeté"));
                                 });
-                            });   
+                            });
                         }
-                           
+
                     }
                 }).catch(function (definitive) {
                     deferred.reject(definitive);
@@ -703,29 +712,32 @@
                 sampling: $scope.sampling
             };
             saveErrors();
-            
+
             if (noConfirm) {
                 DigitalDocumentSrvc.accept(params, {}, function () {
                     $location.path("/checks/checks");
                     $location.search("");
                     MessageSrvc.addSuccess(gettextCatalog.getString("Document numérique validé"));
                 });
-                
+
             } else {
                 var label1 = " cette opération est définitive.";
-                var confirmLabel = "Êtes-vous sûr de vouloir valider le document ["
-                    + $scope.digitalDocument.docUnit.pgcnId + "] " + $scope.digitalDocument.docUnit.label + " ?";
-                
+                var confirmLabel = "Êtes-vous sûr de vouloir valider l'échantillon ?";
+                if(!$scope.sampling){
+                    confirmLabel = "Êtes-vous sûr de vouloir valider le document ["
+                            + $scope.digitalDocument.docUnit.pgcnId + "] " + $scope.digitalDocument.docUnit.label + " ?";
+                }
+
                 ModalSrvc.confirmAcceptReject("Validation document", label1, confirmLabel, "Valider").then(function () {
                     DigitalDocumentSrvc.accept(params, {}, function () {
                         $location.path("/checks/checks");
                         $location.search("");
                         MessageSrvc.addSuccess(gettextCatalog.getString("Document numérique validé"));
                     });
-                });    
+                });
             }
-            
-            
+
+
         }
         $scope.accept = accept;
 
@@ -778,7 +790,7 @@
             } else {
                 synchronizePage('' + ($scope.currentPage + 1));
             }
-            // send event => Mirador pour changement de vue. 
+            // send event => Mirador pour changement de vue.
             self.frames['viewer_iframe'].document.dispatchEvent(new CustomEvent("changeViewMirador", { "detail": { "typeView": "ThumbnailsView" } }));
             // affichage vue à droite => retour vue initiale
             $scope.loaded = false;
@@ -847,10 +859,20 @@
         /**
          *  Chargement du fichier master.
          *  
-         * @returns
+         * @param secondPage si true, concerne la seconde page d'une vue double
          */
-        function downloadMaster(pageNumber, meta) {
-
+        function downloadMaster(secondPage) {
+            // Numéro de la page (commence à 1)
+            var pageNumber = $scope.currentPage;
+            if (secondPage && !isLastPage()) {
+                pageNumber++;
+            }
+            if (!$scope.metadata || pageNumber > $scope.metadata.length) {
+                throw Error('Index du metadata du fichier invalid: ' + pageNumber);
+            }
+            // Index du metadata associé à la page courante
+            var meta = $scope.metadata[pageNumber - 1];
+            
             var url;
             if (angular.isDefined($scope.digitalDocument)) {
                 url = 'api/rest/viewer/document/' + $scope.digitalDocument.identifier + '/master/';
@@ -890,7 +912,7 @@
                     });
             }
         }
-        
+
         /**
          * Téléchargement de la table des matières.
          **/
@@ -913,8 +935,11 @@
                     });
             }
         }
+
+        function convertLineBreak(text) {
+            var html = text.replace(/\r\n/g, '<br />').replace(/[\r\n]/g, '<br />');
+	        return html;
+        }
     }
 
 })();
-
-

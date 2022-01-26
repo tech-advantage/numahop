@@ -1,14 +1,16 @@
 package fr.progilone.pgcn.service.administration;
 
-import fr.progilone.pgcn.domain.administration.InternetArchiveCollection;
-import fr.progilone.pgcn.domain.administration.InternetArchiveConfiguration;
-import fr.progilone.pgcn.repository.administration.InternetArchiveCollectionRepository;
+import java.util.List;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import fr.progilone.pgcn.domain.administration.InternetArchiveCollection;
+import fr.progilone.pgcn.domain.administration.InternetArchiveConfiguration;
+import fr.progilone.pgcn.repository.administration.InternetArchiveCollectionRepository;
+import fr.progilone.pgcn.security.SecurityUtils;
 
 /**
  * Service de gestion des {@link InternetArchiveConfiguration}
@@ -27,7 +29,7 @@ public class InternetArchiveCollectionService {
     }
 
     @Transactional(readOnly = true)
-    public InternetArchiveCollection findOne(String identifier) {
+    public InternetArchiveCollection findOne(final String identifier) {
         return iaCollectionRepository.findOne(identifier);
     }
 
@@ -38,5 +40,11 @@ public class InternetArchiveCollectionService {
         } else {
             return iaCollectionRepository.findAllForLibraries(identifiers);
         }
+    }
+
+    @Transactional(readOnly = true)
+    public InternetArchiveCollection findByName(final String name) {
+        final String libraryId = SecurityUtils.getCurrentUserLibraryId();
+        return iaCollectionRepository.findByNameAndLibrary(name, libraryId);
     }
 }

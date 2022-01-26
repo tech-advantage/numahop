@@ -37,6 +37,8 @@
         repCtrl.isDescriptionValueRequired = isDescriptionValueRequired;
         repCtrl.isDescriptionCommentVisible = isDescriptionCommentVisible;
         repCtrl.isDescriptionValueVisible = isDescriptionValueVisible;
+        repCtrl.getAttributeLabel = getAttributeLabel;
+        repCtrl.getEditableType = getEditableType;
         // Gestion des pièces jointes
         repCtrl.addAttachments = addAttachments;
         repCtrl.deleteAttachment = deleteAttachment;
@@ -46,7 +48,7 @@
         repCtrl.canValidateCondReport = canValidateCondReport;
         repCtrl.canConfirmCondReport = canConfirmCondReport;
         repCtrl.canPropagate = canPropagate;
-        
+
         repCtrl.isUserUnauthorized = isUserUnauthorized;
         repCtrl.isPrestaUnauthorized = isPrestaUnauthorized;
 
@@ -83,7 +85,7 @@
 
         /**
          * Configuration des listes déroulantes de valeur de descriptions
-         * 
+         *
          * @param type
          * @param handler objet partagé entre la liste des propriétés et la liste des valeurs,
          * permettant de réinitialiser la liste des propriétés au changement de valeur,
@@ -120,7 +122,7 @@
 
         /**
          * Configuration des listes déroulantes de valeur de descriptions
-         * 
+         *
          * @param description objet description auquel appartient la valeur
          * @param handler objet partagé entre la liste des propriétés et la liste des valeurs,
          * permettant de réinitialiser la liste des propriétés au changement de valeur,
@@ -153,15 +155,15 @@
 
         /**
          * Initialisation du contrôleur
-         * 
-         * @param {any} parentCtrl 
+         *
+         * @param {any} parentCtrl
          */
         function init(parentCtrl) {
             repCtrl.parent = parentCtrl;
             repCtrl.currentTab = parentCtrl.tabs.CONDREPORT;
             repCtrl.docUnitId = $routeParams.identifier;
             repCtrl.formRO = !$scope.isAuthorized(USER_ROLES.COND_REPORT_HAB2);
-            
+
             repCtrl.isUserPresta = parentCtrl.isUserPresta;
             repCtrl.loginUser = parentCtrl.user.login;
 
@@ -175,8 +177,8 @@
 
         /**
          * Chargement du constat d'état
-         * 
-         * @param {any} docUnit 
+         *
+         * @param {any} docUnit
          */
         function loadConditionReport(docUnit) {
             repCtrl.loaded = false;
@@ -185,7 +187,7 @@
             reportAfterload(repCtrl.report.$promise)
 
                 .then(function (report) {
-                    
+
                     // Conf des propriétés
                     var propPromise = loadPropertyConf();
                     // Détails
@@ -206,7 +208,7 @@
 
         /**
          * Création du constat d'état
-         * 
+         *
          */
         function newReport() {
             repCtrl.loaded = false;
@@ -244,9 +246,9 @@
         /**
          * Actions à effectuer à la réception du constat d'état général:
          * chargement de la liste des contats détaillés
-         * 
-         * @param {any} reportPromise 
-         * @returns 
+         *
+         * @param {any} reportPromise
+         * @returns
          */
         function reportAfterload(reportPromise) {
             return reportPromise
@@ -266,7 +268,7 @@
 
         /**
          * Sauvegarde du constat d'état (champs généraux)
-         * 
+         *
          */
         function saveReport() {
             $timeout(function () {
@@ -282,8 +284,8 @@
 
 		/**
          * Liste des types d'état non encore créés
-         * 
-         * @returns 
+         *
+         * @returns
          */
         function getTypeList() {
             if (!repCtrl._typeList) {
@@ -308,8 +310,8 @@
 
         /**
          * Création d'un nouveau constat d'état à partir du dernier saisi
-         * 
-         * @param {any} type 
+         *
+         * @param {any} type
          */
         function createDetail(type) {
             CondreportDetailSrvc.save({ type: type, detail: getLastDetail().identifier }, {}).$promise
@@ -319,14 +321,14 @@
 
                     repCtrl.currentDetail = newDetail;
                     repCtrl.currentDescriptions = copyDescriptions(newDetail);
-                    
+
                 });
         }
 
         /**
          * Suppression du constat d'état
-         * 
-         * @param {any} detail 
+         *
+         * @param {any} detail
          */
         function deleteDetail(detail) {
             ModalSrvc.confirmDeletion(gettextCatalog.getString("le constat d'état {{type}}", { type: repCtrl.types[detail.type].label }))
@@ -340,51 +342,51 @@
                     });
                 });
         }
-        
+
         function canValidateCondReport() {
-            
+
             if (repCtrl.currentDetail && repCtrl.currentDetail.type === 'LIBRARY_LEAVING') {
                 if (repCtrl.isStateValidated('LIBRARY_LEAVING')) {
                     return false;
                 } else {
-                    return !repCtrl.isUserPresta && repCtrl.parent.canValidateCondReport; 
+                    return !repCtrl.isUserPresta && repCtrl.parent.canValidateCondReport;
                 }
             } else {
                 return repCtrl.isUserPresta && repCtrl.parent.canValidateCondReport;
             }
         }
-        
+
         function canConfirmCondReport() {
-            return repCtrl.isUserPresta 
+            return repCtrl.isUserPresta
                         && repCtrl.isStateValidated('LIBRARY_LEAVING')
                         && !repCtrl.isStateValidated('PROVIDER_RECEPTION');
         }
-        
+
         function canPropagate() {
             return repCtrl.parent.docUnit.nbChildren > 0;
         }
-        
+
         /**
          * Enregistrement suivi d'une validation workflow du constat.
          */
         function validateCondReport(propagate) {
-            
+
             var stateToValidate;
             switch (repCtrl.currentDetail.type) {
-                case "LIBRARY_LEAVING": 
+                case "LIBRARY_LEAVING":
                     stateToValidate = 'VALIDATION_CONSTAT_ETAT';
                     break;
-                case "PROVIDER_RECEPTION":    
-                case "DIGITALIZATION": 
+                case "PROVIDER_RECEPTION":
+                case "DIGITALIZATION":
                     stateToValidate = 'CONSTAT_ETAT_AVANT_NUMERISATION';
                     break;
-                case "LIBRARY_BACK": 
+                case "LIBRARY_BACK":
                     stateToValidate = 'CONSTAT_ETAT_APRES_NUMERISATION';
-                    break;    
+                    break;
                 default: return false;
             }
-            
-            $timeout(function () { 
+
+            $timeout(function () {
                     repCtrl.report.$save()
                     .then(function () {
                         repCtrl.parent.validateCondReport(stateToValidate);
@@ -403,24 +405,24 @@
                     })
                     .catch(function () {
                         openForm('reportForm');
-                    });;   
+                    });
             });
- 
+
         }
-        
+
         function confirmValidatedCondReport() {
             $timeout(function () {
-                
+
                 repCtrl.currentDetail.provWriterName = repCtrl.parent.user.firstname;
                 repCtrl.currentDetail.provWriterfunction = repCtrl.parent.user.function;
-               
+
                CondreportDetailSrvc.confirmInitialValid({ type: repCtrl.currentDetail.type, id: repCtrl.currentDetail.identifier }, repCtrl.currentDetail)
                    .$promise
                      .then(function(newDetail) {
-                         
+
                         repCtrl.currentDetail = newDetail;
                         repCtrl.currentDescriptions = copyDescriptions(newDetail);
-                         
+
                         repCtrl.parent.validateCondReport('VALIDATION_BORDEREAU_CONSTAT_ETAT');
                         MessageSrvc.addSuccess(gettext("Le constat d'état a été validé"));
                         $location.path("/document/all_operations/" + repCtrl.parent.docUnit.identifier).search({ tab: 'CONDREPORT' });
@@ -428,15 +430,15 @@
                     .catch(function () {
                         openForm('reportForm');
                     });
-                
+
             });
         }
 
         /**
          * Récupère les états du constat d'état reportId
-         * 
-         * @param {any} reportId 
-         * @returns 
+         *
+         * @param {any} reportId
+         * @returns
          */
         function loadConditionReportDetails(reportId) {
             repCtrl.details = CondreportDetailSrvc.query({ report: reportId });
@@ -445,9 +447,9 @@
 
         /**
          * Récupère l'état detailId
-         * 
-         * @param {any} detailId 
-         * @returns 
+         *
+         * @param {any} detailId
+         * @returns
          */
         function loadConditionReportDetail(detailId) {
             repCtrl.currentDetail = CondreportDetailSrvc.get({ id: detailId });
@@ -456,11 +458,11 @@
 
         /**
          * Sauvegarde du détail d'un constat d'état
-         * 
+         *
          */
         function saveDetail(stateToValidate) {
             MessageSrvc.clearMessages();
-            
+
             $timeout(function () {
                 if (!repCtrl.currentDetail.report) {
                     repCtrl.currentDetail.report = { identifier: repCtrl.report.identifier };
@@ -469,12 +471,12 @@
                 repCtrl.currentDetail.descriptions = _.filter(repCtrl.currentDescriptions, function (d) {
                     return d.property && !d.property.fake;
                 });
-                
+
                 repCtrl.currentDetail.$save()
                     .then(function (det) {
                         MessageSrvc.addSuccess(gettext("Le constat d'état a été sauvegardé"));
                         repCtrl.currentDescriptions = copyDescriptions(repCtrl.currentDetail);
-                        
+
                     })
                     .catch(function (response) {
                         var descErrors;
@@ -499,8 +501,8 @@
 
         /**
          * Récupération du dernier constat d'état
-         * 
-         * @param {any} detail 
+         *
+         * @param {any} detail
          */
         function getLastDetail() {
             return _.max(repCtrl.details, "position");
@@ -508,9 +510,9 @@
 
         /**
          * Fonction de filtrage par type des descriptions
-         * 
-         * @param {any} type 
-         * @returns 
+         *
+         * @param {any} type
+         * @returns
          */
         function filterDesc(type) {
             return function (value) {
@@ -521,7 +523,7 @@
         /**
          * Sélection du dernier détail de constat d'état,
          * au réinitialisation de la sélection sinon
-         * 
+         *
          */
         function selectLastDetail() {
             // sélection du dernier constat d'état
@@ -536,8 +538,8 @@
 
         /**
          * Sélection d'un détail de constat d'état
-         * 
-         * @param {any} detail 
+         *
+         * @param {any} detail
          */
         function selectDetail(detail) {
             if (!isDetailSelected(detail)) {
@@ -569,9 +571,9 @@
 
 		/**
          * Le détail du constat d'état est-il sélectionné ?
-         * 
-         * @param {any} detail 
-         * @returns 
+         *
+         * @param {any} detail
+         * @returns
          */
         function isDetailSelected(detail) {
             return repCtrl.currentDetail && detail.identifier === repCtrl.currentDetail.identifier;
@@ -583,23 +585,50 @@
         function isInitDetailSelected() {
             return repCtrl.currentDetail && repCtrl.details.length && repCtrl.details[0].identifier === repCtrl.currentDetail.identifier;
         }
-        
+
         function isUserUnauthorized() {
-            return repCtrl.currentDetail 
+            return repCtrl.currentDetail
                         && (repCtrl.currentDetail.type === 'DIGITALIZATION' || repCtrl.currentDetail.type === 'LIBRARY_BACK')
                         && !repCtrl.isUserPresta;
         }
-        
+
         function isPrestaUnauthorized() {
-            return repCtrl.isUserPresta && repCtrl.currentDetail 
-                    && (repCtrl.currentDetail.createdBy !== repCtrl.loginUser 
+            return repCtrl.isUserPresta && repCtrl.currentDetail
+                    && (repCtrl.currentDetail.createdBy !== repCtrl.loginUser
                             || (repCtrl.currentDetail.type !== 'DIGITALIZATION' && repCtrl.currentDetail.type !== 'LIBRARY_BACK'));
         }
 
         /**
+         * Retourne le label pour l'attribut (libellé) de la description donnée
+         *
+         * @param description la description
+         * @returns {*} le libellé
+         */
+        function getAttributeLabel(description) {
+            return description && (description.label || (description.property && description.property.label));
+        }
+
+        /**
+         * Retourne le type de champ editable à utiliser
+         *
+         * Pour les libellés des descriptions:
+         *  - uiselect : Liste déroulante si en mode création (ajout d'une propriété de description)
+         *  ou lien hypertexte lorsque le form n'est pas affiché
+         *  - readonly : Label affiché quand il s'agit d'un champ déjà créé
+         *
+         * @param description la description
+         * @param detailForm le form
+         * @returns {string} le type de champ editable
+         */
+        function getEditableType(description, detailForm) {
+            return (description && detailForm && !detailForm.$visible || description.creationMode) ?
+                'uiselect' : 'readonly';
+        }
+
+        /**
          * Initialisation du detail du constat d'état
-         * 
-         * @param {any} detail 
+         *
+         * @param {any} detail
          */
         function initNewDetail(detail) {
             var confPromise = loadPropertyConf();
@@ -622,7 +651,7 @@
                             return { property: p };
                         })
                         .value();
-                    
+
                     repCtrl.currentDescriptions = copyDescriptions(detail);
 
                     // ppté internes
@@ -652,9 +681,9 @@
 		/**
          * Création d'une copie de la liste des descriptions de reliures,
          * qui sert pour l'affichage
-         * 
-         * @param {any} detail 
-         * @returns 
+         *
+         * @param {any} detail
+         * @returns
          */
         function copyDescriptions(detail) {
             var copyOfDescriptions = angular.copy(detail.descriptions);
@@ -668,13 +697,13 @@
             if (detail.bindingDesc) {
                 copyOfDescriptions.push({ property: CondreportDescPropertySrvc.getFakeProperty("BINDING_DESC") });
             }
-            
+
             return copyOfDescriptions;
         }
 
         /**
          * Filtrage des propriétés
-         * 
+         *
          */
         function filterByType(type) {
             return function (description) {
@@ -684,8 +713,8 @@
 
         /**
          * Position de la description de reliures
-         * 
-         * @param {any} desc 
+         *
+         * @param {any} desc
          */
         function getDescriptionPos(description) {
             var property = description.property;
@@ -695,10 +724,13 @@
 
         /**
          * Ajout d'une description de reliures au constat d'état en cours d'édition
-         * 
+         *
+         * Passage en mode creation pour afficher le menu déroulant
+         * au lieu du label pour le libellé de description
+         *
          */
         function addDescription(type) {
-            var newDescription = { detail: repCtrl.currentDetail };
+            var newDescription = { detail: repCtrl.currentDetail, creationMode: true };
             if (type) {
                 newDescription.type = type;
             }
@@ -707,7 +739,7 @@
 
         /**
          * Suppression d'une description de reliure au constat d'état en cours d'édition
-         * 
+         *
          */
         function deleteDescription(description) {
             var idx = repCtrl.currentDescriptions.indexOf(description);
@@ -733,7 +765,7 @@
 
         /**
          * Au changement de la propriété sélectionnée, on réinitialise la liste des valeurs
-         * 
+         *
          * @param {any} description
          * @param {any} newValue    nouvelle valeur prise par "propriété"
          * @param {any} handler     objet partagé entre le champ propriété et le champ valeur
@@ -756,11 +788,10 @@
 
         /**
          * La valeur est obligatoire
-         * 
-         * @param {any} handler 
-         * @param {any} description 
-         * @param {any} form 
-         * @returns 
+         *
+         * @param {any} handler
+         * @param {any} description
+         * @returns
          */
         function isDescriptionValueRequired(handler, description) {
             var property = handler.value || description.property;
@@ -772,14 +803,14 @@
             });
             return angular.isDefined(conf) && conf.required;
         }
-        
+
         /**
          * Affichage de la valeur d'un état de reliure
-         * 
-         * @param {any} handler 
-         * @param {any} description 
-         * @param {any} form 
-         * @returns 
+         *
+         * @param {any} handler
+         * @param {any} description
+         * @param {any} form
+         * @returns
          */
         function isDescriptionValueVisible(handler, description, form) {
             var property = handler.value || description.property;
@@ -790,16 +821,20 @@
                 return conf.descPropertyId === property.identifier;
             });
             var allowComment = conf ? conf.allowComment : property.allowComment;
-            return (form.$visible || description.value || !allowComment || !description.comment);
+            // Si c'est la liste des valeurs n'a pas d'options, on la cache
+            var hasValueItems = handler.valueSelect && handler.valueSelect.items && handler.valueSelect.items.length;
+
+            return (form.$visible && !!hasValueItems)
+                || (!form.$visible && (!!description.value || !allowComment || !description.comment));
         }
 
         /**
          * Affichage du commentaire d'un état de reliure
-         * 
-         * @param {any} handler 
-         * @param {any} description 
-         * @param {any} form 
-         * @returns 
+         *
+         * @param {any} handler
+         * @param {any} description
+         * @param {any} form
+         * @returns
          */
         function isDescriptionCommentVisible(handler, description, form) {
             var property = handler.value || description.property;
@@ -819,8 +854,8 @@
 
         /**
          * Ajout des pièces jointes sélectionnées
-         * 
-         * @param {any} element 
+         *
+         * @param {any} element
          */
         function addAttachments(element) {
             if (element.files.length > 0) {
@@ -877,8 +912,8 @@
 
         /**
          * Suppression d'une pièce jointe
-         * 
-         * @param {any} att 
+         *
+         * @param {any} att
         * */
         function deleteAttachment(att) {
             ModalSrvc.confirmDeletion(gettextCatalog.getString("la pièce jointe {{originalFilename}}", att))
@@ -893,9 +928,9 @@
 
         /**
          * Chargement des pièces jointes du constat d'état
-         * 
-         * @param {any} reportId 
-         * @returns 
+         *
+         * @param {any} reportId
+         * @returns
          */
         function loadConditionReportAttachments(reportId) {
             repCtrl.attachments = CondreportAttachmentSrvc.query({ report: reportId });
@@ -903,7 +938,7 @@
         }
 
         function loadPropertyConf() {
-            repCtrl.propConf = CondreportPropertyConfSrvc.query({ library: repCtrl.parent.docUnit.library.identifier });
+            repCtrl.propConf = CondreportPropertyConfSrvc.query({ library: repCtrl.parent.docUnit.library.identifier, project: repCtrl.parent.docUnit.project.identifier });
             return repCtrl.propConf.$promise;
         }
 
@@ -916,7 +951,7 @@
                 case "LIBRARY_LEAVING": return WorkflowHandleSrvc.isConstatValidated(workflow);
                 case "PROVIDER_RECEPTION": return WorkflowHandleSrvc.isConstatConfirmed(workflow);
                 case "DIGITALIZATION": return WorkflowHandleSrvc.isConstatBeforeNumValidated(workflow);
-                case "LIBRARY_BACK": return WorkflowHandleSrvc.isConstatAfterNumValidated(workflow); 
+                case "LIBRARY_BACK": return WorkflowHandleSrvc.isConstatAfterNumValidated(workflow);
                 default: return false;
             }
         }
@@ -927,8 +962,8 @@
 
         /**
          * Ouverture du formulaire
-         * 
-         * @param {any} name 
+         *
+         * @param {any} name
          */
         function openForm(name) {
             return $timeout(function () {
@@ -940,8 +975,8 @@
 
         /**
          * Fermeture du formulaire
-         * 
-         * @param {any} name 
+         *
+         * @param {any} name
          */
         function closeForm(name) {
             return $timeout(function () {
@@ -953,8 +988,7 @@
 
         /**
          * Ouverture du formulaire du constat d'état en mode édition
-         * 
-         * @param {any} form 
+         *
          */
         function editReportForm() {
             // Ouverture de l'accordion

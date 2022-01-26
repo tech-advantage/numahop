@@ -21,19 +21,16 @@ import fr.progilone.pgcn.service.lot.LotService;
 import fr.progilone.pgcn.service.project.ProjectService;
 import fr.progilone.pgcn.service.train.TrainService;
 import fr.progilone.pgcn.service.user.UserService;
+import fr.progilone.pgcn.web.rest.administration.security.AuthorizationConstants;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static fr.progilone.pgcn.service.user.UserService.*;
 
@@ -508,6 +505,6 @@ public class AccessHelper {
      * @return
      */
     private boolean checkCurrentLibrary(final Library library, final CustomUserDetails currentUser) {
-        return library == null || StringUtils.equals(library.getIdentifier(), currentUser.getLibraryId());
+        return library == null || StringUtils.equals(library.getIdentifier(), currentUser.getLibraryId()) || currentUser.isUserInRole(AuthorizationConstants.ADMINISTRATION_LIB);
     }
 }

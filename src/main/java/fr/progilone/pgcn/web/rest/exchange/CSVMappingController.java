@@ -92,7 +92,7 @@ public class CSVMappingController extends AbstractRestController {
     @RolesAllowed({MAP_HAB0})
     public ResponseEntity<Set<CSVMappingDTO>> findByLibrary(final HttpServletRequest request, @RequestParam(value = "library") Library library) {
         // Vérification des droits d'accès par rapport à la bibliothèque de l'utilisateur
-        if (!libraryAccesssHelper.checkLibrary(request, library, ADMINISTRATION_LIB)) {
+        if (!libraryAccesssHelper.checkLibrary(request, library)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         // Réponse
@@ -105,7 +105,7 @@ public class CSVMappingController extends AbstractRestController {
     public ResponseEntity<Set<CSVMappingDTO>> findUsableByLibrary(final HttpServletRequest request,
                                                                   @RequestParam(value = "library") Library library) {
         // Vérification des droits d'accès par rapport à la bibliothèque de l'utilisateur
-        if (!libraryAccesssHelper.checkLibrary(request, library, ADMINISTRATION_LIB)) {
+        if (!libraryAccesssHelper.checkLibrary(request, library)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         // Réponse
@@ -119,7 +119,7 @@ public class CSVMappingController extends AbstractRestController {
         // Chargement des mappings
         Collection<CSVMappingDTO> mappingDTOS = mappingService.findAllUsable();
         // Filtrage des mappings par rapport à la bibliothèque de l'utilisateur, pour les non-admin
-        mappingDTOS = libraryAccesssHelper.filterObjectsByLibrary(request, mappingDTOS, dto -> dto.getLibrary().getIdentifier(), ADMINISTRATION_LIB);
+        mappingDTOS = libraryAccesssHelper.filterObjectsByLibrary(request, mappingDTOS, dto -> dto.getLibrary().getIdentifier());
         // Réponse
         return new ResponseEntity<>(mappingDTOS, HttpStatus.OK);
     }
@@ -135,7 +135,7 @@ public class CSVMappingController extends AbstractRestController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         // Vérification des droits d'accès par rapport à la bibliothèque de l'utilisateur
-        if (!libraryAccesssHelper.checkLibrary(request, mapping, CSVMapping::getLibrary, ADMINISTRATION_LIB)) {
+        if (!libraryAccesssHelper.checkLibrary(request, mapping, CSVMapping::getLibrary)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         // Réponse
@@ -159,7 +159,7 @@ public class CSVMappingController extends AbstractRestController {
             // la bib n'est pas renseignée: accès en lecture + écriture à la bib du mapping
             !libraryAccesssHelper.checkLibrary(request, mapping, CSVMapping::getLibrary) :
             // la bib est pas renseignée: accès en lecture à la bib du mapping + accès en écriture à la bib renseignée
-            !libraryAccesssHelper.checkLibrary(request, mapping, CSVMapping::getLibrary, ADMINISTRATION_LIB) || !libraryAccesssHelper.checkLibrary(
+            !libraryAccesssHelper.checkLibrary(request, mapping, CSVMapping::getLibrary) || !libraryAccesssHelper.checkLibrary(
                 request,
                 library)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);

@@ -7,6 +7,7 @@ import java.util.Set;
 import fr.progilone.pgcn.domain.dto.AbstractVersionedDTO;
 import fr.progilone.pgcn.domain.dto.administration.CinesPACDTO;
 import fr.progilone.pgcn.domain.dto.administration.InternetArchiveCollectionDTO;
+import fr.progilone.pgcn.domain.dto.administration.omeka.OmekaConfigurationDTO;
 import fr.progilone.pgcn.domain.dto.administration.omeka.OmekaListDTO;
 import fr.progilone.pgcn.domain.dto.administration.viewsFormat.SimpleViewsFormatConfigurationDTO;
 import fr.progilone.pgcn.domain.dto.checkconfiguration.CheckConfigurationDTO;
@@ -39,8 +40,7 @@ public class LotWithConfigRulesDTO extends AbstractVersionedDTO {
     private String numNotes;
     private String requiredFormat;
     private Date deliveryDateForseen;
-    private ProjectDTO project;
-    private Set<SimpleDocUnitDTO> docUnits;
+    private SimpleProjectDTO project;
     private SimpleFTPConfigurationDTO activeFTPConfiguration;
     private CheckConfigurationDTO activeCheckConfiguration;
     private SimpleViewsFormatConfigurationDTO activeFormatConfiguration;
@@ -52,6 +52,7 @@ public class LotWithConfigRulesDTO extends AbstractVersionedDTO {
     private String requiredResolution;
     private String requiredColorspace;
     private SimpleWorkflowModelDTO workflowModel;
+    private OmekaConfigurationDTO omekaConfiguration;
     private OmekaListDTO omekaCollection;
     private OmekaListDTO omekaItem; 
     private OcrLanguageDTO activeOcrLanguage;
@@ -78,8 +79,7 @@ public class LotWithConfigRulesDTO extends AbstractVersionedDTO {
                   final String numNotes,
                   final String requiredFormat,
                   final Date deliveryDateForseen,
-                  final ProjectDTO project,
-                  final Set<SimpleDocUnitDTO> docUnits,
+                  final SimpleProjectDTO project,
                   final SimpleFTPConfigurationDTO activeFTPConfiguration,
                   final CheckConfigurationDTO activeCheckConfiguration,
                   final SimpleViewsFormatConfigurationDTO activeFormatConfiguration,
@@ -90,7 +90,9 @@ public class LotWithConfigRulesDTO extends AbstractVersionedDTO {
                   final String requiredResolution,
                   final String requiredColorspace,
                   final String createdBy, final LocalDateTime createdDate, 
-                  final String lastModifiedBy, final LocalDateTime lastModifiedDate,
+                                 final String lastModifiedBy,
+                                 final LocalDateTime lastModifiedDate,
+                                 final OmekaConfigurationDTO omekaConfiguration,
                   final OmekaListDTO omekaCollection,
                   final OmekaListDTO omekaItem,
                   final OcrLanguageDTO activeOcrLanguage) {
@@ -106,7 +108,6 @@ public class LotWithConfigRulesDTO extends AbstractVersionedDTO {
         this.requiredFormat = requiredFormat;
         this.deliveryDateForseen = deliveryDateForseen;
         this.project = project;
-        this.docUnits = docUnits;
         this.activeFTPConfiguration = activeFTPConfiguration;
         this.activeCheckConfiguration = activeCheckConfiguration;
         this.activeFormatConfiguration = activeFormatConfiguration;
@@ -121,20 +122,13 @@ public class LotWithConfigRulesDTO extends AbstractVersionedDTO {
         this.createdDate = createdDate;
         this.lastModifiedBy = lastModifiedBy;
         this.lastModifiedDate = lastModifiedDate;
+        this.omekaConfiguration = omekaConfiguration;
         this.omekaCollection = omekaCollection;
         this.omekaItem = omekaItem;
         this.activeOcrLanguage = activeOcrLanguage;
     }
 
     public LotWithConfigRulesDTO() {
-    }
-
-    public ProjectDTO getProject() {
-        return project;
-    }
-
-    public void setProject(final ProjectDTO project) {
-        this.project = project;
     }
 
     public String getIdentifier() {
@@ -216,21 +210,21 @@ public class LotWithConfigRulesDTO extends AbstractVersionedDTO {
     public void setDeliveryDateForseen(final Date deliveryDateForseen) {
         this.deliveryDateForseen = deliveryDateForseen;
     }
-
+    
+    public SimpleProjectDTO getProject() {
+        return project;
+    }
+    
+    public void setProject(SimpleProjectDTO project) {
+        this.project = project;
+    }
+    
     public String getRequiredFormat() {
         return requiredFormat;
     }
 
     public void setRequiredFormat(final String requiredFormat) {
         this.requiredFormat = requiredFormat;
-    }
-
-    public Set<SimpleDocUnitDTO> getDocUnits() {
-        return docUnits;
-    }
-
-    public void setDocUnits(final Set<SimpleDocUnitDTO> docUnits) {
-        this.docUnits = docUnits;
     }
 
     public SimpleFTPConfigurationDTO getActiveFTPConfiguration() {
@@ -356,7 +350,15 @@ public class LotWithConfigRulesDTO extends AbstractVersionedDTO {
     public void setWorkflowModel(final SimpleWorkflowModelDTO workflowModel) {
         this.workflowModel = workflowModel;
     }
-    
+
+    public OmekaConfigurationDTO getOmekaConfiguration() {
+        return omekaConfiguration;
+    }
+
+    public void setOmekaConfiguration(final OmekaConfigurationDTO omekaConfiguration) {
+        this.omekaConfiguration = omekaConfiguration;
+    }
+
     public OmekaListDTO getOmekaCollection() {
         return omekaCollection;
     }
@@ -400,8 +402,7 @@ public class LotWithConfigRulesDTO extends AbstractVersionedDTO {
         private String numNotes;
         private String requiredFormat;
         private Date deliveryDateForseen;
-        private ProjectDTO project;
-        private Set<SimpleDocUnitDTO> docUnits;
+        private SimpleProjectDTO project;
         private SimpleFTPConfigurationDTO activeFTPConfiguration;
         private CheckConfigurationDTO activeCheckConfiguration;
         private SimpleViewsFormatConfigurationDTO activeFormatConfiguration;
@@ -416,6 +417,7 @@ public class LotWithConfigRulesDTO extends AbstractVersionedDTO {
         private LocalDateTime createdDate;
         private String lastModifiedBy;
         private LocalDateTime lastModifiedDate;
+        private OmekaConfigurationDTO omekaConfiguration;
         private OmekaListDTO omekaCollection;
         private OmekaListDTO omekaItem;
         private OcrLanguageDTO activeOcrLanguage;
@@ -432,7 +434,7 @@ public class LotWithConfigRulesDTO extends AbstractVersionedDTO {
             this.numNotes = null;
             this.requiredFormat = null;
             this.deliveryDateForseen = null;
-            this.docUnits = null;
+            this.project = null;
             this.activeFTPConfiguration = null;
             this.activeCheckConfiguration = null;
             this.activeFormatConfiguration = null;
@@ -447,14 +449,10 @@ public class LotWithConfigRulesDTO extends AbstractVersionedDTO {
             this.createdDate = null;
             this.lastModifiedBy = null;
             this.lastModifiedDate = null;
+            this.omekaConfiguration = null;
             this.omekaCollection = null;
             this.omekaItem = null;
             this.activeOcrLanguage = null;
-            return this;
-        }
-
-        public Builder setProject(final ProjectDTO project) {
-            this.project = project;
             return this;
         }
 
@@ -507,14 +505,14 @@ public class LotWithConfigRulesDTO extends AbstractVersionedDTO {
             this.deliveryDateForseen = deliveryDateForseen;
             return this;
         }
-
-        public Builder setRequiredFormat(final String requiredFormat) {
-            this.requiredFormat = requiredFormat;
+    
+        public Builder setProject(final SimpleProjectDTO project) {
+            this.project = project;
             return this;
         }
 
-        public Builder setDocUnits(final Set<SimpleDocUnitDTO> docUnits) {
-            this.docUnits = docUnits;
+        public Builder setRequiredFormat(final String requiredFormat) {
+            this.requiredFormat = requiredFormat;
             return this;
         }
 
@@ -535,6 +533,11 @@ public class LotWithConfigRulesDTO extends AbstractVersionedDTO {
 
         public Builder setCollectionIA(final InternetArchiveCollectionDTO collectionIA) {
             this.collectionIA = collectionIA;
+            return this;
+        }
+
+        public Builder setOmekaConfiguration(final OmekaConfigurationDTO omekaConfiguration) {
+            this.omekaConfiguration = omekaConfiguration;
             return this;
         }
         
@@ -615,7 +618,7 @@ public class LotWithConfigRulesDTO extends AbstractVersionedDTO {
                               numNotes,
                               requiredFormat,
                               deliveryDateForseen,
-                              project, docUnits,
+                              project,
                               activeFTPConfiguration,
                               activeCheckConfiguration,
                               activeFormatConfiguration,
@@ -629,6 +632,7 @@ public class LotWithConfigRulesDTO extends AbstractVersionedDTO {
                                 createdDate,
                                 lastModifiedBy,
                                 lastModifiedDate,
+                                             omekaConfiguration,
                                 omekaCollection,
                                 omekaItem,
                                 activeOcrLanguage);

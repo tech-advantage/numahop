@@ -1,13 +1,6 @@
 package fr.progilone.pgcn.domain.project;
 
-import static fr.progilone.pgcn.service.es.EsConstant.ANALYZER_CI_AI;
-import static fr.progilone.pgcn.service.es.EsConstant.ANALYZER_CI_AS;
-import static fr.progilone.pgcn.service.es.EsConstant.ANALYZER_KEYWORD;
-import static fr.progilone.pgcn.service.es.EsConstant.ANALYZER_PHRASE;
-import static fr.progilone.pgcn.service.es.EsConstant.SUBFIELD_CI_AI;
-import static fr.progilone.pgcn.service.es.EsConstant.SUBFIELD_CI_AS;
-import static fr.progilone.pgcn.service.es.EsConstant.SUBFIELD_PHRASE;
-import static fr.progilone.pgcn.service.es.EsConstant.SUBFIELD_RAW;
+import static fr.progilone.pgcn.service.es.EsConstant.*;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -40,6 +33,7 @@ import com.google.common.base.MoreObjects;
 import fr.progilone.pgcn.domain.AbstractDomainObject;
 import fr.progilone.pgcn.domain.administration.CinesPAC;
 import fr.progilone.pgcn.domain.administration.InternetArchiveCollection;
+import fr.progilone.pgcn.domain.administration.omeka.OmekaConfiguration;
 import fr.progilone.pgcn.domain.administration.omeka.OmekaList;
 import fr.progilone.pgcn.domain.administration.viewsformat.ViewsFormatConfiguration;
 import fr.progilone.pgcn.domain.checkconfiguration.CheckConfiguration;
@@ -286,6 +280,12 @@ public class Project extends AbstractDomainObject {
     @Column(name = "license_url")
     private String licenseUrl;
 
+    /**
+     * Configuration Omeka
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "omeka_configuration")
+    private OmekaConfiguration omekaConfiguration;
 
     public Library getLibrary() {
         return library;
@@ -556,7 +556,7 @@ public class Project extends AbstractDomainObject {
         return libRespName;
     }
 
-    public void setLibRespName(String libRespName) {
+    public void setLibRespName(final String libRespName) {
         this.libRespName = libRespName;
     }
 
@@ -564,7 +564,7 @@ public class Project extends AbstractDomainObject {
         return libRespPhone;
     }
 
-    public void setLibRespPhone(String libRespPhone) {
+    public void setLibRespPhone(final String libRespPhone) {
         this.libRespPhone = libRespPhone;
     }
 
@@ -572,7 +572,7 @@ public class Project extends AbstractDomainObject {
         return libRespEmail;
     }
 
-    public void setLibRespEmail(String libRespEmail) {
+    public void setLibRespEmail(final String libRespEmail) {
         this.libRespEmail = libRespEmail;
     }
 
@@ -580,8 +580,16 @@ public class Project extends AbstractDomainObject {
         return licenseUrl;
     }
 
-    public void setLicenseUrl(String licenseUrl) {
+    public void setLicenseUrl(final String licenseUrl) {
         this.licenseUrl = licenseUrl;
+    }
+
+    public OmekaConfiguration getOmekaConfiguration() {
+        return omekaConfiguration;
+    }
+
+    public void setOmekaConfiguration(final OmekaConfiguration omekaConfiguration) {
+        this.omekaConfiguration = omekaConfiguration;
     }
 
     /**

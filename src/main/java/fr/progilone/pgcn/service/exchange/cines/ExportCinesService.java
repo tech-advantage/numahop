@@ -588,7 +588,10 @@ public class ExportCinesService {
             if (cinesExport) {
                 final List<DocPropertyDTO> customProps = dto.getCustomProperties().stream()
                                                         .filter(p -> !StringUtils.equals(p.getType().getSuperType(), 
-                                                                                        DocPropertyType.DocPropertySuperType.CUSTOM_ARCHIVE.name()))
+                                                                                             DocPropertyType.DocPropertySuperType.CUSTOM_ARCHIVE.name())
+                                                                         &&
+                                                                         !StringUtils.equals(p.getType().getSuperType(),
+                                                                                             DocPropertyType.DocPropertySuperType.CUSTOM_OMEKA.name()))
                                                         .collect(Collectors.toList());
                dto.setCustomProperties(customProps);
             }

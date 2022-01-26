@@ -14,6 +14,8 @@ import java.util.Set;
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 
+import fr.progilone.pgcn.web.util.AccessHelper;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,16 +58,19 @@ public class SftpConfigurationController extends AbstractRestController {
     private final SftpService sftpService;
     private final LibraryAccesssHelper libraryAccesssHelper;
     private final CinesPACService cinesPACService;
+    private final AccessHelper accessHelper;
 
     @Autowired
     public SftpConfigurationController(final SftpConfigurationService sftpConfigurationService,
                                        final SftpService sftpService,
                                        final LibraryAccesssHelper libraryAccesssHelper,
-                                       final CinesPACService cinesPACService) {
+                                       final CinesPACService cinesPACService,
+                                       final AccessHelper accessHelper) {
         this.sftpConfigurationService = sftpConfigurationService;
         this.sftpService = sftpService;
         this.libraryAccesssHelper = libraryAccesssHelper;
         this.cinesPACService = cinesPACService;
+        this.accessHelper = accessHelper;
     }
 
     @RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -104,9 +109,26 @@ public class SftpConfigurationController extends AbstractRestController {
     @Timed
     @RolesAllowed({SFTP_HAB0, DOC_UNIT_HAB0})
     public ResponseEntity<Collection<CinesPAC>> findPACS(final HttpServletRequest request,
-                                                         @RequestParam(name = "library", required = false) String libraryId) {
+                                                         @RequestParam(name = "library", required = false) String libraryId,
+                                                         @RequestParam(name = "project", required = false) final String projectId) {
+        // L'usager est autorisé à accéder aux infos de la bibliothèque ou les infos du projet
+        if ((StringUtils.isNotBlank(libraryId) && !libraryAccesssHelper.checkLibrary(request, libraryId)) &&
+            (StringUtils.isNotBlank(projectId) && !accessHelper.checkProject(projectId))) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
         // Chargement des configurationSftp
         final Collection<CinesPAC> pacs = cinesPACService.findAllForLibrary(libraryId);
+        // Réponse
+        return new ResponseEntity<>(pacs, HttpStatus.OK);
+    }
+    
+    @RequestMapping(method = RequestMethod.GET, params = {"pacs", "configuration"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    @RolesAllowed({SFTP_HAB0, DOC_UNIT_HAB0})
+    public ResponseEntity<Collection<CinesPAC>> findConfigurationPACS(final HttpServletRequest request,
+                                                         @RequestParam(name = "configuration", required = false) String configurationId) {
+        // Chargement des configurationSftp
+        final Collection<CinesPAC> pacs = cinesPACService.findAllForConfiguration(configurationId);
         // Réponse
         return new ResponseEntity<>(pacs, HttpStatus.OK);
     }

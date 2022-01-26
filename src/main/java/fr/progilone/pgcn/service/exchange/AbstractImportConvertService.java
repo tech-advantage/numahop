@@ -1,6 +1,6 @@
 package fr.progilone.pgcn.service.exchange;
 
-import static fr.progilone.pgcn.domain.document.DocUnit.RightsEnum.TO_CHECK;
+import static fr.progilone.pgcn.domain.document.DocUnit.RightsEnum.*;
 
 import java.util.List;
 import java.util.Map;
@@ -13,6 +13,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import fr.progilone.pgcn.domain.administration.CinesPAC;
+import fr.progilone.pgcn.domain.administration.InternetArchiveCollection;
+import fr.progilone.pgcn.domain.administration.omeka.OmekaList;
 import fr.progilone.pgcn.domain.document.BibliographicRecord;
 import fr.progilone.pgcn.domain.document.BibliographicRecord.PropertyOrder;
 import fr.progilone.pgcn.domain.document.DocProperty;
@@ -20,6 +23,9 @@ import fr.progilone.pgcn.domain.document.DocPropertyType;
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.document.PhysicalDocument;
 import fr.progilone.pgcn.domain.library.Library;
+import fr.progilone.pgcn.service.administration.CinesPACService;
+import fr.progilone.pgcn.service.administration.InternetArchiveCollectionService;
+import fr.progilone.pgcn.service.administration.omeka.OmekaListService;
 import fr.progilone.pgcn.service.document.DocUnitService;
 
 /**
@@ -33,6 +39,15 @@ public abstract class AbstractImportConvertService {
 
     @Autowired
     protected DocUnitService docUnitService;
+
+    @Autowired
+    protected OmekaListService omekaListService;
+
+    @Autowired
+    protected InternetArchiveCollectionService iaCollectionService;
+
+    @Autowired
+    protected CinesPACService cinesPACService;
 
     // Taille maximale des chaînes de caratères mappées sur des champs de DocUnit et BibliographicRecord
     protected static final int COL_MAX_WIDTH = 255;
@@ -226,6 +241,45 @@ public abstract class AbstractImportConvertService {
                     }
                 }
             }
+            // OmekaList
+            else if (OmekaList.class.isAssignableFrom(fieldType)) {
+                if (firstValue != null) {
+                    try {
+                        final OmekaList omekaList = omekaListService.findByName(firstValue);
+                        if (omekaList != null) {
+                            PropertyUtils.setSimpleProperty(object, fieldName, omekaList);
+                        }
+                    } catch (final IllegalArgumentException e) {
+                        LOG.error(e.getMessage(), e);
+                    }
+                }
+            }
+            // InternetArchiveCollection
+            else if (InternetArchiveCollection.class.isAssignableFrom(fieldType)) {
+                if (firstValue != null) {
+                    try {
+                        final InternetArchiveCollection iaCollection = iaCollectionService.findByName(firstValue);
+                        if (iaCollection != null) {
+                            PropertyUtils.setSimpleProperty(object, fieldName, iaCollection);
+                        }
+                    } catch (final IllegalArgumentException e) {
+                        LOG.error(e.getMessage(), e);
+                    }
+                }
+            }
+            // CinesPAC
+            else if (CinesPAC.class.isAssignableFrom(fieldType)) {
+                if (firstValue != null) {
+                    try {
+                        final CinesPAC cinesPAC = cinesPACService.findByName(firstValue);
+                        if (cinesPAC != null) {
+                            PropertyUtils.setSimpleProperty(object, fieldName, cinesPAC);
+                        }
+                    } catch (final IllegalArgumentException e) {
+                        LOG.error(e.getMessage(), e);
+                    }
+                }
+            }
             // Boolean
             else if (Objects.equals(Boolean.TYPE, fieldType) || Boolean.class.isAssignableFrom(fieldType)) {
                 PropertyUtils.setSimpleProperty(object, fieldName, Boolean.parseBoolean(firstValue));
@@ -235,7 +289,7 @@ public abstract class AbstractImportConvertService {
                 LOG.warn("Le type {} de la propriété {} n'est pas géré dans le mapping", fieldType.getName(), fieldName);
             }
 
-        } catch (ReflectiveOperationException | IllegalArgumentException e) {
+        } catch (final ReflectiveOperationException | IllegalArgumentException e) {
             LOG.error(e.getMessage(), e);
         }
     }
@@ -269,7 +323,7 @@ public abstract class AbstractImportConvertService {
                 // String: pas vide
                 return !String.class.isAssignableFrom(fieldType) || StringUtils.isNotBlank((String) current);
             }
-        } catch (ReflectiveOperationException | IllegalArgumentException e) {
+        } catch (final ReflectiveOperationException | IllegalArgumentException e) {
             LOG.error(e.getMessage(), e);
         }
         return false;

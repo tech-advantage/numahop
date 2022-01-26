@@ -10,6 +10,7 @@ import java.util.Set;
 import fr.progilone.pgcn.domain.dto.AbstractVersionedDTO;
 import fr.progilone.pgcn.domain.dto.administration.CinesPACDTO;
 import fr.progilone.pgcn.domain.dto.administration.InternetArchiveCollectionDTO;
+import fr.progilone.pgcn.domain.dto.administration.omeka.OmekaConfigurationDTO;
 import fr.progilone.pgcn.domain.dto.administration.omeka.OmekaListDTO;
 import fr.progilone.pgcn.domain.dto.administration.viewsFormat.SimpleViewsFormatConfigurationDTO;
 import fr.progilone.pgcn.domain.dto.checkconfiguration.SimpleCheckConfigurationDTO;
@@ -43,6 +44,7 @@ public class ProjectDTO extends AbstractVersionedDTO {
     private String cancelingComment;
     private OmekaListDTO omekaCollection;
     private OmekaListDTO omekaItem;
+    private OmekaConfigurationDTO omekaConfiguration;
     // responsable bibliotheque
     private String libRespName;
     private String libRespPhone;
@@ -188,7 +190,7 @@ public class ProjectDTO extends AbstractVersionedDTO {
         return licenseUrl;
     }
 
-    public void setLicenseUrl(String licenseUrl) {
+    public void setLicenseUrl(final String licenseUrl) {
         this.licenseUrl = licenseUrl;
     }
 
@@ -251,6 +253,14 @@ public class ProjectDTO extends AbstractVersionedDTO {
 
     public void setOmekaItem(final OmekaListDTO omekaItem) {
         this.omekaItem = omekaItem;
+    }
+
+    public OmekaConfigurationDTO getOmekaConfiguration() {
+        return omekaConfiguration;
+    }
+
+    public void setOmekaConfiguration(final OmekaConfigurationDTO omekaConfiguration) {
+        this.omekaConfiguration = omekaConfiguration;
     }
 
     public String getLibRespName() {

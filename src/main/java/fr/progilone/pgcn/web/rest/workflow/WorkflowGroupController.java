@@ -95,10 +95,7 @@ public class WorkflowGroupController extends AbstractRestController {
                                                                @RequestParam(value = "size", required = false, defaultValue = "10")
                                                                final Integer size,
                                                                @RequestParam(value = "sorts", required = false) final List<String> sorts) {
-        List<String> filteredLibraries = new ArrayList<>();
-        if (libraries != null && !libraries.isEmpty()) {
-            filteredLibraries = libraries.stream().filter(lib -> accessHelper.checkLibrary(request, lib)).collect(Collectors.toList());
-        }
+        final List<String> filteredLibraries = accessHelper.getLibraryFilter(request, libraries);
         return new ResponseEntity<>(uiService.search(search, initiale, filteredLibraries, page, size, sorts), HttpStatus.OK);
     }
 
