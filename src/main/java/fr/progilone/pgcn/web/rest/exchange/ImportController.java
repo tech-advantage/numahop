@@ -218,6 +218,7 @@ public class ImportController {
                     break;
                 case EAD:
                     importEadService.importEadAsync(importFiles.get(0),
+                                                    type,
                                                     mappingId,
                                                     mappingChildrenId,
                                                     importReport,

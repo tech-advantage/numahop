@@ -2,9 +2,10 @@ package fr.progilone.pgcn.domain.dto.exportftpconfiguration;
 
 import fr.progilone.pgcn.domain.dto.AbstractVersionedDTO;
 import fr.progilone.pgcn.domain.dto.library.SimpleLibraryDTO;
+import java.util.List;
 
 public class ExportFTPConfigurationDTO extends AbstractVersionedDTO {
-    
+
     private String identifier;
     private String label;
     private SimpleLibraryDTO library;
@@ -14,13 +15,16 @@ public class ExportFTPConfigurationDTO extends AbstractVersionedDTO {
     private String storageServer;
     private String port;
     private boolean active;
-    
+
     private boolean exportMets;
     private boolean exportMaster;
     private boolean exportView;
     private boolean exportThumb;
     private boolean exportPdf;
     private boolean exportAipSip;
+    private boolean exportAlto;
+
+    private List<ExportFTPConfigurationDeliveryFolderDTO> deliveryFolders;
 
     public ExportFTPConfigurationDTO(final String identifier,
                                final String label,
@@ -33,7 +37,8 @@ public class ExportFTPConfigurationDTO extends AbstractVersionedDTO {
                                final boolean active,
                                final boolean exportAipSip, final boolean exportMets,
                                final boolean exportMaster, final boolean exportView,
-                               final boolean exportThumb, final boolean exportPdf) {
+                               final boolean exportThumb, final boolean exportPdf,
+                                final boolean exportAlto, final List<ExportFTPConfigurationDeliveryFolderDTO> deliveryFolders) {
         this.identifier = identifier;
         this.label = label;
         this.library = library;
@@ -49,6 +54,8 @@ public class ExportFTPConfigurationDTO extends AbstractVersionedDTO {
         this.exportView = exportView;
         this.exportThumb = exportThumb;
         this.exportPdf = exportPdf;
+        this.exportAlto = exportAlto;
+        this.deliveryFolders = deliveryFolders;
     }
 
     public ExportFTPConfigurationDTO() {
@@ -174,5 +181,12 @@ public class ExportFTPConfigurationDTO extends AbstractVersionedDTO {
     public void setExportAipSip(final boolean exportAipSip) {
         this.exportAipSip = exportAipSip;
     }
- 
+
+    public boolean isExportAlto() { return exportAlto; }
+
+    public void setExportAlto(boolean exportAlto) { this.exportAlto = exportAlto; }
+
+    public List<ExportFTPConfigurationDeliveryFolderDTO> getDeliveryFolders() { return deliveryFolders; }
+
+    public void setDeliveryFolders(List<ExportFTPConfigurationDeliveryFolderDTO> deliveryFolders) { this.deliveryFolders = deliveryFolders; }
 }

@@ -2,7 +2,7 @@
     <div class="container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
-                <span class="sr-only">Toggle navigation</span>
+                <span class="sr-only" translate>Toggle navigation</span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
@@ -14,14 +14,14 @@
                 <li ui-sref-active="active">
                     <a ui-sref="home">
                         <span class="glyphicon-regular home"></span>
-                        <span>Home</span>
+                        <span translate>Home</span>
                     </a>
                 </li>
                 <li ui-sref-active="active" ng-switch-when="true" class="dropdown pointer">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="">
                                 <span>
                                     <span class="glyphicon-regular th-list"></span>
-                                    <span class="hidden-tablet">
+                                    <span class="hidden-tablet" translate>
                                         Entities
                                     </span>
                                     <b class="caret"></b>
@@ -35,7 +35,7 @@
                     <a class="dropdown-toggle" data-toggle="dropdown" href="">
                                 <span>
                                     <span class="glyphicon-regular user"></span>
-                                    <span class="hidden-tablet">
+                                    <span class="hidden-tablet" translate>
                                         Account
                                     </span>
                                     <b class="caret"></b>
@@ -43,43 +43,43 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li ui-sref-active="active" ng-switch-when="true"><a ui-sref="settings"><span class="glyphicon-regular wrench"></span>
-                            &#xA0;<span>Settings</span></a></li>
+                            &#xA0;<span translate>Settings</span></a></li>
                         <li ui-sref-active="active" ng-switch-when="true"><a ui-sref="password"><span class="glyphicon-regular lock"></span>
-                            &#xA0;<span>Password</span></a></li>
+                            &#xA0;<span translate>Password</span></a></li>
                         <li ui-sref-active="active" ng-switch-when="true"><a ui-sref="sessions"><span class="glyphicon-regular cloud"></span>
-                            &#xA0;<span>Sessions</span></a></li>
+                            &#xA0;<span translate>Sessions</span></a></li>
                         <li ui-sref-active="active" ng-switch-when="true"><a href="" ng-click="logout()"><span class="glyphicon-regular log-out"></span>
-                            &#xA0;<span>Log out</span></a></li>
+                            &#xA0;<span translate>Log out</span></a></li>
                         <li ui-sref-active="active" ng-switch-when="false"><a ui-sref="login"><span class="glyphicon-regular log-in"></span>
-                            &#xA0;<span>Authenticate</span></a></li>
+                            &#xA0;<span translate>Authenticate</span></a></li>
 
                         <li ui-sref-active="active" ng-switch-when="false"><a ui-sref="register"><span class="glyphicon-regular plus-sign"></span>
-                            &#xA0;<span>Register</span></a></li>
+                            &#xA0;<span translate>Register</span></a></li>
                     </ul>
                 </li>
                 <li ng-class="{active: $state.includes('admin')}"  ng-switch-when="true" class="dropdown pointer">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="">
                                 <span>
                                     <span class="glyphicon-regular tower"></span>
-                                    <span class="hidden-tablet">Administration</span>
+                                    <span class="hidden-tablet" translate>Administration</span>
                                     <b class="caret"></b>
                                 </span>
                     </a>
                     <ul class="dropdown-menu">
                         <li ui-sref-active="active"><a ui-sref="tracker"><span class="glyphicon-regular eye-open"></span>
-                                &nbsp;<span>User tracker</span></a></li>
+                                &nbsp;<span translate>User tracker</span></a></li>
                         <li ui-sref-active="active"><a ui-sref="metrics"><span class="glyphicon-regular dashboard"></span>
-                            &#xA0;<span>Metrics</span></a></li>
+                            &#xA0;<span translate>Metrics</span></a></li>
                         <li ui-sref-active="active"><a ui-sref="health"><span class="glyphicon-regular heart"></span>
-                            &#xA0;<span>Health</span></a></li>
+                            &#xA0;<span translate>Health</span></a></li>
                         <li ui-sref-active="active"><a ui-sref="configuration"><span class="glyphicon-regular list-alt"></span>
-                            &#xA0;<span>Configuration</span></a></li>
+                            &#xA0;<span translate>Configuration</span></a></li>
                         <li ui-sref-active="active"><a ui-sref="audits"><span class="glyphicon-regular bell"></span>
-                            &#xA0;<span>Audits</span></a></li>
+                            &#xA0;<span translate>Audits</span></a></li>
                         <li ui-sref-active="active"><a ui-sref="logs"><span class="glyphicon-regular tasks"></span>
-                            &#xA0;<span>Logs</span></a></li>
+                            &#xA0;<span translate>Logs</span></a></li>
                         <li ui-sref-active="active"><a ui-sref="docs"><span class="glyphicon-regular book"></span>
-                            &#xA0;<span>API</span></a></li>
+                            &#xA0;<span translate>API</span></a></li>
                     </ul>
                 </li>
             </ul>

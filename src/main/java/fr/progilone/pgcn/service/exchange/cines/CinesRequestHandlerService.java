@@ -71,7 +71,7 @@ public class CinesRequestHandlerService {
     public static final String SIP_XML_FILE = "sip.xml";
     public static final String AIP_XML_FILE = "aip.xml";
     public static final String METS_XML_FILE = "mets.xml";
-    
+
     public static final String CINES_SUBJECT_ARCHIVAGE = "AVIS_PAC";
 
     private static final Logger LOG = LoggerFactory.getLogger(CinesRequestHandlerService.class);
@@ -83,10 +83,10 @@ public class CinesRequestHandlerService {
 
     @Value("${instance.libraries}")
     private String[] instanceLibraries;
-    
+
     @Value("${services.cines.updating.cronenabled}")
     private boolean cinesUpdatingEnabled;
-    
+
     // Stockage des AIP
     @Value("${services.cines.aip}")
     private String workingDir;
@@ -122,7 +122,7 @@ public class CinesRequestHandlerService {
 
     @PostConstruct
     public void initialize() {
-        
+
         Arrays.asList(instanceLibraries).forEach(lib -> {
             try {
                 FileUtils.forceMkdir(new File(workingDir, lib));
@@ -147,7 +147,7 @@ public class CinesRequestHandlerService {
 
     @Scheduled(cron = "${cron.cinesUpdateStatus}")
     public void updateExportedDocUnitsCron() {
-        
+
         if (cinesUpdatingEnabled) {
             LOG.info("Lancement du cronjob updateExportedDocUnitsCron...");
             final Set<MailboxConfiguration> confs = mailboxConfigurationService.findAll(true);
@@ -167,33 +167,33 @@ public class CinesRequestHandlerService {
      * @throws PgcnTechnicalException
      */
     public void updateExportedDocUnits(final Collection<MailboxConfiguration> mailboxConfigurations) throws PgcnTechnicalException {
-        
+
         for (final MailboxConfiguration conf : mailboxConfigurations) {
 
             final long nbPending = cinesReportService.countPendingByLibrary(conf.getLibrary());
             // Si des exports CINES sont en attente de réponse, on vérifie la boite mail
             if (nbPending > 0) {
-                
+
                 mailboxService.readMailbox(conf, messages -> {
-                    
+
                     if (messages.length > 0) {
-                        
+
                         transactionService.executeInNewTransaction(() -> {
-                    
+
                             for (final Message message : messages) {
-        
+
                                 try {
-                                    final String subject = message.getSubject();                             
-                                    // On ne traite pas les messages autres genre Ticket etc..  
+                                    final String subject = message.getSubject();
+                                    // On ne traite pas les messages autres genre Ticket etc..
                                     if (subject == null || !subject.contains(CINES_SUBJECT_ARCHIVAGE)) {
-                                        message.setFlag(Flags.Flag.SEEN, true); 
+                                        message.setFlag(Flags.Flag.SEEN, true);
                                     } else {
                                         // les messages qui nous interessent
                                         final CinesResponse response = parseMessage(message);
                                         if (updateExport(response, conf.getLibrary())) {
                                             message.setFlag(Flags.Flag.SEEN, true);
                                         } else {
-                                            message.setFlag(Flags.Flag.SEEN, false); 
+                                            message.setFlag(Flags.Flag.SEEN, false);
                                         }
                                     }
                                 } catch (final JAXBException | IOException | MessagingException e) {
@@ -202,16 +202,16 @@ public class CinesRequestHandlerService {
                                 }
                             }
                         });
-                    }    
+                    }
                 });
-                
+
             } else {
                 LOG.debug("CINES - Aucun export en attente de reponse pour la bibliothèque {}", conf.getLibrary().getIdentifier());
-            }            
-            
+            }
+
         }
     }
-    
+
 
     /**
      * Parse le message à la recherche d'un corps au format avis.xsd et/ou d'une pièce jointe au format aip.xsd
@@ -223,13 +223,13 @@ public class CinesRequestHandlerService {
      * @throws JAXBException
      */
     private CinesResponse parseMessage(final Message message) throws MessagingException, IOException, JAXBException {
-        
+
         final Date sentDate = message.getSentDate();
         LOG.debug("Lecture du message {} du {}", message.getSubject(), sentDate);
         final CinesResponse response = new CinesResponse();
         response.setMsgDate(sentDate != null ? DateUtils.convertToLocalDateTime(sentDate) : LocalDateTime.now());
 
-        final Multipart multipart;       
+        final Multipart multipart;
         if (message.isMimeType(MediaType.TEXT_HTML_VALUE) || message.isMimeType(MediaType.TEXT_XML_VALUE)) {
             // ert: on reconstitue un pseudo multipart...
             // correction pour msg 'vides' non multipart avec du texte attaché qui ne passent pas.
@@ -298,23 +298,23 @@ public class CinesRequestHandlerService {
                                                            .concat(response.getMsgDate().toString())
                                                            .concat(": le fichier AIP n'a pu être interprété."));
                     }
-                    
+
                     if (response.getAip() != null) {
-                        
+
                         final PacType pac = response.getAip();
-                        
+
                         // stocke le fichier aip.xml
                         handleAip(response.getAip(), part);
-                        
+
                         // il n'y a plus d'avis dans ce cas => on cree un avis  + un certificat de toutes pieces...
                         final String certif = "Archivé le " + pac.getDocMeta().getDateArchivage()
                                             + " - Identifiant versement : " + pac.getDocMeta().getIdentifiantVersement()
                                             + " - Identifiant docPac : " + pac.getDocMeta().getIdentifiantDocPac();
-                            
-                            
+
+
                         final fr.progilone.pgcn.domain.jaxb.avis.ObjectFactory avisFactory = new fr.progilone.pgcn.domain.jaxb.avis.ObjectFactory();
                         final PacAvisType avis = avisFactory.createPacAvisType();
-                        
+
                         final ZonedDateTime resultDtArchiv = ZonedDateTime.parse(pac.getDocMeta().getDateArchivage(), DateTimeFormatter.ISO_DATE_TIME);
                         avis.setDateArchivage(resultDtArchiv.toLocalDateTime());
                         avis.setIdVersement(pac.getDocMeta().getIdentifiantVersement());
@@ -323,7 +323,7 @@ public class CinesRequestHandlerService {
                         response.setAvis(avis);
                         response.setCertificate(certif.getBytes("UTF-8"));
                     }
-                    
+
                     // AVIS .xml
                 } else {
 
@@ -356,17 +356,17 @@ public class CinesRequestHandlerService {
         try (final Reader reader = new InputStreamReader(part.getInputStream(), "UTF-8")) {
             final JAXBContext context = JAXBContext.newInstance(jaxbBoundedClasses);
             final Unmarshaller unmarshaller = context.createUnmarshaller();
-            
+
             return Optional.of(unmarshaller.unmarshal(reader));
 
         } catch (final UnmarshalException e) {
-            final String strFile;  
+            final String strFile;
             if (IOUtils.toString(part.getInputStream(), "UTF-8").length() > 500 ) {
                 strFile = IOUtils.toString(part.getInputStream(), "UTF-8").substring(0, 500);
             } else {
                 strFile = IOUtils.toString(part.getInputStream(), "UTF-8");
             }
-            
+
             LOG.error("Le message {} n'a pas pu être parsé à l'aide des classes {}",
                       strFile,
                       Arrays.stream(jaxbBoundedClasses).map(Class::getName).reduce((a, b) -> a + ", " + b).orElse("[Aucune classe fournie]"));
@@ -377,14 +377,14 @@ public class CinesRequestHandlerService {
 
     /**
      * Mise à jour du rapport d'export à partir de la réponse extraite du mail.
-     * 
+     *
      * @param response
      * @return treated : Vrai si msg lu et rapprt mis à jour.
      */
     private boolean updateExport(final CinesResponse response, final Library library) {
-        
+
         boolean treated = false;
-        
+
         if (response.getAvis() == null) {
             return treated; // Le message n'a pas pu être parsé
         }
@@ -401,8 +401,8 @@ public class CinesRequestHandlerService {
             LOG.error("L'export CINES avec l'identifiant de versement {} n'a pas été trouvé", idVersement);
             return treated;
         }
-        if (report.getDocUnit() == null 
-                || report.getDocUnit().getLibrary() == null 
+        if (report.getDocUnit() == null
+                || report.getDocUnit().getLibrary() == null
                 || ! StringUtils.equals(library.getIdentifier(), report.getDocUnit().getLibrary().getIdentifier())) {
             LOG.info("L'export CINES avec l'identifiant de versement {} ne depend pas de cette librairie...", idVersement);
             return treated;
@@ -457,19 +457,21 @@ public class CinesRequestHandlerService {
         if (aip != null) {
             final String idVersement = aip.getDocMeta() != null ? aip.getDocMeta().getIdentifiantDocProducteur() : null;
             if (idVersement != null) {
-                final DocUnit doc = docUnitService.findOneByPgcnId(idVersement);
-                if (doc != null) {
-                    final Path root = Paths.get(workingDir, exportCinesService.getDocLibraryId(doc.getIdentifier()), doc.getIdentifier());
+                final DocUnit availableDoc = docUnitService.findOneByPgcnIdAndState(idVersement, DocUnit.State.AVAILABLE);
+                final DocUnit closedDoc = docUnitService.findOneByPgcnIdAndState(idVersement, DocUnit.State.CLOSED);
+                if (availableDoc != null || closedDoc != null) {
+                    final DocUnit foundDoc = availableDoc != null ? availableDoc : closedDoc;
+                    final Path root = Paths.get(workingDir, exportCinesService.getDocLibraryId(foundDoc.getIdentifier()), foundDoc.getIdentifier());
                     if (root != null) {
                         fm.copyInputStreamToFile(part.getInputStream(), root.toFile(), AIP_XML_FILE, true, false);
                     }
                 } else {
                     LOG.error("DocUnit non trouve - pgcnID = {}", idVersement);
                 }
-            } 
+            }
         }
     }
-    
+
 
     /**
      * Récupération du fichier aip.xml stocké
@@ -505,7 +507,7 @@ public class CinesRequestHandlerService {
                     return fm.retrieveFile(root.toFile(), SIP_XML_FILE);
                 }
             } else {
-    
+
                 final Path root = Paths.get(workingDir, exportCinesService.getDocLibraryId(docUnitId), docUnitId);
                 if (root != null) {
                     return fm.retrieveFile(root.toFile(), SIP_XML_FILE);
@@ -514,7 +516,7 @@ public class CinesRequestHandlerService {
         }
         return null;
     }
-    
+
     /**
      * Récupération du fichier mets.xml le + recent stocké en cache
      * ou backuppé pour un docUnit donné.
@@ -532,7 +534,7 @@ public class CinesRequestHandlerService {
                     return fm.retrieveFile(root.toFile(), METS_XML_FILE);
                 }
             } else {
-    
+
                 final Path root = Paths.get(workingDir, exportCinesService.getDocLibraryId(docUnitId), docUnitId);
                 if (root != null) {
                     return fm.retrieveFile(root.toFile(), METS_XML_FILE);

@@ -164,12 +164,12 @@
                         <thead>
                             <tr>
                                 <th></th>
-                                <th class="text-center" sem-table-sorton="pgcnId">{{::"Identifiant" | translate }}</th>
-                                <th class="text-center" sem-table-sorton="label">{{::"Nom" | translate }}</th>
-                                <th class="text-right" sem-table-sorton="project.name">{{::"Projet" | translate }}</th>
-                                <th class="text-right" sem-table-sorton="lot.label">{{::"Lot" | translate }}</th>
-                                <th class="text-right" sem-table-sorton="train.label">{{::"Train" | translate }}</th>
-                                <th class="text-right" sem-table-sorton="parent.pgcnId">{{::"Unité doc. mère" | translate }}</th>
+                                <th class="text-center">{{::"Identifiant" | translate }}</th>
+                                <th class="text-center">{{::"Nom" | translate }}</th>
+                                <th class="text-right">{{::"Projet" | translate }}</th>
+                                <th class="text-right">{{::"Lot" | translate }}</th>
+                                <th class="text-right">{{::"Train" | translate }}</th>
+                                <th class="text-right">{{::"Unité doc. mère" | translate }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -204,9 +204,9 @@
                                 <td class="text-right">
                                     <div ng-if="item.lot">
                                         <a ng-href="#/lot/lot?id={{ ::item.lot.identifier }}">
-                                            {{::item.lot.label}} 
+                                            {{::item.lot.label}}
                                         </a>
-                                        <button type="button" class="btn btn-sem2 btn-xs" ng-click="mainCtrl.removeLot(item, mainCtrl.search)" ng-if="mainCtrl.canRemoveLot(item)" 
+                                        <button type="button" class="btn btn-sem2 btn-xs" ng-click="mainCtrl.removeLot(item, mainCtrl.search)" ng-if="mainCtrl.canRemoveLot(item)"
                                             uib-tooltip="{{::'Retirer du lot' | translate}}">
                                             <span class="glyphicon-halflings glyphicon-trash"></span>
                                         </button>

@@ -81,8 +81,8 @@ public class DigitalLibraryConfiguration extends AbstractDomainObject {
     @Column(name = "export_view")
     private boolean exportView;
 
-    @Column(name = "export_master")
-    private boolean exportMaster;
+    @Column(name = "export_print")
+    private boolean exportPrint;
 
     @Column(name = "export_thumb")
     private boolean exportThumb;
@@ -185,12 +185,12 @@ public class DigitalLibraryConfiguration extends AbstractDomainObject {
         this.exportView = exportView;
     }
 
-    public boolean isExportMaster() {
-        return exportMaster;
+    public boolean isExportPrint() {
+        return exportPrint;
     }
 
-    public void setExportMaster(final boolean exportMaster) {
-        this.exportMaster = exportMaster;
+    public void setExportPrint(final boolean exportMaster) {
+        this.exportPrint = exportMaster;
     }
 
     public boolean isExportThumb() {

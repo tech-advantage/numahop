@@ -7,36 +7,36 @@
 	    <form name="updateForm">
             <div class="row">
                 <div class="col-md-12 text-center margin-t10">
-                                  Archivable :   
-                                  <input bs-switch 
-                                           ng-model="mainCtrl.values.archivable"
-                                           type="checkbox"
-                                           ng-change="updateArchivable()"
-                                           switch-readonly=""
-                                           switch-on-text="{{ 'OUI' | translate }}"
-                                           switch-off-text="{{ 'NON' | translate }}"
-                                           switch-label-width="0px"/>
+                    <span translate>Archivable :</span>
+                    <input bs-switch
+                           ng-model="mainCtrl.values.archivable"
+                           type="checkbox"
+                           ng-change="updateArchivable()"
+                           switch-readonly=""
+                           switch-on-text="{{ 'OUI' | translate }}"
+                           switch-off-text="{{ 'NON' | translate }}"
+                           switch-label-width="0px"/>
                 </div>
-             </div>
-             <div class="row"> 
+            </div>
+            <div class="row">
                 <div class="col-md-12 text-center margin-t10 margin-b10">
-                                   Diffusable : 
-                                   <input bs-switch 
-                                           ng-model="mainCtrl.values.distributable"
-                                           type="checkbox"
-                                           ng-change="updateDistributable()"
-                                           switch-readonly=""
-                                           switch-on-text="{{ 'OUI' | translate }}"
-                                           switch-off-text="{{ 'NON' | translate }}"
-                                           switch-label-width="0px"/>
-                </div>                           
-             </div>                                             
-                                                       
+                <span translate>Diffusable :</span>
+                <input bs-switch
+                       ng-model="mainCtrl.values.distributable"
+                       type="checkbox"
+                       ng-change="updateDistributable()"
+                       switch-readonly=""
+                       switch-on-text="{{ 'OUI' | translate }}"
+                       switch-off-text="{{ 'NON' | translate }}"
+                       switch-label-width="0px"/>
+                </div>
+            </div>
+
             <sem-field sem-type="select" sem-label="{{::'Type de constat d\'état' | translate}}"
                     sem-model="mainCtrl.values.reportType"
                     sem-select-options="option.label for option in optionData track by option.identifier"
-                    sem-option-data="mainCtrl.options.condreportTypes"></sem-field>                                           
-	        
+                    sem-option-data="mainCtrl.options.condreportTypes"></sem-field>
+
 	    </form>
     </div>
 </div>

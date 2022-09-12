@@ -6,18 +6,9 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
+import fr.progilone.pgcn.domain.administration.ExportFTPDeliveryFolder;
 import org.hibernate.envers.AuditTable;
 import org.hibernate.envers.Audited;
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -286,6 +277,10 @@ public class Project extends AbstractDomainObject {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "omeka_configuration")
     private OmekaConfiguration omekaConfiguration;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "active_export_ftp_delivery_folder")
+    private ExportFTPDeliveryFolder activeExportFTPDeliveryFolder;
 
     public Library getLibrary() {
         return library;
@@ -590,6 +585,14 @@ public class Project extends AbstractDomainObject {
 
     public void setOmekaConfiguration(final OmekaConfiguration omekaConfiguration) {
         this.omekaConfiguration = omekaConfiguration;
+    }
+
+    public ExportFTPDeliveryFolder getActiveExportFTPDeliveryFolder() {
+        return activeExportFTPDeliveryFolder;
+    }
+
+    public void setActiveExportFTPDeliveryFolder(ExportFTPDeliveryFolder activeExportFTPDeliveryFolder) {
+        this.activeExportFTPDeliveryFolder = activeExportFTPDeliveryFolder;
     }
 
     /**

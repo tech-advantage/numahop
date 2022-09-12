@@ -1,17 +1,17 @@
 <div>
     <h2>Logs</h2>
 
-        <form name="admForm" >                      
-                 <div class="text-center" style="margin-bottom: 5px;" >                        
+        <form name="admForm" >
+                 <div class="text-center" style="margin-bottom: 5px;" >
 				    <div class="row">
 				      <div class="col-md-8"></div>
-				      <div class="col-md-2">Date du fichier de log (JJ/MM/AAAA)</div>
+				      <div class="col-md-2" translate>Date du fichier de log (JJ/MM/AAAA)</div>
 				      <div class="col-md-2">
-                            <sem-datepicker ng-model="dt" ng-change="changeDate($data)"></sem-datepicker>				          
+                            <sem-datepicker ng-model="dt" ng-change="changeDate($data)"></sem-datepicker>
 				      </div>
 				    </div>
 				   </div>
-				   <div>  
+				   <div>
 				    <div class="row">
 				        <div class="col-md-10"></div>
 				        <div class="col-md-2">
@@ -23,32 +23,32 @@
 				                 </button>
 				            </div>
 				          </div>
-				        </div>  
-				    </div>      
+				        </div>
+				    </div>
                 </div>
         </form>
 
 
-    <p>There are {{ loggers.length }} loggers.</p>
+    <p translate>There are {{ loggers.length }} loggers.</p>
 
-    <span>Filter</span> <input type="text" ng-model="filter" class="form-control">
+    <span translate>Filter</span> <input type="text" ng-model="filter" class="form-control">
 
     <table class="table table-condensed table-striped table-bordered table-responsive">
         <thead>
         <tr title="click to order">
-            <th ng-click="predicate = 'name'; reverse=!reverse"><span>Name</span></th>
-            <th ng-click="predicate = 'level'; reverse=!reverse"><span>Level</span></th>
+            <th ng-click="predicate = 'name'; reverse=!reverse"><span translate>Name</span></th>
+            <th ng-click="predicate = 'level'; reverse=!reverse"><span translate>Level</span></th>
         </tr>
         </thead>
 
         <tr ng-repeat="logger in loggers | filter:filter | orderBy:predicate:reverse">
             <td><small>{{logger.name | characters:140}}</small></td>
             <td>
-                <button ng-click="changeLevel(logger.name, 'TRACE')" ng-class="(logger.level=='TRACE') ? 'btn-danger' : 'btn-default'" class="btn btn-default btn-xs">TRACE</button>
-                <button ng-click="changeLevel(logger.name, 'DEBUG')" ng-class="(logger.level=='DEBUG') ? 'btn-warning' : 'btn-default'" class="btn btn-default btn-xs">DEBUG</button>
-                <button ng-click="changeLevel(logger.name, 'INFO')" ng-class="(logger.level=='INFO') ? 'btn-info' : 'btn-default'" class="btn btn-default btn-xs">INFO</button>
-                <button ng-click="changeLevel(logger.name, 'WARN')" ng-class="(logger.level=='WARN') ? 'btn-success' : 'btn-default'" class="btn btn-default btn-xs">WARN</button>
-                <button ng-click="changeLevel(logger.name, 'ERROR')" ng-class="(logger.level=='ERROR') ? 'btn-primary' : 'btn-default'" class="btn btn-default btn-xs">ERROR</button>
+                <button ng-click="changeLevel(logger.name, 'TRACE')" ng-class="(logger.level=='TRACE') ? 'btn-danger' : 'btn-default'" class="btn btn-default btn-xs" translate>TRACE</button>
+                <button ng-click="changeLevel(logger.name, 'DEBUG')" ng-class="(logger.level=='DEBUG') ? 'btn-warning' : 'btn-default'" class="btn btn-default btn-xs" translate>DEBUG</button>
+                <button ng-click="changeLevel(logger.name, 'INFO')" ng-class="(logger.level=='INFO') ? 'btn-info' : 'btn-default'" class="btn btn-default btn-xs" translate>INFO</button>
+                <button ng-click="changeLevel(logger.name, 'WARN')" ng-class="(logger.level=='WARN') ? 'btn-success' : 'btn-default'" class="btn btn-default btn-xs" translate>WARN</button>
+                <button ng-click="changeLevel(logger.name, 'ERROR')" ng-class="(logger.level=='ERROR') ? 'btn-primary' : 'btn-default'" class="btn btn-default btn-xs" translate>ERROR</button>
             </td>
         </tr>
     </table>

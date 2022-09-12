@@ -373,6 +373,8 @@ public class OmekaService {
                                        final boolean multiple, final boolean firstDoc) {
 
         final List<DocPropertyType> entetesCustom = docPropertyTypeService.findAllBySuperType(DocPropertyType.DocPropertySuperType.CUSTOM);
+        entetesCustom.addAll(docPropertyTypeService.findAllBySuperType(DocPropertyType.DocPropertySuperType.CUSTOM_OMEKA));
+
         if (depotPath == null || !depotPath.toFile().canRead()) {
             return null;
         }
@@ -512,6 +514,11 @@ public class OmekaService {
                                                                        .stream()
                                                                        .map(DocPropertyType::getLabel)
                                                                        .collect(Collectors.toList());
+            entetesCustomDC.addAll(docPropertyTypeService.findAllBySuperType(DocPropertyType.DocPropertySuperType.CUSTOM_OMEKA)
+                .stream()
+                .map(DocPropertyType::getLabel)
+                .collect(Collectors.toList()));
+
 
             if(metaDC.getCustomProperties() != null){
                 for (final String enteteCustomDC : entetesCustomDC) {
@@ -575,34 +582,17 @@ public class OmekaService {
      * @return
      */
     @Transactional
+    //FIXME: FACTORISE THIS METHOD TO AVOID DUPLICATE CODE (UIBibligraphixRecordService: method getBibliographicRecordDcDTOFromDocUnit)
     public BibliographicRecordDcDTO getDataRecord(final DocUnit docUnit) {
-        final ExportData ed = docUnit.getExportData();
         final BibliographicRecordDcDTO dto;
-        if(ed != null) {
-            dto = new BibliographicRecordDcDTO();
-            ed.getProperties()
-                .stream()
-                .filter(p -> p.getType().getSuperType() == DocPropertyType.DocPropertySuperType.DC)
-                .sorted(Comparator.comparing(ExportProperty::getRank))
-                .forEach(p -> {
-                    try {
-                        final String dcProperty = p.getType().getIdentifier();
-                        final List<String> current = (List<String>) PropertyUtils.getSimpleProperty(dto, dcProperty);
-                        current.add(p.getValue());
 
-                  } catch (final ReflectiveOperationException | IllegalArgumentException e) {
-                        LOG.error(e.getMessage(), e);
-                    }
-                });
-
+        if (docUnit.getRecords().iterator().hasNext()) {
+            final BibliographicRecord record = docUnit.getRecords().iterator().next();
+            dto = uiBibliographicRecordService.getOneDc(record.getIdentifier());
         } else {
-            if (docUnit.getRecords().iterator().hasNext()) {
-                final BibliographicRecord record = docUnit.getRecords().iterator().next();
-                dto = uiBibliographicRecordService.getOneDc(record.getIdentifier());
-            } else {
-                dto = null;
-            }
+            dto = null;
         }
+
         return dto;
     }
 

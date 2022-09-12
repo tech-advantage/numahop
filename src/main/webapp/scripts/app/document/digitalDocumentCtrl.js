@@ -130,7 +130,7 @@
             DigitalDocumentSrvc.reject(params, _.pluck($scope.select.selectedErrors, "key"), function () {
                 $location.path("/dashboard");
                 $location.search("");
-                MessageSrvc.addSuccess("Document numérique rejeté");
+                MessageSrvc.addSuccess(gettext("Document numérique rejeté"));
             });
         }
         $scope.reject = reject;

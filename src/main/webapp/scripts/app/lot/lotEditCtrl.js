@@ -31,6 +31,8 @@
         $scope.downloadCheckSlip = downloadCheckSlip;
         $scope.downloadDeliverySlip = downloadDeliverySlip;
         $scope.onChangeOmekaConf= onChangeOmekaConf;
+        $scope.confExportFtpChanged = confExportFtpChanged;
+        $scope.isDeliveryFolderDisplayed = isDeliveryFolderDisplayed;
 
         // Définition des listes déroulantes
         $scope.options = {
@@ -167,7 +169,7 @@
                 if ($routeParams.activeFormatConfiguration) {
                     lot.activeFormatConfiguration = _.find($scope.options.imgFormat, function (conf) { return conf.identifier === $routeParams.activeFormatConfiguration; });
                 }
-                loadAll(lot);
+                setSelectedDeleveryFolder();
             }
             else {
                 $scope.options.providers = [];
@@ -182,8 +184,8 @@
                 $scope.options.omekaCollections = [];
                 $scope.options.omekaItems = [];
 
-                loadAll(lot);
             }
+            loadAll(lot);
             if (lot.activeCheckConfiguration) {
                 $scope.configRules = lot.activeCheckConfiguration.automaticCheckRules;
             }
@@ -234,23 +236,22 @@
                 NumaHopInitializationSrvc.loadCollections(project.library.identifier, project.identifier),
                 NumaHopInitializationSrvc.loadWorkflowModels(project.library.identifier, project.identifier),
                 NumaHopInitializationSrvc.loadFormatConfigurationForProject(project.identifier),
-                NumaHopInitializationSrvc.loadOmekaConfigurations(project.library, project),
+                NumaHopInitializationSrvc.loadOmekaConfigurations(project.library.identifier, project.identifier),
                 NumaHopInitializationSrvc.loadOcrLanguagesForLibrary(project.library.identifier)
-                ])
-                    .then(function (data) {
-                        $scope.options.providers = data[0];
-                        $scope.options.ftp = data[1];
-                        $scope.options.check = data[2];
-                        $scope.options.pacs = data[3];
-                        $scope.options.collections = data[4];
-                        $scope.options.workflowModels = data[5];
-                        $scope.options.imgFormat = data[6];
-                        $scope.options.omekaConfigurations = data[7];
-                        $scope.options.languagesOcr = data[8];
-                        $scope.options.providers.forEach(function (provider) {
-                            provider.fullName = provider.firstname + " " + provider.surname;
-                        });
+                ]).then(function (data) {
+                    $scope.options.providers = data[0];
+                    $scope.options.ftp = data[1];
+                    $scope.options.check = data[2];
+                    $scope.options.pacs = data[3];
+                    $scope.options.collections = data[4];
+                    $scope.options.workflowModels = data[5];
+                    $scope.options.imgFormat = data[6];
+                    $scope.options.omekaConfigurations = data[7];
+                    $scope.options.languagesOcr = data[8];
+                    $scope.options.providers.forEach(function (provider) {
+                        provider.fullName = provider.firstname + " " + provider.surname;
                     });
+                });
                 ProjectSrvc.get({
                     id: project.identifier
                 }, function (projectDto) {
@@ -283,10 +284,12 @@
                     loadOmekaCollections();
                     loadOmekaItems();
                 });
+                loadExportFTPConf(project.library);
             }
             else {
                 $scope.options.providers = [];
                 $scope.options.ftp = [];
+                $scope.options.exportftp = [];
                 $scope.options.check = [];
                 $scope.options.pacs = [];
                 $scope.options.collections = [];
@@ -294,6 +297,18 @@
                 $scope.options.imgFormat = [];
                 $scope.options.languagesOcr = [];
             }
+        }
+
+        function loadExportFTPConf(library) {
+            if(!library) {
+                $scope.options.exportftp = [];
+                return;
+            }
+
+            NumaHopInitializationSrvc.loadExportFtpConf(library.identifier)
+                .then(function (data) {
+                    $scope.options.exportftp = data;
+                });
         }
 
         function loadProjectSelect() {
@@ -496,13 +511,13 @@
             // ... puis on affiche les infos de modification ...
             if (angular.isDefined(entity.lastModifiedDate)) {
                 var dateModif = new Date(entity.lastModifiedDate);
-                MessageSrvc.addInfo("Dernière modification le {{date}} par {{author}}",
+                MessageSrvc.addInfo(gettext("Dernière modification le {{date}} par {{author}}"),
                     { date: dateModif.toLocaleString(), author: entity.lastModifiedBy }, true);
             }
             // ... puis on affiche les infos de création ...
             if (angular.isDefined(entity.createdDate)) {
                 var dateCreated = new Date(entity.createdDate);
-                MessageSrvc.addInfo("Créé le {{date}}",
+                MessageSrvc.addInfo(gettext("Créé le {{date}}"),
                     { date: dateCreated.toLocaleString() }, true);
             }
             // Affichage pour un temps limité à l'ouverture
@@ -583,6 +598,29 @@
                         lot.status = 'ONGOING';
                     });
                 });
+        }
+
+        function confExportFtpChanged(value) {
+            if(value.label != null && value.label != "") {
+                $scope.displayDeliveriesFolder = true;
+                $scope.options.exportftp.forEach(function (conf) {
+                    if(conf.identifier === value.identifier) {
+                        $scope.lot.activeExportFTPConfiguration = conf;
+                        $scope.lot.activeExportFTPConfiguration.deliveryFolders = conf.deliveryFolders;
+                    }
+                })
+            } else {
+                $scope.displayDeliveriesFolder = false;
+            }
+        }
+
+        function isDeliveryFolderDisplayed() {
+            return $scope.displayDeliveriesFolder;
+        }
+
+        function setSelectedDeleveryFolder() {
+            var exportConfig = $scope.lot.activeExportFTPConfiguration;
+            $scope.displayDeliveriesFolder = exportConfig != null && $scope.lot.activeExportFTPDeliveryFolder != null;
         }
     }
 })();

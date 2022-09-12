@@ -50,7 +50,7 @@
                                 sem-errors="{{ (editCtrl.report.errors | filter:{field: 'dataEncoding'}:true) }}"></sem-field>
                             <!-- Mapping MARC principal -->
                             <sem-field sem-type="uiselect" sem-label="{{::'Mapping MARC' | translate}}" ng-readonly="!editCtrl.isCreation"
-                                ng-show="editCtrl.report.fileFormat === 'MARC' || editCtrl.report.fileFormat === 'MARCJSON' || editCtrl.report.fileFormat === 'MARCXML' 
+                                ng-show="editCtrl.report.fileFormat === 'MARC' || editCtrl.report.fileFormat === 'MARCJSON' || editCtrl.report.fileFormat === 'MARCXML'
                                                 || editCtrl.z3950 || editCtrl.report.type === 'HIERARCHY_IN_SINGLE_NOTICE'"
                                 sem-model="editCtrl.report.mapping" sem-option-data="editCtrl.options.mappingMARC"
                                 sem-onchange="editCtrl.changeMapping(value)" sem-errors="{{ editCtrl.errors.mapping }}"></sem-field>
@@ -64,8 +64,8 @@
                                 ng-show="editCtrl.report.fileFormat === 'EAD'" sem-model="editCtrl.report.mapping"
                                 sem-option-data="editCtrl.options.mappingEAD" sem-errors="{{ editCtrl.errors.mapping }}"></sem-field>
                             <!-- Mapping EAD enfants -->
-                            <sem-field sem-type="uiselect" sem-label="{{::'Mapping des composants EAD enfant' | translate}}" ng-readonly="!editCtrl.isCreation" 
-                                ng-show="editCtrl.report.type === 'SIMPLE_MULTI_NOTICE'"
+                            <sem-field sem-type="uiselect" sem-label="{{::'Mapping des composants EAD enfant' | translate}}" ng-readonly="!editCtrl.isCreation"
+                                ng-show="editCtrl.report.type === 'SIMPLE_MULTI_NOTICE' || editCtrl.report.type === 'SIMPLE_MULTI_MULTI_NOTICE'"
                                 sem-model="editCtrl.report.mappingChildren" sem-option-data="editCtrl.options.mappingEAD"
                                 sem-errors="{{ editCtrl.errors.mappingChildren }}"></sem-field>
                             <!-- Mapping CSV-->
@@ -136,8 +136,7 @@
                             <div class="row vertical-align" ng-if="editCtrl.isCreation && !editCtrl.sourceSrvc">
                                 <div class="col-xs-4 text-right">
                                     <label for="importFiles0" translate>Fichier à téléverser</label>
-                                    <b ng-if="editCtrl.report.type === 'HIERARCHY_IN_MULTIPLE_IMPORT'" translate>(notices
-                                        mères)</b>
+                                    <b ng-if="editCtrl.report.type === 'HIERARCHY_IN_MULTIPLE_IMPORT'" translate>(notices mères)</b>
                                     <b ng-if="editCtrl.parent" translate>(notices filles)</b>
                                 </div>
                                 <div class="col-xs-8 col-lg-4">
@@ -306,7 +305,7 @@
                             sem-model="editCtrl.report.archivable" sem-tooltip="{{ ::'Rendre les unités documentaires importées archivables au Cines' | translate }}"></sem-field>
 						<sem-field sem-type="checkbox" sem-label="{{::'Rendre les unités documentaires diffusables ' | translate}}"
                             sem-model="editCtrl.report.distributable" sem-tooltip="{{ ::'Rendre les unités documentaires importées diffusables sur Archive' | translate }}"></sem-field>
-                        
+
 						<!-- Importer -->
                         <div class="row vertical-align" ng-if="!editCtrl.sourceSrvc">
                             <div class="col-xs-offset-4 col-xs-8 margin-t10">
@@ -413,12 +412,12 @@
                             class="table table-hover table-import">
                             <tbody>
                                 <!-- Unité documentaire importée -->
-                                <tr ng-repeat-start="impDoc in editCtrl.report.content" ng-init="preimported = (impDoc.docUnit && impDoc.docUnit.state === 'NOT_AVAILABLE'); 
-                                         imported = (impDoc.docUnit && impDoc.docUnit.state === 'AVAILABLE'); 
+                                <tr ng-repeat-start="impDoc in editCtrl.report.content" ng-init="preimported = (impDoc.docUnit && impDoc.docUnit.state === 'NOT_AVAILABLE');
+                                         imported = (impDoc.docUnit && impDoc.docUnit.state === 'AVAILABLE');
                                          userValidation = preimported && editCtrl.report.status === 'USER_VALIDATION'"
-                                    class="root" ng-class="{ 'sid-fourth': preimported, 
-                                            'sid-third': imported, 
-                                            'active': !impDoc.docUnit, 
+                                    class="root" ng-class="{ 'sid-fourth': preimported,
+                                            'sid-third': imported,
+                                            'active': !impDoc.docUnit,
                                             'child': impDoc.parentDocUnit,
                                             'group': impDoc.groupCode,
                                             'first': impDoc._first }">

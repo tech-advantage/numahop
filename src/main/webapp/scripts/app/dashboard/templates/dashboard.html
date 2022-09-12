@@ -21,7 +21,7 @@
                                     <span class="glyphicon-halflings glyphicon-plus"></span>
                                 </button>
                                 <span translate>puis choisissez un type de widget parmi ceux proposés. </span><br/>
-                                <span style="font-weight: bold;">N'oubliez pas de sauvegarder vos modifications en cliquant sur </span>
+                                <span style="font-weight: bold;" translate>N'oubliez pas de sauvegarder vos modifications en cliquant sur </span>
                                     <button type="button" class="btn btn-sem2 btn-xs" ng-if="options.editable"
                                         uib-tooltip="{{::'Sauvegarder les modifications' | translate}}" ng-click="toggleEditMode()">
                                         <i class="glyphicon-regular floppy-save"></i>
@@ -30,7 +30,7 @@
                                 <button type="button" class="btn btn-sem2 btn-xs" ng-if="editMode"
                                     uib-tooltip="{{::'Annuler les modifications' | translate}}" ng-click="cancelEditMode()">
                                     <i class="glyphicon-regular unshare"></i>
-                                </button> 
+                                </button>
                                 <span translate>quand vous aurez terminé.</span>
                             </div>
                             <div ng-if="!editMode && model.getNumberOfWidgets() === 0" class="row">
@@ -46,7 +46,7 @@ quotidien. Il est personnalisable en ajoutant des widgets et en les positionnant
                                             </p>
                                             <p>
                                                 <span translate>Pour ajouter un widget à votre tableau de bord, cliquez sur l'icône </span>
-                                                <i class="glyphicon-halflings glyphicon-plus"></i> 
+                                                <i class="glyphicon-halflings glyphicon-plus"></i>
                                                 <span translate>puis choisissez un type de widget parmi ceux proposés.</span>
                                             </p>
                                             <p>
@@ -59,14 +59,14 @@ quotidien. Il est personnalisable en ajoutant des widgets et en les positionnant
                                             </p>
                                             <p>
                                                 <span translate>Pour déplacer un widget, cliquez sur l'icône </span>
-                                                <i class="glyphicon-halflings glyphicon-move"></i> 
+                                                <i class="glyphicon-halflings glyphicon-move"></i>
                                                 <span translate>et déposez le widget dans un des emplacements de la grille.</span>
                                             </p>
                                             <p translate>La grille est constituée de 3 lignes. La première et la troisième ligne possèdent 4 emplacements
 tandis que la seconde en possède 2. Il est possible de mettre plusieurs widgets dans chaque emplacement, ils se placeront alors les uns en dessous des autres.</p>
                                             <p>
-                                                <span translate>Après avoir fait une modification dans les wigdets, 
-<u>il est impératif de sauvegarder votre tableau de bord</u> en cliquant sur l'icône 
+                                                <span translate>Après avoir fait une modification dans les wigdets,
+<u>il est impératif de sauvegarder votre tableau de bord</u> en cliquant sur l'icône
                                                 </span>
                                                 <i class="glyphicon-regular floppy-save"></i>.
                                             </p>

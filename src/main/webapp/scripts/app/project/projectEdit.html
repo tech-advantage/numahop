@@ -147,6 +147,35 @@
 
                         </div>
 
+                        <!-- Export FTP configuration -->
+                        <div class="formBlock">
+                            <div class="formBlockTitle">
+                                <span translate>Configuration Export FTP</span>
+                            </div>
+                            <div class="formBlockContent">
+                                <div class="row">
+                                    <div class="col-sm-8">
+                                        <numa-editable-field title="{{::'Configuration export FTP' | translate}}" type="select" form="projectForm" model="project.activeExportFTPConfiguration"
+                                                             numa-readonly="formRO" errors="{{ errors.activeExportFTPConfiguration }}"
+                                                             config="{ data: [{label: ''}].concat(options.exportftp),
+                                                            display: 'label',
+                                                            query: 'o.label for o in $ctrl.config.data track by o.identifier'}" link="{ type: 'exportftpConfiguration', parameters: {'id': project.activeExportFTPConfiguration.identifier} }"
+                                                             numa-onchange="confExportFtpChanged($data)">
+                                        </numa-editable-field>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <numa-editable-field title="{{::'Dossier de livraison' | translate}}" type="select" form="projectForm" model="project.activeExportFTPDeliveryFolder"
+                                                             numa-readonly="formRO" errors="{{ errors.activeExportFTPDeliveryFolder }}"
+                                                             config="{ data: [{name: ''}].concat(project.activeExportFTPConfiguration.deliveryFolders),
+                                                            display: 'name',
+                                                            query: 'o.name for o in $ctrl.config.data track by o.identifier'}"
+                                                             ng-show="isDeliveryFolderDisplayed()">
+                                        </numa-editable-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Cines -->
                         <div class="formBlock">
                             <div class="formBlockTitle">

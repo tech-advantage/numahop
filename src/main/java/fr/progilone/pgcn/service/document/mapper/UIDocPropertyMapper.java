@@ -10,15 +10,15 @@ import fr.progilone.pgcn.repository.document.DocPropertyTypeRepository;
 @Service
 public class UIDocPropertyMapper {
 	private DocPropertyTypeRepository docPropertyTypeRepository;
-	
+
 	@Autowired
 	public UIDocPropertyMapper(final DocPropertyTypeRepository docPropertyTypeRepository) {
 		this.docPropertyTypeRepository = docPropertyTypeRepository;
 	}
-	
+
 	public void mapInto(final DocPropertyDTO propertyDTO, final DocProperty property) {
 		property.setValue(propertyDTO.getValue());
-		property.setRank(propertyDTO.getRank());
+		property.setRank(propertyDTO.getRank() != null ? propertyDTO.getRank() : propertyDTO.getType().getRank());
 		// Type (obligatoire)
 		if (propertyDTO.getType() != null && propertyDTO.getType().getIdentifier() != null) {
 			property.setType(docPropertyTypeRepository.findOne(propertyDTO.getType().getIdentifier()));

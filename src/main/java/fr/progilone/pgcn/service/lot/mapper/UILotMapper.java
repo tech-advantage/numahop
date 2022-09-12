@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import fr.progilone.pgcn.domain.administration.ExportFTPDeliveryFolder;
+import fr.progilone.pgcn.service.exportftpconfiguration.ExportFTPConfigurationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -42,6 +44,8 @@ public class UILotMapper {
     @Autowired
     private FTPConfigurationService ftpConfigurationService;
     @Autowired
+    private ExportFTPConfigurationService exportFTPConfigurationService;
+    @Autowired
     private CheckConfigurationService checkConfigurationService;
     @Autowired
     private ViewsFormatConfigurationService viewsFormatConfigurationService;
@@ -58,7 +62,7 @@ public class UILotMapper {
     @Autowired
     private OmekaConfigurationService omekaConfigurationService;
     @Autowired
-    private OcrLanguageRepository ocrLangRepository; 
+    private OcrLanguageRepository ocrLangRepository;
 
     public UILotMapper() {
     }
@@ -94,6 +98,18 @@ public class UILotMapper {
         if (lotDTO.getActiveFTPConfiguration() != null) {
             lot.setActiveFTPConfiguration(ftpConfigurationService.getOne(lotDTO.getActiveFTPConfiguration().getIdentifier()));
         }
+        if (lotDTO.getActiveExportFTPConfiguration() != null) {
+            lot.setActiveExportFTPConfiguration(exportFTPConfigurationService.getOne(lotDTO.getActiveExportFTPConfiguration().getIdentifier()));
+            //delivery folders update
+            if(lot.getActiveExportFTPConfiguration() != null && lotDTO.getActiveExportFTPDeliveryFolder() != null) {
+                ExportFTPDeliveryFolder newFolder = new ExportFTPDeliveryFolder();
+                newFolder.setIdentifier(lotDTO.getActiveExportFTPDeliveryFolder().getIdentifier());
+                newFolder.setName(lotDTO.getActiveExportFTPDeliveryFolder().getName());
+                lot.setActiveExportFTPDeliveryFolder(newFolder);
+            } else {
+                lot.setActiveExportFTPDeliveryFolder(null);
+            }
+        }
         if (lotDTO.getActiveCheckConfiguration() != null) {
             lot.setActiveCheckConfiguration(checkConfigurationService.findOne(lotDTO.getActiveCheckConfiguration().getIdentifier()));
         }
@@ -106,7 +122,7 @@ public class UILotMapper {
         if (lotDTO.getActiveOcrLanguage() != null) {
             lot.setActiveOcrLanguage(ocrLangRepository.getOne(lotDTO.getActiveOcrLanguage().getIdentifier()));
         }
-        
+
 
         final InternetArchiveCollectionDTO iaCollection = lotDTO.getCollectionIA();
         if (iaCollection != null && iaCollection.getIdentifier() != null) {
@@ -119,7 +135,7 @@ public class UILotMapper {
             final CinesPAC cinesPAC = cinesPACService.findOne(cinesPACDTO.getIdentifier());
             lot.setPlanClassementPAC(cinesPAC);
         }
-        
+
         final OmekaListDTO collecOmeka = lotDTO.getOmekaCollection();
         if (collecOmeka != null && collecOmeka.getIdentifier() != null) {
             final OmekaList omekaCollection = omekaListService.findOne(collecOmeka.getIdentifier());

@@ -2,7 +2,7 @@
     <h3 class="modal-title" translate>Export CINES</h3>
 </div>
 <div class="modal-body">
-    
+
     <div class="row vertical-align" ng-if="mainCtrl.alertPlanPac">
         <div class="text-center col-xs-12 text-danger">
             <label translate>Attention : Le plan de classement n'est pas renseigné.</label>
@@ -18,7 +18,7 @@
             <label translate>Les champs suivants sont obligatoires : {{::mainCtrl.errFields}}</label>
         </div>
     </div>
-    
+
     <!-- Choix des métadonnées à exporter -->
     <div class="row vertical-align">
         <div class="text-right col-xs-4 col-lg-2">
@@ -42,15 +42,15 @@
         </div>
         <div class="col-xs-8 col-lg-10 form-inline padding-b10">
             <label class="radio-inline">
-                <input type="radio" value="reversion" ng-model="mainCtrl.majAndReversion" name="reversion">Reversion
+                <input type="radio" value="reversion" ng-model="mainCtrl.majAndReversion" name="reversion" translate>Reversion
             </label>
             <label class="radio-inline">
-                <input type="radio" value="maj" ng-model="mainCtrl.majAndReversion" name="reversion" checked>Mise à jour
+                <input type="radio" value="maj" ng-model="mainCtrl.majAndReversion" name="reversion" checked translate>Mise à jour
             </label>
             <label class="radio-inline">
-                <input type="radio" value="twice" ng-model="mainCtrl.majAndReversion" name="reversion">Les 2
+                <input type="radio" value="twice" ng-model="mainCtrl.majAndReversion" name="reversion" translate>Les 2
             </label>
-            
+
         </div>
     </div>
     <!-- Numéros de version -->
@@ -86,7 +86,7 @@
         <sem-field ng-repeat-end sem-type="text" sem-label="{{ ::$first ? dc.label : ' ' }}" sem-placeholder="{{::label}}" sem-label-class="col-xs-4 col-lg-2"
             sem-field-class="col-xs-8 col-lg-10" sem-model="property.value" mandatory="dc.mandatory" ng-readonly="!mainCtrl.meta.dc"></sem-field>
     </div>
-    
+
 </div>
 <div class="modal-footer">
     <button type="button" class="btn btn-sem2" ng-click="mainCtrl.close()" translate>Annuler et fermer la fenêtre</button>

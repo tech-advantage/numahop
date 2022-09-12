@@ -139,6 +139,13 @@
                         params: {
                             arkurl: true
                         }
+                    },
+                    massExport: {
+                        method: "GET",
+                        responseType: 'arraybuffer',
+                        params: {
+                            export: true, // telechargement local
+                        }
                     }
                 });
 

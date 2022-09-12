@@ -1,5 +1,7 @@
 package fr.progilone.pgcn.service.project.mapper;
 
+import fr.progilone.pgcn.domain.dto.exportftpconfiguration.ExportFTPConfigurationDTO;
+import fr.progilone.pgcn.service.exportftpconfiguration.mapper.ExportFTPConfigurationMapper;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
@@ -28,6 +30,7 @@ import fr.progilone.pgcn.service.workflow.mapper.SimpleWorkflowMapper;
                 LotMapper.class,
                 SimpleTrainMapper.class,
                 SimpleFTPConfigurationMapper.class,
+                ExportFTPConfigurationMapper.class,
                 SimpleCheckConfigurationMapper.class,
                 SimpleViewsFormatConfigurationMapper.class,
                 SimpleWorkflowMapper.class,
@@ -46,7 +49,7 @@ public interface ProjectMapper {
 
     @Mappings({@Mapping(target = "nbDocUnits", ignore = true)})
     StatisticsProjectDTO projectToStatProjectDTO(Project project);
-    
+
     @AfterMapping
     default void calculateDocUnits(Project project, @MappingTarget StatisticsProjectDTO dto) {
         dto.setNbDocUnits(project.getDocUnits().size());

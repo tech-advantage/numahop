@@ -136,7 +136,7 @@
 
             $scope.index = function () {
                 SearchSrvc.index();
-                MessageSrvc.addSuccess("L'indexation a commencé");
+                MessageSrvc.addSuccess(gettext("L'indexation a commencé"));
             };
         });
 })();

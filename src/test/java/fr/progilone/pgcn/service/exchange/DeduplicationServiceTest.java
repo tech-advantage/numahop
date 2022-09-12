@@ -51,7 +51,7 @@ public class DeduplicationServiceTest {
 
         final DocUnit duplDocUnit2 = new DocUnit();
         duplDocUnit2.setIdentifier("30e62d6b-cfd2-4c02-80e6-879a2aa1ad31");
-
+    
         when(docUnitRepository.getOneByPgcnIdAndState(docUnit.getPgcnId(), DocUnit.State.AVAILABLE)).thenReturn(duplDocUnit);
         when(docUnitRepository.searchDuplicates(eq(docUnit),
                                                 anyListOf(String.class),

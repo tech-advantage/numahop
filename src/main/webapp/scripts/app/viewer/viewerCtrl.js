@@ -411,12 +411,12 @@
 
         /**
          * Chargement metadonnees de chaque page.
-         * 
+         *
          * 2 metadatas si mode bookView
-         * 
+         *
          * En mode double, quelque soit le déplacement (ascendant ou descendant), on garde le même ordre pour les metadata
          * -> Index de la seconde page à n+1
-         * 
+         *
          */
         function loadPageMetaData(pageNumber) {
             $scope.data.metadataFile = $scope.metadata[pageNumber - 1];
@@ -858,7 +858,7 @@
 
         /**
          *  Chargement du fichier master.
-         *  
+         *
          * @param secondPage si true, concerne la seconde page d'une vue double
          */
         function downloadMaster(secondPage) {
@@ -872,7 +872,7 @@
             }
             // Index du metadata associé à la page courante
             var meta = $scope.metadata[pageNumber - 1];
-            
+
             var url;
             if (angular.isDefined($scope.digitalDocument)) {
                 url = 'api/rest/viewer/document/' + $scope.digitalDocument.identifier + '/master/';
@@ -923,7 +923,7 @@
                 $http.get(url, {responseType: 'arraybuffer'} )
                     .then(function (response) {
                         if (response.data.byteLength === 0) {
-                            MessageSrvc.addWarn("Aucune table des matières initiale", null, false);
+                            MessageSrvc.addWarn(gettext("Aucune table des matières initiale"), null, false);
                         } else {
                             var filename = $scope.digitalDocument.docUnit.pgcnId;
                             if(response.headers("content-type") != "application/xml"){

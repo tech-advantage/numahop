@@ -63,6 +63,39 @@ public class DocUnitWorkflowRepositoryImpl implements DocUnitWorkflowRepositoryC
                                                           final Pageable pageable) {
 
         final QDocUnitWorkflow qDocUnitWorkflow = QDocUnitWorkflow.docUnitWorkflow;
+
+        final JPQLQuery baseQuery = createQueryToFindDocUnitWorkFlows(libraries, projects, projetActive, lots, trains, pgcnId, states, status, users, fromDate, toDate);
+
+        // Nombre de résultats
+        final long total = baseQuery.distinct().count();
+
+        // Pagination
+        if (pageable != null) {
+            baseQuery.offset(pageable.getOffset()).limit(pageable.getPageSize());
+        }
+        // Tri
+        baseQuery.orderBy(qDocUnitWorkflow.docUnit.pgcnId.asc());
+        // Résultats
+        final List<DocUnitWorkflow> results = baseQuery.distinct().list(qDocUnitWorkflow);
+
+        return new PageImpl<>(results, pageable, total);
+    }
+
+    @Override
+    public List<DocUnitWorkflow> findDocUnitProgressStatsPending(List<String> libraries, List<String> projects, boolean projetActive, List<String> lots, List<String> trains, String pgcnId, List<WorkflowStateKey> states, List<WorkflowStateStatus> status, List<String> users, LocalDate fromDate, LocalDate toDate) {
+        final QDocUnitWorkflow qDocUnitWorkflow = QDocUnitWorkflow.docUnitWorkflow;
+        final JPQLQuery baseQuery = createQueryToFindDocUnitWorkFlows(libraries, projects, projetActive, lots, trains, pgcnId, states, status, users, fromDate, toDate);
+
+        // Tri
+        baseQuery.orderBy(qDocUnitWorkflow.docUnit.pgcnId.asc());
+        // Résultats
+        final List<DocUnitWorkflow> results = baseQuery.distinct().list(qDocUnitWorkflow);
+
+        return results;
+    }
+
+    private JPQLQuery createQueryToFindDocUnitWorkFlows(List<String> libraries, List<String> projects, boolean projetActive, List<String> lots, List<String> trains, String pgcnId, List<WorkflowStateKey> states, List<WorkflowStateStatus> status, List<String> users, LocalDate fromDate, LocalDate toDate) {
+        final QDocUnitWorkflow qDocUnitWorkflow = QDocUnitWorkflow.docUnitWorkflow;
         final QDocUnitState qDocUnitState = QDocUnitState.docUnitState;
         final QWorkflowModelState qWorkflowModelState = QWorkflowModelState.workflowModelState;
         final QDocUnit qDocUnit = QDocUnit.docUnit;
@@ -115,13 +148,13 @@ public class DocUnitWorkflowRepositoryImpl implements DocUnitWorkflowRepositoryC
 
         // provider, library
         QueryDSLBuilderUtils.addAccessFilters(builder,
-                                              qDocUnit.library,
-                                              qDocUnit.lot,
-                                              qDocUnit.project,
-                                              qAssociatedLibrary,
-                                              qAssociatedUser,
-                                              libraries,
-                                              null);
+            qDocUnit.library,
+            qDocUnit.lot,
+            qDocUnit.project,
+            qAssociatedLibrary,
+            qAssociatedUser,
+            libraries,
+            null);
 
         // Utilisateurs
         if (CollectionUtils.isNotEmpty(users)) {
@@ -129,37 +162,26 @@ public class DocUnitWorkflowRepositoryImpl implements DocUnitWorkflowRepositoryC
             final QUser qUser = QUser.user;
             // les utilisateurs recherchés font partie des groupes de workflow des étapes
             builder.and(new JPASubQuery().from(qUser)
-                                         .innerJoin(qUser.groups, qWorkflowGroup)
-                                         .where(new BooleanBuilder().and(qUser.login.in(users)).and(qWorkflowGroup.eq(qWorkflowModelState.group)))
-                                         .exists());
+                .innerJoin(qUser.groups, qWorkflowGroup)
+                .where(new BooleanBuilder().and(qUser.login.in(users)).and(qWorkflowGroup.eq(qWorkflowModelState.group)))
+                .exists());
         }
 
         final JPQLQuery baseQuery = new JPAQuery(em);
         baseQuery.from(qDocUnitWorkflow)
-                 .innerJoin(qDocUnitWorkflow.docUnit, qDocUnit)
-                 .leftJoin(qDocUnitWorkflow.states, qDocUnitState)
-                 .leftJoin(qDocUnitState.modelState, qWorkflowModelState)
-                 .leftJoin(qDocUnit.records)
-                 .leftJoin(qDocUnit.project, qProject)
-                 .leftJoin(qProject.associatedLibraries, qAssociatedLibrary)
-                 .leftJoin(qProject.associatedUsers, qAssociatedUser)
-                 .leftJoin(qDocUnit.lot, qLot)
-                 .fetchAll()
-                 .where(builder.getValue());
+            .innerJoin(qDocUnitWorkflow.docUnit, qDocUnit)
+            .leftJoin(qDocUnitWorkflow.states, qDocUnitState)
+            .leftJoin(qDocUnitState.modelState, qWorkflowModelState)
+            .leftJoin(qDocUnit.records)
+            .leftJoin(qDocUnit.project, qProject)
+            .leftJoin(qProject.associatedLibraries, qAssociatedLibrary)
+            .leftJoin(qProject.associatedUsers, qAssociatedUser)
+            .leftJoin(qDocUnit.lot, qLot)
+            .fetchAll()
+            .where(builder.getValue());
 
-        // Nombre de résultats
-        final long total = baseQuery.distinct().count();
-
-        // Pagination
-        if (pageable != null) {
-            baseQuery.offset(pageable.getOffset()).limit(pageable.getPageSize());
-        }
-        // Tri
-        baseQuery.orderBy(qDocUnitWorkflow.docUnit.pgcnId.asc());
         // Résultats
-        final List<DocUnitWorkflow> results = baseQuery.distinct().list(qDocUnitWorkflow);
-
-        return new PageImpl<>(results, pageable, total);
+        return baseQuery;
     }
 
     @Override

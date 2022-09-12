@@ -28,6 +28,7 @@ import java.util.zip.ZipOutputStream;
 
 import javax.xml.bind.JAXBException;
 
+import fr.progilone.pgcn.domain.administration.ExportFTPDeliveryFolder;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -82,16 +83,16 @@ public class FileCleaningManager {
 
     @Value("${instance.libraries}")
     private String[] instanceLibraries;
-      
+
     @Value("${services.cines.cache}")
     private String cinesCacheDir;
-    
+
     @Value("${services.omeka.cache}")
     private String omekaCacheDir;
-    
+
     @Value("${services.ftpexport.cache}")
     private String ftpexportCacheDir;
-    
+
 
     private final DeliveryService deliveryService;
     private final BinaryStorageManager binaryStorageManager;
@@ -129,7 +130,7 @@ public class FileCleaningManager {
                                final ExportMetsService exportMetsService,
                                final UIBibliographicRecordService uiBibliographicRecordService,
                                final TransactionService transactionService) {
-        
+
         this.deliveryService = deliveryService;
         this.binaryStorageManager = binaryStorageManager;
         this.filesGestionConfigService = filesGestionConfigService;
@@ -186,26 +187,26 @@ public class FileCleaningManager {
         LOG.info("Lancement du Job cleanTemporaryFilesCron...");
         // nettoie repertoires et fichiers temporaires dates de  + de 24h (trt à 2h du mat / defaut)
         final long limit = System.currentTimeMillis() - (24 * 3600000L);
-        
-        // 1 disk space per library 
+
+        // 1 disk space per library
         Arrays.asList(instanceLibraries).forEach(lib -> {
             final Path tmpRoot = Paths.get(binaryStorageManager.getTmpDir(lib).getPath());
             purgeDirectory(tmpRoot, limit);
         });
     }
-    
-    
+
+
     /**
      * Purge des fichiers temporaires.
      */
     @Scheduled(cron = "${cron.cleanExportCaches}")
     public void cleanCacheDirsCron() {
-        
+
         LOG.info("Lancement du Job cleanCacheDirsCron ...");
         // nettoie repertoires de cache d'export dates de  + de 24h
         final long limit = System.currentTimeMillis() - (24 * 3600000L);
-        
-        // 1 disk space per library 
+
+        // 1 disk space per library
         Arrays.asList(instanceLibraries).forEach(lib -> {
             // purge caches CINES - OMEKA - FTPEXPORT
             purgeDirectory(Paths.get(cinesCacheDir, lib), limit);
@@ -213,13 +214,13 @@ public class FileCleaningManager {
             purgeDirectory(Paths.get(ftpexportCacheDir, lib), limit);
         });
     }
-    
-    
+
+
     /**
      * Purge directory.
      */
     private void purgeDirectory(final Path dirRoot, final long timeLimit) {
-        
+
         try (final Stream<Path> balad = Files.walk(dirRoot, FileVisitOption.FOLLOW_LINKS)) {
             balad.sorted(Comparator.reverseOrder())
                  .filter(p -> !p.equals(dirRoot))
@@ -231,7 +232,7 @@ public class FileCleaningManager {
             LOG.error("Erreur lors de la purge du dossier {} ", dirRoot.getFileName(),  e);
         }
     }
-    
+
 
     /**
      * Purge / sauvegarde des fichiers apres archivage.
@@ -253,7 +254,7 @@ public class FileCleaningManager {
                         LOG.debug("Suppression / sauvegarde des fichiers après clôture du projet {}", p.getName());
                         final Map<String, List<DocPage>> pages = docPageService.getPagesByProjectId(p.getIdentifier());
                         final String proj = StringUtils.isNotBlank(p.getName()) ? p.getName() : p.getIdentifier();
-                        
+
                         if (processProjectFiles(conf, pages, proj)) {
                             projectService.setFilesProjectArchived(p.getIdentifier());
                             cleanTempFiles(conf, proj);
@@ -294,7 +295,7 @@ public class FileCleaningManager {
         final String libraryId = conf.getLibrary().getIdentifier();
         boolean processed = true;
         for (final String pgcnId : pages.keySet()) {
-            
+
             final List<String> pagesId =
                     pages.get(pgcnId).stream().filter(pg -> pg.getNumber() != null).map(AbstractDomainObject::getIdentifier).collect(Collectors.toList());
                 final String pdfPageId =
@@ -305,17 +306,17 @@ public class FileCleaningManager {
                 final List<StoredFile> xtras =
                     binaryRepository.getAllByPageIdentifiersAndFileFormat(pagesId, ViewsFormatConfiguration.FileFormat.XTRAZOOM);
                 suppressFiles(xtras, libraryId);
-                
+
                 try {
                     prepareSaving(conf, project, pgcnId, pagesId, pdfPageId);
                 } catch(final IOException e) {
                     LOG.error("Error in prepare saving for document {}", pgcnId, e);
                     // let's continue....
                 }
-                
-                processed = processed 
+
+                processed = processed
                         && compressSavedFiles(conf, project, pgcnId);
-                
+
                 if (processed && !conf.isDeleteMaster()) {
                     // si on conserve les masters, on nettoie l'ocr ds les storedFiles.
                     cleanOcr(pgcnId, pagesId);
@@ -323,14 +324,14 @@ public class FileCleaningManager {
         }
         return processed;
     }
-    
+
     /**
      *
      */
     private void cleanOcr(final String pgcnId, final List<String> pagesId) {
-               
+
         transactionService.executeInNewTransaction(() -> {
-            
+
                 // on nettoie au moins l'ocr devenu inutile qui peut etre tres lourd...
                 final List<StoredFile> masters =
                         binaryRepository.getAllByPageIdentifiersAndFileFormat(pagesId, ViewsFormatConfiguration.FileFormat.MASTER);
@@ -338,7 +339,7 @@ public class FileCleaningManager {
                 storedFileRepository.save(cleanedSfs);
         });
     }
-    
+
 
     /**
      * Etape de preparation à la sauvegarde.
@@ -356,22 +357,22 @@ public class FileCleaningManager {
                               final List<String> pagesId,
                               final String pdfPageId) throws IOException {
 
-        if (!conf.isSaveMaster() && !conf.isDeleteMaster() 
-                && !conf.isSavePdf() && !conf.isDeletePdf() 
-                && !conf.isSavePrint() && !conf.isDeletePrint()  
-                && !conf.isSaveView() && !conf.isDeleteView() 
-                && !conf.isSaveThumb() && !conf.isDeleteThumb()  
+        if (!conf.isSaveMaster() && !conf.isDeleteMaster()
+                && !conf.isSavePdf() && !conf.isDeletePdf()
+                && !conf.isSavePrint() && !conf.isDeletePrint()
+                && !conf.isSaveView() && !conf.isDeleteView()
+                && !conf.isSaveThumb() && !conf.isDeleteThumb()
                 && !conf.isSaveAipSip()) {
             // Aucune sauvegarde programmée, on quitte..
             return;
         }
-        
+
         final String libraryId = conf.getLibrary().getIdentifier();
         final Path dest;
         if (conf.isUseExportFtp()) {
             // vers le ftp parametre ds 'Configurations exports FTP'
             dest = Paths.get(ftpexportCacheDir, libraryId, project, pgcnId);
-            
+
         } else {
             // ds 1 dir sur le serveur
             if (StringUtils.isNotBlank(conf.getDestinationDir())) {
@@ -380,17 +381,17 @@ public class FileCleaningManager {
                 dest = Paths.get(bm.getTmpDir(libraryId).getAbsolutePath(), project, pgcnId);
             }
         }
-        
+
         if (!dest.toFile().mkdirs()) {
             // Pb de droits d'ecriture
             LOG.error("Creation du repertoire impossible dans {} - Probleme de permissions ? ", dest.toAbsolutePath());
             LOG.trace("Sauvegarde de {}/{} annulée", project, pgcnId);
             return;
-        }      
+        }
 
         final List<StoredFile> masters =
                 binaryRepository.getAllByPageIdentifiersAndFileFormat(pagesId, ViewsFormatConfiguration.FileFormat.MASTER);
-        
+
         if (conf.isSaveMaster() || conf.isDeleteMaster()) {
             if (conf.isSaveMaster()) {
                 saveFiles(masters, conf.isSaveMaster(), dest, ViewsFormatConfiguration.FileFormat.MASTER, libraryId);
@@ -440,23 +441,23 @@ public class FileCleaningManager {
                 suppressFiles(thumbnails, libraryId);
             }
         }
-        
+
         final DocUnit docUnit = docUnitRepository.getOneByPgcnId(pgcnId);
         if (docUnit != null) {
-            
+
             if (conf.isSaveAipSip()) {
                     final List<File> files = new ArrayList<>();
                     files.add(cinesRequestHandlerService.retrieveAip(docUnit.getIdentifier()));
                     files.add(cinesRequestHandlerService.retrieveSip(docUnit.getIdentifier(), false));
                     saveFiles(files, dest, "aip_sip");
             }
-            
+
             // mets
             final BibliographicRecord record = docUnit.getRecords().iterator().next();
             final BibliographicRecordDcDTO noticeDto = uiBibliographicRecordService.getOneDc(record.getIdentifier());
-            
+
             final Path metsPath = Files.createFile(dest.resolve(MetaDatasCheckService.METS_XML_FILE));
-            
+
             final List<CheckSummedStoredFile> checkSums = new ArrayList<>();
             masters.stream()
                 .filter(sf -> sf.getPage().getNumber() != null)
@@ -466,16 +467,16 @@ public class FileCleaningManager {
                     try {
                         checkSums.add(exportMetsService.getCheckSummedStoredFile(sf, sourceFile));
                     } catch(final IOException e) {
-                        
+
                     }
                 });
-            
+
             try (final OutputStream out = new FileOutputStream(metsPath.toFile()); final OutputStream bufOut = new BufferedOutputStream(out)) {
                 exportMetsService.writeMetadata(bufOut, docUnit, noticeDto, false, checkSums);
                 bufOut.flush();
             } catch (final JAXBException | SAXException e) {
                 LOG.error("Error when generating mets file for doc {}", docUnit.getPgcnId());
-            } 
+            }
         }
 
     }
@@ -487,7 +488,7 @@ public class FileCleaningManager {
      * @param formatToSave
      * @param dest
      */
-    public void saveFiles(final List<StoredFile> sfs, final boolean formatToSave, final Path dest, 
+    public void saveFiles(final List<StoredFile> sfs, final boolean formatToSave, final Path dest,
                           final ViewsFormatConfiguration.FileFormat format, final String libraryId) {
 
         if (formatToSave) {
@@ -497,15 +498,15 @@ public class FileCleaningManager {
 
                 final Map<String, File> files = new HashMap<>();
                 sfs.forEach(sf -> {
-                    
+
                     if (ViewsFormatConfiguration.FileFormat.MASTER == format) {
                         files.put(sf.getFilename(), bm.getFileForStoredFile(sf, libraryId));
                     } else {
-                        final String fileName = sf.getFilename().substring(0, sf.getFilename().lastIndexOf(".")+1) 
+                        final String fileName = sf.getFilename().substring(0, sf.getFilename().lastIndexOf(".")+1)
                                         + ImageUtils.FORMAT_JPG;
                         files.put(fileName, bm.getFileForStoredFile(sf, libraryId));
                     }
-                    
+
                 });
 
                 files.forEach((k, f) -> {
@@ -564,14 +565,14 @@ public class FileCleaningManager {
      * @param project
      */
     public boolean compressSavedFiles(final FilesGestionConfig conf, final String project, final String pgcnId) {
-        
-        
+
+
         final String libraryId = conf.getLibrary().getIdentifier();
         final Path dest;
         if (conf.isUseExportFtp()) {
             // vers le ftp parametre ds 'Configurations exports FTP'
             dest = Paths.get(ftpexportCacheDir, libraryId, project, pgcnId);
-            
+
         } else {
             // ds 1 dir sur le serveur
             dest = Paths.get(conf.getDestinationDir(), project, pgcnId);
@@ -614,8 +615,8 @@ public class FileCleaningManager {
         boolean exported = false;
         if (zipped) {
             // export
-            if (conf.isUseExportFtp()) {         
-                 exported = ftpExport(conf, zipFile.toPath());         
+            if (conf.isUseExportFtp()) {
+                 exported = ftpExport(conf, zipFile.toPath());
             }
             // Cleaning zip
             if (exported && zipFile.exists() && zipFile.canWrite()) {
@@ -624,21 +625,21 @@ public class FileCleaningManager {
         }
         return zipped;
     }
-    
-    
+
+
     private void cleanTempFiles(final FilesGestionConfig conf, final String project) {
-        
+
         if (conf.isUseExportFtp()) {
-        
+
             final String libraryId = conf.getLibrary().getIdentifier();
             final Path dest;
-            
+
             // vers le ftp parametre ds 'Configurations exports FTP'
-            dest = Paths.get(ftpexportCacheDir, libraryId, project);   
-            
+            dest = Paths.get(ftpexportCacheDir, libraryId, project);
+
             // Cleaning tmp files
             try (final Stream<Path> stream = Files.walk(dest, FileVisitOption.FOLLOW_LINKS)) {
-    
+
                 stream.sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
                 stream.close();
             } catch (final IOException | SecurityException e) {
@@ -646,23 +647,22 @@ public class FileCleaningManager {
             }
         }
     }
-    
-    
+
+
     private boolean ftpExport(final FilesGestionConfig conf, final Path zipPath) {
-        // recup conf ftp active
-        final Optional<ExportFTPConfiguration> ftpConf = exportFTPConfigurationRepository.findByLibraryAndActive(conf.getLibrary(), true)
-                                                                                        .stream().findFirst();
-        if (ftpConf.isPresent()) {
-                final ExportFTPConfiguration config = ftpConf.get();
+        ExportFTPConfiguration confExport = conf.getActiveExportFTPConfiguration();
+        ExportFTPDeliveryFolder deliveryFolder = conf.getActiveExportFTPDeliveryFolder();
+
+        if (confExport != null && deliveryFolder != null) {
                 final SftpConfiguration sftpConf = new SftpConfiguration();
                 sftpConf.setActive(true);
-                sftpConf.setHost(config.getStorageServer());
-                sftpConf.setPort(Integer.valueOf(config.getPort()));
-                sftpConf.setUsername(config.getLogin());
-                sftpConf.setTargetDir(config.getAddress());
+                sftpConf.setHost(confExport.getStorageServer());
+                sftpConf.setPort(Integer.valueOf(confExport.getPort()));
+                sftpConf.setUsername(confExport.getLogin());
+                sftpConf.setTargetDir(confExport.getAddress().concat(deliveryFolder.getName()));
 
                 try {
-                    sftpConf.setPassword(cryptoService.encrypt(config.getPassword()));
+                    sftpConf.setPassword(cryptoService.encrypt(confExport.getPassword()));
                     sftpService.sftpPut(sftpConf, zipPath);
                 } catch (final PgcnTechnicalException e) {
                     LOG.error("Erreur Export FTP du fichier {}", zipPath.getFileName(), e);
@@ -720,17 +720,17 @@ public class FileCleaningManager {
             }
         }
     }
-    
-    
+
+
     /**
-     * Delete files with no line in DB storedFile. 
-     * 
+     * Delete files with no line in DB storedFile.
+     *
      * @param libraryId
      */
     public void cleanOrphanFiles(final String libraryId) {
-        
+
         bm.deleteOrphanFiles(libraryId);
         // todo delete empty directories...
-        
+
     }
 }

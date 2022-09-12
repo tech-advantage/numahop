@@ -17,7 +17,7 @@
                     <div class="panel panel-cataloging-sec">
                         <div class="panel-heading">
                             <a class="pull-left" ng-click="repCtrl.reportAcc=!repCtrl.reportAcc" data-toggle="collapse" data-target="#report-collapse">
-                                <span class="glyphicon-halflings" 
+                                <span class="glyphicon-halflings"
                                       ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[repCtrl.reportAcc]">&nbsp;</span>
                             </a>
                             <div class="pull-right">
@@ -115,7 +115,7 @@
                     <div class="panel panel-cataloging-sec">
                         <div class="panel-heading">
                             <a class="pull-left" ng-click="accordion_list=!accordion_list" data-toggle="collapse" data-target="#detail-list-collapse">
-                                <span class="glyphicon-halflings" 
+                                <span class="glyphicon-halflings"
                                       ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordion_list]">&nbsp;</span>
                             </a>
                             <span class="badge badge-info pull-right" style="padding: 3px 7px; min-width: 10px">{{ repCtrl.details.length }}</span>
@@ -142,19 +142,19 @@
                 </div>
 
                 <!-- État initial -->
-                <div class="col-xs-12 col-sm-6 col-lg-3 padding-b10" 
-                     ng-init="detail = repCtrl.details[0]; accordion_init=false" 
+                <div class="col-xs-12 col-sm-6 col-lg-3 padding-b10"
+                     ng-init="detail = repCtrl.details[0]; accordion_init=false"
                      ng-if="repCtrl.details.length > 0 && repCtrl.currentDetail.identifier !== repCtrl.details[0].identifier">
 
                     <div class="panel" ng-class="{true: 'panel-loan', false: 'panel-cataloging-sec'}[repCtrl.isInitDetailSelected()]">
                         <div class="panel-heading">
                             <a class="pull-left" ng-click="accordion_init=!accordion_init" data-toggle="collapse" data-target="#detail-0-collapse">
-                                <span class="glyphicon-halflings" 
+                                <span class="glyphicon-halflings"
                                       ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordion_init]">&nbsp;</span>
                             </a>
                             <div class="pull-right">
                                 <button type="button" class="btn btn-sem3 btn-xs" uib-tooltip="{{::'Modifier' | translate}}"
-                                        ng-click="detailForm.$show()" ng-show="!detailForm.$visible && repCtrl.isInitDetailSelected() 
+                                        ng-click="detailForm.$show()" ng-show="!detailForm.$visible && repCtrl.isInitDetailSelected()
                                         && !repCtrl.isStateValidated(detail.type)" sem-roles-allowed="COND_REPORT_HAB2">
                                     <span class="glyphicon-regular edit"></span>
                                 </button>
@@ -166,7 +166,7 @@
                         <div id="detail-0-collapse" class="collapse">
                             <div class="panel-body">
                                 <numa-editable-field type="readonly" value="{{ ::detail.date | moment:'L' }}"></numa-editable-field>
-                                
+
                                 <div class="margin-t10"><strong translate>Rédacteur bibliothèque</strong></div>
                                 <numa-editable-field type="readonly" value="{{ ::detail.libWriterName }}"></numa-editable-field>
                                 <numa-editable-field type="readonly" value="{{ ::detail.libWriterFunction }}"></numa-editable-field>
@@ -188,24 +188,24 @@
                     <div class="panel panel-loan">
                         <div class="panel-heading">
                             <a class="pull-left" ng-click="accordion_current=!accordion_current" data-toggle="collapse" data-target="#detail-current-collapse">
-                                <span class="glyphicon-halflings" 
+                                <span class="glyphicon-halflings"
                                       ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordion_current]">&nbsp;</span>
                             </a>
                             <div class="pull-right">
                                 <button type="button" class="btn btn-sem3 btn-xs" uib-tooltip="{{::'Modifier' | translate}}"
-                                        ng-click="detailForm.$show()" 
-                                        ng-show="!detailForm.$visible && !repCtrl.isStateValidated(repCtrl.currentDetail.type)" 
+                                        ng-click="detailForm.$show()"
+                                        ng-show="!detailForm.$visible && !repCtrl.isStateValidated(repCtrl.currentDetail.type)"
                                         sem-roles-allowed="COND_REPORT_HAB2">
                                     <span class="glyphicon-regular edit"></span>
-                                </button>          
+                                </button>
                                 <button type="button" class="btn btn-sem3 btn-xs" uib-tooltip="{{::'Supprimer' | translate}}"
                                         ng-click="repCtrl.deleteDetail(repCtrl.currentDetail)"
-                                        ng-show="!detailForm.$visible && !repCtrl.isInitDetailSelected() && !repCtrl.isStateValidated(repCtrl.currentDetail.type) && !(repCtrl.isUserUnauthorized() || repCtrl.isPrestaUnauthorized())" 
+                                        ng-show="!detailForm.$visible && !repCtrl.isInitDetailSelected() && !repCtrl.isStateValidated(repCtrl.currentDetail.type) && !(repCtrl.isUserUnauthorized() || repCtrl.isPrestaUnauthorized())"
                                         sem-roles-allowed="COND_REPORT_HAB3">
                                     <span class="glyphicon-halflings glyphicon-trash"></span>
                                 </button>
                             </div>
-                            
+
                             <div uib-tooltip="{{ ::repCtrl.types[repCtrl.currentDetail.type].description }}">
                                  {{ repCtrl.currentDetail.position }}. <strong>{{ repCtrl.types[repCtrl.currentDetail.type].label }}</strong>
                                  &nbsp;{{repCtrl.currentDetail.date | moment:"L"}}
@@ -213,43 +213,43 @@
                         </div>
                         <div id="detail-current-collapse" class="collapse">
                             <div class="panel-body">
-                                <numa-editable-field placeholder="{{::'Date' | translate}}" type="datepicker" model="repCtrl.currentDetail.date" form="detailForm" 
+                                <numa-editable-field placeholder="{{::'Date' | translate}}" type="datepicker" model="repCtrl.currentDetail.date" form="detailForm"
                                         numa-readonly="repCtrl.formRO || repCtrl.isUserUnauthorized() || repCtrl.isPrestaUnauthorized()"></numa-editable-field>
                                 <div class="margin-t10" ng-if="repCtrl.currentDetail.type !== 'DIGITALIZATION' && repCtrl.currentDetail.type !== 'LIBRARY_BACK'">
                                     <strong translate>Rédacteur bibliothèque</strong>
                                 </div>
                                 <div ng-if="repCtrl.currentDetail.type !== 'DIGITALIZATION' && repCtrl.currentDetail.type !== 'LIBRARY_BACK'">
-                                <numa-editable-field placeholder="{{::'Nom' | translate}}" model="repCtrl.currentDetail.libWriterName" form="detailForm" 
+                                <numa-editable-field placeholder="{{::'Nom' | translate}}" model="repCtrl.currentDetail.libWriterName" form="detailForm"
                                                      numa-readonly="repCtrl.formRO || repCtrl.isUserUnauthorized() || repCtrl.isPrestaUnauthorized()"></numa-editable-field>
-                                <numa-editable-field placeholder="{{::'Qualité' | translate}}" model="repCtrl.currentDetail.libWriterFunction" form="detailForm" 
+                                <numa-editable-field placeholder="{{::'Qualité' | translate}}" model="repCtrl.currentDetail.libWriterFunction" form="detailForm"
                                                      numa-readonly="repCtrl.formRO || repCtrl.isUserUnauthorized() || repCtrl.isPrestaUnauthorized()"></numa-editable-field>
                                 </div>
                                 <div class="margin-t10" ng-if="repCtrl.currentDetail.type === 'DIGITALIZATION' || repCtrl.currentDetail.type === 'LIBRARY_BACK'">
                                     <strong translate>Rédacteur prestataire</strong>
                                 </div>
                                 <div ng-if="repCtrl.currentDetail.type === 'DIGITALIZATION' || repCtrl.currentDetail.type === 'LIBRARY_BACK'">
-                                <numa-editable-field placeholder="{{::'Nom' | translate}}" model="repCtrl.currentDetail.provWriterName" form="detailForm" 
+                                <numa-editable-field placeholder="{{::'Nom' | translate}}" model="repCtrl.currentDetail.provWriterName" form="detailForm"
                                                      numa-readonly="repCtrl.formRO || repCtrl.isUserUnauthorized() || repCtrl.isPrestaUnauthorized()"></numa-editable-field>
-                                <numa-editable-field placeholder="{{::'Qualité' | translate}}" model="repCtrl.currentDetail.provWriterFunction" form="detailForm" 
+                                <numa-editable-field placeholder="{{::'Qualité' | translate}}" model="repCtrl.currentDetail.provWriterFunction" form="detailForm"
                                                      numa-readonly="repCtrl.formRO || repCtrl.isUserUnauthorized() || repCtrl.isPrestaUnauthorized()"></numa-editable-field>
                                 </div>
                                 <div class="margin-t10"><strong translate>Commentaire</strong></div>
-                                <numa-editable-field type="textarea" model="repCtrl.currentDetail.comment" form="detailForm" 
+                                <numa-editable-field type="textarea" model="repCtrl.currentDetail.comment" form="detailForm"
                                                       numa-readonly="repCtrl.formRO || repCtrl.isUserUnauthorized() || repCtrl.isPrestaUnauthorized()"></numa-editable-field>
-                                
+
                                 <div ng-if="repCtrl.isInitDetailSelected() && repCtrl.isStateValidated('PROVIDER_RECEPTION')">
                                     <div class="margin-t10"><strong translate>Validé par </strong></div>
-                                    <numa-editable-field type="textarea" model="repCtrl.currentDetail.provWriterName" form="detailForm" 
+                                    <numa-editable-field type="textarea" model="repCtrl.currentDetail.provWriterName" form="detailForm"
                                                       numa-readonly="true"></numa-editable-field>
                                 </div>
-                                                                   
+
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Nouvel état -->
-                <div class="col-xs-12 col-sm-6 col-lg-3 padding-t20" ng-if="isAuthorized(userRoles.COND_REPORT_HAB1) 
+                <div class="col-xs-12 col-sm-6 col-lg-3 padding-t20" ng-if="isAuthorized(userRoles.COND_REPORT_HAB1)
                                 && (!repCtrl.isUserPresta || repCtrl.parent.expectedProviderLogin === repCtrl.loginUser)">
                     <div class="btn-group" uib-dropdown>
                         <button type="button" class="btn btn-sem3 btn-xs" uib-dropdown-toggle>
@@ -264,15 +264,15 @@
                 </div>
                 <div style="align: right;">
                     <!-- Confirmation du constat initial par le prestataire -->
-                    <button type="button" class="btn btn-sem2 margin-l50" 
+                    <button type="button" class="btn btn-sem2 margin-l50"
                             ng-if="repCtrl.isUserPresta && repCtrl.parent.expectedProviderLogin === repCtrl.loginUser && repCtrl.isInitDetailSelected()
-                                    && repCtrl.canConfirmCondReport() && repCtrl.isStateValidated('LIBRARY_LEAVING') && !repCtrl.isStateValidated('PROVIDER_RECEPTION')" 
+                                    && repCtrl.canConfirmCondReport() && repCtrl.isStateValidated('LIBRARY_LEAVING') && !repCtrl.isStateValidated('PROVIDER_RECEPTION')"
                             ng-click="repCtrl.confirmValidatedCondReport()" ng-disabled="repCtrl.formRO">
                             <span class="glyphicon-halflings glyphicon-check"></span> {{::'Valider le constat initial' | translate}}
                     </button>
                     <div class="padding-b5">
 	                    <!-- Validation du constat -->
-	                    <button type="button" class="btn btn-sem2 margin-l50" 
+	                    <button type="button" class="btn btn-sem2 margin-l50"
 	                            ng-if="!detailForm.$visible && repCtrl.loaded && !repCtrl.isStateValidated(repCtrl.currentDetail.type) && repCtrl.canValidateCondReport()"
 	                            ng-click="repCtrl.validateCondReport(false)" ng-disabled="repCtrl.formRO" >
 	                            <span class="glyphicon-halflings glyphicon-check"></span> {{::'Valider' | translate}}
@@ -280,19 +280,18 @@
                     </div>
                     <div>
 	                    <!-- Validation du constat + propagation aux UD filles -->
-	                    <button type="button" class="btn btn-sem2 margin-l50" 
+	                    <button type="button" class="btn btn-sem2 margin-l50"
 	                            ng-if="!detailForm.$visible && repCtrl.loaded && repCtrl.canPropagate() && !repCtrl.isStateValidated(repCtrl.currentDetail.type) && repCtrl.canValidateCondReport()"
 	                            ng-click="repCtrl.validateCondReport(true)" ng-disabled="repCtrl.formRO" >
 	                            <span class="glyphicon-halflings glyphicon-check"></span> {{::'Valider et propager' | translate}}
 	                    </button>
                     </div>
-                </div>    
+                </div>
             </div>
 
             <!-- Détails des états -->
             <div ng-if="repCtrl.loaded && repCtrl.currentDetail.identifier" ng-hide="reportForm.$visible"
-                    ng-init="cantModif = repCtrl.isUserUnauthorized() || repCtrl.isPrestaUnauthorized();                             
-                        isReportValidated = repCtrl.isStateValidated(repCtrl.currentDetail.type)">
+                    ng-init="repCtrl.initCantModifAndIsReportValidated()">
                 <!-- Description -->
                 <div class="formBlock margin-b20" style="margin-top: 10px">
                     <div class="formBlockTitle text-uppercase">
@@ -462,7 +461,7 @@
                                 </button>
                             </div>
                         </div>
-                        
+
                                                 <!-- Description du document -->
                         <div class="row" ng-if="detailForm.$visible || (repCtrl.currentDescriptions | filter:repCtrl.filterByType('BINDING')).length > 0">
                             <div class="col-xs-8 col-xs-offset-4">
@@ -476,7 +475,7 @@
                             <div class="col-xs-4" ng-class="{'no-padding': detailForm.$visible && !repCtrl.formRO, 'text-right':  !detailForm.$visible || !desc.creationMode}">
                                 <span class="btn-group-xs margin-l15 pull-left" ng-show="detailForm.$visible" sem-roles-allowed="COND_REPORT_HAB2">
                                     <button type="button" class="btn btn-sem1 btn-removable" uib-tooltip="{{::'Supprimer' | translate}}"
-                                            ng-click="repCtrl.deleteDescription(desc)" 
+                                            ng-click="repCtrl.deleteDescription(desc)"
                                             ng-disabled="repCtrl.formRO || isReportValidated || cantModif">
                                         <span class="glyphicon-halflings glyphicon-trash"></span>
                                     </button>
@@ -494,23 +493,23 @@
 <!--                             <div>{{repCtrl.getDescriptionPos(desc)}}</div> -->
                             <!-- Description -->
                             <div class="col-xs-8" ng-switch-default>
-                                <numa-editable-field type="uiselect" form="detailForm" model="desc.value" 
+                                <numa-editable-field type="uiselect" form="detailForm" model="desc.value"
                                                     ng-init="config = repCtrl.descriptionValueConfig(handler, desc)" config="config"
                                                     numa-readonly="repCtrl.formRO || isReportValidated || cantModif"
                                                     ng-show="repCtrl.isDescriptionValueVisible(handler, desc, detailForm)"></numa-editable-field>
-                                <numa-editable-field type="textarea" model="desc.comment" form="detailForm" 
+                                <numa-editable-field type="textarea" model="desc.comment" form="detailForm"
                                                     numa-readonly="repCtrl.formRO || isReportValidated || cantModif"
                                                     ng-show="repCtrl.isDescriptionCommentVisible(handler, desc, detailForm)"></numa-editable-field>
                             </div>
                             <!-- Dimensions du document -->
                             <div class="col-xs-8" ng-switch-when="DIMENSION">
-                                <span editable-semnumber="repCtrl.currentDetail.dim1" class="editable editable-click" ng-click="detailForm.$show()" 
+                                <span editable-semnumber="repCtrl.currentDetail.dim1" class="editable editable-click" ng-click="detailForm.$show()"
                                         e-ng-readonly="repCtrl.formRO || isReportValidated || cantModif">{{ repCtrl.currentDetail.dim1 || ('Non renseigné' | translate) }}</span>
                                 <span class="fa fa-times"></span>
-                                <span editable-semnumber="repCtrl.currentDetail.dim2" class="editable editable-click" ng-click="detailForm.$show()" 
+                                <span editable-semnumber="repCtrl.currentDetail.dim2" class="editable editable-click" ng-click="detailForm.$show()"
                                         e-ng-readonly="repCtrl.formRO || isReportValidated || cantModif">{{ repCtrl.currentDetail.dim2 || ('Non renseigné' | translate) }}</span>
                                 <span class="fa fa-times"></span>
-                                <span editable-semnumber="repCtrl.currentDetail.dim3" class="editable editable-click" ng-click="detailForm.$show()" 
+                                <span editable-semnumber="repCtrl.currentDetail.dim3" class="editable editable-click" ng-click="detailForm.$show()"
                                         e-ng-readonly="repCtrl.formRO || isReportValidated || cantModif">{{ repCtrl.currentDetail.dim3 || ('Non renseigné' | translate) }}</span>
                             </div>
                             <!-- Autres infos -->
@@ -609,7 +608,7 @@
             <!-- Points de vigilance -->
             <div class="formBlock" style="margin-top: 40px" ng-style="detailForm.$visible ? {'margin-bottom': '75px'} : {}"
                  ng-if="repCtrl.loaded && repCtrl.currentDetail.identifier" ng-hide="reportForm.$visible"
-                 ng-init="cantModif = (repCtrl.isUserPresta && repCtrl.currentDetail.createdBy !== repCtrl.loginUser)  
+                 ng-init="cantModif = (repCtrl.isUserPresta && repCtrl.currentDetail.createdBy !== repCtrl.loginUser)
                         || (repCtrl.isUserPresta && repCtrl.currentDetail.type !== 'DIGITALIZATION' && repCtrl.currentDetail.type !== 'LIBRARY_BACK')
                         || (!repCtrl.isUserPresta && (repCtrl.currentDetail.type === 'DIGITALIZATION' || repCtrl.currentDetail.type === 'LIBRARY_BACK'));
                         isReportValidated = repCtrl.isStateValidated(repCtrl.currentDetail.type)">
@@ -645,7 +644,7 @@
                                                 ng-init="config = repCtrl.descriptionValueConfig(handler, desc)" config="config"
                                                 numa-readonly="repCtrl.formRO || isReportValidated || cantModif"
                                                 ng-show="repCtrl.isDescriptionValueVisible(handler, desc, detailForm)"></numa-editable-field>
-                            <numa-editable-field type="textarea" model="desc.comment" form="detailForm" 
+                            <numa-editable-field type="textarea" model="desc.comment" form="detailForm"
                                                 numa-readonly="repCtrl.formRO || isReportValidated || cantModif"
                                                 ng-show="repCtrl.isDescriptionCommentVisible(handler, desc, detailForm)"></numa-editable-field>
                         </div>
@@ -674,9 +673,9 @@
                         <button type="button" class="btn btn-sem4" ng-disabled="detailForm.$waiting" ng-click="detailForm.$cancel()">
                             <span class="glyphicon-regular unshare"></span> {{::'Annuler' | translate}}
                         </button>
-                        <button type="submit" class="btn btn-sem2" 
+                        <button type="submit" class="btn btn-sem2"
                             ng-disabled="repCtrl.formRO || repCtrl.isStateValidated(repCtrl.currentDetail.type)
-                                        || (repCtrl.isUserPresta && repCtrl.currentDetail.createdBy !== repCtrl.loginUser)  
+                                        || (repCtrl.isUserPresta && repCtrl.currentDetail.createdBy !== repCtrl.loginUser)
                                         || (repCtrl.isUserPresta && repCtrl.currentDetail.type !== 'DIGITALIZATION' && repCtrl.currentDetail.type !== 'LIBRARY_BACK')
                                         || (!repCtrl.isUserPresta && (repCtrl.currentDetail.type === 'DIGITALIZATION' || repCtrl.currentDetail.type === 'LIBRARY_BACK'))">
                             <span class="glyphicon-regular floppy-save"></span> {{::'Enregistrer' | translate}}
@@ -707,7 +706,7 @@
                                     <span ng-switch-when="true">({{ ::att.fileSize / 1048576 | number:2 }} MB)</span>
                                     <span ng-switch-default>({{ ::att.fileSize / 1024 | number:2 }} kB)</span>
                                 </div>
-                                <div> 
+                                <div>
                                     <button type="button" class="btn btn-sem1 btn-xs" uib-tooltip="{{::'Supprimer' | translate}}"
                                             ng-disabled="repCtrl.formRO || repCtrl.isStateValidated(repCtrl.currentDetail.type)
                                                 || (repCtrl.isUserPresta && repCtrl.currentDetail.type !== 'DIGITALIZATION' && repCtrl.currentDetail.type !== 'LIBRARY_BACK')
@@ -736,7 +735,7 @@
                             <input type="file" id="importFiles0" multiple="true"
                                 ng-disabled="repCtrl.formRO || repCtrl.isStateValidated(repCtrl.currentDetail.type)
                                             || (repCtrl.isUserPresta && repCtrl.currentDetail.type !== 'DIGITALIZATION' && repCtrl.currentDetail.type !== 'LIBRARY_BACK')
-                                            || (!repCtrl.isUserPresta && (repCtrl.currentDetail.type === 'DIGITALIZATION' || repCtrl.currentDetail.type === 'LIBRARY_BACK'))" 
+                                            || (!repCtrl.isUserPresta && (repCtrl.currentDetail.type === 'DIGITALIZATION' || repCtrl.currentDetail.type === 'LIBRARY_BACK'))"
                                 onchange="angular.element(this).scope().repCtrl.addAttachments(this)" />
                         </div>
                     </div>

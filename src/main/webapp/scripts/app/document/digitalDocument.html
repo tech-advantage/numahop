@@ -4,7 +4,7 @@
             <div class="panel-heading">
             </div>
             <div class="panel-body" style="padding: 0 0 0 0;">
-                <div class="row text-center" ng-if="data.validation">Pages notées en erreur</div>
+                <div class="row text-center" ng-if="data.validation" translate>Pages notées en erreur</div>
                 <!-- Integration viewer -->
 				<a ng-include src="'scripts/app/viewer/vision.html'" width="100%" height="98%" ></a>
             </div>
@@ -41,7 +41,7 @@
 		        <!-- Fin info UD -->
                 <div  style="padding: 10px">
                     <div class="row">
-                        <label>Erreurs</label>
+                        <label translate>Erreurs</label>
                         <ui-select multiple ng-model="select.selectedErrors" theme="select2" on-select="" on-remove="" class="form-control">
                             <ui-select-match placeholder="{{::'Erreurs' | translate}}">{{$item.value}}</ui-select-match>
                             <ui-select-choices group-by="groupErrorLabels" repeat="item in options.errors track by item.key">
@@ -51,15 +51,15 @@
                     </div>
                     <div class="row text-center">
                         <button type="button" class="btn btn-sem2" ng-click="goToPageCheck()">
-                            <span>Contrôles pages</span>
+                            <span translate>Contrôles pages</span>
                         </button>
                         <div class="btn-group">
                             <button type="button" class="btn btn-sem4" ng-click="reject()" ng-hide="rejected">
-                                <span>Rejeter</span>
+                                <span translate>Rejeter</span>
                                 <span class="glyphicon-regular remove"></span>
                             </button>
                             <button type="button" class="btn btn-sem2" ng-click="accept()" ng-hide="rejected">
-                                <span>Accepter</span>
+                                <span translate>Accepter</span>
                                 <span class="glyphicon-regular ok"></span>
                             </button>
                         </div>

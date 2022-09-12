@@ -230,16 +230,16 @@ public class DeliveryAsyncService {
      * @return Delivery
      */
     private Delivery initializeDelivery(final String id, final Map<String, PrefixedDocuments> documentsForPrefix) {
-        
+
         return transactionService.executeInNewTransactionWithReturn(() -> {
-        
+
             final Delivery delivery = deliveryService.findOneWithDep(id);
             delivery.setDepositDate(LocalDate.now());
-    
+
             documentsForPrefix.forEach((prefix, prefixedDoc) -> {
                 final DigitalDocument unitializedDigitalDoc = Iterables.getOnlyElement(prefixedDoc.getDigitalDocuments());
                 final DigitalDocument dd = digitalDocumentService.findOne(unitializedDigitalDoc.getIdentifier());
-    
+
                 final DeliveredDocument deliveredDocument = digitalDocumentService.getDeliveredDocument(dd, delivery);
                 deliveredDocument.setDeliveryDate(dd.getDeliveryDate());
                 deliveredDocument.setNbPages(dd.getNbPages());
@@ -454,11 +454,17 @@ public class DeliveryAsyncService {
                     extractTextFromPdf(filesForOcr, delivery, libraryId);
                 } else {
                     // Avec génération PDF/OCR.
+                    final AutomaticCheckRule generateWithoutOcrRule = processElement.getCheckingRules().get(AutoCheckType.GENER_PDF_WITHOUT_OCR);
+                    final boolean isPdfGenerationWithoutOcr = generateWithoutOcrRule != null && generateWithoutOcrRule.isActive();
+
                     if (isOcrPdfGeneration) {
                         multiPdfs = generateOcrPdf(documentsToTreat, libraryId);
 
                         // Extraction text ocr des pdfs multi.
                         extractTextFromPdf(multiPdfs, delivery, libraryId);
+                    } else if(isPdfGenerationWithoutOcr) {
+                        //convert img to pdf via ImageMagickService
+                        multiPdfs = generatePdfWithoutOcr(documentsToTreat, libraryId, delivery);
                     }
 
                     storeMetaDataFiles(delivery, processElement.getMetadatasDTOForPrefix(), multiPdfs, tocFiles, libraryId, documentsToTreat.keySet());
@@ -469,7 +475,7 @@ public class DeliveryAsyncService {
                                            "FIN TRAITEMENT TABLE DES MATIERES / OCR",
                                            libraryId);
                 deliveryProgressService.deliveryProgress(delivery, null, TYP_MSG_INFO, "DELIVERING", 95, "Fin Traitement Table des Matières");
-                
+
                 if (!isMasterActive) {
                     // Livraison sans master => il faut qd mm finaliser la livraison des documents non rejetes.
                     documentsToTreat.forEach((prefix, prefixedDoc) -> {
@@ -595,6 +601,39 @@ public class DeliveryAsyncService {
             return false;
         }).process();
         return metadatasByFiles;
+    }
+
+    private Map<String, List<File>> generatePdfWithoutOcr(final Map<String, PrefixedDocuments> documentsToTreat, final String libraryId, final Delivery delivery) {
+        final Map<String, List<File>> mapPdfs = new HashMap<>();
+
+        deliveryProgressService.deliveryProgress(delivery,
+            null,
+            TYP_MSG_INFO,
+            "DELIVERING",
+            90,
+            "Démarrage de la génération du pdf sans OCR");
+
+        documentsToTreat.forEach((prefix, prefixedDoc) -> {
+            final Path tmpDir = getTemporaryDirectory(prefix, libraryId);
+
+            if(tmpDir != null && !prefixedDoc.getFiles().isEmpty()) {
+                List<File> listToMap = new ArrayList<>();
+                listToMap.add(imService.convertImgFromDirectoryToPdf(prefixedDoc.getFiles(), tmpDir.toString()));
+                mapPdfs.put(prefix, listToMap);
+            } else {
+                //Log file and continue
+                LOG.warn("No files to convert to: "+prefix);
+            }
+        });
+
+        deliveryProgressService.deliveryProgress(delivery,
+            null,
+            TYP_MSG_INFO,
+            "DELIVERING",
+            95,
+            "Fin de la génération du pdf sans OCR");
+
+        return mapPdfs;
     }
 
     /**
@@ -968,7 +1007,7 @@ public class DeliveryAsyncService {
                     } catch (final IOException e) {
                         LOG.error("[LIVRAISON - OCR] Erreur lors de l'extraction de texte du PDF : {}", e.getLocalizedMessage(), e);
                         transactionService.rollbackTransaction(status);
-    
+
                         reportService.updateReport(delivery,
                                                    Optional.empty(),
                                                    Optional.of(LocalDateTime.now()),

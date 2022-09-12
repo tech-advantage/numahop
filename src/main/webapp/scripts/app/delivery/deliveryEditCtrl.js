@@ -120,7 +120,7 @@
         function addMessagesForLoadedDelivery() {
             switch ($scope.delivery.status) {
                 case "TO_BE_CONTROLLED":
-                    MessageSrvc.addSuccess("Contrôles automatiques validés, en attente des contrôles manuels", null, true);
+                    MessageSrvc.addSuccess(gettext("Contrôles automatiques validés, en attente des contrôles manuels"), null, true);
                     break;
                 case "AUTOMATICALLY_REJECTED":
                     autoControlMessages();
@@ -129,21 +129,21 @@
                     manualControlMessages();
                     break;
                 case "VALIDATED":
-                    MessageSrvc.addSuccess("Livraison validée", null, true);
+                    MessageSrvc.addSuccess(gettext("Livraison validée"), null, true);
                     break;
                 case "DELIVERED":
-                    MessageSrvc.addSuccess("Livraison effectuée, en attente des contrôles", null, true);
+                    MessageSrvc.addSuccess(gettext("Livraison effectuée, en attente des contrôles"), null, true);
                     break;
                 case "DELIVERING":
-                    MessageSrvc.addInfo("Livraison en cours", null, true);
+                    MessageSrvc.addInfo(gettext("Livraison en cours"), null, true);
                     break;
                 case "DELIVERING_ERROR":
-                    MessageSrvc.addFailure("Livraison en erreur", null, true);
+                    MessageSrvc.addFailure(gettext("Livraison en erreur"), null, true);
                     break;
             }
             // Format attendu
             if (angular.isDefined($scope.delivery.lot)) {
-                MessageSrvc.addInfo("Format attendu : *.{{format}}", { format: $scope.delivery.lot.requiredFormat }, true);
+                MessageSrvc.addInfo(gettext("Format attendu : *.{{format}}"), { format: $scope.delivery.lot.requiredFormat }, true);
             }
         }
 
@@ -158,10 +158,10 @@
         }
 
         function autoControlMessages() {
-            messageForCheck($scope.delivery.fileRadicalOK, "Radical des fichiers correct", "Radical des fichiers incorrect");
-            messageForCheck($scope.delivery.numberOfFilesOK, "Nombre de fichiers correct", "Nombre de fichiers incorrect");
-            messageForCheck($scope.delivery.fileFormatOK, "Format des fichiers correct", "Format des fichiers incorrect");
-            messageForCheck($scope.delivery.sequentialNumbers, "Séquence des fichiers correcte", "Séquence des fichiers incorrecte");
+            messageForCheck($scope.delivery.fileRadicalOK, gettext("Radical des fichiers correct"), gettext("Radical des fichiers incorrect"));
+            messageForCheck($scope.delivery.numberOfFilesOK, gettext("Nombre de fichiers correct"), gettext("Nombre de fichiers incorrect"));
+            messageForCheck($scope.delivery.fileFormatOK, gettext("Format des fichiers correct"), gettext("Format des fichiers incorrect"));
+            messageForCheck($scope.delivery.sequentialNumbers, gettext("Séquence des fichiers correcte"), gettext("Séquence des fichiers incorrecte"));
         }
 
         function manualControlMessages() {
@@ -483,13 +483,13 @@
             // ... puis on affiche les infos de modification ...
             if (angular.isDefined(entity.lastModifiedDate)) {
                 var dateModif = new Date(entity.lastModifiedDate);
-                MessageSrvc.addInfo("Dernière modification le {{date}} par {{author}}",
+                MessageSrvc.addInfo(gettext("Dernière modification le {{date}} par {{author}}"),
                     { date: dateModif.toLocaleString(), author: entity.lastModifiedBy }, true);
             }
             // ... puis on affiche les infos de création ...
             if (angular.isDefined(entity.createdDate)) {
                 var dateCreated = new Date(entity.createdDate);
-                MessageSrvc.addInfo("Créé le {{date}}",
+                MessageSrvc.addInfo(gettext("Créé le {{date}}"),
                     { date: dateCreated.toLocaleString() }, true);
             }
             // Affichage pour un temps limité à l'ouverture
@@ -534,7 +534,7 @@
                         }
                         $scope.checkConfiguration = config;
                     } else {
-                        MessageSrvc.addWarn("Aucune configuration de contrôles paramétrée sur le lot", null, true);
+                        MessageSrvc.addWarn(gettext("Aucune configuration de contrôles paramétrée sur le lot", null, true));
                     }
                 });
             }

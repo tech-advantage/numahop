@@ -1,17 +1,19 @@
 package fr.progilone.pgcn.domain.exportftpconfiguration;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.google.common.base.MoreObjects;
 
 import fr.progilone.pgcn.domain.AbstractDomainObject;
+import fr.progilone.pgcn.domain.administration.ExportFTPDeliveryFolder;
+import fr.progilone.pgcn.domain.administration.InternetArchiveCollection;
 import fr.progilone.pgcn.domain.library.Library;
+import fr.progilone.pgcn.domain.lot.Lot;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Classe métier permettant de gérer la configuration d'export FTP.
@@ -35,19 +37,19 @@ public class ExportFTPConfiguration extends AbstractDomainObject {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "library")
     private Library library;
-    
+
     /**
      * La configuration est active / inactive
      */
     @Column(name = "active", nullable = false)
     private boolean active = true;
-    
+
     /**
      * serveur de stockage Omeka
      */
     @Column(name = "storage_server")
     private String storageServer;
-    
+
     /**
      * port pour acces au serveur de stockage Omeka
      */
@@ -71,26 +73,31 @@ public class ExportFTPConfiguration extends AbstractDomainObject {
      */
     @Column(name = "password")
     private String password;
-    
+
     /* Types de fichiers à exporter */
     @Column(name = "export_view")
     private boolean exportView;
-    
+
     @Column(name = "export_master")
     private boolean exportMaster;
-    
+
     @Column(name = "export_thumb")
     private boolean exportThumb;
-    
+
     @Column(name = "export_pdf")
     private boolean exportPdf;
-    
+
     @Column(name = "export_mets")
     private boolean exportMets;
-    
+
     @Column(name = "export_aip_sip")
     private boolean exportAipSip;
-    
+
+    @Column(name = "export_alto")
+    private boolean exportAlto;
+
+    @OneToMany(mappedBy = "confExportFtp", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<ExportFTPDeliveryFolder> deliveryFolders  = new HashSet<>();
 
     public String getLabel() {
         return label;
@@ -202,6 +209,26 @@ public class ExportFTPConfiguration extends AbstractDomainObject {
 
     public void setExportAipSip(final boolean exportAipSip) {
         this.exportAipSip = exportAipSip;
+    }
+
+    public boolean isExportAlto() { return exportAlto; }
+
+    public void setExportAlto(boolean exportAlto) { this.exportAlto = exportAlto; }
+
+    public Set<ExportFTPDeliveryFolder> getDeliveryFolders() { return deliveryFolders; }
+
+    public void setDeliveryFolders(final Set<ExportFTPDeliveryFolder> deliveryFolders) {
+        this.deliveryFolders.clear();
+        if (deliveryFolders != null) {
+            deliveryFolders.forEach(this::addDeliveryFolder);
+        }
+    }
+
+    public void addDeliveryFolder(final ExportFTPDeliveryFolder deliveryFolder) {
+        if (deliveryFolder != null) {
+            deliveryFolder.setConfExportFtp(this);
+            this.deliveryFolders.add(deliveryFolder);
+        }
     }
 
     @Override

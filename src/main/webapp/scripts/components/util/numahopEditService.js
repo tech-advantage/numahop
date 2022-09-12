@@ -4,16 +4,9 @@
     angular.module('numaHopApp.service')
         .factory('NumahopEditService', NumahopEditService);
 
-    function NumahopEditService(StringTools) {
+    function NumahopEditService(StringTools, VIEW_MODES) {
 
         var service = {};
-        /**
-    	 * Gestion des modes des formulaires d'édition
-    	 */
-        service.viewModes = {
-            VIEW: "view",     // Visualisation, Édition rapide
-            EDIT: "edit"
-        };   // Création, Modification
 
         service.preventDefault = preventDefault;
         service.getFirstLetter = getFirstLetter;
@@ -24,7 +17,7 @@
 
         /** Empêcher la sauvegarde du formulaire lors d'un clic sur entrée */
         function preventDefault(event, viewMode) {
-            if (viewMode === service.viewModes.EDIT) {
+            if (viewMode === VIEW_MODES.EDIT) {
                 event.preventDefault();
             }
         }
@@ -32,11 +25,11 @@
         /**
          * Gestion de la liste des nouvelles entités
          * Ajout des entités juste créées
-         * 
+         *
          * Liste de champs utilisés successivement pour la comparaison
          * EX : ["title", "id"] => comparaison par title et ssi identiques
          * alors comparaison par id
-         * 
+         *
          */
         function addNewEntityToList(entity, newEntities, entities, compareFields) {
             var found = _.find(newEntities, function (b) {
@@ -94,7 +87,7 @@
 
         /**
          * Mise à jour de la colonne du milieu au besoin (changement du label, etc..)
-         * 
+         *
          */
         function updateMiddleColumn(entity, items, newEntities) {
             if (entity.identifier) {

@@ -41,6 +41,30 @@ public interface DocUnitWorkflowRepositoryCustom {
                                                    Pageable pageable);
 
     /**
+     * Recherche paginée
+     *
+     * @param libraries
+     * @param projects
+     * @param pgcnId
+     * @param states
+     * @param users
+     * @param fromDate
+     * @param toDate
+     * @return
+     */
+    List<DocUnitWorkflow> findDocUnitProgressStatsPending(List<String> libraries,
+                                                   List<String> projects,
+                                                   boolean projetActive,
+                                                   List<String> lots,
+                                                   List<String> trains,
+                                                   String pgcnId,
+                                                   List<WorkflowStateKey> states,
+                                                   final List<WorkflowStateStatus> status,
+                                                   List<String> users,
+                                                   LocalDate fromDate,
+                                                   LocalDate toDate);
+
+    /**
      * Recherche de DocUnitWorkflow
      *
      * @param searchBuilder

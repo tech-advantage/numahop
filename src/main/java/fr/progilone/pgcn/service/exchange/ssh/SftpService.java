@@ -229,7 +229,7 @@ public class SftpService {
             try (final InputStream in = new FileInputStream(localSource)) {
                 LOG.debug("Envoi de {} vers {} ({})", localSource.getAbsolutePath(), targetName, channelSftp.pwd());
                 channelSftp.put(in, targetName);
-                channelSftp.chmod(0755, targetName);    // permission en octal
+                channelSftp.chmod(0660, targetName);    // permission en octal
 
             } catch (final IOException | SftpException e) {
                 LOG.error("Une erreur s'est produite lors de la copie du fichier {} vers {}: {}",

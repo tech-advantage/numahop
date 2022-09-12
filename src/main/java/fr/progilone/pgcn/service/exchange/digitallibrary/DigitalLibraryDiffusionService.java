@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import fr.progilone.pgcn.domain.administration.viewsformat.ViewsFormatConfiguration;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -24,6 +25,7 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,6 +53,7 @@ import fr.progilone.pgcn.service.storage.BinaryStorageManager;
 import fr.progilone.pgcn.service.util.CryptoService;
 import fr.progilone.pgcn.service.util.DateUtils;
 import fr.progilone.pgcn.service.workflow.WorkflowService;
+import javax.persistence.EntityNotFoundException;
 
 @Service
 public class DigitalLibraryDiffusionService {
@@ -243,17 +246,16 @@ public class DigitalLibraryDiffusionService {
         }
 
         final String format = docUnit.getLot().getRequiredFormat();
-        final boolean isPdfDelivery = EXTENSION_FORMAT_PDF.equalsIgnoreCase(format);
 
         // Création du répertoire
         LOG.trace("Création du répertoire {}", root);
-        final Path depotPath = createDirectories(root, docUnit.getPgcnId(), conf, isPdfDelivery);
-        File csv = null;
+        final Path depotPath = createDirectories(root, docUnit.getPgcnId(), conf);
+        File csv;
         try {
             // Ajout des fichiers à archiver
-            addDepotFiles(docUnit, depotPath, conf, isPdfDelivery);
+            addDepotFiles(docUnit, depotPath, conf);
             // csv
-            csv = createDocUnitsDigitalLibraryDiffusionCsv(docUnit, metaDc, conf, mediaDir, multiple, firstDoc, isPdfDelivery);
+            csv = createDocUnitsDigitalLibraryDiffusionCsv(docUnit, metaDc, conf, mediaDir, multiple, firstDoc);
 
         } catch (final UncheckedIOException e) {
             throw new IOException(e);
@@ -268,8 +270,7 @@ public class DigitalLibraryDiffusionService {
                                                           final DigitalLibraryConfiguration conf,
                                                           final Path depotPath,
                                                           final boolean multiple,
-                                                          final boolean firstDoc,
-                                                          final boolean isPdfDelivery) {
+                                                          final boolean firstDoc) {
 
         if (depotPath == null || !depotPath.toFile().canRead()) {
             return null;
@@ -302,29 +303,15 @@ public class DigitalLibraryDiffusionService {
         try (final Writer writer = new FileWriter(csvFile, true)) {
             writer.append(NEW_LINE_SEPARATOR);
 
-            if (conf.isExportMaster() && isPdfDelivery) {
-                writer.append(MEDIA_DIR)
-                      .append("/")
-                      .append(docUnit.getPgcnId())
-                      .append(CSV_COL_SEP);
-            }
-            if (conf.isExportMaster() && !isPdfDelivery) {
-                writer.append(MEDIA_DIR)
-                      .append("/")
-                      .append(docUnit.getPgcnId())
-                      .append("/")
-                      .append(docUnit.getPgcnId())
-                      .append(JPG_DIR)
-                      .append(CSV_COL_SEP);
+            String pgcnId = docUnit.getPgcnId();
+            if (conf.isExportPrint()) {
+                writer.append(buildExportRelativePath(pgcnId, JPG_DIR, conf));
             }
             if (conf.isExportAlto()) {
-                writer.append(MEDIA_DIR)
-                      .append("/")
-                      .append(docUnit.getPgcnId())
-                      .append("/")
-                      .append(docUnit.getPgcnId())
-                      .append(ALTO_DIR)
-                      .append(CSV_COL_SEP);
+                writer.append(buildExportRelativePath(pgcnId, ALTO_DIR, conf));
+            }
+            if (conf.isExportPdf()) {
+                writer.append(buildExportRelativePath(pgcnId, PDF_DIR, conf));
             }
 
             final List<String> entetesDC = docPropertyTypeService.findAllBySuperType(DocPropertyType.DocPropertySuperType.DC)
@@ -449,10 +436,14 @@ public class DigitalLibraryDiffusionService {
     private void initializeCsvFile(final File csvFile, final DigitalLibraryConfiguration conf) {
         try (final Writer writer = new FileWriter(csvFile)) {
             // Entête
-            writer.append(MEDIA_HEADER).append(CSV_COL_SEP);
-
+            if (conf.isExportPrint()) {
+                writer.append(MEDIA_HEADER).append(CSV_COL_SEP);
+            }
             if (conf.isExportAlto()) {
                 writer.append(ALTO_HEADER).append(CSV_COL_SEP);
+            }
+            if (conf.isExportPdf()) {
+                writer.append(MEDIA_HEADER).append(CSV_COL_SEP);
             }
 
             // Entête Dublin Core
@@ -491,75 +482,141 @@ public class DigitalLibraryDiffusionService {
 
     private Path createDirectories(final Path root,
                                    final String pgcnId,
-                                   final DigitalLibraryConfiguration conf,
-                                   final boolean isPdfDelivery) throws IOException {
+                                   final DigitalLibraryConfiguration conf) throws IOException {
         final Path depotPath = Files.createDirectory(root);
         LOG.debug("Répertoire {} créé", depotPath.toString());
-        if (conf.isExportMaster() && !isPdfDelivery) {
-            Files.createDirectory(depotPath.resolve(pgcnId.concat(JPG_DIR)));
-        }
-        if (conf.isExportPdf()) {
-            Files.createDirectory(depotPath.resolve(pgcnId.concat(PDF_DIR)));
-        }
-        if (conf.isExportAlto()) {
-            Files.createDirectory(depotPath.resolve(pgcnId.concat(ALTO_DIR)));
+        if (this.hasMultipleExports(conf)) {
+            LOG.debug("Plusieurs types d'exports requis, création des répertoires intermédiaires");
+            if (conf.isExportPrint()) {
+                Files.createDirectory(depotPath.resolve(pgcnId.concat(JPG_DIR)));
+            }
+            if (conf.isExportPdf()) {
+                Files.createDirectory(depotPath.resolve(pgcnId.concat(PDF_DIR)));
+            }
+            if (conf.isExportAlto()) {
+                Files.createDirectory(depotPath.resolve(pgcnId.concat(ALTO_DIR)));
+            }
         }
         return depotPath;
     }
 
     /**
+     * Vérifie si le nombre de types d'exports sélectionnés (Print, Pdf, Alto) est supérieur à 1
+     *
+     * @param conf la configuration de librairie numérique
+     * @return true si plus d'un type d'export sélectionné dans la configuration
+     */
+    private boolean hasMultipleExports(final DigitalLibraryConfiguration conf) {
+        int exportPrint = conf.isExportPrint() ? 1 : 0;
+        int exportPdf = conf.isExportPdf() ? 1 : 0;
+        int exportAlto = conf.isExportAlto() ? 1 : 0;
+
+        return exportPrint + exportPdf + exportAlto > 1;
+    }
+
+    /**
+     * Génère le chemin de stockage des fichiers d'exports en fonction du nombre de types d'exports
+     *
+     * Insère le répertoire spécifique d'export exportPath si plusieurs types d'exports sont présents,
+     * sinon renvoie le chemin racine.
+     *
+     * @param depotPath le chemin du dépôt de l'export
+     * @param exportPath le nom du répertoire associé au type d'export
+     * @param conf la configuration de librairie numérique
+     * @return le chemin pour le dépôt de l'export généré
+     */
+    private Path resolveExportDepotPath(final Path depotPath, String exportPath, final DigitalLibraryConfiguration conf) {
+        return hasMultipleExports(conf) ? depotPath.resolve(exportPath) : depotPath;
+    }
+
+    /**
+     * Concatène les différents éléments des répertoires d'exports en fonction du nombre
+     * de formats selectionnés dans la configuration
+     *
+     * si plus d'un type d'exports est présent, insère le répertoire spécifique d'export
+     *
+     * @param conf la configuration de librairie numérique
+     * @param pgcnId l'identifiant PGCN - en préfixe du type d'export
+     * @param exportName le nom du type d'export
+     * @return la chaine de caractères du chemin relatif
+     */
+    private String buildExportRelativePath(String pgcnId, String exportName, final DigitalLibraryConfiguration conf) {
+        StringBuilder stringBuilder = new StringBuilder(MEDIA_DIR).append("/").append(pgcnId);
+        if (hasMultipleExports(conf)) {
+            stringBuilder.append("/")
+                .append(pgcnId)
+                .append(exportName);
+        }
+        stringBuilder.append(CSV_COL_SEP);
+        return stringBuilder.toString();
+    }
+
+    /**
      * DEPOT : ajout des fichiers à archiver
-     * 
+     *
      * @return la liste de checksum permettant d'éviter un recalcul
      */
     private List<CheckSummedStoredFile>
-            addDepotFiles(final DocUnit docUnit, final Path depotPath, final DigitalLibraryConfiguration conf, final boolean isPdfDelivery) {
+            addDepotFiles(final DocUnit docUnit, final Path depotPath, final DigitalLibraryConfiguration conf) {
         final List<CheckSummedStoredFile> checkSums = new ArrayList<>();
         final String libraryId = docUnit.getLibrary().getIdentifier();
         final String pgcnId = docUnit.getPgcnId();
         final String digitalId = docUnit.getDigitalDocuments().iterator().next().getDigitalId();
+
+        final Path depotPrint = resolveExportDepotPath(depotPath, pgcnId.concat(JPG_DIR), conf);
+        final Path depotPdf = resolveExportDepotPath(depotPath, pgcnId.concat(PDF_DIR), conf);
+
         docUnit.getDigitalDocuments()
-               .forEach(digitalDoc -> digitalDoc.getOrderedPages()
-                                                .forEach(page -> {
+            .forEach(digitalDoc -> digitalDoc.getOrderedPages()
+                .forEach(page -> {
+                    // Si page standard (non pdfs)
+                    if (page.getNumber() != null && page.getNumber() != 0) {
+                        // Par défaut, export du format PRINT
+                        final Optional<StoredFile> print = page.getDerivedForFormat(ViewsFormatConfiguration.FileFormat.PRINT);
 
-                                                    final Optional<StoredFile> master = page.getMaster();
+                        if (print.isPresent()) {
+                            final StoredFile printStoredFile = print.get();
+                            final File sourceFile = bm.getFileForStoredFile(printStoredFile, libraryId);
+                            final Path sourcePath = Paths.get(sourceFile.getAbsolutePath());
 
-                                                    if (master.isPresent()) {
+                            if (conf.isExportPrint() && page.getNumber() != null) {
+                                try {
+                                    final Path destPath =
+                                        Files.createFile(depotPrint.resolve(printStoredFile.getFilename()));
+                                    Files.copy(sourcePath, destPath, StandardCopyOption.REPLACE_EXISTING);
+                                    // On remplit la map pour optimiser le traitement ultérieur des métadonnées
+                                    checkSums.add(exportMetsService.getCheckSummedStoredFile(printStoredFile,
+                                        sourceFile));
+                                } catch (final IOException e) {
+                                    throw new UncheckedIOException(e);
+                                }
+                            }
+                        }
+                    } else if (conf.isExportPdf()) {
+                        // Page dont le number est null (pdf)
+                        try {
+                            // On récupère le pdf, dans le format master
+                            final Optional<StoredFile> pdf = page.getMaster();
 
-                                                        final StoredFile masterStoredFile = master.get();
-                                                        final File sourceFile = bm.getFileForStoredFile(masterStoredFile, libraryId);
-                                                        final Path sourcePath = Paths.get(sourceFile.getAbsolutePath());
-
-                                                        if (conf.isExportMaster() && page.getNumber() != null && !isPdfDelivery) {
-                                                            final Path depotMaster = depotPath.resolve(pgcnId.concat(JPG_DIR));
-                                                            try {
-                                                                final Path destPath =
-                                                                                    Files.createFile(depotMaster.resolve(masterStoredFile.getFilename()));
-                                                                Files.copy(sourcePath, destPath, StandardCopyOption.REPLACE_EXISTING);
-                                                                // On remplit la map pour optimiser le traitement ultérieur des métadonnées
-                                                                checkSums.add(exportMetsService.getCheckSummedStoredFile(masterStoredFile,
-                                                                                                                         sourceFile));
-                                                            } catch (final IOException e) {
-                                                                throw new UncheckedIOException(e);
-                                                            }
-                                                        }
-                                                        if (conf.isExportMaster() && page.getNumber() == null && isPdfDelivery) {
-                                                            try {
-                                                                final Path destPath =
-                                                                                    Files.createFile(depotPath.resolve(masterStoredFile.getFilename()));
-                                                                Files.copy(sourcePath, destPath, StandardCopyOption.REPLACE_EXISTING);
-                                                                // On remplit la map pour optimiser le traitement ultérieur des métadonnées
-                                                                checkSums.add(exportMetsService.getCheckSummedStoredFile(masterStoredFile,
-                                                                                                                         sourceFile));
-                                                            } catch (final IOException e) {
-                                                                throw new UncheckedIOException(e);
-                                                            }
-                                                        }
-                                                    }
-
-                                                }));
+                            if (pdf.isPresent() && MediaType.APPLICATION_PDF.toString().equals(pdf.get().getMimetype())) {
+                                final StoredFile pdfStoredFile = pdf.get();
+                                final File pdfSourceFile = bm.getFileForStoredFile(pdfStoredFile, libraryId);
+                                final Path pdfSourcePath = Paths.get(pdfSourceFile.getAbsolutePath());
+                                final Path destPath = Files.createFile(depotPdf.resolve(pdfStoredFile.getFilename()));
+                                Files.copy(pdfSourcePath, destPath, StandardCopyOption.REPLACE_EXISTING);
+                                // On remplit la map pour optimiser le traitement ultérieur des métadonnées
+                                checkSums.add(exportMetsService.getCheckSummedStoredFile(pdfStoredFile,
+                                    pdfSourceFile));
+                            }
+                        } catch (final IOException e) {
+                            throw new UncheckedIOException(e);
+                        } catch (final EntityNotFoundException nFE) {
+                            LOG.error("File not found", nFE);
+                        }
+                    }
+                }));
         if (conf.isExportAlto()) {
-            final Path depotAlto = depotPath.resolve(pgcnId.concat(ALTO_DIR));
+            final Path depotAlto = resolveExportDepotPath(depotPath, pgcnId.concat(ALTO_DIR), conf);
             try {
                 final List<File> altoFiles = altoService.retrieveAlto(digitalId, libraryId, true, false);
                 if (!altoFiles.isEmpty()) {

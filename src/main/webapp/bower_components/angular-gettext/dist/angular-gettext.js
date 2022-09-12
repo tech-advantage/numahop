@@ -60,7 +60,7 @@ angular.module('gettext').constant('gettext', function (str) {
  * @requires https://docs.angularjs.org/api/ng/service/$cacheFactory $cacheFactory
  * @requires https://docs.angularjs.org/api/ng/service/$interpolate $interpolate
  * @requires https://docs.angularjs.org/api/ng/service/$rootScope $rootScope
- * @description Provides set of method to translate stings
+ * @description Provides set of method to translate strings
  */
 angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "gettextFallbackLanguage", "$http", "$cacheFactory", "$interpolate", "$rootScope", function (gettextPlurals, gettextFallbackLanguage, $http, $cacheFactory, $interpolate, $rootScope) {
     var catalog;
@@ -233,15 +233,20 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "gettextF
                     val = obj;
                 }
 
-                // Expand single strings for each context.
+                if (!this.strings[language][key]) {
+                    this.strings[language][key] = {};
+                }
+
                 for (var context in val) {
                     var str = val[context];
                     if (!angular.isArray(str)) {
-                        val[context] = [];
-                        val[context][defaultPlural] = str;
+                        // Expand single strings
+                        this.strings[language][key][context] = [];
+                        this.strings[language][key][context][defaultPlural] = str;
+                    } else {
+                        this.strings[language][key][context] = str;
                     }
                 }
-                this.strings[language][key] = val;
             }
 
             broadcastUpdated();
@@ -253,7 +258,7 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "gettextF
          * @protected
          * @param {String} language language name
          * @param {String} string translation key
-         * @param {Number=} n number to build sting form for
+         * @param {Number=} n number to build string form for
          * @param {String=} context translation key context, e.g. {@link doc:context Verb, Noun}
          * @returns {String|Null} translated or annotated string or null if language is not set
          * @description Translate a string with the given language, count and context.
@@ -300,7 +305,7 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "gettextF
          * @ngdoc method
          * @name gettextCatalog#getPlural
          * @public
-         * @param {Number} n number to build sting form for
+         * @param {Number} n number to build string form for
          * @param {String} string translation key
          * @param {String} stringPlural plural translation key
          * @param {$rootScope.Scope=} scope scope to do interpolation against
@@ -405,7 +410,7 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "gettextF
  * ```
  */
 angular.module('gettext').directive('translate', ["gettextCatalog", "$parse", "$animate", "$compile", "$window", "gettextUtil", function (gettextCatalog, $parse, $animate, $compile, $window, gettextUtil) {
-    var msie = parseInt((/msie (\d+)/.exec(angular.lowercase($window.navigator.userAgent)) || [])[1], 10);
+    var msie = parseInt((/msie (\d+)/i.exec($window.navigator.userAgent) || [])[1], 10);
     var PARAMS_PREFIX = 'translateParams';
 
     function getCtxAttr(key) {
@@ -421,7 +426,7 @@ angular.module('gettext').directive('translate', ["gettextCatalog", "$parse", "$
             return null;
         }
 
-        var interpolationContext = angular.extend({}, scope);
+        var interpolationContext = scope.$new();
         var unwatchers = [];
         attributes.forEach(function (attribute) {
             var unwatch = scope.$watch(attrs[attribute], function (newVal) {
@@ -435,6 +440,8 @@ angular.module('gettext').directive('translate', ["gettextCatalog", "$parse", "$
             unwatchers.forEach(function (unwatch) {
                 unwatch();
             });
+
+            interpolationContext.$destroy();
         });
         return interpolationContext;
     }
@@ -443,6 +450,16 @@ angular.module('gettext').directive('translate', ["gettextCatalog", "$parse", "$
         restrict: 'AE',
         terminal: true,
         compile: function compile(element, attrs) {
+            var translate = attrs.translate;
+            if (translate && translate.match(/^yes|no$/i)) {
+                // Ignore the translate attribute if it has a "yes" or "no" value, assuming that it is the HTML
+                // native translate attribute, see
+                // https://html.spec.whatwg.org/multipage/dom.html#the-translate-attribute
+                //
+                // In that case we skip processing as this attribute is intended for the user agent itself.
+                return;
+            }
+
             // Validate attributes
             gettextUtil.assert(!attrs.translatePlural || attrs.translateN, 'translate-n', 'translate-plural');
             gettextUtil.assert(!attrs.translateN || attrs.translatePlural, 'translate-plural', 'translate-n');
@@ -473,13 +490,13 @@ angular.module('gettext').directive('translate', ["gettextCatalog", "$parse", "$
                         if (translatePlural) {
                             scope = pluralScope || (pluralScope = scope.$new());
                             scope.$count = countFn(scope);
-                            translated = gettextCatalog.getPlural(scope.$count, msgid, translatePlural, interpolationContext, translateContext);
+                            translated = gettextCatalog.getPlural(scope.$count, msgid, translatePlural, null, translateContext);
                         } else {
-                            translated = gettextCatalog.getString(msgid, interpolationContext, translateContext);
+                            translated = gettextCatalog.getString(msgid, null, translateContext);
                         }
                         var oldContents = element.contents();
 
-                        if (oldContents.length === 0){
+                        if (!oldContents && !translated){
                             return;
                         }
 
@@ -494,7 +511,7 @@ angular.module('gettext').directive('translate', ["gettextCatalog", "$parse", "$
 
                         // Swap in the translation
                         var newWrapper = angular.element('<span>' + translated + '</span>');
-                        $compile(newWrapper.contents())(scope);
+                        $compile(newWrapper.contents())(interpolationContext || scope);
                         var newContents = newWrapper.contents();
 
                         $animate.enter(newContents, element);

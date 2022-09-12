@@ -2,8 +2,7 @@
 
     <h2>Health Check</h2>
 
-    <div class="modal fade" id="showHealthModal" tabindex="-1" role="dialog" aria-labelledby="showHealthLabel"
-         aria-hidden="true">
+    <div class="modal fade" id="showHealthModal" tabindex="-1" role="dialog" aria-labelledby="showHealthLabel"aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <form name="form" role="form" novalidate
@@ -20,17 +19,17 @@
                     </div>
                     <div class="modal-body">
                         <div ng-show="currentHealth.details">
-                            <h4>Properties</h4>
+                            <h4 translate>Properties</h4>
                             <table class="table table-striped">
                                 <thead>
                                     <tr>
-                                        <th class="col-md-6 text-left">Name</th>
-                                        <th class="col-md-6 text-left">Value</th>
+                                        <th class="col-md-6 text-left" translate>Name</th>
+                                        <th class="col-md-6 text-left" translate>Value</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr ng-repeat="(k,v) in currentHealth.details">
-                                        <td class="col-md-6 text-left">{{k}}</td> 
+                                        <td class="col-md-6 text-left">{{k}}</td>
                                         <td ng-if="baseName(currentHealth.name) === 'diskSpace'" class="col-md-6 text-left">{{v | filesize}}</td>
                                         <td ng-if="baseName(currentHealth.name) !== 'diskSpace'" class="col-md-6 text-left">{{v}}</td>
                                     </tr>

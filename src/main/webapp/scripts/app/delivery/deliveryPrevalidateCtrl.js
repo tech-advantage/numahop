@@ -110,6 +110,8 @@
                 if (predelivery.errors && predelivery.errors.length > 0) {
                     $scope.emptyDelivery = _.filter(predelivery.errors,
                     function(error){ return error.code == "DELIVERY_NO_MATCHING_PREFIX" || error.code == "DELIVERY_NO_MASTER_FOUND"; }).length > 0;
+                    $scope.availableSpaceOnDisk = !_.filter(predelivery.errors,
+                    function(error){ return error.code == "DELIVERY_NOT_ENOUGH_AVAILABLE_SPACE" ; }).length > 0;
                 }
                 if (predelivery.lockedDigitalDocuments.length > 0) {
                     MessageSrvc.addWarn(gettextCatalog.getString("Certains documents ne peuvent pas être livrés"));

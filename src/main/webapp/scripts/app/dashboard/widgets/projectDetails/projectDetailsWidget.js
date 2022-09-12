@@ -3,7 +3,7 @@
 
     angular.module('numaHopApp').config(function (dashboardProvider, gettext) {
         dashboardProvider.widget('projectDetails', {
-            /* Recopie de la clé dans le widget, necessaire car le support des catégories lors de l'ajout des widgets 
+            /* Recopie de la clé dans le widget, necessaire car le support des catégories lors de l'ajout des widgets
             est mal fait : la fonction qui crée les catégories (createCategories) depuis les widgets "perd" la clé,
             voir le template widget-add.html */
             key: "projectDetails",
@@ -19,7 +19,7 @@
                         return ProjectSrvc.get({ id: config.project.identifier }).$promise
                             // Gestion des erreurs serveur
                             .catch(function (e) {
-                                if (e.status === 404) {
+                                if (e.status === 403) {
                                     // projet non trouvé => widget non configuré
                                     delete config.project;
                                 }

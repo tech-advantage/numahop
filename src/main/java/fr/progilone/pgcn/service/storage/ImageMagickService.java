@@ -15,6 +15,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import fr.progilone.pgcn.service.delivery.PrefixedDocuments;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -94,6 +95,65 @@ public class ImageMagickService {
     }
 
     /**
+     * convert several img to a new pdf
+     * @param imgsToConvert
+     * @param destPath
+     * @return created pdf file
+     */
+    public File convertImgFromDirectoryToPdf(final List<File> imgsToConvert, final String destPath) {
+        //get the path of img
+        File newPdf = null;
+        File img = imgsToConvert.stream().findAny().orElse(null);
+
+        if(img != null) {
+            Path imgPath = img.toPath();
+            String directory = imgPath.getParent().toString();
+
+            try {
+                final ProcessBuilder builder = new ProcessBuilder(IMConverterPath,
+                    "*",
+                    "-quality",
+                    "100",
+                    destPath+".pdf"); //NOSONAR
+
+                builder.directory(new File(directory));
+
+                builder.redirectError(Redirect.INHERIT);
+                builder.redirectOutput(Redirect.INHERIT);
+
+                final Process process = builder.start();
+                if (process.waitFor() == 0) {
+                    // ok, convert is done
+                    newPdf = new File(destPath);
+                    if (newPdf == null) {
+                        LOG.info("[ImageMagick] Unable to extract images from pdf file {}", img.getName());
+                    }
+
+                } else {
+                    if (process.isAlive()) {
+                        process.destroyForcibly().waitFor();
+                    }
+                    // Les fichiers sont quand même générés mais le process est bloqué par des warnings
+                    newPdf = new File(destPath);
+                    if (newPdf == null) {
+                        LOG.info("[ImageMagick] Unable to extract images from pdf file {} - interval:{} - {}", img.getName(), process.isAlive() ? "processus still running..." : process.exitValue());
+                    }
+
+                    final List<String> errors = IOUtils.readLines(process.getErrorStream(), StandardCharsets.UTF_8);
+                    if (!errors.isEmpty()) {
+                        LOG.error("[ImageMagick] Error during images extraction : {}", errors);
+                    }
+                }
+            } catch(final IOException | InterruptedException e) {
+                LOG.error("[ImageMagick] Unable to extract images from pdf file", e);
+            }
+        }
+
+        return newPdf;
+    }
+
+
+    /**
      * Extraction des pages d'un pdf en images jpg.
      *
      * @param sourceFile
@@ -115,14 +175,14 @@ public class ImageMagickService {
             if(nbPages > 0){
                 for(int i=0 ; i <= quotient ; i++){
                     List<File> filesInterval = new ArrayList<>();
-        
+
                     String interval = "[" + intervalPage*i + "-" + (intervalPage*(i+1) - 1) + "]";
                     if(i == quotient){
                         interval = "[" + intervalPage*i + "-" + (intervalPage*i + (rest - 1)) + "]";
                     }
-        
+
                     LOG.info("[ImageMagick] Extract images from pdf file {} {}", sourceFile, interval);
-        
+
                     final ProcessBuilder builder = new ProcessBuilder(IMConverterPath,
                                                                       "+adjoin",
                                                                       "-density",
@@ -131,12 +191,11 @@ public class ImageMagickService {
                                                                       "100",
                                                                       sourceFile.getAbsolutePath()+ interval, //NOSONAR
                                                                       destFile); //NOSONA
-        
+
                     builder.redirectError(Redirect.INHERIT);
                     builder.redirectOutput(Redirect.INHERIT);
                     final Process process = builder.start();
                     if (process.waitFor() == 0) {
-            
                         // ok, convert is done
                         filesInterval = getExtractedFiles(destFile);
                         if (filesInterval.isEmpty()) {
@@ -144,7 +203,7 @@ public class ImageMagickService {
                         } else {
                             LOG.debug("PDF - Process *NORMAL* nb pages extraites du pdf = {}", filesInterval.size());
                         }
-            
+
                     } else {
                         if (process.isAlive()) {
                             process.destroyForcibly().waitFor();
@@ -156,7 +215,7 @@ public class ImageMagickService {
                         } else {
                             LOG.debug("PDF - Process *BLOCAGES PAR WARNINGS* nb pages extraites du pdf = {}", filesInterval.size());
                         }
-            
+
                         final List<String> errors = IOUtils.readLines(process.getErrorStream(), StandardCharsets.UTF_8);
                         if (!errors.isEmpty()) {
                             LOG.error("[ImageMagick] Error during images extraction : {}", errors);

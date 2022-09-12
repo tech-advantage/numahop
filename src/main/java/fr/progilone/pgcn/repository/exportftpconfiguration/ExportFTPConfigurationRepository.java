@@ -16,14 +16,14 @@ public interface ExportFTPConfigurationRepository extends JpaRepository<ExportFT
             + "from ExportFTPConfiguration c "
             + "join fetch c.library "
             + "where c.identifier = ?1")
-     ExportFTPConfiguration findOneWithDependencies(String identifier);
-    
+    ExportFTPConfiguration findOneWithDependencies(String identifier);
+
     @Query("select distinct c "
             + "from ExportFTPConfiguration c "
             + "join fetch c.library l "
             + "where l = ?1 "
             + "and c.active = ?2")
-     Set<ExportFTPConfiguration> findByLibraryAndActive(Library library, boolean active);
+    Set<ExportFTPConfiguration> findByLibraryAndActive(Library library, boolean active);
 
      @Query("select c.password from ExportFTPConfiguration c where c.identifier = ?1")
      String findPasswordByIdentifier(String identifier);

@@ -34,22 +34,23 @@ public class InternetArchiveServiceAsync {
 
     /**
      * Pas de controle user : A reserver aux traitements automatiques
-     * 
-     * @param docUnit
-     * @param item
      */
     @Async
     public void createItem(final String docUnitId, final boolean automaticExport) {
         
         final InternetArchiveReport report = internetArchiveService.createItem(docUnitId, automaticExport);
-        esIaReportService.indexAsync(report.getIdentifier());
+        if(report != null){
+            esIaReportService.indexAsync(report.getIdentifier());
+        }
     }
 
     @Async
     public void createItem(final DocUnit docUnit, final InternetArchiveItemDTO item, final String userId) {
         
         final InternetArchiveReport report = internetArchiveService.createItem(docUnit, item, false, userId);
-        esIaReportService.indexAsync(report.getIdentifier());
+        if(report != null){
+            esIaReportService.indexAsync(report.getIdentifier());
+        }
     }
 
     /**

@@ -136,6 +136,12 @@ public class Z3950Service {
                 throw new PgcnBusinessException(builder.reinit().setCode(PgcnErrorCode.Z3950_SEARCH_FAILURE).addComplement(e.getMessage()).build());
             }
         }
+
+        z3950records.forEach(record -> {
+            record.setTitle(record.getTitle().replaceAll("[^A-Za-z0-9À-ÖØ-öø-ÿЀ-ӿ]", " "));
+            record.setAuthor(record.getAuthor().replaceAll("[^A-Za-z0-9À-ÖØ-öø-ÿЀ-ӿ]", " "));
+        });
+
         return new PageImpl<>(z3950records, new PageRequest(page, size), totalCount);
     }
 

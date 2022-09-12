@@ -25,42 +25,41 @@ import fr.progilone.pgcn.web.rest.AbstractRestController;
 @RestController
 @RequestMapping(value = "/api/rest/filesgestionconfig")
 public class FilesGestionConfigController extends AbstractRestController {
-    
+
     private final FilesGestionConfigService filesGestionConfigService;
-    
+
     @Autowired
     public FilesGestionConfigController(final FilesGestionConfigService filesGestionConfigService) {
         this.filesGestionConfigService = filesGestionConfigService;
     }
-    
+
     @RequestMapping(value = "/{idLibrary}", method = RequestMethod.GET, params = {}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed({FILES_GEST_HAB0})
     public ResponseEntity<FilesGestionConfigDTO> getByLibrary(@PathVariable final String idLibrary) {
-        
-        final FilesGestionConfigDTO dto = FilesGestionConfigMapper.INSTANCE
-                                        .configToConfigDto(filesGestionConfigService.getConfigByLibrary(idLibrary));
+
+        final FilesGestionConfigDTO dto = filesGestionConfigService.getConfigByLibrary(idLibrary);
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
-    
+
     @RequestMapping(value = "/{id}", method = RequestMethod.POST, params = {}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed({FILES_GEST_HAB0})
-    public ResponseEntity<FilesGestionConfigDTO> saveConfig(@PathVariable final String id, 
+    public ResponseEntity<FilesGestionConfigDTO> saveConfig(@PathVariable final String id,
                                                             @RequestBody final FilesGestionConfigDTO config) {
-                
-        final FilesGestionConfig saved = filesGestionConfigService.save(FilesGestionConfigMapper.INSTANCE.configDtoToObj(config));
-        return new ResponseEntity<>(FilesGestionConfigMapper.INSTANCE.configToConfigDto(saved), HttpStatus.OK);
+
+        final FilesGestionConfigDTO saved = filesGestionConfigService.save(FilesGestionConfigMapper.INSTANCE.configDtoToObj(config));
+        return new ResponseEntity<>(saved, HttpStatus.OK);
     }
-    
+
     @RequestMapping(method = RequestMethod.POST, params = {}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed({FILES_GEST_HAB0})
     public ResponseEntity<FilesGestionConfigDTO> createConfig(@RequestBody final FilesGestionConfigDTO config) {
-                
-        final FilesGestionConfig saved = filesGestionConfigService.save(FilesGestionConfigMapper.INSTANCE.configDtoToObj(config));
-        return new ResponseEntity<>(FilesGestionConfigMapper.INSTANCE.configToConfigDto(saved), HttpStatus.OK);
+
+        final FilesGestionConfigDTO saved = filesGestionConfigService.save(FilesGestionConfigMapper.INSTANCE.configDtoToObj(config));
+        return new ResponseEntity<>(saved, HttpStatus.OK);
     }
-    
+
 
 }

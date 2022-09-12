@@ -1,10 +1,12 @@
 package fr.progilone.pgcn.domain.dto.filesgestion;
 
 import fr.progilone.pgcn.domain.dto.AbstractVersionedDTO;
+import fr.progilone.pgcn.domain.dto.exportftpconfiguration.ExportFTPConfigurationDTO;
+import fr.progilone.pgcn.domain.dto.exportftpconfiguration.ExportFTPConfigurationDeliveryFolderDTO;
 import fr.progilone.pgcn.domain.dto.library.SimpleLibraryDTO;
 
 public class FilesGestionConfigDTO extends AbstractVersionedDTO {
-    
+
     private String identifier;
     private String triggerType;
     private int delay;
@@ -21,10 +23,12 @@ public class FilesGestionConfigDTO extends AbstractVersionedDTO {
     private boolean saveView;
     private boolean saveThumb;
     private boolean saveAipSip;
+    private ExportFTPConfigurationDTO activeExportFTPConfiguration;
+    private ExportFTPConfigurationDeliveryFolderDTO activeExportFTPDeliveryFolder;
 
     private SimpleLibraryDTO library;
-    
-    
+
+
     public String getIdentifier() {
         return identifier;
     }
@@ -199,6 +203,19 @@ public class FilesGestionConfigDTO extends AbstractVersionedDTO {
         this.library = library;
     }
 
-    
-    
+    public ExportFTPConfigurationDTO getActiveExportFTPConfiguration() {
+        return activeExportFTPConfiguration;
+    }
+
+    public void setActiveExportFTPConfiguration(ExportFTPConfigurationDTO activeExportFTPConfiguration) {
+        this.activeExportFTPConfiguration = activeExportFTPConfiguration;
+    }
+
+    public ExportFTPConfigurationDeliveryFolderDTO getActiveExportFTPDeliveryFolder() {
+        return activeExportFTPDeliveryFolder;
+    }
+
+    public void setActiveExportFTPDeliveryFolder(ExportFTPConfigurationDeliveryFolderDTO activeExportFTPDeliveryFolder) {
+        this.activeExportFTPDeliveryFolder = activeExportFTPDeliveryFolder;
+    }
 }

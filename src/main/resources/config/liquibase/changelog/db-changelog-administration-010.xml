@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="pgcn-create-conf-delivery-folder-010" author="progilone">
+
+        <createTable tableName="conf_delivery_folder">
+            <column name="identifier" type="varchar(191)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(191)">
+                <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="conf_export_ftp" type="varchar(191)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="varchar(255)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(255)" defaultValue="system">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="conf_delivery_folder" baseColumnNames="conf_export_ftp" constraintName="conf_export_ftp_FK"
+                                 referencedTableName="conf_export_ftp"
+                                 referencedColumnNames="identifier"/>
+
+        <addColumn tableName="proj_project">
+            <column name="active_export_ftp_delivery_folder" type="varchar(191)"></column>
+        </addColumn>
+
+        <addColumn tableName="lot_lot">
+            <column name="active_export_ftp_delivery_folder" type="varchar(191)"></column>
+        </addColumn>
+        <addForeignKeyConstraint baseTableName="proj_project" baseColumnNames="active_export_ftp_delivery_folder" constraintName="proj_delivery_folder_fk"
+                                 referencedTableName="conf_delivery_folder"
+                                 referencedColumnNames="identifier"/>
+        <addForeignKeyConstraint baseTableName="lot_lot" baseColumnNames="active_export_ftp_delivery_folder" constraintName="lot_delivery_folder_fk"
+                                 referencedTableName="conf_delivery_folder"
+                                 referencedColumnNames="identifier"/>
+
+    </changeSet>
+</databaseChangeLog>

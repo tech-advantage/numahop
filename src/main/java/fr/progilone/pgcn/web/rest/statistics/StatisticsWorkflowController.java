@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import javax.annotation.security.PermitAll;
 import javax.servlet.http.HttpServletRequest;
 
+import fr.progilone.pgcn.domain.dto.statistics.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -24,12 +25,6 @@ import com.codahale.metrics.annotation.Timed;
 
 import fr.progilone.pgcn.domain.AbstractDomainObject;
 import fr.progilone.pgcn.domain.document.DigitalDocument.DigitalDocumentStatus;
-import fr.progilone.pgcn.domain.dto.statistics.WorkflowDeliveryProgressDTO;
-import fr.progilone.pgcn.domain.dto.statistics.WorkflowDocUnitProgressDTO;
-import fr.progilone.pgcn.domain.dto.statistics.WorkflowProfileActivityDTO;
-import fr.progilone.pgcn.domain.dto.statistics.WorkflowStateProgressDTO;
-import fr.progilone.pgcn.domain.dto.statistics.WorkflowUserActivityDTO;
-import fr.progilone.pgcn.domain.dto.statistics.WorkflowUserProgressDTO;
 import fr.progilone.pgcn.domain.util.CustomUserDetails;
 import fr.progilone.pgcn.domain.workflow.WorkflowStateKey;
 import fr.progilone.pgcn.domain.workflow.WorkflowStateStatus;
@@ -206,6 +201,59 @@ public class StatisticsWorkflowController {
                                                                                            toDate,
                                                                                            page,
                                                                                            size), HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, params = {"wdocunitpending"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<List<WorkflowDocUnitProgressDTOPending>> getWorkflowDocUnitProgressStatisticsLight(final HttpServletRequest request,
+                                                                                                             @RequestParam(value = "library", required = false)
+                                                                                                 final List<String> libraries,
+                                                                                                             @RequestParam(value = "project", required = false)
+                                                                                                 final List<String> projects,
+                                                                                                             @RequestParam(value = "project_active", required = false, defaultValue = "false") final boolean projetActive,
+                                                                                                             @RequestParam(value = "lot", required = false)
+                                                                                                 final List<String> lots,
+                                                                                                             @RequestParam(value = "train", required = false)
+                                                                                                 final List<String> trains,
+                                                                                                             @RequestParam(value = "pgcnid", required = false)
+                                                                                                 final String pgcnId,
+                                                                                                             @RequestParam(value = "state", required = false)
+                                                                                                 final List<WorkflowStateKey> states,
+                                                                                                             @RequestParam(value = "status", required = false) final List<WorkflowStateStatus> status,
+                                                                                                             @RequestParam(value = "mine",
+                                                                                                     required = false,
+                                                                                                     defaultValue = "false")
+                                                                                                 final boolean onlyMine,
+                                                                                                             @DateTimeFormat(pattern = "yyyy-MM-dd")
+                                                                                                 @RequestParam(name = "from", required = false)
+                                                                                                 final LocalDate fromDate,
+                                                                                                             @DateTimeFormat(pattern = "yyyy-MM-dd")
+                                                                                                 @RequestParam(name = "to", required = false)
+                                                                                                 final LocalDate toDate) {
+        // Droits d'accès
+        final List<String> filteredLibraries = libraryAccesssHelper.getLibraryFilter(request, libraries);
+        final List<String> filteredProjects = accessHelper.filterProjects(projects).stream().map(AbstractDomainObject::getIdentifier).collect(Collectors.toList());
+        final List<String> filteredLots = accessHelper.filterLots(lots).stream().map(AbstractDomainObject::getIdentifier).collect(Collectors.toList());
+
+        List<String> users = null;
+        if (onlyMine) {  // on recupere le user => on n'aura en retour que les etapes sur lesquelles le user peut agir !
+            final CustomUserDetails currentUser = SecurityUtils.getCurrentUser();
+            if (currentUser != null && !StringUtils.equals(currentUser.getIdentifier(), UserService.SUPER_ADMIN_ID)) {
+                users = Collections.singletonList(currentUser.getLogin());
+            }
+        }
+
+        return new ResponseEntity<>(workflowProgressReportService.getDocUnitProgressReportPending(filteredLibraries,
+                                                                                            filteredProjects,
+                                                                                            projetActive,
+                                                                                            filteredLots,
+                                                                                            trains,
+                                                                                            pgcnId,
+                                                                                            states,
+                                                                                            status,
+                                                                                            users,
+                                                                                            fromDate,
+                                                                                            toDate), HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.GET, params = {"wdocunit", "current"}, produces = MediaType.APPLICATION_JSON_VALUE)

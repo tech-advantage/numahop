@@ -103,7 +103,7 @@ public class DeliveryProcessService {
     private final WorkflowService workflowService;
     private final ConditionReportService conditionReportService;
     private final BinaryStorageManager bm;
-    
+
     @Autowired
     public DeliveryProcessService(final PhysicalDocumentRepository physicalDocumentRepository,
                                   final DigitalDocumentService digitalDocumentService,
@@ -179,13 +179,13 @@ public class DeliveryProcessService {
         final DeliverySlip deliverySlip = new DeliverySlip();
         delivery.setDeliverySlip(deliverySlip);
         deliverySlip.setDelivery(delivery);
-        
+
         long totalMastersSize = 0L;
 
         for (final File directory : subDirectories) {
             final String prefix = prefixes.getOrDefault(directory, directory.getName());
             final Collection<File> filesToHandle = FileUtils.listFiles(directory, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
-            
+
             try {
                 totalMastersSize += Files.walk(directory.toPath())
                                         .filter(p -> p.toFile().isFile())
@@ -195,7 +195,7 @@ public class DeliveryProcessService {
             } catch(final IOException e) {
                 LOG.error("Erreur evaluation taille directory {}, erreur {}", directory.getName(), e.getMessage());
             }
-            
+
             // Traitement des fichiers au format attendu (FIXME : master et non master au même format)
             final List<String> fileNames = autoCheckService.findMastersOnly(filesToHandle, format);
             int pageCount = 0;
@@ -289,12 +289,12 @@ public class DeliveryProcessService {
         if (pddtos.isEmpty()) {
             preDeliveryDTO.addError(buildError(DELIVERY_NO_MATCHING_PREFIX));
         }
-        // Controle espace disque / taille totale des masters. 
+        // Controle espace disque / taille totale des masters.
         if (!checkDiskAvailableSpace(lot.getProject().getLibrary(), totalMastersSize)) {
             LOG.error("Manque de place sur le disque  => livraison stoppée");
-            preDeliveryDTO.addError(buildError(DELIVERY_NOT_ENOUGH_AVAILABLE_SPACE)); 
+            preDeliveryDTO.addError(buildError(DELIVERY_NOT_ENOUGH_AVAILABLE_SPACE));
         }
-        
+
         preDeliveryDTO.setDocuments(pddtos);
 
         deliveryService.save(delivery);
@@ -385,22 +385,23 @@ public class DeliveryProcessService {
             final List<DigitalDocument> ddForLotAndId =
                 digitalDocumentService.getAllByDigitalIdAndLotIdentifier(prefix, delivery.getLot().getIdentifier());
             ddForLotAndId.forEach(dd -> {
-                final Optional<DigitalDocumentDTO> ddtoOpt =
+                Optional<DigitalDocumentDTO> ddtoOpt = null;
+                //in case of the delivered document was deleted, we have to check the dd status
+                if(dd.getStatus() == DigitalDocumentStatus.CANCELED) {
+                    ddtoOpt = Optional.of(createDigitDocDTOFromDigitDoc(dd, dd.getStatus()));
+                } else {
                     // Récupération du doc livré, s'il existe (sans création s'il n'existe pas)
-                    digitalDocumentService.getDeliveredDocumentIfExists(dd, delivery)
-                                          // status CREATING ou DELIVERING
-                                          .filter(deliveredDocument -> deliveredDocument.getStatus() != null && (deliveredDocument.getStatus()
-                                                                                                                 == DigitalDocumentStatus.CREATING
-                                                                                                                 || deliveredDocument.getStatus()
-                                                                                                                    == DigitalDocumentStatus.DELIVERING))
-                                          // Création d'un DigitalDocumentDTO
-                                          .map(deliveredDocument -> {
-                                              final DigitalDocumentDTO ddto = new DigitalDocumentDTO();
-                                              ddto.setIdentifier(dd.getIdentifier());
-                                              ddto.setDigitalId(dd.getDigitalId());
-                                              ddto.setStatus(deliveredDocument.getStatus().name());
-                                              return ddto;
-                                          });
+                    ddtoOpt = digitalDocumentService.getDeliveredDocumentIfExists(dd, delivery)
+                        // status CREATING ou DELIVERING
+                        .filter(deliveredDocument -> deliveredDocument.getStatus() != null
+                            && (deliveredDocument.getStatus() == DigitalDocumentStatus.CREATING || deliveredDocument.getStatus() == DigitalDocumentStatus.DELIVERING))
+
+                        // Création d'un DigitalDocumentDTO
+                        .map(deliveredDocument -> {
+                            return createDigitDocDTOFromDigitDoc(dd, deliveredDocument.getStatus());
+                        });
+                }
+
                 // On a un DigitalDocumentDTO => doc en cours de traitement
                 if (ddtoOpt.isPresent()) {
                     preDeliveryDTO.addLockedDigitalDocument(ddtoOpt.get());
@@ -419,6 +420,14 @@ public class DeliveryProcessService {
             }
         });
         return documentsForPrefix;
+    }
+
+    private DigitalDocumentDTO createDigitDocDTOFromDigitDoc(DigitalDocument dd, DigitalDocumentStatus status) {
+        DigitalDocumentDTO dto = new DigitalDocumentDTO();
+        dto.setIdentifier(dd.getIdentifier());
+        dto.setDigitalId(dd.getDigitalId());
+        dto.setStatus(status.name());
+        return dto;
     }
 
     /**
@@ -440,7 +449,7 @@ public class DeliveryProcessService {
         return pddtos.stream().filter(dto -> prefixToExclude == null || !prefixToExclude.contains(dto.getDigitalId()))
                      // Création des unités documentaires
                      .map(dto -> {
-                         
+
                          // La docUnit existe en cas de relivraison
                          final DocUnit alreadyHere = docUnitService.findOneByPgcnIdAndState(dto.getDigitalId());
                          final DocUnit docUnit = alreadyHere == null ? new DocUnit() : alreadyHere;
@@ -596,9 +605,9 @@ public class DeliveryProcessService {
                     workflowService.processState(digitalDoc.getDocUnit().getIdentifier(),
                                                  WorkflowStateKey.RELIVRAISON_DOCUMENT_EN_COURS,
                                                  SecurityUtils.getCurrentUser().getIdentifier());
-                } 
+                }
             }
-            
+
             digitalDocumentService.save(digitalDoc);
         });
 
@@ -714,7 +723,7 @@ public class DeliveryProcessService {
         }
         return Paths.get(activeFTPConfiguration.getDeliveryFolder(), delivery.getFolderPath());
     }
-    
+
     /**
      * Controle si espace disque suffisant pour la livraison à venir.
      *
@@ -723,12 +732,12 @@ public class DeliveryProcessService {
      */
     private boolean checkDiskAvailableSpace(final Library library, final long totalMastersSize) {
         final File tmpdir = bm.getTmpDir(library.getIdentifier());
-        return tmpdir.getUsableSpace() > (3 * totalMastersSize);        
+        return tmpdir.getUsableSpace() > (3 * totalMastersSize);
     }
-    
+
     /**
      * Retourne infos sur l'espace disque de la bibliothèque (widget Espace disque disponible).
-     * 
+     *
      * @param libId
      * @return
      */
@@ -741,7 +750,7 @@ public class DeliveryProcessService {
             infos.put("disponible", tmpdir.getUsableSpace());
             LOG.debug("Espace disque - Occupé {} - Disponible {}", infos.get("occupe"), infos.get("disponible"));
         }
-        return infos;   
+        return infos;
     }
 
     private PgcnError buildError(final PgcnErrorCode pgcnErrorCode) {

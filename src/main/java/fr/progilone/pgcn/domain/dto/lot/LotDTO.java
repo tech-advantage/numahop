@@ -11,6 +11,8 @@ import fr.progilone.pgcn.domain.dto.administration.omeka.OmekaListDTO;
 import fr.progilone.pgcn.domain.dto.administration.viewsFormat.SimpleViewsFormatConfigurationDTO;
 import fr.progilone.pgcn.domain.dto.checkconfiguration.SimpleCheckConfigurationDTO;
 import fr.progilone.pgcn.domain.dto.document.SimpleDocUnitDTO;
+import fr.progilone.pgcn.domain.dto.exportftpconfiguration.ExportFTPConfigurationDTO;
+import fr.progilone.pgcn.domain.dto.exportftpconfiguration.ExportFTPConfigurationDeliveryFolderDTO;
 import fr.progilone.pgcn.domain.dto.ftpconfiguration.SimpleFTPConfigurationDTO;
 import fr.progilone.pgcn.domain.dto.ocrlangconfiguration.OcrLanguageDTO;
 import fr.progilone.pgcn.domain.dto.project.ProjectDTO;
@@ -42,6 +44,7 @@ public class LotDTO extends AbstractVersionedDTO {
     private ProjectDTO project;
     private Set<SimpleDocUnitDTO> docUnits;
     private SimpleFTPConfigurationDTO activeFTPConfiguration;
+    private ExportFTPConfigurationDTO activeExportFTPConfiguration;
     private SimpleCheckConfigurationDTO activeCheckConfiguration;
     private SimpleViewsFormatConfigurationDTO activeFormatConfiguration;
     private InternetArchiveCollectionDTO collectionIA;
@@ -56,6 +59,7 @@ public class LotDTO extends AbstractVersionedDTO {
     private OmekaListDTO omekaCollection;
     private OmekaListDTO omekaItem;
     private OcrLanguageDTO activeOcrLanguage;
+    private ExportFTPConfigurationDeliveryFolderDTO activeExportFTPDeliveryFolder;
 
     public LotDTO(final String identifier,
                   final String label,
@@ -72,10 +76,11 @@ public class LotDTO extends AbstractVersionedDTO {
                   final ProjectDTO project,
                   final Set<SimpleDocUnitDTO> docUnits,
                   final SimpleFTPConfigurationDTO activeFTPConfiguration,
+                  final ExportFTPConfigurationDTO activeExportFTPConfiguration,
                   final SimpleCheckConfigurationDTO activeCheckConfiguration,
                   final SimpleViewsFormatConfigurationDTO activeFormatConfiguration,
                   final InternetArchiveCollectionDTO collectionIA,
-                  final CinesPACDTO planClassementPAC, 
+                  final CinesPACDTO planClassementPAC,
                   final SimpleUserDTO provider,
                   final String requiredTypeCompression,
                   final Integer requiredTauxCompression,
@@ -84,7 +89,8 @@ public class LotDTO extends AbstractVersionedDTO {
                   final OmekaConfigurationDTO omekaConfiguration,
                   final OmekaListDTO omekaCollection,
                   final OmekaListDTO omekaItem,
-                  final OcrLanguageDTO activeOcrLanguage) {
+                  final OcrLanguageDTO activeOcrLanguage,
+                  final ExportFTPConfigurationDeliveryFolderDTO activeExportFTPDeliveryFolder) {
         this.identifier = identifier;
         this.label = label;
         this.code = code;
@@ -100,6 +106,7 @@ public class LotDTO extends AbstractVersionedDTO {
         this.project = project;
         this.docUnits = docUnits;
         this.activeFTPConfiguration = activeFTPConfiguration;
+        this.activeExportFTPConfiguration = activeExportFTPConfiguration;
         this.activeCheckConfiguration = activeCheckConfiguration;
         this.activeFormatConfiguration = activeFormatConfiguration;
         this.collectionIA = collectionIA;
@@ -113,6 +120,7 @@ public class LotDTO extends AbstractVersionedDTO {
         this.omekaCollection = omekaCollection;
         this.omekaItem = omekaItem;
         this.activeOcrLanguage = activeOcrLanguage;
+        this.activeExportFTPDeliveryFolder = activeExportFTPDeliveryFolder;
     }
 
     public LotDTO() {
@@ -234,9 +242,11 @@ public class LotDTO extends AbstractVersionedDTO {
         return activeFTPConfiguration;
     }
 
-    public void setActiveFTPConfiguration(final SimpleFTPConfigurationDTO activeFTPConfiguration) {
-        this.activeFTPConfiguration = activeFTPConfiguration;
-    }
+    public void setActiveFTPConfiguration(final SimpleFTPConfigurationDTO activeFTPConfiguration) { this.activeFTPConfiguration = activeFTPConfiguration; }
+
+    public ExportFTPConfigurationDTO getActiveExportFTPConfiguration() { return activeExportFTPConfiguration; }
+
+    public void setActiveExportFTPConfiguration(ExportFTPConfigurationDTO activeExportFTPConfiguration) { this.activeExportFTPConfiguration = activeExportFTPConfiguration; }
 
     public SimpleCheckConfigurationDTO getActiveCheckConfiguration() {
         return activeCheckConfiguration;
@@ -341,7 +351,7 @@ public class LotDTO extends AbstractVersionedDTO {
     public void setOmekaItem(final OmekaListDTO omekaItem) {
         this.omekaItem = omekaItem;
     }
-    
+
     public OcrLanguageDTO getActiveOcrLanguage() {
         return activeOcrLanguage;
     }
@@ -350,6 +360,13 @@ public class LotDTO extends AbstractVersionedDTO {
         this.activeOcrLanguage = activeOcrLanguage;
     }
 
+    public ExportFTPConfigurationDeliveryFolderDTO getActiveExportFTPDeliveryFolder() {
+        return activeExportFTPDeliveryFolder;
+    }
+
+    public void setActiveExportFTPDeliveryFolder(ExportFTPConfigurationDeliveryFolderDTO activeExportFTPDeliveryFolder) {
+        this.activeExportFTPDeliveryFolder = activeExportFTPDeliveryFolder;
+    }
 
     /**
      * Builder pour la classe LotDTO
@@ -373,6 +390,7 @@ public class LotDTO extends AbstractVersionedDTO {
         private ProjectDTO project;
         private Set<SimpleDocUnitDTO> docUnits;
         private SimpleFTPConfigurationDTO activeFTPConfiguration;
+        private ExportFTPConfigurationDTO activeExportFTPConfiguration;
         private SimpleCheckConfigurationDTO activeCheckConfiguration;
         private SimpleViewsFormatConfigurationDTO activeFormatConfiguration;
         private InternetArchiveCollectionDTO collectionIA;
@@ -386,6 +404,7 @@ public class LotDTO extends AbstractVersionedDTO {
         private OmekaListDTO omekaCollection;
         private OmekaListDTO omekaItem;
         private OcrLanguageDTO activeOcrLanguage;
+        private ExportFTPConfigurationDeliveryFolderDTO activeExportFTPDeliveryFolder;
 
         public Builder reinit() {
             this.identifier = null;
@@ -402,6 +421,7 @@ public class LotDTO extends AbstractVersionedDTO {
             this.realEndDate = null;
             this.docUnits = null;
             this.activeFTPConfiguration = null;
+            this.activeExportFTPConfiguration = null;
             this.activeCheckConfiguration = null;
             this.activeFormatConfiguration = null;
             this.collectionIA = null;
@@ -415,6 +435,7 @@ public class LotDTO extends AbstractVersionedDTO {
             this.omekaCollection = null;
             this.omekaItem = null;
             this.activeOcrLanguage = null;
+            this.activeExportFTPDeliveryFolder = null;
             return this;
         }
 
@@ -472,7 +493,7 @@ public class LotDTO extends AbstractVersionedDTO {
             this.deliveryDateForseen = deliveryDateForseen;
             return this;
         }
-        
+
         public Builder setRealEndDate(final Date realEndDate) {
             this.realEndDate = realEndDate;
             return this;
@@ -497,7 +518,12 @@ public class LotDTO extends AbstractVersionedDTO {
             this.activeCheckConfiguration = activeCheckConfiguration;
             return this;
         }
-        
+
+        public Builder setActiveExportFTPConfiguration(ExportFTPConfigurationDTO activeExportFTPConfiguration) {
+            this.activeExportFTPConfiguration = activeExportFTPConfiguration;
+            return this;
+        }
+
         public Builder setActiveFormatConfiguration(final SimpleViewsFormatConfigurationDTO activeFormatConfiguration) {
             this.activeFormatConfiguration = activeFormatConfiguration;
             return this;
@@ -512,17 +538,17 @@ public class LotDTO extends AbstractVersionedDTO {
             this.omekaConfiguration = omekaConfiguration;
             return this;
         }
-        
+
         public Builder setOmekaCollection(final OmekaListDTO omekaCollection) {
             this.omekaCollection = omekaCollection;
             return this;
         }
-        
+
         public Builder setOmekaItem(final OmekaListDTO omekaItem) {
             this.omekaItem = omekaItem;
             return this;
-        } 
-        
+        }
+
         public Builder setPlanClassementPAC(final CinesPACDTO planClassementPAC) {
             this.planClassementPAC = planClassementPAC;
             return this;
@@ -552,13 +578,16 @@ public class LotDTO extends AbstractVersionedDTO {
             this.requiredColorspace = requiredColorspace;
             return this;
         }
-        
+
         public Builder setActiveOcrLanguage(final OcrLanguageDTO ocrLanguage) {
             this.activeOcrLanguage = ocrLanguage;
             return this;
         }
 
-
+        public Builder setDeliveryFolder(ExportFTPConfigurationDeliveryFolderDTO activeExportFTPDeliveryFolder) {
+            this.activeExportFTPDeliveryFolder = activeExportFTPDeliveryFolder;
+            return this;
+        }
 
         public LotDTO build() {
             return new LotDTO(identifier,
@@ -575,6 +604,7 @@ public class LotDTO extends AbstractVersionedDTO {
                               realEndDate,
                               project, docUnits,
                               activeFTPConfiguration,
+                              activeExportFTPConfiguration,
                               activeCheckConfiguration,
                               activeFormatConfiguration,
                               collectionIA,
@@ -586,7 +616,8 @@ public class LotDTO extends AbstractVersionedDTO {
                               omekaConfiguration,
                               omekaCollection,
                               omekaItem,
-                              activeOcrLanguage);
+                              activeOcrLanguage,
+                              activeExportFTPDeliveryFolder);
         }
     }
 }

@@ -98,7 +98,7 @@
             $scope.model.states.push({ key: "CLOTURE_DOCUMENT", type: "OTHER" });
             $scope.model.states.push({ key: "ARCHIVAGE_DOCUMENT", type: "TO_SKIP" });
             $scope.model.states.push({ key: "CONSTAT_ETAT_APRES_NUMERISATION", type: "TO_SKIP" });
-            $scope.model.states.push({ key: "CONSTAT_ETAT_AVANT_NUMERISATION", type: "TO_SKIP" });            
+            $scope.model.states.push({ key: "CONSTAT_ETAT_AVANT_NUMERISATION", type: "TO_SKIP" });
             $scope.model.states.push({ key: "DIFFUSION_DOCUMENT", type: "TO_SKIP" });
             $scope.model.states.push({ key: "DIFFUSION_DOCUMENT_OMEKA", type: "TO_SKIP" });
             $scope.model.states.push({ key: "DIFFUSION_DOCUMENT_DIGITAL_LIBRARY", type: "TO_SKIP" });
@@ -115,7 +115,7 @@
             $scope.model.states.push({ key: "VALIDATION_CONSTAT_ETAT", type: "TO_SKIP" });
             $scope.model.states.push({ key: "VALIDATION_DOCUMENT", type: "REQUIRED" });
             $scope.model.states.push({ key: "VALIDATION_NOTICES", type: "REQUIRED" });
-            
+
         }
 
         /****************************************************************/
@@ -234,7 +234,7 @@
                             })
                             .value();
                         if (creation){
-                            
+
                         }
                         openForm();
                     });
@@ -271,13 +271,13 @@
             // ... puis on affiche les infos de création ...
             if (angular.isDefined(entity.createdDate)) {
                 var dateCreated = new Date(entity.createdDate);
-                MessageSrvc.addInfo("Créé le {{date}}",
+                MessageSrvc.addInfo(gettext("Créé le {{date}}"),
                     { date: dateCreated.toLocaleString() }, true);
             }
             // ... puis on affiche les infos de modification ...
             if (angular.isDefined(entity.lastModifiedDate)) {
                 var dateModif = new Date(entity.lastModifiedDate);
-                MessageSrvc.addInfo("Dernière modification le {{date}} par {{author}}",
+                MessageSrvc.addInfo(gettext("Dernière modification le {{date}} par {{author}}"),
                     { date: dateModif.toLocaleString(), author: entity.lastModifiedBy }, true);
             }
 
@@ -308,8 +308,8 @@
         /**
          * Contrôle si des modifications sont en cours, et alerte l'utilisateur
          * sur un évènement ($locationChangeStart)
-         * 
-         * @param {any} event 
+         *
+         * @param {any} event
          */
         function checkModificationsOnLocationChange(event) {
             // Dans le cas d'une restauration sans modification, on prévient l'utilisateur s'il change de page

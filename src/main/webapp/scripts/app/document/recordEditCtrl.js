@@ -192,7 +192,7 @@
                         "record": { identifier: entity.identifier },
                         "rank": getCustomMaxRank(entity, "CUSTOM_ARCHIVE") + $scope.indices[type]++
                     };
-                    break;    
+                    break;
                 case "custom_omeka":
                     property = {
                         "_name": "propertyFormCUSTOMOmeka" + $scope.indices[type]++,
@@ -223,10 +223,10 @@
                 return gettext(property.type.label);
             }
         }
-        
+
         /**
          * Pour conserver l'ordre de saisie des champs de type custom.
-         * 
+         *
          * @param entity
          * @param type
          * @returns
@@ -257,7 +257,7 @@
             }
             return maxRank;
         }
-        
+
         function selectDocUnit() {
             var params = { multiple: false };
             if ($scope.entity.docUnit) {
@@ -345,8 +345,8 @@
 
         /**
          * Duplication d'une entité
-         * 
-         * @param {any} entity 
+         *
+         * @param {any} entity
          */
         function duplicate(entity) {
             entity.$duplicate()
@@ -395,13 +395,13 @@
             // ... puis on affiche les infos de modification ...
             if (angular.isDefined(entity.lastModifiedDate)) {
                 var dateModif = new Date(entity.lastModifiedDate);
-                MessageSrvc.addInfo("Dernière modification le {{date}} par {{author}}",
+                MessageSrvc.addInfo(gettext("Dernière modification le {{date}} par {{author}}"),
                     { date: dateModif.toLocaleString(), author: entity.lastModifiedBy }, true);
             }
             // ... puis on affiche les infos de création ...
             if (angular.isDefined(entity.createdDate)) {
                 var dateCreated = new Date(entity.createdDate);
-                MessageSrvc.addInfo("Créé le {{date}}",
+                MessageSrvc.addInfo(gettext("Créé le {{date}}"),
                     { date: dateCreated.toLocaleString() }, true);
             }
             // Affichage pour un temps limité à l'ouverture
@@ -436,7 +436,7 @@
             entity.record.custom_cines = [];
             entity.record.custom_archive = [];
             entity.record.custom_omeka = [];
-            
+
             _.each(entity.properties, function (property) {
                 switch (property.type.superType) {
                     case "DC": NumahopEditService.insertBasedOnRank(entity.record.dc, property, "weightedRank");

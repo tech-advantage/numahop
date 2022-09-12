@@ -1,0 +1,16 @@
+identifier;label;supertype;rank;version
+idref_title;idref_Title;CUSTOM_OMEKA;1;0
+idref_creator;idref_Creator;CUSTOM_OMEKA;2;0
+idref_subject;idref_Subject;CUSTOM_OMEKA;3;0
+idref_description;idref_Description;CUSTOM_OMEKA;4;0
+idref_publisher;idref_Publisher;CUSTOM_OMEKA;5;0
+idref_contributor;idref_Contributor;CUSTOM_OMEKA;6;0
+idref_date;idref_Date;CUSTOM_OMEKA;7;0
+idref_type;idref_Type;CUSTOM_OMEKA;8;0
+idref_format;idref_Format;CUSTOM_OMEKA;9;0
+idref_identifier;idref_Identifier;CUSTOM_OMEKA;10;0
+idref_source;idref_Source;CUSTOM_OMEKA;11;0
+idref_language;idref_Language;CUSTOM_OMEKA;12;0
+idref_relation;idref_Relation;CUSTOM_OMEKA;13;0
+idref_coverage;idref_Coverage;CUSTOM_OMEKA;14;0
+idref_rights;idref_Rights;CUSTOM_OMEKA;15;0

@@ -1,6 +1,6 @@
 <div class="row layout-columns">
     <!-- Filtres -->
-    <div ng-include="'scripts/components/templates/common/filters.html'"></div>    
+    <div ng-include="'scripts/components/templates/common/filters.html'"></div>
     <div class="col-sm-4 col-layout-columns" ng-keydown="navigate($event)" tabindex="0">
         <div class="panel panel-column-2 panel-column-first">
             <div class="panel-heading">
@@ -9,7 +9,7 @@
                             uib-tooltip="{{::'Réinitialiser les filtres de la recherche' | translate}}">
                         <span class="glyphicon-halflings glyphicon-refresh"></span>
                     </button>
-                    <button type="button" class="btn btn-sem2 btn-xs" ng-click="create()" 
+                    <button type="button" class="btn btn-sem2 btn-xs" ng-click="create()"
                             uib-tooltip="{{::'Créer' | translate}}"
                             sem-roles-allowed="DOC_UNIT_HAB1">
                         <span class="glyphicon-halflings glyphicon-plus"></span>
@@ -47,7 +47,7 @@
                      translate>Aucune unité documentaire n'a été trouvée
                 </div>
                 <div>
-                    <div ng-repeat="docUnit in pagination.items" class="col-infinite-scroll" ng-if="docUnit.parentIdentifier === null">
+                    <div ng-repeat="docUnit in pagination.items" class="col-infinite-scroll" ng-if="docUnit['parentIdentifier'] === null">
                         <div ng-show="$index === 0 || getFirstLetter(docUnit) != getFirstLetter(pagination.items[$index-1])"
                              class="pagination-break">{{docUnit[filters.sortModel]|initial:'OTHER'}}
                         </div>

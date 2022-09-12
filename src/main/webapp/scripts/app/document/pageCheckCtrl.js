@@ -102,7 +102,7 @@
             };
             PageCheckSrvc.setErrorsForPage(params, body, function (value) {
                 if (value.minorErrorRateExceeded) {
-                    MessageSrvc.addWarn("Taux d'erreur dépassé par rapport à la taille de l'échantillon considéré");
+                    MessageSrvc.addWarn(gettext("Taux d'erreur dépassé par rapport à la taille de l'échantillon considéré"));
                 }
                 if (isLastPage()) {
                     $scope.complete = true;

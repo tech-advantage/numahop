@@ -38,10 +38,10 @@ public class AutomaticCheckType extends AbstractDomainObject {
 
     @Column(name = "active", nullable = false)
     private boolean active;
-    
+
     @Column(name = "configurable", nullable = false)
     private boolean configurable;
-    
+
     @Column(name = "order")
     private Integer order;
 
@@ -101,6 +101,7 @@ public class AutomaticCheckType extends AbstractDomainObject {
         FILE_CASE_SENSITIVE, /* Contrôle de la casse du nom de fichier */
         METADATA_FILE, /* Controles validité des fichiers de metadonnées  */
         FILE_PDF_MULTI, /* Controles presence et validite fichier pdf multicouches */
-        GENER_PDF_OCR   /* Génération d'un pdf OCRisé */
+        GENER_PDF_OCR,   /* Génération d'un pdf OCRisé */
+        GENER_PDF_WITHOUT_OCR /* Génération d'un pdf sans OCR */
     }
 }

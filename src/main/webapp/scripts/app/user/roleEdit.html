@@ -23,7 +23,7 @@
 
         <div class="panel-body" ng-show="loaded">
             <!-- Formulaire -->
-                <form editable-form name="roleForm" onaftersave="saveRole(role)" 
+                <form editable-form name="roleForm" onaftersave="saveRole(role)"
                 ng-init="formRO = !isAuthorized([userRoles.ROLE_HAB1,userRoles.ROLE_HAB2])" ng-show="loaded">
 
                 <numa-editable-field title="{{::'Code' | translate}}" placeholder="{{::'Code' | translate}}" mandatory="true"
@@ -49,7 +49,7 @@
             </div>
             <div class="row margin-t20">
                 <div class="table-responsive col-sm-12" ng-show="roleForm.$visible">
-                    <table class="table table-condensed table-hover" 
+                    <table class="table table-condensed table-hover"
                            ng-init="updAllowed = isAuthorized([userRoles.ROLE_HAB1,userRoles.ROLE_HAB2])">
                         <thead>
                         <tr>
@@ -78,12 +78,10 @@
                                 <span>{{::auth.code}}</span>
                                 <span class="glyphicon-regular circle-question-mark"
                                       ng-if="auth._readOnly && !auth._activated && auth.requirements.length > 0"
-                                      uib-tooltip="{{::('Cette autorisation ne peut pas être activée
-tant que les autorisations suivantes ne sont pas activées: ' | translate) + auth.requirements.join(', ') }}"></span>
+                                      uib-tooltip="{{::('Cette autorisation ne peut pas être activée tant que les autorisations suivantes ne sont pas activées: ' | translate) + auth.requirements.join(', ') }}"></span>
                                 <span class="glyphicon-regular circle-question-mark"
                                       ng-if="auth._readOnly && auth._activated && auth.dependencies.length > 0"
-                                      uib-tooltip="{{::('Cette autorisation ne peut pas être désactivée
-tant que les autorisations suivantes ne sont pas désactivées: ' | translate) + auth.dependencies.join(', ') }}"></span>
+                                      uib-tooltip="{{::('Cette autorisation ne peut pas être désactivée tant que les autorisations suivantes ne sont pas désactivées: ' | translate) + auth.dependencies.join(', ') }}"></span>
                             </td>
                             <td><span uib-tooltip={{::auth.description}}>{{::auth.label}}</span></td>
                         </tr>
@@ -93,7 +91,7 @@ tant que les autorisations suivantes ne sont pas désactivées: ' | translate) +
 
                 <!-- Habilitations sans édition -->
                 <div class="table-responsive col-sm-12" ng-show="!roleForm.$visible">
-                    <table class="table table-condensed table-hover" 
+                    <table class="table table-condensed table-hover"
                            ng-init="updAllowed = false">
                         <thead>
                         <tr>

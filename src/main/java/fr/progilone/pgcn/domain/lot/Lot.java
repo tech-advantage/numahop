@@ -7,16 +7,10 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
+import fr.progilone.pgcn.domain.administration.ExportFTPDeliveryFolder;
+import fr.progilone.pgcn.domain.administration.ExportFTPDeliveryFolder_;
 import org.hibernate.Hibernate;
 import org.hibernate.LazyInitializationException;
 import org.hibernate.envers.AuditTable;
@@ -132,7 +126,7 @@ public class Lot extends AbstractDomainObject {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "active_format_configuration")
     private ViewsFormatConfiguration activeFormatConfiguration;
-    
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "active_configuration_export_ftp")
     private ExportFTPConfiguration activeExportFTPConfiguration;
@@ -141,7 +135,7 @@ public class Lot extends AbstractDomainObject {
     @JoinColumn(name = "provider")
     @Field(type = FieldType.Object)
     private User provider;
-    
+
     /** langage selectionné pour ocr */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "active_ocr_lang")
@@ -259,7 +253,7 @@ public class Lot extends AbstractDomainObject {
     @ManyToOne
     @JoinColumn(name = "items_omeka")
     private OmekaList omekaItem;
-    
+
     /**
      * plateformes associées au lot
      */
@@ -286,7 +280,9 @@ public class Lot extends AbstractDomainObject {
     @JoinColumn(name = "omeka_configuration")
     private OmekaConfiguration omekaConfiguration;
 
-
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "active_export_ftp_delivery_folder")
+    private ExportFTPDeliveryFolder activeExportFTPDeliveryFolder;
 
     public String getRequiredFormat() {
         return requiredFormat;
@@ -583,7 +579,7 @@ public class Lot extends AbstractDomainObject {
     public void setFilesArchived(final boolean filesArchived) {
         this.filesArchived = filesArchived;
     }
-    
+
     public OmekaList getOmekaCollection() {
         return omekaCollection;
     }
@@ -622,6 +618,14 @@ public class Lot extends AbstractDomainObject {
 
     public void setActiveOcrLanguage(final OcrLanguage activeOcrLanguage) {
         this.activeOcrLanguage = activeOcrLanguage;
+    }
+
+    public ExportFTPDeliveryFolder getActiveExportFTPDeliveryFolder() {
+        return activeExportFTPDeliveryFolder;
+    }
+
+    public void setActiveExportFTPDeliveryFolder(ExportFTPDeliveryFolder activeExportFTPDeliveryFolder) {
+        this.activeExportFTPDeliveryFolder = activeExportFTPDeliveryFolder;
     }
 
     @Override

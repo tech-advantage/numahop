@@ -6,50 +6,46 @@
     function NumaAlertWorkflowTodoCtrl(codeSrvc, StatisticsSrvc) {
         var ctrl = this;
         ctrl.code = codeSrvc;
-        ctrl.$onChanges = onChanges;
         ctrl.params = {
-                      page : 0,
-                      size : 500,
-                      mine : true, // filtrage sur les alertes de l'utilisateur connecté
-                      project_active : true,
-                      status: "PENDING"
-                  };
+            page : 0,
+            size : 500,
+            mine : true, // filtrage sur les alertes de l'utilisateur connecté
+            project_active : true,
+            status: "PENDING"
+        };
+
+        /**
+         * Suivi des modifs extérieures
+         *
+         * @param {*}
+         *            changes
+         */
+        ctrl.$onChanges = function() {
+            // Rafraichissement des actions
+            ctrl.params.project = _.pluck(ctrl.projects, "identifier");
+            ctrl.params.lot = _.pluck(ctrl.lots, "identifier");
+            ctrl.loadWorkflowDocUnit();
+        }
 
         /**
          * Chargement des workflowDocUnit en cours.
-         * 
+         *
          */
-        function loadWorkflowDocUnit() {
+        ctrl.loadWorkflowDocUnit = function() {
 
-            StatisticsSrvc.workflowDocUnit(ctrl.params).$promise.then(function(result) {
+            StatisticsSrvc.workflowDocUnitPending(ctrl.params).$promise.then(function(result) {
                 // Map [état du workflow, unité documentaire], filtrée sur les états en cours
                 var pendingStatByStep = {};
-                _.each(result.content, function(doc) {
-                    _.chain(doc.workflow).filter(function(w) {
-                        return w.status === "PENDING";
-                    }).each(function(w) {
-                        if (!pendingStatByStep[w.key]) {
-                            pendingStatByStep[w.key] = [];
+                _.each(result, function(doc) {
+                    for(var state in doc.workflowStateKeys){
+                        if (!pendingStatByStep[doc.workflowStateKeys[state]]) {
+                            pendingStatByStep[doc.workflowStateKeys[state]] = [];
                         }
-                        pendingStatByStep[w.key].push(doc);
-                    });
+                        pendingStatByStep[doc.workflowStateKeys[state]].push(doc);
+                    }
                 });
                 ctrl.pendingStatByStep = pendingStatByStep;
             });
         }
-
-        /**
-         * Suivi des modifs extérieures
-         * 
-         * @param {*}
-         *            changes
-         */
-        function onChanges(changes) {
-            // Rafraichissement des actions
-            ctrl.params.project = _.pluck(ctrl.projects, "identifier");
-            ctrl.params.lot = _.pluck(ctrl.lots, "identifier");
-            loadWorkflowDocUnit();
-        }
-
     }
 })();

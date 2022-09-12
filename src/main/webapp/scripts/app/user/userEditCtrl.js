@@ -205,13 +205,13 @@
             // ... puis on affiche les infos de modification ...
             if (angular.isDefined(entity.lastModifiedDate)) {
                 var dateModif = new Date(entity.lastModifiedDate);
-                MessageSrvc.addInfo("Dernière modification le {{date}} par {{author}}",
+                MessageSrvc.addInfo(gettext("Dernière modification le {{date}} par {{author}}"),
                     { date: dateModif.toLocaleString(), author: entity.lastModifiedBy }, true);
             }
             // ... puis on affiche les infos de création ...
             if (angular.isDefined(entity.createdDate)) {
                 var dateCreated = new Date(entity.createdDate);
-                MessageSrvc.addInfo("Créé le {{date}}",
+                MessageSrvc.addInfo(gettext("Créé le {{date}}"),
                     { date: dateCreated.toLocaleString() }, true);
             }
             // Affichage pour un temps limité à l'ouverture
@@ -225,7 +225,7 @@
                 || ($scope.isAuthorized($scope.userRoles.USER_HAB6) && user.identifier === Principal.identifier()));
 
             if ($scope.formRO && user.identifier === Principal.identifier()) {
-                MessageSrvc.addWarn('Pour éditer vos informations, faites appel à un administrateur.');
+                MessageSrvc.addWarn(gettext('Pour éditer vos informations, faites appel à un administrateur.'));
             }
             $scope.loaded = true;
 
@@ -307,8 +307,8 @@
 
         /**
          * Suppression du signature
-         * 
-         * @param {any} user 
+         *
+         * @param {any} user
          */
         function deleteSignature(user) {
             UserSrvc.deleteSignature({ id: user.identifier }).$promise

@@ -4,7 +4,8 @@
 	angular.module('numaHopApp.controller')
 		.controller('WorkflowAllOperationsCtrl', WorkflowAllOperationsCtrl);
 
-	function WorkflowAllOperationsCtrl($routeParams, $location, WorkflowSrvc, codeSrvc, gettextCatalog, MessageSrvc) {
+	function WorkflowAllOperationsCtrl($routeParams, $location, $q, WorkflowSrvc, codeSrvc, gettextCatalog,
+                                       MessageSrvc, DocUnitSrvc, DateUtils, FileSaver, ExportHandlerSrvc) {
 
 		var workflowCtrl = this;
 
@@ -14,11 +15,14 @@
 		workflowCtrl.validate = validate;
 		workflowCtrl.reject = reject;
 		workflowCtrl.getStatusClass = getStatusClass;
+        workflowCtrl.goToLot = goToLot;
+        // Opérations après la validation d'un état du workflow
+        workflowCtrl.postValidationTasks = {};
 
         /**
          * Initialisation du contrôleur
-         * 
-         * @param {any} parentCtrl 
+         *
+         * @param {any} parentCtrl
          */
 		function init(parentCtrl) {
 			workflowCtrl.parent = parentCtrl;
@@ -26,9 +30,28 @@
 			workflowCtrl.lot = parentCtrl.docUnit.lot;
 			workflowCtrl.docUnitId = $routeParams.identifier;
 			workflowCtrl.radical = parentCtrl.docUnit.digitalId;
+			workflowCtrl.pgcnId = parentCtrl.docUnit.pgcnId;
+
+            initPostValidationTasks();
 
 			loadWorkflow(workflowCtrl.docUnitId);
 		}
+
+        /**
+         * Initialisation des opérations à effectuer après la validation d'un état du workflow
+         *
+         */
+        function initPostValidationTasks() {
+            workflowCtrl.postValidationTasks = {
+                "DIFFUSION_DOCUMENT_LOCALE": function (identifier) {
+                    return ExportHandlerSrvc.massExport(identifier,
+                        {
+                            projectId: workflowCtrl.lot.project.identifier,
+                            pgcnId: workflowCtrl.pgcnId
+                        });
+                }
+            }
+        }
 
 
         /**************************************
@@ -37,7 +60,7 @@
 
         /**
          * Chargement du workflow
-         * 
+         *
          * @param {any} docUnit identifier
          */
 		function loadWorkflow(identifier) {
@@ -69,9 +92,14 @@
 			return true;
 		}
 
+        function goToLot() {
+            var search = { id: workflowCtrl.lot.identifier };
+            $location.path('/lot/lot').search(search);
+        }
+
 		function validate(state) {
 			var params;
-			if (state.key === "LIVRAISON_DOCUMENT_EN_COURS" 
+			if (state.key === "LIVRAISON_DOCUMENT_EN_COURS"
 			        || state.key === "RELIVRAISON_DOCUMENT_EN_COURS") {
 				params = {
 					new: true,
@@ -85,12 +113,27 @@
 				$location.path("/checks/checks").search(params);
 			} else {
 				WorkflowSrvc.process({ docUnitId: workflowCtrl.docUnitId, key: state.key }).$promise
+                    .then(function() {
+                        return afterValidated(state.key, workflowCtrl.docUnitId);
+                    })
 					.then(function () {
 						MessageSrvc.addSuccess(gettextCatalog.getString("L'étape {{name}} a été validée"), { name: workflowCtrl.code['workflow.' + state.key] });
 						loadWorkflow(workflowCtrl.docUnitId);
 					});
 			}
 		}
+
+        /**
+         * Lance les tâches post validation d'un état du workflow
+         *
+         * @param key l'identifiant de l'état du workflow
+         * @param docId L'identifiant de l'unité documentaire
+         * @returns {*|null}
+         */
+        function afterValidated(key, docId) {
+            return typeof workflowCtrl.postValidationTasks[key] === 'function' ?
+                workflowCtrl.postValidationTasks[key](docId) : null;
+        }
 
 		function reject() {
 			MessageSrvc.addWarn(gettextCatalog.getString("L'opération demandée n'est pas disponible actuellement"), {}, true);
@@ -102,14 +145,14 @@
 					return "label-not-started";
 				case "PENDING":     // Tâche en cours
 					return "label-pending";
-				case "FINISHED":    // Tâche accomplie 
+				case "FINISHED":    // Tâche accomplie
 					return "label-success";
 				case "FAILED":      // Tâche échouée
 					return "label-failure";
 				case "TO_WAIT":     // Tâche qui sera à attendre
 				case "WAITING":     // En attente d'action système
 					return "label-waiting";
-				case "CANCELED":    // Tâche annulée 
+				case "CANCELED":    // Tâche annulée
 				case "TO_SKIP":     // Tâche qui ne sera pas accomplie (optionnelle uniquement)
 				case "SKIPPED":     // Tâche optionnelle qui a été passée
 				default:
@@ -133,7 +176,7 @@
 			var relivStates = _.where(states, { key: "RELIVRAISON_DOCUMENT_EN_COURS" });
 			relivStates = _.sortBy(relivStates, function(relivState){ return new Date( relivState.startDate ) }).reverse();
 			if (relivStates.length > 0) {
-			    sortedStates.push(relivStates[0]); 
+			    sortedStates.push(relivStates[0]);
 			}
 			sortedStates.push(_.where(states, { key: "CONTROLES_AUTOMATIQUES_EN_COURS" })[0]);
 			sortedStates.push(_.where(states, { key: "CONTROLE_QUALITE_EN_COURS" })[0]);
@@ -144,12 +187,12 @@
 			sortedStates.push(_.where(states, { key: "RAPPORT_CONTROLES" })[0]);
 			sortedStates.push(_.where(states, { key: "ARCHIVAGE_DOCUMENT" })[0]);
 			sortedStates.push(_.where(states, { key: "DIFFUSION_DOCUMENT" })[0]);
-			var diffOmekaStates = _.where(states, { key: "DIFFUSION_DOCUMENT_OMEKA" }); 
+			var diffOmekaStates = _.where(states, { key: "DIFFUSION_DOCUMENT_OMEKA" });
 			if (diffOmekaStates.length > 0) {
 			    sortedStates.push(diffOmekaStates[0]);
 			}
 			sortedStates.push(_.where(states, { key: "DIFFUSION_DOCUMENT_DIGITAL_LIBRARY" })[0]);
-			var diffLocalStates = _.where(states, { key: "DIFFUSION_DOCUMENT_LOCALE" }); 
+			var diffLocalStates = _.where(states, { key: "DIFFUSION_DOCUMENT_LOCALE" });
             if (diffLocalStates.length > 0) {
                 sortedStates.push(diffLocalStates[0]);
             }

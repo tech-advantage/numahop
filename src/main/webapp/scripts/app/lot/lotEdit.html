@@ -53,7 +53,7 @@
                                 <span class="glyphicon-halflings glyphicon-export"></span> {{ ::'Liste des unités documentaires CSV' | translate }}
                             </a>
                         </li>
-                        
+
 <!--                        <li>-->
 <!--                            <a ng-click="downloadCheckSlip('pdf')">-->
 <!--                                <span class="glyphicon-halflings glyphicon-export"></span> {{ ::'Bordereau de contrôle PDF' | translate }}-->
@@ -81,8 +81,8 @@
             <h5 translate>Fiche</h5>
         </div>
         <div class="panel-body" ng-show="loaded" id="lotDetails">
-            
-            <form editable-form name="lotForm" onaftersave="saveLot(lot)" 
+
+            <form editable-form name="lotForm" onaftersave="saveLot(lot)"
                 ng-init="formRO = !isAuthorized([userRoles.LOT_HAB0, userRoles.LOT_HAB1])" ng-show="loaded">
 
                 <uib-accordion close-others="false">
@@ -105,7 +105,7 @@
                                              numa-onchange="reloadSelects($data)"
                         link="{ type: 'project', parameters: {'id': lot.project.identifier} }"> </numa-editable-field>
 
-                        <numa-editable-field data-title="{{::'Prestataire' | translate}}" type="select" form="lotForm" 
+                        <numa-editable-field data-title="{{::'Prestataire' | translate}}" type="select" form="lotForm"
                         model="lot.provider" numa-readonly="formRO" errors="{{ errors.provider }}"
                         default-text="{{ lot.project.provider != null ? lot.project.provider.name : 'Non renseigné' }}"
                         config="{ data: [{fullName: ''}].concat(options.providers),
@@ -114,12 +114,12 @@
                         link="{ type: 'user', parameters: {'id': lot.provider.identifier} }"
                         ng-if="currentUser.category !== 'PROVIDER'"> </numa-editable-field>
 
-                        <numa-editable-field data-title="{{::'Actif' | translate}}" type="radiolist" form="lotForm" 
+                        <numa-editable-field data-title="{{::'Actif' | translate}}" type="radiolist" form="lotForm"
                         model="lot.active" numa-readonly="formRO" errors="{{ errors.active }}"
-                        config="{ data: options.boolean, displayFn: displayBoolean, 
+                        config="{ data: options.boolean, displayFn: displayBoolean,
                         query: 'key as value for (key, value) in $ctrl.config.data'}" > </numa-editable-field>
 
-                        <numa-editable-field data-title="{{::'Type de lot' | translate}}" type="select" form="lotForm" 
+                        <numa-editable-field data-title="{{::'Type de lot' | translate}}" type="select" form="lotForm"
                         model="lot.type" numa-readonly="formRO" errors="{{ errors.type }}" tooltip-fn="getTypeTooltip(model)"
                         config="{ data: options.type,
                         displayFn: displayType,
@@ -127,7 +127,7 @@
 
                         <numa-editable-field data-title="{{::'Description' | translate}}" numa-type="textarea" placeholder="{{::'Description' | translate}}"
                         form="lotForm" model="lot.description" numa-readonly="formRO" errors="{{ errors.description }}"> </numa-editable-field>
-                        
+
                         <div class="row" ng-if="lot.status">
                             <div class="col-xs-4 text-right">
                                 <span translate>Statut</span>
@@ -212,6 +212,35 @@
                                                          model="lot.requiredColorspace" numa-readonly="formRO" errors="{{ errors.requiredColorspace }}"
                                                          config="{ data: options.colorspace, displayFn: displayColorspace,
                                                             query: 'key as value for (key, value) in $ctrl.config.data'}"></numa-editable-field>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Export FTP configuration -->
+                    <div class="formBlock">
+                        <div class="formBlockTitle">
+                            <span translate>Configuration Export FTP</span>
+                        </div>
+                        <div class="formBlockContent">
+                            <div class="row">
+                                <div class="col-sm-8">
+                                    <numa-editable-field title="{{::'Configuration export FTP' | translate}}" type="select" form="lotForm" model="lot.activeExportFTPConfiguration"
+                                                         numa-readonly="formRO" errors="{{ errors.activeExportFTPConfiguration }}"
+                                                         config="{ data: [{label: ''}].concat(options.exportftp),
+                                                        display: 'label',
+                                                        query: 'o.label for o in $ctrl.config.data track by o.identifier'}" link="{ type: 'exportftpConfiguration', parameters: {'id': lot.activeExportFTPConfiguration.identifier} }"
+                                                         numa-onchange="confExportFtpChanged($data)">
+                                    </numa-editable-field>
+                                </div>
+                                <div class="col-sm-8">
+                                    <numa-editable-field title="{{::'Dossier de livraison' | translate}}" type="select" form="lotForm" model="lot.activeExportFTPDeliveryFolder"
+                                                         numa-readonly="formRO" errors="{{ errors.activeExportFTPConfiguration }}"
+                                                         config="{ data: [{name: ''}].concat(lot.activeExportFTPConfiguration.deliveryFolders),
+                                                            display: 'name',
+                                                            query: 'o.name for o in $ctrl.config.data track by o.identifier'}"
+                                                         ng-show="isDeliveryFolderDisplayed()">
+                                    </numa-editable-field>
                                 </div>
                             </div>
                         </div>
@@ -329,7 +358,7 @@
                                 <uib-accordion-heading>
                                     <span class="pull-left glyphicon-halflings"
                                             ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordions.docUnit]">&nbsp;</span>
-                                    <h4>{{ 'Unités documentaires' | translate }} 
+                                    <h4>{{ 'Unités documentaires' | translate }}
                                         <span class="badge btn-sem2">{{ docUnits.length }}</span>
                                     </h4>
                                 </uib-accordion-heading>

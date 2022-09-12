@@ -51,6 +51,7 @@
 
         repCtrl.isUserUnauthorized = isUserUnauthorized;
         repCtrl.isPrestaUnauthorized = isPrestaUnauthorized;
+        repCtrl.initCantModifAndIsReportValidated = initCantModifAndIsReportValidated;
 
 
         // listes déroulantes
@@ -308,6 +309,11 @@
          *               Detail               *
          **************************************/
 
+        function initCantModifAndIsReportValidated() {
+            repCtrl.cantModif = isUserUnauthorized() || isPrestaUnauthorized();
+            repCtrl.isReportValidated = isStateValidated(repCtrl.currentDetail.type);
+        }
+
         /**
          * Création d'un nouveau constat d'état à partir du dernier saisi
          *
@@ -321,7 +327,7 @@
 
                     repCtrl.currentDetail = newDetail;
                     repCtrl.currentDescriptions = copyDescriptions(newDetail);
-
+                    initCantModifAndIsReportValidated();
                 });
         }
 

@@ -5,10 +5,10 @@
         </div>
         <div class="panel-body" ng-show="loaded" id="deliveryDetails">
             <div>
-                <div ng-if="!_createDocs && ( predelivery.errors.length > 0 || emptyDocs.length > 0)">
+                <div ng-if="predelivery.errors.length > 0 || emptyDocs.length > 0">
                     <div class="formBlock ng-scope" aria-hidden="false" style="margin-bottom: 20px;">
                         <div class="formBlockTitle">
-                            <span translate=""><span class="warn">Attention</span></span>
+                            <span ><span class="warn" translate>Attention</span></span>
                         </div>
                         <div class="formBlockContent">
                             <div class="row ng-scope">
@@ -30,7 +30,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div uib-accordion>
                     <div uib-accordion-group is-open="accordions.lockedDoc">
                         <uib-accordion-heading>

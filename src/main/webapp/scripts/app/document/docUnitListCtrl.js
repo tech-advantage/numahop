@@ -7,7 +7,7 @@
     function DocUnitListCtrl($http, $httpParamSerializer, $q, $location, $routeParams, CONFIGURATION,
         DocUnitBaseService, DocUnitSrvc, DtoService, ErreurSrvc, FileSaver, gettext, gettextCatalog, HistorySrvc,
         NumahopUrlService, MessageSrvc, ModalSrvc, NumaHopInitializationSrvc, NumahopStorageService, ExportCinesSrvc,
-        SelectionSrvc, ExportInternetArchiveSrvc, ExportOmekaSrvc, ExportDigitalLibrarySrvc, DateUtils) {
+        SelectionSrvc, ExportInternetArchiveSrvc, ExportOmekaSrvc, ExportDigitalLibrarySrvc, ExportHandlerSrvc) {
 
         var mainCtrl = this;
 
@@ -124,7 +124,7 @@
          * Modèle pour le tri
          * @type {Object}
          */
-        mainCtrl.sortModel = [];
+        mainCtrl.sortModel = ["-label"];
 
         /**
          * La liste a déjà été chargé une première fois
@@ -578,7 +578,7 @@
                 if (ud.train !== null) {
                     train = getPreSelectedTrain(ud.train);
                 }
-                
+
             }
             if (docs) {
                 ModalSrvc.integrateToProject(docs, "sm", proj, lot, train)
@@ -624,7 +624,7 @@
 
         /**
          * Ajout de la sélection à un nouveau projet
-         * On sauvegarde la sélection courante dans SelectionSrvc, 
+         * On sauvegarde la sélection courante dans SelectionSrvc,
          * avec de basculer sur la page de création de projet.
          */
         function addSelectionToNewProject() {
@@ -638,7 +638,7 @@
 
         /**
          * Ajout de la sélection à un nouveau lot
-         * On sauvegarde la sélection courante dans SelectionSrvc, 
+         * On sauvegarde la sélection courante dans SelectionSrvc,
          * avec de basculer sur la page de création de lot.
          */
         function addSelectionToNewLot() {
@@ -647,7 +647,7 @@
 
         /**
          * Ajout de la sélection à un nouveau train
-         * On sauvegarde la sélection courante dans SelectionSrvc, 
+         * On sauvegarde la sélection courante dans SelectionSrvc,
          * avec de basculer sur la page de création de train.
          */
         function addSelectionToNewTrain() {
@@ -673,9 +673,9 @@
         /**
          * Ajout de la sélection à un nouveau projet / lot / train
          * Une fois le projet créé, on revient ici pour y lier la sélection
-         * 
-         * @param {any} projectId 
-         * @returns 
+         *
+         * @param {any} projectId
+         * @returns
          */
         function addSelectionToNewProjectCallback(projectId, lotId, trainId) {
             var selection = SelectionSrvc.get(SelectionSrvc.keys.DOC_UNIT_LIST);
@@ -688,12 +688,12 @@
 
         /**
          * Ajout de la sélection à un projet / lot / train
-         * 
-         * @param {any} docUnits 
-         * @param {any} projectId 
-         * @param {any} lotId 
-         * @param {any} trainId 
-         * @returns 
+         *
+         * @param {any} docUnits
+         * @param {any} projectId
+         * @param {any} lotId
+         * @param {any} trainId
+         * @returns
          */
         function addDocUnitsToProject(docUnits, projectId, lotId, trainId) {
             if (docUnits.length === 0) {
@@ -721,8 +721,8 @@
 
         /**
          * Retourne les UD sélectionnées et valides pour l'ajout à un lot/train
-         * 
-         * @returns 
+         *
+         * @returns
          */
         function getValidSelection(type) {
             if (mainCtrl.selectedLength === 0) {
@@ -730,7 +730,7 @@
                 return;
             }
 
-            // On autorise la selection d'UDs appartenant ttes au mm projet, ou alors toutes sans projet. 
+            // On autorise la selection d'UDs appartenant ttes au mm projet, ou alors toutes sans projet.
             var testValue = _.find(mainCtrl.selection, function (item) { return item.project; });
             var filteredDocs = [];
             if (angular.isDefined(testValue)) {
@@ -775,8 +775,8 @@
 
         /**
          * Retourne les UD sélectionnées et valides pour l'ajout à un projet
-         * 
-         * @returns 
+         *
+         * @returns
          */
         function getValidSelectionForProject() {
             if (mainCtrl.selectedLength === 0) {
@@ -837,7 +837,7 @@
 
         /**
          * Suppression des unités documentaires sélectionnées
-         * 
+         *
          */
         function deleteSelection() {
             if (mainCtrl.selectedLength === 0) {
@@ -888,7 +888,8 @@
             }
             var params = {
                 "import-template": _.pluck(mainCtrl.selection, "identifier"),
-                "format": "XLSX"
+                "format": "XLSX",
+                "sortAttributes": mainCtrl.sortModel
             };
             var url = 'api/rest/condreport?' + $httpParamSerializer(params);
 
@@ -918,32 +919,10 @@
                     if (filteredWithoutRecord.length > 0) {
                         MessageSrvc.addWarn(gettext(filteredWithoutRecord.length + " unité(s) documentaire(s) sélectionnée(s) sans notice. Les métadonnées (Mets) ne seront pas exportées."), {}, false);
                     }
-
-                    var ftpExport = types.ftpExport === "true";
-                    
-                    var params = {
-                        "docs": _.pluck(mainCtrl.selection, "identifier"),
-                        "types": types.exportTypes
-                    };
-                    if (ftpExport) {
-                        // export ftp
-                        params.export_ftp = true;
-                    } else {    // telechargement local
-                        params.export = true;
-                    }
-                    var url = 'api/rest/docunit?' + $httpParamSerializer(params);
-                    
-                    // on met la réponse dans un arraybuffer pour conserver l'encodage original dans le fichier sauvegardé
-                    $http.get(url, { responseType: 'arraybuffer' })
-                        .then(function (response) {
-                            if (ftpExport) {
-                                // todo message sent!
-                            } else {
-                                var currDate = new Date();
-                                var filename = DateUtils.getFormattedDateYearMonthDayHourMinSec(new Date()) + "_mass_export.zip";
-                                var blob = new Blob([response.data], { type: response.headers("content-type") });
-                                FileSaver.saveAs(blob, filename);
-                            }
+                    ExportHandlerSrvc.massExport(
+                        _.pluck(mainCtrl.selection, "identifier"),
+                        {
+                            types: types
                         });
                 });
         }
@@ -980,7 +959,7 @@
                     MessageSrvc.addSuccess(gettext("L'archivage CINES des documents a été effectué. Pour plus de détails, consultez la page des documents concernés"));
                 });
         }
-        
+
         function massOmeka() {
             if (mainCtrl.selectedLength === 0) {
                 MessageSrvc.addWarn(gettext("La sélection est vide"), {}, false);
@@ -1072,7 +1051,7 @@
         }
 
         /**
-         * Téléversement des constats d'état, complétés à partir d'un modèle d'import 
+         * Téléversement des constats d'état, complétés à partir d'un modèle d'import
          */
         function uploadCondReport() {
             ModalSrvc.selectFile()

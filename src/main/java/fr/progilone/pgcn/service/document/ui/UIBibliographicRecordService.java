@@ -120,7 +120,7 @@ public class UIBibliographicRecordService {
             e.getErrors().forEach(semanthequeError -> request.addError(buildError(semanthequeError.getCode())));
             throw new PgcnValidationException(request);
         }
-    }    
+    }
 
     private PgcnError buildError(final PgcnErrorCode pgcnErrorCode) {
         final PgcnError.Builder builder = new PgcnError.Builder();
@@ -266,33 +266,15 @@ public class UIBibliographicRecordService {
      * @return
      */
     @Transactional
+    //FIXME: FACTORISE THIS METHOD TO AVOID DUPLICATE CODE (OmekaService: method getDataRecord)
     public BibliographicRecordDcDTO getBibliographicRecordDcDTOFromDocUnit(final DocUnit docUnit) {
-        final ExportData ed = docUnit.getExportData();
         final BibliographicRecordDcDTO dto;
-        if (ed != null) {
-            dto = new BibliographicRecordDcDTO();
-            ed.getProperties()
-              .stream()
-              .filter(p -> p.getType().getSuperType() == DocPropertyType.DocPropertySuperType.DC)
-              .sorted(Comparator.comparing(ExportProperty::getRank))
-              .forEach(p -> {
-                  try {
-                      final String dcProperty = p.getType().getIdentifier();
-                      final List<String> current = (List<String>) PropertyUtils.getSimpleProperty(dto, dcProperty);
-                      current.add(p.getValue());
 
-                  } catch (final ReflectiveOperationException | IllegalArgumentException e) {
-                      LOG.error(e.getMessage(), e);
-                  }
-              });
-
+        if (docUnit.getRecords().iterator().hasNext()) {
+            final BibliographicRecord record = docUnit.getRecords().iterator().next();
+            dto = getOneDc(record.getIdentifier());
         } else {
-            if (docUnit.getRecords().iterator().hasNext()) {
-                final BibliographicRecord record = docUnit.getRecords().iterator().next();
-                dto = getOneDc(record.getIdentifier());
-            } else {
-                dto = null;
-            }
+            dto = null;
         }
         return dto;
     }

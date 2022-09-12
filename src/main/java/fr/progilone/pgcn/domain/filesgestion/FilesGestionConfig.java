@@ -1,232 +1,249 @@
 package fr.progilone.pgcn.domain.filesgestion;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import fr.progilone.pgcn.domain.AbstractDomainObject;
+import fr.progilone.pgcn.domain.administration.ExportFTPDeliveryFolder;
+import fr.progilone.pgcn.domain.exportftpconfiguration.ExportFTPConfiguration;
 import fr.progilone.pgcn.domain.library.Library;
 
 
 @Entity
 @Table(name = FilesGestionConfig.TABLE_NAME)
 public class FilesGestionConfig extends AbstractDomainObject {
-    
-  public static final String TABLE_NAME = "conf_files_gestion";
-    
-  @Column(name = "trigger_type")
-  private String triggerType;
-  
-  @Column(name = "delay")
-  private int delay;
-  
-  @Column(name = "export_ftp")
-  private boolean useExportFtp;
-  
-  @Column(name = "destination_dir")
-  private String destinationDir;
-  
-  @Column(name = "delete_master")
-  private boolean deleteMaster;
-  
-  @Column(name = "delete_pdf")
-  private boolean deletePdf;
-  
-  @Column(name = "delete_print")
-  private boolean deletePrint;
-  
-  @Column(name = "delete_view")
-  private boolean deleteView;
-  
-  @Column(name = "delete_thumb")
-  private boolean deleteThumb;
-  
-  @Column(name = "save_master")
-  private boolean saveMaster;
-  
-  @Column(name = "save_pdf")
-  private boolean savePdf;
-  
-  @Column(name = "save_print")
-  private boolean savePrint;
-  
-  @Column(name = "save_view")
-  private boolean saveView;
-  
-  @Column(name = "save_thumb")
-  private boolean saveThumb;
-  
-  @Column(name = "save_aip_sip")
-  private boolean saveAipSip;
-  
-  
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "library")
-  private Library library;
 
+    public static final String TABLE_NAME = "conf_files_gestion";
 
-public String getTriggerType() {
-    return triggerType;
-}
+    @Column(name = "trigger_type")
+    private String triggerType;
 
+    @Column(name = "delay")
+    private int delay;
 
-public void setTriggerType(final String triggerType) {
-    this.triggerType = triggerType;
-}
+    @Column(name = "export_ftp")
+    private boolean useExportFtp;
 
+    @Column(name = "destination_dir")
+    private String destinationDir;
 
-public int getDelay() {
-    return delay;
-}
+    @Column(name = "delete_master")
+    private boolean deleteMaster;
 
+    @Column(name = "delete_pdf")
+    private boolean deletePdf;
 
-public void setDelay(final int delay) {
-    this.delay = delay;
-}
+    @Column(name = "delete_print")
+    private boolean deletePrint;
 
+    @Column(name = "delete_view")
+    private boolean deleteView;
 
-public boolean isUseExportFtp() {
-    return useExportFtp;
-}
+    @Column(name = "delete_thumb")
+    private boolean deleteThumb;
 
+    @Column(name = "save_master")
+    private boolean saveMaster;
 
-public void setUseExportFtp(final boolean useExportFtp) {
-    this.useExportFtp = useExportFtp;
-}
+    @Column(name = "save_pdf")
+    private boolean savePdf;
 
+    @Column(name = "save_print")
+    private boolean savePrint;
 
-public String getDestinationDir() {
-    return destinationDir;
-}
+    @Column(name = "save_view")
+    private boolean saveView;
 
+    @Column(name = "save_thumb")
+    private boolean saveThumb;
 
-public void setDestinationDir(final String destinationDir) {
-    this.destinationDir = destinationDir;
-}
+    @Column(name = "save_aip_sip")
+    private boolean saveAipSip;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "library")
+    private Library library;
 
-public boolean isDeleteMaster() {
-    return deleteMaster;
-}
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "active_export_ftp_conf")
+    private ExportFTPConfiguration activeExportFTPConfiguration;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "active_export_ftp_delivery_folder")
+    private ExportFTPDeliveryFolder activeExportFTPDeliveryFolder;
 
-public void setDeleteMaster(final boolean deleteMaster) {
-    this.deleteMaster = deleteMaster;
-}
 
+    public String getTriggerType() {
+        return triggerType;
+    }
 
-public boolean isDeletePrint() {
-    return deletePrint;
-}
 
+    public void setTriggerType(final String triggerType) {
+        this.triggerType = triggerType;
+    }
 
-public void setDeletePrint(final boolean deletePrint) {
-    this.deletePrint = deletePrint;
-}
 
+    public int getDelay() {
+        return delay;
+    }
 
-public boolean isDeleteView() {
-    return deleteView;
-}
 
+    public void setDelay(final int delay) {
+        this.delay = delay;
+    }
 
-public void setDeleteView(final boolean deleteView) {
-    this.deleteView = deleteView;
-}
 
+    public boolean isUseExportFtp() {
+        return useExportFtp;
+    }
 
-public boolean isDeleteThumb() {
-    return deleteThumb;
-}
 
+    public void setUseExportFtp(final boolean useExportFtp) {
+        this.useExportFtp = useExportFtp;
+    }
 
-public void setDeleteThumb(final boolean deleteThumb) {
-    this.deleteThumb = deleteThumb;
-}
 
+    public String getDestinationDir() {
+        return destinationDir;
+    }
 
-public boolean isSaveMaster() {
-    return saveMaster;
-}
 
+    public void setDestinationDir(final String destinationDir) {
+        this.destinationDir = destinationDir;
+    }
 
-public void setSaveMaster(final boolean saveMaster) {
-    this.saveMaster = saveMaster;
-}
 
+    public boolean isDeleteMaster() {
+        return deleteMaster;
+    }
 
-public boolean isSavePrint() {
-    return savePrint;
-}
 
+    public void setDeleteMaster(final boolean deleteMaster) {
+        this.deleteMaster = deleteMaster;
+    }
 
-public void setSavePrint(final boolean savePrint) {
-    this.savePrint = savePrint;
-}
 
+    public boolean isDeletePrint() {
+        return deletePrint;
+    }
 
-public boolean isSaveView() {
-    return saveView;
-}
 
+    public void setDeletePrint(final boolean deletePrint) {
+        this.deletePrint = deletePrint;
+    }
 
-public void setSaveView(final boolean saveView) {
-    this.saveView = saveView;
-}
 
+    public boolean isDeleteView() {
+        return deleteView;
+    }
 
-public boolean isSaveThumb() {
-    return saveThumb;
-}
 
+    public void setDeleteView(final boolean deleteView) {
+        this.deleteView = deleteView;
+    }
 
-public void setSaveThumb(final boolean saveThumb) {
-    this.saveThumb = saveThumb;
-}
 
+    public boolean isDeleteThumb() {
+        return deleteThumb;
+    }
 
-public boolean isDeletePdf() {
-    return deletePdf;
-}
 
+    public void setDeleteThumb(final boolean deleteThumb) {
+        this.deleteThumb = deleteThumb;
+    }
 
-public void setDeletePdf(final boolean deletePdf) {
-    this.deletePdf = deletePdf;
-}
 
+    public boolean isSaveMaster() {
+        return saveMaster;
+    }
 
-public boolean isSavePdf() {
-    return savePdf;
-}
 
+    public void setSaveMaster(final boolean saveMaster) {
+        this.saveMaster = saveMaster;
+    }
 
-public void setSavePdf(final boolean savePdf) {
-    this.savePdf = savePdf;
-}
 
+    public boolean isSavePrint() {
+        return savePrint;
+    }
 
-public boolean isSaveAipSip() {
-    return saveAipSip;
-}
 
+    public void setSavePrint(final boolean savePrint) {
+        this.savePrint = savePrint;
+    }
 
-public void setSaveAipSip(final boolean saveAipSip) {
-    this.saveAipSip = saveAipSip;
-}
 
+    public boolean isSaveView() {
+        return saveView;
+    }
 
-public Library getLibrary() {
-    return library;
-}
 
+    public void setSaveView(final boolean saveView) {
+        this.saveView = saveView;
+    }
 
-public void setLibrary(final Library library) {
-    this.library = library;
-}
-  
 
+    public boolean isSaveThumb() {
+        return saveThumb;
+    }
 
+
+    public void setSaveThumb(final boolean saveThumb) {
+        this.saveThumb = saveThumb;
+    }
+
+
+    public boolean isDeletePdf() {
+        return deletePdf;
+    }
+
+
+    public void setDeletePdf(final boolean deletePdf) {
+        this.deletePdf = deletePdf;
+    }
+
+
+    public boolean isSavePdf() {
+        return savePdf;
+    }
+
+
+    public void setSavePdf(final boolean savePdf) {
+        this.savePdf = savePdf;
+    }
+
+
+    public boolean isSaveAipSip() {
+        return saveAipSip;
+    }
+
+
+    public void setSaveAipSip(final boolean saveAipSip) {
+        this.saveAipSip = saveAipSip;
+    }
+
+
+    public Library getLibrary() {
+        return library;
+    }
+
+
+    public void setLibrary(final Library library) {
+        this.library = library;
+    }
+
+    public ExportFTPConfiguration getActiveExportFTPConfiguration() {
+        return activeExportFTPConfiguration;
+    }
+
+    public void setActiveExportFTPConfiguration(ExportFTPConfiguration activeExportFTPConfiguration) {
+        this.activeExportFTPConfiguration = activeExportFTPConfiguration;
+    }
+
+    public ExportFTPDeliveryFolder getActiveExportFTPDeliveryFolder() {
+        return activeExportFTPDeliveryFolder;
+    }
+
+    public void setActiveExportFTPDeliveryFolder(ExportFTPDeliveryFolder activeExportFTPDeliveryFolder) {
+        this.activeExportFTPDeliveryFolder = activeExportFTPDeliveryFolder;
+    }
 }

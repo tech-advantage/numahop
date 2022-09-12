@@ -42,7 +42,7 @@ public class FTPClientService {
                        final String password,
                        final String targetDir,
                        final Path localSource) throws PgcnTechnicalException, IOException {
-        final FTPSClient ftpClient = new FTPSClient("TLS");
+        final FTPSClient ftpClient = new FTPSClient("SSL");
 
         if (localSource != null && Files.exists(localSource)) {
             try {

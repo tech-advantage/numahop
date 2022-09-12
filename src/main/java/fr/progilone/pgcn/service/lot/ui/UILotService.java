@@ -50,7 +50,7 @@ public class UILotService {
     private final WorkflowService workflowService;
 
     @Autowired
-    public UILotService(final LotService lotService, final UILotMapper uiLotMapper, 
+    public UILotService(final LotService lotService, final UILotMapper uiLotMapper,
                         final AccessHelper accessHelper, final WorkflowService workflowService) {
         this.lotService = lotService;
         this.uiLotMapper = uiLotMapper;
@@ -115,8 +115,8 @@ public class UILotService {
     }
 
     @Transactional(readOnly = true)
-    public LotWithConfigRulesDTO getOneWithConfigRules(final String id) {
-        return LotWithConfigRulesMapper.INSTANCE.lotToLotWithConfigRulesDTO(lotService.getOneWithConfigRules(id));
+    public LotDTO getOneWithConfigRules(final String id) {
+        return LotMapper.INSTANCE.lotToLotDTO(lotService.getOneWithConfigRules(id));
     }
 
     @Transactional(readOnly = true)
@@ -141,19 +141,19 @@ public class UILotService {
         final List<Lot> lots = lotService.findAllByActiveForDelivery(true);
         return filterLots(lots).stream().map(LotMapper.INSTANCE::lotToLotListDTO).collect(Collectors.toList());
     }
-       
+
     /**
      * Vérifie que le lot est dispo pour une livraison.
-     * 
+     *
      * - lots physiques en cours (déjà filtrés par la requete)
      * - lots digitaux créés
-     * - lots digitaux en cours avec un doc workflow en attente de relivraison  
-     * 
+     * - lots digitaux en cours avec un doc workflow en attente de relivraison
+     *
      * @param lot
      * @return
      */
     private boolean checkLotIsAvailableForDeliv(final Lot lot) {
-        
+
         boolean isAvailable = false;
         if (Lot.Type.PHYSICAL ==  lot.getType()) {
             isAvailable = true;
@@ -171,8 +171,8 @@ public class UILotService {
         }
         return isAvailable;
     }
-    
-    
+
+
 
     @Transactional(readOnly = true)
     public List<LotListDTO> findAllActiveForMultiLotsDelivery() {
@@ -191,7 +191,7 @@ public class UILotService {
         final List<Lot> lots = lotService.findAllActiveByProjectIn(projects);
         return lots.stream().map(LotMapper.INSTANCE::lotToLotListDTO).collect(Collectors.toList());
     }
-    
+
     @Transactional(readOnly = true)
     public Collection<LotListDTO> findAllByLibraryIn(final List<String> libraries) {
         final List<Lot> lots = lotService.findAllByLibraryIn(libraries);

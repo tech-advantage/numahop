@@ -1,8 +1,8 @@
-<a class="list-group-item padding-t10 padding-b5" 
+<a class="list-group-item padding-t10 padding-b5"
    ng-class="{ 'selected': $ctrl.isSelected({$item: item}) }"
-   ng-repeat="item in $ctrl.pagination.items" 
+   ng-repeat="item in $ctrl.pagination.items"
    ng-href="#/document/all_operations/{{::item.docUnitId}}?tab=CONDREPORT" ng-click="$ctrl.clickItem(item, $event)">
-    <h5 class="list-group-item-heading">{{ ::$ctrl.types[item.type].label }}, le {{ ::item.date | moment:'LL' }}</h5>
+    <h5 class="list-group-item-heading" translate>{{ ::$ctrl.types[item.type].label }}, le {{ ::item.date | moment:'LL' }}</h5>
     <p class="small list-group-item-text">{{ ::item.docUnitLabel }}</p>
     <p class="small list-group-item-text">{{ ::item.docUnitPgcnId }}</p>
 </a>

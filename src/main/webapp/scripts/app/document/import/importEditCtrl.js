@@ -180,6 +180,11 @@
                     code: "SIMPLE_MULTI_NOTICE",
                     label: gettextCatalog.getString("Hiérarchie de composants dans une seule notice")
                 },
+                // n notices dans l'import = n notice PGCN avec relation parent / enfant
+                "SIMPLE_MULTI_MULTI_NOTICE": {
+                    code: "SIMPLE_MULTI_MULTI_NOTICE",
+                    label: gettextCatalog.getString("Hiérarchie de composants dans des notices mères / filles")
+                },
                 // 1 notice dans l'import = n notices PGCN
                 "HIERARCHY_IN_SINGLE_NOTICE": {
                     code: "HIERARCHY_IN_SINGLE_NOTICE",
@@ -562,7 +567,7 @@
             if (editCtrl.report.type === "HIERARCHY_IN_SINGLE_NOTICE") {
                 return format !== "MARC" && format !== "MARCJSON" && format !== "MARCXML";
             }
-            else if (editCtrl.report.type === "SIMPLE_MULTI_NOTICE") {
+            else if (editCtrl.report.type === "SIMPLE_MULTI_NOTICE"|| editCtrl.report.type === "SIMPLE_MULTI_MULTI_NOTICE") {
                 return format !== "EAD";
             }
             else if (editCtrl.parent || editCtrl.report.type === "HIERARCHY_IN_MULTIPLE_IMPORT") {
@@ -575,6 +580,7 @@
         function isImportDisabled() {
             return !((editCtrl.report.mapping || editCtrl.report.fileFormat === "DC")  // mapping renseigné
                 && (editCtrl.report.type !== "SIMPLE_MULTI_NOTICE" || editCtrl.report.mappingChildren) // mapping pério renseigné
+                && (editCtrl.report.type !== "SIMPLE_MULTI_MULTI_NOTICE" || editCtrl.report.mappingChildren) // mapping pério renseigné
                 && (editCtrl.report.type !== "HIERARCHY_IN_SINGLE_NOTICE" || editCtrl.report.mappingChildren) // mapping pério renseigné
                 && (editCtrl.z3950 || (editCtrl.report.fileFormat && editCtrl.files && editCtrl.files.length)));  // format et fichier renseigné
         }
@@ -605,6 +611,11 @@
             // Mapping
             switch (editCtrl.report.type) {
                 case "SIMPLE_MULTI_NOTICE":
+                    formData.append("prop_order", "BY_CREATION");   // Ordre des propriétés par date de création
+                    setFormValue("mapping", editCtrl.report.mapping.identifier, formData);
+                    setFormValue("mappingChildren", editCtrl.report.mappingChildren.identifier, formData);
+                    break;
+                case "SIMPLE_MULTI_MULTI_NOTICE":
                     formData.append("prop_order", "BY_CREATION");   // Ordre des propriétés par date de création
                     setFormValue("mapping", editCtrl.report.mapping.identifier, formData);
                     setFormValue("mappingChildren", editCtrl.report.mappingChildren.identifier, formData);

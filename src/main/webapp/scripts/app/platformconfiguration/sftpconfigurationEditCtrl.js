@@ -6,13 +6,12 @@
 
     function SFTPConfigurationEditCtrl($http, $location, $q, $routeParams, $scope, $timeout, SFTPConfigurationSrvc,
         codeSrvc, CONFIGURATION, gettext, gettextCatalog, HistorySrvc, ListTools, LibraryParameterSrvc, CinesLangCodeSrvc,
-        NumahopEditService, MessageSrvc, ModalSrvc, NumaHopInitializationSrvc, ValidationSrvc) {
+        NumahopEditService, MessageSrvc, ModalSrvc, NumaHopInitializationSrvc, ValidationSrvc, VIEW_MODES) {
 
         $scope.semCodes = codeSrvc;
         $scope.preventDefault = NumahopEditService.preventDefault;
-        $scope.viewModes = NumahopEditService.viewModes;
+        $scope.viewModes = VIEW_MODES;
         $scope.validation = ValidationSrvc;
-
 
         $scope.viewMode = $routeParams.mode || $scope.viewModes.VIEW;
 
@@ -153,7 +152,7 @@
         /****************************************************************/
         // Sauvegarde une configuration
         function saveConfiguration(configuration) {
-   
+
             // sauvegarde des valeurs defaut pour cines.
             if ($scope.configuration.cinesDefaultValues && $scope.configuration.cinesDefaultValues.identifier) {
                 LibraryParameterSrvc.save({ sftpConfig: $scope.configuration.cinesDefaultValues.identifier },
@@ -245,7 +244,7 @@
 
 
         /**
-         * Chargement des modules parametres defaut et codes lang. cines. 
+         * Chargement des modules parametres defaut et codes lang. cines.
          */
         function loadParams() {
             if (angular.isDefined($routeParams.id)) {
@@ -282,7 +281,7 @@
             }
         }
 
-        /** 
+        /**
          * Charge les Pacs depuis le fichier ppdi uploadé (multipart).
          */
         function loadPacs() {

@@ -6,12 +6,13 @@
 
     function IAConfigurationEditCtrl($location, $q, $routeParams, $scope, $timeout, IAConfigurationSrvc, codeSrvc,
         gettext, gettextCatalog, HistorySrvc, ListTools, NumahopEditService,
-        MessageSrvc, ModalSrvc, NumaHopInitializationSrvc, ValidationSrvc) {
+        MessageSrvc, ModalSrvc, NumaHopInitializationSrvc, ValidationSrvc, VIEW_MODES) {
 
         $scope.semCodes = codeSrvc;
         $scope.preventDefault = NumahopEditService.preventDefault;
-        $scope.viewModes = NumahopEditService.viewModes;
         $scope.validation = ValidationSrvc;
+        //only mandatory because we needed view_modes in HTML
+        $scope.VIEW_MODES = VIEW_MODES;
 
         // Définition des listes déroulantes
         $scope.options = {
@@ -21,7 +22,7 @@
             }
         };
 
-        $scope.viewMode = $routeParams.mode || $scope.viewModes.VIEW;
+        $scope.viewMode = $routeParams.mode || VIEW_MODES.VIEW;
 
         $scope.binding = { resp: "" };
         $scope.loaded = false;
@@ -63,9 +64,9 @@
                     deferred.reject(value);
                 });
 
-                if ($scope.viewMode === $scope.viewModes.EDIT) {
+                if ($scope.viewMode === VIEW_MODES.EDIT) {
                     savePromise.then(function (value) {
-                        $scope.setViewMode($scope.viewModes.VIEW);
+                        $scope.setViewMode(VIEW_MODES.VIEW);
                     }).catch(function (value) {
                         openForm();
                     });
@@ -75,7 +76,7 @@
             return deferred.promise;
         };
         $scope.showAdd = function (index, collection) {
-            return index === (collection.length - 1) && ($scope.viewMode === $scope.viewModes.EDIT || index >= 0 && angular.isDefined(collection[collection.length - 1].identifier));
+            return index === (collection.length - 1) && ($scope.viewMode === VIEW_MODES.EDIT || index >= 0 && angular.isDefined(collection[collection.length - 1].identifier));
         };
 
         /****************************************************************/
@@ -113,7 +114,7 @@
             }
         };
         $scope.cancel = function () {
-            $scope.setViewMode($scope.viewModes.VIEW);
+            $scope.setViewMode(VIEW_MODES.VIEW);
         };
         $scope.backToList = function () {
             $scope.loaded = false;
@@ -223,7 +224,7 @@
                 }, function (configuration) {
                     afterLoadingConfiguration(configuration);
                 });
-            } else if ($scope.viewMode === $scope.viewModes.EDIT) {
+            } else if ($scope.viewMode === VIEW_MODES.EDIT) {
                 // Création d'une nouvelle configuration
                 HistorySrvc.add(gettext("Nouvelle configuration"));
                 $scope.configuration = new IAConfigurationSrvc();

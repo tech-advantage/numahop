@@ -1,35 +1,35 @@
-<div ng-controller="DigitalDocumentAllOperationsCtrl as digDocCtrl" 
-     ng-init="digDocCtrl.init(mainCtrl)">   
-		
+<div ng-controller="DigitalDocumentAllOperationsCtrl as digDocCtrl"
+     ng-init="digDocCtrl.init(mainCtrl)">
+
 		<div class="panel-body">
-		      <!-- Integration viewer -->        
+		      <!-- Integration viewer -->
               <div class="col-sm-10"  ng-include src="'scripts/app/viewer/vision.html'" ></div>
-              
+
               <div class="col-sm-2" >
                   <div class="row text-center" ng-if="digDocCtrl.masterPdfInfos[0].length > 0">
                         Charger {{::digDocCtrl.masterPdfInfos[0]}}&nbsp;
-                        <a ng-click="digDocCtrl.downloadMasterPdf(digDocCtrl.masterPdfInfos[0])"  
+                        <a ng-click="digDocCtrl.downloadMasterPdf(digDocCtrl.masterPdfInfos[0])"
                                        uib-tooltip="{{::'Télécharger ' + digDocCtrl.masterPdfInfos[0] | translate}}">
                                 <span class="glyphicon-halflings glyphicon-download-alt"></span>
                            </a>
                         ({{ ::digDocCtrl.masterPdfInfos[1] | filesize }})
-                  </div>        
+                  </div>
                   <div class="row text-center" >
                         <h3 translate>Résultats du contrôle</h3>
                   </div>
                   <div class="row text-center  text-warning" ng_if="!digDocCtrl.checkResults.status">
-                        <h5>Contrôle en cours</h5>
+                        <h5 translate>Contrôle en cours</h5>
                   </div>
                   <div class="row text-center text-warning" ng_if="digDocCtrl.checkResults.status">
-                        <h5>Document {{::digDocCtrl.checkResults.status}}</h5>
+                        <h5 translate>Document {{::digDocCtrl.checkResults.status}}</h5>
                   </div>
-                  
+
                   <div class="row text-center" ng_if="digDocCtrl.checkResults.status">
-                        Résultats  &nbsp;&nbsp;
-	                        <a ng-click="digDocCtrl.downloadCheckSlip(digDocCtrl.deliveryId)"  
-	                                   uib-tooltip="{{::'Télécharger le résultat du contrôle' | translate}}">
-	                            <span class="glyphicon-halflings glyphicon-download-alt"></span>
-	                       </a>
+                        <span translate>Résultats</span> &nbsp;&nbsp;
+                        <a ng-click="digDocCtrl.downloadCheckSlip(digDocCtrl.deliveryId)"
+                                   uib-tooltip="{{::'Télécharger le résultat du contrôle' | translate}}">
+                            <span class="glyphicon-halflings glyphicon-download-alt"></span>
+                        </a>
                   </div>
                   <br>
                   <div ng_if="digDocCtrl.checkResults.status" class="row text-left" ng-repeat="err in digDocCtrl.checkResults.errors" >
@@ -38,4 +38,3 @@
              </div>
 		</div>
 </div>
-            

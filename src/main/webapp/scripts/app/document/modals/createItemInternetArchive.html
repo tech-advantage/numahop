@@ -6,7 +6,7 @@
     <div>
         <div class="row">
 	        <div class="col-sm-8 text-right">
-	          <label>Nombre total de pages :</label>
+	          <label translate>Nombre total de pages :</label>
 	        </div>
 	        <div class="col-sm-4">
 	          <span>{{mainCtrl.item.total}}</span>
@@ -151,16 +151,16 @@
             <sem-editable-field sem-label="{{::'Type' | translate}}" sem-type="text" sem-model="mainCtrl.item.type"
                                 onbeforesave="validation.required" onaftersave="onaftersave"
                                 sem-server-error="{{ (mainCtrl.item.errors | filter:{field: 'type'}:true) }}"></sem-editable-field>
-	                
-	                <sem-editable-field sem-label="{{::'Type de média' | translate}}" sem-type="select" sem-model="mainCtrl.item._mediatype" 
+
+	                <sem-editable-field sem-label="{{::'Type de média' | translate}}" sem-type="select" sem-model="mainCtrl.item._mediatype"
 	                                    sem-select-options="mainCtrl.options.mediatypes" e-ng-options="o as o.name for o  in options track by o.id"
 	                                    onbeforesave="validation.required" onaftersave="onaftersave"></sem-editable-field>
-	                                    
+
 	                <sem-editable-field sem-label="{{::'Type de média (personnalisé)' | translate}}" sem-type="text" sem-model="mainCtrl.item.customMediatype"
-                                        onbeforesave="validation.required" onaftersave="onaftersave" 
+                                        onbeforesave="validation.required" onaftersave="onaftersave"
                                         sem-tooltip="{{::'Remplace le type de média si non vide' | translate}}"
                                         sem-server-error="{{ (mainCtrl.item.errors | filter:{field: 'customMediatype'}:true) }}"></sem-editable-field>
-                                        
+
 	                <br/>
 	                <!-- Sujets répétables -->
 	                <div>
@@ -186,7 +186,7 @@
                                                 onbeforesave="validation.required" onaftersave="onaftersave"></sem-editable-field>
                         </div>
 	                </div>
-	                
+
 	                <!-- Collections répétables -->
                     <div>
                         <div class="row">
@@ -206,12 +206,12 @@
                              </div>
                          </div>
                          <div ng-repeat="collection in mainCtrl.item.collections track by $index">
-                           <sem-editable-field sem-label="{{::'Collection' | translate}}" sem-type="text" sem-model="collection" 
+                           <sem-editable-field sem-label="{{::'Collection' | translate}}" sem-type="text" sem-model="collection"
                                        sem-removable="true" ondelete="mainCtrl.removeCollection(collection)" showdelete="true"
                                         onbeforesave="validation.required" onaftersave="onaftersave"></sem-editable-field>
                          </div>
                     </div>
-                    
+
                     <!-- Headers personnalisé -->
                     <div>
                         <div class="row">
@@ -258,11 +258,11 @@
 </div>
 <div class="modal-footer">
     <button type="button" class="btn btn-sem2" ng-click="mainCtrl.close()" translate>Annuler et fermer la fenêtre</button>
-    <button type="button" class="btn btn-sem2" ng-click="mainCtrl.saveIA()" sem-roles-allowed="EXPORT_INTERNET_ARCHIVE_HAB0" 
+    <button type="button" class="btn btn-sem2" ng-click="mainCtrl.saveIA()" sem-roles-allowed="EXPORT_INTERNET_ARCHIVE_HAB0"
     ng-show="mainCtrl.item.total > 0">
         <span class="glyphicon-regular floppy-save"></span> {{::'Enregistrer les données du formulaire' | translate}}
     </button>
-    <button type="button" class="btn btn-sem2" ng-click="mainCtrl.exportIA()" sem-roles-allowed="EXPORT_INTERNET_ARCHIVE_HAB0" 
+    <button type="button" class="btn btn-sem2" ng-click="mainCtrl.exportIA()" sem-roles-allowed="EXPORT_INTERNET_ARCHIVE_HAB0"
     ng-show="mainCtrl.item.total > 0">
         <span class="glyphicon-regular floppy-save"></span> {{::'Exporter vers Internet Archive' | translate}}
     </button>

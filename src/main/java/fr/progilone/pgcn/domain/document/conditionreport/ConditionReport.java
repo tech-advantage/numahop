@@ -135,7 +135,7 @@ public class ConditionReport extends AbstractDomainObject {
     /**
      * Liste des pièces jointes
      */
-    @OneToMany(mappedBy = "report", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "report", orphanRemoval = true, fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private final Set<ConditionReportAttachment> attachments = new HashSet<>();
 
     /**

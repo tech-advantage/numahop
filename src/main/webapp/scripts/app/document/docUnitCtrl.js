@@ -216,7 +216,16 @@
                     delete searchParams[field];
                 }
             }
-            return DocUnitSrvc.search(searchParams).$promise;
+            return DocUnitSrvc.search(searchParams).$promise/*.then(function (data) {
+
+                var list = data.content;
+
+                _.each(list, function(docUnit) {
+                    console.log(docUnit);
+                    //update docUnit.children
+                });
+
+            });*/
         }
 
         function applyFilter(filterWith, event) {
@@ -238,7 +247,10 @@
 
                 var idNewEntities = _.pluck($scope.newEntities, 'identifier');
 
-                var docUnitIdentifiers = _.map(value.content, function(docUnit) { return docUnit.identifier; });
+                var docUnitIdentifiers = _.pluck(value.content, 'identifier');
+
+                //var docUnitIdAlreadyDisplayed = _.pluck($scope.pagination.items, 'identifier');
+
                 for (var i = 0; i < value.content.length; i++) {
                     if (idNewEntities.indexOf(value.content[i].identifier) < 0) {
                         if (afterUpdate && value.content[i].identifier === $scope.docUnit.identifier) {
@@ -329,13 +341,13 @@
                 .forEach(function (elt, i) {
                     elt._selected = false;
                     elt.children.forEach(function(child, i) {
-                       child._selected = false; 
+                       child._selected = false;
                     });
                 });
         }
         function getFirstLetter(docUnit) {
             if (angular.isUndefined($scope.filters.sortModel)) {
-                $scope.filters.sortModel = 'pgcnId'; 
+                $scope.filters.sortModel = 'pgcnId';
             }
             return StringTools.getFirstLetter(docUnit[$scope.filters.sortModel], "OTHER");
         }

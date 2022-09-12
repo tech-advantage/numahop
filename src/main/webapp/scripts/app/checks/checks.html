@@ -1,4 +1,4 @@
-<div class="row layout-columns">
+0<div class="row layout-columns">
     <div id="sem-filters-toggle" class="button-toggle" sem-auto-hide-filters>
         <a ng-click="$semFilters.toggle()" class="link-toggle">
         <span class="glyphicon-regular filter"></span>
@@ -123,11 +123,11 @@
                                 <div class="filter-title">{{::'Date de livraison' | translate}}</div>
                                 <div class="filter-element">
                                     <div class="row">
-                                        <div class="col-md-12">
+                                        <div class="col-md-12" translate>
                                             du
                                             <sem-datepicker filter="true" ng-change="mainCtrl.search(mainCtrl.sortModel, {dateFrom: $data})" ng-model="mainCtrl.filters.dateFrom"></sem-datepicker>
                                         </div>
-                                        <div class="col-md-12">
+                                        <div class="col-md-12" translate>
                                             au
                                             <sem-datepicker filter="true" ng-change="mainCtrl.search(mainCtrl.sortModel, {dateTo: $data})" ng-model="mainCtrl.filters.dateTo"></sem-datepicker>
                                         </div>
@@ -139,11 +139,11 @@
                                 <div class="filter-title">{{::'Date limite controle' | translate}}</div>
                                 <div class="filter-element">
                                     <div class="row">
-                                        <div class="col-md-12">
+                                        <div class="col-md-12" translate>
                                             du
                                             <sem-datepicker filter="true" ng-change="mainCtrl.search(mainCtrl.sortModel, {dateLimitFrom: $data})" ng-model="mainCtrl.filters.dateLimitFrom"></sem-datepicker>
                                         </div>
-                                        <div class="col-md-12">
+                                        <div class="col-md-12" translate>
                                             au
                                             <sem-datepicker filter="true" ng-change="mainCtrl.search(mainCtrl.sortModel, {dateLimitTo: $data})" ng-model="mainCtrl.filters.dateLimitTo"></sem-datepicker>
                                         </div>
@@ -208,12 +208,12 @@
                         </div>
                         <!-- Infos cachées lorsque l'accordion est replié -->
                         <div class="formBlockContent margin-t0" uib-accordion-group is-open="mainCtrl.accSearchPages">
-                        
+
                             <!-- Format -->
                             <div class="filter-block">
                                 <div class="filter-title">{{::'Type de fichiers' | translate}}</div>
                                 <div class="filter-element">
-			                        <ui-select multiple ng-model="mainCtrl.filters.searchFormatDocument" theme="select2" 
+			                        <ui-select multiple ng-model="mainCtrl.filters.searchFormatDocument" theme="select2"
 			                                     on-select="mainCtrl.search()" on-remove="mainCtrl.search()"
 			                                     class="form-control" theme="select2">
 			                            <ui-select-match placeholder="{{::'Format de fichiers' | translate}}">{{$item.label}}</ui-select-match>
@@ -223,12 +223,12 @@
 			                        </ui-select>
 			                    </div>
                             </div>
-                            
+
                             <!-- Angle d'ouverture -->
                             <div class="filter-block">
                                 <div class="filter-title">{{::'Angle d\'ouverture maximale' | translate}}</div>
                                 <div class="filter-element">
-                                    <ui-select multiple ng-model="mainCtrl.filters.searchMaxAngle" theme="select2" 
+                                    <ui-select multiple ng-model="mainCtrl.filters.searchMaxAngle" theme="select2"
                                                  on-select="mainCtrl.search()" on-remove="mainCtrl.search()"
                                                  class="form-control" theme="select2">
                                         <ui-select-match placeholder="{{::'Ouverture max' | translate}}">{{$item.label}}</ui-select-match>
@@ -245,13 +245,13 @@
                                     <div class="row">
                                         <div class="col-md-6">
                                             de
-                                            <input class="form-control sem-input-xs" type="number" id="searchPageFrom" 
+                                            <input class="form-control sem-input-xs" type="number" id="searchPageFrom"
                                                 ng-model="mainCtrl.filters.searchPageFrom" sem-enter-key="mainCtrl.search()" />
                                         </div>
 
                                         <div class="col-md-6">
                                             à
-                                            <input class="form-control sem-input-xs" type="text" id="searchPageTo" 
+                                            <input class="form-control sem-input-xs" type="text" id="searchPageTo"
                                                 ng-model="mainCtrl.filters.searchPageTo" sem-enter-key="mainCtrl.search()" />
                                         </div>
                                     </div>
@@ -264,13 +264,13 @@
                                     <div class="row">
                                         <div class="col-md-6">
                                             de
-                                            <input class="form-control sem-input-xs" type="number" id="searchPageCheckFrom" 
+                                            <input class="form-control sem-input-xs" type="number" id="searchPageCheckFrom"
                                                 ng-model="mainCtrl.filters.searchPageCheckFrom" sem-enter-key="mainCtrl.search()" />
                                         </div>
 
                                         <div class="col-md-6">
                                             à
-                                            <input class="form-control sem-input-xs" type="text" id="searchPageCheckTo" 
+                                            <input class="form-control sem-input-xs" type="text" id="searchPageCheckTo"
                                                 ng-model="mainCtrl.filters.searchPageCheckTo" sem-enter-key="mainCtrl.search()" />
                                         </div>
                                     </div>
@@ -310,7 +310,7 @@
                     <span class="glyphicon-halflings glyphicon-refresh"></span>
                 </button>
                 <div class="input-group padding-r20">
-                    <input class="form-control sem-input-xs" type="text" id="searchInput" 
+                    <input class="form-control sem-input-xs" type="text" id="searchInput"
                            ng-model="mainCtrl.searchRequest" sem-enter-key="mainCtrl.search()" />
                     <span class="input-group-btn">
                         <button type="button" class="btn btn-sem2 btn-xs" ng-click="mainCtrl.search()" uib-tooltip="{{::'Rechercher' | translate}}">
@@ -345,11 +345,11 @@
                     <button type="button" class="btn btn-sem2 btn-xs" ng-click="mainCtrl.checkAll()">
                         {{::"Tout cocher" | translate}}
                     </button>
-                    <button type="button" class="btn btn-sem2 btn-xs" ng-disabled="mainCtrl.getSelectionLength() === 0" 
+                    <button type="button" class="btn btn-sem2 btn-xs" ng-disabled="mainCtrl.getSelectionLength() === 0"
                             ng-click="mainCtrl.uncheckAll()">
                         {{::"Tout décocher" | translate}}
                     </button>
-                    <select ng-hide="mainCtrl.pagination.items.length == 0" id="pageSize" name="pageSize" 
+                    <select ng-hide="mainCtrl.pagination.items.length == 0" id="pageSize" name="pageSize"
                             ng-options="size.value as size.label for size in mainCtrl.sizeOptions"
                             ng-model="mainCtrl.pageSize" ng-change="mainCtrl.changePageSize()">
                     </select>
@@ -377,7 +377,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Liste des entités  -->
                 <div class="table-responsive" ng-show="mainCtrl.pagination.items.length > 0 && !mainCtrl.pagination.busy">
                     <table class="table table-hover sem-list" sem-table="mainCtrl.sortModel" sem-table-onsort="mainCtrl.search(mainCtrl.sortModel)">
@@ -405,7 +405,7 @@
                                 <td class="text-right">
                                     {{ ::item.pgcnId }}&nbsp;
                                     <numa-custom-link numa-link-type="docunit"
-                                                      numa-tooltip="Voir l'unité documentaire"   
+                                                      numa-tooltip="Voir l'unité documentaire"
                                                       numa-link-parameters="{id: item.docUnit.identifier}"
                                                       ng-if="item.docUnit"></numa-custom-link>
                                 </td>
@@ -431,7 +431,7 @@
                                     {{ ::item.deliveryDate | moment }}
                                 </td>
                                 <td class="text-center">
-                                    <button ng_if="item.isCheckStarted.done" type="button" class="btn btn-sem2 btn-xs" 
+                                    <button ng_if="item.isCheckStarted.done" type="button" class="btn btn-sem2 btn-xs"
                                             ng-click="mainCtrl.goToCheck(item)" uib-tooltip="{{::'Contrôler' | translate}}">
                                         <span class="glyphicon-halflings glyphicon-eye-open"></span>
                                     </button>
@@ -443,11 +443,11 @@
                 <div class="row" ng-show="mainCtrl.pagination.size && mainCtrl.pagination.totalItems > mainCtrl.pagination.size">
                     <div class="col-sm-12">
                         <div class="text-center">
-                            <ul uib-pagination class="pagination-sm" 
-                                num-pages="mainCtrl.pagination.totalPages" 
-                                total-items="mainCtrl.pagination.totalItems" 
+                            <ul uib-pagination class="pagination-sm"
+                                num-pages="mainCtrl.pagination.totalPages"
+                                total-items="mainCtrl.pagination.totalItems"
                                 items-per-page="mainCtrl.pagination.size"
-                                ng-change="mainCtrl.getPage()" 
+                                ng-change="mainCtrl.getPage()"
                                 ng-model="mainCtrl.pagination.page"></ul>
                         </div>
                     </div>

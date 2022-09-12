@@ -5,11 +5,7 @@ import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstant
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.annotation.security.RolesAllowed;
@@ -199,7 +195,7 @@ public class ConditionReportController extends AbstractRestController {
                                                                          page,
                                                                          size,
                                                                          sorts);
-        
+
         results.forEach(res -> res.getDocUnit().setChangeTrainAuthorized(workflowAccessHelper.canChangeTrain(res.getDocUnit().getIdentifier()).isDone()));
         return new ResponseEntity<>(results, HttpStatus.OK);
     }
@@ -253,7 +249,8 @@ public class ConditionReportController extends AbstractRestController {
     public void getReportImportTemplate(final HttpServletResponse response,
                                         @RequestParam(name = "import-template") final List<String> docUnitIds,
                                         @RequestParam(name = "format", defaultValue = "XLSX")
-                                        final ConditionReportExportService.WorkbookFormat format) throws PgcnTechnicalException {
+                                        final ConditionReportExportService.WorkbookFormat format,
+                                        @RequestParam(name = "sortAttributes") final List<String> sortAttributes) throws PgcnTechnicalException {
         // droits d'accès à l'ud
         final Collection<DocUnit> filteredDocUnits = accessHelper.filterDocUnits(docUnitIds);
         if (filteredDocUnits.isEmpty()) {
@@ -368,10 +365,10 @@ public class ConditionReportController extends AbstractRestController {
             }
         }
     }
-    
+
     /**
      * Propagation du constat d'etat du parent vers les relations filles.
-     * 
+     *
      * @param request
      * @param response
      * @param docUnitId
@@ -389,15 +386,15 @@ public class ConditionReportController extends AbstractRestController {
         // droits d'accès à l'ud
         if (!accessHelper.checkDocUnit(docUnitId)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        } 
+        }
         final Map<String, String> results = conditionReportService.propagateReport(docUnitId, detailId);
-        // es indexation des nouveaux reports 
+        // es indexation des nouveaux reports
         esConditionReportService.indexAsync(new ArrayList<>(results.keySet()));
 
         return new ResponseEntity<>(results.values(), HttpStatus.OK);
     }
 
-    
+
     private static final class SearchRequest {
         private List<String> libraries;
         private List<String> projects;
@@ -495,7 +492,7 @@ public class ConditionReportController extends AbstractRestController {
         public DimensionFilter getDimensions() {
             return new DimensionFilter(op, dim1, dim2, dim3);
         }
-        
+
         public void setValidateOnly(final boolean validateOnly) {
             this.validateOnly = validateOnly;
         }

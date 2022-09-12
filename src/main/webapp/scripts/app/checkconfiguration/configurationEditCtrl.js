@@ -120,7 +120,10 @@
                     $scope.readOnlyCheck = false;
                 } else if (rule.automaticCheckType.type === 'GENER_PDF_OCR') {
                     disableRule('FILE_PDF_MULTI');
+                    disableRule('GENER_PDF_WITHOUT_OCR');
                 } else if (rule.automaticCheckType.type === 'FILE_PDF_MULTI') {
+                    disableRule('GENER_PDF_OCR');
+                } else if (rule.automaticCheckType.type === 'GENER_PDF_WITHOUT_OCR') {
                     disableRule('GENER_PDF_OCR');
                 }
             }
@@ -131,12 +134,15 @@
                 rule.active = true;
                 if (rule.automaticCheckType.type === 'GENER_PDF_OCR') {
                     disableRule('FILE_PDF_MULTI');
+                    disableRule('GENER_PDF_WITHOUT_OCR');
                 } else if (rule.automaticCheckType.type === 'FILE_PDF_MULTI') {
+                    disableRule('GENER_PDF_OCR');
+                } else if (rule.automaticCheckType.type === 'GENER_PDF_WITHOUT_OCR') {
                     disableRule('GENER_PDF_OCR');
                 }
             }
         };
-        
+
         /**
          * Desactivation d'une regle.
          */

@@ -97,8 +97,8 @@
         }
         /**
          * Contrôle si des modifications sont en cours, et alerte l'utilisateur
-         * 
-         * @param {any} event 
+         *
+         * @param {any} event
          * @returns promise
          */
         function checkModifications(ignoreLastRestore) {
@@ -119,8 +119,8 @@
         /**
          * Contrôle si des modifications sont en cours, et alerte l'utilisateur
          * sur un évènement ($locationChangeStart)
-         * 
-         * @param {any} event 
+         *
+         * @param {any} event
          */
         function checkModificationsOnLocationChange(event) {
             // Dans le cas d'une restauration sans modification, on prévient l'utilisateur s'il change de page
@@ -247,9 +247,9 @@
         }
         /**
          * Copie de infos de auditMapping (AuditSrvc) dans mapping (MappingSrvc)
-         * 
-         * @param {any} auditMapping 
-         * @param {any} mapping 
+         *
+         * @param {any} auditMapping
+         * @param {any} mapping
          */
         function copyRestoredMapping(auditMapping, mapping) {
             // On conserve le n° de version des règles existantes
@@ -367,9 +367,9 @@
 
         /**
          * Déplacement des règles de mapping
-         * 
-         * @param {any} rule 
-         * @param {any} rules 
+         *
+         * @param {any} rule
+         * @param {any} rules
          */
         function downRule(rule, rules) {
             moveRule(rule, rules, "down");
@@ -406,8 +406,8 @@
 
         /**
          * Filtrage des règles de mapping
-         * 
-         * @param {any} mapping 
+         *
+         * @param {any} mapping
          */
         function setRuleFilters() {
             ModalSrvc.getValueTextarea(
@@ -430,8 +430,8 @@
 
         /**
          * Suppression du filtrage des règles de mapping
-         * 
-         * @param {any} mapping 
+         *
+         * @param {any} mapping
          */
         function deleteRuleFilters() {
             delete mainCtrl.ruleFilters;
@@ -440,7 +440,7 @@
 
         /**
          * Filtrage des règles de mapping
-         * 
+         *
          * @param {any} rule
          */
         function filterRule(rule) {
@@ -469,8 +469,8 @@
 
         /**
          * Tooltip du filtre des règles de filtrage
-         * 
-         * @returns 
+         *
+         * @returns
          */
         function getRuleFiltersTooltip() {
             if (mainCtrl.ruleFilters && mainCtrl.ruleFilters.length > 0) {
@@ -504,8 +504,8 @@
 
         /**
          * Libellé d'un champ d'une notice bibliographique
-         * 
-         * @param {any} field 
+         *
+         * @param {any} field
          */
         function getBibfieldLabel(field) {
             if (!field) {
@@ -519,8 +519,8 @@
 
         /**
          * Libellé d'un champ d'une unité documentaire
-         * 
-         * @param {any} field 
+         *
+         * @param {any} field
          */
         function getDocfieldLabel(field) {
             if (!field) {
@@ -546,7 +546,7 @@
             if (!library && mainCtrl.uioptions.libraries.data.length > 0) {
                 library = mainCtrl.uioptions.libraries.data[0];
             }
-            uploadMapping(null, library ? library.identifier : null)
+            uploadMapping(null, library)
                 .then(function (mapping) {
                     mapping.library = library;
                     afterSave(mapping, true);
@@ -567,8 +567,8 @@
 
         /**
          * Upload d'un mapping
-         * 
-         * @param {any} formData 
+         *
+         * @param {any} formData
          * @param {any} mappingId si renseigné => mise à jour du mapping existant
          * @param {any} libraryId si renseigné => création d'un nouveau mapping
          */

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- ajout colonne mailCsv pour envoi du csv au transfert Omeka -->
+    <changeSet id="pgcn-conf-omeka-005" author="progilone">
+
+        <addColumn tableName="proj_project">
+            <column name="omeka_configuration" type="varchar(191)"/>
+        </addColumn>
+        <addColumn tableName="lot_lot">
+            <column name="omeka_configuration" type="varchar(191)"/>
+        </addColumn>
+
+        <addForeignKeyConstraint baseTableName="proj_project" baseColumnNames="omeka_configuration" constraintName="fk_proj_omeka_conf"
+                                 referencedTableName="conf_omeka" referencedColumnNames="identifier"/>
+
+        <addForeignKeyConstraint baseTableName="lot_lot" baseColumnNames="omeka_configuration" constraintName="fk_lot_omeka_conf"
+                                 referencedTableName="conf_omeka" referencedColumnNames="identifier"/>
+
+    </changeSet>
+</databaseChangeLog>

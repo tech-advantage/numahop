@@ -63,6 +63,8 @@ public class ImportReport extends AbstractDomainObject {
         SIMPLE,
         // pas de relation parent / enfant, n imports -> 1 notice PGCN
         SIMPLE_MULTI_NOTICE,
+        // relation parent / enfant, n imports -> n notices PGCN
+        SIMPLE_MULTI_MULTI_NOTICE,
         // parent / enfants dans la même notice, 1 import -> n notices PGCN
         HIERARCHY_IN_SINGLE_NOTICE,
         // parent / enfant issus de 2 imports différents, n imports -> n notices PGCN

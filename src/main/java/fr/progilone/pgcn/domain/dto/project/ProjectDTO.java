@@ -14,6 +14,9 @@ import fr.progilone.pgcn.domain.dto.administration.omeka.OmekaConfigurationDTO;
 import fr.progilone.pgcn.domain.dto.administration.omeka.OmekaListDTO;
 import fr.progilone.pgcn.domain.dto.administration.viewsFormat.SimpleViewsFormatConfigurationDTO;
 import fr.progilone.pgcn.domain.dto.checkconfiguration.SimpleCheckConfigurationDTO;
+import fr.progilone.pgcn.domain.dto.exportftpconfiguration.ExportFTPConfigurationDTO;
+import fr.progilone.pgcn.domain.dto.exportftpconfiguration.ExportFTPConfigurationDeliveryFolderDTO;
+import fr.progilone.pgcn.domain.dto.exportftpconfiguration.SimpleExportFTPConfDTO;
 import fr.progilone.pgcn.domain.dto.ftpconfiguration.SimpleFTPConfigurationDTO;
 import fr.progilone.pgcn.domain.dto.library.SimpleLibraryDTO;
 import fr.progilone.pgcn.domain.dto.user.SimpleUserDTO;
@@ -34,6 +37,7 @@ public class ProjectDTO extends AbstractVersionedDTO {
     private LocalDate realEndDate;
     private String status;
     private SimpleFTPConfigurationDTO activeFTPConfiguration;
+    private ExportFTPConfigurationDTO activeExportFTPConfiguration;
     private SimpleCheckConfigurationDTO activeCheckConfiguration;
     private SimpleViewsFormatConfigurationDTO activeFormatConfiguration;
     private InternetArchiveCollectionDTO collectionIA;
@@ -49,6 +53,7 @@ public class ProjectDTO extends AbstractVersionedDTO {
     private String libRespName;
     private String libRespPhone;
     private String libRespEmail;
+    private ExportFTPConfigurationDeliveryFolderDTO activeExportFTPDeliveryFolder;
 
     private final Set<SimpleLibraryDTO> associatedLibraries = new HashSet<>();
     private final Set<SimpleUserDTO> associatedUsers = new HashSet<>();
@@ -161,6 +166,10 @@ public class ProjectDTO extends AbstractVersionedDTO {
     public void setActiveFTPConfiguration(final SimpleFTPConfigurationDTO activeFTPConfiguration) {
         this.activeFTPConfiguration = activeFTPConfiguration;
     }
+
+    public ExportFTPConfigurationDTO getActiveExportFTPConfiguration() { return activeExportFTPConfiguration; }
+
+    public void setActiveExportFTPConfiguration(ExportFTPConfigurationDTO activeExportFTPConfiguration) { this.activeExportFTPConfiguration = activeExportFTPConfiguration; }
 
     public SimpleCheckConfigurationDTO getActiveCheckConfiguration() {
         return activeCheckConfiguration;
@@ -317,5 +326,13 @@ public class ProjectDTO extends AbstractVersionedDTO {
 
     public void setLastModifiedDate(final LocalDateTime lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
+    }
+
+    public ExportFTPConfigurationDeliveryFolderDTO getActiveExportFTPDeliveryFolder() {
+        return activeExportFTPDeliveryFolder;
+    }
+
+    public void setActiveExportFTPDeliveryFolder(ExportFTPConfigurationDeliveryFolderDTO activeExportFTPDeliveryFolder) {
+        this.activeExportFTPDeliveryFolder = activeExportFTPDeliveryFolder;
     }
 }

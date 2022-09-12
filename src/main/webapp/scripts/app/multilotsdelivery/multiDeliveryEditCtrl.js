@@ -39,7 +39,7 @@
         $scope.delivLabels = {};
         $scope.creation = false;
         $scope.selectedByTrain = false;
-        
+
 
         // Définition des listes déroulantes
         $scope.options = {
@@ -50,8 +50,8 @@
             method: DeliverySrvc.config.method,
             payment: DeliverySrvc.config.payment,
             sampleMode: DeliverySrvc.config.sampleMode
-        };        
-        
+        };
+
         $scope.accordions = {
             docunit: true
         };
@@ -113,7 +113,7 @@
         function addMessagesForLoadedDelivery() {
             switch ($scope.multiDelivery.status) {
                 case "TO_BE_CONTROLLED":
-                    MessageSrvc.addSuccess("Contrôles automatiques validés, en attente des contrôles manuels", null, true);
+                    MessageSrvc.addSuccess(gettext("Contrôles automatiques validés, en attente des contrôles manuels"), null, true);
                     break;
                 case "AUTOMATICALLY_REJECTED":
                     autoControlMessages();
@@ -122,16 +122,16 @@
                     manualControlMessages();
                     break;
                 case "VALIDATED":
-                    MessageSrvc.addSuccess("Livraison validée", null, true);
+                    MessageSrvc.addSuccess(gettext("Livraison validée"), null, true);
                     break;
                 case "DELIVERED":
-                    MessageSrvc.addSuccess("Livraison effectuée, en attente des contrôles", null, true);
+                    MessageSrvc.addSuccess(gettext("Livraison effectuée, en attente des contrôles"), null, true);
                     break;
                 case "DELIVERING":
-                    MessageSrvc.addInfo("Livraison en cours", null, true);
+                    MessageSrvc.addInfo(gettext("Livraison en cours"), null, true);
                     break;
                 case "DELIVERING_ERROR":
-                    MessageSrvc.addFailure("Livraison en erreur", null, true);
+                    MessageSrvc.addFailure(gettext("Livraison en erreur"), null, true);
                     break;
             }
         }
@@ -159,18 +159,18 @@
                 $scope.filteredLots = filtLots;
             }
         }
-        
+
         function loadTrainSelect() {
             return NumaHopInitializationSrvc.loadTrains({}, {}, 'multilotsdelivery').then(function (trains) {
                 $scope.sel2Trains = trains;
                 return trains;
             });
         }
-        
+
         function onchangeSelTrain(train) {
             $scope.multiDelivery.trainId = train.identifier;
         }
-        
+
         function displaySelectionType(value) {
             var found = _.find($scope.options.selections, function (b) {
                 return b.value === value;
@@ -179,8 +179,8 @@
                 return found.text;
             }
         }
-        
-        function onchangeSelType(type) { 
+
+        function onchangeSelType(type) {
             if (type) {
                 // selection classique des lots
                 $scope.multiDelivery.selectedByTrain = false;
@@ -191,7 +191,7 @@
                 $scope.multiDelivery.lots = [];
             }
         }
-        
+
         function setSelectedTrain(multi) {
             if (multi.selectedByTrain) {
                 $scope.multiDelivery.typSelection = false;
@@ -461,13 +461,13 @@
             // ... puis on affiche les infos de modification ...
             if (angular.isDefined(entity.lastModifiedDate)) {
                 var dateModif = new Date(entity.lastModifiedDate);
-                MessageSrvc.addInfo("Dernière modification le {{date}} par {{author}}",
+                MessageSrvc.addInfo(gettext("Dernière modification le {{date}} par {{author}}"),
                     { date: dateModif.toLocaleString(), author: entity.lastModifiedBy }, true);
             }
             // ... puis on affiche les infos de création ...
             if (angular.isDefined(entity.createdDate)) {
                 var dateCreated = new Date(entity.createdDate);
-                MessageSrvc.addInfo("Créé le {{date}}",
+                MessageSrvc.addInfo(gettext("Créé le {{date}}"),
                     { date: dateCreated.toLocaleString() }, true);
             }
             // Affichage pour un temps limité à l'ouverture
@@ -476,11 +476,11 @@
 
         function afterLoadingDelivery(multi) {
             onSuccess(multi);
-            
+
             $scope.delivered = multi.status !== "SAVED";
             var notCheckedStatus = ["TO_BE_CONTROLLED", "SAVED", "DELIVERING"];
             $scope.deliveryNotChecked = notCheckedStatus.indexOf(multi.status) > -1;
-            
+
             addMessagesForLoadedDelivery();
             dofilterLots();
 
@@ -490,27 +490,27 @@
             });
             $scope.canChangeLot = angular.isUndefined(oneDelivStarted);
             loadUserInfos();
-            
-            $scope.formRO = multi.status !== 'SAVED' 
+
+            $scope.formRO = multi.status !== 'SAVED'
                 && ($scope.userIsPresta || !$scope.isAuthorized($scope.userRoles.DEL_HAB8));
-            
+
          // un presta peut supprimer une livraison si créée par lui-meme et non demarrée.
             $scope.canDeleteDelivery = multi.status === 'SAVED' && $scope.isAuthorized($scope.userRoles.DEL_HAB3)
                                 && ( !$scope.userIsPresta ||
                                         ($scope.userIsPresta && $scope.currentUser.login === multi.createdBy)
                                    );
-            
+
             setSelectedTrain(multi);
             $scope.loaded = true;
         }
-        
-        
+
+
         function loadUserInfos() {
             var currentUser = Principal.identity();
             if (angular.isDefined(currentUser)) {
                 currentUser.then(function (result) {
                     $scope.currentUser = result;
-                    $scope.userIsPresta = result.category === "PROVIDER" 
+                    $scope.userIsPresta = result.category === "PROVIDER"
                                     && $scope.isAuthorized($scope.userRoles.DEL_HAB2);
                 });
             }

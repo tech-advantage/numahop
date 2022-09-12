@@ -1,11 +1,11 @@
-<div class="col-sm-6 col-sm-offset-6 col-layout-columns" ng-controller="IAConfigurationEditCtrl">
+<div class="col-sm-6 col-sm-offset-6 col-layout-columns" ng-controller="IAConfigurationEditCtrl as ctrl">
     <div class="panel panel-column-3">
         <div class="panel-heading">
             <div class="pull-right">
                 <button type="button" class="btn btn-sem2 btn-xs"
-                        ng-click="setViewMode(viewModes.EDIT)" ng-disabled="!configuration || !configuration.identifier"
+                        ng-click="setViewMode(VIEW_MODES.EDIT)" ng-disabled="!configuration || !configuration.identifier"
                         uib-tooltip="{{::'Modifier' | translate}}"
-                        ng-show="viewMode === viewModes.VIEW && loaded"
+                        ng-show="viewMode === VIEW_MODES.VIEW && loaded"
                         sem-roles-allowed="CONF_INTERNET_ARCHIVE_HAB1">
                     <span class="glyphicon-regular edit"></span>
                 </button>
@@ -20,11 +20,11 @@
         </div>
         <div class="panel-body" ng-show="loaded">
             <div>
-                <sem-editable-form sem-name="configurationForm" sem-mode-edition="{{ viewMode == viewModes.EDIT }}"
+                <sem-editable-form sem-name="configurationForm" sem-mode-edition="{{ viewMode == VIEW_MODES.EDIT }}"
                                    sem-server-error="{{ (configuration.errors | filter:{field: '_object'}:true) }}"
                                    ng-readonly="!isAuthorized([userRoles.CONF_INTERNET_ARCHIVE_HAB1, userRoles.CONF_INTERNET_ARCHIVE_HAB2])"
                                    sem-on-key-pressed="preventDefault(event)">
-                    
+
                     <sem-editable-field sem-label="{{::'Libellé' | translate}}" sem-type="text" sem-model="configuration.label"
                                         onbeforesave="validation.required" onaftersave="onaftersave" mandatory="true"
                                         sem-server-error="{{ (configuration.errors | filter:{field: 'label'}:true) }}"></sem-editable-field>
@@ -47,7 +47,7 @@
                                         onbeforesave="validation.required" sem-select-options="options.libraries" e-ng-options="o.name for o in options track by o.identifier"
                                         onaftersave="onaftersave" sem-display-property="name" sem-link-type="library"
                                         sem-link-parameters='{"id": configuration.library.identifier}'></sem-editable-field>
-                    
+
                     <div uib-accordion>
                         <div uib-accordion-group is-open="accordions.collections">
                             <uib-accordion-heading>
@@ -58,7 +58,7 @@
                             <button type="button" class="btn btn-sem2 btn-xs"
                                     ng-click="addCollection()"
                                     uib-tooltip="{{::'Ajouter' | translate}}"
-                                    ng-show="viewMode === viewModes.EDIT && loaded"
+                                    ng-show="viewMode === VIEW_MODES.EDIT && loaded"
                                     sem-roles-allowed="SFTP_HAB1">
                                 <span class="glyphicon-regular plus"></span>
                             </button>
@@ -78,8 +78,8 @@
                                                 sem-server-error="{{ (configuration.errors | filter:{field: 'collections'}:true) }}"></sem-editable-field>
                                             </td>
                                             <td class="text-center">
-                                                    <button type="button" class="btn btn-sem2 btn-xs" 
-                                                            ng-click="deleteCollection($index)" ng-show="viewMode === viewModes.EDIT"
+                                                    <button type="button" class="btn btn-sem2 btn-xs"
+                                                            ng-click="deleteCollection($index)" ng-show="viewMode === VIEW_MODES.EDIT"
                                                             uib-tooltip="{{::'Supprimer' | translate}}"
                                                             sem-roles-allowed="SFTP_HAB1">
                                                         <span class="glyphicon-regular remove"></span>
@@ -91,7 +91,7 @@
                         </div>
                     </div>
                 </sem-editable-form>
-                <div class="text-center column-bottom column-5 margin-t10" ng-if="viewMode === viewModes.EDIT">
+                <div class="text-center column-bottom column-5 margin-t10" ng-if="viewMode === VIEW_MODES.EDIT">
                     <div class="column-bottom-button">
                         <!-- Création / Modification -->
                         <div class="btn-group">

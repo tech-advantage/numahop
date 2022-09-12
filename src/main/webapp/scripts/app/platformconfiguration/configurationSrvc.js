@@ -24,7 +24,7 @@
                 });
             return service;
         });
-    
+
     angular.module('numaHopApp.service')
     .factory('ExportFTPConfigurationSrvc', function ($resource, CONFIGURATION) {
         var service = $resource(CONFIGURATION.numahop.url + 'api/rest/exportftpconfiguration/:id', {
@@ -43,6 +43,13 @@
                     params: {
                         search: true,
                         size: 50
+                    }
+                },
+                findByLibrary: {
+                    method: "GET",
+                    isArray: true,
+                    params: {
+                        libraryId: null
                     }
                 }
             });
@@ -90,7 +97,7 @@
                             'Content-Type': undefined,
                             enctype: 'multipart/form-data'
                         },
-                        isArray: false //,                    
+                        isArray: false //,
                         //                    params: {
                         //                        upload: true
                         //                    }
@@ -136,7 +143,7 @@
                 });
             return service;
         });
-    
+
     angular.module('numaHopApp.service')
     .factory('OmekaConfigurationSrvc', function ($resource, CONFIGURATION) {
         var service = $resource(CONFIGURATION.numahop.url + 'api/rest/conf_omeka/:id', {
@@ -178,7 +185,7 @@
                         items: true
                     }
                 }
-                
+
             });
         return service;
     });

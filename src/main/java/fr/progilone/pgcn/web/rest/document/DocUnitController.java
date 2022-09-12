@@ -4,6 +4,7 @@ import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstant
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -86,11 +87,11 @@ public class DocUnitController extends AbstractRestController {
         this.lockService = lockService;
         this.docCheckHistoryService = docCheckHistoryService;
     }
-    
-    
+
+
     /**
      * Reprise d'historique des controles.
-     * 
+     *
      * @param request
      * @param libraryId
      * @return
@@ -99,15 +100,15 @@ public class DocUnitController extends AbstractRestController {
     @RequestMapping(value = "/initHistory", method = RequestMethod.GET)
     @Timed
     @RolesAllowed(DOC_UNIT_HAB3)
-    public ResponseEntity<?> initDocCheckHistory(final HttpServletRequest request, 
+    public ResponseEntity<?> initDocCheckHistory(final HttpServletRequest request,
                                                  @RequestParam(name = "library") final String libraryId) throws PgcnException {
-        
-        
+
+
         docCheckHistoryService.retrieveCheckHistory(libraryId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-    
-    
+
+
     @RequestMapping(method = RequestMethod.POST)
     @Timed
     @RolesAllowed(DOC_UNIT_HAB1)
@@ -281,7 +282,7 @@ public class DocUnitController extends AbstractRestController {
                                                             size,
                                                             sorts), HttpStatus.OK);
     }
-    
+
     @RequestMapping(method = RequestMethod.GET, params = {"searchAllForProject", "project"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed({DOC_UNIT_HAB0})
@@ -332,14 +333,14 @@ public class DocUnitController extends AbstractRestController {
                                                                   size,
                                                                   sorts), HttpStatus.OK);
     }
-    
-    
+
+
     @RequestMapping(method = RequestMethod.POST, params = {"searchAsMinList"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed({DOC_UNIT_HAB0})
     public ResponseEntity<List<MinimalListDocUnitDTO>> searchAsMinList(final HttpServletRequest request,
                                                                    @RequestBody final SearchRequest requestParams) {
-        
+
         return new ResponseEntity<>(uiDocUnitService.searchAsMinList(requestParams.getSearch(),
                                                                      requestParams.getLibraries(),
                                                                      requestParams.getProjects(),
@@ -399,15 +400,15 @@ public class DocUnitController extends AbstractRestController {
         // TODO access control for docs, project, lot, train
         uiDocUnitService.setProjectAndLot(docs, project, lot, train);
     }
-    
-    
+
+
     @RequestMapping(method = RequestMethod.POST, params = {"setTrain"})
     @ResponseStatus(HttpStatus.OK)
     @Timed
     @RolesAllowed(DOC_UNIT_HAB2)
     public ResponseEntity<?> setTrain(@RequestBody final List<String> docs,
                                       @RequestParam(name = "train") final String train) {
-        
+
         // droits d'accès à l'ud
         final Collection<DocUnit> filteredDocUnits = accessHelper.filterDocUnits(docs);
         if (filteredDocUnits.isEmpty()) {
@@ -416,7 +417,7 @@ public class DocUnitController extends AbstractRestController {
         uiDocUnitService.setTrain(docs, train);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-    
+
 
     /**
      * Retrait d'un {@link DocUnit} d'un {@link Project}
@@ -597,7 +598,7 @@ public class DocUnitController extends AbstractRestController {
                            @RequestParam(name = "docs") final List<String> docs,
                            @RequestParam(name = "types", defaultValue = "METS,VIEW") final List<String> exportTypes) throws PgcnTechnicalException {
         // droits d'accès à l'ud
-        final Collection<DocUnit> filteredDocUnits = accessHelper.filterDocUnits(docs);
+        final List<DocUnit> filteredDocUnits = new ArrayList<>(accessHelper.filterDocUnits(docs));
         if (filteredDocUnits.isEmpty()) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return;
@@ -607,15 +608,13 @@ public class DocUnitController extends AbstractRestController {
             writeResponseHeaderForDownload(response, "application/zip", null, "mass_export.zip");
 
             // réponse
-            uiDocUnitService.massExport(response.getOutputStream(),
-                                        filteredDocUnits.stream().map(DocUnit::getIdentifier).collect(Collectors.toList()),
-                                        exportTypes);
+            uiDocUnitService.massExport(response.getOutputStream(), docs, exportTypes);
 
         } catch (final IOException e) {
             throw new PgcnTechnicalException(e);
         }
     }
-    
+
     /**
      * Télécharge une archive ZIP contenant les fichiers demandés pour les unités documentaires demandées.
      *
@@ -632,13 +631,12 @@ public class DocUnitController extends AbstractRestController {
         if (filteredDocUnits.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        
+
         // recup library
         final Library firstLib = filteredDocUnits.iterator().next().getLibrary();
         boolean exported = false;
         try {
-            exported = uiDocUnitService.massExportToFtp(filteredDocUnits.stream().map(DocUnit::getIdentifier).collect(Collectors.toList()), 
-                                                        exportTypes, firstLib);
+            exported = uiDocUnitService.exportToFtp(docs, exportTypes, firstLib);
         } catch (final IOException e) {
             throw new PgcnTechnicalException(e);
         }
@@ -646,7 +644,7 @@ public class DocUnitController extends AbstractRestController {
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
-        } 
+        }
     }
 
     @RequestMapping(value = "/{identifier}", method = RequestMethod.GET, params = {"lock"})
@@ -839,7 +837,7 @@ public class DocUnitController extends AbstractRestController {
         public void setTrains(final List<String> trains) {
             this.trains = trains;
         }
-        
+
         public List<String> getStatuses() {
             return statuses;
         }

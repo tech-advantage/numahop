@@ -1,10 +1,7 @@
 package fr.progilone.pgcn.service.document.ui;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -21,12 +18,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import javax.annotation.PostConstruct;
 import javax.xml.bind.JAXBException;
 
+import fr.progilone.pgcn.domain.administration.ExportFTPDeliveryFolder;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -134,7 +133,6 @@ public class UIDocUnitService {
     private final WorkflowService workflowService;
     private final EsDocUnitService esDocUnitService;
     private final CinesRequestHandlerService cinesRequestHandlerService;
-    private final ExportFTPConfigurationService exportFTPConfigurationService;
     private final SftpService sftpService;
     private final CryptoService cryptoService;
     private final LotRepository lotRepository;
@@ -174,7 +172,6 @@ public class UIDocUnitService {
         this.workflowService = workflowService;
         this.esDocUnitService = esDocUnitService;
         this.cinesRequestHandlerService = cinesRequestHandlerService;
-        this.exportFTPConfigurationService = exportFTPConfigurationService;
         this.sftpService = sftpService;
         this.cryptoService = cryptoService;
         this.lotRepository = lotRepository;
@@ -521,7 +518,7 @@ public class UIDocUnitService {
 
         return docs.stream().map(SimpleDocUnitMapper.INSTANCE::docUnitToMinimalListDocUnitDTO).collect(Collectors.toList());
     }
-    
+
     @Transactional(readOnly = true)
     public Page<SummaryDocUnitWithLotDTO> searchAllForProject(final String projectId, final Integer page, final Integer size) {
         final Page<DocUnit> docs = docUnitService.searchAllForProject(projectId, page, size);
@@ -814,13 +811,13 @@ public class UIDocUnitService {
 
     @Transactional
     public boolean
-           massExportToFtp(final Collection<String> docUnitIdentifiers, final List<String> exportTypes, final Library lib) throws IOException {
+           massExportToFtp(final List<DocUnit> docUnits, final List<String> exportTypes, final Library lib) throws IOException {
 
         boolean exported = false;
         // Création du fichier zip global
         String zipName = DateUtils.formatDateToString(LocalDateTime.now(), "yyyy-MM-dd HH-mm-ss") + "_";
-        if (CollectionUtils.isNotEmpty(docUnitIdentifiers) && docUnitIdentifiers.size() == 1) {
-            final DocUnit doc = docUnitService.findOne(docUnitIdentifiers.iterator().next());
+        if (!docUnits.isEmpty() && docUnits.size() == 1) {
+            final DocUnit doc = docUnits.get(0);
             zipName += doc.getPgcnId() + ".zip";
         } else {
             zipName += "export.zip";
@@ -836,7 +833,7 @@ public class UIDocUnitService {
         }
 
         try (final FileOutputStream fos = new FileOutputStream(zipFile)) {
-            massExport(fos, docUnitIdentifiers, exportTypes);
+            massExport(fos, docUnits.stream().map(DocUnit::getIdentifier).collect(Collectors.toList()), exportTypes);
         } catch (final IOException e) {
             LOG.error("Erreur lors de la compression des fichiers d'export", e);
             return exported;
@@ -845,28 +842,45 @@ public class UIDocUnitService {
         final Path zipPath = zipFile.toPath();
 
         // recup config export ftp
-        final Set<ExportFTPConfiguration> configs = exportFTPConfigurationService.findByLibraryAndActive(lib, true);
-        if (CollectionUtils.isNotEmpty(configs)) {
-            final ExportFTPConfiguration conf = configs.iterator().next();
-            if (zipPath != null && zipPath.toFile().exists()) {
-
-                final SftpConfiguration sftpConf = new SftpConfiguration();
-                sftpConf.setActive(true);
-                sftpConf.setHost(conf.getStorageServer());
-                sftpConf.setPort(Integer.valueOf(conf.getPort()));
-                sftpConf.setUsername(conf.getLogin());
-                sftpConf.setTargetDir(conf.getAddress());
-
-                try {
-                    sftpConf.setPassword(cryptoService.encrypt(conf.getPassword()));
-                    sftpService.sftpPut(sftpConf, zipPath);
-                } catch (final PgcnTechnicalException e) {
-                    LOG.error("Erreur Export FTP", e);
-                    return exported;
-                }
-                exported = true;
+        List<DocUnit> docsInError = new ArrayList<>();
+        docUnits.stream().forEach(docUnit -> {
+            //Get conf FTP on Lot then, if null, on project or terminate process to this docUnit
+            ExportFTPConfiguration confExport = docUnit.getLot().getActiveExportFTPConfiguration();
+            if(confExport == null) {
+                confExport = docUnit.getProject().getActiveExportFTPConfiguration();
             }
-        }
+
+            ExportFTPDeliveryFolder deliveryFolder = docUnit.getLot().getActiveExportFTPDeliveryFolder();
+            if(deliveryFolder == null) {
+                deliveryFolder = docUnit.getProject().getActiveExportFTPDeliveryFolder();
+            }
+
+            if(confExport != null && deliveryFolder != null) {
+                if (zipPath.toFile().exists()) {
+
+                    final SftpConfiguration sftpConf = new SftpConfiguration();
+                    sftpConf.setActive(true);
+                    sftpConf.setHost(confExport.getStorageServer());
+                    sftpConf.setPort(Integer.valueOf(confExport.getPort()));
+                    sftpConf.setUsername(confExport.getLogin());
+                    sftpConf.setTargetDir(confExport.getAddress().concat(deliveryFolder.getName()));
+
+                    try {
+                        sftpConf.setPassword(cryptoService.encrypt(confExport.getPassword()));
+                        sftpService.sftpPut(sftpConf, zipPath);
+                    } catch (final PgcnTechnicalException e) {
+                        LOG.error("Erreur Export FTP", e);
+                        docsInError.add(docUnit);
+                    }
+                }
+            } else {
+                docsInError.add(docUnit);
+                LOG.error("Erreur Export FTP, export configuration is missing on " + docUnit.getLabel());
+            }
+        });
+
+        exported = docsInError.isEmpty();
+
         if (exported) {
             // Suppression du zip si envoyé sur le ftp
             FileUtils.deleteQuietly(zipFile);
@@ -875,8 +889,13 @@ public class UIDocUnitService {
     }
 
     @Transactional
-    public void massExport(final OutputStream out, final Collection<String> docUnitIdentifiers, final List<String> exportTypes) throws IOException {
+    public boolean exportToFtp(List<String> docIdentifiers, List<String> exportTypes, Library library) throws IOException {
+        return massExportToFtp(new ArrayList<>(docUnitService.findAllById(docIdentifiers)), exportTypes, library);
+    }
 
+    @Transactional
+    public void massExport(final OutputStream out, final List<String> docUnitIdentifiers, final List<String> exportTypes) throws IOException {
+        //mandatory to prevent lazy loading exceptions
         final Collection<DocUnit> docUnits = docUnitService.findAllById(docUnitIdentifiers);
         try (final ZipOutputStream zos = new ZipOutputStream(out)) {
 
@@ -888,52 +907,44 @@ public class UIDocUnitService {
                 final List<CheckSummedStoredFile> cssfs = new ArrayList<>();
                 zos.putNextEntry(new ZipEntry(directory));
                 zos.closeEntry();
-                
 
                 // Export des images / format.
                 if(exportTypes.contains("METS") || exportTypes.contains("MASTER") || exportTypes.contains("PDF") || exportTypes.contains("VIEW") || exportTypes.contains("THUMBNAIL")){
                     for (final DigitalDocument dd : du.getDigitalDocuments()) {
-                        
                         // PDF
                         if (exportTypes.contains("PDF")) {
                             DocPage pdfPage = digitalDocumentService.getPdfPage(dd.getIdentifier());
-                            final Optional<StoredFile> master = pdfPage.getMaster();
-                            if (master.isPresent()) {
+                            if (pdfPage != null && pdfPage.getMaster().isPresent()) {
+                                final Optional<StoredFile> master = pdfPage.getMaster();
                                 final StoredFile sf = master.get();
                                 final File file = bm.getFileForStoredFile(sf, libraryId);
                                 zos.putNextEntry(new ZipEntry(directory + "pdf/" + sf.getFilename()));
-    
-                                try (final FileInputStream fis = new FileInputStream(file)) {
-                                    IOUtils.copy(fis, zos);
-                                    zos.closeEntry();
-                                }
+
+                                copyToZip(zos, file);
                             }
                         }
-                        
+
                         if(exportTypes.contains("METS") || exportTypes.contains("MASTER") ||  exportTypes.contains("VIEW") || exportTypes.contains("THUMBNAIL")) {
-    
+
                             for (final DocPage dp : dd.getOrderedPages()) {
-        
+
                                 final Optional<StoredFile> master = dp.getMaster();
                                 if (master.isPresent()) {
                                     final StoredFile sf = master.get();
                                     final File file = bm.getFileForStoredFile(sf, libraryId);
-            
+
                                     if (exportTypes.contains("METS")) {
                                         final CheckSummedStoredFile cssf = exportMetsService.getCheckSummedStoredFile(sf, file);
                                         cssfs.add(cssf);
                                     }
-            
+
                                     if (exportTypes.contains("MASTER") && dp.getNumber() != null) {
                                         zos.putNextEntry(new ZipEntry(directory + "master/" + sf.getFilename()));
-                
-                                        try (final FileInputStream fis = new FileInputStream(file)) {
-                                            IOUtils.copy(fis, zos);
-                                            zos.closeEntry();
-                                        }
+
+                                        copyToZip(zos, file);
                                     }
                                 }
-        
+
                                 if (exportTypes.contains("VIEW")) {
                                     final Optional<StoredFile> view = dp.getDerivedForFormat(ViewsFormatConfiguration.FileFormat.VIEW);
                                     if (view.isPresent()) {
@@ -941,14 +952,11 @@ public class UIDocUnitService {
                                         final File file = bm.getFileForStoredFile(sf, libraryId);
                                         final String fileName = sf.getFilename().substring(0, sf.getFilename().lastIndexOf("."));
                                         zos.putNextEntry(new ZipEntry(directory.concat("view/").concat(fileName).concat(".").concat(ImageUtils.FORMAT_JPG)));
-                
-                                        try (final FileInputStream fis = new FileInputStream(file)) {
-                                            IOUtils.copy(fis, zos);
-                                            zos.closeEntry();
-                                        }
+
+                                        copyToZip(zos, file);
                                     }
                                 }
-        
+
                                 if (exportTypes.contains("THUMBNAIL")) {
                                     final Optional<StoredFile> thumb = dp.getDerivedForFormat(ViewsFormatConfiguration.FileFormat.THUMB);
                                     if (thumb.isPresent()) {
@@ -956,11 +964,8 @@ public class UIDocUnitService {
                                         final File file = bm.getFileForStoredFile(sf, libraryId);
                                         final String fileName = sf.getFilename().substring(0, sf.getFilename().lastIndexOf("."));
                                         zos.putNextEntry(new ZipEntry(directory.concat("vignettes/").concat(fileName).concat(".").concat(ImageUtils.FORMAT_JPG)));
-                
-                                        try (final FileInputStream fis = new FileInputStream(file)) {
-                                            IOUtils.copy(fis, zos);
-                                            zos.closeEntry();
-                                        }
+
+                                        copyToZip(zos, file);
                                     }
                                 }
                             }
@@ -1003,10 +1008,7 @@ public class UIDocUnitService {
                     if (sipFile != null && sipFile.exists()) {
                         zos.putNextEntry(new ZipEntry(directory.concat(CinesRequestHandlerService.SIP_XML_FILE)));
 
-                        try (final FileInputStream fis = new FileInputStream(sipFile)) {
-                            IOUtils.copy(fis, zos);
-                            zos.closeEntry();
-                        }
+                        copyToZip(zos, sipFile);
                     }
                 }
 
@@ -1020,16 +1022,30 @@ public class UIDocUnitService {
                             for (final File file : altoTextFiles) {
                                 zos.putNextEntry(new ZipEntry(directory.concat(file.getName())));
 
-                                try (final FileInputStream fis = new FileInputStream(file)) {
-                                    IOUtils.copy(fis, zos);
-                                    zos.closeEntry();
-                                }
+                                copyToZip(zos, file);
                             }
                         }
                     }
                 }
             }
         }
+    }
+
+    private void copyToZip(ZipOutputStream zos, File file) throws IOException {
+        LOG.trace("copyToZip - start");
+        try (Stream<Path> paths = Files.walk(Paths.get(file.getPath()))){
+            paths.filter(Files::isRegularFile).forEach(path -> {
+                try {
+                    LOG.trace("copyToZip - walk - " + path.toString());
+                    FileInputStream fileInputTest = new FileInputStream(path.toFile());
+                    IOUtils.copy(fileInputTest, zos);
+                } catch (IOException e) {
+                    LOG.error(e.getMessage(), e);
+                }
+            });
+            zos.closeEntry();
+        }
+        LOG.trace("copyToZip - end");
     }
 
     /**

@@ -172,6 +172,14 @@
                             wdocunit: true
                         }
                     },
+                    workflowDocUnitPending: {
+                        method: 'GET',
+                        isArray: true,
+                        params: {
+                            stype: "workflow",
+                            wdocunitpending: true
+                        }
+                    },
                     workflowControl: {
                         method: 'GET',
                         isArray: true,
@@ -226,8 +234,8 @@
 
             /**
              * Libellé à partir du code
-             * @param {*} code 
-             * @param {*} svcName 
+             * @param {*} code
+             * @param {*} svcName
              */
             service.getLabel = function (svcName, code) {
                 switch (svcName) {

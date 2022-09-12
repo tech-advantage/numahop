@@ -107,6 +107,7 @@ public class ImportEadService extends AbstractImportService {
      */
     @Async
     public void importEadAsync(final File importFile,
+                               final ImportReport.Type type,
                                final String mappingId,
                                final String mappingChildId,
                                ImportReport report,
@@ -119,7 +120,7 @@ public class ImportEadService extends AbstractImportService {
         try {
             /* Pré-import */
             LOG.info("Pré-import du fichier EAD {}", importFile.getAbsolutePath());
-            report = importEadRecords(importFile, mappingId, mappingChildId, report, propertyOrder, archivable, distributable);
+            report = importEadRecords(importFile, type, mappingId, mappingChildId, report, propertyOrder, archivable, distributable);
 
             /* Poursuite du traitement des unités documentaires pré-importées: recherche de doublons, validation utilisateur, import */
             importDocUnit(report, null, stepValidation, stepDeduplication, defaultDedupProcess);
@@ -144,6 +145,7 @@ public class ImportEadService extends AbstractImportService {
      * @see fr.progilone.pgcn.domain.jaxb.rdf.RDF
      */
     private ImportReport importEadRecords(final File importFile,
+                                          final ImportReport.Type type,
                                           final String mappingId,
                                           final String mappingChildId,
                                           final ImportReport report,
@@ -208,7 +210,8 @@ public class ImportEadService extends AbstractImportService {
             }
             // SIMPLE_MULTI_NOTICE: 1 composant EAD parent + composants enfant = 1 notice dans PGCN
             else {
-                getMultipleEadCEntityHandler(compiledMapping, compiledMappingChild, propertyTypes, propertyOrder, runningReport, tMgr)
+                boolean simpleNotice = type.equals(ImportReport.Type.SIMPLE_MULTI_NOTICE);
+                getMultipleEadCEntityHandler(simpleNotice, compiledMapping, compiledMappingChild, propertyTypes, propertyOrder, runningReport, tMgr)
                     // Lecture du fichier d'entrée
                     .parse(importFile);
             }
@@ -283,15 +286,10 @@ public class ImportEadService extends AbstractImportService {
      * Lecture du fichier EAD
      * Traitement de type SIMPLE_MULTI_NOTICE: 1 composant EAD parent + composants enfant = 1 notice dans PGCN
      *
-     * @param compiledMapping
-     * @param compiledMappingChild
-     * @param propertyTypes
-     * @param propertyOrder
-     * @param runningReport
-     * @param tMgr
      * @return
      */
-    private EadCEntityHandler getMultipleEadCEntityHandler(final CompiledMapping compiledMapping,
+    private EadCEntityHandler getMultipleEadCEntityHandler(final boolean simpleNotice,
+                                                           final CompiledMapping compiledMapping,
                                                            final CompiledMapping compiledMappingChild,
                                                            final Map<String, DocPropertyType> propertyTypes,
                                                            final PropertyOrder propertyOrder,
@@ -324,14 +322,18 @@ public class ImportEadService extends AbstractImportService {
                 // Ajout des composants enfant, mappés avec le sous-mapping
                 for (final C c : eadCParser.getcLeaves()) {
                     if (!Objects.equals(c, rootC)) {
-                        final DocUnit docUnitChild = convertService.convert(c, eadCParser, compiledMappingChild, propertyTypes, propertyOrder);
-                        docUnitChild.setParent(docUnit);
-                        // Sauvegarde
-                        final ImportedDocUnit impChild = new ImportedDocUnit();
-                        impChild.initDocUnitFields(docUnitChild);
-                        impChild.setReport(runningReport);
-                        impChild.setParentDocUnit(savedUnit.getIdentifier());
-                        final ImportedDocUnit savedUnitChild = importDocUnitService.create(impChild);
+                        if(simpleNotice){
+                            convertService.convert(docUnit, c, eadCParser, compiledMappingChild, propertyTypes);
+                        } else {
+                            final DocUnit docUnitChild = convertService.convert(c, eadCParser, compiledMappingChild, propertyTypes, propertyOrder);
+                            docUnitChild.setParent(docUnit);
+                            // Sauvegarde
+                            final ImportedDocUnit impChild = new ImportedDocUnit();
+                            impChild.initDocUnitFields(docUnitChild);
+                            impChild.setReport(runningReport);
+                            impChild.setParentDocUnit(savedUnit.getIdentifier());
+                            final ImportedDocUnit savedUnitChild = importDocUnitService.create(impChild);
+                        }
                     }
                 }
 

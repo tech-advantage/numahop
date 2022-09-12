@@ -21,7 +21,7 @@ public interface DocUnitRepository extends JpaRepository<DocUnit, String>, DocUn
             + "left join fetch d.library "
             + "where d.identifier = ?1")
      DocUnit findOneWithLibrary(String identifier);
-    
+
     @Query("select d "
            + "from DocUnit d "
            + "left join fetch d.library "
@@ -47,10 +47,10 @@ public interface DocUnitRepository extends JpaRepository<DocUnit, String>, DocUn
            + "left join fetch d.workflow w "
            + "where d.identifier = ?1")
     DocUnit findOneWithAllDependenciesForWorkflow(String identifier);
-    
+
     @Query("select d "
             + "from DocUnit d "
-            + "left join fetch d.library l "
+            + "left join fetch d.library lib "
             + "left join fetch d.project p "
             + "left join fetch d.lot l "
             + "left join fetch d.physicalDocuments pd "
@@ -126,10 +126,11 @@ public interface DocUnitRepository extends JpaRepository<DocUnit, String>, DocUn
            + "where d.identifier = ?1")
     DocUnit findOneByIdentifierWithRecords(String idDoc);
 
-    @Query("select d from DocUnit d " 
+    @Query("select d from DocUnit d "
             + "left join fetch d.library "
-            + "left join fetch d.physicalDocuments p " 
-            + "left join fetch d.records r " 
+            + "left join fetch d.physicalDocuments p "
+            + "left join fetch d.digitalDocuments dd "
+            + "left join fetch d.records r "
             + "where d.identifier in ?1")
     Set<DocUnit> findByIdentifierInWithDocs(Iterable<String> idDocs);
 
@@ -158,13 +159,13 @@ public interface DocUnitRepository extends JpaRepository<DocUnit, String>, DocUn
     List<DocUnit> findAllByProjectIdentifier(String identifier);
 
     List<DocUnit> findAllByLotIdentifier(String identifier);
-    
+
     @Query("select new fr.progilone.pgcn.domain.dto.document.SummaryDocUnitDTO(du.identifier, du.pgcnId, du.label, du.type, du.archivable, du.distributable) " +
             "from DocUnit du where du.lot.identifier = ?1")
     List<SummaryDocUnitDTO> findAllSummaryByLotId(String identifier);
 
     DocUnit getOneByPgcnId(String pgcnId);
-    
+
     DocUnit getOneByPgcnIdAndState(String pgcnId, DocUnit.State state);
 
     Long countByPgcnIdAndState(String pgcnId, DocUnit.State state);
@@ -202,7 +203,7 @@ public interface DocUnitRepository extends JpaRepository<DocUnit, String>, DocUn
            + "where d.archivable = true and w != null "
            + "and lib.identifier in ?1")
     List<DocUnit> findByLibraryWithCinesExportDep(String libraryId);
-    
+
     @Query("select distinct d from DocUnit d "
             + "left join fetch d.parent parent "
             + "left join fetch d.library lib "
@@ -213,7 +214,7 @@ public interface DocUnitRepository extends JpaRepository<DocUnit, String>, DocUn
             + "where d.distributable = true and w != null "
             + "and lib.identifier in ?1")
      List<DocUnit> findByLibraryWithOmekaExportDep(String libraryId);
-    
+
     @Query("select distinct d from DocUnit d "
            + "left join fetch d.library lib "
            + "left join fetch d.records r "

@@ -3,7 +3,7 @@
         <div class="panel panel-column-1">
             <div class="panel-heading">
                 <div class="pull-right">
-                    <button type="button" class="btn btn-sem2 btn-xs" 
+                    <button type="button" class="btn btn-sem2 btn-xs"
                             ng-click="mainCtrl.reinitFilters()" uib-tooltip="{{::'Réinitialiser les filtres de la recherche' | translate}}">
                         <span class="glyphicon-halflings glyphicon-refresh"></span>
                     </button>
@@ -14,7 +14,7 @@
                 <div class="filter-block">
                     <div class="filter-title">{{::'Bibliothèque' | translate}}</div>
                     <div class="filter-element">
-                        <ui-select multiple ng-model="mainCtrl.filters.libraries" theme="select2" 
+                        <ui-select multiple ng-model="mainCtrl.filters.libraries" theme="select2"
                                    on-select="mainCtrl.search()" on-remove="mainCtrl.search()" class="form-control">
                             <ui-select-match placeholder="{{::'Bibliothèque' | translate}}">{{$item.name}}</ui-select-match>
                             <ui-select-choices repeat="library in mainCtrl.options.libraries | filter: $select.search track by library.identifier">
@@ -43,7 +43,7 @@
                     </button>
                 </div>
                 <div class="input-group padding-r20">
-                    <input class="form-control sem-input-xs" type="text" 
+                    <input class="form-control sem-input-xs" type="text"
                            ng-model="mainCtrl.filters.search" ng-keypress="mainCtrl.search($event)"/>
                     <span class="input-group-btn">
                         <button type="button" class="btn btn-sem2 btn-xs" ng-click="mainCtrl.search()" uib-tooltip="{{::'Rechercher' | translate}}">
@@ -56,8 +56,7 @@
                 <div ng-show="mainCtrl.loaded && mainCtrl.mailboxes.length > 0" class="well well-sm" translate
                      translate-n="mainCtrl.mailboxes.length + newBoxes.length" translate-plural="{{$count}} configurations trouvées">1 configuration trouvée
                 </div>
-                <div class="well" ng-show="mainCtrl.loaded && mainCtrl.mailboxes.length === 0"
-                     translate>Aucune configuration n'a été trouvée
+                <div class="well" ng-show="mainCtrl.loaded && mainCtrl.mailboxes.length === 0" translate>Aucune configuration n'a été trouvée
                 </div>
 
                 <!-- Configurations récemment créés -->

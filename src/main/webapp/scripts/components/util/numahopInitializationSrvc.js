@@ -3,7 +3,7 @@
 
 	angular.module('numaHopApp.service')
 		.factory('NumaHopInitializationSrvc', function ($q, AuthenticationSharedService, CheckConfigurationSrvc, DocPropertyTypeSrvc, DocUnitSrvc,
-			FTPConfigurationSrvc, IAConfigurationSrvc, LibraryParameterSrvc, LibrarySrvc, LotSrvc, OmekaConfigurationSrvc, ProjectSrvc, SFTPConfigurationSrvc,
+			FTPConfigurationSrvc, IAConfigurationSrvc, LibraryParameterSrvc, LibrarySrvc, LotSrvc, OmekaConfigurationSrvc, ProjectSrvc, SFTPConfigurationSrvc, ExportFTPConfigurationSrvc,
 			TrainSrvc, USER_ROLES, UserAuthorizationSrvc, UserRoleSrvc, UserSrvc, ViewsFormatSrvc, WorkflowGroupSrvc, WorkflowModelSrvc, OcrLanguageSrvc) {
 
 			var loadRoles = function () {
@@ -31,6 +31,15 @@
 						});
 					});
 			};
+
+            var loadExportFtpConf = function (libraryId) {
+                return ExportFTPConfigurationSrvc.findByLibrary({libraryId: libraryId}).$promise
+                    .then(function (confExport) {
+                        return _.sortBy(confExport, function (ce) {
+                            return ce.name ? ce.name.toLowerCase() : ce;
+                        });
+                    })
+            };
 
 			var loadCinesParamsDefaultValues = function (id) {
 				return LibraryParameterSrvc.cinesDefaultValues({ sftpConfig: id }).$promise
@@ -257,6 +266,7 @@
 				loadWorkflowModels: loadWorkflowModels,
 				loadWorkflowGroups: loadWorkflowGroups,
 				loadPACS: loadPACS,
+                loadExportFtpConf: loadExportFtpConf,
 				loadRoles: loadRoles,
 				loadLibraries: loadLibraries,
 				loadProjects: loadProjects,

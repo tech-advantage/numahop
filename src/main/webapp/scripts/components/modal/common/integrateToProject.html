@@ -4,7 +4,7 @@
 <div class="modal-body">
     <div class="row">
         <div class="col-xs-12">
-            <label>Projet</label>
+            <label translate>Projet</label>
             <ui-select ng-model="mainCtrl.project" on-select="mainCtrl.onSelectProject($item)" ng-disabled="!mainCtrl.canRemove(mainCtrl.project)">
                 <ui-select-match>
                     <span ng-bind="$select.selected.name"></span>
@@ -17,7 +17,7 @@
     </div>
     <div class="row margin-t10">
         <div class="col-xs-12">
-            <label>Lot</label>
+            <label translate>Lot</label>
             <ui-select ng-model="mainCtrl.lot" ng-disabled="!mainCtrl.project || !mainCtrl.canRemove(mainCtrl.lot)">
                 <ui-select-match>
                     <span ng-bind="$select.selected.label"></span>
@@ -30,7 +30,7 @@
     </div>
     <div class="row margin-t10">
         <div class="col-xs-12">
-            <label>Train</label>
+            <label translate>Train</label>
             <ui-select ng-model="mainCtrl.train" ng-disabled="!mainCtrl.project || !mainCtrl.canRemove(mainCtrl.train)">
                 <ui-select-match>
                     <span ng-bind="$select.selected.label"></span>

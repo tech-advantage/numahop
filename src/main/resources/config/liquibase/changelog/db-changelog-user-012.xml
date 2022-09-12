@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Mise à jour des libellés et descriptions des rôles -->
+    <changeSet author="progilone" id="pgcn-create-user-12">
+        <sql>delete from user_role_authorization WHERE role = 'c8505374-370b-4090-96c7-5a0a9eb6e481' and user_authorization = 'ADMINISTRATION-LIB'
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

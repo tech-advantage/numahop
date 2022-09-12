@@ -5,13 +5,9 @@ import static org.apache.poi.ss.usermodel.DataValidationConstraint.OperatorType.
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFDataValidationHelper;
@@ -102,7 +98,7 @@ public class ConditionReportExportService {
         templateBuilder.initWorkbook();
 
         // Unités documentaires
-        final Set<DocUnit> docUnits = docUnitService.findAllById(docUnitIds);
+        final List<DocUnit> docUnits = docUnitService.findAllById(docUnitIds).stream().sorted((f1, f2) -> f2.getLabel().compareTo(f1.getLabel())).collect(Collectors.toList());
 
         for (final DocUnit docUnit : docUnits) {
             final List<PropertyConfiguration> configurations = propertyConfigurationService.findByLibrary(docUnit.getLibrary());

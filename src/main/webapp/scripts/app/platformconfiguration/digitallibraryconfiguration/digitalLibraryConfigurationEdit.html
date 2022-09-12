@@ -67,10 +67,12 @@
                             <span>{{::' Types de fichiers à exporter ' | translate}}</span>
                         </uib-accordion-heading>
                         <div class="row text-center">
-                            <label translate>Masters</label>
-                            <input type="checkbox" ng-model="ctrl.configuration.exportMaster" style="margin-right: 15px;" ng-disabled="!ctrl.loaded || viewMode !== viewModes.EDIT">
+                            <label translate>Print</label>
+                            <input type="checkbox" ng-model="ctrl.configuration.exportPrint" style="margin-right: 15px;" ng-disabled="!ctrl.loaded || viewMode !== viewModes.EDIT">
                             <label translate>Alto</label>
-                            <input type="checkbox" ng-model="ctrl.configuration.exportAlto" ng-disabled="!ctrl.loaded || viewMode !== viewModes.EDIT">
+                            <input type="checkbox" ng-model="ctrl.configuration.exportAlto" style="margin-right: 15px;" ng-disabled="!ctrl.loaded || viewMode !== viewModes.EDIT">
+                            <label translate>Pdf</label>
+                            <input type="checkbox" ng-model="ctrl.configuration.exportPdf" ng-disabled="!ctrl.loaded || viewMode !== viewModes.EDIT">
                         </div>
                     </div>
                 </div>

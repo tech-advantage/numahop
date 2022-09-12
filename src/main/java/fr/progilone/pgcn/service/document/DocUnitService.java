@@ -836,18 +836,6 @@ public class DocUnitService {
     }
 
     /**
-     * Permet de s'assurer que les données d'export vers Internet Archive sont déjà existantes
-     *
-     * @param identifier
-     * @return
-     */
-    @Transactional(readOnly = true)
-    public boolean isDocumentReadyForDiffusion(final String identifier) {
-        final DocUnit doc = docUnitRepository.findOneWithExportDependencies(identifier);
-        return doc.getArchiveItem() != null && doc.getArchiveItem().getIdentifier() != null;
-    }
-
-    /**
      * Permet de s'assurer que les données d'export vers Omeka sont déjà existantes
      *
      * @param identifier

@@ -271,7 +271,7 @@ public class WorkflowService {
                 }
             }  // fin cas particulier CONSTAT ETAT HORS WORKFLOW
 
-            if (!canUserProcessTask(userId, currentState) || !canStateBeProcessed(doc, currentState)) {
+            if (currentState != null && (!canUserProcessTask(userId, currentState) || !canStateBeProcessed(doc, currentState))) {
                 final PgcnError.Builder builder = new PgcnError.Builder();
                 throw new PgcnBusinessException(builder.reinit().setCode(PgcnErrorCode.WORKFLOW_PROCESS_NO_RIGHTS).build());
 
@@ -469,12 +469,10 @@ public class WorkflowService {
                 break;
             case CONTROLE_QUALITE_EN_COURS:
                 return true;
-            case DIFFUSION_DOCUMENT:
-                return docUnitService.isDocumentReadyForDiffusion(doc.getIdentifier());
             case DIFFUSION_DOCUMENT_OMEKA:
                 return docUnitService.isDocumentReadyForDiffusionOmeka(doc.getIdentifier());
             case DIFFUSION_DOCUMENT_LOCALE:
-                return true;
+            case DIFFUSION_DOCUMENT:
             case DIFFUSION_DOCUMENT_DIGITAL_LIBRARY:
                 return true;
             case GENERATION_BORDEREAU:

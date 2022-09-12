@@ -6,11 +6,11 @@
 
     function WorkflowGroupEditCtrl($location, $q, $routeParams, $scope, $timeout, codeSrvc,
         gettext, gettextCatalog, HistorySrvc, ListTools, Principal, NumahopEditService,
-        MessageSrvc, ModalSrvc, ValidationSrvc, WorkflowGroupSrvc, NumaHopInitializationSrvc) {
+        MessageSrvc, ModalSrvc, ValidationSrvc, WorkflowGroupSrvc, NumaHopInitializationSrvc, VIEW_MODES) {
 
         $scope.semCodes = codeSrvc;
         $scope.preventDefault = NumahopEditService.preventDefault;
-        $scope.viewModes = NumahopEditService.viewModes;
+        $scope.viewModes = VIEW_MODES;
         $scope.validation = ValidationSrvc;
         $scope.fullName = getFullName;
         $scope.saveEntity = saveEntity;
@@ -217,13 +217,13 @@
             // ... puis on affiche les infos de création ...
             if (angular.isDefined(entity.createdDate)) {
                 var dateCreated = new Date(entity.createdDate);
-                MessageSrvc.addInfo("Créé le {{date}}",
+                MessageSrvc.addInfo(gettext("Créé le {{date}}"),
                     { date: dateCreated.toLocaleString() }, true);
             }
             // ... puis on affiche les infos de modification ...
             if (angular.isDefined(entity.lastModifiedDate)) {
                 var dateModif = new Date(entity.lastModifiedDate);
-                MessageSrvc.addInfo("Dernière modification le {{date}} par {{author}}",
+                MessageSrvc.addInfo(gettext("Dernière modification le {{date}} par {{author}}"),
                     { date: dateModif.toLocaleString(), author: entity.lastModifiedBy }, true);
             }
 

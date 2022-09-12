@@ -1,5 +1,6 @@
 package fr.progilone.pgcn.service.lot.mapper;
 
+import fr.progilone.pgcn.service.exportftpconfiguration.mapper.ExportFTPConfigurationMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -36,7 +37,8 @@ import fr.progilone.pgcn.service.workflow.mapper.SimpleWorkflowMapper;
                 InternetArchiveCollectionMapper.class,
                 CinesPACMapper.class,
                 OmekaListMapper.class,
-                OcrLanguageMapper.class})
+                OcrLanguageMapper.class,
+                ExportFTPConfigurationMapper.class})
 public interface LotMapper {
 
     LotMapper INSTANCE = Mappers.getMapper(LotMapper.class);
@@ -50,5 +52,5 @@ public interface LotMapper {
     SimpleLotDTO lotToSimpleLotDTO(Lot lot);
 
     SimpleLotForDeliveryDTO lotToSimpleLotForDeliveryDTO(Lot lot);
-    
+
 }

@@ -39,7 +39,6 @@ import fr.progilone.pgcn.domain.AbstractDomainObject;
 import fr.progilone.pgcn.domain.dto.audit.AuditLotRevisionDTO;
 import fr.progilone.pgcn.domain.dto.lot.LotDTO;
 import fr.progilone.pgcn.domain.dto.lot.LotListDTO;
-import fr.progilone.pgcn.domain.dto.lot.LotWithConfigRulesDTO;
 import fr.progilone.pgcn.domain.dto.lot.ResultAdminLotDTO;
 import fr.progilone.pgcn.domain.dto.lot.SimpleLotDTO;
 import fr.progilone.pgcn.domain.lot.Lot;
@@ -241,12 +240,12 @@ public class LotController extends AbstractRestController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed({LOT_HAB3})
-    public ResponseEntity<LotWithConfigRulesDTO> getById(@PathVariable final String id) {
+    public ResponseEntity<LotDTO> getById(@PathVariable final String id) {
         // Droits d'accès
         if (!accessHelper.checkLot(id)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
-        final LotWithConfigRulesDTO lot = uiLotService.getOneWithConfigRules(id);
+        final LotDTO lot = uiLotService.getOneWithConfigRules(id);
         return createResponseEntity(lot);
     }
 

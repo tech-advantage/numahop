@@ -2,10 +2,10 @@
 
     <h2>Active sessions for All users</h2>
 
-    <div class="alert alert-success" ng-show="success">
+    <div class="alert alert-success" ng-show="success" translate>
         <strong>Session invalidated!</strong>
     </div>
-    <div class="alert alert-danger" ng-show="error">
+    <div class="alert alert-danger" ng-show="error" translate>
         <strong>An error has occured!</strong> The session could not be invalidated.
     </div>
 
@@ -13,10 +13,10 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>IP Address</th>
-                    <th>Login</th>
-                    <th>User agent</th>
-                    <th>Date</th>
+                    <th translate>IP Address</th>
+                    <th translate>Login</th>
+                    <th translate>User agent</th>
+                    <th translate>Date</th>
                     <th></th>
                 </tr>
             </thead>
@@ -29,7 +29,7 @@
                     <td>
                         <button type="submit"
                                 class="btn btn-primary"
-                                ng-click="invalidate(session.series)">
+                                ng-click="invalidate(session.series)" translate>
                                  Invalidate
                         </button>
                     </td>

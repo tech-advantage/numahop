@@ -17,7 +17,7 @@
 
 						if (parameters.state === "LIVRAISON_DOCUMENT_EN_COURS" || parameters.state === "RELIVRAISON_DOCUMENT_EN_COURS") {
 							params = {
-							    new: true,      
+							    new: true,
 								lot: parameters.item.infos.lot
 							};
 							url = "/#/delivery/delivery";

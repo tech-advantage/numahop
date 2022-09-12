@@ -7,7 +7,7 @@
     function DocAllOperationsCtrl($http, $httpParamSerializer, $location, $q, $routeParams, $scope, $timeout, Principal, codeSrvc,
         CondreportSrvc, DeliverySrvc, DocUnitBaseService, DocUnitSrvc, ErreurSrvc, ExportSrvc, FileSaver, gettext, gettextCatalog,
         HistorySrvc, MessageSrvc, ModalSrvc, NumaHopInitializationSrvc, NumahopEditService, USER_ROLES, ValidationSrvc,
-        NumahopAutoCheckService, WorkflowHandleSrvc, WorkflowSrvc, DateUtils) {
+        NumahopAutoCheckService, WorkflowHandleSrvc, WorkflowSrvc, ExportHandlerSrvc, VIEW_MODES) {
 
         $scope.validation = ValidationSrvc;
 
@@ -18,7 +18,7 @@
         mainCtrl.delete = deleteDoc;
         mainCtrl.deleteCondreport = deleteCondreport;
         mainCtrl.refreshMessages = refreshMessages;
-        mainCtrl.viewModes = NumahopEditService.viewModes;
+        mainCtrl.viewModes = VIEW_MODES;
         mainCtrl.export = exportDocUnit;
         mainCtrl.exportLocal = exportLocal;
         mainCtrl.exportCSV = exportCSV;
@@ -104,12 +104,12 @@
 
         // Initialisation du contrôleur
         function init() {
-            
+
             Principal.identity().then(function (usr) {
                 mainCtrl.user = usr;
                 mainCtrl.isUserPresta = usr.category === "PROVIDER";
             });
-            
+
             loadOptions();
         }
 
@@ -172,9 +172,9 @@
             //mainCtrl.autoCheck('facile', mainCtrl.docUnit.identifier);
             NumahopAutoCheckService.autoCheck('facile', mainCtrl.docUnit.identifier);
             loadFacileResults( mainCtrl.docUnit)
-            
+
         }
-        
+
         /**
          * Affichage du resultat de la validation FACILE.
          */
@@ -207,13 +207,13 @@
 
         function displayMessages(entity) {
             MessageSrvc.clearMessages();
-            
+
             //  gère la validation facile
             loadFacileResults(entity);
-            
+
             // Affichage pour un temps limité à l'ouverture
             // on gère les plateformes de diffusion & archivage
-            if (entity.omekaExportStatus) {                
+            if (entity.omekaExportStatus) {
                 if (entity.omekaExportStatus === 'IN_PROGRESS') {
                     mainCtrl.canExportToOmeka = false;
                     mainCtrl.omekaDistribStatus = 'En cours';
@@ -286,7 +286,7 @@
             } else {
                 mainCtrl.canExportToInternetArchive = true;
             }
-            
+
             MessageSrvc.initPanel();
         }
 
@@ -385,40 +385,19 @@
                     break;
             }
         }
-        
+
         /**
          * Téléchargement d'une archive pour l'export local / SFTP d'une UD.
          */
         function exportLocal() {
             ModalSrvc.selectExportTypes()
                 .then(function (types) {
-                    
-                    var ftpExport = types.ftpExport === "true";
-                    var params = {
-                        "docs": mainCtrl.docUnit.identifier,
-                        "types": types.exportTypes
-                    };
-                    if (ftpExport) {
-                        // export ftp
-                        params.export_ftp = true;
-                    } else {
-                        // telechargement local
-                        params.export = true;
-                    }
-                    var url = 'api/rest/docunit?' + $httpParamSerializer(params);
-                    
-                    // on met la réponse dans un arraybuffer pour conserver l'encodage original dans le fichier sauvegardé
-                    $http.get(url, { responseType: 'arraybuffer' })
-                        .then(function (response) {
-                            if (ftpExport) {
-                                MessageSrvc.addSuccess(gettext("[" + mainCtrl.docUnit.pgcnId +  "] L'export FTP est en cours"));
-                            } else {    
-                                var filename = DateUtils.getFormattedDateYearMonthDayHourMinSec(new Date()) + "_" + mainCtrl.docUnit.pgcnId + "_export.zip";
-                                var blob = new Blob([response.data], { type: response.headers("content-type") });
-                                FileSaver.saveAs(blob, filename);
-                            }
-                            
-                        });
+                    ExportHandlerSrvc.massExport(mainCtrl.docUnit.identifier,
+                        {
+                            types: types,
+                            pgcnId: mainCtrl.docUnit.pgcnId
+                        }
+                    );
                 });
         }
 
@@ -454,7 +433,7 @@
                 mainCtrl.canValidateCondReport = WorkflowHandleSrvc.canCondReportBeValidated(entity.workflow);
             }
         }
-        
+
         /**
          * Validation workflow (notice)
          */
@@ -467,7 +446,7 @@
                     });
             }
         }
-        
+
         /**
          * Validation workflow (constat)
          */
@@ -483,8 +462,8 @@
 
         /**
          * Suppression d'un constat d'état
-         * 
-         * @param {any} reportId 
+         *
+         * @param {any} reportId
          */
         function deleteCondreport(reportId) {
             ModalSrvc.confirmDeletion(gettextCatalog.getString("le constat d'état de l'unité documentaire {{pgcnId}} {{label}}", mainCtrl.docUnit))

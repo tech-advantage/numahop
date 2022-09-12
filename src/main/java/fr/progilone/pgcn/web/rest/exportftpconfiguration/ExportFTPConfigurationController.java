@@ -9,6 +9,7 @@ import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 
+import fr.progilone.pgcn.domain.dto.AbstractDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -37,7 +38,7 @@ import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
 @RequestMapping(value = "/api/rest/exportftpconfiguration")
 public class ExportFTPConfigurationController extends AbstractRestController {
 
-    
+
     private final ExportFTPConfigurationService exportFtpConfigurationService;
     private final UIExportFTPConfigurationService uiExportFTPConfigurationService;
     private final LibraryAccesssHelper libraryAccesssHelper;
@@ -118,21 +119,30 @@ public class ExportFTPConfigurationController extends AbstractRestController {
         return createResponseEntity(conf);
     }
 
-    @RequestMapping(method = RequestMethod.GET, params = {"project"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.GET, params = {"project", "fullConfig"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed({EXP_FTP_HAB0})
-    public ResponseEntity<List<SimpleExportFTPConfDTO>> getByProjectId(final HttpServletRequest request,
-                                                                          @RequestParam(value = "project") final String project) {
+    public ResponseEntity<List<? extends AbstractDTO>> getByProjectId(final HttpServletRequest request,
+                                                            @RequestParam(value = "project") final String project,
+                                                            @RequestParam(value = "fullConfig", required = false) final boolean fullConfig) {
         final List<String> libraries = libraryAccesssHelper.getLibraryFilter(request, null);
-        //final List<SimpleFTPConfigurationDTO> configuration = 
-        final List<SimpleExportFTPConfDTO> configuration = uiExportFTPConfigurationService.getAllByProjectId(project, libraries);
+        final List<? extends AbstractDTO> configuration = uiExportFTPConfigurationService.getAllByProjectId(project, libraries, fullConfig);
+        return createResponseEntity(configuration);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, params = {"libraryId"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    @RolesAllowed({EXP_FTP_HAB0})
+    public ResponseEntity<List<? extends AbstractDTO>> getByLibraryId(final HttpServletRequest request,
+                                                                      @RequestParam(value = "") final String libraryId) {
+        final List<? extends AbstractDTO> configuration = uiExportFTPConfigurationService.getAllByLibraryId(libraryId);
         return createResponseEntity(configuration);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.POST)
     @Timed
     @RolesAllowed({EXP_FTP_HAB1})
-    public ResponseEntity<ExportFTPConfigurationDTO> update(final HttpServletRequest request, 
+    public ResponseEntity<ExportFTPConfigurationDTO> update(final HttpServletRequest request,
                                                             @RequestBody final ExportFTPConfigurationDTO configuration) throws PgcnTechnicalException {
 
         // Vérification des droits d'accès par rapport à la bibliothèque de l'utilisateur, pour la conf à importer
@@ -153,5 +163,5 @@ public class ExportFTPConfigurationController extends AbstractRestController {
         final ExportFTPConfigurationDTO savedConfiguration = uiExportFTPConfigurationService.update(configuration);
         return new ResponseEntity<>(savedConfiguration, HttpStatus.OK);
     }
-    
+
 }

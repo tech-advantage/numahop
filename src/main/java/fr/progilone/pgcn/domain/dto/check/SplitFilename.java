@@ -128,7 +128,13 @@ public class SplitFilename {
         // check separator
         final String seqSep = Pattern.quote(seqSeparator);
         final String[] splitName = rebuildedName.toString().split(seqSep);
-        final int minNbParts = bibPrefixMandatory ? isPdfDelivery ? 2 : 3 : isPdfDelivery ? 1 : 2;
+        final int minNbParts = bibPrefixMandatory ?
+                               isPdfDelivery ? 2 // Prefix de bibliothèque et livraison pdf -> prefix_nom.pdf
+                                             : isJustOneEstampe ? 2 // Prefix de bibliothèque et livraison estampe -> prefix_nom.tif
+                                                                : 3 // Prefix de bibliothèque -> prefix_nom_sequence.tif
+                                                  : isPdfDelivery ? 1  // Pas de prefix de bibliothèque et livraison pdf-> nom.pdf
+                                                                  : isJustOneEstampe ? 1 // Pas de prefix de bibliothèque et livraison estampe -> nom.tif
+                                                                                     : 2; // Pas de prefix de bibliothèque -> nom_sequence.tif
         if (splitName.length < minNbParts) {
             splitNames.put(filename, Optional.empty());
             throw new PgcnTechnicalException("[Livraison] Mauvais format de nom de fichier : " + filename);

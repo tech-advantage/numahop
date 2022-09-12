@@ -4,22 +4,23 @@
     angular.module('numaHopApp.controller')
         .controller('ExportFTPConfigurationEditCtrl', ExportFTPConfigurationEditCtrl);
 
-    function ExportFTPConfigurationEditCtrl($location, $routeParams, $scope, $timeout, codeSrvc,
+    function ExportFTPConfigurationEditCtrl($location, $routeParams, $timeout, codeSrvc,
         DocUnitBaseService, ExportFTPConfigurationSrvc, gettext, gettextCatalog, HistorySrvc, ListTools,
-        MessageSrvc, ModalSrvc, NumaHopInitializationSrvc, ValidationSrvc) {
+        MessageSrvc, ModalSrvc, NumaHopInitializationSrvc, ValidationSrvc, VIEW_MODES, $scope) {
 
-        $scope.backToList = backToList;
-        $scope.cancel = cancel;
-        $scope.delete = deleteConf;
-        $scope.semCodes = codeSrvc;
-        $scope.saveConfiguration = saveConfiguration;
-        $scope.validation = ValidationSrvc;
+        var ctrl = this;
+
+        ctrl.semCodes = codeSrvc;
+        ctrl.validation = ValidationSrvc;
+        ctrl.VIEW_MODES = VIEW_MODES;
 
         // Définition des listes déroulantes
-        $scope.options = {
+        ctrl.options = {
             boolean: DocUnitBaseService.options.booleanObj,
             libraries: []
         };
+
+        ctrl.viewMode = $routeParams.mode || VIEW_MODES.VIEW;
 
         init();
 
@@ -28,19 +29,21 @@
         function init() {
             loadLibrarySelect();
             loadConfiguration();
+            ctrl.isFileTypeOpened = true;
+            ctrl.isDeliveryConfOpened = true;
         }
 
         function loadLibrarySelect() {
             return NumaHopInitializationSrvc.loadLibraries()
                 .then(function (libs) {
-                    $scope.options.libraries = libs;
+                    ctrl.options.libraries = libs;
                 });
         }
 
         /****************************************************************/
         /** Actions *****************************************************/
         /****************************************************************/
-        function deleteConf(configuration) {
+        ctrl.delete = function deleteConf(configuration) {
             ModalSrvc.confirmDeletion(gettextCatalog.getString("la configuration d'export FTP {{label}}", configuration))
                 .then(function () {
                     configuration.$delete(function (value) {
@@ -52,21 +55,21 @@
                         else {
                             ListTools.findAndRemoveItemFromList(configuration, $scope.newConfigurations);
                         }
-                        $scope.backToList();
+                        ctrl.backToList();
                     });
                 });
         }
 
-        function cancel() {
+        ctrl.cancel = function cancel() {
             if ($routeParams.new) {
-                backToList();
+                ctrl.backToList();
             }
             else {
-                $scope.exportFtpConfigForm.$cancel();
+                ctrl.exportFtpConfigForm.$cancel();
             }
         }
 
-        function backToList() {
+        ctrl.backToList = function backToList() {
             $location.path("/platformconfiguration/exportftpconfiguration").search({});
         }
 
@@ -74,13 +77,13 @@
         /** Fonctions ***************************************************/
         /****************************************************************/
         // Sauvegarde une configuration
-        function saveConfiguration() {
-            delete $scope.errors;
+        ctrl.saveConfiguration = function saveConfiguration() {
+            delete ctrl.errors;
 
             $timeout(function () {
-                var creation = !$scope.configuration.identifier;
+                var creation = !ctrl.configuration.identifier;
 
-                $scope.configuration.$save({},
+                ctrl.configuration.$save({},
                     function (value) {
                         MessageSrvc.addSuccess(gettext("La configuration {{name}} a été sauvegardée"), { name: value.name });
                         onSuccess();
@@ -90,11 +93,11 @@
                             addNewConfigurationToList(value, $scope.newConfigurations, $scope.pagination.items);
                             $location.search({ id: value.identifier }); // suppression des paramètres
                         } else {
-                            $scope.updateConfiguration($scope.configuration.identifier, $scope.configuration);
+                            $scope.updateConfiguration(ctrl.configuration.identifier, ctrl.configuration);
                         }
                     },
                     function (response) {
-                        $scope.errors = _.chain(response.data.errors)
+                        ctrl.errors = _.chain(response.data.errors)
                             .groupBy("field")
                             .mapObject(function (list) {
                                 return _.pluck(list, "code");
@@ -128,10 +131,9 @@
                 identifier: configuration.identifier,
                 label: configuration.label
             };
-            var i = 0;
-            for (i = 0; i < newConfigurations.length; i++) {
+            for (var i = 0; i < newConfigurations.length; i++) {
                 var b = newConfigurations[i];
-                if (b.name.localeCompare(configuration.name) > 0) {
+                if (b.label.localeCompare(configuration.label) > 0) {
                     break;
                 }
             }
@@ -139,14 +141,14 @@
         }
         // Gestion de la configuration renvoyée par le serveur
         function onSuccess() {
-            HistorySrvc.add(gettextCatalog.getString("Configuration {{label}}", $scope.configuration));
+            HistorySrvc.add(gettextCatalog.getString("Configuration {{label}}", ctrl.configuration));
             displayMessages();
         }
         // Ouverture du formulaire et des sous formulaires
         function openForm() {
             $timeout(function () {
-                if (angular.isDefined($scope.exportFtpConfigForm)) {
-                    $scope.exportFtpConfigForm.$show();
+                if (angular.isDefined(ctrl.exportFtpConfigForm)) {
+                    ctrl.exportFtpConfigForm.$show();
                 }
             });
         }
@@ -160,15 +162,15 @@
         // Initialisation une fois qu'on a reçu toutes les données du serveur
         function afterLoadingConfiguration() {
             onSuccess();
-            $scope.loaded = true;
+            ctrl.loaded = true;
         }
 
         function loadConfiguration() {
-            $scope.loaded = false;
+            ctrl.loaded = false;
 
             if (angular.isDefined($routeParams.id)) {
                 // Chargement configuration
-                $scope.configuration = ExportFTPConfigurationSrvc.get({
+                ctrl.configuration = ExportFTPConfigurationSrvc.get({
                     id: $routeParams.id
                 }, function () {
                     afterLoadingConfiguration();
@@ -176,11 +178,29 @@
             } else if (angular.isDefined($routeParams.new)) {
                 // Création d'une nouvelle configuration
                 HistorySrvc.add(gettext("Nouvelle configuration"));
-                $scope.configuration = new ExportFTPConfigurationSrvc();
-                $scope.configuration.active = true;
+                ctrl.configuration = new ExportFTPConfigurationSrvc();
+                ctrl.configuration.active = true;
                 afterLoadingConfiguration();
                 openForm();
             }
         }
+
+        /***
+         * Configuration des dossiers de livraison
+         */
+        ctrl.addDeleveryFolder = function () {
+            var newCollection = {
+                confExportFTP: ctrl.configuration
+            };
+            if (ctrl.configuration.deliveryFolders) {
+                ctrl.configuration.deliveryFolders.push(newCollection);
+            } else {
+                ctrl.configuration.deliveryFolders = [newCollection];
+            }
+        };
+
+        ctrl.deleteDeliveryFolder = function (index) {
+            ctrl.configuration.deliveryFolders.splice(index, 1);
+        };
     }
 })();

@@ -4,7 +4,7 @@
     angular.module('numaHopApp.controller')
         .controller('CSVMappingCtrl', CSVMappingCtrl);
 
-    function CSVMappingCtrl($filter, $q, gettext, gettextCatalog, HistorySrvc, LibrarySrvc, CSVMappingSrvc, MessageSrvc, ModalSrvc, Principal, USER_ROLES) {
+    function CSVMappingCtrl($filter, $q, gettext, gettextCatalog, HistorySrvc, LibrarySrvc, CSVMappingSrvc, MappingSrvc, MessageSrvc, ModalSrvc, Principal, USER_ROLES) {
         var mainCtrl = this;
         mainCtrl.mappingModified = mappingModified;
         /** Mapping */
@@ -181,7 +181,7 @@
             var options = { rule: copyOfRule };
             return ModalSrvc.open("scripts/app/configuration/csvMapping/csvModalEditRule.html", options, "lg", "CSVModalEditRuleCtrl")
                 .then(function (edRule) {
-                    
+
                     mapping.rules.push(edRule);
                     computeRanks(mapping.rules);
                     mainCtrl.modified = true;
@@ -196,7 +196,7 @@
                 computeRanks(mapping.rules);
                 mainCtrl.modified = true;
             }
-            
+
         }
         /** Suppression d'une règle existante */
         function editRule(rule, mapping) {
@@ -212,41 +212,41 @@
                     return rule;
                 });
         }
-        
+
         /**
          * Libellé d'un champ d'une unité documentaire
-         * 
-         * @param {any} field 
+         *
+         * @param {any} field
          */
         function getDocfieldLabel(field) {
             if (!field) {
                 return;
             }
-            var found = _.find(CSVMappingSrvc.docUnitFields, function (f) {
+            var found = _.find(MappingSrvc.docUnitFields, function (f) {
                 return f.code === field;
             });
             return found ? found.label : "";
         }
         /**
          * Libellé d'un champ d'une notice bibliographique
-         * 
-         * @param {any} field 
+         *
+         * @param {any} field
          */
         function getBibfieldLabel(field) {
             if (!field) {
                 return;
             }
-            var found = _.find(CSVMappingSrvc.bibRecordFields, function (f) {
+            var found = _.find(MappingSrvc.bibRecordFields, function (f) {
                 return f.code === field;
             });
             return found ? found.label : "";
         }
-        
+
         /**
          * Déplacement des règles de mapping
-         * 
-         * @param {any} rule 
-         * @param {any} rules 
+         *
+         * @param {any} rule
+         * @param {any} rules
          */
         function downRule(rule, rules) {
             moveRule(rule, rules, "down");
@@ -265,9 +265,9 @@
                     .sortBy(sortBy)
                     .find(find)
                     .value();
-            
+
             if (angular.isDefined(next)) {
-                
+
                 swapItems(rules, rule, next);
                 computeRanks(rules);
 
@@ -275,26 +275,26 @@
                 mainCtrl.modified = true;
             }
         }
-        
+
         /** on permute */
         function swapItems(rules, r1, r2) {
             var idx1 = rules.indexOf(r1);
             var idx2 = rules.indexOf(r2);
-            
+
             rules[idx1] = r2;
             rules[idx2] = r1;
         }
-        
+
         /**
          * recalcul systematique des positions.
          */
         function computeRanks(rules) {
            var rank = 0;
            _.each(rules, function(r) {
-              r.rank = rank++; 
-           });         
-           
+              r.rank = rank++;
+           });
+
         }
-        
+
     }
 })();

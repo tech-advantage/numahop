@@ -2,10 +2,7 @@ package fr.progilone.pgcn.service.exchange.exportftp;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -57,6 +54,7 @@ public class ExportFtpService {
     }
 
     @Scheduled(cron = "${cron.localExport}")
+    @Transactional
     public void localExportCron() {
 
         LOG.info("Lancement du cronjob localExport ...");
@@ -84,32 +82,35 @@ public class ExportFtpService {
     }
 
     private boolean exportDocToLocalFtp(final DocUnit doc) throws IOException {
+        ExportFTPConfiguration ftpConfig = Optional.of(doc.getLot().getActiveExportFTPConfiguration())
+            .orElse(doc.getProject().getActiveExportFTPConfiguration());
 
-        final Optional<ExportFTPConfiguration> ftpConfig = configurationService.findByLibraryAndActive(doc.getLibrary(), true).stream().findFirst();
-        if (ftpConfig.isPresent()) {
-            final ExportFTPConfiguration config = ftpConfig.get();
+        if (ftpConfig != null) {
             final List<String> exportTypes = new ArrayList<>();
-            if (config.isExportAipSip()) {
+            if (ftpConfig.isExportAipSip()) {
                 exportTypes.add("AIP");
             }
-            if (config.isExportMaster()) {
+            if (ftpConfig.isExportMaster()) {
                 exportTypes.add("MASTER");
             }
-            if (config.isExportMets()) {
+            if (ftpConfig.isExportMets()) {
                 exportTypes.add("METS");
             }
-            if (config.isExportPdf()) {
+            if (ftpConfig.isExportPdf()) {
                 exportTypes.add("PDF");
             }
-            if (config.isExportThumb()) {
+            if (ftpConfig.isExportThumb()) {
                 exportTypes.add("THUMBNAIL");
             }
-            if (config.isExportView()) {
+            if (ftpConfig.isExportView()) {
                 exportTypes.add("VIEW");
+            }
+            if(ftpConfig.isExportAlto()) {
+                exportTypes.add("ALTO");
             }
 
             if (!exportTypes.isEmpty()) {
-                return uiDocUnitService.massExportToFtp(Collections.singleton(doc.getIdentifier()), exportTypes, doc.getLibrary());
+                return uiDocUnitService.massExportToFtp(Arrays.asList(doc), exportTypes, doc.getLibrary());
             }
         } else {
             updateDocUnitLocalExportStatus(doc, DocUnit.ExportStatus.FAILED);

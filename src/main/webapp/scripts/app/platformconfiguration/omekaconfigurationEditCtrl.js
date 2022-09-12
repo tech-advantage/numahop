@@ -6,11 +6,11 @@
 
     function OmekaConfigurationEditCtrl($location, $q, $routeParams, $scope, $timeout, OmekaConfigurationSrvc, codeSrvc,
         gettext, gettextCatalog, HistorySrvc, ListTools, NumahopEditService,
-        MessageSrvc, ModalSrvc, NumaHopInitializationSrvc, ValidationSrvc, DocUnitBaseService) {
+        MessageSrvc, ModalSrvc, NumaHopInitializationSrvc, ValidationSrvc, DocUnitBaseService, VIEW_MODES) {
 
         $scope.semCodes = codeSrvc;
         $scope.preventDefault = NumahopEditService.preventDefault;
-        $scope.viewModes = NumahopEditService.viewModes;
+        $scope.viewModes = VIEW_MODES;
         $scope.validation = ValidationSrvc;
         $scope.displayBoolean = DocUnitBaseService.displayBoolean;
         $scope.saveConfiguration= saveConfiguration;
@@ -42,7 +42,7 @@
         $scope.deleteCollection = function (index) {
             $scope.configuration.omekaCollections.splice(index, 1);
         };
-        
+
         $scope.addItem = function () {
             var newItem = {
                 type: 'ITEM'

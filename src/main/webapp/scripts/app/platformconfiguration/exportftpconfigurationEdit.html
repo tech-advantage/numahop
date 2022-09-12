@@ -1,16 +1,16 @@
-<div class="col-sm-6 col-sm-offset-6 col-layout-columns" ng-controller="ExportFTPConfigurationEditCtrl">
+<div class="col-sm-6 col-sm-offset-6 col-layout-columns" ng-controller="ExportFTPConfigurationEditCtrl as ctrl">
     <div class="panel panel-column-3">
         <div class="panel-heading">
             <div class="pull-right">
                 <button type="button" class="btn btn-sem2 btn-xs"
-                        ng-click="exportFtpConfigForm.$show()" uib-tooltip="{{::'Modifier' | translate}}"
-                        ng-disabled="exportFtpConfigForm.$visible" ng-show="loaded"
+                        ng-click="ctrl.exportFtpConfigForm.$show()" uib-tooltip="{{::'Modifier' | translate}}"
+                        ng-disabled="ctrl.exportFtpConfigForm.$visible" ng-show="ctrl.loaded"
                         sem-roles-allowed="EXP_FTP_HAB1">
                     <span class="glyphicon-regular edit"></span>
                 </button>
                 <button type="button" class="btn btn-sem2 btn-xs"
-                        ng-click="delete(configuration)" uib-tooltip="{{::'Supprimer' | translate}}" 
-                        ng-disabled="!configuration || !configuration.identifier" ng-show="loaded"
+                        ng-click="ctrl.delete(ctrl.configuration)" uib-tooltip="{{::'Supprimer' | translate}}"
+                        ng-disabled="!ctrl.configuration || !ctrl.configuration.identifier" ng-show="ctrl.loaded"
                         sem-roles-allowed="EXP_FTP_HAB2">
                     <span class="glyphicon-halflings glyphicon-trash"></span>
                 </button>
@@ -18,64 +18,112 @@
             <h5 translate>Fiche</h5>
         </div>
         <div class="panel-body">
-            <form editable-form name="exportFtpConfigForm" onaftersave="saveConfiguration()" ng-show="loaded"
-                  ng-init="formRO = !isAuthorized([userRoles.EXP_FTP_HAB1])">
-            
-                <numa-editable-field title="{{::'Libellé' | translate}}" placeholder="{{::'Libellé' | translate}}" form="exportFtpConfigForm" 
-                                    model="configuration.label" errors="{{ errors.label }}"  mandatory="true"
+            <form editable-form name="ctrl.exportFtpConfigForm" onaftersave="ctrl.saveConfiguration()" ng-show="ctrl.loaded"
+                  ng-init="ctrl.formRO = !ctrl.isAuthorized([userRoles.EXP_FTP_HAB1])">
+
+                <numa-editable-field title="{{::'Libellé' | translate}}" placeholder="{{::'Libellé' | translate}}" form="ctrl.exportFtpConfigForm"
+                                    model="ctrl.configuration.label" errors="{{ errors.label }}"  mandatory="true"
                                     onbeforesave="validation.required($data)" numa-readonly="formRO"></numa-editable-field>
-                 
-                <numa-editable-field title="{{::'Serveur de stockage' | translate}}" placeholder="{{::'Adresse du serveur FTP' | translate}}" form="exportFtpConfigForm" 
-                                        model="configuration.storageServer" errors="{{ errors.storageServer }}" mandatory="true"
+
+                <numa-editable-field title="{{::'Serveur de stockage' | translate}}" placeholder="{{::'Adresse du serveur FTP' | translate}}" form="ctrl.exportFtpConfigForm"
+                                        model="ctrl.configuration.storageServer" errors="{{ errors.storageServer }}" mandatory="true"
                                         onbeforesave="validation.required($data)" numa-readonly="formRO" ></numa-editable-field>
-                <numa-editable-field title="{{::'Port' | translate}}" placeholder="{{::'Adresse du serveur FTP' | translate}}" form="exportFtpConfigForm" 
-                                        model="configuration.port" errors="{{ errors.port }}" mandatory="true"
-                                        onbeforesave="validation.required($data)" numa-readonly="formRO" ></numa-editable-field>                        
-                                    
-                <numa-editable-field title="{{::'Adresse de dépôt' | translate}}" placeholder="{{::'Adresse' | translate}}" form="exportFtpConfigForm" 
-                                    model="configuration.address" errors="{{ errors.address }}" mandatory="true"
-                                    onbeforesave="validation.required($data)" numa-readonly="formRO"></numa-editable-field>
-                <numa-editable-field title="{{::'Login' | translate}}" placeholder="{{::'Login' | translate}}" form="exportFtpConfigForm" 
-                                    model="configuration.login" errors="{{ errors.login }}" numa-readonly="formRO"></numa-editable-field>
+                <numa-editable-field title="{{::'Port' | translate}}" placeholder="{{::'Adresse du serveur FTP' | translate}}" form="ctrl.exportFtpConfigForm"
+                                        model="ctrl.configuration.port" errors="{{ errors.port }}" mandatory="true"
+                                        onbeforesave="validation.required($data)" numa-readonly="formRO" ></numa-editable-field>
+                <numa-editable-field title="{{::'Login' | translate}}" placeholder="{{::'Login' | translate}}" form="ctrl.exportFtpConfigForm"
+                                    model="ctrl.configuration.login" errors="{{ errors.login }}" numa-readonly="formRO"></numa-editable-field>
                 <numa-editable-field title="{{::'Mot de passe' | translate}}" type="password" placeholder="{{::'Mot de passe' | translate}}"
-                                     form="exportFtpConfigForm" model="configuration.password" errors="{{ errors.password }}"
+                                     form="exportFtpConfigForm" model="ctrl.configuration.password" errors="{{ errors.password }}"
                                      numa-readonly="formRO"></numa-editable-field>
-                <numa-editable-field title="{{::'Bibliothèque' | translate}}" type="select" placeholder="{{::'Bibliothèque' | translate}}" form="exportFtpConfigForm"
-                                     model="configuration.library" errors="{{ errors.library }}"
+                <numa-editable-field title="{{::'Bibliothèque' | translate}}" type="select" placeholder="{{::'Bibliothèque' | translate}}" form="ctrl.exportFtpConfigForm"
+                                     model="ctrl.configuration.library" errors="{{ errors.library }}"
                                      onbeforesave="validation.required($data)" numa-readonly="formRO" mandatory="true"
                                      config="{ data: options.libraries,
-                                            display: 'name', 
+                                            display: 'name',
                                             query: 'o.name for o in $ctrl.config.data track by o.identifier' }"
-                                     link="{ type: 'library', parameters: {'id': configuration.library.identifier} }"></numa-editable-field>
+                                     link="{ type: 'library', parameters: {'id': ctrl.configuration.library.identifier} }"></numa-editable-field>
 
+                <!--    File types configuration   -->
                 <div uib-accordion>
-                    <div uib-accordion-group is-open="accordions.filesType">
+                    <div uib-accordion-group is-open="ctrl.isFileTypeOpened">
                         <uib-accordion-heading>
                             <span class="pull-left glyphicon-halflings"
-                                  ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordions.filesType]"/>
+                                  ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[ctrl.isFileTypeOpened]"/>
                             <span>{{::' Types de fichiers à exporter' | translate}}</span>
                         </uib-accordion-heading>
                         <div class="row text-center">
                             <label translate>METS</label>
-                            <input type="checkbox" ng-model="configuration.exportMets" style="margin-right: 15px;" ng-disabled="!loaded || viewMode !== viewModes.EDIT">
+                            <input type="checkbox" ng-model="ctrl.configuration.exportMets" style="margin-right: 15px;" ng-disabled="!ctrl.loaded || !ctrl.exportFtpConfigForm.$visible">
                             <label translate>AIP/SIP</label>
-                            <input type="checkbox" ng-model="configuration.exportAipSip" style="margin-right: 15px;" ng-disabled="!loaded || viewMode !== viewModes.EDIT">
+                            <input type="checkbox" ng-model="ctrl.configuration.exportAipSip" style="margin-right: 15px;" ng-disabled="!ctrl.loaded || !ctrl.exportFtpConfigForm.$visible">
                             <label translate>Masters</label>
-                            <input type="checkbox" ng-model="configuration.exportMaster" style="margin-right: 15px;" ng-disabled="!loaded || viewMode !== viewModes.EDIT">
+                            <input type="checkbox" ng-model="ctrl.configuration.exportMaster" style="margin-right: 15px;" ng-disabled="!ctrl.loaded || !ctrl.exportFtpConfigForm.$visible">
                             <label translate>Views</label>
-                            <input type="checkbox" ng-model="configuration.exportView" style="margin-right: 15px;" ng-disabled="!loaded || viewMode !== viewModes.EDIT">
+                            <input type="checkbox" ng-model="ctrl.configuration.exportView" style="margin-right: 15px;" ng-disabled="!ctrl.loaded || !ctrl.exportFtpConfigForm.$visible">
                             <label translate>Vignettes</label>
-                            <input type="checkbox" ng-model="configuration.exportThumb" style="margin-right: 15px;" ng-disabled="!loaded || viewMode !== viewModes.EDIT">
+                            <input type="checkbox" ng-model="ctrl.configuration.exportThumb" style="margin-right: 15px;" ng-disabled="!ctrl.loaded || !ctrl.exportFtpConfigForm.$visible">
                             <label translate>Pdf</label>
-                            <input type="checkbox" ng-model="configuration.exportPdf" ng-disabled="!loaded || viewMode !== viewModes.EDIT">
+                            <input type="checkbox" ng-model="ctrl.configuration.exportPdf" style="margin-right: 15px;" ng-disabled="!ctrl.loaded || !ctrl.exportFtpConfigForm.$visible">
+                            <label translate>Alto</label>
+                            <input type="checkbox" ng-model="ctrl.configuration.exportAlto" ng-disabled="!ctrl.loaded || !ctrl.exportFtpConfigForm.$visible">
                         </div>
                     </div>
                 </div>
-                <div class="text-center column-bottom column-5 margin-t10" ng-if="exportFtpConfigForm.$visible">
+
+                <div uib-accordion>
+                    <div uib-accordion-group is-open="ctrl.isDeliveryConfOpened">
+                        <uib-accordion-heading>
+                                <span class="pull-left glyphicon-halflings"
+                                      ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[ctrl.isDeliveryConfOpened]"/>
+                            <span>{{::'Configuration des dossiers de livraison' | translate}}</span>
+                        </uib-accordion-heading>
+
+                        <numa-editable-field title="{{::'Adresse de dépôt' | translate}}" placeholder="{{::'Adresse' | translate}}" form="ctrl.exportFtpConfigForm"
+                                             model="ctrl.configuration.address" errors="{{ errors.address }}" mandatory="true"
+                                             onbeforesave="validation.required($data)" numa-readonly="formRO"></numa-editable-field>
+
+                        <button type="button" class="btn btn-sem2 btn-xs"
+                                ng-click="ctrl.addDeleveryFolder()"
+                                uib-tooltip="{{::'Ajouter' | translate}}"
+                                ng-show="ctrl.exportFtpConfigForm.$visible"
+                                sem-roles-allowed="SFTP_HAB1">
+                            <span class="glyphicon-regular plus"></span>
+                        </button>
+
+                        <table class="table table-condensed table-hover">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" translate>Dossier de livraison</th>
+                                    <th class="text-center" translate>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="deliveryFolder in ctrl.configuration.deliveryFolders">
+                                    <td class="text-center">
+                                        <numa-editable-field placeholder="{{::'Adresse' | translate}}" form="ctrl.exportFtpConfigForm"
+                                                             model="deliveryFolder.name" errors="{{ errors.address }}" mandatory="true"
+                                                             onaftersave="ctrl.onaftersave" numa-readonly="formRO"></numa-editable-field>
+                                    </td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-sem2 btn-xs"
+                                                ng-click="ctrl.deleteDeliveryFolder($index)" ng-show="ctrl.exportFtpConfigForm.$visible"
+                                                uib-tooltip="{{::'Supprimer' | translate}}"
+                                                sem-roles-allowed="SFTP_HAB1">
+                                            <span class="glyphicon-regular remove"></span>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="text-center column-bottom column-5 margin-t10" ng-if="ctrl.exportFtpConfigForm.$visible">
                     <div class="column-bottom-button">
                         <!-- Création / Modification -->
                         <div class="btn-group">
-                            <button type="button" class="btn btn-sem4" ng-disabled="exportFtpConfigForm.$waiting" ng-click="cancel()">
+                            <button type="button" class="btn btn-sem4" ng-disabled="ctrl.exportFtpConfigForm.$waiting" ng-click="ctrl.cancel()">
                                 <span class="glyphicon-regular unshare"></span> {{::'Annuler' | translate}}
                             </button>
                             <button type="submit" class="btn btn-sem2" sem-roles-allowed="EXP_FTP_HAB1">

@@ -127,7 +127,7 @@ public class TesseractService {
             builder.redirectOutput(Redirect.INHERIT);
             try {
                 final Process process = builder.start();
-                if (process.waitFor(4, TimeUnit.HOURS) && process.exitValue() == 0) {
+                if (process.waitFor(12, TimeUnit.HOURS) && process.exitValue() == 0) {
                     // when pdf is done, write to the correct output
                     // only if the size is not null
 

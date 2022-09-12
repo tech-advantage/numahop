@@ -59,13 +59,13 @@ public class BibliographicRecordService {
     @Transactional
     public BibliographicRecord save(final BibliographicRecord record) {
         setDefaultValues(record);
-        
+
         final BibliographicRecord savedRecord = bibliographicRecordRepository.save(record);
-        
+
         for (final DocProperty property : record.getProperties()) {
             docPropertyService.save(property);
         }
-        
+
         return savedRecord;
     }
 
@@ -151,7 +151,7 @@ public class BibliographicRecordService {
     public List<BibliographicRecord> findAllByDocUnitId(final String docUnitId) {
         return bibliographicRecordRepository.findAllByDocUnitIdentifier(docUnitId);
     }
-    
+
     /**
      * Recherche de l'unité documentaire d'une notice
      *
@@ -168,14 +168,14 @@ public class BibliographicRecordService {
         if(record == null) {
             return null;
         }
-        final BibliographicRecordDcDTO dto = new BibliographicRecordDcDTO();        
+        final BibliographicRecordDcDTO dto = new BibliographicRecordDcDTO();
         // il faut reordonner les props custom selon le rank
         final List<DocProperty> customProps = record.getProperties().stream()
-                                .filter(p -> p.getType().getSuperType() == DocPropertyType.DocPropertySuperType.CUSTOM || p.getType().getSuperType() == DocPropertyType.DocPropertySuperType.CUSTOM_CINES)
+                                .filter(p -> p.getType().getSuperType() == DocPropertyType.DocPropertySuperType.CUSTOM || p.getType().getSuperType() == DocPropertyType.DocPropertySuperType.CUSTOM_CINES || p.getType().getSuperType() == DocPropertyType.DocPropertySuperType.CUSTOM_OMEKA)
                                 .sorted(Comparator.comparing(DocProperty::getRank))
                                 .collect(Collectors.toCollection(ArrayList::new));
         dto.setCustomProperties(DocPropertyMapper.INSTANCE.docPropsToDto(customProps));
-                                
+
         record.getProperties().stream()
               .filter(p -> p.getType().getSuperType() == DocPropertyType.DocPropertySuperType.DC)
               .sorted(Comparator.comparing(DocProperty::getRank))
@@ -191,7 +191,7 @@ public class BibliographicRecordService {
               });
         return dto;
     }
-    
+
 
     @Transactional
     public BibliographicRecord duplicate(final String id) {

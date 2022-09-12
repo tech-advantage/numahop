@@ -130,15 +130,15 @@ public class UIDeliveryService {
         final Delivery deliveryWithProperties = deliveryService.getOne(savedDelivery.getIdentifier());
         return DeliveryMapper.INSTANCE.deliveryToDeliveryDTO(deliveryWithProperties);
     }
-    
+
     /**
      * Infos espace disque / bibliothèque.
-     * 
+     *
      * @param libIdentifier
      * @return
      */
-    public Map<String, Long> getDiskInfos(final String libIdentifier) { 
-        
+    public Map<String, Long> getDiskInfos(final String libIdentifier) {
+
         return deliveryProcessService.getDiskInfos(libIdentifier);
     }
 
@@ -156,11 +156,11 @@ public class UIDeliveryService {
                         final List<PreDeliveryDocumentDTO> metaDatas,
                         final boolean createDocs,
                         final List<String> prefixToExclude) throws PgcnTechnicalException {
-        
+
         final CustomUserDetails user = SecurityUtils.getCurrentUser();
         final String libraryId = user != null ? user.getLibraryId() : null;
-        
-        
+
+
         // Synchrone
         if (createDocs) {
             final List<DocUnit> docs = deliveryProcessService.createDocs(identifier, metaDatas, prefixToExclude);
@@ -414,6 +414,12 @@ public class UIDeliveryService {
 
         // suppression du deliveredDocument qui bloque
         deliveryService.deleteDeliveredDocument(deliveryId, docToDetach.getIdentifier());
+
+        //update status of related digital document
+        DigitalDocument digitDoc = digitalDocumentService.findOne(docToDetach.getIdentifier());
+        digitDoc.setStatus(DigitalDocumentStatus.CANCELED);
+        digitalDocumentService.save(digitDoc);
+
         // Workflow : retour à un etat d'avant livraison pour le doc bloqué
         final DocUnit docUnit = docUnitService.findOneWithAllDependenciesForWorkflow(docToDetach.getDocUnit().getIdentifier());
         docUnitWorkflowService.resetDeliverStatesForDetachedDoc(docUnit);

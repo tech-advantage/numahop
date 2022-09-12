@@ -3,6 +3,10 @@ package fr.progilone.pgcn.service.project.mapper;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import fr.progilone.pgcn.domain.administration.ExportFTPDeliveryFolder;
+import fr.progilone.pgcn.domain.dto.exportftpconfiguration.ExportFTPConfigurationDeliveryFolderDTO;
+import fr.progilone.pgcn.service.exportftpconfiguration.ExportFTPConfigurationService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +39,8 @@ public class UIProjectMapper {
     private LibraryService libraryService;
     @Autowired
     private FTPConfigurationService ftpConfigurationService;
+    @Autowired
+    private ExportFTPConfigurationService exportFTPConfigurationService;
     @Autowired
     private CheckConfigurationService checkConfigurationService;
     @Autowired
@@ -86,6 +92,18 @@ public class UIProjectMapper {
         if (projectDTO.getActiveFTPConfiguration() != null) {
             project.setActiveFTPConfiguration(ftpConfigurationService.getOne(projectDTO.getActiveFTPConfiguration().getIdentifier()));
         }
+        if (projectDTO.getActiveExportFTPConfiguration() != null) {
+            project.setActiveExportFTPConfiguration(exportFTPConfigurationService.getOne(projectDTO.getActiveExportFTPConfiguration().getIdentifier()));
+            //delivery folders update
+            if(project.getActiveExportFTPConfiguration() != null && projectDTO.getActiveExportFTPDeliveryFolder() != null) {
+                ExportFTPDeliveryFolder newFolder = new ExportFTPDeliveryFolder();
+                newFolder.setIdentifier(projectDTO.getActiveExportFTPDeliveryFolder().getIdentifier());
+                newFolder.setName(projectDTO.getActiveExportFTPDeliveryFolder().getName());
+                project.setActiveExportFTPDeliveryFolder(newFolder);
+            } else {
+                project.setActiveExportFTPDeliveryFolder(null);
+            }
+        }
         if (projectDTO.getActiveCheckConfiguration() != null) {
             project.setActiveCheckConfiguration(checkConfigurationService.findOne(projectDTO.getActiveCheckConfiguration().getIdentifier()));
         }
@@ -118,7 +136,7 @@ public class UIProjectMapper {
         } else {
             project.setPlanClassementPAC(null);
         }
-        
+
         final OmekaListDTO collecOmeka = projectDTO.getOmekaCollection();
         if (collecOmeka != null && collecOmeka.getIdentifier() != null) {
             final OmekaList omekaCollection = omekaListService.findOne(collecOmeka.getIdentifier());
@@ -134,10 +152,10 @@ public class UIProjectMapper {
         } else {
             project.setOmekaItem(null);
         }
-        
+
         final SimpleUserDTO providerDto = projectDTO.getProvider();
         if (providerDto != null && providerDto.getIdentifier() != null) {
-            project.setProvider(userService.findByIdentifier(providerDto.getIdentifier()));           
+            project.setProvider(userService.findByIdentifier(providerDto.getIdentifier()));
         } else {
             project.setProvider(null);
         }

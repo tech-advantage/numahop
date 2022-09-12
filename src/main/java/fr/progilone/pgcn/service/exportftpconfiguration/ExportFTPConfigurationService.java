@@ -52,11 +52,11 @@ public class ExportFTPConfigurationService {
         }
         return exportFtpConfigurationRepository.findOneWithDependencies(identifier);
     }
-    
+
     public Set<ExportFTPConfiguration> findByLibraryAndActive(final Library library, final boolean active) {
         return exportFtpConfigurationRepository.findByLibraryAndActive(library, active);
     }
-    
+
     /**
      * Recherche paginée
      *
@@ -69,7 +69,7 @@ public class ExportFTPConfigurationService {
     public Page<ExportFTPConfiguration> search(final String search, final List<String> libraries, final Pageable pageRequest) {
         return exportFtpConfigurationRepository.search(search, libraries, pageRequest);
     }
-    
+
     @Transactional
     public void delete(final String id) throws PgcnValidationException {
         // Validation de la suppression
@@ -79,7 +79,7 @@ public class ExportFTPConfigurationService {
         // Suppression
         exportFtpConfigurationRepository.delete(id);
     }
-    
+
     private void validateDelete(final ExportFTPConfiguration conf) throws PgcnValidationException {
         final PgcnList<PgcnError> errors = new PgcnList<>();
         final PgcnError.Builder builder = new PgcnError.Builder();

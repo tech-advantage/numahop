@@ -32,6 +32,8 @@
         $scope.displayBoolean = DocUnitBaseService.displayBoolean;
         $scope.displayStatus = displayStatus;
         $scope.createLot = createLot;
+        $scope.confExportFtpChanged = confExportFtpChanged;
+        $scope.isDeliveryFolderDisplayed = isDeliveryFolderDisplayed;
 
 
         // Définition des listes déroulantes
@@ -111,6 +113,8 @@
         /** Initialisation **********************************************/
         /****************************************************************/
         function init() {
+            $scope.displayDeliveriesFolder = false;
+
             $scope.sel2Docs = DtoService.getDocs();
             Principal.identity().then(function (usr) {
                 $scope.currentUser = usr;
@@ -179,6 +183,7 @@
 
                     // Load other
                     loadPACS($scope.project.library);
+                    loadExportFTPConf($scope.project.library);
                     loadCollections($scope.project.library);
                     loadOmekaConfigurations($scope.project.library);
                     if($scope.project.omekaConfiguration){
@@ -189,6 +194,7 @@
                     loadWorkflowModels($scope.project.library);
                     loadConfigurationSelect();
                     loadAll(project);
+                    setSelectedDeleveryFolder();
                 });
 
         }
@@ -301,6 +307,18 @@
                 });
         }
 
+        function loadExportFTPConf(library) {
+            if(!library) {
+                $scope.options.exportftp = [];
+                return;
+            }
+
+            NumaHopInitializationSrvc.loadExportFtpConf(library.identifier)
+                .then(function (data) {
+                    $scope.options.exportftp = data;
+                });
+        }
+
         function loadCollections(library) {
             if (!library) {
                 library = $scope.project.library;
@@ -316,7 +334,14 @@
         }
 
         function loadOmekaConfigurations(library) {
-            NumaHopInitializationSrvc.loadOmekaConfigurations(library, $scope.project)
+            if (!library) {
+                library = $scope.project.library;
+            }
+            if (!library) {
+                $scope.options.collections = [];
+                return;
+            }
+            NumaHopInitializationSrvc.loadOmekaConfigurations(library.identifier, $scope.project.identifier)
                 .then(function (data) {
                     $scope.options.omekaConfigurations = data;
                 });
@@ -382,6 +407,7 @@
             loadOmekaConfigurations(library);
             loadWorkflowModels(library);
             loadResponsableLibrary(library);
+            loadExportFTPConf(library);
         }
 
         function onChangeOmekaConf(omekaConf) {
@@ -638,19 +664,19 @@
             // ... puis on affiche les infos de modification ...
             if (entity.active && angular.isDefined(entity.lastModifiedDate)) {
                 var dateModif = new Date(entity.lastModifiedDate);
-                MessageSrvc.addInfo("Dernière modification le {{date}} par {{author}}",
+                MessageSrvc.addInfo(gettext("Dernière modification le {{date}} par {{author}}"),
                     { date: dateModif.toLocaleString(), author: entity.lastModifiedBy }, true);
             }
             // ... puis on affiche les infos de création ...
             if (angular.isDefined(entity.createdDate)) {
                 var dateCreated = new Date(entity.createdDate);
-                MessageSrvc.addInfo("Créé le {{date}}",
+                MessageSrvc.addInfo(gettext("Créé le {{date}}"),
                     { date: dateCreated.toLocaleString() }, true);
             }
             // ... et annulation éventuelle
             if (!entity.active && angular.isDefined(entity.realEndDate)) {
                 var dateCanceling = new Date(entity.realEndDate);
-                MessageSrvc.addInfo("Annulé le {{date}} : {{comment}}",
+                MessageSrvc.addInfo(gettext("Annulé le {{date}} : {{comment}}"),
                     { date: dateCanceling.toLocaleDateString(), comment: entity.cancelingComment }, true);
             }
             // Affichage pour un temps limité à l'ouverture
@@ -711,6 +737,29 @@
 
         function createLot(projectId) {
             $location.path("/lot/lot").search({ new: true, 'project' : projectId });
+        }
+
+        function confExportFtpChanged(value) {
+            if(value.label != null && value.label != "") {
+                $scope.displayDeliveriesFolder = true;
+                $scope.options.exportftp.forEach(function (conf) {
+                    if(conf.identifier === value.identifier) {
+                        $scope.project.activeExportFTPConfiguration = conf;
+                        $scope.project.activeExportFTPConfiguration.deliveryFolders = conf.deliveryFolders;
+                    }
+                })
+            } else {
+                $scope.displayDeliveriesFolder = false;
+            }
+        }
+
+        function isDeliveryFolderDisplayed() {
+            return $scope.displayDeliveriesFolder;
+        }
+
+        function setSelectedDeleveryFolder() {
+            var exportConfig = $scope.project.activeExportFTPConfiguration;
+            $scope.displayDeliveriesFolder = exportConfig != null && $scope.project.activeExportFTPDeliveryFolder != null;
         }
     }
 })();

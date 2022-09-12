@@ -7,7 +7,7 @@
     function DocUnitEditCtrl($http, $httpParamSerializer, $location, $q, $routeParams, $scope, $timeout, codeSrvc, WebsocketSrvc,
         DocUnitBaseService, DocUnitSrvc, ErreurSrvc, ExportSrvc, FileSaver, gettext, gettextCatalog, HistorySrvc,
         ListTools, LockSrvc, ModalSrvc, NumahopEditService, NumahopAutoCheckService, MessageSrvc,
-        NumaHopStatusService, NumaHopInitializationSrvc, ValidationSrvc, WorkflowHandleSrvc, DateUtils) {
+        NumaHopStatusService, NumaHopInitializationSrvc, ValidationSrvc, WorkflowHandleSrvc, ExportHandlerSrvc) {
 
         $scope.semCodes = codeSrvc;
         $scope.checkFacile = checkFacile;
@@ -619,7 +619,7 @@
             if (angular.isDefined(entity.project) && entity.project !== null && angular.isDefined(entity.project.status)
                 && entity.project.status !== 'CANCELED' && entity.state === 'CANCELED') {
                 var dateCanceling = new Date(entity.lastModifiedDate);
-                MessageSrvc.addInfo("Annulé le {{date}} : {{comment}}",
+                MessageSrvc.addInfo(gettext("Annulé le {{date}} : {{comment}}"),
                     { date: dateCanceling.toLocaleDateString(), comment: entity.cancelingComment }, true);
             }
 
@@ -750,32 +750,11 @@
 
             ModalSrvc.selectExportTypes()
                 .then(function (types) {
-
-                    var ftpExport = types.ftpExport === "true";
-                    var params = {
-                        "docs": $scope.docUnit.identifier,
-                        "types": types.exportTypes
-                    };
-                    if (ftpExport) {
-                        // export ftp
-                        params.export_ftp = true;
-                    } else {
-                        // telechargement local
-                        params.export = true;
-                    }
-                    var url = 'api/rest/docunit?' + $httpParamSerializer(params);
-
-                    // on met la réponse dans un arraybuffer pour conserver l'encodage original dans le fichier sauvegardé
-                    $http.get(url, { responseType: 'arraybuffer' })
-                        .then(function (response) {
-                            if (ftpExport) {
-                                MessageSrvc.addSuccess(gettext("[" + $scope.docUnit.pgcnId +  "] L'export FTP est en cours"));
-                            } else {
-                                var filename = DateUtils.getFormattedDateYearMonthDayHourMinSec(new Date()) + "_" + $scope.docUnit.pgcnId + "_export.zip";
-                                var blob = new Blob([response.data], { type: response.headers("content-type") });
-                                FileSaver.saveAs(blob, filename);
-                            }
-
+                    ExportHandlerSrvc.massExport(
+                        $scope.docUnit.identifier,
+                        {
+                            types: types,
+                            pgcnId: $scope.docUnit.pgcnId
                         });
                 });
         }

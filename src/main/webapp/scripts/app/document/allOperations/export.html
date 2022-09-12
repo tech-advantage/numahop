@@ -11,12 +11,12 @@
                 <div class="formBlockContent margin-t0 margin-b10" ng-if="exportCtrl.iaurl">
                     <div class="row">
                         <div class="col-xs-12">
-                            <span>Lien Internet Archive : <a href="{{::exportCtrl.iaurl}}" target="_blank">{{::exportCtrl.iaurl}}</a></span>
+                            <span translate>Lien Internet Archive : </span> <span><a href="{{::exportCtrl.iaurl}}" target="_blank">{{::exportCtrl.iaurl}}</a></span>
                         </div>
                     </div>
                     <div class="row" ng-if="exportCtrl.docUnit.arkUrl">
                         <div class="col-xs-12">
-                            <span>URL ARK : {{::exportCtrl.docUnit.arkUrl}}</span>
+                            <span translate>URL ARK :</span> <span> {{::exportCtrl.docUnit.arkUrl}}</span>
                             <button type="button" class="btn btn-sem2 btn-xs"
                                     clipboard text="::exportCtrl.docUnit.arkUrl"
                                     uib-tooltip="{{::'Copier dans le presse-papiers' | translate}}">
@@ -36,7 +36,7 @@
 					<!-- Premier report -->
 					<div class="row" ng-if="exportCtrl.firstIA">
 						<div class="col-xs-12">
-							
+
 		                    <table class="table table-hover table-import">
                          <tbody>
                          <tr ng-init="status = (exportCtrl.firstIA.status === 'ARCHIVED');" class="root" ng-class="{ true: 'sid-fourth', false: 'sid-third' }[status]">
@@ -130,7 +130,7 @@
             </div>
         </uib-accordion>
         <!-- Fin Export Internet Archive -->
-        
+
         <!-- Début Export Omeka -->
         <uib-accordion>
             <div class="formBlock margin-t0">
@@ -148,7 +148,7 @@
                     <!-- Premier report -->
                     <div class="row" ng-if="exportCtrl.docUnit.omekaExportStatus">
                         <div class="col-xs-12">
-                            
+
                             <table class="table table-hover table-import">
                          <tbody>
                          <tr ng-init="status = (exportCtrl.docUnit.omekaExportStatus === 'SENT');" class="root" ng-class="{ true: 'sid-fourth', false: 'sid-third' }[status]">

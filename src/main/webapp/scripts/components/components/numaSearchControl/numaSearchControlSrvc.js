@@ -78,11 +78,19 @@
                 "entities": ["CONDREPORT"]
             }, {
                 "identifier": "rep-binding",
-                "label": gettextCatalog.getString("Éat de la reliure"),
+                "label": gettextCatalog.getString("État de la reliure"),
                 "entities": ["CONDREPORT"]
             }, {
                 "identifier": "rep-vigilance",
                 "label": gettextCatalog.getString("Points de vigilance"),
+                "entities": ["CONDREPORT"]
+            }, {
+                "identifier": "rep-type",
+                "label": gettextCatalog.getString("Type de document"),
+                "entities": ["CONDREPORT"]
+            }, {
+                "identifier": "rep-state",
+                "label": gettextCatalog.getString("État du document"),
                 "entities": ["CONDREPORT"]
             }],
             index: {
@@ -302,7 +310,9 @@
                 "rep-description": [],
                 "rep-numbering": [],
                 "rep-binding": [],
-                "rep-vigilance": []
+                "rep-vigilance": [],
+                "rep-type": [],
+                "rep-state": [],
             }
         };
         return service;
