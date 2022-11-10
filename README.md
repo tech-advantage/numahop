@@ -37,7 +37,7 @@ Numahop nécessite au préalable l'installation des outils listés ci-dessous.
 * exiftool 
 * compass 
 
-Les versions proposées sont valides dans un environnement Debian Stretch.
+Les versions proposées sont valides dans un environnement Debian 9 & 11.
 
 Il vous faudra également un user linux dédié disposant d'un repository maven (.m2).
 
