@@ -327,14 +327,17 @@ public class DeliveryAsyncService {
                     // Recuperation des fichiers de TOC et pdf multis / OCR.
                     final Map<String, Map<String, List<File>>> tocOcrFiles = prepareTocAndOcrTreatment(delivery,
                                                                                                        processElement.getMetadatasDTOForPrefix());
-                    tocFiles = tocOcrFiles.get("tocFiles");
-                    // Si on ne doit pas generer les pdf ocr => on traite tout de suite
-                    if (!isOcrPdfGeneration) {
-                        multiPdfs = tocOcrFiles.get("multiPdfs");
-                        // Extraction text ocr des pdfs multi.
-                        extractedOcr = extractOcrText(multiPdfs, documentsForPrefix.size());
+                    if(tocOcrFiles != null) {
+                        tocFiles = tocOcrFiles.get("tocFiles");
+                        // Si on ne doit pas generer les pdf ocr => on traite tout de suite
+                        if (!isOcrPdfGeneration) {
+                            multiPdfs = tocOcrFiles.get("multiPdfs");
+                            // Extraction text ocr des pdfs multi.
+                            extractedOcr = extractOcrText(multiPdfs, documentsForPrefix.size());
+                        }
+                    } else {
+                        LOG.warn("Fichiers TOC et pdf multi/OCR absents");
                     }
-
                 }
 
                 /*
@@ -456,7 +459,8 @@ public class DeliveryAsyncService {
                     // Avec génération PDF/OCR.
                     final AutomaticCheckRule generateWithoutOcrRule = processElement.getCheckingRules().get(AutoCheckType.GENER_PDF_WITHOUT_OCR);
                     final boolean isPdfGenerationWithoutOcr = generateWithoutOcrRule != null && generateWithoutOcrRule.isActive();
-
+                    LOG.debug("isOcrPdfGeneration {}", isOcrPdfGeneration);
+                    LOG.debug("isPdfGenerationWithoutOcr {}", isPdfGenerationWithoutOcr);
                     if (isOcrPdfGeneration) {
                         multiPdfs = generateOcrPdf(documentsToTreat, libraryId);
 
@@ -543,6 +547,17 @@ public class DeliveryAsyncService {
             // Moteur de recherche
             esDeliveryService.indexAsync(identifier);
 
+            //delete temporaries files
+   /*         try {
+                File tmpDir = bm.getTmpDir(libraryId);
+                Path tmpDirPath = tmpDir.toPath();
+
+                FileUtils.cleanDirectory(tmpDirPath.getParent().toFile());
+            } catch (IOException e) {
+                LOG.error("Impossible to delete temporaries files");
+                LOG.error(e.getMessage(), e);
+            }*/
+
         }), SecurityContextHolder.getContext()));
     }
 
@@ -613,12 +628,22 @@ public class DeliveryAsyncService {
             90,
             "Démarrage de la génération du pdf sans OCR");
 
+        LOG.info("generatePdfWithoutOCR start");
+
         documentsToTreat.forEach((prefix, prefixedDoc) -> {
             final Path tmpDir = getTemporaryDirectory(prefix, libraryId);
 
-            if(tmpDir != null && !prefixedDoc.getFiles().isEmpty()) {
+            final DigitalDocument unitializedDigitalDoc = Iterables.getOnlyElement(prefixedDoc.getDigitalDocuments());
+            final DigitalDocument digitalDoc = digitalDocumentService.getOneWithDocUnitAndPages(unitializedDigitalDoc.getIdentifier());
+            final List<String> pagesIds = digitalDoc.getPages().stream().map(AbstractDomainObject::getIdentifier).collect(Collectors.toList());
+            final List<StoredFile> storedFiles = binaryRepository.getAllByPageIdentifiersAndFileFormat(pagesIds, ViewsFormatConfiguration.FileFormat.VIEW);
+
+
+            final List<File> listNamesFile = getAndCreateDerivedFiles(storedFiles, libraryId);
+
+            if(tmpDir != null) {
                 List<File> listToMap = new ArrayList<>();
-                listToMap.add(imService.convertImgFromDirectoryToPdf(prefixedDoc.getFiles(), tmpDir.toString()));
+                listToMap.add(imService.convertImgFromDirectoryToPdf(prefix, listNamesFile, tmpDir.toString()));
                 mapPdfs.put(prefix, listToMap);
             } else {
                 //Log file and continue
@@ -632,6 +657,8 @@ public class DeliveryAsyncService {
             "DELIVERING",
             95,
             "Fin de la génération du pdf sans OCR");
+
+        LOG.info("generatePdfWithoutOCR end");
 
         return mapPdfs;
     }
@@ -650,7 +677,7 @@ public class DeliveryAsyncService {
             final DigitalDocument digitalDoc = digitalDocumentService.getOneWithDocUnitAndPages(unitializedDigitalDoc.getIdentifier());
             final List<String> pagesIds = digitalDoc.getPages().stream().map(AbstractDomainObject::getIdentifier).collect(Collectors.toList());
             final List<StoredFile> storedFiles = binaryRepository.getAllByPageIdentifiersAndFileFormat(pagesIds,
-                                                                                                       ViewsFormatConfiguration.FileFormat.ZOOM);
+                                                                                                       ViewsFormatConfiguration.FileFormat.VIEW);
 
             final List<File> pdfs = new ArrayList<>();
             mapPdfs.put(digitalDoc.getDigitalId(), pdfs);
@@ -704,13 +731,21 @@ public class DeliveryAsyncService {
                                                   .map(File::getAbsolutePath)
                                                   .collect(Collectors.toList());
         // liste les paths dans un simple fichier texte.
-        final File tmpFile = new File(tmpDir, prefix + "_input.txt");
+         final File tmpFile = new File(tmpDir, prefix + "_input.txt");
         try (final FileWriter writer = new FileWriter(tmpFile)) {
             for (final String p : filesPath) {
                 writer.write(p + System.lineSeparator());
             }
         }
         return tmpFile;
+    }
+
+    private List<File> getAndCreateDerivedFiles(final List<StoredFile> storedFiles, final String libraryId) {
+
+        //get and create derived files
+        return storedFiles.stream()
+            .map(sf -> bm.getFileForStoredFile(sf, libraryId))
+            .collect(Collectors.toList());
     }
 
     /**

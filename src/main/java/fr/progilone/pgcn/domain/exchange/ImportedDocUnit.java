@@ -3,6 +3,7 @@ package fr.progilone.pgcn.domain.exchange;
 import com.google.common.base.MoreObjects;
 import fr.progilone.pgcn.domain.AbstractDomainObject;
 import fr.progilone.pgcn.domain.document.DocUnit;
+import org.apache.commons.lang3.RegExUtils;
 
 import javax.annotation.Nullable;
 import javax.persistence.CollectionTable;
@@ -220,7 +221,7 @@ public class ImportedDocUnit extends AbstractDomainObject {
     }
 
     public void setDocUnitLabel(final String docUnitLabel) {
-        this.docUnitLabel = docUnitLabel;
+        this.docUnitLabel = RegExUtils.replaceAll(docUnitLabel, "[\u0088\u0089]", "");
     }
 
     public String getParentDocUnit() {

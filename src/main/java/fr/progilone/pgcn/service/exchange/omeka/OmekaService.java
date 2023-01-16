@@ -80,7 +80,7 @@ public class OmekaService {
 
     private static final String CSV_COL_SEP = "\t";
     private static final String CSV_REPEATED_FIELD_SEP = "|";
-    private static final String EMPTY_FIELD_VALUE = "Non renseigné";
+    private static final String EMPTY_FIELD_VALUE = "";
     private static final String NEW_LINE_SEPARATOR = "\n";
     private static final String JPG_EXT = ".jpg";
 

@@ -488,7 +488,6 @@ public class DocUnitWorkflowRepositoryImpl implements DocUnitWorkflowRepositoryC
         return new JPAQuery(em).from(qDocUnitWorkflow)
                                .innerJoin(qDocUnitWorkflow.docUnit, qDocUnit)
                                .leftJoin(qDocUnitWorkflow.states, qDocUnitState)
-                               .fetch()
                                .where(builder.getValue())
                                .distinct()
                                .list(qDocUnitWorkflow);

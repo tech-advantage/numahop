@@ -44,7 +44,7 @@ liquibase.change-log: classpath:/config/liquibase/master.xml
 spring:
 
     datasource:
-        url: jdbc:mariadb://localhost:3306/pgcn_bsg_preprod?cachePrepStmts=true&prepStmtCacheSize=250&prepStmtCacheSqlLimit=2048&useServerPrepStmts=true&characterEncoding=utf8&useUnicode=true
+        url: jdbc:mariadb://localhost:3306/pgcn?cachePrepStmts=true&prepStmtCacheSize=250&prepStmtCacheSqlLimit=2048&useServerPrepStmts=true&characterEncoding=utf8&useUnicode=true
         username:
         password:
         hikari:
@@ -136,7 +136,7 @@ export:
         default_uri: http://numahop.fr/
     ssh:
         knownHosts:
-        strictHostKeyChecking: "no"
+        strictHostKeyChecking: yes
     sftp:
         privateKey: /opt/pgcn/config/id_rsa
 

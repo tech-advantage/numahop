@@ -12,3 +12,9 @@
     margin: 1em;
 }
 .workflow__notExist--button {}
+
+/** Composant: menuLeft **/
+.longMenu {
+    max-height: 25rem;
+    overflow: auto;
+}

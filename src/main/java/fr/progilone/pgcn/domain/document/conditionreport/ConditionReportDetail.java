@@ -139,7 +139,7 @@ public class ConditionReportDetail extends AbstractDomainObject {
     /**
      * Propriétés du constat d'état
      */
-    @OneToMany(mappedBy = "detail", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "detail", orphanRemoval = true, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @Field(type = FieldType.Nested)
     private final Set<Description> descriptions = new LinkedHashSet<>();
 
@@ -419,7 +419,7 @@ public class ConditionReportDetail extends AbstractDomainObject {
     public void setInsurance(final Double insurance) {
         this.insurance = insurance;
     }
-    
+
     /**
      * On force le chargement du createur en json..
      */

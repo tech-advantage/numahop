@@ -88,17 +88,7 @@ public class StatisticsWorkflowCsvController extends AbstractRestController {
                                                                                                                         toDate,
                                                                                                                         0,
                                                                                                                         Integer.MAX_VALUE);
-
-        final List<WorkflowDeliveryProgressDTO> body =
-                                                     result.getBody()
-                                                           .getContent()
-                                                           .stream()
-                                                           .peek(workflowDeliveryProgress -> workflowDeliveryProgress.setWorkflow(workflowDeliveryProgress.getWorkflow()
-                                                                                                                                                          .stream()
-                                                                                                                                                          .filter(state -> states.contains(state.getKey()))
-                                                                                                                                                          .collect(Collectors.toList())))
-                                                           .collect(Collectors.toList());
-
+        final List<WorkflowDeliveryProgressDTO> body = result.getBody().getContent();
         final List<WorkflowDeliveryProgressCsvDTO> dtos = StatisticsMapper.toWorkflowDeliveryProgressCsvDTO(body);
 
         try {
@@ -146,15 +136,7 @@ public class StatisticsWorkflowCsvController extends AbstractRestController {
                                                                                                                       0,
                                                                                                                       Integer.MAX_VALUE);
 
-        final List<WorkflowDocUnitProgressDTO> body =
-                                                    result.getBody()
-                                                          .getContent()
-                                                          .stream()
-                                                          .peek(workflowProgress -> workflowProgress.setWorkflow(workflowProgress.getWorkflow()
-                                                                                                                                 .stream()
-                                                                                                                                 .filter(state -> states.contains(state.getKey()))
-                                                                                                                                 .collect(Collectors.toList())))
-                                                          .collect(Collectors.toList());
+        final List<WorkflowDocUnitProgressDTO> body = result.getBody().getContent();
         final List<WorkflowDocUnitProgressCsvDTO> dtos = StatisticsMapper.toWorkflowDocUnitProgressCsvDTO(body);
 
         try {

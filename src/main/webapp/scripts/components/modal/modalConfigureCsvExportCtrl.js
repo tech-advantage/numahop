@@ -13,8 +13,8 @@
         mainCtrl.confirm = confirm;
         mainCtrl.cancel = cancel;
         mainCtrl.checkAll = checkAll;
+        mainCtrl.isValid = isValid;
         mainCtrl.selectSeparator = selectSeparator;
-
         mainCtrl.options = {
             dc: {
                 text: "label",
@@ -91,6 +91,9 @@
             dc: [],
             dcq: [],
             custom: [],
+            docfield: [],
+            bibfield: [],
+            physfield: [],
             separatorOpt: mainCtrl.options.separator[2],
             encoding: "ISO-8859-15"
         };

@@ -174,6 +174,9 @@ public class DeliveryProcessService {
 
                 return prefixForDirectory == null;
             });
+            if(subDirectories.isEmpty()) {
+                LOG.info("Aucun repertoire correspondant au prefix: " + prefixes.toString());
+            }
         }
 
         final DeliverySlip deliverySlip = new DeliverySlip();
@@ -344,6 +347,7 @@ public class DeliveryProcessService {
         LOG.debug("Recherche de fichiers dans le dossier : {}", deliveryPath);
 
         final File[] subDirectories = new File(deliveryPath).listFiles(File::isDirectory);
+        LOG.debug("sous dossier : {}", subDirectories);
         if (subDirectories == null) {
             final PgcnError error = buildError(DELIVERY_WRONG_FOLDER);
             preDeliveryDTO.addError(error);
@@ -369,6 +373,7 @@ public class DeliveryProcessService {
                     final PrefixedDocuments prefixedDocs = new PrefixedDocuments();
                     prefixedDocs.addPhysicalDocument(physicalDoc);
                     documentsForPrefix.put(physicalDoc.getDigitalId(), prefixedDocs);
+                    LOG.info("documentsForPrefix if: " + documentsForPrefix.toString());
                 }
             } else {
                 final PhysicalDocumentDTO physicalDocDTOWorkflow = PhysicalDocumentMapper.INSTANCE.physicalDocumentToPhysicalDocumentDTO(physicalDoc);
