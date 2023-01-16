@@ -14,6 +14,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import fr.progilone.pgcn.service.delivery.PrefixedDocuments;
 import org.apache.commons.collections.MapUtils;
@@ -46,6 +47,9 @@ public class ImageMagickService {
     private DefaultFileFormats defaultFileFormats;
 
     public static final String META_DATAS_SEPARATOR = " # ";
+    public static final String PATH_SEPARATOR = "/";
+    public static final String PDF_EXTENSION = ".pdf";
+    public static final String DIGIT_NUMBER = "%04d";
 
     @Value("${exifTool.quot_char}")
     protected String quoteDelim;
@@ -100,45 +104,55 @@ public class ImageMagickService {
      * @param destPath
      * @return created pdf file
      */
-    public File convertImgFromDirectoryToPdf(final List<File> imgsToConvert, final String destPath) {
+    public File convertImgFromDirectoryToPdf(final String prefix, final List<File> imgsToConvert, final String destPath) {
         //get the path of img
         File newPdf = null;
-        File img = imgsToConvert.stream().findAny().orElse(null);
 
-        if(img != null) {
-            Path imgPath = img.toPath();
-            String directory = imgPath.getParent().toString();
+        if(!imgsToConvert.isEmpty()) {
+            String destPdf = destPath+PATH_SEPARATOR+prefix+PDF_EXTENSION;
+
+            for(int i=0; i<imgsToConvert.size(); i++) {
+                try {
+                    Files.copy(imgsToConvert.get(i).toPath(), Paths.get(destPath+PATH_SEPARATOR+String.format(DIGIT_NUMBER, i)));
+                } catch (IOException e) {
+                    LOG.error("Impossible to copy from " + destPath + ", {}", e);
+                }
+            };
 
             try {
                 final ProcessBuilder builder = new ProcessBuilder(IMConverterPath,
                     "*",
                     "-quality",
                     "100",
-                    destPath+".pdf"); //NOSONAR
+                    destPdf); //NOSONAR
 
-                builder.directory(new File(directory));
-
-                builder.redirectError(Redirect.INHERIT);
-                builder.redirectOutput(Redirect.INHERIT);
-
+                builder.directory(new File(destPath));
                 final Process process = builder.start();
                 if (process.waitFor() == 0) {
                     // ok, convert is done
-                    newPdf = new File(destPath);
-                    if (newPdf == null) {
-                        LOG.info("[ImageMagick] Unable to extract images from pdf file {}", img.getName());
-                    }
+                    newPdf = new File(destPdf);
 
+                    removeDerivedFiles(imgsToConvert, destPath);
+                    if (!newPdf.canRead()) {
+                        LOG.info("[ImageMagick] Unable to extract images from pdf file {}", prefix);
+                    }
                 } else {
                     if (process.isAlive()) {
                         process.destroyForcibly().waitFor();
                     }
                     // Les fichiers sont quand même générés mais le process est bloqué par des warnings
-                    newPdf = new File(destPath);
-                    if (newPdf == null) {
-                        LOG.info("[ImageMagick] Unable to extract images from pdf file {} - interval:{} - {}", img.getName(), process.isAlive() ? "processus still running..." : process.exitValue());
+                    newPdf = new File(destPdf);
+
+                    removeDerivedFiles(imgsToConvert, destPath);
+
+                    if (!newPdf.canRead()) {
+                        LOG.info("[ImageMagick] Unable to extract images from pdf file {} - interval:{}", prefix, process.isAlive() ? "processus still running..." : process.exitValue());
                     }
 
+                    final List<String> infos = IOUtils.readLines(process.getInputStream(), StandardCharsets.UTF_8);
+                    if (!infos.isEmpty()) {
+                        LOG.debug("[ImageMagick] info during images extraction : {}", infos);
+                    }
                     final List<String> errors = IOUtils.readLines(process.getErrorStream(), StandardCharsets.UTF_8);
                     if (!errors.isEmpty()) {
                         LOG.error("[ImageMagick] Error during images extraction : {}", errors);
@@ -150,6 +164,21 @@ public class ImageMagickService {
         }
 
         return newPdf;
+    }
+
+    /**
+     * Remove the derived images after pdf generated
+     * @param imgsToConvert
+     * @param destPath
+     */
+    private void removeDerivedFiles(final List<File> imgsToConvert, final String destPath) {
+        for(int i=0; i<imgsToConvert.size(); i++) {
+            try {
+                Files.deleteIfExists(Paths.get(destPath+PATH_SEPARATOR+String.format(DIGIT_NUMBER, i)));
+            } catch (IOException e) {
+                LOG.error("Impossible to copy from " + destPath + ", {}", e);
+            }
+        };
     }
 
 
@@ -192,8 +221,6 @@ public class ImageMagickService {
                                                                       sourceFile.getAbsolutePath()+ interval, //NOSONAR
                                                                       destFile); //NOSONA
 
-                    builder.redirectError(Redirect.INHERIT);
-                    builder.redirectOutput(Redirect.INHERIT);
                     final Process process = builder.start();
                     if (process.waitFor() == 0) {
                         // ok, convert is done

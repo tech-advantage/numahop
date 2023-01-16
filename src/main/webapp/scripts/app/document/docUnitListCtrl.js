@@ -50,6 +50,7 @@
         mainCtrl.changePageSize = changePageSize;
 
         mainCtrl.massExport = massExport;
+        mainCtrl.massExportCSV = massExportCSV;
         mainCtrl.massCines = massCines;
         mainCtrl.massIA = massIA;
         mainCtrl.massOmeka = massOmeka;
@@ -124,7 +125,7 @@
          * Modèle pour le tri
          * @type {Object}
          */
-        mainCtrl.sortModel = ["-label"];
+        mainCtrl.sortModel = ["pgcnId"];
 
         /**
          * La liste a déjà été chargé une première fois
@@ -892,7 +893,6 @@
                 "sortAttributes": mainCtrl.sortModel
             };
             var url = 'api/rest/condreport?' + $httpParamSerializer(params);
-
             // on met la réponse dans un arraybuffer pour conserver l'encodage original dans le fichier sauvegardé
             $http.get(url, { responseType: 'arraybuffer' })
                 .then(function (response) {
@@ -923,6 +923,26 @@
                         _.pluck(mainCtrl.selection, "identifier"),
                         {
                             types: types
+                        });
+                });
+        }
+
+        /**
+         * Zip download of selected doc units
+         * Zip file contains csv files
+         */
+        function massExportCSV() {
+            ModalSrvc.configureCsvExport()
+                .then(function (params) {
+                    params.docUnit = _.pluck(mainCtrl.selection, "identifier");
+                    var url = 'api/rest/export/csv?' + $httpParamSerializer(params);
+
+                    // on met la réponse dans un arraybuffer pour conserver l'encodage original dans le fichier sauvegardé
+                    $http.get(url, { responseType: 'arraybuffer' })
+                        .then(function (response) {
+                            var filename = "massDocUnits-" + new Date().getTime().toString(32) + ".csv";
+                            var blob = new Blob([response.data], { type: response.headers("content-type") });
+                            FileSaver.saveAs(blob, filename);
                         });
                 });
         }

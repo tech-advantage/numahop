@@ -235,7 +235,7 @@ public class AutomaticCheckService {
      * @param results
      * @param doc
      */
-    private void checkFacile(final AutomaticCheckType checkType, final List<AutomaticCheckResult> results, 
+    private void checkFacile(final AutomaticCheckType checkType, final List<AutomaticCheckResult> results,
                                                                  final DocUnit doc, final String libraryId) {
         final Set<DigitalDocument> digitalDocs = doc.getDigitalDocuments();
         final List<AutomaticCheckResult> batchResults = new ArrayList<>();
@@ -377,7 +377,7 @@ public class AutomaticCheckService {
                                 .forEach((name) -> {
 
                 if (splitNames.get(name).isPresent()) { // à priori toujours vrai....
-                    
+
                     final SplitFilename split = splitNames.get(name).get();
                     final String toTest = prefix.startsWith(bibPrefix) ?
                                                          split.getLibrary().concat(seqSeparator).concat(split.getPrefix())
@@ -389,9 +389,9 @@ public class AutomaticCheckService {
 
                         LOG.debug("ERREUR DE CASSE DETECTEE : prefix={} - chaine testee:{}", bibPrefix,  toTest);
                         result.addErrorFile(name);
-                    }  
+                    }
                 }
-                
+
             });
 
         }
@@ -481,6 +481,10 @@ public class AutomaticCheckService {
                     sbIntegrity.append(HEADER_LIST_FILES);
                 }
                 resultIntegrity.addErrorFile(file.getName());
+
+                DigitalDocument dd = resultIntegrity.getDigitalDocument();
+                dd.setStatus(DigitalDocument.DigitalDocumentStatus.REJECTED); //Trying to reject the document
+                digitalDocumentService.save(dd);
             }
             // Type de compression
             final AutomaticCheckRule ruleTypeComp = checkingRules.get(AutoCheckType.FILE_TYPE_COMPR);
@@ -713,7 +717,7 @@ public class AutomaticCheckService {
                                                                final Map<String, List<MdSecType>> extractedDmdSec) {
 
         final List<AutomaticCheckResult> allResults = new ArrayList<>();
-    
+
         // Format de fichier metadonnee
         AutomaticCheckResult tocResult = initializeAutomaticCheckResult(AutoCheckType.METADATA_FILE);
         handleLinkResultMetaDatas(tocResult, delivery, digitalIdDoc);
@@ -736,13 +740,13 @@ public class AutomaticCheckService {
                                                                              MetaDatasCheckService.METS_MIME_TYPE,
                                                                              FileRoleEnum.METS,
                                                                              extractedDmdSec);
-                
+
                         break;
                     case EXCEL:
                         // validation table des matieres excel.
                         final Optional<File> excelToCheck =
                                 files.stream().filter(file -> StringUtils.equalsIgnoreCase(file.getName(), dto.getName())).findFirst();
-                
+
                         if (excelToCheck.isPresent()) {
                             if (excelToCheck.get().getName().endsWith(".xlsx")) {
                                 tocResult = metaCheckService.checkMetaDataFileFormat(tocResult,
@@ -760,7 +764,7 @@ public class AutomaticCheckService {
                                                                                      extractedDmdSec);
                             }
                         }
-                
+
                         break;
                     case PDF_MULTI:
                         // Validation pdf/A ocr.
@@ -772,7 +776,7 @@ public class AutomaticCheckService {
                                                                              MetaDatasCheckService.PDF_MIME_TYPE,
                                                                              FileRoleEnum.PDF_MULTI,
                                                                              extractedDmdSec);
-                
+
                         break;
                     case OTHER:
                         // rien pour le moment....
@@ -781,14 +785,14 @@ public class AutomaticCheckService {
                         // ?? COLOR, ?... Valider les elements de l'enum
                         break;
                 }
-        
+
                 if (isTocBlocking && tocResult.getResult().compareTo(AutoCheckResult.OK) != 0) {
                     delivery.setTableOfContentsOK(false);
                 }
                 if (isPdfBlocking && pdfResult.getResult().compareTo(AutoCheckResult.OK) != 0) {
                     delivery.setPdfMultiOK(false);
                 }
-        
+
                 allResults.add(save(tocResult));
                 allResults.add(save(pdfResult));
             }
@@ -797,7 +801,7 @@ public class AutomaticCheckService {
             tocResult.setMessage("Table des matières introuvable");
             pdfResult.setResult(AutoCheckResult.OTHER);
             pdfResult.setMessage("PDF multicouches introuvable");
-            
+
             if (isTocBlocking && tocResult.getResult().compareTo(AutoCheckResult.OK) != 0) {
                 delivery.setTableOfContentsOK(false);
             }

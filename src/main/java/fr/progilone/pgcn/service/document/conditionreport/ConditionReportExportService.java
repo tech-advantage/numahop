@@ -98,7 +98,8 @@ public class ConditionReportExportService {
         templateBuilder.initWorkbook();
 
         // Unités documentaires
-        final List<DocUnit> docUnits = docUnitService.findAllById(docUnitIds).stream().sorted((f1, f2) -> f2.getLabel().compareTo(f1.getLabel())).collect(Collectors.toList());
+        final List<DocUnit> docUnits = docUnitService.findAllById(docUnitIds).stream()
+                                            .sorted((f1, f2) -> f1.getPgcnId().compareTo(f2.getPgcnId())).collect(Collectors.toList());
 
         for (final DocUnit docUnit : docUnits) {
             final List<PropertyConfiguration> configurations = propertyConfigurationService.findByLibrary(docUnit.getLibrary());

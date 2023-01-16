@@ -5,8 +5,8 @@
             <numa-filter data-class="pull-left btn-filter">
                 <!-- Nom du projet -->
                 <numa-filter-field data-title="{{ ::'Projet' | translate }}">
-                    <sem-field sem-type="text" sem-model="statProjectCtrl.filters.search" 
-                               sem-onchange="statProjectCtrl.searchValue('search', value)" 
+                    <sem-field sem-type="text" sem-model="statProjectCtrl.filters.search"
+                               sem-onchange="statProjectCtrl.searchValue('search', value)"
                                sem-model-options="{ debounce: 300 }"></sem-field>
                 </numa-filter-field>
                 <!-- Date d'import du projet -->
@@ -25,7 +25,7 @@
             </numa-filter>
             <div class="panel-heading">
                 <div class="pull-right">
-                    <button type="button" class="btn btn-sem2 btn-xs" 
+                    <button type="button" class="btn btn-sem2 btn-xs"
                             ng-click="statProjectCtrl.reinitFilters()" uib-tooltip="{{::'Réinitialiser les filtres de la recherche' | translate}}">
                         <span class="glyphicon-halflings glyphicon-refresh"></span>
                     </button>
@@ -35,7 +35,7 @@
                 <div class="row" ng-if="statProjectCtrl.loaded">
                     <div class="col-xs-12 col-lg-8 col-lg-offset-2">
                         <div class="well" ng-show="statProjectCtrl.pagination.items.length === 0" translate>
-                            Aucune projet trouvé
+                            Aucun projet trouvé
                         </div>
                         <div ng-show="statProjectCtrl.pagination.items.length > 0 && !statProjectCtrl.pagination.busy" class="well well-sm" translate
                             translate-n="statProjectCtrl.pagination.totalItems"
@@ -43,7 +43,7 @@
                             1 projet trouvé
                         </div>
                         <div>
-                            <select ng-hide="statProjectCtrl.pagination.items.length === 0" ng-options="size.value as size.label for size in statProjectCtrl.sizeOptions" id="pageSize" name="pageSize" 
+                            <select ng-hide="statProjectCtrl.pagination.items.length === 0" ng-options="size.value as size.label for size in statProjectCtrl.sizeOptions" id="pageSize" name="pageSize"
                             ng-model="statProjectCtrl.pageSize" ng-change="statProjectCtrl.changePageSize()">
                             </select>
                         </div>

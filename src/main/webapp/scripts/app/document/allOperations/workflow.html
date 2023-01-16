@@ -24,7 +24,7 @@
                   </tr>
               </thead>
               <tbody>
-                  <tr ng-repeat="state in workflowCtrl.sortedStates" ng-if="state != null">
+                  <tr ng-repeat="state in workflowCtrl.sortedStates track by $index" ng-if="state != null">
                       <td class="text-center">
                           <span>
                             {{ ::workflowCtrl.code['workflow.model.' + state.key] || state.key }}

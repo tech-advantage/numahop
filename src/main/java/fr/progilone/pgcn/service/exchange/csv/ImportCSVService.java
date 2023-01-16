@@ -138,9 +138,9 @@ public class ImportCSVService extends AbstractImportService {
      * @param mappingId
      * @param parentKeyExpr
      */
-    private ImportReport importCSVRecords(final File importFile, 
-    										final ImportReport report, 
-    										final String mappingId, 
+    private ImportReport importCSVRecords(final File importFile,
+    										final ImportReport report,
+    										final String mappingId,
     										final String parentKeyExpr,
     										final boolean archivable,
     										final boolean distributable) throws PgcnTechnicalException {
@@ -161,9 +161,9 @@ public class ImportCSVService extends AbstractImportService {
      * @param mappingId
      * @param parentKeyExpr
      */
-    private ImportReport importRecord(final Reader in, 
-    								  final ImportReport importReport, 
-    								  final String mappingId, 
+    private ImportReport importRecord(final Reader in,
+    								  final ImportReport importReport,
+    								  final String mappingId,
     								  final String parentKeyExpr,
     								  final boolean archivable,
 									  final boolean distributable) throws PgcnTechnicalException {
@@ -173,8 +173,8 @@ public class ImportCSVService extends AbstractImportService {
         final CSVMapping mapping = mappingService.findOne(mappingId);
         if (mapping == null) {
             throw new PgcnTechnicalException("Il n'existe pas de mapping avec l'identifiant " + mappingId);
-        } 
-        
+        }
+
         // Record iterator
         final CSVParser parser;
         try {
@@ -193,7 +193,7 @@ public class ImportCSVService extends AbstractImportService {
             if (key.startsWith("dc:")) {
                 propertyNames.put(key.substring(3), key.substring(3));
                 entetes.put(i, key);
-            
+
             } else if (key.equals(parentKeyExpr)) {
                 entetes.put(i, key);
             } else {
@@ -208,7 +208,7 @@ public class ImportCSVService extends AbstractImportService {
                     propertyNames.put(keyRule, key);
                     entetes.put(i, key);
                 }
-                
+
             }
         }
 
@@ -219,8 +219,8 @@ public class ImportCSVService extends AbstractImportService {
                 propertyTypes.put(propertyNames.get(property), docPropertyTypeService.findOne(property));
             }
         }
-        
-        
+
+
         // Résumé d'exécution
         importReport.setCsvMapping(mapping);   // lien avec le mapping qui vient d'être chargé
         final ImportReport runningReport = importReportService.startReport(importReport);
@@ -230,7 +230,7 @@ public class ImportCSVService extends AbstractImportService {
         // Création des unités documentaires pré-importées à partir des notices
         new TransactionalJobRunner<CSVRecord>(transactionService)
             // Configuration du job
-            .setCommit(BULK_SIZE).setMaxThreads(Runtime.getRuntime().availableProcessors() - 2)
+            .setCommit(BULK_SIZE).setMaxThreads(Runtime.getRuntime().availableProcessors())
             // Traitement principal
             .forEach((record) -> {
                 try {
