@@ -30,14 +30,14 @@ Les instructions suivantes permettent d'installer NumaHop sur un poste de dével
 Numahop nécessite au préalable l'installation des outils listés ci-dessous.
 
 * JDK 8
-* MariaDB 10.1
+* MariaDB
 * elasticsearch 2.4.6
-* tesseract 3.04.01 (leptonica-1.74.1 : libgif 5.1.4 : libjpeg 6b (libjpeg-turbo 1.5.1) : libpng 1.6.28 : libtiff 4.0.8 : zlib 1.2.8 : libwebp 0.5.2 : libopenjp2 2.1.2)
-* ImageMagick 6.9.7-4 Q16 x86_64 20170114 - http://www.imagemagick.org
-* exiftool 10.40
-* compass 1.0.3 (Polaris) 
+* tesseract
+* ImageMagick 
+* exiftool 
+* compass 
 
-Les versions proposées sont valides dans un environnement Debian Stretch.
+Les versions proposées sont valides dans un environnement Debian 9 & 11.
 
 Il vous faudra également un user linux dédié disposant d'un repository maven (.m2).
 
