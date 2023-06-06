@@ -47,7 +47,7 @@
         <ninja-squad-dbsetup.version>1.6.0</ninja-squad-dbsetup.version>
         <opencsv.version>4.1</opencsv.version>
         <org.mapstruct.version>1.3.0.Final</org.mapstruct.version>
-        <poi.version>3.17</poi.version>
+        <poi.version>4.1.1</poi.version>
         <querydsl.version>3.7.4</querydsl.version>
         <run.addResources>false</run.addResources>
         <saxon.version>9.7.0-10</saxon.version>
