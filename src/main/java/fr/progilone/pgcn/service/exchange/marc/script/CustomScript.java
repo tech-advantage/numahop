@@ -2,18 +2,17 @@ package fr.progilone.pgcn.service.exchange.marc.script;
 
 import fr.progilone.pgcn.service.exchange.marc.MarcUtils;
 import fr.progilone.pgcn.service.exchange.marc.script.format.CollectionFieldFormatter;
+import fr.progilone.pgcn.service.exchange.marc.script.format.ConcatWithSepFormatter;
 import fr.progilone.pgcn.service.exchange.marc.script.format.CorporateFieldFormatter;
 import fr.progilone.pgcn.service.exchange.marc.script.format.DatePublicationFormatter;
 import fr.progilone.pgcn.service.exchange.marc.script.format.PersonFieldFormatter;
 import fr.progilone.pgcn.service.exchange.marc.script.format.SubfieldsFormatter;
 import fr.progilone.pgcn.service.exchange.marc.script.format.TitleFieldFormatter;
-import fr.progilone.pgcn.service.exchange.marc.script.format.ConcatWithSepFormatter;
 import fr.progilone.pgcn.service.exchange.marc.script.test.ExistsCondition;
-import org.marc4j.converter.CharConverter;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import org.marc4j.converter.CharConverter;
 
 /**
  * Created by Sebastien on 06/12/2016.

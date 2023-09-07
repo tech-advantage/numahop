@@ -2,15 +2,15 @@ package fr.progilone.pgcn.domain.dto.library;
 
 /**
  * DTO représentant une valeur de paramétrage du cines
- * 
+ *
  * @author jbrunet
- * Créé le 24 févr. 2017
+ *         Créé le 24 févr. 2017
  */
 public class LibraryParameterValueCinesDTO extends AbstractLibraryParameterValueDTO {
 
     private String type;
     private String value;
-    
+
     public LibraryParameterValueCinesDTO() {
         super();
     }

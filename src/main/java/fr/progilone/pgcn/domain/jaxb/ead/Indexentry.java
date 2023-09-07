@@ -5,25 +5,25 @@
 // Généré le : 2017.05.16 à 10:56:55 AM CEST
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.ead;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlID;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlID;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 
 /**
- * <p>Classe Java pour indexentry complex type.
+ * <p>
+ * Classe Java pour indexentry complex type.
  *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="indexentry">
@@ -50,23 +50,22 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "indexentry", propOrder = {
-    "namegrp",
-    "corpname",
-    "famname",
-    "geogname",
-    "name",
-    "occupation",
-    "persname",
-    "subject",
-    "genreform",
-    "function",
-    "title",
-    "ptrgrp",
-    "ptr",
-    "ref",
-    "indexentry"
-})
+@XmlType(name = "indexentry",
+         propOrder = {"namegrp",
+                      "corpname",
+                      "famname",
+                      "geogname",
+                      "name",
+                      "occupation",
+                      "persname",
+                      "subject",
+                      "genreform",
+                      "function",
+                      "title",
+                      "ptrgrp",
+                      "ptr",
+                      "ref",
+                      "indexentry"})
 public class Indexentry {
 
     protected Namegrp namegrp;
@@ -100,8 +99,8 @@ public class Indexentry {
      * Obtient la valeur de la propriété namegrp.
      *
      * @return
-     *     possible object is
-     *     {@link Namegrp }
+     *         possible object is
+     *         {@link Namegrp }
      *
      */
     public Namegrp getNamegrp() {
@@ -112,8 +111,8 @@ public class Indexentry {
      * Définit la valeur de la propriété namegrp.
      *
      * @param value
-     *     allowed object is
-     *     {@link Namegrp }
+     *            allowed object is
+     *            {@link Namegrp }
      *
      */
     public void setNamegrp(Namegrp value) {
@@ -124,8 +123,8 @@ public class Indexentry {
      * Obtient la valeur de la propriété corpname.
      *
      * @return
-     *     possible object is
-     *     {@link Corpname }
+     *         possible object is
+     *         {@link Corpname }
      *
      */
     public Corpname getCorpname() {
@@ -136,8 +135,8 @@ public class Indexentry {
      * Définit la valeur de la propriété corpname.
      *
      * @param value
-     *     allowed object is
-     *     {@link Corpname }
+     *            allowed object is
+     *            {@link Corpname }
      *
      */
     public void setCorpname(Corpname value) {
@@ -148,8 +147,8 @@ public class Indexentry {
      * Obtient la valeur de la propriété famname.
      *
      * @return
-     *     possible object is
-     *     {@link Famname }
+     *         possible object is
+     *         {@link Famname }
      *
      */
     public Famname getFamname() {
@@ -160,8 +159,8 @@ public class Indexentry {
      * Définit la valeur de la propriété famname.
      *
      * @param value
-     *     allowed object is
-     *     {@link Famname }
+     *            allowed object is
+     *            {@link Famname }
      *
      */
     public void setFamname(Famname value) {
@@ -172,8 +171,8 @@ public class Indexentry {
      * Obtient la valeur de la propriété geogname.
      *
      * @return
-     *     possible object is
-     *     {@link Geogname }
+     *         possible object is
+     *         {@link Geogname }
      *
      */
     public Geogname getGeogname() {
@@ -184,8 +183,8 @@ public class Indexentry {
      * Définit la valeur de la propriété geogname.
      *
      * @param value
-     *     allowed object is
-     *     {@link Geogname }
+     *            allowed object is
+     *            {@link Geogname }
      *
      */
     public void setGeogname(Geogname value) {
@@ -196,8 +195,8 @@ public class Indexentry {
      * Obtient la valeur de la propriété name.
      *
      * @return
-     *     possible object is
-     *     {@link Name }
+     *         possible object is
+     *         {@link Name }
      *
      */
     public Name getName() {
@@ -208,8 +207,8 @@ public class Indexentry {
      * Définit la valeur de la propriété name.
      *
      * @param value
-     *     allowed object is
-     *     {@link Name }
+     *            allowed object is
+     *            {@link Name }
      *
      */
     public void setName(Name value) {
@@ -220,8 +219,8 @@ public class Indexentry {
      * Obtient la valeur de la propriété occupation.
      *
      * @return
-     *     possible object is
-     *     {@link Occupation }
+     *         possible object is
+     *         {@link Occupation }
      *
      */
     public Occupation getOccupation() {
@@ -232,8 +231,8 @@ public class Indexentry {
      * Définit la valeur de la propriété occupation.
      *
      * @param value
-     *     allowed object is
-     *     {@link Occupation }
+     *            allowed object is
+     *            {@link Occupation }
      *
      */
     public void setOccupation(Occupation value) {
@@ -244,8 +243,8 @@ public class Indexentry {
      * Obtient la valeur de la propriété persname.
      *
      * @return
-     *     possible object is
-     *     {@link Persname }
+     *         possible object is
+     *         {@link Persname }
      *
      */
     public Persname getPersname() {
@@ -256,8 +255,8 @@ public class Indexentry {
      * Définit la valeur de la propriété persname.
      *
      * @param value
-     *     allowed object is
-     *     {@link Persname }
+     *            allowed object is
+     *            {@link Persname }
      *
      */
     public void setPersname(Persname value) {
@@ -268,8 +267,8 @@ public class Indexentry {
      * Obtient la valeur de la propriété subject.
      *
      * @return
-     *     possible object is
-     *     {@link Subject }
+     *         possible object is
+     *         {@link Subject }
      *
      */
     public Subject getSubject() {
@@ -280,8 +279,8 @@ public class Indexentry {
      * Définit la valeur de la propriété subject.
      *
      * @param value
-     *     allowed object is
-     *     {@link Subject }
+     *            allowed object is
+     *            {@link Subject }
      *
      */
     public void setSubject(Subject value) {
@@ -292,8 +291,8 @@ public class Indexentry {
      * Obtient la valeur de la propriété genreform.
      *
      * @return
-     *     possible object is
-     *     {@link Genreform }
+     *         possible object is
+     *         {@link Genreform }
      *
      */
     public Genreform getGenreform() {
@@ -304,8 +303,8 @@ public class Indexentry {
      * Définit la valeur de la propriété genreform.
      *
      * @param value
-     *     allowed object is
-     *     {@link Genreform }
+     *            allowed object is
+     *            {@link Genreform }
      *
      */
     public void setGenreform(Genreform value) {
@@ -316,8 +315,8 @@ public class Indexentry {
      * Obtient la valeur de la propriété function.
      *
      * @return
-     *     possible object is
-     *     {@link Function }
+     *         possible object is
+     *         {@link Function }
      *
      */
     public Function getFunction() {
@@ -328,8 +327,8 @@ public class Indexentry {
      * Définit la valeur de la propriété function.
      *
      * @param value
-     *     allowed object is
-     *     {@link Function }
+     *            allowed object is
+     *            {@link Function }
      *
      */
     public void setFunction(Function value) {
@@ -340,8 +339,8 @@ public class Indexentry {
      * Obtient la valeur de la propriété title.
      *
      * @return
-     *     possible object is
-     *     {@link Title }
+     *         possible object is
+     *         {@link Title }
      *
      */
     public Title getTitle() {
@@ -352,8 +351,8 @@ public class Indexentry {
      * Définit la valeur de la propriété title.
      *
      * @param value
-     *     allowed object is
-     *     {@link Title }
+     *            allowed object is
+     *            {@link Title }
      *
      */
     public void setTitle(Title value) {
@@ -364,8 +363,8 @@ public class Indexentry {
      * Obtient la valeur de la propriété ptrgrp.
      *
      * @return
-     *     possible object is
-     *     {@link Ptrgrp }
+     *         possible object is
+     *         {@link Ptrgrp }
      *
      */
     public Ptrgrp getPtrgrp() {
@@ -376,8 +375,8 @@ public class Indexentry {
      * Définit la valeur de la propriété ptrgrp.
      *
      * @param value
-     *     allowed object is
-     *     {@link Ptrgrp }
+     *            allowed object is
+     *            {@link Ptrgrp }
      *
      */
     public void setPtrgrp(Ptrgrp value) {
@@ -388,8 +387,8 @@ public class Indexentry {
      * Obtient la valeur de la propriété ptr.
      *
      * @return
-     *     possible object is
-     *     {@link Ptr }
+     *         possible object is
+     *         {@link Ptr }
      *
      */
     public Ptr getPtr() {
@@ -400,8 +399,8 @@ public class Indexentry {
      * Définit la valeur de la propriété ptr.
      *
      * @param value
-     *     allowed object is
-     *     {@link Ptr }
+     *            allowed object is
+     *            {@link Ptr }
      *
      */
     public void setPtr(Ptr value) {
@@ -412,8 +411,8 @@ public class Indexentry {
      * Obtient la valeur de la propriété ref.
      *
      * @return
-     *     possible object is
-     *     {@link Ref }
+     *         possible object is
+     *         {@link Ref }
      *
      */
     public Ref getRef() {
@@ -424,8 +423,8 @@ public class Indexentry {
      * Définit la valeur de la propriété ref.
      *
      * @param value
-     *     allowed object is
-     *     {@link Ref }
+     *            allowed object is
+     *            {@link Ref }
      *
      */
     public void setRef(Ref value) {
@@ -443,8 +442,9 @@ public class Indexentry {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getIndexentry().add(newItem);
+     * getIndexentry().add(newItem);
      * </pre>
      *
      *
@@ -465,8 +465,8 @@ public class Indexentry {
      * Obtient la valeur de la propriété id.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getId() {
@@ -477,8 +477,8 @@ public class Indexentry {
      * Définit la valeur de la propriété id.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setId(String value) {
@@ -489,8 +489,8 @@ public class Indexentry {
      * Obtient la valeur de la propriété altrender.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getAltrender() {
@@ -501,8 +501,8 @@ public class Indexentry {
      * Définit la valeur de la propriété altrender.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setAltrender(String value) {
@@ -513,8 +513,8 @@ public class Indexentry {
      * Obtient la valeur de la propriété audience.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getAudience() {
@@ -525,8 +525,8 @@ public class Indexentry {
      * Définit la valeur de la propriété audience.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setAudience(String value) {

@@ -1,15 +1,14 @@
 package fr.progilone.pgcn.service.exchange.ead.script.format;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import fr.progilone.pgcn.domain.jaxb.ead.ObjectFactory;
 import fr.progilone.pgcn.domain.jaxb.ead.Persname;
 import fr.progilone.pgcn.service.exchange.ead.script.AbstractScriptTest;
-import org.junit.Test;
-
-import javax.script.ScriptException;
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.junit.Assert.*;
+import javax.script.ScriptException;
+import org.junit.jupiter.api.Test;
 
 public class NormalFormatterTest extends AbstractScriptTest {
 

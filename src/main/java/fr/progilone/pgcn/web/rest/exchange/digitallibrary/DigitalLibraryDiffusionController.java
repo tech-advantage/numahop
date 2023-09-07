@@ -1,23 +1,6 @@
 package fr.progilone.pgcn.web.rest.exchange.digitallibrary;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.codahale.metrics.annotation.Timed;
-
 import fr.progilone.pgcn.domain.administration.digitallibrary.DigitalLibraryConfiguration;
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.exception.PgcnTechnicalException;
@@ -28,6 +11,19 @@ import fr.progilone.pgcn.service.exchange.digitallibrary.DigitalLibraryDiffusion
 import fr.progilone.pgcn.web.rest.exchange.security.AuthorizationConstants;
 import fr.progilone.pgcn.web.util.AccessHelper;
 import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.servlet.http.HttpServletRequest;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Contrôleur gérant la diffusion d'unités documentaires vers une bibliothèque numériqure.
@@ -65,8 +61,7 @@ public class DigitalLibraryDiffusionController {
      */
     @RequestMapping(method = RequestMethod.POST, params = {"send"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @RolesAllowed({AuthorizationConstants.EXPORT_DIFFUSION_DIGITAL_LIBRARY_HAB0})
-    public ResponseEntity<?> exportDocUnitToDigitalLibrary(final HttpServletRequest request,
-                                                        @RequestParam(value = "docUnit") final String docUnitId) {
+    public ResponseEntity<?> exportDocUnitToDigitalLibrary(final HttpServletRequest request, @RequestParam(value = "docUnit") final String docUnitId) {
 
         final DocUnit docUnit = docUnitService.findOneWithAllDependencies(docUnitId);
         // Non trouvé
@@ -95,8 +90,7 @@ public class DigitalLibraryDiffusionController {
     @RolesAllowed({AuthorizationConstants.EXPORT_DIFFUSION_DIGITAL_LIBRARY_HAB0})
     @RequestMapping(method = RequestMethod.GET, params = {"mass_export"})
     @Timed
-    public ResponseEntity<HttpStatus> massExport(final HttpServletRequest request,
-                                                 @RequestParam(name = "docs") final List<String> docs) throws PgcnTechnicalException {
+    public ResponseEntity<HttpStatus> massExport(final HttpServletRequest request, @RequestParam(name = "docs") final List<String> docs) throws PgcnTechnicalException {
         // droits d'accès à l'ud
         final Collection<DocUnit> filteredDocUnits = accessHelper.filterDocUnits(docs);
         if (filteredDocUnits.isEmpty()) {

@@ -1,19 +1,5 @@
 package fr.progilone.pgcn.service.document;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import fr.progilone.pgcn.domain.checkconfiguration.CheckConfiguration;
 import fr.progilone.pgcn.domain.delivery.DeliveredDocument;
 import fr.progilone.pgcn.domain.document.Check;
@@ -22,6 +8,7 @@ import fr.progilone.pgcn.domain.document.DigitalDocument.DigitalDocumentStatus;
 import fr.progilone.pgcn.domain.document.DocPage;
 import fr.progilone.pgcn.domain.document.DocPage.PageStatus;
 import fr.progilone.pgcn.domain.document.GlobalCheck;
+import fr.progilone.pgcn.domain.document.conditionreport.ConditionReport;
 import fr.progilone.pgcn.domain.dto.document.DocPageErrorsDTO;
 import fr.progilone.pgcn.domain.dto.sample.SampleDTO;
 import fr.progilone.pgcn.domain.lot.Lot;
@@ -30,9 +17,18 @@ import fr.progilone.pgcn.repository.document.CheckRepository;
 import fr.progilone.pgcn.repository.document.DigitalDocumentRepository;
 import fr.progilone.pgcn.repository.document.DocPageRepository;
 import fr.progilone.pgcn.repository.document.GlobalCheckRepository;
+import fr.progilone.pgcn.service.document.conditionreport.ConditionReportService;
 import fr.progilone.pgcn.service.lot.LotService;
 import fr.progilone.pgcn.service.sample.SampleService;
 import fr.progilone.pgcn.service.util.transaction.TransactionService;
+import java.util.*;
+import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by lebouchp on 10/02/2017.
@@ -52,6 +48,8 @@ public class CheckService {
     private final DeliveryRepository deliveryRepository;
     private final TransactionService transactionService;
 
+    private final ConditionReportService condReportService;
+
     @Autowired
     public CheckService(final CheckRepository checkRepository,
                         final GlobalCheckRepository globalCheckRepository,
@@ -61,7 +59,8 @@ public class CheckService {
                         final SampleService sampleService,
                         final DigitalDocumentService digitalDocumentService,
                         final DeliveryRepository deliveryRepository,
-                        final TransactionService transactionService) {
+                        final TransactionService transactionService,
+                        final ConditionReportService condReportService) {
         this.checkRepository = checkRepository;
         this.globalCheckRepository = globalCheckRepository;
         this.digitalDocumentRepository = digitalDocumentRepository;
@@ -71,6 +70,7 @@ public class CheckService {
         this.digitalDocumentService = digitalDocumentService;
         this.deliveryRepository = deliveryRepository;
         this.transactionService = transactionService;
+        this.condReportService = condReportService;
     }
 
     /**
@@ -94,12 +94,11 @@ public class CheckService {
                                                  final String deliveryId) {
 
         return transactionService.executeInNewTransactionWithReturn(() -> {
-            final DocPage docPage =
-                                  sampling ? digitalDocumentService.getPage(identifier, pageNumber)
-                                           : digitalDocumentService.getPageByOrder(identifier, pageNumber);
+            final DocPage docPage = sampling ? digitalDocumentService.getPage(identifier, pageNumber)
+                                             : digitalDocumentService.getPageByOrder(identifier, pageNumber);
 
             // On supprime les erreurs
-            checkRepository.delete(docPage.getChecks());
+            checkRepository.deleteAll(docPage.getChecks());
             docPage.getChecks().clear();
 
             for (final Check.ErrorLabel error : errors.getFailedChecks()) {
@@ -120,6 +119,8 @@ public class CheckService {
             if (errors.getFailedChecks().isEmpty()) {
                 docPage.setStatus(PageStatus.VALIDATED);
             }
+
+            docPageRepository.save(docPage);
 
             final DeliveredDocument doc = deliveryRepository.getOneWithDigitalDoc(deliveryId, identifier);
             if (DigitalDocumentStatus.CHECKING != doc.getStatus()) {
@@ -158,7 +159,8 @@ public class CheckService {
 
         final int countMinorErrors = docPageRepository.countDocPageWithMinorErrorsForSample(identifier);
         final int countMajorErrors = docPageRepository.countDocPageWithMajorErrorsForSample(identifier);
-        final double[] errorRates = {(double) countMinorErrors / sample.getPages().size(), (double) countMajorErrors / sample.getPages().size()};
+        final double[] errorRates = {(double) countMinorErrors / sample.getPages().size(),
+                                     (double) countMajorErrors / sample.getPages().size()};
 
         final Lot lot = digitalDocument.getDocUnit().getLot();
         final CheckConfiguration checkConfiguration = lotService.getActiveCheckConfiguration(lot);
@@ -190,8 +192,7 @@ public class CheckService {
             check.setDigitalDocument(cleanedDoc);
             cleanedDoc.getChecks().add(check);
 
-            cleanedDoc.getPages().stream()
-                                .forEach(p -> {
+            cleanedDoc.getPages().stream().forEach(p -> {
                 final Check chk = new Check();
                 chk.setErrorType(error.getType());
                 chk.setErrorLabel(error);
@@ -240,7 +241,7 @@ public class CheckService {
 
         final DigitalDocument doc = digitalDocumentRepository.getOneWithChecks(identifier);
         boolean notChanged = true;
-        if (! StringUtils.equals(errors.getCheckNotes(), doc.getCheckNotes())) {
+        if (!StringUtils.equals(errors.getCheckNotes(), doc.getCheckNotes())) {
             notChanged = false;
         } else if (errors.getFailedChecks().size() == doc.getChecks().size()) {
             for (final GlobalCheck gc : doc.getChecks()) {
@@ -294,6 +295,7 @@ public class CheckService {
      * Structure pour communiquer les taux d'erreur au client.
      */
     public static final class DocErrorReport {
+
         private int nbMinorErrors;
         private int nbMajorErrors;
         private boolean minorErrorRateExceeded;
@@ -302,24 +304,31 @@ public class CheckService {
         public int getNbMinorErrors() {
             return nbMinorErrors;
         }
+
         public void setNbMinorErrors(final int nbMinorErrors) {
             this.nbMinorErrors = nbMinorErrors;
         }
+
         public int getNbMajorErrors() {
             return nbMajorErrors;
         }
+
         public void setNbMajorErrors(final int nbMajorErrors) {
             this.nbMajorErrors = nbMajorErrors;
         }
+
         public boolean isMinorErrorRateExceeded() {
             return minorErrorRateExceeded;
         }
+
         public void setMinorErrorRateExceeded(final boolean minorErrorRateExceeded) {
             this.minorErrorRateExceeded = minorErrorRateExceeded;
         }
+
         public boolean isMajorErrorRateExceeded() {
             return majorErrorRateExceeded;
         }
+
         public void setMajorErrorRateExceeded(final boolean majorErrorRateExceeded) {
             this.majorErrorRateExceeded = majorErrorRateExceeded;
         }
@@ -328,7 +337,8 @@ public class CheckService {
     @Transactional
     public double[] computeErrorRates(final String identifier, final int countMinorErrors, final int countMajorErrors) {
         final int countPages = docPageRepository.countDocPageByDigitalDocumentIdentifier(identifier);
-        final double[] errRates = {(double) countMinorErrors / countPages, (double) countMajorErrors / countPages};
+        final double[] errRates = {(double) countMinorErrors / countPages,
+                                   (double) countMajorErrors / countPages};
         return errRates;
     }
 
@@ -347,7 +357,22 @@ public class CheckService {
     }
 
     @Transactional(readOnly = true)
+    public Set<String> getCondReportSummaryForSamplePage(final String idPage) {
+        final DocPage docPage;
+        Set<String> summary = new HashSet<>();
+        try {
+            docPage = docPageRepository.findById(idPage).orElseThrow(Exception::new);
+            ConditionReport report = condReportService.findByDocUnit(docPage.getDigitalDocument().getDocUnit().getIdentifier());
+            summary = condReportService.getSummary(report);
+        } catch (Exception e) {
+            LOG.error("Erreur lors de la recuperation du document", e);
+        }
+
+        return summary;
+    }
+
+    @Transactional(readOnly = true)
     public Check findOne(final String identifier) {
-        return checkRepository.findOne(identifier);
+        return checkRepository.findById(identifier).orElse(null);
     }
 }

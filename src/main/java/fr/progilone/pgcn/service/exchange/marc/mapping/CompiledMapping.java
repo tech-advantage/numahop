@@ -4,10 +4,9 @@ import com.google.common.collect.Ordering;
 import fr.progilone.pgcn.domain.exchange.Mapping;
 import fr.progilone.pgcn.domain.exchange.MappingRule;
 import fr.progilone.pgcn.domain.library.Library;
-import org.marc4j.converter.CharConverter;
-
 import java.util.ArrayList;
 import java.util.List;
+import org.marc4j.converter.CharConverter;
 
 /**
  * Classe permettant de précompiler les règles de mapping pour accélérer leur évaluation au moment de leur application
@@ -20,10 +19,7 @@ public final class CompiledMapping {
     public CompiledMapping(final Mapping mapping) {
         this.mapping = mapping;
         // alimentation de compiledRules, par ordre de position croissante
-        mapping.getRules()
-               .stream()
-               .sorted(Ordering.natural().nullsFirst().onResultOf(MappingRule::getPosition))
-               .forEach(rule -> compiledRules.add(new CompiledMappingRule(rule)));
+        mapping.getRules().stream().sorted(Ordering.natural().nullsFirst().onResultOf(MappingRule::getPosition)).forEach(rule -> compiledRules.add(new CompiledMappingRule(rule)));
     }
 
     public String getLabel() {

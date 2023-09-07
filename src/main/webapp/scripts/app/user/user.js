@@ -1,33 +1,34 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp')
-        .config(function ($routeProvider, gettext, USER_ROLES) {
-
-            $routeProvider.when('/user/user', {
+    angular.module('numaHopApp').config(function ($routeProvider, gettext, USER_ROLES) {
+        $routeProvider
+            .when('/user/user', {
                 templateUrl: 'scripts/app/user/users.html',
                 controller: 'UserCtrl',
-                title: gettext("Utilisateurs"),
+                title: gettext('Utilisateurs'),
                 reloadOnSearch: false,
                 access: {
-                    authorizedRoles: [USER_ROLES.USER_HAB0, USER_ROLES.USER_HAB6]
-                }
-            }).when('/user/authorization', {
+                    authorizedRoles: [USER_ROLES.USER_HAB0, USER_ROLES.USER_HAB6],
+                },
+            })
+            .when('/user/authorization', {
                 templateUrl: 'scripts/app/user/authorizations.html',
                 controller: 'UserAuthorizationCtrl',
-                title: gettext("Habilitations"),
+                title: gettext('Habilitations'),
                 reloadOnSearch: false,
                 access: {
-                    authorizedRoles: [USER_ROLES.ROLE_HAB0]
-                }
-            }).when('/user/role', {
+                    authorizedRoles: [USER_ROLES.ROLE_HAB0],
+                },
+            })
+            .when('/user/role', {
                 templateUrl: 'scripts/app/user/roles.html',
                 controller: 'UserRoleCtrl',
-                title: gettext("Rôles"),
+                title: gettext('Rôles'),
                 reloadOnSearch: false,
                 access: {
-                    authorizedRoles: [USER_ROLES.ROLE_HAB0]
-                }
+                    authorizedRoles: [USER_ROLES.ROLE_HAB0],
+                },
             });
-        });
+    });
 })();

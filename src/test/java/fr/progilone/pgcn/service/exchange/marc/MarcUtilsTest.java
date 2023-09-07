@@ -1,9 +1,17 @@
 package fr.progilone.pgcn.service.exchange.marc;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import fr.progilone.pgcn.domain.exchange.DataEncoding;
 import fr.progilone.pgcn.service.exchange.marc.mapping.MarcKey;
-import org.junit.Ignore;
-import org.junit.Test;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.marc4j.MarcReader;
 import org.marc4j.MarcStreamReader;
 import org.marc4j.converter.impl.Iso5426ToUnicode;
@@ -12,15 +20,6 @@ import org.marc4j.marc.MarcFactory;
 import org.marc4j.marc.Record;
 import org.marc4j.marc.Subfield;
 import org.marc4j.marc.VariableField;
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by Sébastien on 22/12/2016.
@@ -38,12 +37,12 @@ public class MarcUtilsTest {
 
     /**
      * Tester un fichier unimarc pour vérifier sa validité. Renseigner le chemin
-     * Laisser en @Ignore
+     * Laisser en @Disabled
      *
      * @throws FileNotFoundException
      */
     @Test
-    @Ignore
+    @Disabled
     public void checkUniMarcValidity() throws FileNotFoundException {
         InputStream in = new FileInputStream("progilone-notices\\perio.uni");
         MarcReader reader = new MarcStreamReader(in);
@@ -62,8 +61,7 @@ public class MarcUtilsTest {
         record.addVariableField(fld200);
 
         final String actual = MarcUtils.getRecordInXml(record, DataEncoding.UTF_8);
-        final String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-                                + "<marc:collection xmlns:marc=\"http://www.loc.gov/MARC21/slim\">"
+        final String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "<marc:collection xmlns:marc=\"http://www.loc.gov/MARC21/slim\">"
                                 + "<marc:record>"
                                 + "<marc:leader>00000nam a2200000 a 4500</marc:leader>"
                                 + "<marc:datafield tag=\"200\" ind1=\" \" ind2=\" \">"
@@ -77,8 +75,7 @@ public class MarcUtilsTest {
 
     @Test
     public void testGetRecord() {
-        final String marcxml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-                               + "<marc:collection xmlns:marc=\"http://www.loc.gov/MARC21/slim\">"
+        final String marcxml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "<marc:collection xmlns:marc=\"http://www.loc.gov/MARC21/slim\">"
                                + "<marc:record>"
                                + "<marc:leader>00000nam a2200000 a 4500</marc:leader>"
                                + "<marc:datafield tag=\"200\" ind1=\" \" ind2=\" \">"
@@ -173,11 +170,7 @@ public class MarcUtilsTest {
         // itemTags = 327, 945
         record = marcFactory.newRecord();
         record.addVariableField(marcFactory.newDataField("327", ' ', ' ', "a", "1958. [1] Le programme national du PCF - Février 1958 (4 p.)"));
-        record.addVariableField(marcFactory.newDataField("327",
-                                                         ' ',
-                                                         ' ',
-                                                         "a",
-                                                         "[2] Une nouvelle lettre de M. Thorez à G. Mollet - Février 1958 (1 f.)"));
+        record.addVariableField(marcFactory.newDataField("327", ' ', ' ', "a", "[2] Une nouvelle lettre de M. Thorez à G. Mollet - Février 1958 (1 f.)"));
         record.addVariableField(marcFactory.newDataField("945", ' ', ' ', "b", "COL4°2022(1955-1960)"));
 
         actual = MarcUtils.splitRecordByMarcKeys(record, Arrays.asList(new MarcKey("327"), new MarcKey("945")));
@@ -186,26 +179,20 @@ public class MarcUtilsTest {
 
         actualRecord = actual.get(0);
         assertEquals(1, actualRecord.getVariableFields("327").size());
-        assertEquals("1958. [1] Le programme national du PCF - Février 1958 (4 p.)",
-                     ((DataField) actualRecord.getVariableField("327")).getSubfield('a').getData());
+        assertEquals("1958. [1] Le programme national du PCF - Février 1958 (4 p.)", ((DataField) actualRecord.getVariableField("327")).getSubfield('a').getData());
         assertEquals(1, actualRecord.getVariableFields("945").size());
         assertEquals("COL4°2022(1955-1960)", ((DataField) actualRecord.getVariableField("945")).getSubfield('b').getData());
 
         actualRecord = actual.get(1);
         assertEquals(1, actualRecord.getVariableFields("327").size());
-        assertEquals("[2] Une nouvelle lettre de M. Thorez à G. Mollet - Février 1958 (1 f.)",
-                     ((DataField) actualRecord.getVariableField("327")).getSubfield('a').getData());
+        assertEquals("[2] Une nouvelle lettre de M. Thorez à G. Mollet - Février 1958 (1 f.)", ((DataField) actualRecord.getVariableField("327")).getSubfield('a').getData());
         assertEquals(1, actualRecord.getVariableFields("945").size());
         assertEquals("COL4°2022(1955-1960)", ((DataField) actualRecord.getVariableField("945")).getSubfield('b').getData());
 
         // itemTags = 327, 945
         record = marcFactory.newRecord();
         record.addVariableField(marcFactory.newDataField("327", ' ', ' ', "a", "1958. [1] Le programme national du PCF - Février 1958 (4 p.)"));
-        record.addVariableField(marcFactory.newDataField("327",
-                                                         ' ',
-                                                         ' ',
-                                                         "a",
-                                                         "[2] Une nouvelle lettre de M. Thorez à G. Mollet - Février 1958 (1 f.)"));
+        record.addVariableField(marcFactory.newDataField("327", ' ', ' ', "a", "[2] Une nouvelle lettre de M. Thorez à G. Mollet - Février 1958 (1 f.)"));
         record.addVariableField(marcFactory.newDataField("945", ' ', ' ', "b", "COL4°2022(1955-1960)"));
 
         actual = MarcUtils.splitRecordByMarcKeys(record, Arrays.asList(new MarcKey("327"), new MarcKey("945")));
@@ -214,15 +201,13 @@ public class MarcUtilsTest {
 
         actualRecord = actual.get(0);
         assertEquals(1, actualRecord.getVariableFields("327").size());
-        assertEquals("1958. [1] Le programme national du PCF - Février 1958 (4 p.)",
-                     ((DataField) actualRecord.getVariableField("327")).getSubfield('a').getData());
+        assertEquals("1958. [1] Le programme national du PCF - Février 1958 (4 p.)", ((DataField) actualRecord.getVariableField("327")).getSubfield('a').getData());
         assertEquals(1, actualRecord.getVariableFields("945").size());
         assertEquals("COL4°2022(1955-1960)", ((DataField) actualRecord.getVariableField("945")).getSubfield('b').getData());
 
         actualRecord = actual.get(1);
         assertEquals(1, actualRecord.getVariableFields("327").size());
-        assertEquals("[2] Une nouvelle lettre de M. Thorez à G. Mollet - Février 1958 (1 f.)",
-                     ((DataField) actualRecord.getVariableField("327")).getSubfield('a').getData());
+        assertEquals("[2] Une nouvelle lettre de M. Thorez à G. Mollet - Février 1958 (1 f.)", ((DataField) actualRecord.getVariableField("327")).getSubfield('a').getData());
         assertEquals(1, actualRecord.getVariableFields("945").size());
         assertEquals("COL4°2022(1955-1960)", ((DataField) actualRecord.getVariableField("945")).getSubfield('b').getData());
 
@@ -239,13 +224,7 @@ public class MarcUtilsTest {
                                                          "test 1",
                                                          "b",
                                                          "test 2"));
-        record.addVariableField(marcFactory.newDataField("327",
-                                                         ' ',
-                                                         ' ',
-                                                         "a",
-                                                         "1960. [1]Bienvenue à N. Khrouchtchev - avril 1960 (2 p.)",
-                                                         "b",
-                                                         "test 3"));
+        record.addVariableField(marcFactory.newDataField("327", ' ', ' ', "a", "1960. [1]Bienvenue à N. Khrouchtchev - avril 1960 (2 p.)", "b", "test 3"));
         record.addVariableField(marcFactory.newDataField("945", ' ', ' ', "b", "COL4°2022(1955-1960)"));
 
         actual = MarcUtils.splitRecordByMarcKeys(record, Arrays.asList(new MarcKey("327", 'a'), new MarcKey("945", 'b')));
@@ -361,8 +340,7 @@ public class MarcUtilsTest {
                                                          "ANNEE.1863-1865;Vol.N.4-5-6 A2"));
         record.addVariableField(marcFactory.newDataField("852", ' ', ' ', "h", "4 AE SUP 125 RES B", "v", "ANNEE.1860-1862;Vol.N.1-2-3"));
 
-        final List<Record> actual =
-            MarcUtils.splitRecordByMarcKeys(record, Arrays.asList(new MarcKey("930", 'a'), new MarcKey("852", 'h'), new MarcKey("852", 'v')));
+        final List<Record> actual = MarcUtils.splitRecordByMarcKeys(record, Arrays.asList(new MarcKey("930", 'a'), new MarcKey("852", 'h'), new MarcKey("852", 'v')));
 
         assertEquals(3, actual.size());
 

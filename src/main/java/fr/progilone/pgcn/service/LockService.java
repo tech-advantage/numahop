@@ -1,9 +1,13 @@
 package fr.progilone.pgcn.service;
 
+import fr.progilone.pgcn.domain.AbstractDomainObject;
+import fr.progilone.pgcn.domain.Lock;
+import fr.progilone.pgcn.exception.PgcnLockException;
+import fr.progilone.pgcn.repository.LockRepository;
+import fr.progilone.pgcn.security.SecurityUtils;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,12 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
-
-import fr.progilone.pgcn.domain.AbstractDomainObject;
-import fr.progilone.pgcn.domain.Lock;
-import fr.progilone.pgcn.exception.PgcnLockException;
-import fr.progilone.pgcn.repository.LockRepository;
-import fr.progilone.pgcn.security.SecurityUtils;
 
 @Service
 public class LockService {
@@ -59,12 +57,12 @@ public class LockService {
         final Optional<Lock> existingLockForAnotherUser = isCurrentlyLockedByAnotherUser(object);
         // Verrou expiré d'un autre utilisateur ou verrou de l'utilisateur courant (expiré ou non)
         // => On supprime le verrou et on en crée un nouveau
-        if(!existingLockForAnotherUser.isPresent()) {
+        if (!existingLockForAnotherUser.isPresent()) {
             lockRepository.deleteByIdentifier(object.getIdentifier());
             lockRepository.flush();
             final Lock newLock = new Lock(object.getIdentifier(), SecurityUtils.getCurrentLogin(), object.getClass().getName());
             return lockRepository.save(newLock);
-            
+
         } else {
             throw new PgcnLockException(existingLockForAnotherUser.get());
         }
@@ -85,7 +83,7 @@ public class LockService {
         Assert.notNull(object, "La ressource ne peut être null");
         Assert.notNull(object, "La ressource doit posséder un identifiant");
         final Optional<Lock> currentlyLockedByAnotherUser = isCurrentlyLockedByAnotherUser(object);
-        if(currentlyLockedByAnotherUser.isPresent()) {
+        if (currentlyLockedByAnotherUser.isPresent()) {
             throw new PgcnLockException(currentlyLockedByAnotherUser.get());
         } else {
             lockRepository.deleteByIdentifier(object.getIdentifier());
@@ -95,21 +93,23 @@ public class LockService {
     /**
      * Vérification si la ressource est disponible pour l'usager courant
      *
-     * @param object la ressource pour laquelle on souhaite vérifier la présence d'un verrou ne doit pas être {@literal null}.
-     * @param <T> type de la ressource
-     * @throws SemanthequeLockException entité actuellement verrouillée par un autre uager
+     * @param object
+     *            la ressource pour laquelle on souhaite vérifier la présence d'un verrou ne doit pas être {@literal null}.
+     * @param <T>
+     *            type de la ressource
+     * @throws SemanthequeLockException
+     *             entité actuellement verrouillée par un autre uager
      */
     @Transactional
     public <T extends AbstractDomainObject> void checkLock(final T object) throws PgcnLockException {
         if (object.getIdentifier() != null) {
             final Optional<Lock> currentlyLockedByAnotherUser = isCurrentlyLockedByAnotherUser(object);
-            if(currentlyLockedByAnotherUser.isPresent()) {
+            if (currentlyLockedByAnotherUser.isPresent()) {
                 throw new PgcnLockException(currentlyLockedByAnotherUser.get());
             }
         }
     }
 
-    
     /**
      * le verrou est posé par un autre user + le timeout n'est pas passé
      *
@@ -120,8 +120,7 @@ public class LockService {
     private <T extends AbstractDomainObject> Optional<Lock> isCurrentlyLockedByAnotherUser(final T object) {
         final Lock lock = lockRepository.findByIdentifier(object.getIdentifier());
         if (lock != null) {
-            if (!StringUtils.equals(lock.getLockedBy(), SecurityUtils.getCurrentLogin())
-                && ChronoUnit.MINUTES.between(lock.getLockedDate(), LocalDateTime.now()) < LOCK_TIMEOUT) {
+            if (!StringUtils.equals(lock.getLockedBy(), SecurityUtils.getCurrentLogin()) && ChronoUnit.MINUTES.between(lock.getLockedDate(), LocalDateTime.now()) < LOCK_TIMEOUT) {
                 return Optional.of(lock);
             } else {
                 return Optional.empty();
@@ -130,7 +129,7 @@ public class LockService {
             return Optional.empty();
         }
     }
-    
+
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void releaseLocksOnLogout(final String userLogin) {
         // Libération des locks posés par le user au logout.

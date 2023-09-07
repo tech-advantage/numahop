@@ -1,13 +1,5 @@
 package fr.progilone.pgcn.service.workflow.mapper;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import fr.progilone.pgcn.domain.dto.workflow.WorkflowModelDTO;
 import fr.progilone.pgcn.domain.dto.workflow.WorkflowModelStateDTO;
 import fr.progilone.pgcn.domain.library.Library;
@@ -19,6 +11,12 @@ import fr.progilone.pgcn.service.library.LibraryService;
 import fr.progilone.pgcn.service.util.transaction.VersionValidationService;
 import fr.progilone.pgcn.service.workflow.WorkflowGroupService;
 import fr.progilone.pgcn.service.workflow.WorkflowModelStateService;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UIWorkflowModelMapper {
@@ -26,12 +24,9 @@ public class UIWorkflowModelMapper {
     private final WorkflowModelStateService workflowModelStateService;
     private final LibraryService libraryService;
     private final WorkflowGroupService workflowGroupService;
-    
 
     @Autowired
-    public UIWorkflowModelMapper(final WorkflowModelStateService workflowModelStateService,
-            final LibraryService libraryService,
-            final WorkflowGroupService workflowGroupService) {
+    public UIWorkflowModelMapper(final WorkflowModelStateService workflowModelStateService, final LibraryService libraryService, final WorkflowGroupService workflowGroupService) {
         this.workflowModelStateService = workflowModelStateService;
         this.libraryService = libraryService;
         this.workflowGroupService = workflowGroupService;
@@ -50,7 +45,7 @@ public class UIWorkflowModelMapper {
             Set<WorkflowModelState> states = new HashSet<>();
             statesDTO.forEach(stateDTO -> {
                 WorkflowModelState state = null;
-                if(stateDTO.getIdentifier() != null ) {
+                if (stateDTO.getIdentifier() != null) {
                     state = workflowModelStateService.getOne(stateDTO.getIdentifier());
                     VersionValidationService.checkForStateObject(state, stateDTO);
                 } else {
@@ -67,7 +62,7 @@ public class UIWorkflowModelMapper {
 
         // Bibliothèque
         Library library = null;
-        if(dto.getLibrary() != null) {
+        if (dto.getLibrary() != null) {
             library = libraryService.findByIdentifier(dto.getLibrary().getIdentifier());
         } else {
             if (SecurityUtils.getCurrentUser().getLibraryId() != null) {
@@ -77,17 +72,17 @@ public class UIWorkflowModelMapper {
         domainObject.setLibrary(library);
 
     }
-    
+
     @Transactional(readOnly = true)
     public void mapInto(final WorkflowModelStateDTO dto, final WorkflowModelState domainObject) {
         domainObject.setType(dto.getType());
         WorkflowGroup group = null;
-        if(dto.getGroup() != null) {
+        if (dto.getGroup() != null) {
             group = workflowGroupService.getOne(dto.getGroup().getIdentifier());
         }
         domainObject.setGroup(group);
         // Cas pour création
-        if(domainObject.getIdentifier() == null) {
+        if (domainObject.getIdentifier() == null) {
             domainObject.setKey(dto.getKey());
         }
     }

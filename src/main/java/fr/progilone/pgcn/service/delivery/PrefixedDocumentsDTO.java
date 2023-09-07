@@ -11,8 +11,9 @@ import java.util.List;
  * <li>document physique associé : identifiant</li>
  * <li>document numérique associé : identifiant</li>
  * </ul>
+ *
  * @author jbrunet
- * Créé le 27 mars 2017
+ *         Créé le 27 mars 2017
  */
 public class PrefixedDocumentsDTO {
 
@@ -25,7 +26,9 @@ public class PrefixedDocumentsDTO {
         this.physicalDocuments = physicalDocuments;
         this.digitalDocuments = digitalDocuments;
     }
-    public PrefixedDocumentsDTO() {}
+
+    public PrefixedDocumentsDTO() {
+    }
 
     public List<File> getFiles() {
         return files;
@@ -33,13 +36,13 @@ public class PrefixedDocumentsDTO {
 
     public void setFiles(List<File> files) {
         this.files.clear();
-        if(files != null) {
+        if (files != null) {
             files.forEach(this::addFile);
         }
     }
-    
+
     public void addFile(File file) {
-        if(file != null) {
+        if (file != null) {
             files.add(file);
         }
     }
@@ -50,13 +53,13 @@ public class PrefixedDocumentsDTO {
 
     public void setPhysicalDocuments(List<String> physicalDocuments) {
         this.physicalDocuments.clear();
-        if(physicalDocuments != null) {
+        if (physicalDocuments != null) {
             physicalDocuments.forEach(this::addPhysicalDocument);
         }
     }
-    
+
     public void addPhysicalDocument(String doc) {
-        if(doc != null) {
+        if (doc != null) {
             physicalDocuments.add(doc);
         }
     }
@@ -67,15 +70,15 @@ public class PrefixedDocumentsDTO {
 
     public void setDigitalDocuments(List<String> digitalDocuments) {
         this.digitalDocuments.clear();
-        if(digitalDocuments != null) {
+        if (digitalDocuments != null) {
             digitalDocuments.forEach(this::addDigitalDocument);
         }
     }
-    
+
     public void addDigitalDocument(String doc) {
-        if(doc != null) {
+        if (doc != null) {
             digitalDocuments.add(doc);
         }
     }
-    
+
 }

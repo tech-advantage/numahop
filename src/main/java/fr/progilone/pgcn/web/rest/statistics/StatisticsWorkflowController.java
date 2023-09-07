@@ -1,15 +1,25 @@
 package fr.progilone.pgcn.web.rest.statistics;
 
+import com.codahale.metrics.annotation.Timed;
+import fr.progilone.pgcn.domain.AbstractDomainObject;
+import fr.progilone.pgcn.domain.document.DigitalDocument.DigitalDocumentStatus;
+import fr.progilone.pgcn.domain.dto.statistics.*;
+import fr.progilone.pgcn.domain.util.CustomUserDetails;
+import fr.progilone.pgcn.domain.workflow.WorkflowStateKey;
+import fr.progilone.pgcn.domain.workflow.WorkflowStateStatus;
+import fr.progilone.pgcn.security.SecurityUtils;
+import fr.progilone.pgcn.service.document.DocCheckHistoryService;
+import fr.progilone.pgcn.service.statistics.StatisticsWorkflowService;
+import fr.progilone.pgcn.service.user.UserService;
+import fr.progilone.pgcn.web.util.AccessHelper;
+import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
+import jakarta.annotation.security.PermitAll;
+import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import javax.annotation.security.PermitAll;
-import javax.servlet.http.HttpServletRequest;
-
-import fr.progilone.pgcn.domain.dto.statistics.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -20,20 +30,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.codahale.metrics.annotation.Timed;
-
-import fr.progilone.pgcn.domain.AbstractDomainObject;
-import fr.progilone.pgcn.domain.document.DigitalDocument.DigitalDocumentStatus;
-import fr.progilone.pgcn.domain.util.CustomUserDetails;
-import fr.progilone.pgcn.domain.workflow.WorkflowStateKey;
-import fr.progilone.pgcn.domain.workflow.WorkflowStateStatus;
-import fr.progilone.pgcn.security.SecurityUtils;
-import fr.progilone.pgcn.service.document.DocCheckHistoryService;
-import fr.progilone.pgcn.service.statistics.StatisticsWorkflowService;
-import fr.progilone.pgcn.service.user.UserService;
-import fr.progilone.pgcn.web.util.AccessHelper;
-import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
 
 @RestController
 @RequestMapping(value = "/api/rest/statistics/workflow")
@@ -58,24 +54,18 @@ public class StatisticsWorkflowController {
     @RequestMapping(method = RequestMethod.GET, params = {"wdelivery"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<Page<WorkflowDeliveryProgressDTO>> getWorkflowDeliveryProgressStatistics(final HttpServletRequest request,
-                                                                                                   @RequestParam(value = "library", required = false)
-                                                                                                   final List<String> libraries,
-                                                                                                   @RequestParam(value = "project", required = false)
-                                                                                                   final List<String> projects,
-                                                                                                   @RequestParam(value = "lot", required = false)
-                                                                                                   final List<String> lots,
-                                                                                                   @RequestParam(value = "delivery", required = false)
-                                                                                                   final List<String> deliveries,
-                                                                                                   @RequestParam(value = "pgcnid", required = false)
-                                                                                                   final String pgcnId,
-                                                                                                   @RequestParam(value = "state", required = false)
-                                                                                                   final List<WorkflowStateKey> states,
-                                                                                                   @DateTimeFormat(pattern = "yyyy-MM-dd")
-                                                                                                   @RequestParam(name = "from", required = false)
-                                                                                                   final LocalDate fromDate,
-                                                                                                   @DateTimeFormat(pattern = "yyyy-MM-dd")
-                                                                                                   @RequestParam(name = "to", required = false)
-                                                                                                   final LocalDate toDate,
+                                                                                                   @RequestParam(value = "library", required = false) final List<String> libraries,
+                                                                                                   @RequestParam(value = "project", required = false) final List<String> projects,
+                                                                                                   @RequestParam(value = "lot", required = false) final List<String> lots,
+                                                                                                   @RequestParam(value = "delivery", required = false) final List<
+                                                                                                                                                                  String> deliveries,
+                                                                                                   @RequestParam(value = "pgcnid", required = false) final String pgcnId,
+                                                                                                   @RequestParam(value = "state", required = false) final List<
+                                                                                                                                                               WorkflowStateKey> states,
+                                                                                                   @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "from",
+                                                                                                                                                         required = false) final LocalDate fromDate,
+                                                                                                   @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "to",
+                                                                                                                                                         required = false) final LocalDate toDate,
                                                                                                    @RequestParam(value = "page",
                                                                                                                  defaultValue = "0",
                                                                                                                  required = false) final int page,
@@ -84,8 +74,7 @@ public class StatisticsWorkflowController {
                                                                                                                  required = false) final int size) {
         // Droits d'accès
         final List<String> filteredLibraries = libraryAccesssHelper.getLibraryFilter(request, libraries);
-        final List<String> filteredProjects =
-            accessHelper.filterProjects(projects).stream().map(AbstractDomainObject::getIdentifier).collect(Collectors.toList());
+        final List<String> filteredProjects = accessHelper.filterProjects(projects).stream().map(AbstractDomainObject::getIdentifier).collect(Collectors.toList());
 
         return new ResponseEntity<>(workflowProgressReportService.getDeliveryProgressReport(filteredLibraries,
                                                                                             filteredProjects,
@@ -102,26 +91,17 @@ public class StatisticsWorkflowController {
     @RequestMapping(method = RequestMethod.GET, params = {"wcontrol"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<List<WorkflowDocUnitProgressDTO>> getWorkflowDocUnitStateControl(final HttpServletRequest request,
-                                                                                           @RequestParam(value = "library", required = false)
-                                                                                           final List<String> libraries,
-                                                                                           @RequestParam(value = "project", required = false)
-                                                                                           final List<String> projects,
-                                                                                           @RequestParam(value = "lot", required = false)
-                                                                                           final List<String> lots,
-                                                                                           @RequestParam(value = "state", required = false)
-                                                                                           final List<DigitalDocumentStatus> states,
-                                                                                           @DateTimeFormat(pattern = "yyyy-MM-dd")
-                                                                                           @RequestParam(name = "from") final LocalDate fromDate) {
+                                                                                           @RequestParam(value = "library", required = false) final List<String> libraries,
+                                                                                           @RequestParam(value = "project", required = false) final List<String> projects,
+                                                                                           @RequestParam(value = "lot", required = false) final List<String> lots,
+                                                                                           @RequestParam(value = "state", required = false) final List<
+                                                                                                                                                       DigitalDocumentStatus> states,
+                                                                                           @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "from") final LocalDate fromDate) {
         // Droits d'accès
         final List<String> filteredLibraries = libraryAccesssHelper.getLibraryFilter(request, libraries);
-        final List<String> filteredProjects =
-            accessHelper.filterProjects(projects).stream().map(AbstractDomainObject::getIdentifier).collect(Collectors.toList());
+        final List<String> filteredProjects = accessHelper.filterProjects(projects).stream().map(AbstractDomainObject::getIdentifier).collect(Collectors.toList());
 
-        return new ResponseEntity<>(workflowProgressReportService.getDocUnitForStateControl(filteredLibraries,
-                                                                                            filteredProjects,
-                                                                                            lots,
-                                                                                            states,
-                                                                                            fromDate), HttpStatus.OK);
+        return new ResponseEntity<>(workflowProgressReportService.getDocUnitForStateControl(filteredLibraries, filteredProjects, lots, states, fromDate), HttpStatus.OK);
     }
 
     /**
@@ -143,40 +123,32 @@ public class StatisticsWorkflowController {
     @RequestMapping(method = RequestMethod.GET, params = {"wdocunit"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<Page<WorkflowDocUnitProgressDTO>> getWorkflowDocUnitProgressStatistics(final HttpServletRequest request,
-                                                                                                 @RequestParam(value = "library", required = false)
-                                                                                                 final List<String> libraries,
-                                                                                                 @RequestParam(value = "project", required = false)
-                                                                                                 final List<String> projects,
-                                                                                                 @RequestParam(value = "project_active", required = false, defaultValue = "false") final boolean projetActive,
-                                                                                                 @RequestParam(value = "lot", required = false)
-                                                                                                 final List<String> lots,
-                                                                                                 @RequestParam(value = "train", required = false)
-                                                                                                 final List<String> trains,
-                                                                                                 @RequestParam(value = "pgcnid", required = false)
-                                                                                                 final String pgcnId,
-                                                                                                 @RequestParam(value = "state", required = false)
-                                                                                                 final List<WorkflowStateKey> states,
-                                                                                                 @RequestParam(value = "status", required = false) final List<WorkflowStateStatus> status,
+                                                                                                 @RequestParam(value = "library", required = false) final List<String> libraries,
+                                                                                                 @RequestParam(value = "project", required = false) final List<String> projects,
+                                                                                                 @RequestParam(value = "project_active",
+                                                                                                               required = false,
+                                                                                                               defaultValue = "false") final boolean projetActive,
+                                                                                                 @RequestParam(value = "lot", required = false) final List<String> lots,
+                                                                                                 @RequestParam(value = "train", required = false) final List<String> trains,
+                                                                                                 @RequestParam(value = "pgcnid", required = false) final String pgcnId,
+                                                                                                 @RequestParam(value = "state", required = false) final List<
+                                                                                                                                                             WorkflowStateKey> states,
+                                                                                                 @RequestParam(value = "status", required = false) final List<
+                                                                                                                                                              WorkflowStateStatus> status,
                                                                                                  @RequestParam(value = "mine",
                                                                                                                required = false,
-                                                                                                               defaultValue = "false")
-                                                                                                 final boolean onlyMine,
-                                                                                                 @DateTimeFormat(pattern = "yyyy-MM-dd")
-                                                                                                 @RequestParam(name = "from", required = false)
-                                                                                                 final LocalDate fromDate,
-                                                                                                 @DateTimeFormat(pattern = "yyyy-MM-dd")
-                                                                                                 @RequestParam(name = "to", required = false)
-                                                                                                 final LocalDate toDate,
-                                                                                                 @RequestParam(value = "page",
-                                                                                                               defaultValue = "0",
-                                                                                                               required = false) final int page,
-                                                                                                  @RequestParam(value = "size",
+                                                                                                               defaultValue = "false") final boolean onlyMine,
+                                                                                                 @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "from",
+                                                                                                                                                       required = false) final LocalDate fromDate,
+                                                                                                 @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "to",
+                                                                                                                                                       required = false) final LocalDate toDate,
+                                                                                                 @RequestParam(value = "page", defaultValue = "0", required = false) final int page,
+                                                                                                 @RequestParam(value = "size",
                                                                                                                defaultValue = "10",
                                                                                                                required = false) final int size) {
         // Droits d'accès
         final List<String> filteredLibraries = libraryAccesssHelper.getLibraryFilter(request, libraries);
-        final List<String> filteredProjects =
-            accessHelper.filterProjects(projects).stream().map(AbstractDomainObject::getIdentifier).collect(Collectors.toList());
+        final List<String> filteredProjects = accessHelper.filterProjects(projects).stream().map(AbstractDomainObject::getIdentifier).collect(Collectors.toList());
 
         final List<String> filteredLots = accessHelper.filterLots(lots).stream().map(AbstractDomainObject::getIdentifier).collect(Collectors.toList());
 
@@ -206,30 +178,28 @@ public class StatisticsWorkflowController {
     @RequestMapping(method = RequestMethod.GET, params = {"wdocunitpending"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<List<WorkflowDocUnitProgressDTOPending>> getWorkflowDocUnitProgressStatisticsLight(final HttpServletRequest request,
-                                                                                                             @RequestParam(value = "library", required = false)
-                                                                                                 final List<String> libraries,
-                                                                                                             @RequestParam(value = "project", required = false)
-                                                                                                 final List<String> projects,
-                                                                                                             @RequestParam(value = "project_active", required = false, defaultValue = "false") final boolean projetActive,
-                                                                                                             @RequestParam(value = "lot", required = false)
-                                                                                                 final List<String> lots,
-                                                                                                             @RequestParam(value = "train", required = false)
-                                                                                                 final List<String> trains,
-                                                                                                             @RequestParam(value = "pgcnid", required = false)
-                                                                                                 final String pgcnId,
-                                                                                                             @RequestParam(value = "state", required = false)
-                                                                                                 final List<WorkflowStateKey> states,
-                                                                                                             @RequestParam(value = "status", required = false) final List<WorkflowStateStatus> status,
+                                                                                                             @RequestParam(value = "library", required = false) final List<
+                                                                                                                                                                           String> libraries,
+                                                                                                             @RequestParam(value = "project", required = false) final List<
+                                                                                                                                                                           String> projects,
+                                                                                                             @RequestParam(value = "project_active",
+                                                                                                                           required = false,
+                                                                                                                           defaultValue = "false") final boolean projetActive,
+                                                                                                             @RequestParam(value = "lot", required = false) final List<String> lots,
+                                                                                                             @RequestParam(value = "train", required = false) final List<
+                                                                                                                                                                         String> trains,
+                                                                                                             @RequestParam(value = "pgcnid", required = false) final String pgcnId,
+                                                                                                             @RequestParam(value = "state", required = false) final List<
+                                                                                                                                                                         WorkflowStateKey> states,
+                                                                                                             @RequestParam(value = "status", required = false) final List<
+                                                                                                                                                                          WorkflowStateStatus> status,
                                                                                                              @RequestParam(value = "mine",
-                                                                                                     required = false,
-                                                                                                     defaultValue = "false")
-                                                                                                 final boolean onlyMine,
-                                                                                                             @DateTimeFormat(pattern = "yyyy-MM-dd")
-                                                                                                 @RequestParam(name = "from", required = false)
-                                                                                                 final LocalDate fromDate,
-                                                                                                             @DateTimeFormat(pattern = "yyyy-MM-dd")
-                                                                                                 @RequestParam(name = "to", required = false)
-                                                                                                 final LocalDate toDate) {
+                                                                                                                           required = false,
+                                                                                                                           defaultValue = "false") final boolean onlyMine,
+                                                                                                             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "from",
+                                                                                                                                                                   required = false) final LocalDate fromDate,
+                                                                                                             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "to",
+                                                                                                                                                                   required = false) final LocalDate toDate) {
         // Droits d'accès
         final List<String> filteredLibraries = libraryAccesssHelper.getLibraryFilter(request, libraries);
         final List<String> filteredProjects = accessHelper.filterProjects(projects).stream().map(AbstractDomainObject::getIdentifier).collect(Collectors.toList());
@@ -244,98 +214,73 @@ public class StatisticsWorkflowController {
         }
 
         return new ResponseEntity<>(workflowProgressReportService.getDocUnitProgressReportPending(filteredLibraries,
-                                                                                            filteredProjects,
-                                                                                            projetActive,
-                                                                                            filteredLots,
-                                                                                            trains,
-                                                                                            pgcnId,
-                                                                                            states,
-                                                                                            status,
-                                                                                            users,
-                                                                                            fromDate,
-                                                                                            toDate), HttpStatus.OK);
+                                                                                                  filteredProjects,
+                                                                                                  projetActive,
+                                                                                                  filteredLots,
+                                                                                                  trains,
+                                                                                                  pgcnId,
+                                                                                                  states,
+                                                                                                  status,
+                                                                                                  users,
+                                                                                                  fromDate,
+                                                                                                  toDate), HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.GET, params = {"wdocunit", "current"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.GET,
+                    params = {"wdocunit",
+                              "current"},
+                    produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<List<WorkflowDocUnitProgressDTO>> getWorkflowDocUnitCurrentStatistics(final HttpServletRequest request,
-                                                                                                @RequestParam(value = "library", required = false)
-                                                                                                final List<String> libraries,
-                                                                                                @RequestParam(value = "project", required = false)
-                                                                                                final List<String> projects,
-                                                                                                @RequestParam(value = "lot", required = false)
-                                                                                                final List<String> lots,
-                                                                                                @RequestParam(value = "state", required = false)
-                                                                                                final List<WorkflowStateKey> states,
-                                                                                                @DateTimeFormat(pattern = "yyyy-MM-dd")
-                                                                                                @RequestParam(name = "from")
-                                                                                                final LocalDate fromDate) {
+                                                                                                @RequestParam(value = "library", required = false) final List<String> libraries,
+                                                                                                @RequestParam(value = "project", required = false) final List<String> projects,
+                                                                                                @RequestParam(value = "lot", required = false) final List<String> lots,
+                                                                                                @RequestParam(value = "state", required = false) final List<
+                                                                                                                                                            WorkflowStateKey> states,
+                                                                                                @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "from") final LocalDate fromDate) {
         // Droits d'accès
         final List<String> filteredLibraries = libraryAccesssHelper.getLibraryFilter(request, libraries);
-        final List<String> filteredProjects =
-            accessHelper.filterProjects(projects).stream().map(AbstractDomainObject::getIdentifier).collect(Collectors.toList());
-        final List<String> filteredLots =
-            accessHelper.filterLots(lots).stream().map(AbstractDomainObject::getIdentifier).collect(Collectors.toList());
+        final List<String> filteredProjects = accessHelper.filterProjects(projects).stream().map(AbstractDomainObject::getIdentifier).collect(Collectors.toList());
+        final List<String> filteredLots = accessHelper.filterLots(lots).stream().map(AbstractDomainObject::getIdentifier).collect(Collectors.toList());
 
-        return new ResponseEntity<>(workflowProgressReportService.getDocUnitCurrentReport(filteredLibraries,
-                                                                                          filteredProjects,
-                                                                                          filteredLots,
-                                                                                          states,
-                                                                                          fromDate), HttpStatus.OK);
+        return new ResponseEntity<>(workflowProgressReportService.getDocUnitCurrentReport(filteredLibraries, filteredProjects, filteredLots, states, fromDate), HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.GET, params = {"wstate"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<List<WorkflowStateProgressDTO>> getWorkflowStatesStatistics(final HttpServletRequest request,
-                                                                                      @RequestParam(value = "library", required = false)
-                                                                                      final List<String> libraries,
-                                                                                      @RequestParam(value = "workflow", required = false)
-                                                                                      final List<String> workflows,
-                                                                                      @RequestParam(value = "state", required = false)
-                                                                                      final List<WorkflowStateKey> states,
-                                                                                      @DateTimeFormat(pattern = "yyyy-MM-dd")
-                                                                                      @RequestParam(name = "from", required = false)
-                                                                                      final LocalDate fromDate,
-                                                                                      @DateTimeFormat(pattern = "yyyy-MM-dd")
-                                                                                      @RequestParam(name = "to", required = false)
-                                                                                      final LocalDate toDate) {
+                                                                                      @RequestParam(value = "library", required = false) final List<String> libraries,
+                                                                                      @RequestParam(value = "workflow", required = false) final List<String> workflows,
+                                                                                      @RequestParam(value = "state", required = false) final List<WorkflowStateKey> states,
+                                                                                      @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "from",
+                                                                                                                                            required = false) final LocalDate fromDate,
+                                                                                      @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "to",
+                                                                                                                                            required = false) final LocalDate toDate) {
         // Droits d'accès
-        if (accessHelper.checkUserIsPresta()) { //  no presta
+        if (accessHelper.checkUserIsPresta()) { // no presta
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         final List<String> filteredLibraries = libraryAccesssHelper.getLibraryFilter(request, libraries);
-        return new ResponseEntity<>(workflowProgressReportService.getWorkflowStatesStatistics(filteredLibraries, workflows, states, fromDate, toDate),
-                                    HttpStatus.OK);
+        return new ResponseEntity<>(workflowProgressReportService.getWorkflowStatesStatistics(filteredLibraries, workflows, states, fromDate, toDate), HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.GET, params = {"wuser"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<Collection<WorkflowUserProgressDTO>> getWorkflowUsersStatistics(final HttpServletRequest request,
-                                                                                          @RequestParam(value = "library", required = false)
-                                                                                          final List<String> libraries,
-                                                                                          @RequestParam(value = "project", required = false)
-                                                                                          final List<String> projects,
-                                                                                          @RequestParam(value = "lot", required = false)
-                                                                                          final List<String> lots,
-                                                                                          @RequestParam(value = "delivery", required = false)
-                                                                                          final List<String> deliveries,
-                                                                                          @DateTimeFormat(pattern = "yyyy-MM-dd")
-                                                                                          @RequestParam(name = "from", required = false)
-                                                                                          final LocalDate fromDate,
-                                                                                          @DateTimeFormat(pattern = "yyyy-MM-dd")
-                                                                                          @RequestParam(name = "to", required = false)
-                                                                                          final LocalDate toDate) {
+                                                                                          @RequestParam(value = "library", required = false) final List<String> libraries,
+                                                                                          @RequestParam(value = "project", required = false) final List<String> projects,
+                                                                                          @RequestParam(value = "lot", required = false) final List<String> lots,
+                                                                                          @RequestParam(value = "delivery", required = false) final List<String> deliveries,
+                                                                                          @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "from",
+                                                                                                                                                required = false) final LocalDate fromDate,
+                                                                                          @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "to",
+                                                                                                                                                required = false) final LocalDate toDate) {
         // Droits d'accès
-        if (accessHelper.checkUserIsPresta()) { //  no presta
+        if (accessHelper.checkUserIsPresta()) { // no presta
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         final List<String> filteredLibraries = libraryAccesssHelper.getLibraryFilter(request, libraries);
-        return new ResponseEntity<>(docCheckHistoryService.getWorkflowUsersStatistics(filteredLibraries,
-                                                                                             projects,
-                                                                                             lots,
-                                                                                             deliveries,
-                                                                                             fromDate,
-                                                                                             toDate), HttpStatus.OK);
+        return new ResponseEntity<>(docCheckHistoryService.getWorkflowUsersStatistics(filteredLibraries, projects, lots, deliveries, fromDate, toDate), HttpStatus.OK);
     }
 
     /**
@@ -354,24 +299,18 @@ public class StatisticsWorkflowController {
     @RequestMapping(method = RequestMethod.GET, params = {"wprofile_activity"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<Collection<WorkflowProfileActivityDTO>> getProfilesActivityStatistics(final HttpServletRequest request,
-                                                                                                @RequestParam(value = "library", required = false)
-                                                                                                final List<String> libraries,
-                                                                                                @RequestParam(value = "project", required = false)
-                                                                                                final List<String> projects,
-                                                                                                @RequestParam(value = "lot", required = false)
-                                                                                                final List<String> lots,
-                                                                                                @RequestParam(value = "state", required = false)
-                                                                                                final List<WorkflowStateKey> states,
-                                                                                                @RequestParam(value = "role", required = false)
-                                                                                                final List<String> roles,
-                                                                                                @DateTimeFormat(pattern = "yyyy-MM-dd")
-                                                                                                @RequestParam(name = "from", required = false)
-                                                                                                    LocalDate fromDate,
-                                                                                                @DateTimeFormat(pattern = "yyyy-MM-dd")
-                                                                                                @RequestParam(name = "to", required = false)
-                                                                                                final LocalDate toDate) {
+                                                                                                @RequestParam(value = "library", required = false) final List<String> libraries,
+                                                                                                @RequestParam(value = "project", required = false) final List<String> projects,
+                                                                                                @RequestParam(value = "lot", required = false) final List<String> lots,
+                                                                                                @RequestParam(value = "state", required = false) final List<
+                                                                                                                                                            WorkflowStateKey> states,
+                                                                                                @RequestParam(value = "role", required = false) final List<String> roles,
+                                                                                                @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "from",
+                                                                                                                                                      required = false) LocalDate fromDate,
+                                                                                                @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "to",
+                                                                                                                                                      required = false) final LocalDate toDate) {
         // Droits d'accès
-        if (accessHelper.checkUserIsPresta()) { //  no presta
+        if (accessHelper.checkUserIsPresta()) { // no presta
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         final List<String> filteredLibraries = libraryAccesssHelper.getLibraryFilter(request, libraries);
@@ -380,13 +319,7 @@ public class StatisticsWorkflowController {
         if (fromDate == null && toDate == null) {
             fromDate = LocalDate.now().minusDays(30);
         }
-        return new ResponseEntity<>(workflowProgressReportService.getProfilesActivityStatistics(filteredLibraries,
-                                                                                                projects,
-                                                                                                lots,
-                                                                                                states,
-                                                                                                roles,
-                                                                                                fromDate,
-                                                                                                toDate), HttpStatus.OK);
+        return new ResponseEntity<>(workflowProgressReportService.getProfilesActivityStatistics(filteredLibraries, projects, lots, states, roles, fromDate, toDate), HttpStatus.OK);
     }
 
     /**
@@ -405,24 +338,17 @@ public class StatisticsWorkflowController {
     @RequestMapping(method = RequestMethod.GET, params = {"wuser_activity"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<Collection<WorkflowUserActivityDTO>> getUsersActivityStatistics(final HttpServletRequest request,
-                                                                                          @RequestParam(value = "library", required = false)
-                                                                                          final List<String> libraries,
-                                                                                          @RequestParam(value = "project", required = false)
-                                                                                          final List<String> projects,
-                                                                                          @RequestParam(value = "lot", required = false)
-                                                                                          final List<String> lots,
-                                                                                          @RequestParam(value = "state", required = false)
-                                                                                          final List<WorkflowStateKey> states,
-                                                                                          @RequestParam(value = "role", required = false)
-                                                                                          final List<String> roles,
-                                                                                          @DateTimeFormat(pattern = "yyyy-MM-dd")
-                                                                                          @RequestParam(name = "from", required = false)
-                                                                                              LocalDate fromDate,
-                                                                                          @DateTimeFormat(pattern = "yyyy-MM-dd")
-                                                                                          @RequestParam(name = "to", required = false)
-                                                                                          final LocalDate toDate) {
+                                                                                          @RequestParam(value = "library", required = false) final List<String> libraries,
+                                                                                          @RequestParam(value = "project", required = false) final List<String> projects,
+                                                                                          @RequestParam(value = "lot", required = false) final List<String> lots,
+                                                                                          @RequestParam(value = "state", required = false) final List<WorkflowStateKey> states,
+                                                                                          @RequestParam(value = "role", required = false) final List<String> roles,
+                                                                                          @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "from",
+                                                                                                                                                required = false) LocalDate fromDate,
+                                                                                          @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "to",
+                                                                                                                                                required = false) final LocalDate toDate) {
         // Droits d'accès
-        if (accessHelper.checkUserIsPresta()) { //  no presta
+        if (accessHelper.checkUserIsPresta()) { // no presta
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         final List<String> filteredLibraries = libraryAccesssHelper.getLibraryFilter(request, libraries);
@@ -431,12 +357,6 @@ public class StatisticsWorkflowController {
         if (fromDate == null && toDate == null) {
             fromDate = LocalDate.now().minusDays(30);
         }
-        return new ResponseEntity<>(workflowProgressReportService.getUsersActivityStatistics(filteredLibraries,
-                                                                                             projects,
-                                                                                             lots,
-                                                                                             states,
-                                                                                             roles,
-                                                                                             fromDate,
-                                                                                             toDate), HttpStatus.OK);
+        return new ResponseEntity<>(workflowProgressReportService.getUsersActivityStatistics(filteredLibraries, projects, lots, states, roles, fromDate, toDate), HttpStatus.OK);
     }
 }

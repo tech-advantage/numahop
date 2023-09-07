@@ -1,14 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <!-- Changeset du module Usager -->
     <changeSet author="progilone" id="pgcn-create-user-2">
         <sql>SET FOREIGN_KEY_CHECKS=0;</sql>
-	    <addNotNullConstraint columnName="email" tableName="user_user" columnDataType="varchar(255)"/>
-	    <addNotNullConstraint columnName="role" tableName="user_user" columnDataType="varchar(191)"/>
-	    <addNotNullConstraint columnName="library" tableName="user_user" columnDataType="varchar(191)"/>
+	    <addNotNullConstraint columnName="email" tableName="user_user" columnDataType="varchar(255)" />
+	    <addNotNullConstraint columnName="role" tableName="user_user" columnDataType="varchar(191)" />
+	    <addNotNullConstraint columnName="library" tableName="user_user" columnDataType="varchar(191)" />
 	    <sql>SET FOREIGN_KEY_CHECKS=1;</sql>
     </changeSet>
 </databaseChangeLog>

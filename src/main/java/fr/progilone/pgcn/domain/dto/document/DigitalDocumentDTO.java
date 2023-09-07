@@ -1,9 +1,8 @@
 package fr.progilone.pgcn.domain.dto.document;
 
-import java.util.List;
-
 import fr.progilone.pgcn.domain.dto.AbstractVersionedDTO;
 import fr.progilone.pgcn.domain.dto.check.AutomaticCheckResultDTO;
+import java.util.List;
 
 /**
  * DTO pour les documents numériques
@@ -19,10 +18,9 @@ public class DigitalDocumentDTO extends AbstractVersionedDTO {
     private int nbPages;
     private String status;
     private SimpleDocUnitDTO docUnit;
-    
+
     // Retours de contrôles
     private List<AutomaticCheckResultDTO> automaticCheckResults;
-    
 
     public DigitalDocumentDTO() {
     }

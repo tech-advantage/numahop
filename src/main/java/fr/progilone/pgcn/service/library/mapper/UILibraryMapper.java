@@ -1,8 +1,5 @@
 package fr.progilone.pgcn.service.library.mapper;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import fr.progilone.pgcn.domain.dto.library.LibraryDTO;
 import fr.progilone.pgcn.domain.dto.user.AddressDTO;
 import fr.progilone.pgcn.domain.library.Library;
@@ -13,6 +10,8 @@ import fr.progilone.pgcn.repository.ftpconfiguration.FTPConfigurationRepository;
 import fr.progilone.pgcn.repository.ocrlangconfiguration.OcrLangConfigurationRepository;
 import fr.progilone.pgcn.repository.user.AddressRepository;
 import fr.progilone.pgcn.repository.user.RoleRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * Mapper pour Library
@@ -45,7 +44,7 @@ public class UILibraryMapper {
             if (addressDTO.getIdentifier() == null) {
                 address = new Address();
             } else {
-                address = addressRepository.findOne(addressDTO.getIdentifier());
+                address = addressRepository.findById(addressDTO.getIdentifier()).orElseThrow();
             }
             address.setLabel(addressDTO.getLabel());
             address.setAddress1(addressDTO.getAddress1());
@@ -67,27 +66,27 @@ public class UILibraryMapper {
         library.setInstitution(libraryDTO.getInstitution());
 
         if (libraryDTO.getActiveFTPConfiguration() != null) {
-            library.setActiveFTPConfiguration(ftpConfigurationRepository.findOne(libraryDTO.getActiveFTPConfiguration().getIdentifier()));
+            library.setActiveFTPConfiguration(ftpConfigurationRepository.findById(libraryDTO.getActiveFTPConfiguration().getIdentifier()).orElse(null));
         }
         if (libraryDTO.getActiveCheckConfiguration() != null) {
-            library.setActiveCheckConfiguration(checkConfigurationRepository.findOne(libraryDTO.getActiveCheckConfiguration().getIdentifier()));
+            library.setActiveCheckConfiguration(checkConfigurationRepository.findById(libraryDTO.getActiveCheckConfiguration().getIdentifier()).orElse(null));
         }
         if (libraryDTO.getActiveFormatConfiguration() != null) {
-            library.setActiveFormatConfiguration(viewsFormatConfigurationRepository.findOne(libraryDTO.getActiveFormatConfiguration().getIdentifier()));
+            library.setActiveFormatConfiguration(viewsFormatConfigurationRepository.findById(libraryDTO.getActiveFormatConfiguration().getIdentifier()).orElse(null));
         }
         if (libraryDTO.getActiveOcrLangConfiguration() != null) {
-            library.setActiveOcrLangConfiguration(ocrLangConfigurationRepository.findOne(libraryDTO.getActiveOcrLangConfiguration().getIdentifier()));
+            library.setActiveOcrLangConfiguration(ocrLangConfigurationRepository.findById(libraryDTO.getActiveOcrLangConfiguration().getIdentifier()).orElse(null));
         }
         if (libraryDTO.getDefaultRole() != null) {
-            library.setDefaultRole(roleRepository.findOne(libraryDTO.getDefaultRole().getIdentifier()));
+            library.setDefaultRole(roleRepository.findById(libraryDTO.getDefaultRole().getIdentifier()).orElse(null));
         }
-        if(libraryDTO.getLibRespName() != null){
+        if (libraryDTO.getLibRespName() != null) {
             library.setLibRespName(libraryDTO.getLibRespName());
         }
-        if(libraryDTO.getLibRespPhone() != null){
+        if (libraryDTO.getLibRespPhone() != null) {
             library.setLibRespPhone(libraryDTO.getLibRespPhone());
         }
-        if(libraryDTO.getLibRespEmail() != null){
+        if (libraryDTO.getLibRespEmail() != null) {
             library.setLibRespEmail(libraryDTO.getLibRespEmail());
         }
     }

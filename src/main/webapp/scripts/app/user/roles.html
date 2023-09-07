@@ -1,87 +1,81 @@
 <div class="row layout-columns">
-		<div id="sem-filters-toggle" class="button-toggle" sem-auto-hide-filters>
-				<a ng-click="$semFilters.toggle()" class="link-toggle">
-					<span class="glyphicon-regular filter"></span>
-				</a>
-			</div>
-			<div id="sem-filters" sem-auto-hide-filters>
-				<div class="panel no-print" ng-controller="FiltersController as FilterCtrl">
-					<div class="panel-heading">
-						<span translate>Filtres</span>
-					</div>
-					<div class="panel-body">
-						<!-- Habilitations -->
-						<div class="filter-block">
-							<div class="filter-title">{{::'Habilitations' | translate}}</div>
-							<div class="filter-element">
-								<ui-select multiple ng-model="filters.authorizations" theme="select2" on-select="doFilter()" on-remove="doFilter()" class="form-control">
-									<ui-select-match placeholder="{{::'Habilitations' | translate}}">{{$item.label}}</ui-select-match>
-									<ui-select-choices repeat="authorization in options.authorizations | filter: $select.search track by authorization.identifier">
-										<div ng-bind-html="authorization.label | highlight: $select.search"></div>
-									</ui-select-choices>
-								</ui-select>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
+    <div id="sem-filters-toggle" class="button-toggle" sem-auto-hide-filters>
+        <a ng-click="$semFilters.toggle()" class="link-toggle">
+            <span class="glyphicon-regular filter"></span>
+        </a>
+    </div>
+    <div id="sem-filters" sem-auto-hide-filters>
+        <div class="panel no-print" ng-controller="FiltersController as FilterCtrl">
+            <div class="panel-heading">
+                <span translate>Filtres</span>
+            </div>
+            <div class="panel-body">
+                <!-- Habilitations -->
+                <div class="filter-block">
+                    <div class="filter-title">{{::'Habilitations' | translate}}</div>
+                    <div class="filter-element">
+                        <ui-select multiple ng-model="filters.authorizations" theme="select2" on-select="doFilter()" on-remove="doFilter()" class="form-control">
+                            <ui-select-match placeholder="{{::'Habilitations' | translate}}">{{$item.label}}</ui-select-match>
+                            <ui-select-choices repeat="authorization in options.authorizations | filter: $select.search track by authorization.identifier">
+                                <div ng-bind-html="authorization.label | highlight: $select.search"></div>
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-	<div class="col-sm-4 col-layout-columns" ng-keydown="navigate($event)" tabindex="0">
-		<div class="panel panel-column-2 panel-column-first">
-			<div class="panel-heading">
-				<div class="pull-right">
-				<button type="button" class="btn btn-sem2 btn-xs" ng-click="reinitFilters(true)"
-						uib-tooltip="{{::'Réinitialiser les filtres de la recherche' | translate}}">
-					<span class="glyphicon-halflings glyphicon-refresh"></span>
-				</button>
-               <button type="button" class="btn btn-sem2 btn-xs" sem-roles-allowed="ROLE_HAB1" ng-click="create()"
-               			uib-tooltip="{{::'Créer' | translate}}">
-                   <span class="glyphicon-halflings glyphicon-plus"></span>
-			   </button>
-			   </div>
-			   <div class="input-group padding-r20">
-				   <input class="form-control sem-input-xs" type="text" id="nameSearchInput"
-						  ng-model="filterWith" ng-keypress="applyFilter($event)"/>
-				   <span class="input-group-btn">
-					   <button type="button" class="btn btn-sem2 btn-xs" ng-click="doFilter()" uib-tooltip="{{::'Rechercher' | translate}}">
-						   <span class="glyphicon syrtis-icon-loupe"></span>
-					   </button>
-				   </span>
-			   </div>
-			</div>
+    <div class="col-sm-4 col-layout-columns" ng-keydown="navigate($event)" tabindex="0">
+        <div class="panel panel-column-2 panel-column-first">
+            <div class="panel-heading">
+                <div class="pull-right">
+                    <button type="button" class="btn btn-sem2 btn-xs" ng-click="reinitFilters(true)" uib-tooltip="{{::'Réinitialiser les filtres de la recherche' | translate}}" tooltip-append-to-body="true">
+                        <span class="glyphicon-halflings glyphicon-refresh"></span>
+                    </button>
+                    <button type="button" class="btn btn-sem2 btn-xs" sem-roles-allowed="ROLE_HAB1" ng-click="create()" uib-tooltip="{{::'Créer' | translate}}" tooltip-append-to-body="true">
+                        <span class="glyphicon-halflings glyphicon-plus"></span>
+                    </button>
+                </div>
+                <div class="input-group padding-r20">
+                    <input class="form-control sem-input-xs" type="text" id="nameSearchInput" ng-model="filterWith" ng-keypress="applyFilter($event)" />
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-sem2 btn-xs" ng-click="doFilter()" uib-tooltip="{{::'Rechercher' | translate}}" tooltip-append-to-body="true">
+                            <span class="glyphicon syrtis-icon-loupe"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
 
-			<div class="panel-body" ng-switch="displayedRoles.length === 0 && listLoaded && newRoles.length === 0">
-
+            <div class="panel-body" ng-switch="displayedRoles.length === 0 && listLoaded && newRoles.length === 0">
                 <!-- Rôles récemment créés -->
                 <div ng-show="newRoles.length > 0" class="col-infinite-scroll">
-                	<div class="pagination-break" translate>Récemment créés</div>
-	                <div ng-repeat="role in newRoles">
-	                	<div class="list" ng-class="{active: role._selected}">
-		                	<a ng-click="edit(role, $index, true)">
-		                		<span class="principal">{{role.label}}</span>
-		                	</a>
-	                	</div>
-	                </div>
-	            </div>
+                    <div class="pagination-break" translate>Récemment créés</div>
+                    <div ng-repeat="role in newRoles">
+                        <div class="list" ng-class="{active: role._selected}">
+                            <a ng-click="edit(role, $index, true)">
+                                <span class="principal">{{role.label}}</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="well" ng-switch-when="true" translate>Aucun profil n'a été trouvé</div>
 
                 <div ng-switch-default>
                     <div ng-repeat="role in roles" class="col-infinite-scroll">
-                        <div ng-show="$index === 0 || getFirstLetter(role) != getFirstLetter(roles[$index-1])" class="pagination-break">
-                        	{{role.label|initial:'OTHER'}}
-                        </div>
+                        <div ng-show="$index === 0 || getFirstLetter(role) != getFirstLetter(roles[$index-1])" class="pagination-break">{{role.label|initial:'OTHER'}}</div>
                         <div class="list" ng-class="{active: role._selected}">
-	                        <a ng-click="edit(role, $index)">
-	                            <span class="principal">{{ role.label }}</span>
-	                        </a>
+                            <a ng-click="edit(role, $index)">
+                                <span class="principal">{{ role.label }}</span>
+                            </a>
                         </div>
                     </div>
                     <div ng-show="!listLoaded" translate>Chargement en cours...</div>
                 </div>
-			</div>
-		</div>
-	</div>
+            </div>
+        </div>
+    </div>
 
-	<ng-include src="roleInclude"></ng-include>
+    <ng-include src="roleInclude"></ng-include>
 </div>

@@ -1,28 +1,26 @@
 package fr.progilone.pgcn.domain.workflow;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-
 import fr.progilone.pgcn.domain.AbstractDomainObject;
 import fr.progilone.pgcn.domain.library.Library;
 import fr.progilone.pgcn.domain.user.User;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Un groupe de {@link User} qui a la responsabilité d'une étape de workflow
- * 
+ *
  * @author jbrunet
- * Créé le 12 juil. 2017
+ *         Créé le 12 juil. 2017
  */
 @Entity
 @Table(name = WorkflowGroup.TABLE_NAME)
@@ -38,14 +36,14 @@ public class WorkflowGroup extends AbstractDomainObject {
     private String description;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {})
-    @JoinTable(name = TABLE_NAME_GROUP_USER, 
-                joinColumns = {@JoinColumn(name = "workflow_group", referencedColumnName = "identifier")}, 
-                inverseJoinColumns = {@JoinColumn(name = "workflow_user", referencedColumnName = "identifier")})
+    @JoinTable(name = TABLE_NAME_GROUP_USER,
+               joinColumns = {@JoinColumn(name = "workflow_group", referencedColumnName = "identifier")},
+               inverseJoinColumns = {@JoinColumn(name = "workflow_user", referencedColumnName = "identifier")})
     private final Set<User> users = new HashSet<>();
-    
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "group")
     private final Set<WorkflowModelState> states = new HashSet<>();
-    
+
     /**
      * {@link Library} qui possède le groupe
      */

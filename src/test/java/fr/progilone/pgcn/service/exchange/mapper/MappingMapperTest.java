@@ -1,16 +1,14 @@
 package fr.progilone.pgcn.service.exchange.mapper;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.test.util.ReflectionTestUtils;
+import static org.junit.jupiter.api.Assertions.*;
 
 import fr.progilone.pgcn.domain.dto.exchange.MappingDTO;
 import fr.progilone.pgcn.domain.exchange.Mapping;
 import fr.progilone.pgcn.domain.library.Library;
 import fr.progilone.pgcn.service.library.mapper.SimpleLibraryMapper;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 
 /**
  * Created by Sebastien on 07/12/2016.
@@ -19,7 +17,7 @@ public class MappingMapperTest {
 
     private MappingMapper mapper;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         mapper = MappingMapper.INSTANCE;
         ReflectionTestUtils.setField(mapper, "simpleLibraryMapper", SimpleLibraryMapper.INSTANCE);

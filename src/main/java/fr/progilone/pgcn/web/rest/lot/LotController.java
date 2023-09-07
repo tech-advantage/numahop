@@ -3,38 +3,7 @@ package fr.progilone.pgcn.web.rest.lot;
 import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.*;
 import static fr.progilone.pgcn.web.rest.lot.security.AuthorizationConstants.*;
 
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.codahale.metrics.annotation.Timed;
-
 import fr.progilone.pgcn.domain.AbstractDomainObject;
 import fr.progilone.pgcn.domain.dto.audit.AuditLotRevisionDTO;
 import fr.progilone.pgcn.domain.dto.lot.LotDTO;
@@ -54,6 +23,33 @@ import fr.progilone.pgcn.web.rest.administration.security.AuthorizationConstants
 import fr.progilone.pgcn.web.util.AccessHelper;
 import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
 import fr.progilone.pgcn.web.util.WorkflowAccessHelper;
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/api/rest/lot")
@@ -124,19 +120,9 @@ public class LotController extends AbstractRestController {
                                                      @RequestParam(value = "sorts", required = false) final List<String> sorts) {
         // Droits d'accès
         final List<String> filteredLibraries = libraryAccesssHelper.getLibraryFilter(request, libraries);
-        final List<String> filteredProjects =
-            accessHelper.filterProjects(projects).stream().map(AbstractDomainObject::getIdentifier).collect(Collectors.toList());
-        return new ResponseEntity<>(uiLotService.search(search,
-                                                        filteredLibraries,
-                                                        filteredProjects,
-                                                        active,
-                                                        lotStatuses,
-                                                        docNumber,
-                                                        fileFormats,
-                                                        null,
-                                                        page,
-                                                        size,
-                                                        sorts), HttpStatus.OK);
+        final List<String> filteredProjects = accessHelper.filterProjects(projects).stream().map(AbstractDomainObject::getIdentifier).collect(Collectors.toList());
+        return new ResponseEntity<>(uiLotService.search(search, filteredLibraries, filteredProjects, active, lotStatuses, docNumber, fileFormats, null, page, size, sorts),
+                                    HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST, params = {"search"}, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -149,8 +135,10 @@ public class LotController extends AbstractRestController {
                                                      @RequestParam(value = "sorts", required = false) final List<String> sorts) {
         // Droits d'accès
         final List<String> filteredLibraries = libraryAccesssHelper.getLibraryFilter(request, requestParams.getLibraries());
-        final List<String> filteredProjects =
-            accessHelper.filterProjects(requestParams.getProjects()).stream().map(AbstractDomainObject::getIdentifier).collect(Collectors.toList());
+        final List<String> filteredProjects = accessHelper.filterProjects(requestParams.getProjects())
+                                                          .stream()
+                                                          .map(AbstractDomainObject::getIdentifier)
+                                                          .collect(Collectors.toList());
         return new ResponseEntity<>(uiLotService.search(requestParams.getSearch(),
                                                         filteredLibraries,
                                                         filteredProjects,
@@ -164,20 +152,20 @@ public class LotController extends AbstractRestController {
                                                         sorts), HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.GET, params = {"widget", "from"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.GET,
+                    params = {"widget",
+                              "from"},
+                    produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed({LOT_HAB3})
     public ResponseEntity<List<AuditLotRevisionDTO>> getLotsForWidget(final HttpServletRequest request,
-                                                                      @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "from")
-                                                                      final LocalDate fromDate,
+                                                                      @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "from") final LocalDate fromDate,
                                                                       @RequestParam(value = "library", required = false) final List<String> libraries,
                                                                       @RequestParam(value = "project", required = false) final List<String> projects,
-                                                                      @RequestParam(value = "status", required = false)
-                                                                      final List<Lot.LotStatus> status) {
+                                                                      @RequestParam(value = "status", required = false) final List<Lot.LotStatus> status) {
 
         final List<String> filteredLibraries = libraryAccesssHelper.getLibraryFilter(request, libraries);
-        final List<String> filteredProjects =
-            accessHelper.filterProjects(projects).stream().map(AbstractDomainObject::getIdentifier).collect(Collectors.toList());
+        final List<String> filteredProjects = accessHelper.filterProjects(projects).stream().map(AbstractDomainObject::getIdentifier).collect(Collectors.toList());
 
         // Chargement
         final List<AuditLotRevisionDTO> revisions = uiLotService.getLotsForWidget(fromDate, filteredLibraries, filteredProjects, status);
@@ -185,7 +173,10 @@ public class LotController extends AbstractRestController {
         return new ResponseEntity<>(revisions, HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.GET, params = {"simpleByProject", "project"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.GET,
+                    params = {"simpleByProject",
+                              "project"},
+                    produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed({LOT_HAB3})
     public ResponseEntity<List<SimpleLotDTO>> findAllSimpleForProject(@RequestParam(value = "project") final String projectId) {
@@ -197,7 +188,10 @@ public class LotController extends AbstractRestController {
         return createResponseEntity(lot);
     }
 
-    @RequestMapping(method = RequestMethod.GET, params = {"filterByProjects", "projectIds"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.GET,
+                    params = {"filterByProjects",
+                              "projectIds"},
+                    produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed({LOT_HAB3})
     public ResponseEntity<List<SimpleLotDTO>> findAllIdentifiersForProjects(@RequestParam(value = "projectIds") final List<String> projectIds) {
@@ -205,7 +199,10 @@ public class LotController extends AbstractRestController {
         return createResponseEntity(lotIds);
     }
 
-    @RequestMapping(method = RequestMethod.GET, params = {"dto", "libraries"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.GET,
+                    params = {"dto",
+                              "libraries"},
+                    produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<Collection<LotListDTO>> findAllActiveByLibraries(@RequestParam(required = false) final List<String> libraries) {
         final Collection<LotListDTO> lots = uiLotService.findAllByLibraryIn(libraries);
@@ -213,7 +210,10 @@ public class LotController extends AbstractRestController {
         return createResponseEntity(filteredLots);
     }
 
-    @RequestMapping(method = RequestMethod.GET, params = {"dto", "projects"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.GET,
+                    params = {"dto",
+                              "projects"},
+                    produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<Collection<LotListDTO>> findAllActiveByProjects(@RequestParam(required = false) final List<String> projects) {
         final Collection<LotListDTO> lots = uiLotService.findAllByProjectIn(projects);
@@ -221,7 +221,11 @@ public class LotController extends AbstractRestController {
         return createResponseEntity(filteredLots);
     }
 
-    @RequestMapping(method = RequestMethod.GET, params = {"dto", "complete", "libraries"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.GET,
+                    params = {"dto",
+                              "complete",
+                              "libraries"},
+                    produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<Collection<LotListDTO>> findAllByLibraries(@RequestParam(required = false) final List<String> libraries) {
         final Collection<LotListDTO> lots = uiLotService.findAllByLibraryIn(libraries);
@@ -229,7 +233,11 @@ public class LotController extends AbstractRestController {
         return createResponseEntity(filteredLots);
     }
 
-    @RequestMapping(method = RequestMethod.GET, params = {"dto", "complete", "projects"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.GET,
+                    params = {"dto",
+                              "complete",
+                              "projects"},
+                    produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<Collection<LotListDTO>> findAllByProjects(@RequestParam(required = false) final List<String> projects) {
         final Collection<LotListDTO> lots = uiLotService.findAllByProjectIn(projects);
@@ -263,7 +271,10 @@ public class LotController extends AbstractRestController {
         return createResponseEntity(filteredLots);
     }
 
-    @RequestMapping(method = RequestMethod.GET, params = {"project", "simpleForDocUnit"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.GET,
+                    params = {"project",
+                              "simpleForDocUnit"},
+                    produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed({LOT_HAB3})
     public ResponseEntity<List<LotDTO>> findSimpleForDocUnit(@RequestParam(value = "project") final String projectId) {
@@ -289,7 +300,10 @@ public class LotController extends AbstractRestController {
         return createResponseEntity(lot);
     }
 
-    @RequestMapping(method = RequestMethod.GET, params = {"dto", "lot"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.GET,
+                    params = {"dto",
+                              "lot"},
+                    produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed({LOT_HAB3})
     public ResponseEntity<List<LotDTO>> getDtoByIds(@RequestParam(name = "lot") final List<String> ids) {
@@ -321,7 +335,7 @@ public class LotController extends AbstractRestController {
     public ResponseEntity<LotDTO> create(final HttpServletRequest request, @RequestBody final LotDTO lot) throws PgcnException {
         // Droit d'accès à la bibliothèque
         if (lot.getProject() != null && !libraryAccesssHelper.checkLibrary(request, lot.getProject().getLibrary().getIdentifier())
-        && !accessHelper.checkProject(lot.getProject().getIdentifier())) {
+            && !accessHelper.checkProject(lot.getProject().getIdentifier())) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         final LotDTO savedLot = uiLotService.create(lot);
@@ -408,8 +422,7 @@ public class LotController extends AbstractRestController {
     @RequestMapping(method = RequestMethod.GET, value = "/pdf/{id}", produces = "application/pdf")
     @Timed
     @RolesAllowed(COND_REPORT_HAB0)
-    public void generateSlipPdf(final HttpServletRequest request, final HttpServletResponse response, @PathVariable final String id) throws
-                                                                                                                                     PgcnTechnicalException {
+    public void generateSlipPdf(final HttpServletRequest request, final HttpServletResponse response, @PathVariable final String id) throws PgcnTechnicalException {
 
         if (!accessHelper.checkLot(id)) {
             response.setStatus(403);
@@ -436,15 +449,13 @@ public class LotController extends AbstractRestController {
     public ResponseEntity<List<ResultAdminLotDTO>> closeLot(@RequestBody final List<String> lotsIds) {
 
         final List<ResultAdminLotDTO> results = new ArrayList<>();
-        lotsIds.stream()
-                .forEach(id -> {
+        lotsIds.stream().forEach(id -> {
 
-                    results.add(lotService.preClotureLot(id));
-                    esLotService.indexAsync(id);
-                });
+            results.add(lotService.preClotureLot(id));
+            esLotService.indexAsync(id);
+        });
         return new ResponseEntity<>(results, HttpStatus.OK);
     }
-
 
     /**
      * Force la reouverture de lots clotures en parametre.
@@ -457,12 +468,11 @@ public class LotController extends AbstractRestController {
     public ResponseEntity<List<ResultAdminLotDTO>> declotureLot(@RequestBody final List<String> lotsIds) {
         final List<ResultAdminLotDTO> results = new ArrayList<>();
         lotsIds.forEach(id -> {
-                    results.add(lotService.declotureLot(id));
-                    esLotService.indexAsync(id);
-                });
+            results.add(lotService.declotureLot(id));
+            esLotService.indexAsync(id);
+        });
         return new ResponseEntity<>(results, HttpStatus.OK);
     }
-
 
     /**
      * Filtrage d'une liste de LotDTO sur les droits d'accès de l'utilisateur
@@ -481,6 +491,7 @@ public class LotController extends AbstractRestController {
     }
 
     private static final class SearchRequest {
+
         private String search;
         private List<String> libraries;
         private List<String> projects;

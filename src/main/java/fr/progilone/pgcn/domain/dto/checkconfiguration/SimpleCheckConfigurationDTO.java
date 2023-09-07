@@ -32,6 +32,7 @@ public class SimpleCheckConfigurationDTO extends AbstractDTO {
     }
 
     public static final class Builder {
+
         private String identifier;
         private String label;
 

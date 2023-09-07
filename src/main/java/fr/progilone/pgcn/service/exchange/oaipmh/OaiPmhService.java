@@ -3,6 +3,13 @@ package fr.progilone.pgcn.service.exchange.oaipmh;
 import fr.progilone.pgcn.domain.jaxb.oaipmh.OAIPMHerrorType;
 import fr.progilone.pgcn.domain.jaxb.oaipmh.OAIPMHtype;
 import fr.progilone.pgcn.domain.jaxb.oaipmh.ObjectFactory;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Unmarshaller;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.Optional;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -12,14 +19,6 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.Optional;
 
 /**
  * Client OAI-PMH
@@ -40,9 +39,7 @@ public class OaiPmhService {
      */
     public Optional<OAIPMHtype> getRecord(final String baseUrl, final String prefix, final String identifier) {
         try {
-            final URIBuilder uriBuilder = new URIBuilder(baseUrl).addParameter("verb", "GetRecord")
-                                                                 .addParameter("metadataPrefix", prefix)
-                                                                 .addParameter("identifier", identifier);
+            final URIBuilder uriBuilder = new URIBuilder(baseUrl).addParameter("verb", "GetRecord").addParameter("metadataPrefix", prefix).addParameter("identifier", identifier);
             return get(uriBuilder.toString());
 
         } catch (final JAXBException | IOException | URISyntaxException e) {
@@ -71,20 +68,15 @@ public class OaiPmhService {
      * @param baseUrl
      * @param prefix
      * @param from
-     *         yyyy-MM-dd
+     *            yyyy-MM-dd
      * @param until
-     *         yyyy-MM-dd
+     *            yyyy-MM-dd
      * @param set
      * @param token
      * @return
      * @see <a href="http://www.openarchives.org/OAI/openarchivesprotocol.html#ListIdentifiers">ListIdentifiers</a>
      */
-    public Optional<OAIPMHtype> listIdentifiers(final String baseUrl,
-                                                final String prefix,
-                                                final String from,
-                                                final String until,
-                                                final String set,
-                                                final String token) {
+    public Optional<OAIPMHtype> listIdentifiers(final String baseUrl, final String prefix, final String from, final String until, final String set, final String token) {
         try {
             final URIBuilder uriBuilder = new URIBuilder(baseUrl).addParameter("verb", "ListIdentifiers");
             if (token != null) {
@@ -141,12 +133,7 @@ public class OaiPmhService {
      * @return
      * @see <a href="http://www.openarchives.org/OAI/openarchivesprotocol.html#ListRecords">ListRecords</a>
      */
-    public Optional<OAIPMHtype> listRecords(final String baseUrl,
-                                            final String prefix,
-                                            final String from,
-                                            final String until,
-                                            final String set,
-                                            final String token) {
+    public Optional<OAIPMHtype> listRecords(final String baseUrl, final String prefix, final String from, final String until, final String set, final String token) {
         try {
             final URIBuilder uriBuilder = new URIBuilder(baseUrl).addParameter("verb", "ListRecords");
             if (token != null) {

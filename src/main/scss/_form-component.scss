@@ -1,9 +1,9 @@
-@import "../bower_components/font-awesome/scss/variables";
-@import "../bower_components/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox";
+@import '../../../node_modules/font-awesome/scss/variables';
+@import '../../../node_modules/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox';
 
-.checkbox input[type=checkbox]:checked + label:after {
+.checkbox input[type='checkbox']:checked + label:after {
     font-family: 'Glyphicons Regular';
-    content: "\E207";
+    content: '\E207';
 }
 
 .checkbox label:after {
@@ -12,7 +12,7 @@
     font-size: 9px;
 }
 
-.checkbox input[type="checkbox"] {
+.checkbox input[type='checkbox'] {
     width: 20px;
     height: 20px;
     margin-top: 0px;
@@ -28,17 +28,17 @@ input.full-width {
 @include checkbox-variant('.checkbox-sid-main', $sid-main-color);
 @include radio-variant('.radio-sid-main', $sid-main-color);
 
-.checkbox-sid-main-inv input[type="checkbox"]:checked + label,
-.checkbox-sid-main-inv input[type="radio"]:checked + label {
+.checkbox-sid-main-inv input[type='checkbox']:checked + label,
+.checkbox-sid-main-inv input[type='radio']:checked + label {
     &::before {
         background-color: #fff;
         border-color: #fff;
     }
-    &::after{
+    &::after {
         color: red; /*$sid-main-color;*/
         font-size: 12px;
         padding-top: 0;
         padding-left: 3px;
-        padding-right:50px;
+        padding-right: 50px;
     }
 }

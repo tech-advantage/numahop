@@ -1,14 +1,13 @@
 package fr.progilone.pgcn.domain.document.conditionreport;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-
 import fr.progilone.pgcn.domain.AbstractDomainObject;
 import fr.progilone.pgcn.domain.library.Library;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = ConditionReportSlipConfiguration.TABLE_NAME)
@@ -19,16 +18,16 @@ public class ConditionReportSlipConfiguration extends AbstractDomainObject {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "library")
     private Library library;
-    
+
     @Column(name = "pgcn_id")
     private boolean pgcnId;
-    
+
     @Column(name = "title")
     private boolean title;
-    
+
     @Column(name = "nb_pages")
     private boolean nbPages;
-    
+
     @Column(name = "global_report")
     private boolean globalReport;
 
@@ -71,6 +70,5 @@ public class ConditionReportSlipConfiguration extends AbstractDomainObject {
     public void setGlobalReport(boolean globalReport) {
         this.globalReport = globalReport;
     }
-    
-    
+
 }

@@ -1,13 +1,12 @@
 package fr.progilone.pgcn.domain.dto.multilotsdelivery;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
 import fr.progilone.pgcn.domain.dto.AbstractDTO;
 import fr.progilone.pgcn.domain.dto.delivery.SimpleDeliveryLotDTO;
 import fr.progilone.pgcn.domain.dto.lot.SimpleLotForDeliveryDTO;
 import fr.progilone.pgcn.domain.dto.train.SimpleTrainDTO;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MultiLotsDeliveryDTO extends AbstractDTO {
 
@@ -25,16 +24,15 @@ public class MultiLotsDeliveryDTO extends AbstractDTO {
     private boolean selectedByTrain;
     private SimpleTrainDTO train;
     private String createdBy;
-    
+
     private List<SimpleDeliveryLotDTO> deliveries = new ArrayList<>();
-    
+
     private List<SimpleLotForDeliveryDTO> lots = new ArrayList<>();
-    
+
     public MultiLotsDeliveryDTO() {
-        
+
     }
 
-    
     public String getIdentifier() {
         return identifier;
     }
@@ -119,21 +117,17 @@ public class MultiLotsDeliveryDTO extends AbstractDTO {
         return trainId;
     }
 
-
     public void setTrainId(final String trainId) {
         this.trainId = trainId;
     }
-
 
     public boolean isSelectedByTrain() {
         return selectedByTrain;
     }
 
-
     public void setSelectedByTrain(final boolean selectedByTrain) {
         this.selectedByTrain = selectedByTrain;
     }
-
 
     public List<SimpleDeliveryLotDTO> getDeliveries() {
         return deliveries;
@@ -151,28 +145,20 @@ public class MultiLotsDeliveryDTO extends AbstractDTO {
         this.lots = lots;
     }
 
-
     public SimpleTrainDTO getTrain() {
         return train;
     }
-
 
     public void setTrain(final SimpleTrainDTO train) {
         this.train = train;
     }
 
-
     public String getCreatedBy() {
         return createdBy;
     }
 
-
     public void setCreatedBy(final String createdBy) {
         this.createdBy = createdBy;
     }
-    
-    
-
 
 }
-

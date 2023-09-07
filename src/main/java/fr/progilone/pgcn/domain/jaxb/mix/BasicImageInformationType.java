@@ -5,21 +5,21 @@
 // Généré le : 2017.08.25 à 03:15:17 PM CEST
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.mix;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
-
 
 /**
- * <p>Classe Java pour BasicImageInformationType complex type.
+ * <p>
+ * Classe Java pour BasicImageInformationType complex type.
  *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="BasicImageInformationType">
@@ -233,10 +233,9 @@ import javax.xml.bind.annotation.XmlType;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "BasicImageInformationType", propOrder = {
-    "basicImageCharacteristics",
-    "specialFormatCharacteristics"
-})
+@XmlType(name = "BasicImageInformationType",
+         propOrder = {"basicImageCharacteristics",
+                      "specialFormatCharacteristics"})
 public class BasicImageInformationType {
 
     @XmlElement(name = "BasicImageCharacteristics")
@@ -248,8 +247,8 @@ public class BasicImageInformationType {
      * Obtient la valeur de la propriété basicImageCharacteristics.
      *
      * @return
-     *     possible object is
-     *     {@link BasicImageInformationType.BasicImageCharacteristics }
+     *         possible object is
+     *         {@link BasicImageInformationType.BasicImageCharacteristics }
      *
      */
     public BasicImageInformationType.BasicImageCharacteristics getBasicImageCharacteristics() {
@@ -260,8 +259,8 @@ public class BasicImageInformationType {
      * Définit la valeur de la propriété basicImageCharacteristics.
      *
      * @param value
-     *     allowed object is
-     *     {@link BasicImageInformationType.BasicImageCharacteristics }
+     *            allowed object is
+     *            {@link BasicImageInformationType.BasicImageCharacteristics }
      *
      */
     public void setBasicImageCharacteristics(BasicImageInformationType.BasicImageCharacteristics value) {
@@ -272,8 +271,8 @@ public class BasicImageInformationType {
      * Obtient la valeur de la propriété specialFormatCharacteristics.
      *
      * @return
-     *     possible object is
-     *     {@link BasicImageInformationType.SpecialFormatCharacteristics }
+     *         possible object is
+     *         {@link BasicImageInformationType.SpecialFormatCharacteristics }
      *
      */
     public BasicImageInformationType.SpecialFormatCharacteristics getSpecialFormatCharacteristics() {
@@ -284,19 +283,20 @@ public class BasicImageInformationType {
      * Définit la valeur de la propriété specialFormatCharacteristics.
      *
      * @param value
-     *     allowed object is
-     *     {@link BasicImageInformationType.SpecialFormatCharacteristics }
+     *            allowed object is
+     *            {@link BasicImageInformationType.SpecialFormatCharacteristics }
      *
      */
     public void setSpecialFormatCharacteristics(BasicImageInformationType.SpecialFormatCharacteristics value) {
         this.specialFormatCharacteristics = value;
     }
 
-
     /**
-     * <p>Classe Java pour anonymous complex type.
+     * <p>
+     * Classe Java pour anonymous complex type.
      *
-     * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+     * <p>
+     * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
      *
      * <pre>
      * &lt;complexType>
@@ -420,11 +420,10 @@ public class BasicImageInformationType {
      *
      */
     @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "imageWidth",
-        "imageHeight",
-        "photometricInterpretation"
-    })
+    @XmlType(name = "",
+             propOrder = {"imageWidth",
+                          "imageHeight",
+                          "photometricInterpretation"})
     public static class BasicImageCharacteristics {
 
         protected PositiveIntegerType imageWidth;
@@ -436,8 +435,8 @@ public class BasicImageInformationType {
          * Obtient la valeur de la propriété imageWidth.
          *
          * @return
-         *     possible object is
-         *     {@link PositiveIntegerType }
+         *         possible object is
+         *         {@link PositiveIntegerType }
          *
          */
         public PositiveIntegerType getImageWidth() {
@@ -448,8 +447,8 @@ public class BasicImageInformationType {
          * Définit la valeur de la propriété imageWidth.
          *
          * @param value
-         *     allowed object is
-         *     {@link PositiveIntegerType }
+         *            allowed object is
+         *            {@link PositiveIntegerType }
          *
          */
         public void setImageWidth(PositiveIntegerType value) {
@@ -460,8 +459,8 @@ public class BasicImageInformationType {
          * Obtient la valeur de la propriété imageHeight.
          *
          * @return
-         *     possible object is
-         *     {@link PositiveIntegerType }
+         *         possible object is
+         *         {@link PositiveIntegerType }
          *
          */
         public PositiveIntegerType getImageHeight() {
@@ -472,8 +471,8 @@ public class BasicImageInformationType {
          * Définit la valeur de la propriété imageHeight.
          *
          * @param value
-         *     allowed object is
-         *     {@link PositiveIntegerType }
+         *            allowed object is
+         *            {@link PositiveIntegerType }
          *
          */
         public void setImageHeight(PositiveIntegerType value) {
@@ -484,8 +483,8 @@ public class BasicImageInformationType {
          * Obtient la valeur de la propriété photometricInterpretation.
          *
          * @return
-         *     possible object is
-         *     {@link BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation }
+         *         possible object is
+         *         {@link BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation }
          *
          */
         public BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation getPhotometricInterpretation() {
@@ -496,19 +495,20 @@ public class BasicImageInformationType {
          * Définit la valeur de la propriété photometricInterpretation.
          *
          * @param value
-         *     allowed object is
-         *     {@link BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation }
+         *            allowed object is
+         *            {@link BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation }
          *
          */
         public void setPhotometricInterpretation(BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation value) {
             this.photometricInterpretation = value;
         }
 
-
         /**
-         * <p>Classe Java pour anonymous complex type.
+         * <p>
+         * Classe Java pour anonymous complex type.
          *
-         * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+         * <p>
+         * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
          *
          * <pre>
          * &lt;complexType>
@@ -620,12 +620,11 @@ public class BasicImageInformationType {
          *
          */
         @XmlAccessorType(XmlAccessType.FIELD)
-        @XmlType(name = "", propOrder = {
-            "colorSpace",
-            "colorProfile",
-            "yCbCr",
-            "referenceBlackWhite"
-        })
+        @XmlType(name = "",
+                 propOrder = {"colorSpace",
+                              "colorProfile",
+                              "yCbCr",
+                              "referenceBlackWhite"})
         public static class PhotometricInterpretation {
 
             protected StringType colorSpace;
@@ -640,8 +639,8 @@ public class BasicImageInformationType {
              * Obtient la valeur de la propriété colorSpace.
              *
              * @return
-             *     possible object is
-             *     {@link StringType }
+             *         possible object is
+             *         {@link StringType }
              *
              */
             public StringType getColorSpace() {
@@ -652,8 +651,8 @@ public class BasicImageInformationType {
              * Définit la valeur de la propriété colorSpace.
              *
              * @param value
-             *     allowed object is
-             *     {@link StringType }
+             *            allowed object is
+             *            {@link StringType }
              *
              */
             public void setColorSpace(StringType value) {
@@ -664,8 +663,8 @@ public class BasicImageInformationType {
              * Obtient la valeur de la propriété colorProfile.
              *
              * @return
-             *     possible object is
-             *     {@link BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.ColorProfile }
+             *         possible object is
+             *         {@link BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.ColorProfile }
              *
              */
             public BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.ColorProfile getColorProfile() {
@@ -676,8 +675,8 @@ public class BasicImageInformationType {
              * Définit la valeur de la propriété colorProfile.
              *
              * @param value
-             *     allowed object is
-             *     {@link BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.ColorProfile }
+             *            allowed object is
+             *            {@link BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.ColorProfile }
              *
              */
             public void setColorProfile(BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.ColorProfile value) {
@@ -688,8 +687,8 @@ public class BasicImageInformationType {
              * Obtient la valeur de la propriété yCbCr.
              *
              * @return
-             *     possible object is
-             *     {@link BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.YCbCr }
+             *         possible object is
+             *         {@link BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.YCbCr }
              *
              */
             public BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.YCbCr getYCbCr() {
@@ -700,8 +699,8 @@ public class BasicImageInformationType {
              * Définit la valeur de la propriété yCbCr.
              *
              * @param value
-             *     allowed object is
-             *     {@link BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.YCbCr }
+             *            allowed object is
+             *            {@link BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.YCbCr }
              *
              */
             public void setYCbCr(BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.YCbCr value) {
@@ -719,8 +718,9 @@ public class BasicImageInformationType {
              *
              * <p>
              * For example, to add a new item, do as follows:
+             *
              * <pre>
-             *    getReferenceBlackWhite().add(newItem);
+             * getReferenceBlackWhite().add(newItem);
              * </pre>
              *
              *
@@ -737,11 +737,12 @@ public class BasicImageInformationType {
                 return this.referenceBlackWhite;
             }
 
-
             /**
-             * <p>Classe Java pour anonymous complex type.
+             * <p>
+             * Classe Java pour anonymous complex type.
              *
-             * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+             * <p>
+             * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
              *
              * <pre>
              * &lt;complexType>
@@ -783,11 +784,10 @@ public class BasicImageInformationType {
              *
              */
             @XmlAccessorType(XmlAccessType.FIELD)
-            @XmlType(name = "", propOrder = {
-                "iccProfile",
-                "localProfile",
-                "embeddedProfile"
-            })
+            @XmlType(name = "",
+                     propOrder = {"iccProfile",
+                                  "localProfile",
+                                  "embeddedProfile"})
             public static class ColorProfile {
 
                 @XmlElement(name = "IccProfile")
@@ -800,8 +800,8 @@ public class BasicImageInformationType {
                  * Obtient la valeur de la propriété iccProfile.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.ColorProfile.IccProfile }
+                 *         possible object is
+                 *         {@link BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.ColorProfile.IccProfile }
                  *
                  */
                 public BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.ColorProfile.IccProfile getIccProfile() {
@@ -812,8 +812,8 @@ public class BasicImageInformationType {
                  * Définit la valeur de la propriété iccProfile.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.ColorProfile.IccProfile }
+                 *            allowed object is
+                 *            {@link BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.ColorProfile.IccProfile }
                  *
                  */
                 public void setIccProfile(BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.ColorProfile.IccProfile value) {
@@ -824,8 +824,8 @@ public class BasicImageInformationType {
                  * Obtient la valeur de la propriété localProfile.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.ColorProfile.LocalProfile }
+                 *         possible object is
+                 *         {@link BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.ColorProfile.LocalProfile }
                  *
                  */
                 public BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.ColorProfile.LocalProfile getLocalProfile() {
@@ -836,8 +836,8 @@ public class BasicImageInformationType {
                  * Définit la valeur de la propriété localProfile.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.ColorProfile.LocalProfile }
+                 *            allowed object is
+                 *            {@link BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.ColorProfile.LocalProfile }
                  *
                  */
                 public void setLocalProfile(BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.ColorProfile.LocalProfile value) {
@@ -848,8 +848,8 @@ public class BasicImageInformationType {
                  * Obtient la valeur de la propriété embeddedProfile.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link Base64BinaryType }
+                 *         possible object is
+                 *         {@link Base64BinaryType }
                  *
                  */
                 public Base64BinaryType getEmbeddedProfile() {
@@ -860,19 +860,20 @@ public class BasicImageInformationType {
                  * Définit la valeur de la propriété embeddedProfile.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link Base64BinaryType }
+                 *            allowed object is
+                 *            {@link Base64BinaryType }
                  *
                  */
                 public void setEmbeddedProfile(Base64BinaryType value) {
                     this.embeddedProfile = value;
                 }
 
-
                 /**
-                 * <p>Classe Java pour anonymous complex type.
+                 * <p>
+                 * Classe Java pour anonymous complex type.
                  *
-                 * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+                 * <p>
+                 * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
                  *
                  * <pre>
                  * &lt;complexType>
@@ -891,11 +892,10 @@ public class BasicImageInformationType {
                  *
                  */
                 @XmlAccessorType(XmlAccessType.FIELD)
-                @XmlType(name = "", propOrder = {
-                    "iccProfileName",
-                    "iccProfileVersion",
-                    "iccProfileURI"
-                })
+                @XmlType(name = "",
+                         propOrder = {"iccProfileName",
+                                      "iccProfileVersion",
+                                      "iccProfileURI"})
                 public static class IccProfile {
 
                     protected StringType iccProfileName;
@@ -906,8 +906,8 @@ public class BasicImageInformationType {
                      * Obtient la valeur de la propriété iccProfileName.
                      *
                      * @return
-                     *     possible object is
-                     *     {@link StringType }
+                     *         possible object is
+                     *         {@link StringType }
                      *
                      */
                     public StringType getIccProfileName() {
@@ -918,8 +918,8 @@ public class BasicImageInformationType {
                      * Définit la valeur de la propriété iccProfileName.
                      *
                      * @param value
-                     *     allowed object is
-                     *     {@link StringType }
+                     *            allowed object is
+                     *            {@link StringType }
                      *
                      */
                     public void setIccProfileName(StringType value) {
@@ -930,8 +930,8 @@ public class BasicImageInformationType {
                      * Obtient la valeur de la propriété iccProfileVersion.
                      *
                      * @return
-                     *     possible object is
-                     *     {@link StringType }
+                     *         possible object is
+                     *         {@link StringType }
                      *
                      */
                     public StringType getIccProfileVersion() {
@@ -942,8 +942,8 @@ public class BasicImageInformationType {
                      * Définit la valeur de la propriété iccProfileVersion.
                      *
                      * @param value
-                     *     allowed object is
-                     *     {@link StringType }
+                     *            allowed object is
+                     *            {@link StringType }
                      *
                      */
                     public void setIccProfileVersion(StringType value) {
@@ -954,8 +954,8 @@ public class BasicImageInformationType {
                      * Obtient la valeur de la propriété iccProfileURI.
                      *
                      * @return
-                     *     possible object is
-                     *     {@link URIType }
+                     *         possible object is
+                     *         {@link URIType }
                      *
                      */
                     public URIType getIccProfileURI() {
@@ -966,8 +966,8 @@ public class BasicImageInformationType {
                      * Définit la valeur de la propriété iccProfileURI.
                      *
                      * @param value
-                     *     allowed object is
-                     *     {@link URIType }
+                     *            allowed object is
+                     *            {@link URIType }
                      *
                      */
                     public void setIccProfileURI(URIType value) {
@@ -976,11 +976,12 @@ public class BasicImageInformationType {
 
                 }
 
-
                 /**
-                 * <p>Classe Java pour anonymous complex type.
+                 * <p>
+                 * Classe Java pour anonymous complex type.
                  *
-                 * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+                 * <p>
+                 * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
                  *
                  * <pre>
                  * &lt;complexType>
@@ -998,10 +999,9 @@ public class BasicImageInformationType {
                  *
                  */
                 @XmlAccessorType(XmlAccessType.FIELD)
-                @XmlType(name = "", propOrder = {
-                    "localProfileName",
-                    "localProfileURL"
-                })
+                @XmlType(name = "",
+                         propOrder = {"localProfileName",
+                                      "localProfileURL"})
                 public static class LocalProfile {
 
                     protected StringType localProfileName;
@@ -1011,8 +1011,8 @@ public class BasicImageInformationType {
                      * Obtient la valeur de la propriété localProfileName.
                      *
                      * @return
-                     *     possible object is
-                     *     {@link StringType }
+                     *         possible object is
+                     *         {@link StringType }
                      *
                      */
                     public StringType getLocalProfileName() {
@@ -1023,8 +1023,8 @@ public class BasicImageInformationType {
                      * Définit la valeur de la propriété localProfileName.
                      *
                      * @param value
-                     *     allowed object is
-                     *     {@link StringType }
+                     *            allowed object is
+                     *            {@link StringType }
                      *
                      */
                     public void setLocalProfileName(StringType value) {
@@ -1035,8 +1035,8 @@ public class BasicImageInformationType {
                      * Obtient la valeur de la propriété localProfileURL.
                      *
                      * @return
-                     *     possible object is
-                     *     {@link URIType }
+                     *         possible object is
+                     *         {@link URIType }
                      *
                      */
                     public URIType getLocalProfileURL() {
@@ -1047,8 +1047,8 @@ public class BasicImageInformationType {
                      * Définit la valeur de la propriété localProfileURL.
                      *
                      * @param value
-                     *     allowed object is
-                     *     {@link URIType }
+                     *            allowed object is
+                     *            {@link URIType }
                      *
                      */
                     public void setLocalProfileURL(URIType value) {
@@ -1059,11 +1059,12 @@ public class BasicImageInformationType {
 
             }
 
-
             /**
-             * <p>Classe Java pour anonymous complex type.
+             * <p>
+             * Classe Java pour anonymous complex type.
              *
-             * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+             * <p>
+             * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
              *
              * <pre>
              * &lt;complexType>
@@ -1092,9 +1093,7 @@ public class BasicImageInformationType {
              *
              */
             @XmlAccessorType(XmlAccessType.FIELD)
-            @XmlType(name = "", propOrder = {
-                "component"
-            })
+            @XmlType(name = "", propOrder = {"component"})
             public static class ReferenceBlackWhite {
 
                 @XmlElement(name = "Component")
@@ -1111,8 +1110,9 @@ public class BasicImageInformationType {
                  *
                  * <p>
                  * For example, to add a new item, do as follows:
+                 *
                  * <pre>
-                 *    getComponent().add(newItem);
+                 * getComponent().add(newItem);
                  * </pre>
                  *
                  *
@@ -1129,11 +1129,12 @@ public class BasicImageInformationType {
                     return this.component;
                 }
 
-
                 /**
-                 * <p>Classe Java pour anonymous complex type.
+                 * <p>
+                 * Classe Java pour anonymous complex type.
                  *
-                 * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+                 * <p>
+                 * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
                  *
                  * <pre>
                  * &lt;complexType>
@@ -1152,11 +1153,10 @@ public class BasicImageInformationType {
                  *
                  */
                 @XmlAccessorType(XmlAccessType.FIELD)
-                @XmlType(name = "", propOrder = {
-                    "componentPhotometricInterpretation",
-                    "footroom",
-                    "headroom"
-                })
+                @XmlType(name = "",
+                         propOrder = {"componentPhotometricInterpretation",
+                                      "footroom",
+                                      "headroom"})
                 public static class Component {
 
                     @XmlElement(required = true)
@@ -1170,8 +1170,8 @@ public class BasicImageInformationType {
                      * Obtient la valeur de la propriété componentPhotometricInterpretation.
                      *
                      * @return
-                     *     possible object is
-                     *     {@link TypeOfComponentPhotometricInterpretationType }
+                     *         possible object is
+                     *         {@link TypeOfComponentPhotometricInterpretationType }
                      *
                      */
                     public TypeOfComponentPhotometricInterpretationType getComponentPhotometricInterpretation() {
@@ -1182,8 +1182,8 @@ public class BasicImageInformationType {
                      * Définit la valeur de la propriété componentPhotometricInterpretation.
                      *
                      * @param value
-                     *     allowed object is
-                     *     {@link TypeOfComponentPhotometricInterpretationType }
+                     *            allowed object is
+                     *            {@link TypeOfComponentPhotometricInterpretationType }
                      *
                      */
                     public void setComponentPhotometricInterpretation(TypeOfComponentPhotometricInterpretationType value) {
@@ -1194,8 +1194,8 @@ public class BasicImageInformationType {
                      * Obtient la valeur de la propriété footroom.
                      *
                      * @return
-                     *     possible object is
-                     *     {@link RationalType }
+                     *         possible object is
+                     *         {@link RationalType }
                      *
                      */
                     public RationalType getFootroom() {
@@ -1206,8 +1206,8 @@ public class BasicImageInformationType {
                      * Définit la valeur de la propriété footroom.
                      *
                      * @param value
-                     *     allowed object is
-                     *     {@link RationalType }
+                     *            allowed object is
+                     *            {@link RationalType }
                      *
                      */
                     public void setFootroom(RationalType value) {
@@ -1218,8 +1218,8 @@ public class BasicImageInformationType {
                      * Obtient la valeur de la propriété headroom.
                      *
                      * @return
-                     *     possible object is
-                     *     {@link RationalType }
+                     *         possible object is
+                     *         {@link RationalType }
                      *
                      */
                     public RationalType getHeadroom() {
@@ -1230,8 +1230,8 @@ public class BasicImageInformationType {
                      * Définit la valeur de la propriété headroom.
                      *
                      * @param value
-                     *     allowed object is
-                     *     {@link RationalType }
+                     *            allowed object is
+                     *            {@link RationalType }
                      *
                      */
                     public void setHeadroom(RationalType value) {
@@ -1242,11 +1242,12 @@ public class BasicImageInformationType {
 
             }
 
-
             /**
-             * <p>Classe Java pour anonymous complex type.
+             * <p>
+             * Classe Java pour anonymous complex type.
              *
-             * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+             * <p>
+             * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
              *
              * <pre>
              * &lt;complexType>
@@ -1288,11 +1289,10 @@ public class BasicImageInformationType {
              *
              */
             @XmlAccessorType(XmlAccessType.FIELD)
-            @XmlType(name = "", propOrder = {
-                "yCbCrSubSampling",
-                "yCbCrPositioning",
-                "yCbCrCoefficients"
-            })
+            @XmlType(name = "",
+                     propOrder = {"yCbCrSubSampling",
+                                  "yCbCrPositioning",
+                                  "yCbCrCoefficients"})
             public static class YCbCr {
 
                 @XmlElement(name = "YCbCrSubSampling")
@@ -1305,8 +1305,8 @@ public class BasicImageInformationType {
                  * Obtient la valeur de la propriété yCbCrSubSampling.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.YCbCr.YCbCrSubSampling }
+                 *         possible object is
+                 *         {@link BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.YCbCr.YCbCrSubSampling }
                  *
                  */
                 public BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.YCbCr.YCbCrSubSampling getYCbCrSubSampling() {
@@ -1317,8 +1317,8 @@ public class BasicImageInformationType {
                  * Définit la valeur de la propriété yCbCrSubSampling.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.YCbCr.YCbCrSubSampling }
+                 *            allowed object is
+                 *            {@link BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.YCbCr.YCbCrSubSampling }
                  *
                  */
                 public void setYCbCrSubSampling(BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.YCbCr.YCbCrSubSampling value) {
@@ -1329,8 +1329,8 @@ public class BasicImageInformationType {
                  * Obtient la valeur de la propriété yCbCrPositioning.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link TypeOfYCbCrPositioningType }
+                 *         possible object is
+                 *         {@link TypeOfYCbCrPositioningType }
                  *
                  */
                 public TypeOfYCbCrPositioningType getYCbCrPositioning() {
@@ -1341,8 +1341,8 @@ public class BasicImageInformationType {
                  * Définit la valeur de la propriété yCbCrPositioning.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link TypeOfYCbCrPositioningType }
+                 *            allowed object is
+                 *            {@link TypeOfYCbCrPositioningType }
                  *
                  */
                 public void setYCbCrPositioning(TypeOfYCbCrPositioningType value) {
@@ -1353,8 +1353,8 @@ public class BasicImageInformationType {
                  * Obtient la valeur de la propriété yCbCrCoefficients.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.YCbCr.YCbCrCoefficients }
+                 *         possible object is
+                 *         {@link BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.YCbCr.YCbCrCoefficients }
                  *
                  */
                 public BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.YCbCr.YCbCrCoefficients getYCbCrCoefficients() {
@@ -1365,19 +1365,20 @@ public class BasicImageInformationType {
                  * Définit la valeur de la propriété yCbCrCoefficients.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.YCbCr.YCbCrCoefficients }
+                 *            allowed object is
+                 *            {@link BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.YCbCr.YCbCrCoefficients }
                  *
                  */
                 public void setYCbCrCoefficients(BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.YCbCr.YCbCrCoefficients value) {
                     this.yCbCrCoefficients = value;
                 }
 
-
                 /**
-                 * <p>Classe Java pour anonymous complex type.
+                 * <p>
+                 * Classe Java pour anonymous complex type.
                  *
-                 * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+                 * <p>
+                 * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
                  *
                  * <pre>
                  * &lt;complexType>
@@ -1396,11 +1397,10 @@ public class BasicImageInformationType {
                  *
                  */
                 @XmlAccessorType(XmlAccessType.FIELD)
-                @XmlType(name = "", propOrder = {
-                    "lumaRed",
-                    "lumaGreen",
-                    "lumaBlue"
-                })
+                @XmlType(name = "",
+                         propOrder = {"lumaRed",
+                                      "lumaGreen",
+                                      "lumaBlue"})
                 public static class YCbCrCoefficients {
 
                     protected RationalType lumaRed;
@@ -1411,8 +1411,8 @@ public class BasicImageInformationType {
                      * Obtient la valeur de la propriété lumaRed.
                      *
                      * @return
-                     *     possible object is
-                     *     {@link RationalType }
+                     *         possible object is
+                     *         {@link RationalType }
                      *
                      */
                     public RationalType getLumaRed() {
@@ -1423,8 +1423,8 @@ public class BasicImageInformationType {
                      * Définit la valeur de la propriété lumaRed.
                      *
                      * @param value
-                     *     allowed object is
-                     *     {@link RationalType }
+                     *            allowed object is
+                     *            {@link RationalType }
                      *
                      */
                     public void setLumaRed(RationalType value) {
@@ -1435,8 +1435,8 @@ public class BasicImageInformationType {
                      * Obtient la valeur de la propriété lumaGreen.
                      *
                      * @return
-                     *     possible object is
-                     *     {@link RationalType }
+                     *         possible object is
+                     *         {@link RationalType }
                      *
                      */
                     public RationalType getLumaGreen() {
@@ -1447,8 +1447,8 @@ public class BasicImageInformationType {
                      * Définit la valeur de la propriété lumaGreen.
                      *
                      * @param value
-                     *     allowed object is
-                     *     {@link RationalType }
+                     *            allowed object is
+                     *            {@link RationalType }
                      *
                      */
                     public void setLumaGreen(RationalType value) {
@@ -1459,8 +1459,8 @@ public class BasicImageInformationType {
                      * Obtient la valeur de la propriété lumaBlue.
                      *
                      * @return
-                     *     possible object is
-                     *     {@link RationalType }
+                     *         possible object is
+                     *         {@link RationalType }
                      *
                      */
                     public RationalType getLumaBlue() {
@@ -1471,8 +1471,8 @@ public class BasicImageInformationType {
                      * Définit la valeur de la propriété lumaBlue.
                      *
                      * @param value
-                     *     allowed object is
-                     *     {@link RationalType }
+                     *            allowed object is
+                     *            {@link RationalType }
                      *
                      */
                     public void setLumaBlue(RationalType value) {
@@ -1481,11 +1481,12 @@ public class BasicImageInformationType {
 
                 }
 
-
                 /**
-                 * <p>Classe Java pour anonymous complex type.
+                 * <p>
+                 * Classe Java pour anonymous complex type.
                  *
-                 * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+                 * <p>
+                 * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
                  *
                  * <pre>
                  * &lt;complexType>
@@ -1503,10 +1504,9 @@ public class BasicImageInformationType {
                  *
                  */
                 @XmlAccessorType(XmlAccessType.FIELD)
-                @XmlType(name = "", propOrder = {
-                    "yCbCrSubsampleHoriz",
-                    "yCbCrSubsampleVert"
-                })
+                @XmlType(name = "",
+                         propOrder = {"yCbCrSubsampleHoriz",
+                                      "yCbCrSubsampleVert"})
                 public static class YCbCrSubSampling {
 
                     protected TypeOfYCbCrSubsampleHorizType yCbCrSubsampleHoriz;
@@ -1516,8 +1516,8 @@ public class BasicImageInformationType {
                      * Obtient la valeur de la propriété yCbCrSubsampleHoriz.
                      *
                      * @return
-                     *     possible object is
-                     *     {@link TypeOfYCbCrSubsampleHorizType }
+                     *         possible object is
+                     *         {@link TypeOfYCbCrSubsampleHorizType }
                      *
                      */
                     public TypeOfYCbCrSubsampleHorizType getYCbCrSubsampleHoriz() {
@@ -1528,8 +1528,8 @@ public class BasicImageInformationType {
                      * Définit la valeur de la propriété yCbCrSubsampleHoriz.
                      *
                      * @param value
-                     *     allowed object is
-                     *     {@link TypeOfYCbCrSubsampleHorizType }
+                     *            allowed object is
+                     *            {@link TypeOfYCbCrSubsampleHorizType }
                      *
                      */
                     public void setYCbCrSubsampleHoriz(TypeOfYCbCrSubsampleHorizType value) {
@@ -1540,8 +1540,8 @@ public class BasicImageInformationType {
                      * Obtient la valeur de la propriété yCbCrSubsampleVert.
                      *
                      * @return
-                     *     possible object is
-                     *     {@link TypeOfYCbCrSubsampleVertType }
+                     *         possible object is
+                     *         {@link TypeOfYCbCrSubsampleVertType }
                      *
                      */
                     public TypeOfYCbCrSubsampleVertType getYCbCrSubsampleVert() {
@@ -1552,8 +1552,8 @@ public class BasicImageInformationType {
                      * Définit la valeur de la propriété yCbCrSubsampleVert.
                      *
                      * @param value
-                     *     allowed object is
-                     *     {@link TypeOfYCbCrSubsampleVertType }
+                     *            allowed object is
+                     *            {@link TypeOfYCbCrSubsampleVertType }
                      *
                      */
                     public void setYCbCrSubsampleVert(TypeOfYCbCrSubsampleVertType value) {
@@ -1568,11 +1568,12 @@ public class BasicImageInformationType {
 
     }
 
-
     /**
-     * <p>Classe Java pour anonymous complex type.
+     * <p>
+     * Classe Java pour anonymous complex type.
      *
-     * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+     * <p>
+     * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
      *
      * <pre>
      * &lt;complexType>
@@ -1658,11 +1659,10 @@ public class BasicImageInformationType {
      *
      */
     @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "jpeg2000",
-        "mrSID",
-        "djvu"
-    })
+    @XmlType(name = "",
+             propOrder = {"jpeg2000",
+                          "mrSID",
+                          "djvu"})
     public static class SpecialFormatCharacteristics {
 
         @XmlElement(name = "JPEG2000")
@@ -1676,8 +1676,8 @@ public class BasicImageInformationType {
          * Obtient la valeur de la propriété jpeg2000.
          *
          * @return
-         *     possible object is
-         *     {@link BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000 }
+         *         possible object is
+         *         {@link BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000 }
          *
          */
         public BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000 getJPEG2000() {
@@ -1688,8 +1688,8 @@ public class BasicImageInformationType {
          * Définit la valeur de la propriété jpeg2000.
          *
          * @param value
-         *     allowed object is
-         *     {@link BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000 }
+         *            allowed object is
+         *            {@link BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000 }
          *
          */
         public void setJPEG2000(BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000 value) {
@@ -1700,8 +1700,8 @@ public class BasicImageInformationType {
          * Obtient la valeur de la propriété mrSID.
          *
          * @return
-         *     possible object is
-         *     {@link BasicImageInformationType.SpecialFormatCharacteristics.MrSID }
+         *         possible object is
+         *         {@link BasicImageInformationType.SpecialFormatCharacteristics.MrSID }
          *
          */
         public BasicImageInformationType.SpecialFormatCharacteristics.MrSID getMrSID() {
@@ -1712,8 +1712,8 @@ public class BasicImageInformationType {
          * Définit la valeur de la propriété mrSID.
          *
          * @param value
-         *     allowed object is
-         *     {@link BasicImageInformationType.SpecialFormatCharacteristics.MrSID }
+         *            allowed object is
+         *            {@link BasicImageInformationType.SpecialFormatCharacteristics.MrSID }
          *
          */
         public void setMrSID(BasicImageInformationType.SpecialFormatCharacteristics.MrSID value) {
@@ -1724,8 +1724,8 @@ public class BasicImageInformationType {
          * Obtient la valeur de la propriété djvu.
          *
          * @return
-         *     possible object is
-         *     {@link BasicImageInformationType.SpecialFormatCharacteristics.Djvu }
+         *         possible object is
+         *         {@link BasicImageInformationType.SpecialFormatCharacteristics.Djvu }
          *
          */
         public BasicImageInformationType.SpecialFormatCharacteristics.Djvu getDjvu() {
@@ -1736,19 +1736,20 @@ public class BasicImageInformationType {
          * Définit la valeur de la propriété djvu.
          *
          * @param value
-         *     allowed object is
-         *     {@link BasicImageInformationType.SpecialFormatCharacteristics.Djvu }
+         *            allowed object is
+         *            {@link BasicImageInformationType.SpecialFormatCharacteristics.Djvu }
          *
          */
         public void setDjvu(BasicImageInformationType.SpecialFormatCharacteristics.Djvu value) {
             this.djvu = value;
         }
 
-
         /**
-         * <p>Classe Java pour anonymous complex type.
+         * <p>
+         * Classe Java pour anonymous complex type.
          *
-         * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+         * <p>
+         * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
          *
          * <pre>
          * &lt;complexType>
@@ -1765,9 +1766,7 @@ public class BasicImageInformationType {
          *
          */
         @XmlAccessorType(XmlAccessType.FIELD)
-        @XmlType(name = "", propOrder = {
-            "djvuFormat"
-        })
+        @XmlType(name = "", propOrder = {"djvuFormat"})
         public static class Djvu {
 
             protected TypeOfDjvuFormatType djvuFormat;
@@ -1776,8 +1775,8 @@ public class BasicImageInformationType {
              * Obtient la valeur de la propriété djvuFormat.
              *
              * @return
-             *     possible object is
-             *     {@link TypeOfDjvuFormatType }
+             *         possible object is
+             *         {@link TypeOfDjvuFormatType }
              *
              */
             public TypeOfDjvuFormatType getDjvuFormat() {
@@ -1788,8 +1787,8 @@ public class BasicImageInformationType {
              * Définit la valeur de la propriété djvuFormat.
              *
              * @param value
-             *     allowed object is
-             *     {@link TypeOfDjvuFormatType }
+             *            allowed object is
+             *            {@link TypeOfDjvuFormatType }
              *
              */
             public void setDjvuFormat(TypeOfDjvuFormatType value) {
@@ -1798,11 +1797,12 @@ public class BasicImageInformationType {
 
         }
 
-
         /**
-         * <p>Classe Java pour anonymous complex type.
+         * <p>
+         * Classe Java pour anonymous complex type.
          *
-         * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+         * <p>
+         * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
          *
          * <pre>
          * &lt;complexType>
@@ -1856,26 +1856,25 @@ public class BasicImageInformationType {
          *
          */
         @XmlAccessorType(XmlAccessType.FIELD)
-        @XmlType(name = "", propOrder = {
-            "codecCompliance",
-            "encodingOptions"
-        })
+        @XmlType(name = "",
+                 propOrder = {"codecCompliance",
+                              "encodingOptions"})
         public static class JPEG2000 {
 
             @XmlElement(name = "CodecCompliance")
-            protected BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000 .CodecCompliance codecCompliance;
+            protected BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000.CodecCompliance codecCompliance;
             @XmlElement(name = "EncodingOptions")
-            protected BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000 .EncodingOptions encodingOptions;
+            protected BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000.EncodingOptions encodingOptions;
 
             /**
              * Obtient la valeur de la propriété codecCompliance.
              *
              * @return
-             *     possible object is
-             *     {@link BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000 .CodecCompliance }
+             *         possible object is
+             *         {@link BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000 .CodecCompliance }
              *
              */
-            public BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000 .CodecCompliance getCodecCompliance() {
+            public BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000.CodecCompliance getCodecCompliance() {
                 return codecCompliance;
             }
 
@@ -1883,11 +1882,11 @@ public class BasicImageInformationType {
              * Définit la valeur de la propriété codecCompliance.
              *
              * @param value
-             *     allowed object is
-             *     {@link BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000 .CodecCompliance }
+             *            allowed object is
+             *            {@link BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000 .CodecCompliance }
              *
              */
-            public void setCodecCompliance(BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000 .CodecCompliance value) {
+            public void setCodecCompliance(BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000.CodecCompliance value) {
                 this.codecCompliance = value;
             }
 
@@ -1895,11 +1894,11 @@ public class BasicImageInformationType {
              * Obtient la valeur de la propriété encodingOptions.
              *
              * @return
-             *     possible object is
-             *     {@link BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000 .EncodingOptions }
+             *         possible object is
+             *         {@link BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000 .EncodingOptions }
              *
              */
-            public BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000 .EncodingOptions getEncodingOptions() {
+            public BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000.EncodingOptions getEncodingOptions() {
                 return encodingOptions;
             }
 
@@ -1907,19 +1906,20 @@ public class BasicImageInformationType {
              * Définit la valeur de la propriété encodingOptions.
              *
              * @param value
-             *     allowed object is
-             *     {@link BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000 .EncodingOptions }
+             *            allowed object is
+             *            {@link BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000 .EncodingOptions }
              *
              */
-            public void setEncodingOptions(BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000 .EncodingOptions value) {
+            public void setEncodingOptions(BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000.EncodingOptions value) {
                 this.encodingOptions = value;
             }
 
-
             /**
-             * <p>Classe Java pour anonymous complex type.
+             * <p>
+             * Classe Java pour anonymous complex type.
              *
-             * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+             * <p>
+             * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
              *
              * <pre>
              * &lt;complexType>
@@ -1939,12 +1939,11 @@ public class BasicImageInformationType {
              *
              */
             @XmlAccessorType(XmlAccessType.FIELD)
-            @XmlType(name = "", propOrder = {
-                "codec",
-                "codecVersion",
-                "codestreamProfile",
-                "complianceClass"
-            })
+            @XmlType(name = "",
+                     propOrder = {"codec",
+                                  "codecVersion",
+                                  "codestreamProfile",
+                                  "complianceClass"})
             public static class CodecCompliance {
 
                 protected StringType codec;
@@ -1956,8 +1955,8 @@ public class BasicImageInformationType {
                  * Obtient la valeur de la propriété codec.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link StringType }
+                 *         possible object is
+                 *         {@link StringType }
                  *
                  */
                 public StringType getCodec() {
@@ -1968,8 +1967,8 @@ public class BasicImageInformationType {
                  * Définit la valeur de la propriété codec.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link StringType }
+                 *            allowed object is
+                 *            {@link StringType }
                  *
                  */
                 public void setCodec(StringType value) {
@@ -1980,8 +1979,8 @@ public class BasicImageInformationType {
                  * Obtient la valeur de la propriété codecVersion.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link StringType }
+                 *         possible object is
+                 *         {@link StringType }
                  *
                  */
                 public StringType getCodecVersion() {
@@ -1992,8 +1991,8 @@ public class BasicImageInformationType {
                  * Définit la valeur de la propriété codecVersion.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link StringType }
+                 *            allowed object is
+                 *            {@link StringType }
                  *
                  */
                 public void setCodecVersion(StringType value) {
@@ -2004,8 +2003,8 @@ public class BasicImageInformationType {
                  * Obtient la valeur de la propriété codestreamProfile.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link StringType }
+                 *         possible object is
+                 *         {@link StringType }
                  *
                  */
                 public StringType getCodestreamProfile() {
@@ -2016,8 +2015,8 @@ public class BasicImageInformationType {
                  * Définit la valeur de la propriété codestreamProfile.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link StringType }
+                 *            allowed object is
+                 *            {@link StringType }
                  *
                  */
                 public void setCodestreamProfile(StringType value) {
@@ -2028,8 +2027,8 @@ public class BasicImageInformationType {
                  * Obtient la valeur de la propriété complianceClass.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link StringType }
+                 *         possible object is
+                 *         {@link StringType }
                  *
                  */
                 public StringType getComplianceClass() {
@@ -2040,8 +2039,8 @@ public class BasicImageInformationType {
                  * Définit la valeur de la propriété complianceClass.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link StringType }
+                 *            allowed object is
+                 *            {@link StringType }
                  *
                  */
                 public void setComplianceClass(StringType value) {
@@ -2050,11 +2049,12 @@ public class BasicImageInformationType {
 
             }
 
-
             /**
-             * <p>Classe Java pour anonymous complex type.
+             * <p>
+             * Classe Java pour anonymous complex type.
              *
-             * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+             * <p>
+             * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
              *
              * <pre>
              * &lt;complexType>
@@ -2084,15 +2084,14 @@ public class BasicImageInformationType {
              *
              */
             @XmlAccessorType(XmlAccessType.FIELD)
-            @XmlType(name = "", propOrder = {
-                "tiles",
-                "qualityLayers",
-                "resolutionLevels"
-            })
+            @XmlType(name = "",
+                     propOrder = {"tiles",
+                                  "qualityLayers",
+                                  "resolutionLevels"})
             public static class EncodingOptions {
 
                 @XmlElement(name = "Tiles")
-                protected BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000 .EncodingOptions.Tiles tiles;
+                protected BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000.EncodingOptions.Tiles tiles;
                 protected PositiveIntegerType qualityLayers;
                 protected PositiveIntegerType resolutionLevels;
 
@@ -2100,11 +2099,11 @@ public class BasicImageInformationType {
                  * Obtient la valeur de la propriété tiles.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000 .EncodingOptions.Tiles }
+                 *         possible object is
+                 *         {@link BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000 .EncodingOptions.Tiles }
                  *
                  */
-                public BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000 .EncodingOptions.Tiles getTiles() {
+                public BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000.EncodingOptions.Tiles getTiles() {
                     return tiles;
                 }
 
@@ -2112,11 +2111,11 @@ public class BasicImageInformationType {
                  * Définit la valeur de la propriété tiles.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000 .EncodingOptions.Tiles }
+                 *            allowed object is
+                 *            {@link BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000 .EncodingOptions.Tiles }
                  *
                  */
-                public void setTiles(BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000 .EncodingOptions.Tiles value) {
+                public void setTiles(BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000.EncodingOptions.Tiles value) {
                     this.tiles = value;
                 }
 
@@ -2124,8 +2123,8 @@ public class BasicImageInformationType {
                  * Obtient la valeur de la propriété qualityLayers.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link PositiveIntegerType }
+                 *         possible object is
+                 *         {@link PositiveIntegerType }
                  *
                  */
                 public PositiveIntegerType getQualityLayers() {
@@ -2136,8 +2135,8 @@ public class BasicImageInformationType {
                  * Définit la valeur de la propriété qualityLayers.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link PositiveIntegerType }
+                 *            allowed object is
+                 *            {@link PositiveIntegerType }
                  *
                  */
                 public void setQualityLayers(PositiveIntegerType value) {
@@ -2148,8 +2147,8 @@ public class BasicImageInformationType {
                  * Obtient la valeur de la propriété resolutionLevels.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link PositiveIntegerType }
+                 *         possible object is
+                 *         {@link PositiveIntegerType }
                  *
                  */
                 public PositiveIntegerType getResolutionLevels() {
@@ -2160,19 +2159,20 @@ public class BasicImageInformationType {
                  * Définit la valeur de la propriété resolutionLevels.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link PositiveIntegerType }
+                 *            allowed object is
+                 *            {@link PositiveIntegerType }
                  *
                  */
                 public void setResolutionLevels(PositiveIntegerType value) {
                     this.resolutionLevels = value;
                 }
 
-
                 /**
-                 * <p>Classe Java pour anonymous complex type.
+                 * <p>
+                 * Classe Java pour anonymous complex type.
                  *
-                 * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+                 * <p>
+                 * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
                  *
                  * <pre>
                  * &lt;complexType>
@@ -2190,10 +2190,9 @@ public class BasicImageInformationType {
                  *
                  */
                 @XmlAccessorType(XmlAccessType.FIELD)
-                @XmlType(name = "", propOrder = {
-                    "tileWidth",
-                    "tileHeight"
-                })
+                @XmlType(name = "",
+                         propOrder = {"tileWidth",
+                                      "tileHeight"})
                 public static class Tiles {
 
                     protected PositiveIntegerType tileWidth;
@@ -2203,8 +2202,8 @@ public class BasicImageInformationType {
                      * Obtient la valeur de la propriété tileWidth.
                      *
                      * @return
-                     *     possible object is
-                     *     {@link PositiveIntegerType }
+                     *         possible object is
+                     *         {@link PositiveIntegerType }
                      *
                      */
                     public PositiveIntegerType getTileWidth() {
@@ -2215,8 +2214,8 @@ public class BasicImageInformationType {
                      * Définit la valeur de la propriété tileWidth.
                      *
                      * @param value
-                     *     allowed object is
-                     *     {@link PositiveIntegerType }
+                     *            allowed object is
+                     *            {@link PositiveIntegerType }
                      *
                      */
                     public void setTileWidth(PositiveIntegerType value) {
@@ -2227,8 +2226,8 @@ public class BasicImageInformationType {
                      * Obtient la valeur de la propriété tileHeight.
                      *
                      * @return
-                     *     possible object is
-                     *     {@link PositiveIntegerType }
+                     *         possible object is
+                     *         {@link PositiveIntegerType }
                      *
                      */
                     public PositiveIntegerType getTileHeight() {
@@ -2239,8 +2238,8 @@ public class BasicImageInformationType {
                      * Définit la valeur de la propriété tileHeight.
                      *
                      * @param value
-                     *     allowed object is
-                     *     {@link PositiveIntegerType }
+                     *            allowed object is
+                     *            {@link PositiveIntegerType }
                      *
                      */
                     public void setTileHeight(PositiveIntegerType value) {
@@ -2253,11 +2252,12 @@ public class BasicImageInformationType {
 
         }
 
-
         /**
-         * <p>Classe Java pour anonymous complex type.
+         * <p>
+         * Classe Java pour anonymous complex type.
          *
-         * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+         * <p>
+         * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
          *
          * <pre>
          * &lt;complexType>
@@ -2274,9 +2274,7 @@ public class BasicImageInformationType {
          *
          */
         @XmlAccessorType(XmlAccessType.FIELD)
-        @XmlType(name = "", propOrder = {
-            "zoomLevels"
-        })
+        @XmlType(name = "", propOrder = {"zoomLevels"})
         public static class MrSID {
 
             protected PositiveIntegerType zoomLevels;
@@ -2285,8 +2283,8 @@ public class BasicImageInformationType {
              * Obtient la valeur de la propriété zoomLevels.
              *
              * @return
-             *     possible object is
-             *     {@link PositiveIntegerType }
+             *         possible object is
+             *         {@link PositiveIntegerType }
              *
              */
             public PositiveIntegerType getZoomLevels() {
@@ -2297,8 +2295,8 @@ public class BasicImageInformationType {
              * Définit la valeur de la propriété zoomLevels.
              *
              * @param value
-             *     allowed object is
-             *     {@link PositiveIntegerType }
+             *            allowed object is
+             *            {@link PositiveIntegerType }
              *
              */
             public void setZoomLevels(PositiveIntegerType value) {

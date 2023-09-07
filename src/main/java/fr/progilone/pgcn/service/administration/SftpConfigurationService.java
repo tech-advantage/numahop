@@ -14,6 +14,17 @@ import fr.progilone.pgcn.exception.message.PgcnList;
 import fr.progilone.pgcn.repository.administration.SftpConfigurationRepository;
 import fr.progilone.pgcn.service.administration.mapper.SftpConfigurationMapper;
 import fr.progilone.pgcn.service.util.CryptoService;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Unmarshaller;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,18 +36,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Created by Sébastien on 30/12/2016.
@@ -57,9 +56,8 @@ public class SftpConfigurationService {
 
     @Transactional(readOnly = true)
     public Set<SftpConfigurationDTO> findAllDto(final Boolean active) {
-        final Set<SftpConfiguration> confs = Boolean.TRUE.equals(active) ?
-                                             sftpConfigurationRepository.findByActiveWithDependencies(true) :
-                                             sftpConfigurationRepository.findAllWithDependencies();
+        final Set<SftpConfiguration> confs = Boolean.TRUE.equals(active) ? sftpConfigurationRepository.findByActiveWithDependencies(true)
+                                                                         : sftpConfigurationRepository.findAllWithDependencies();
         return SftpConfigurationMapper.INSTANCE.configurationSftpToDtos(confs);
     }
 
@@ -72,17 +70,15 @@ public class SftpConfigurationService {
 
     @Transactional(readOnly = true)
     public Set<SftpConfiguration> findByLibrary(final Library library, final boolean active) {
-        return Boolean.TRUE.equals(active) ?
-               sftpConfigurationRepository.findByLibraryAndActive(library, true) :
-               sftpConfigurationRepository.findByLibrary(library);
+        return Boolean.TRUE.equals(active) ? sftpConfigurationRepository.findByLibraryAndActive(library, true)
+                                           : sftpConfigurationRepository.findByLibrary(library);
 
     }
 
     @Transactional(readOnly = true)
     public Set<SftpConfigurationDTO> findDtoByLibrary(final Library library, final Boolean active) {
-        final Set<SftpConfiguration> confs = Boolean.TRUE.equals(active) ?
-                                             sftpConfigurationRepository.findByLibraryAndActive(library, true) :
-                                             sftpConfigurationRepository.findByLibrary(library);
+        final Set<SftpConfiguration> confs = Boolean.TRUE.equals(active) ? sftpConfigurationRepository.findByLibraryAndActive(library, true)
+                                                                         : sftpConfigurationRepository.findByLibrary(library);
         return SftpConfigurationMapper.INSTANCE.configurationSftpToDtos(confs);
     }
 
@@ -102,19 +98,16 @@ public class SftpConfigurationService {
      */
     @Transactional(readOnly = true)
     public Page<SftpConfigurationDTO> search(String search, List<String> libraries, Integer page, Integer size) {
-        final Pageable pageRequest = new PageRequest(page, size);
+        final Pageable pageRequest = PageRequest.of(page, size);
         Page<SftpConfiguration> configurations = sftpConfigurationRepository.search(search, libraries, pageRequest);
 
-        List<SftpConfigurationDTO> results =
-            configurations.getContent().stream().map(SftpConfigurationMapper.INSTANCE::configurationSftpToDto).collect(Collectors.toList());
-        return new PageImpl<>(results,
-                              new PageRequest(configurations.getNumber(), configurations.getSize(), configurations.getSort()),
-                              configurations.getTotalElements());
+        List<SftpConfigurationDTO> results = configurations.getContent().stream().map(SftpConfigurationMapper.INSTANCE::configurationSftpToDto).collect(Collectors.toList());
+        return new PageImpl<>(results, PageRequest.of(configurations.getNumber(), configurations.getSize(), configurations.getSort()), configurations.getTotalElements());
     }
 
     @Transactional
     public void delete(final String id) {
-        sftpConfigurationRepository.delete(id);
+        sftpConfigurationRepository.deleteById(id);
     }
 
     @Transactional
@@ -168,7 +161,7 @@ public class SftpConfigurationService {
                 opt = unmarshallPpdiFile(file.getInputStream());
             } catch (JAXBException | IOException e) {
                 LOG.error(e.getMessage(), e);
-                // pb du fichier ppdi : invalide ?  - on fait rien ..
+                // pb du fichier ppdi : invalide ? - on fait rien ..
                 return;
             }
             if (opt.isPresent()) {

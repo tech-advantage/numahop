@@ -4,6 +4,13 @@ import fr.progilone.pgcn.domain.document.BibliographicRecord;
 import fr.progilone.pgcn.domain.document.DocProperty;
 import fr.progilone.pgcn.domain.document.DocPropertyType;
 import fr.progilone.pgcn.domain.document.DocUnit;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -17,14 +24,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by Sébastien on 23/12/2016.
@@ -46,8 +45,8 @@ public class DocUnitToJenaService {
      * @param superType
      * @throws IOException
      */
-    public void convert(final OutputStream out, final DocUnit docUnit, final Map<String, Property> rdfProperties,
-                        final DocPropertyType.DocPropertySuperType superType) throws IOException {
+    public void convert(final OutputStream out, final DocUnit docUnit, final Map<String, Property> rdfProperties, final DocPropertyType.DocPropertySuperType superType)
+                                                                                                                                                                        throws IOException {
 
         final Model model = getModel(superType);
         final String uri = getUri(docUnit);
@@ -92,8 +91,7 @@ public class DocUnitToJenaService {
      */
     public String convert(final DocUnit docUnit, final DocPropertyType.DocPropertySuperType superType) throws IOException {
 
-        try (final OutputStream out = new ByteArrayOutputStream();
-             final OutputStream bufOut = new BufferedOutputStream(out)) {
+        try (final OutputStream out = new ByteArrayOutputStream(); final OutputStream bufOut = new BufferedOutputStream(out)) {
 
             convert(bufOut, docUnit, superType);
             return out.toString();  // retourne le contenu du ByteArrayOutputStream sous forme de String
@@ -101,7 +99,8 @@ public class DocUnitToJenaService {
     }
 
     private String getUri(DocUnit docUnit) {
-        String uri = docUnit.getLibrary() != null ? docUnit.getLibrary().getWebsite() : null;
+        String uri = docUnit.getLibrary() != null ? docUnit.getLibrary().getWebsite()
+                                                  : null;
         if (StringUtils.isBlank(uri)) {
             uri = defaultUri;
         }

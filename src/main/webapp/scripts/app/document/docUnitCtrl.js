@@ -1,12 +1,9 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('DocUnitCtrl', DocUnitCtrl);
+    angular.module('numaHopApp.controller').controller('DocUnitCtrl', DocUnitCtrl);
 
-    function DocUnitCtrl($location, $q, $routeParams, $scope, $timeout, DocUnitSrvc, gettext, gettextCatalog,
-        HistorySrvc, NumaHopInitializationSrvc, NumahopStorageService, StringTools) {
-
+    function DocUnitCtrl($location, $q, $routeParams, $scope, $timeout, DocUnitSrvc, gettext, gettextCatalog, HistorySrvc, NumaHopInitializationSrvc, NumahopStorageService, StringTools) {
         $scope.applyFilter = applyFilter;
         $scope.clearSelection = clearSelection;
         $scope.create = create;
@@ -23,17 +20,17 @@
         $scope.selectedIndex = null;
         $scope.selectedInNew = false;
 
-        $scope.docUnitInclude = "scripts/app/document/docUnitEdit.html";
+        $scope.docUnitInclude = 'scripts/app/document/docUnitEdit.html';
         $scope.docUnit = null;
 
         $scope.sortOptions = {
-            'label': 'Libellé',
-            'pgcnId': 'Identifiant PGCN'
+            label: 'Libellé',
+            pgcnId: 'Identifiant PGCN',
         };
 
-        var FILTER_STORAGE_SERVICE_KEY = "doc_unit";
+        var FILTER_STORAGE_SERVICE_KEY = 'doc_unit';
         $scope.filters = {
-            sortModel: "label",
+            sortModel: 'label',
             libraries: [],
             wkf_statuses: [],
             available: false,
@@ -44,7 +41,7 @@
             distributed: false,
             nonDistributed: false,
             distributable: false,
-            nonDistributable: false
+            nonDistributable: false,
         };
         $scope.listFilters = {
             sort_criterion: true,
@@ -57,10 +54,10 @@
             created_date_filter: true,
             archive_filter: true,
             distribution_filter: true,
-            inactive_filter: true
+            inactive_filter: true,
         };
         $scope.filterLabels = {
-            inactive: "Voir les unités documentaires inactives"
+            inactive: 'Voir les unités documentaires inactives',
         };
 
         /**
@@ -70,14 +67,14 @@
             libraries: [],
             projects: [],
             lots: [],
-            statuses: []
+            statuses: [],
         };
         $scope.pagination = {
             items: [],
             totalItems: 0,
             busy: false,
             page: 0,
-            last: false
+            last: false,
         };
         $scope.newEntities = []; // liste des unités documentaires récemment créés
 
@@ -85,46 +82,38 @@
 
         /** Initialisation */
         function init() {
-            HistorySrvc.add(gettextCatalog.getString("Unités documentaires"));
+            HistorySrvc.add(gettextCatalog.getString('Unités documentaires'));
             reinitFilters(false);
             loadOptionsAndFilters();
 
-            $scope.$on("$routeUpdate",
-                function ($currentRoute, $previousRoute) {
-                    $timeout(function () {
-                        $scope.docUnitInclude = null;
-                        $scope.$apply();
-                        $scope.docUnitInclude = "scripts/app/document/docUnitEdit.html";
-                    });
-                }
-            );
+            $scope.$on('$routeUpdate', function ($currentRoute, $previousRoute) {
+                $timeout(function () {
+                    $scope.docUnitInclude = null;
+                    $scope.$apply();
+                    $scope.docUnitInclude = 'scripts/app/document/docUnitEdit.html';
+                });
+            });
         }
         function loadOptionsAndFilters() {
-            $q.all([NumaHopInitializationSrvc.loadLibraries(),
-            NumaHopInitializationSrvc.loadProjects(),
-            NumaHopInitializationSrvc.loadLots(),
-            DocUnitSrvc.getConfigFilterStatuses()])
-                .then(function (data) {
-                    $scope.options.libraries = data[0];
-                    $scope.options.projects = data[1];
-                    $scope.options.lots = data[2];
-                    $scope.options.statuses = data[3];
-                    loadFilters();
-                    nextPage();
-                });
+            $q.all([NumaHopInitializationSrvc.loadLibraries(), NumaHopInitializationSrvc.loadProjects(), NumaHopInitializationSrvc.loadLots(), DocUnitSrvc.getConfigFilterStatuses()]).then(function (data) {
+                $scope.options.libraries = data[0];
+                $scope.options.projects = data[1];
+                $scope.options.lots = data[2];
+                $scope.options.statuses = data[3];
+                loadFilters();
+                nextPage();
+            });
         }
 
         function refreshFilterLists() {
-            var librariesIds = _.pluck($scope.filters.libraries, "identifier");
-            var projectsIds = _.pluck($scope.filters.projects, "identifier");
-            NumaHopInitializationSrvc.loadProjects(librariesIds)
-                .then(function (data) {
-                    $scope.options.projects = data;
-                    NumaHopInitializationSrvc.loadLots(librariesIds, projectsIds)
-                        .then(function (data) {
-                            $scope.options.lots = data;
-                        });
+            var librariesIds = _.pluck($scope.filters.libraries, 'identifier');
+            var projectsIds = _.pluck($scope.filters.projects, 'identifier');
+            NumaHopInitializationSrvc.loadProjects(librariesIds).then(function (data) {
+                $scope.options.projects = data;
+                NumaHopInitializationSrvc.loadLots(librariesIds, projectsIds).then(function (data) {
+                    $scope.options.lots = data;
                 });
+            });
         }
 
         function doFilterLibrary() {
@@ -143,7 +132,7 @@
                 $scope.docUnit._selected = false;
                 $scope.docUnit = null;
             }
-            $location.path("/document/docunit").search({ new: true });
+            $location.path('/document/docunit').search({ new: true });
         }
         function edit(docUnit, index, selectedInNew) {
             clearSelection();
@@ -158,7 +147,7 @@
                 search = { id: docUnit.identifier };
             }
 
-            $location.path("/document/docunit").search(search);
+            $location.path('/document/docunit').search(search);
         }
 
         function filterDocUnits(newValue, field) {
@@ -166,7 +155,7 @@
 
             var searchParams = {
                 page: $scope.pagination.page,
-                search: $scope.filterWith || "",
+                search: $scope.filterWith || '',
                 hasDigitalDocuments: $scope.filters.hasDigitalDocuments,
                 active: !$scope.filters.inactive,
                 archived: $scope.filters.archived,
@@ -177,36 +166,36 @@
                 nonDistributed: $scope.filters.nonDistributed,
                 distributable: $scope.filters.distributable,
                 nonDistributable: $scope.filters.nonDistributable,
-                sorts: $scope.filters.sortModel
+                sorts: $scope.filters.sortModel,
             };
 
             if ($scope.filters.libraries) {
-                var librariesIds = _.pluck($scope.filters.libraries, "identifier");
-                searchParams["libraries"] = librariesIds;
+                var librariesIds = _.pluck($scope.filters.libraries, 'identifier');
+                searchParams['libraries'] = librariesIds;
             }
             if ($scope.filters.projects) {
-                var projectsIds = _.pluck($scope.filters.projects, "identifier");
-                searchParams["projects"] = projectsIds;
+                var projectsIds = _.pluck($scope.filters.projects, 'identifier');
+                searchParams['projects'] = projectsIds;
             }
             if ($scope.filters.lots) {
-                var lotsIds = _.pluck($scope.filters.lots, "identifier");
-                searchParams["lots"] = lotsIds;
+                var lotsIds = _.pluck($scope.filters.lots, 'identifier');
+                searchParams['lots'] = lotsIds;
             }
             if ($scope.filters.wkf_statuses) {
-                var statuses = _.pluck($scope.filters.wkf_statuses, "identifier");
-                searchParams["statuses"] = statuses;
+                var statuses = _.pluck($scope.filters.wkf_statuses, 'identifier');
+                searchParams['statuses'] = statuses;
             }
             if ($scope.filters.createdDateFrom) {
-                searchParams["createdDateFrom"] = $scope.filters.createdDateFrom;
+                searchParams['createdDateFrom'] = $scope.filters.createdDateFrom;
             }
             if ($scope.filters.createdDateTo) {
-                searchParams["createdDateTo"] = $scope.filters.createdDateTo;
+                searchParams['createdDateTo'] = $scope.filters.createdDateTo;
             }
             if ($scope.filters.lastModifiedDateFrom) {
-                searchParams["lastModifiedDateFrom"] = $scope.filters.lastModifiedDateFrom;
+                searchParams['lastModifiedDateFrom'] = $scope.filters.lastModifiedDateFrom;
             }
             if ($scope.filters.lastModifiedDateTo) {
-                searchParams["lastModifiedDateTo"] = $scope.filters.lastModifiedDateTo;
+                searchParams['lastModifiedDateTo'] = $scope.filters.lastModifiedDateTo;
             }
 
             if (field) {
@@ -216,7 +205,7 @@
                     delete searchParams[field];
                 }
             }
-            return DocUnitSrvc.search(searchParams).$promise/*.then(function (data) {
+            return DocUnitSrvc.search(searchParams).$promise; /*.then(function (data) {
 
                 var list = data.content;
 
@@ -229,7 +218,7 @@
         }
 
         function applyFilter(filterWith, event) {
-            if (event.type === "keypress" && event.keyCode === 13) {
+            if (event.type === 'keypress' && event.keyCode === 13) {
                 doFilter();
             }
         }
@@ -257,13 +246,12 @@
                             $scope.docUnit._selected = true;
                             $scope.pagination.items.push($scope.docUnit);
                         } else {
-                            if(value.content[i].parentIdentifier != null && !_.contains(docUnitIdentifiers, value.content[i].parentIdentifier)){
+                            if (value.content[i].parentIdentifier != null && !_.contains(docUnitIdentifiers, value.content[i].parentIdentifier)) {
                                 value.content[i].parentIdentifier = null;
                             }
                             $scope.pagination.items.push(value.content[i]);
                         }
-                    }
-                    else {
+                    } else {
                         // On ne compte pas 2 fois les nouvelles uc rechargées
                         $scope.pagination.totalItems--;
                     }
@@ -277,8 +265,7 @@
                 if ($scope.pagination.items.length === 1) {
                     edit($scope.pagination.items[0], 0);
                     $scope.selectedIndex = 0;
-                }
-                else {
+                } else {
                     // réinitialisation de la fiche de droite
                     edit();
                     $scope.selectedIndex = null;
@@ -315,7 +302,7 @@
             $scope.filters = {
                 libraries: [],
                 available: false,
-                inactive: false
+                inactive: false,
             };
             $scope.filterWith = null;
 
@@ -325,10 +312,12 @@
         }
         // liste
         function nextPage() {
-            if ($scope.pagination.busy || $scope.pagination.last) { return; }
+            if ($scope.pagination.busy || $scope.pagination.last) {
+                return;
+            }
             $scope.pagination.busy = true;
 
-            filterDocUnits().then(function (value, responseHeaders) {
+            filterDocUnits().then((value, responseHeaders) => {
                 $scope.pagination.page = value.number + 1;
                 $scope.pagination.totalItems = value.totalElements;
                 $scope.pagination.items = $scope.pagination.items.concat(value.content);
@@ -337,19 +326,18 @@
             });
         }
         function clearSelection() {
-            _.union($scope.pagination.items, $scope.newEntities)
-                .forEach(function (elt, i) {
-                    elt._selected = false;
-                    elt.children.forEach(function(child, i) {
-                       child._selected = false;
-                    });
+            _.union($scope.pagination.items, $scope.newEntities).forEach(function (elt, i) {
+                elt._selected = false;
+                elt.children.forEach(function (child, i) {
+                    child._selected = false;
                 });
+            });
         }
         function getFirstLetter(docUnit) {
             if (angular.isUndefined($scope.filters.sortModel)) {
                 $scope.filters.sortModel = 'pgcnId';
             }
-            return StringTools.getFirstLetter(docUnit[$scope.filters.sortModel], "OTHER");
+            return StringTools.getFirstLetter(docUnit[$scope.filters.sortModel], 'OTHER');
         }
 
         function moveUp() {

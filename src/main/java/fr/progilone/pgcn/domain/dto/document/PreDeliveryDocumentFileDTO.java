@@ -4,9 +4,9 @@ import fr.progilone.pgcn.domain.dto.AbstractDTO;
 
 /**
  * Fichier avec rôle
- * 
+ *
  * @author jbrunet
- * Créé le 10 mars 2017
+ *         Créé le 10 mars 2017
  */
 public class PreDeliveryDocumentFileDTO extends AbstractDTO {
 
@@ -17,29 +17,25 @@ public class PreDeliveryDocumentFileDTO extends AbstractDTO {
         this.name = name;
         this.role = role;
     }
-      
+
     public PreDeliveryDocumentFileDTO() {
     }
-    
+
     public String getName() {
         return name;
     }
-
 
     public void setName(final String name) {
         this.name = name;
     }
 
-
     public FileRoleEnum getRole() {
         return role;
     }
 
-
     public void setRole(final FileRoleEnum role) {
         this.role = role;
     }
-
 
     public enum FileRoleEnum {
         NO_ROLE,

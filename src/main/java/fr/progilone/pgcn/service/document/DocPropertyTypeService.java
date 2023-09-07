@@ -1,15 +1,5 @@
 package fr.progilone.pgcn.service.document;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import fr.progilone.pgcn.domain.document.DocPropertyType;
 import fr.progilone.pgcn.domain.document.DocPropertyType.DocPropertySuperType;
 import fr.progilone.pgcn.exception.PgcnValidationException;
@@ -18,6 +8,14 @@ import fr.progilone.pgcn.exception.message.PgcnErrorCode;
 import fr.progilone.pgcn.exception.message.PgcnList;
 import fr.progilone.pgcn.repository.document.DocPropertyTypeRepository;
 import fr.progilone.pgcn.service.exchange.MappingService;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class DocPropertyTypeService {
@@ -27,9 +25,7 @@ public class DocPropertyTypeService {
     private final MappingService mappingService;
 
     @Autowired
-    public DocPropertyTypeService(final DocPropertyTypeRepository docPropertyTypeRepository,
-                                  final DocPropertyService docPropertyService,
-                                  final MappingService mappingService) {
+    public DocPropertyTypeService(final DocPropertyTypeRepository docPropertyTypeRepository, final DocPropertyService docPropertyService, final MappingService mappingService) {
         this.docPropertyTypeRepository = docPropertyTypeRepository;
         this.docPropertyService = docPropertyService;
         this.mappingService = mappingService;
@@ -39,12 +35,12 @@ public class DocPropertyTypeService {
     public List<DocPropertyType> findAll() {
         return docPropertyTypeRepository.findAll();
     }
-    
+
     @Transactional(readOnly = true)
     public List<DocPropertyType> findCustom() {
-        
-        final DocPropertyType.DocPropertySuperType[] customTypes = {DocPropertySuperType.CUSTOM, 
-                                                                    DocPropertySuperType.CUSTOM_ARCHIVE, 
+
+        final DocPropertyType.DocPropertySuperType[] customTypes = {DocPropertySuperType.CUSTOM,
+                                                                    DocPropertySuperType.CUSTOM_ARCHIVE,
                                                                     DocPropertySuperType.CUSTOM_CINES,
                                                                     DocPropertySuperType.CUSTOM_OMEKA};
         return docPropertyTypeRepository.findAllBySuperTypeIn(Arrays.asList(customTypes));
@@ -57,12 +53,13 @@ public class DocPropertyTypeService {
 
     @Transactional(readOnly = true)
     public List<DocPropertyType> findAllByIdentifierIn(final List<String> fields) {
-        return CollectionUtils.isNotEmpty(fields) ? docPropertyTypeRepository.findAll(fields) : Collections.emptyList();
+        return CollectionUtils.isNotEmpty(fields) ? docPropertyTypeRepository.findAllById(fields)
+                                                  : Collections.emptyList();
     }
 
     @Transactional(readOnly = true)
     public DocPropertyType findOne(final String identifier) {
-        return docPropertyTypeRepository.findOne(identifier);
+        return docPropertyTypeRepository.findById(identifier).orElse(null);
     }
 
     @Transactional
@@ -135,7 +132,8 @@ public class DocPropertyTypeService {
     private void handleRank(final DocPropertyType propertyType) {
         if (propertyType.getRank() == null) {
             final Integer currentRank = docPropertyTypeRepository.findCurrentRankForPropertyType(propertyType.getSuperType());
-            final Integer nextRank = currentRank != null ? currentRank + 1 : 1;
+            final Integer nextRank = currentRank != null ? currentRank + 1
+                                                         : 1;
             propertyType.setRank(nextRank);
         }
     }

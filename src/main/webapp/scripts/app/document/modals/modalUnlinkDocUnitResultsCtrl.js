@@ -1,11 +1,9 @@
 (function () {
     'use strict';
 
-    angular.module("numaHopApp.controller")
-        .controller("modalUnlinkDocUnitResultsCtrl", ModalUnlinkDocUnitResultsCtrl);
+    angular.module('numaHopApp.controller').controller('modalUnlinkDocUnitResultsCtrl', ModalUnlinkDocUnitResultsCtrl);
 
     function ModalUnlinkDocUnitResultsCtrl($uibModalInstance, options, gettextCatalog, $location) {
-
         var mainCtrl = this;
         mainCtrl.entities = options.entities;
         mainCtrl.ok = ok;
@@ -23,14 +21,15 @@
                     entity.deleted = true;
                 } else {
                     entity.deleted = false;
-                    entity.result = "";
+                    entity.result = '';
                     _.each(entity.errors, function (error) {
                         entity.result += gettextCatalog.getString('Détachement impossible : ');
                         switch (error.code) {
-                            case "DOC_UNIT_IN_ONGOING_LOT": entity.result += gettextCatalog.getString("L'unité documentaire appartient à un lot en cours");
+                            case 'DOC_UNIT_IN_ONGOING_LOT':
+                                entity.result += gettextCatalog.getString("L'unité documentaire appartient à un lot en cours");
                                 break;
                         }
-                        entity.result += "\n";
+                        entity.result += '\n';
                     });
                 }
             });
@@ -41,14 +40,12 @@
          * @return {[type]} [description]
          */
         function ok() {
-            $uibModalInstance.dismiss("cancel");
+            $uibModalInstance.dismiss('cancel');
         }
 
         function redirect(path) {
             ok();
             $location.path(path);
         }
-
     }
-
 })();

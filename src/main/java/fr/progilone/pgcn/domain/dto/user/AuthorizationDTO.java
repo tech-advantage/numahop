@@ -1,8 +1,7 @@
 package fr.progilone.pgcn.domain.dto.user;
 
-import java.util.List;
-
 import fr.progilone.pgcn.domain.administration.Module;
+import java.util.List;
 
 /**
  * DTO représentant une habilitation

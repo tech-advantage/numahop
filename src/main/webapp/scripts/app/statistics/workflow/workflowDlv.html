@@ -5,140 +5,125 @@
             <numa-filter data-class="pull-left btn-filter">
                 <!-- Colonnes -->
                 <numa-filter-field data-title="{{ ::'Colonnes' | translate }}">
-                    <sem-field sem-type="uiselect" sem-model="statCtrl.columns" sem-option-data="statCtrl.config.states" 
-                                sem-onchange="statCtrl.saveColumns()"></sem-field>
+                    <sem-field sem-type="uiselect" sem-model="statCtrl.columns" sem-option-data="statCtrl.config.states" sem-onchange="statCtrl.saveColumns()"></sem-field>
                 </numa-filter-field>
                 <!-- Bibliothèques -->
                 <numa-filter-field data-title="{{ ::'Bibliothèque' | translate }}">
-                    <sem-field sem-type="uiselect" sem-model="statCtrl.filters.library" sem-option-data="statCtrl.config.libraries"
-                               sem-onchange="statCtrl.search()"></sem-field>
+                    <sem-field sem-type="uiselect" sem-model="statCtrl.filters.library" sem-option-data="statCtrl.config.libraries" sem-onchange="statCtrl.search()"></sem-field>
                 </numa-filter-field>
                 <!-- Projet -->
                 <numa-filter-field data-title="{{ ::'Projet' | translate }}">
-                    <sem-field sem-type="uiselect" sem-model="statCtrl.filters.project" sem-option-data="statCtrl.config.projects" 
-                               sem-onchange="statCtrl.search()"></sem-field>
+                    <sem-field sem-type="uiselect" sem-model="statCtrl.filters.project" sem-option-data="statCtrl.config.projects" sem-onchange="statCtrl.search()"></sem-field>
                 </numa-filter-field>
                 <!-- Lot -->
                 <numa-filter-field data-title="{{ ::'Lot' | translate }}">
-                    <sem-field sem-type="uiselect" sem-model="statCtrl.filters.lot" sem-option-data="statCtrl.config.lots" 
-                               sem-onchange="statCtrl.search()"></sem-field>
+                    <sem-field sem-type="uiselect" sem-model="statCtrl.filters.lot" sem-option-data="statCtrl.config.lots" sem-onchange="statCtrl.search()"></sem-field>
                 </numa-filter-field>
                 <!-- Livraison -->
                 <numa-filter-field data-title="{{ ::'Livraison' | translate }}">
-                    <sem-field sem-type="uiselect" sem-model="statCtrl.filters.delivery" sem-option-data="statCtrl.config.deliveries" 
-                               sem-onchange="statCtrl.search()"></sem-field>
+                    <sem-field sem-type="uiselect" sem-model="statCtrl.filters.delivery" sem-option-data="statCtrl.config.deliveries" sem-onchange="statCtrl.search()"></sem-field>
                 </numa-filter-field>
                 <!-- Date de la livraison -->
                 <numa-filter-field data-title="{{ ::'Date de la livraison' | translate }}">
                     <div class="form-inline text-right margin-b10">
                         <label translate>entre le</label>
-                        <sem-datepicker ng-model="statCtrl.filters.dlvFrom" sem-model-options="{ debounce: 300 }"
-                                        ng-change="statCtrl.setAndSearch('dlvFrom', $data)"></sem-datepicker>
+                        <sem-datepicker ng-model="statCtrl.filters.dlvFrom" sem-model-options="{ debounce: 300 }" ng-change="statCtrl.setAndSearch('dlvFrom', $data)"></sem-datepicker>
                     </div>
                     <div class="form-inline text-right">
                         <label translate>et le</label>
-                        <sem-datepicker ng-model="statCtrl.filters.dlvTo" sem-model-options="{ debounce: 300 }"
-                                        ng-change="statCtrl.setAndSearch('dlvTo', $data)"></sem-datepicker>
+                        <sem-datepicker ng-model="statCtrl.filters.dlvTo" sem-model-options="{ debounce: 300 }" ng-change="statCtrl.setAndSearch('dlvTo', $data)"></sem-datepicker>
                     </div>
                 </numa-filter-field>
                 <numa-filter-field data-title="{{ ::'Unité documentaire' | translate }}">
                     <!-- PGCN Id -->
-                    <sem-field sem-model="statCtrl.filters.pgcnid" sem-model-options="{ debounce: 300 }"
-                               sem-placeholder="{{ ::'PGCN Id' | translate }}"
-                               sem-onchange="statCtrl.setAndSearch('pgcnid', value)"></sem-field>
+                    <sem-field sem-model="statCtrl.filters.pgcnid" sem-model-options="{ debounce: 300 }" sem-placeholder="{{ ::'PGCN Id' | translate }}" sem-onchange="statCtrl.setAndSearch('pgcnid', value)"></sem-field>
                     <!-- Statut de l'UD -->
-                    <sem-field sem-type="uiselect" sem-model="statCtrl.filters.state" sem-option-data="statCtrl.config.states" 
-                               sem-onchange="statCtrl.search()"></sem-field>
+                    <sem-field sem-type="uiselect" sem-model="statCtrl.filters.state" sem-option-data="statCtrl.config.states" sem-onchange="statCtrl.search()"></sem-field>
                 </numa-filter-field>
             </numa-filter>
             <!-- Entête -->
             <div class="panel-heading">
                 <div class="pull-right">
-                    <button type="button" class="btn btn-sem2 btn-xs" 
-                            ng-click="statCtrl.reinitFilters()" uib-tooltip="{{::'Réinitialiser les filtres de la recherche' | translate}}">
+                    <button type="button" class="btn btn-sem2 btn-xs" ng-click="statCtrl.reinitFilters()" uib-tooltip="{{::'Réinitialiser les filtres de la recherche' | translate}}" tooltip-append-to-body="true">
                         <span class="glyphicon-halflings glyphicon-refresh"></span>
                     </button>
-                    <a class="btn btn-sem2 btn-xs" 
-                            ng-href="{{statCtrl.getExportUrl()}}" uib-tooltip="{{::'Export CSV' | translate}}">
+                    <a class="btn btn-sem2 btn-xs" ng-href="{{statCtrl.getExportUrl()}}" uib-tooltip="{{::'Export CSV' | translate}}" tooltip-append-to-body="true">
                         <span class="fa fa-download"></span>
                     </a>
                 </div>
             </div>
             <div class="panel-body">
                 <div ng-if="statCtrl.loaded">
-                    <div class="well" ng-show="statCtrl.pagination.items.length == 0" translate>
-                        Aucune livraison trouvée
-                    </div>
-                    <div ng-show="statCtrl.pagination.items.length > 0 && !statCtrl.pagination.busy" class="well well-sm" translate
+                    <div class="well" ng-show="statCtrl.pagination.items.length == 0" translate>Aucune livraison trouvée</div>
+                    <div
+                        ng-show="statCtrl.pagination.items.length > 0 && !statCtrl.pagination.busy"
+                        class="well well-sm"
+                        translate
                         translate-n="statCtrl.pagination.totalItems"
-                        translate-plural="{{$count}} livraisons trouvées">
+                        translate-plural="{{$count}} livraisons trouvées"
+                    >
                         1 livraison trouvée
                     </div>
-                    <select id="pageSize" name="pageSize" 
-                            ng-hide="statCtrl.pagination.items.length == 0" ng-options="size.value as size.label for size in statCtrl.sizeOptions" 
-                            ng-model="statCtrl.pageSize" ng-change="statCtrl.changePageSize()">
-                    </select>
+                    <select
+                        id="pageSize"
+                        name="pageSize"
+                        ng-hide="statCtrl.pagination.items.length == 0"
+                        ng-options="size.value as size.label for size in statCtrl.sizeOptions"
+                        ng-model="statCtrl.pageSize"
+                        ng-change="statCtrl.changePageSize()"
+                    ></select>
                 </div>
                 <!-- Liste des entités  -->
                 <div ng-show="statCtrl.pagination.items.length > 0 && !statCtrl.pagination.busy">
-                  <div class="sticky-wrapper">
-                   <div class="sticky-scroller-deliv">  
-                    <table class="table table-hover sem-list-sticky-tab">
-                        <thead>
-                        <tr>
-                            <th class="text-center h6 bold sticky-col0-deliv sticky-header padding-t70" translate>Projet</th>
-                            <th class="text-center h6 bold sticky-col1-deliv sticky-header padding-t70" translate>Lot</th>
-                            <th class="text-center h6 bold sticky-col2-deliv sticky-header padding-t70" translate>Livraison</th>
-                            <th class="text-right h6 bold sticky-header" ng-repeat="state in statCtrl.config.states.data | filter:statCtrl.isVisible">
-                                <a>{{ ::state.label }}</a>
-                            </th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr ng-repeat="item in statCtrl.pagination.items">
-                            <td class="text-right nowrap  sticky-col0-deliv">
-                                <span uib-tooltip="{{::item.projectName}}">
-                                            {{ ::item.projectName | characters: 18 :true }} 
-                                </span>
-                                <numa-custom-link numa-link-type="project"
-                                                  numa-link-parameters="{id: item.projectIdentifier}"
-                                                  ng-if="item.projectIdentifier"></numa-custom-link>
-                            </td>
-                            <td class="text-right nowrap sticky-col1-deliv">
-                                <span uib-tooltip="{{::item.lotLabel}}">
-                                            {{ ::item.lotLabel | characters: 18 :true }} 
-                                </span> 
-                                <numa-custom-link numa-link-type="lot"
-                                                    numa-link-parameters="{id: item.lotIdentifier}"
-                                                    ng-if="item.lotIdentifier"></numa-custom-link>
-                            </td>
-                            <td class="text-right nowrap sticky-col2-deliv">
-                                <span uib-tooltip="{{::item.deliveryLabel}}">
-                                            {{ ::item.deliveryLabel | characters: 18 :true }} 
-                                </span>
-                                <numa-custom-link numa-link-type="delivery" 
-                                                  numa-link-parameters="{id: item.deliveryIdentifier}"
-                                                  ng-if="item.deliveryIdentifier"></numa-custom-link>
-                            </td>
-                            <td class="text-right" 
-                                ng-repeat="state in statCtrl.config.states.data | filter:statCtrl.isVisible" 
-                                ng-init="data = statCtrl.getCount(item, state.identifier);">
-                                <span ng-if="data" class="margin-r5 margin-l5" >
-                                      {{ data.count + ' ud' | translate }}&nbsp;</span>
-                                <span ng-if="!data">&nbsp;</span>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                   </div>
-                  </div>  
+                    <div class="sticky-wrapper">
+                        <div class="sticky-scroller-deliv">
+                            <table class="table table-hover sem-list-sticky-tab">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center h6 bold sticky-col0-deliv sticky-header padding-t70" translate>Projet</th>
+                                        <th class="text-center h6 bold sticky-col1-deliv sticky-header padding-t70" translate>Lot</th>
+                                        <th class="text-center h6 bold sticky-col2-deliv sticky-header padding-t70" translate>Livraison</th>
+                                        <th class="text-right h6 bold sticky-header" ng-repeat="state in statCtrl.config.states.data | filter:statCtrl.isVisible">
+                                            <a>{{ ::state.label }}</a>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="item in statCtrl.pagination.items">
+                                        <td class="text-right nowrap sticky-col0-deliv">
+                                            <span uib-tooltip="{{::item.projectName}}"> {{ ::item.projectName | characters: 18 :true }} </span>
+                                            <numa-custom-link numa-link-type="project" numa-link-parameters="{id: item.projectIdentifier}" ng-if="item.projectIdentifier"></numa-custom-link>
+                                        </td>
+                                        <td class="text-right nowrap sticky-col1-deliv">
+                                            <span uib-tooltip="{{::item.lotLabel}}"> {{ ::item.lotLabel | characters: 18 :true }} </span>
+                                            <numa-custom-link numa-link-type="lot" numa-link-parameters="{id: item.lotIdentifier}" ng-if="item.lotIdentifier"></numa-custom-link>
+                                        </td>
+                                        <td class="text-right nowrap sticky-col2-deliv">
+                                            <span uib-tooltip="{{::item.deliveryLabel}}"> {{ ::item.deliveryLabel | characters: 18 :true }} </span>
+                                            <numa-custom-link numa-link-type="delivery" numa-link-parameters="{id: item.deliveryIdentifier}" ng-if="item.deliveryIdentifier"></numa-custom-link>
+                                        </td>
+                                        <td class="text-right" ng-repeat="state in statCtrl.config.states.data | filter:statCtrl.isVisible" ng-init="data = statCtrl.getCount(item, state.identifier);">
+                                            <span ng-if="data" class="margin-r5 margin-l5"> {{ data.count + ' ud' | translate }}&nbsp;</span>
+                                            <span ng-if="!data">&nbsp;</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
                 <div class="row" ng-show="statCtrl.pagination.size && statCtrl.pagination.totalItems > statCtrl.pagination.size">
                     <div class="col-sm-12">
                         <div class="text-center">
-                            <ul uib-pagination num-pages="statCtrl.pagination.totalPages" total-items="statCtrl.pagination.totalItems"
-                                items-per-page="statCtrl.pagination.size" ng-change="statCtrl.getPage()" ng-model="statCtrl.pagination.page"
-                                class="pagination-sm"></ul>
+                            <ul
+                                uib-pagination
+                                num-pages="statCtrl.pagination.totalPages"
+                                total-items="statCtrl.pagination.totalItems"
+                                items-per-page="statCtrl.pagination.size"
+                                ng-change="statCtrl.getPage()"
+                                ng-model="statCtrl.pagination.page"
+                                class="pagination-sm"
+                            ></ul>
                         </div>
                     </div>
                 </div>

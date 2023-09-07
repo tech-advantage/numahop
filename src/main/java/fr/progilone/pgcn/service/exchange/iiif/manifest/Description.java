@@ -1,20 +1,18 @@
 
 package fr.progilone.pgcn.service.exchange.iiif.manifest;
 
-import java.util.HashMap;
-import java.util.Map;
-import javax.validation.Valid;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import jakarta.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({
-    "@id"
-})
+@JsonPropertyOrder({"@id"})
 public class Description {
 
     @JsonProperty("@id")

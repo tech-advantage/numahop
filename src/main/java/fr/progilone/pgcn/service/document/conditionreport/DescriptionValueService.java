@@ -1,6 +1,5 @@
 package fr.progilone.pgcn.service.document.conditionreport;
 
-import fr.progilone.pgcn.domain.document.conditionreport.DescriptionProperty;
 import fr.progilone.pgcn.domain.document.conditionreport.DescriptionValue;
 import fr.progilone.pgcn.exception.PgcnValidationException;
 import fr.progilone.pgcn.exception.message.PgcnError;
@@ -8,12 +7,11 @@ import fr.progilone.pgcn.exception.message.PgcnErrorCode;
 import fr.progilone.pgcn.exception.message.PgcnList;
 import fr.progilone.pgcn.repository.document.conditionreport.DescriptionRepository;
 import fr.progilone.pgcn.repository.document.conditionreport.DescriptionValueRepository;
+import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 public class DescriptionValueService {
@@ -33,17 +31,18 @@ public class DescriptionValueService {
     }
 
     @Transactional(readOnly = true)
-    public List<DescriptionValue> findByProperty(final DescriptionProperty property) {
-        return descriptionValueRepository.findByProperty(property);
+    public List<DescriptionValue> findByPropertyIdentifier(final String propertyId) {
+        return descriptionValueRepository.findByPropertyIdentifier(propertyId);
     }
 
     @Transactional
     public void delete(final String identifier) throws PgcnValidationException {
-        final DescriptionValue value = descriptionValueRepository.findOne(identifier);
-        // Validation de la suppression
-        validateDeletion(value);
-        // Suppression
-        descriptionValueRepository.delete(value);
+        descriptionValueRepository.findById(identifier).ifPresent(value -> {
+            // Validation de la suppression
+            validateDeletion(value);
+            // Suppression
+            descriptionValueRepository.delete(value);
+        });
     }
 
     private void validateDeletion(final DescriptionValue value) throws PgcnValidationException {

@@ -4,6 +4,12 @@ import fr.progilone.pgcn.domain.audit.AuditRevision;
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.dto.audit.AuditDocUnitRevisionDTO;
 import fr.progilone.pgcn.domain.lot.Lot;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.PersistenceContext;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.hibernate.Hibernate;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
@@ -11,13 +17,6 @@ import org.hibernate.envers.query.AuditEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.PersistenceContext;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Dépôt des table d'audit d'unités documentaires
@@ -55,8 +54,7 @@ public class AuditDocUnitRepository {
      * @return
      */
     public List<AuditDocUnitRevisionDTO> getRevisions(final String id) {
-        final List<?> revisions =
-            AuditReaderFactory.get(em).createQuery().forRevisionsOfEntity(DocUnit.class, false, false).add(AuditEntity.id().eq(id)).getResultList();
+        final List<?> revisions = AuditReaderFactory.get(em).createQuery().forRevisionsOfEntity(DocUnit.class, false, false).add(AuditEntity.id().eq(id)).getResultList();
         return revisions.stream()
                         // Construction des DTOs à partir des résultats de la recherche
                         .map(obj -> {
@@ -65,7 +63,9 @@ public class AuditDocUnitRepository {
 
                             return getAuditDocUnitRevisionDTO(docUnit, rev);
 
-                        }).sorted(Comparator.comparing(AuditDocUnitRevisionDTO::getTimestamp)).collect(Collectors.toList());
+                        })
+                        .sorted(Comparator.comparing(AuditDocUnitRevisionDTO::getTimestamp))
+                        .collect(Collectors.toList());
     }
 
     private AuditDocUnitRevisionDTO getAuditDocUnitRevisionDTO(final DocUnit docUnit, final AuditRevision rev) {

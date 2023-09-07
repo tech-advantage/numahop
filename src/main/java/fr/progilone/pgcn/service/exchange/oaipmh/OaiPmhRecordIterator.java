@@ -3,10 +3,9 @@ package fr.progilone.pgcn.service.exchange.oaipmh;
 import fr.progilone.pgcn.domain.jaxb.oaidc.OaiDcType;
 import fr.progilone.pgcn.domain.jaxb.oaipmh.OAIPMHtype;
 import fr.progilone.pgcn.domain.jaxb.oaipmh.ResumptionTokenType;
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.Iterator;
 import java.util.Optional;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Itérateur sur les OAI_DC récupérés sur un service OAI-PMH
@@ -26,7 +25,8 @@ final class OaiPmhRecordIterator implements Iterator<OaiDcType> {
 
     @Override
     public synchronized boolean hasNext() {
-        return token == null || StringUtils.isNotBlank(token.getValue()) || innerIt.hasNext();
+        return token == null || StringUtils.isNotBlank(token.getValue())
+               || innerIt.hasNext();
     }
 
     @Override
@@ -38,7 +38,8 @@ final class OaiPmhRecordIterator implements Iterator<OaiDcType> {
                                                                              request.getFrom(),
                                                                              request.getTo(),
                                                                              request.getSet(),
-                                                                             token != null ? token.getValue() : null);
+                                                                             token != null ? token.getValue()
+                                                                                           : null);
 
             if (!oaiPmhOpt.isPresent()) {
                 return null;
@@ -46,16 +47,12 @@ final class OaiPmhRecordIterator implements Iterator<OaiDcType> {
             readResponse(oaiPmhOpt.get());
         }
         // Lecture de l'itérateur
-        return innerIt.hasNext() ? innerIt.next() : null;
+        return innerIt.hasNext() ? innerIt.next()
+                                 : null;
     }
 
     private void readResponse(final OAIPMHtype oaiPmh) {
-        innerIt = oaiPmh.getListRecords()
-                        .getRecord()
-                        .stream()
-                        .filter(rec -> rec.getMetadata() != null)
-                        .map(rec -> (OaiDcType) rec.getMetadata().getAny())
-                        .iterator();
+        innerIt = oaiPmh.getListRecords().getRecord().stream().filter(rec -> rec.getMetadata() != null).map(rec -> (OaiDcType) rec.getMetadata().getAny()).iterator();
         token = oaiPmh.getListRecords().getResumptionToken();
     }
 }

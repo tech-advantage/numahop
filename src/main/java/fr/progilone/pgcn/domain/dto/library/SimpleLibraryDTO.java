@@ -153,8 +153,7 @@ public class SimpleLibraryDTO extends AbstractVersionedDTO {
         }
 
         public SimpleLibraryDTO build() {
-            return new SimpleLibraryDTO(identifier, name, prefix, defaultRole,
-                                        libRespName, libRespPhone, libRespEmail);
+            return new SimpleLibraryDTO(identifier, name, prefix, defaultRole, libRespName, libRespPhone, libRespEmail);
         }
 
     }

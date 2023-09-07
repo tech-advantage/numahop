@@ -1,68 +1,73 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <changeSet id="pgcn-condition-report-004" author="progilone">
         <!-- doc_condreport_binding_property -->
         <addColumn tableName="doc_condreport_binding_property">
             <column name="required" type="boolean" defaultValueBoolean="false">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </addColumn>
 
         <!-- doc_condreport_property_config -->
         <createTable tableName="doc_condreport_property_config">
             <column name="identifier" type="varchar(191)">
-                <constraints primaryKey="true" nullable="false"/>
+                <constraints primaryKey="true" nullable="false" />
             </column>
             <column name="required" type="boolean" defaultValueBoolean="false">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="allow_comment" type="boolean" defaultValueBoolean="false">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
 
             <column name="library" type="varchar(191)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
-            <column name="bind_property" type="varchar(191)"/>
-            <column name="desc_property" type="varchar(191)"/>
+            <column name="bind_property" type="varchar(191)" />
+            <column name="desc_property" type="varchar(191)" />
             <!-- Données techniques auto -->
             <column name="version" type="BIGINT">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>
 
-        <addForeignKeyConstraint baseTableName="doc_condreport_property_config" baseColumnNames="library" constraintName="fk_report_prop_conf_lib"
-                                 referencedTableName="lib_library" referencedColumnNames="identifier"/>
-        <addForeignKeyConstraint baseTableName="doc_condreport_property_config" baseColumnNames="bind_property"
-                                 constraintName="fk_report_prop_conf_bind"
-                                 referencedTableName="doc_condreport_binding_property" referencedColumnNames="identifier"/>
+        <addForeignKeyConstraint baseTableName="doc_condreport_property_config" baseColumnNames="library" constraintName="fk_report_prop_conf_lib" referencedTableName="lib_library" referencedColumnNames="identifier" />
+        <addForeignKeyConstraint
+            baseTableName="doc_condreport_property_config"
+            baseColumnNames="bind_property"
+            constraintName="fk_report_prop_conf_bind"
+            referencedTableName="doc_condreport_binding_property"
+            referencedColumnNames="identifier"
+        />
         <createIndex tableName="doc_condreport_property_config" indexName="idx_report_prop_conf_lib">
-            <column name="library"/>
+            <column name="library" />
         </createIndex>
         <createIndex tableName="doc_condreport_property_config" indexName="idx_report_prop_conf_bind">
-            <column name="bind_property"/>
+            <column name="bind_property" />
         </createIndex>
         <createIndex tableName="doc_condreport_property_config" indexName="idx_report_prop_conf_desc">
-            <column name="desc_property"/>
+            <column name="desc_property" />
         </createIndex>
 
         <!-- Nettoyage -->
-        <dropColumn tableName="doc_condreport_binding_property" columnName="required"/>
+        <dropColumn tableName="doc_condreport_binding_property" columnName="required" />
 
     </changeSet>
 </databaseChangeLog>

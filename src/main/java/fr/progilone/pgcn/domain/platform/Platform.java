@@ -1,24 +1,21 @@
 package fr.progilone.pgcn.domain.platform;
 
-import java.util.Set;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.google.common.base.MoreObjects;
-
 import fr.progilone.pgcn.domain.AbstractDomainObject;
 import fr.progilone.pgcn.domain.library.Library;
 import fr.progilone.pgcn.domain.lot.Lot;
 import fr.progilone.pgcn.domain.project.Project;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import java.util.Set;
 
 /**
  * Classe métier permettant de gérer les tierces plateformes.
@@ -27,6 +24,7 @@ import fr.progilone.pgcn.domain.project.Project;
 @Table(name = Platform.TABLE_NAME)
 @JsonSubTypes({@JsonSubTypes.Type(name = "platform", value = Platform.class)})
 public class Platform extends AbstractDomainObject {
+
     /**
      * Nom de la table dans la base de données.
      */
@@ -192,7 +190,8 @@ public class Platform extends AbstractDomainObject {
         DIFFUSION
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return MoreObjects.toStringHelper(this)
                           .omitNullValues()
                           .add("label", label)

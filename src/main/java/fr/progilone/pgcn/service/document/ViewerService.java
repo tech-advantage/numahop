@@ -1,32 +1,6 @@
 package fr.progilone.pgcn.service.document;
 
-import java.awt.*;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import fr.progilone.pgcn.domain.AbstractDomainObject;
 import fr.progilone.pgcn.domain.administration.viewsformat.ViewsFormatConfiguration;
 import fr.progilone.pgcn.domain.delivery.DeliveredDocument;
@@ -54,6 +28,29 @@ import fr.progilone.pgcn.service.exchange.iiif.manifest.Structures;
 import fr.progilone.pgcn.service.exchange.iiif.manifest.Thumbnail;
 import fr.progilone.pgcn.service.sample.SampleService;
 import fr.progilone.pgcn.service.storage.BinaryStorageManager;
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ViewerService {
@@ -134,7 +131,7 @@ public class ViewerService {
      */
     private int[] getSizeFile(final String identifier, final int page) throws PgcnTechnicalException {
 
-        final DocPage dp =  digitalDocumentService.getPage(identifier, page);
+        final DocPage dp = digitalDocumentService.getPage(identifier, page);
         StoredFile sf = null;
         sf = binaryRepository.getOneByPageIdentifierAndFileFormat(dp.getIdentifier(), ViewsFormatConfiguration.FileFormat.XTRAZOOM);
         if (sf == null) {
@@ -145,11 +142,11 @@ public class ViewerService {
         }
         final File f = bsm.getFileForStoredFile(sf, sf.getPage().getDigitalDocument().getDocUnit().getLibrary().getIdentifier());
         final int[] dims = new int[2];
-        if (sf.getHeight()==null || sf.getWidth() == null) {
-            final Optional<Dimension> dim =  bsm.getImgDimension(f, Optional.empty());
+        if (sf.getHeight() == null || sf.getWidth() == null) {
+            final Optional<Dimension> dim = bsm.getImgDimension(f, Optional.empty());
             if (dim.isPresent()) {
-                dims[0] = (int)dim.get().getHeight();
-                dims[1] = (int)dim.get().getWidth();
+                dims[0] = (int) dim.get().getHeight();
+                dims[1] = (int) dim.get().getWidth();
             }
         } else {
             dims[0] = sf.getHeight().intValue();
@@ -162,9 +159,9 @@ public class ViewerService {
     @Transactional(readOnly = true)
     public DocUnit getDocUnit(final String identifier) {
         final DigitalDocument ddoc = digitalDocumentRepository.getOneWithDocUnitAndLibrary(identifier);
-        return ddoc != null ? ddoc.getDocUnit() : null;
+        return ddoc != null ? ddoc.getDocUnit()
+                            : null;
     }
-
 
     /**
      * Point d'entrée de la generation du fichier manifest pour affichage dans Mirador.
@@ -220,7 +217,7 @@ public class ViewerService {
         // Table des matières (TOC).
         final Optional<Mets> mets = getMetsFile(identifier);
         // Fichier METS ?
-        if(mets.isPresent()) {
+        if (mets.isPresent()) {
             // Ajout de la table des matieres si presente.
             final List<Structures> structures = tocService.getTableOfContent(identifier, mets.get());
             if (CollectionUtils.isNotEmpty(structures)) {
@@ -231,8 +228,7 @@ public class ViewerService {
             final Optional<File> excel = getExcelFile(identifier, docUnit.getLibrary().getIdentifier());
             if (excel.isPresent() && excel.get().canRead()) {
                 try (final InputStream is = FileUtils.openInputStream(excel.get())) {
-                    final List<Structures> structures =
-                                    tocService.getTableOfContentExcel(identifier, is, docUnit.getLabel());
+                    final List<Structures> structures = tocService.getTableOfContentExcel(identifier, is, docUnit.getLabel());
                     if (CollectionUtils.isNotEmpty(structures)) {
                         manifest.setAdditionalProperty("structures", structures);
                     }
@@ -240,8 +236,7 @@ public class ViewerService {
                     LOG.error(e.getMessage(), e);
                 }
             } else {
-                final List<Structures> structures =
-                        tocService.getTableOfContentFromDb(identifier);
+                final List<Structures> structures = tocService.getTableOfContentFromDb(identifier);
                 if (CollectionUtils.isNotEmpty(structures)) {
                     manifest.setAdditionalProperty("structures", structures);
                 }
@@ -273,9 +268,9 @@ public class ViewerService {
         return manifest;
     }
 
-
     /**
      * Recuperation du fichier Mets.
+     *
      * @param identifier
      * @return
      */
@@ -283,8 +278,7 @@ public class ViewerService {
         final DigitalDocument dd = digitalDocumentRepository.getOneWithDocUnitAndLibrary(identifier);
         Optional<Mets> mets = Optional.ofNullable(null);
         if (dd != null) {
-            mets = metaDatasCheckService.getMetaDataMetsFile(dd.getDigitalId(),
-                                                             dd.getDocUnit().getLibrary().getIdentifier());
+            mets = metaDatasCheckService.getMetaDataMetsFile(dd.getDigitalId(), dd.getDocUnit().getLibrary().getIdentifier());
         }
         return mets;
     }
@@ -296,7 +290,7 @@ public class ViewerService {
      * @return
      */
     private Optional<File> getExcelFile(final String identifier, final String libraryId) {
-        final DigitalDocument dd = digitalDocumentRepository.findOne(identifier);
+        final DigitalDocument dd = digitalDocumentRepository.findById(identifier).orElse(null);
         Optional<File> excel = Optional.ofNullable(null);
         if (dd != null) {
             excel = metaDatasCheckService.getMetaDataExcelFile(dd.getDigitalId(), libraryId);
@@ -314,7 +308,7 @@ public class ViewerService {
     public File getTableOfContent(final String identifier) {
         final DigitalDocument dd = digitalDocumentRepository.getOneWithDocUnitAndLibrary(identifier);
         Optional<File> toc = getExcelFile(dd.getIdentifier(), dd.getDocUnit().getLibrary().getIdentifier());
-        if(toc.isPresent() && toc.get().canRead()) {
+        if (toc.isPresent() && toc.get().canRead()) {
             return toc.get();
         } else {
             // pas de toc excel, on tente de recuperer le mets
@@ -348,34 +342,40 @@ public class ViewerService {
         }
         final Metadata mdType = new Metadata();
         mdType.setAdditionalProperty("label", "Classification");
-        mdType.setAdditionalProperty("value", StringUtils.isNotBlank(docUnit.getType()) ? docUnit.getType() : NON_RENSEIGNE);
+        mdType.setAdditionalProperty("value",
+                                     StringUtils.isNotBlank(docUnit.getType()) ? docUnit.getType()
+                                                                               : NON_RENSEIGNE);
         metas.add(mdType);
         final Metadata mdDelay = new Metadata();
         mdDelay.setAdditionalProperty("label", "Délai avant contrôle (jours)");
-        mdDelay.setAdditionalProperty("value", docUnit.getCheckDelay() != null ? String.valueOf(docUnit.getCheckDelay()) : NON_RENSEIGNE);
+        mdDelay.setAdditionalProperty("value",
+                                      docUnit.getCheckDelay() != null ? String.valueOf(docUnit.getCheckDelay())
+                                                                      : NON_RENSEIGNE);
         metas.add(mdDelay);
         final Metadata mdDtFin = new Metadata();
         mdDtFin.setAdditionalProperty("label", "Date de fin de contrôle prévue");
-        mdDtFin.setAdditionalProperty("value", docUnit.getCheckEndTime() != null ? docUnit.getCheckEndTime().toString() : NON_RENSEIGNE);
+        mdDtFin.setAdditionalProperty("value",
+                                      docUnit.getCheckEndTime() != null ? docUnit.getCheckEndTime().toString()
+                                                                        : NON_RENSEIGNE);
         metas.add(mdDtFin);
 
         return metas;
     }
 
-   /**
-    * Construction des objets Sequences.
-    *
-    * @param identifier
-    * @return
-    * @throws PgcnTechnicalException
-    */
+    /**
+     * Construction des objets Sequences.
+     *
+     * @param identifier
+     * @return
+     * @throws PgcnTechnicalException
+     */
     private List<Sequences> getSequences(final String identifier, final boolean sampling) throws PgcnTechnicalException {
         final List<Sequences> seqs = new ArrayList<>();
         final Sequences sequences = new Sequences();
         sequences.setType("sc:Sequence");
         sequences.setAdditionalProperty("viewingDirection", "left-to-right");
 
-        /*sequences.setAdditionalProperty("viewingDirection", "right-to-left"); */
+        /* sequences.setAdditionalProperty("viewingDirection", "right-to-left"); */
 
         sequences.setAdditionalProperty("viewingHint", "paged");  // detecte selon le doc si "paged" ou "individuals" (evite la bookview) ?
         sequences.setAdditionalProperty("canvases", getCanvases(identifier, sampling));
@@ -393,7 +393,8 @@ public class ViewerService {
      */
     private List<Canvases> getCanvases(final String identifier, final boolean sampling) throws PgcnTechnicalException {
 
-        final DigitalDocument ddoc = sampling ? null : digitalDocumentRepository.getOneWithDocUnitAndLibrary(identifier);
+        final DigitalDocument ddoc = sampling ? null
+                                              : digitalDocumentRepository.getOneWithDocUnitAndLibrary(identifier);
         final List<StoredFile> storedThumbs = getStoredFiles(identifier, ViewsFormatConfiguration.FileFormat.THUMB, sampling);
         // prise en compte des zooms eventuels
         final List<StoredFile> storedFiles = mergeStoredFileList(identifier, sampling);
@@ -407,15 +408,16 @@ public class ViewerService {
             formatConfig = formatConfigurationService.getOneByLot(sample.getDelivery().getLot().getIdentifier());
         }
         // default height/width du format print si pas stockés en DB.
-        final long maxWidth  = formatConfig.getWidthByFormat(ViewsFormatConfiguration.FileFormat.PRINT);
+        final long maxWidth = formatConfig.getWidthByFormat(ViewsFormatConfiguration.FileFormat.PRINT);
         final long maxHeight = formatConfig.getHeightByFormat(ViewsFormatConfiguration.FileFormat.PRINT);
 
         final List<Canvases> canvs = new ArrayList<>();
         int cpt = 0;
-        for(final StoredFile sf : storedFiles) {
+        for (final StoredFile sf : storedFiles) {
 
             final DocPage page = sf.getPage();
-            final int sfPageNumber = page!=null ? page.getNumber() : 0;
+            final int sfPageNumber = page != null ? page.getNumber()
+                                                  : 0;
             cpt++;
             final Canvases canvases = new Canvases();
             canvases.setId(String.valueOf(cpt));
@@ -425,12 +427,12 @@ public class ViewerService {
             } else {
                 canvases.setAdditionalProperty("label", getSplittedName(sf.getFilename(), ddoc.getDigitalId()));
                 if (page != null && page.getSample() != null) {  // pour reperer les img echantillonnees
-                   canvases.setAdditionalProperty("sampled", true);
+                    canvases.setAdditionalProperty("sampled", true);
                 }
             }
-            if (page!=null && DocPage.PageStatus.VALIDATED == page.getStatus()) {
+            if (page != null && DocPage.PageStatus.VALIDATED == page.getStatus()) {
                 canvases.setAdditionalProperty("checkedOK", true);
-            } else if (page!=null && DocPage.PageStatus.REJECTED == page.getStatus()) {
+            } else if (page != null && DocPage.PageStatus.REJECTED == page.getStatus()) {
                 canvases.setAdditionalProperty("checkedKO", true);
             }
 
@@ -438,14 +440,26 @@ public class ViewerService {
                 // empeche pagination pour mode paysage
                 canvases.setAdditionalProperty("viewingHint", "non-paged");
             }
-            canvases.setAdditionalProperty("height", sf.getHeight()!=null?sf.getHeight():maxHeight);
-            canvases.setAdditionalProperty("width", sf.getWidth()!=null?sf.getWidth():maxWidth);
+            canvases.setAdditionalProperty("height",
+                                           sf.getHeight() != null ? sf.getHeight()
+                                                                  : maxHeight);
+            canvases.setAdditionalProperty("width",
+                                           sf.getWidth() != null ? sf.getWidth()
+                                                                 : maxWidth);
 
-            final String digDocId = sampling ? sf.getPage().getDigitalDocument().getIdentifier() : identifier;
+            final String digDocId = sampling ? sf.getPage().getDigitalDocument().getIdentifier()
+                                             : identifier;
 
             // ajout du thumbnail => on ne charge que les vignettes a l'initialisation du viewer.
-            canvases.setAdditionalProperty("thumbnail", getThumb(digDocId, sfPageNumber, storedThumbs.get(cpt-1), formatConfig));
-            canvases.setAdditionalProperty("images", getImages(digDocId, cpt, sfPageNumber, sf.getWidth()!=null?sf.getWidth():maxWidth, sf.getHeight()!=null?sf.getHeight():maxHeight));
+            canvases.setAdditionalProperty("thumbnail", getThumb(digDocId, sfPageNumber, storedThumbs.get(cpt - 1), formatConfig));
+            canvases.setAdditionalProperty("images",
+                                           getImages(digDocId,
+                                                     cpt,
+                                                     sfPageNumber,
+                                                     sf.getWidth() != null ? sf.getWidth()
+                                                                           : maxWidth,
+                                                     sf.getHeight() != null ? sf.getHeight()
+                                                                            : maxHeight));
             canvs.add(canvases);
         }
         return canvs;
@@ -471,7 +485,6 @@ public class ViewerService {
         }
     }
 
-
     /**
      * Merge les items de list2 dans list1.
      *
@@ -489,8 +502,8 @@ public class ViewerService {
         } else {
             // il faut merger list2 dans list1
             int idx = 0;
-            for(final StoredFile sf1:list1) {
-                for(final StoredFile sf2:list2) {
+            for (final StoredFile sf1 : list1) {
+                for (final StoredFile sf2 : list2) {
                     if (StringUtils.equals(sf2.getPage().getIdentifier(), sf1.getPage().getIdentifier())) {
                         merged.set(idx, sf2);
                     }
@@ -508,9 +521,10 @@ public class ViewerService {
      * @return
      */
     private String getSplittedName(final String name, final String radical) {
-        String splittedName = StringUtils.isBlank(name)?"":name;
+        String splittedName = StringUtils.isBlank(name) ? ""
+                                                        : name;
         final String[] splitName = name.split(radical.concat("_"));
-        if (splitName.length==1){
+        if (splitName.length == 1) {
             splittedName = splitName[0];
         } else if (splitName.length > 1) {
             splittedName = splitName[1];
@@ -529,11 +543,14 @@ public class ViewerService {
     private Thumbnail getThumb(final String identifier, final int pageNumber, final StoredFile thumb, final ViewsFormatConfiguration formatConfig) {
 
         final Thumbnail th = new Thumbnail();
-        th.setId(URI_WS_VIEWER.concat(identifier).concat("/thumbnail/")
-                     .concat(String.valueOf(pageNumber)).concat("/thumb.jpg"));
+        th.setId(URI_WS_VIEWER.concat(identifier).concat("/thumbnail/").concat(String.valueOf(pageNumber)).concat("/thumb.jpg"));
         th.setType("dctypes:Image");
-        th.setAdditionalProperty("height", thumb.getHeight()!=null?thumb.getHeight():formatConfig.getHeightByFormat(ViewsFormatConfiguration.FileFormat.THUMB));
-        th.setAdditionalProperty("width", thumb.getWidth()!=null?thumb.getWidth():formatConfig.getWidthByFormat(ViewsFormatConfiguration.FileFormat.THUMB));
+        th.setAdditionalProperty("height",
+                                 thumb.getHeight() != null ? thumb.getHeight()
+                                                           : formatConfig.getHeightByFormat(ViewsFormatConfiguration.FileFormat.THUMB));
+        th.setAdditionalProperty("width",
+                                 thumb.getWidth() != null ? thumb.getWidth()
+                                                          : formatConfig.getWidthByFormat(ViewsFormatConfiguration.FileFormat.THUMB));
         return th;
     }
 
@@ -571,7 +588,9 @@ public class ViewerService {
     private Resource getResource(final String identifier, final int pageNumber, final long maxWidth, final long maxHeight) {
 
         final Resource resource = new Resource();
-        resource.setId(URI_WS_VIEWER.concat(identifier) + "/" + pageNumber + "/full");
+        resource.setId(URI_WS_VIEWER.concat(identifier) + "/"
+                       + pageNumber
+                       + "/full");
         resource.setType("dctypes:Image");
         resource.setAdditionalProperty("format", "image/jpeg");
         resource.setAdditionalProperty("height", maxHeight);
@@ -590,7 +609,8 @@ public class ViewerService {
     private fr.progilone.pgcn.service.exchange.iiif.manifest.Service getService(final String identifier, final int pageNumber) {
 
         final fr.progilone.pgcn.service.exchange.iiif.manifest.Service service = new fr.progilone.pgcn.service.exchange.iiif.manifest.Service();
-        service.setId(URI_WS_VIEWER.concat(identifier) + "/" + pageNumber);
+        service.setId(URI_WS_VIEWER.concat(identifier) + "/"
+                      + pageNumber);
         service.setAdditionalProperty("@context", URI_IMG_CONTEXT_IIIF);
         service.setAdditionalProperty("profile", URI_PROFILE_IIIF);
         return service;
@@ -622,7 +642,7 @@ public class ViewerService {
         info.put("height", height);
         info.put("protocol", URI_PROTOCOL_IIIF);
 
-        for(final Integer i: scaleFactors) {
+        for (final Integer i : scaleFactors) {
             final Map<String, Integer> size = new LinkedHashMap<>();
             size.put("width", Integer.divideUnsigned(width, i));
             size.put("height", Integer.divideUnsigned(height, i));
@@ -689,44 +709,43 @@ public class ViewerService {
         final List<Structures> consolidedStruct = getStructureByDocument(ddoc);
 
         storedMasters.stream()
-                    .filter(sf->sf.getPage().getNumber() != null)  // cas du master pdf
-                    .forEach(sf -> {
-                        final Map<String, String> datas = new LinkedHashMap<>();
+                     .filter(sf -> sf.getPage().getNumber() != null)  // cas du master pdf
+                     .forEach(sf -> {
+                         final Map<String, String> datas = new LinkedHashMap<>();
 
-                        // splitted name
-                        datas.put("name", getSplittedName(sf.getFilename(), ddoc.getDigitalId()));
-                        datas.put("fileName", sf.getFilename());
-                        datas.put("size", String.valueOf(sf.getLength()).concat(" octets"));
-                        datas.put("WxH", String.valueOf(sf.getWidth()).concat(" x ").concat(String.valueOf(sf.getHeight())));
-                        datas.put("compressionType", sf.getCompressionType() );
-                        final String txComp = (sf.getCompressionRate() == null
-                                                || sf.getCompressionRate() == 0) ? "" : String.valueOf(sf.getCompressionRate());
-                        datas.put("bitsDepth", StringUtils.defaultIfBlank(txComp, ViewerService.NON_RENSEIGNE));
-                        datas.put("colorspace", StringUtils.defaultIfBlank(sf.getColorspace(), ViewerService.NON_RENSEIGNE));
-                        final String res = (sf.getResolution() == null
-                                || sf.getResolution() == 0) ? "" : String.valueOf(sf.getResolution());
-                        datas.put("resolution", StringUtils.defaultIfBlank(res, ViewerService.NON_RENSEIGNE));
+                         // splitted name
+                         datas.put("name", getSplittedName(sf.getFilename(), ddoc.getDigitalId()));
+                         datas.put("fileName", sf.getFilename());
+                         datas.put("size", String.valueOf(sf.getLength()).concat(" octets"));
+                         datas.put("WxH", String.valueOf(sf.getWidth()).concat(" x ").concat(String.valueOf(sf.getHeight())));
+                         datas.put("compressionType", sf.getCompressionType());
+                         final String txComp = (sf.getCompressionRate() == null || sf.getCompressionRate() == 0) ? ""
+                                                                                                                 : String.valueOf(sf.getCompressionRate());
+                         datas.put("bitsDepth", StringUtils.defaultIfBlank(txComp, ViewerService.NON_RENSEIGNE));
+                         datas.put("colorspace", StringUtils.defaultIfBlank(sf.getColorspace(), ViewerService.NON_RENSEIGNE));
+                         final String res = (sf.getResolution() == null || sf.getResolution() == 0) ? ""
+                                                                                                    : String.valueOf(sf.getResolution());
+                         datas.put("resolution", StringUtils.defaultIfBlank(res, ViewerService.NON_RENSEIGNE));
 
-                        // TOC fields
-                        if (StringUtils.isBlank(sf.getTypeToc())
-                                        && StringUtils.isBlank(sf.getOrderToc())
-                                        && StringUtils.isBlank(sf.getTitleToc()) ) {
-                            final String[] tocDatas = getTocDatas(consolidedStruct, sf.getPage().getNumber());
-                            datas.put("typeTOC", tocDatas[0]);
-                            datas.put("orderTOC", tocDatas[1]);
-                            datas.put("nameTOC", tocDatas[2]);
-                        } else {
-                            datas.put("typeTOC", sf.getTypeToc());
-                            datas.put("orderTOC", sf.getOrderToc());
-                            datas.put("nameTOC", sf.getTitleToc());
-                        }
-                        // Text OCR
-                        datas.put("textOcr", sf.getTextOcr());
+                         // TOC fields
+                         if (StringUtils.isBlank(sf.getTypeToc()) && StringUtils.isBlank(sf.getOrderToc())
+                             && StringUtils.isBlank(sf.getTitleToc())) {
+                             final String[] tocDatas = getTocDatas(consolidedStruct, sf.getPage().getNumber());
+                             datas.put("typeTOC", tocDatas[0]);
+                             datas.put("orderTOC", tocDatas[1]);
+                             datas.put("nameTOC", tocDatas[2]);
+                         } else {
+                             datas.put("typeTOC", sf.getTypeToc());
+                             datas.put("orderTOC", sf.getOrderToc());
+                             datas.put("nameTOC", sf.getTitleToc());
+                         }
+                         // Text OCR
+                         datas.put("textOcr", sf.getTextOcr());
                          // Piece
                          datas.put("piece", sf.getPage().getPiece());
-                        // cle : simple increment => permet de rester synchro mm avec une sequence bizarre
-                        metadataFiles.put(String.valueOf(metadataFiles.size()), datas);
-                    });
+                         // cle : simple increment => permet de rester synchro mm avec une sequence bizarre
+                         metadataFiles.put(String.valueOf(metadataFiles.size()), datas);
+                     });
 
         return metadataFiles;
     }
@@ -751,31 +770,27 @@ public class ViewerService {
             structuresByDoc.put(doc.getDigitalDocument().getIdentifier(), getStructureByDocument(doc.getDigitalDocument()));
         });
 
-        storedMasters.stream()
-                    .filter(sf->sf.getPage().getNumber() != null)
-                    .forEach(sf -> {
+        storedMasters.stream().filter(sf -> sf.getPage().getNumber() != null).forEach(sf -> {
 
             final Map<String, String> datas = new LinkedHashMap<>();
             datas.put("name", getSplittedName(sf.getFilename(), sf.getPage().getDigitalDocument().getDigitalId()));
             datas.put("fileName", sf.getFilename());
             datas.put("size", String.valueOf(sf.getLength()).concat(" octets"));
             datas.put("WxH", String.valueOf(sf.getWidth()).concat(" x ").concat(String.valueOf(sf.getHeight())));
-            datas.put("compressionType", sf.getCompressionType() );
-            final String txComp = (sf.getCompressionRate() == null
-                                    || sf.getCompressionRate() == 0) ? "" : String.valueOf(sf.getCompressionRate());
+            datas.put("compressionType", sf.getCompressionType());
+            final String txComp = (sf.getCompressionRate() == null || sf.getCompressionRate() == 0) ? ""
+                                                                                                    : String.valueOf(sf.getCompressionRate());
             datas.put("bitsDepth)", StringUtils.defaultIfBlank(txComp, ViewerService.NON_RENSEIGNE));
             datas.put("colorspace", StringUtils.defaultIfBlank(sf.getColorspace(), ViewerService.NON_RENSEIGNE));
-            final String res = (sf.getResolution() == null
-                    || sf.getResolution() == 0) ? "" : String.valueOf(sf.getResolution());
+            final String res = (sf.getResolution() == null || sf.getResolution() == 0) ? ""
+                                                                                       : String.valueOf(sf.getResolution());
             datas.put("resolution", StringUtils.defaultIfBlank(res, ViewerService.NON_RENSEIGNE));
 
             // TOC fields
-            if (StringUtils.isBlank(sf.getTypeToc())
-                            && StringUtils.isBlank(sf.getOrderToc())
-                            && StringUtils.isBlank(sf.getTitleToc()) ) {
+            if (StringUtils.isBlank(sf.getTypeToc()) && StringUtils.isBlank(sf.getOrderToc())
+                && StringUtils.isBlank(sf.getTitleToc())) {
 
-                final String[] tocDatas = getTocDatas(structuresByDoc.get(sf.getPage().getDigitalDocument().getIdentifier()),
-                                                           sf.getPage().getNumber());
+                final String[] tocDatas = getTocDatas(structuresByDoc.get(sf.getPage().getDigitalDocument().getIdentifier()), sf.getPage().getNumber());
                 datas.put("typeTOC", tocDatas[0]);
                 datas.put("orderTOC", tocDatas[1]);
                 datas.put("nameTOC", tocDatas[2]);
@@ -787,14 +802,13 @@ public class ViewerService {
 
             // Text OCR
             datas.put("textOcr", sf.getTextOcr());
-                         // Piece
-                         datas.put("piece", sf.getPage().getPiece());
+            // Piece
+            datas.put("piece", sf.getPage().getPiece());
             // cle : simple increment => permet de rester synchro mm avec une sequence bizarre
             metadataFiles.put(String.valueOf(metadataFiles.size()), datas);
         });
         return metadataFiles;
     }
-
 
     /**
      * Retourne les données affichées ds la table de matières.
@@ -805,14 +819,11 @@ public class ViewerService {
      */
     private String[] getTocDatas(final List<Structures> structures, final int page) {
 
-        final Optional<Structures> struc = structures
-                .stream()
-                .filter(s ->
-                    CollectionUtils.isNotEmpty(s.getAdditionalProperties().keySet())
-                        && s.getAdditionalProperties().get("canvases")!= null
-                        && StringUtils.equals(String.valueOf(page),  ((List<String>)s.getAdditionalProperties().get("canvases")).get(0))
-                )
-                .findFirst();
+        final Optional<Structures> struc = structures.stream()
+                                                     .filter(s -> CollectionUtils.isNotEmpty(s.getAdditionalProperties().keySet()) && s.getAdditionalProperties().get("canvases")
+                                                                                                                                      != null
+                                                                  && StringUtils.equals(String.valueOf(page), ((List<String>) s.getAdditionalProperties().get("canvases")).get(0)))
+                                                     .findFirst();
 
         final String[] datas = new String[3];
         if (struc.isPresent()) {
@@ -822,6 +833,5 @@ public class ViewerService {
         }
         return datas;
     }
-
 
 }

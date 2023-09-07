@@ -5,14 +5,13 @@
 // Généré le : 2017.01.03 à 11:16:35 AM CET
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.aip;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlType;
 import java.time.LocalDateTime;
 
 /**
@@ -24,9 +23,11 @@ import java.time.LocalDateTime;
  *
  *
  *
- * <p>Classe Java pour communicabiliteType complex type.
+ * <p>
+ * Classe Java pour communicabiliteType complex type.
  *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="communicabiliteType"&gt;
@@ -44,10 +45,9 @@ import java.time.LocalDateTime;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "communicabiliteType", propOrder = {
-    "code",
-    "dateDebut"
-})
+@XmlType(name = "communicabiliteType",
+         propOrder = {"code",
+                      "dateDebut"})
 public class CommunicabiliteType {
 
     @XmlElement(required = true)
@@ -60,8 +60,8 @@ public class CommunicabiliteType {
      * Obtient la valeur de la propriété code.
      *
      * @return
-     *     possible object is
-     *     {@link CodeType }
+     *         possible object is
+     *         {@link CodeType }
      *
      */
     public CodeType getCode() {
@@ -72,8 +72,8 @@ public class CommunicabiliteType {
      * Définit la valeur de la propriété code.
      *
      * @param value
-     *     allowed object is
-     *     {@link CodeType }
+     *            allowed object is
+     *            {@link CodeType }
      *
      */
     public void setCode(CodeType value) {
@@ -84,8 +84,8 @@ public class CommunicabiliteType {
      * Obtient la valeur de la propriété dateDebut.
      *
      * @return
-     *     possible object is
-     *     {@link LocalDateTime }
+     *         possible object is
+     *         {@link LocalDateTime }
      *
      */
     public LocalDateTime getDateDebut() {
@@ -96,8 +96,8 @@ public class CommunicabiliteType {
      * Définit la valeur de la propriété dateDebut.
      *
      * @param value
-     *     allowed object is
-     *     {@link LocalDateTime }
+     *            allowed object is
+     *            {@link LocalDateTime }
      *
      */
     public void setDateDebut(LocalDateTime value) {

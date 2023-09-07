@@ -5,37 +5,37 @@
 // Généré le : 2016.12.29 à 11:54:07 AM CET
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.dc;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlMixed;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlMixed;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 
 /**
  *
- *             This is the default type for all of the DC elements.
- *             It permits text content only with optional
- *             xml:lang attribute.
- *             Text is allowed because mixed="true", but sub-elements
- *             are disallowed because minOccurs="0" and maxOccurs="0"
- *             are on the xs:any tag.
+ * This is the default type for all of the DC elements.
+ * It permits text content only with optional
+ * xml:lang attribute.
+ * Text is allowed because mixed="true", but sub-elements
+ * are disallowed because minOccurs="0" and maxOccurs="0"
+ * are on the xs:any tag.
  *
- *     	    This complexType allows for restriction or extension permitting
- *             child elements.
+ * This complexType allows for restriction or extension permitting
+ * child elements.
  *
  *
- * <p>Classe Java pour SimpleLiteral complex type.
+ * <p>
+ * Classe Java pour SimpleLiteral complex type.
  *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="SimpleLiteral"&gt;
@@ -53,9 +53,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "SimpleLiteral", propOrder = {
-    "content"
-})
+@XmlType(name = "SimpleLiteral", propOrder = {"content"})
 public class SimpleLiteral {
 
     @XmlMixed
@@ -67,16 +65,16 @@ public class SimpleLiteral {
 
     /**
      *
-     *             This is the default type for all of the DC elements.
-     *             It permits text content only with optional
-     *             xml:lang attribute.
-     *             Text is allowed because mixed="true", but sub-elements
-     *             are disallowed because minOccurs="0" and maxOccurs="0"
-     *             are on the xs:any tag.
+     * This is the default type for all of the DC elements.
+     * It permits text content only with optional
+     * xml:lang attribute.
+     * Text is allowed because mixed="true", but sub-elements
+     * are disallowed because minOccurs="0" and maxOccurs="0"
+     * are on the xs:any tag.
      *
-     *     	    This complexType allows for restriction or extension permitting
-     *             child elements.
-     *     	Gets the value of the content property.
+     * This complexType allows for restriction or extension permitting
+     * child elements.
+     * Gets the value of the content property.
      *
      * <p>
      * This accessor method returns a reference to the live list,
@@ -86,8 +84,9 @@ public class SimpleLiteral {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getContent().add(newItem);
+     * getContent().add(newItem);
      * </pre>
      *
      *
@@ -108,8 +107,8 @@ public class SimpleLiteral {
      * Obtient la valeur de la propriété lang.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getLang() {
@@ -120,8 +119,8 @@ public class SimpleLiteral {
      * Définit la valeur de la propriété lang.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setLang(String value) {

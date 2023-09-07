@@ -1,58 +1,57 @@
-<!doctype html>
+<!DOCTYPE html>
 <html class="no-js">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title translate>NumaHOP</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width">
-    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-    <link rel="shortcut icon" href="hop_favicon.png" />
-    <!-- build:css(.tmp) assets/styles/vendor.css -->
-    <link rel="stylesheet" href="bower_components/angular-loading-bar/build/loading-bar.css"/>
-    <link rel="stylesheet" href="bower_components/angular-tree-control/css/tree-control.css"/>
-    <link rel="stylesheet" href="bower_components/angular-ui-select/dist/select.css"/>
-    <link rel="stylesheet" href="bower_components/angular-xeditable/dist/css/xeditable.css"/>
-    <link rel="stylesheet" href="bower_components/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.css"/>
-    <link rel="stylesheet" href="bower_components/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css"/>
-    <link rel="stylesheet" href="bower_components/jquery-timepicker-jt/jquery.timepicker.css"/>
-    <link rel="stylesheet" href="bower_components/select2/select2.css"/>
-    <link rel="stylesheet" href="bower_components/select2-bootstrap-css/select2-bootstrap.css"/>
-    <link rel="stylesheet" href="bower_components/summernote/dist/summernote.css">
-    <link rel="stylesheet" href="bower_components/angular-dashboard-framework/dist/angular-dashboard-framework.css">
-    <!-- endbuild -->
-    <!-- build:css(.tmp) assets/styles/numahop.css -->
-    <link rel="stylesheet" href="assets/styles/main.css"/>
-    <!-- endbuild -->
-    <!--     <link rel="stylesheet" href="styles/mediaelement/build/mediaelementplayer.min.css" /> -->
-</head>
-<body ng-app="numaHopApp" ng-controller="MainController" ng-cloak>
-<!--[if lt IE 10]>
-<p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to
-    improve your experience.</p>
-<![endif]-->
-<!-- Menu top -->
-<ng-include src="'scripts/app/main/menuTop.html'" role="search"></ng-include>
-<!-- Menu left -->
-<div id="sem-menu" ng-include="'scripts/app/main/menuLeft.html'" role="navigation" ng-if="isAuthenticated()" sem-auto-hide></div>
-<!-- Content -->
-<div id="sem-content" ng-class="{'menu-left-on': isAuthenticated()}">
-    <div id="messages" ng-show="isAuthenticated() || isLoginPage()" class="alerts col-sm-2">
-        <!-- Autres messages d'information -->
-        <div uib-alert ng-repeat="msg in getTemporaryMessages() | orderBy:'-timestamp'" ng-class="'alert-' + msg.level" close="deleteMessage(msg)">
-            <span class="badge pull-right" ng-if="msg.count > 1">{{msg.count}}</span>
-            <span ng-bind-html="msg.content"></span>
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <title translate>NumaHOP</title>
+        <meta name="description" content="" />
+        <meta name="viewport" content="width=device-width" />
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+        <link rel="shortcut icon" href="hop_favicon.png" />
+        <!-- build:css(.tmp) assets/styles/vendor.css -->
+        <link rel="stylesheet" href="../node_modules/angular-loading-bar/build/loading-bar.css" />
+        <link rel="stylesheet" href="../node_modules/angular-tree-control/css/tree-control.css" />
+        <link rel="stylesheet" href="../node_modules/ui-select/dist/select.css" />
+        <link rel="stylesheet" href="../node_modules/angular-xeditable/dist/css/xeditable.css" />
+        <link rel="stylesheet" href="../node_modules/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.css" />
+        <link rel="stylesheet" href="../node_modules/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" />
+        <link rel="stylesheet" href="../node_modules/select2/select2.css" />
+        <link rel="stylesheet" href="../node_modules/select2-bootstrap-css/select2-bootstrap.css" />
+        <link rel="stylesheet" href="../node_modules/famfamfam-flags/dist/sprite/famfamfam-flags.css" />
+        <link rel="stylesheet" href="../node_modules/summernote/dist/summernote.css" />
+        <link rel="stylesheet" href="../node_modules/angular-dashboard-framework/dist/angular-dashboard-framework.css" />
+        <!-- endbuild -->
+        <!-- build:css(.tmp) assets/styles/numahop.css -->
+        <link rel="stylesheet" href="assets/styles/main.css" />
+        <!-- endbuild -->
+        <!--     <link rel="stylesheet" href="styles/mediaelement/build/mediaelementplayer.min.css" /> -->
+    </head>
+    <body ng-app="numaHopApp" ng-controller="MainController" ng-cloak>
+        <!--[if lt IE 10]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+        <!-- Menu top -->
+        <ng-include src="'scripts/app/main/menuTop.html'" role="search"></ng-include>
+        <!-- Menu left -->
+        <div id="sem-menu" ng-include="'scripts/app/main/menuLeft.html'" role="navigation" ng-if="isAuthenticated()" sem-auto-hide></div>
+        <!-- Content -->
+        <div id="sem-content" ng-class="{'menu-left-on': isAuthenticated()}">
+            <div id="messages" ng-show="isAuthenticated() || isLoginPage()" class="alerts col-sm-2">
+                <!-- Autres messages d'information -->
+                <div uib-alert ng-repeat="msg in getTemporaryMessages() | orderBy:'-timestamp'" ng-class="'alert-' + msg.level" close="deleteMessage(msg)">
+                    <span class="badge pull-right" ng-if="msg.count > 1">{{msg.count}}</span>
+                    <span ng-bind-html="msg.content"></span>
+                </div>
+            </div>
+            <!-- Content -->
+            <div id="main-content" role="main" class="container-fluid">
+                <!-- Main view -->
+                <div ng-view ng-show="isAuthenticated() || isLoginPage()"></div>
+                <!-- infos -->
+                <div ng-include="'scripts/app/main/informationsRight.html'" ng-if="isAuthenticated()"></div>
+            </div>
         </div>
-    </div>
-    <!-- Content -->
-    <div id="main-content" role="main" class="container-fluid">
-        <!-- Main view -->
-        <div ng-view ng-show="isAuthenticated() || isLoginPage()"></div>
-        <!-- infos -->
-        <div ng-include="'scripts/app/main/informationsRight.html'" ng-if="isAuthenticated()"></div>
-    </div>
-</div>
-<!-- Google Analytics: uncomment and change UA-XXXXX-X to be your site's ID.
+        <!-- Google Analytics: uncomment and change UA-XXXXX-X to be your site's ID.
 <script>
 (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
 function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
@@ -61,504 +60,503 @@ e.src='//www.google-analytics.com/analytics.js';
 r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
 ga('create','UA-XXXXX-X');ga('send','pageview');
 </script>-->
-<!-- build:js scripts/libs-core.js -->
-<script type="text/javascript" src="bower_components/modernizr/modernizr.js"></script>
-<!-- JQuery -->
-<script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
-<script type="text/javascript" src="bower_components/jquery-ui/ui/core.js"></script>
-<script type="text/javascript" src="bower_components/jquery-ui/ui/widget.js"></script>
-<script type="text/javascript" src="bower_components/jquery-ui/ui/mouse.js"></script>
-<script type="text/javascript" src="bower_components/jquery-ui/ui/draggable.js"></script>
-<script type="text/javascript" src="bower_components/jquery-ui/ui/droppable.js"></script>
-<!-- AngularJS -->
-<script type="text/javascript" src="bower_components/angular/angular.js"></script>
-<script type="text/javascript" src="bower_components/angular-animate/angular-animate.js"></script>
-<script type="text/javascript" src="bower_components/angular-route/angular-route.js"></script>
-<script type="text/javascript" src="bower_components/angular-resource/angular-resource.js"></script>
-<script type="text/javascript" src="bower_components/angular-cookies/angular-cookies.js"></script>
-<script type="text/javascript" src="bower_components/angular-sanitize/angular-sanitize.js"></script>
-<script type="text/javascript" src="bower_components/angular-aria/angular-aria.js"></script>
-<!-- Bootstrap -->
-<script type="text/javascript" src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/affix.js"></script>
-<script type="text/javascript" src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/alert.js"></script>
-<script type="text/javascript" src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/button.js"></script>
-<script type="text/javascript" src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/carousel.js"></script>
-<script type="text/javascript" src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/collapse.js"></script>
-<script type="text/javascript" src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/dropdown.js"></script>
-<script type="text/javascript" src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/modal.js"></script>
-<script type="text/javascript" src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/tooltip.js"></script>
-<script type="text/javascript" src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/popover.js"></script>
-<script type="text/javascript" src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/scrollspy.js"></script>
-<script type="text/javascript" src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/tab.js"></script>
-<script type="text/javascript" src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/transition.js"></script>
-<!-- endbuild -->
-<!-- build:js scripts/libs.js -->
-<script type="text/javascript" src="bower_components/angular-smart-table/dist/smart-table.js"></script>
-<script type="text/javascript" src="bower_components/angular-bootstrap-contextmenu/contextMenu.js"></script>
-<script type="text/javascript" src="bower_components/bootstrap-switch/dist/js/bootstrap-switch.js"></script>
-<script type="text/javascript" src="bower_components/chart.js/dist/Chart.js"></script>
-<script type="text/javascript" src="bower_components/moment/moment.js"></script>
-<script type="text/javascript" src="bower_components/moment/min/locales.js"></script>
-<script type="text/javascript" src="bower_components/lrInfiniteScroll/lrInfiniteScroll.js"></script>
-<script type="text/javascript" src="bower_components/select2/select2.js"></script>
-<script type="text/javascript" src="bower_components/underscore/underscore.js"></script>
-<script type="text/javascript" src="bower_components/jquery-timepicker-jt/jquery.timepicker.js"></script>
-<script type="text/javascript" src="bower_components/naturalSort.js/dist/naturalSort.js"></script>
-<script type="text/javascript" src="bower_components/stomp-websocket/lib/stomp.js"></script>
-<script type="text/javascript" src="bower_components/sockjs-client/dist/sockjs.js"></script>
-<script type="text/javascript" src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
-<script type="text/javascript" src="bower_components/angular-bootstrap-switch/dist/angular-bootstrap-switch.js"></script>
-<script type="text/javascript" src="bower_components/angular-chart.js/dist/angular-chart.js"></script>
-<script type="text/javascript" src="bower_components/angular-dragdrop/src/angular-dragdrop.js"></script>
-<script type="text/javascript" src="bower_components/angular-dynamic-locale/src/tmhDynamicLocale.js"></script>
-<script type="text/javascript" src="bower_components/angular-gettext/dist/angular-gettext.js"></script>
-<script type="text/javascript" src="bower_components/angular-jquery-timepicker/src/timepickerdirective.js"></script>
-<script type="text/javascript" src="bower_components/angular-loading-bar/build/loading-bar.js"></script>
-<script type="text/javascript" src="bower_components/angular-local-storage/dist/angular-local-storage.js"></script>
-<script type="text/javascript" src="bower_components/angular-tree-control/angular-tree-control.js"></script>
-<script type="text/javascript" src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
-<script type="text/javascript" src="bower_components/angular-ui-select/dist/select.js"></script>
-<script type="text/javascript" src="bower_components/angular-xeditable/dist/js/xeditable.js"></script>
-<script type="text/javascript" src="bower_components/summernote/dist/summernote.js"></script>
-<script type="text/javascript" src="bower_components/summernote/lang/summernote-fr-FR.js"></script>
-<script type="text/javascript" src="bower_components/Sortable/Sortable.js"></script>
-<script type="text/javascript" src="bower_components/angular-dashboard-framework/dist/angular-dashboard-framework.js"></script>
-<script type="text/javascript" src="bower_components/angular-svg-round-progressbar/build/roundProgress.js"></script>
-<script type="text/javascript" src="bower_components/angular-clipboard/angular-clipboard.js"></script>
-<script type="text/javascript" src="bower_components/angular-file-upload/dist/angular-file-upload.js"></script>
-<script type="text/javascript" src="bower_components/angular-file-saver/dist/angular-file-saver.bundle.js"></script>
+        <!-- build:js scripts/libs-core.js -->
+        <!-- JQuery -->
+        <script type="text/javascript" src="../../../node_modules/jquery/dist/jquery.js"></script>
+        <script type="text/javascript" src="../../../node_modules/jquery-ui/jquery-ui.js"></script>
+        <!-- AngularJS -->
+        <script type="text/javascript" src="../../../node_modules/angular/angular.js"></script>
+        <script type="text/javascript" src="../../../node_modules/angular-animate/angular-animate.js"></script>
+        <script type="text/javascript" src="../../../node_modules/angular-route/angular-route.js"></script>
+        <script type="text/javascript" src="../../../node_modules/angular-resource/angular-resource.js"></script>
+        <script type="text/javascript" src="../../../node_modules/angular-cookies/angular-cookies.js"></script>
+        <script type="text/javascript" src="../../../node_modules/angular-sanitize/angular-sanitize.js"></script>
+        <script type="text/javascript" src="../../../node_modules/angular-aria/angular-aria.js"></script>
+        <!-- Bootstrap -->
+        <script type="text/javascript" src="../../../node_modules/bootstrap-sass/assets/javascripts/bootstrap/affix.js"></script>
+        <script type="text/javascript" src="../../../node_modules/bootstrap-sass/assets/javascripts/bootstrap/alert.js"></script>
+        <script type="text/javascript" src="../../../node_modules/bootstrap-sass/assets/javascripts/bootstrap/button.js"></script>
+        <script type="text/javascript" src="../../../node_modules/bootstrap-sass/assets/javascripts/bootstrap/carousel.js"></script>
+        <script type="text/javascript" src="../../../node_modules/bootstrap-sass/assets/javascripts/bootstrap/collapse.js"></script>
+        <script type="text/javascript" src="../../../node_modules/bootstrap-sass/assets/javascripts/bootstrap/dropdown.js"></script>
+        <script type="text/javascript" src="../../../node_modules/bootstrap-sass/assets/javascripts/bootstrap/modal.js"></script>
+        <script type="text/javascript" src="../../../node_modules/bootstrap-sass/assets/javascripts/bootstrap/tooltip.js"></script>
+        <script type="text/javascript" src="../../../node_modules/bootstrap-sass/assets/javascripts/bootstrap/popover.js"></script>
+        <script type="text/javascript" src="../../../node_modules/bootstrap-sass/assets/javascripts/bootstrap/scrollspy.js"></script>
+        <script type="text/javascript" src="../../../node_modules/bootstrap-sass/assets/javascripts/bootstrap/tab.js"></script>
+        <script type="text/javascript" src="../../../node_modules/bootstrap-sass/assets/javascripts/bootstrap/transition.js"></script>
+        <!-- endbuild -->
+        <!-- build:js scripts/libs.js -->
+        <script type="text/javascript" src="../../../node_modules/angular-smart-table/dist/smart-table.js"></script>
+        <script type="text/javascript" src="../../../node_modules/angular-bootstrap-contextmenu/contextMenu.js"></script>
+        <script type="text/javascript" src="../../../node_modules/bootstrap-switch/dist/js/bootstrap-switch.js"></script>
+        <script type="text/javascript" src="../../../node_modules/chart.js/dist/Chart.js"></script>
+        <script type="text/javascript" src="../../../node_modules/moment/moment.js"></script>
+        <script type="text/javascript" src="../../../node_modules/moment/min/locales.js"></script>
+        <script type="text/javascript" src="../../../node_modules/lr-infinite-scroll/lrInfiniteScroll.js"></script>
+        <script type="text/javascript" src="../../../node_modules/underscore/underscore.js"></script>
+        <script type="text/javascript" src="../../../node_modules/angular-jquery-timepicker/src/timepickerdirective.js"></script>
+        <script type="text/javascript" src="../../../node_modules/natural-sort/dist/natural-sort.js"></script>
+        <script type="text/javascript" src="../../../node_modules/stomp-websocket/lib/stomp.js"></script>
+        <script type="text/javascript" src="../../../node_modules/sockjs-client/dist/sockjs.js"></script>
+        <script type="text/javascript" src="../../../node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js"></script>
+        <script type="text/javascript" src="../../../node_modules/angular-bootstrap-switch/dist/angular-bootstrap-switch.js"></script>
+        <script type="text/javascript" src="../../../node_modules/angular-chart.js/dist/angular-chart.js"></script>
+        <script type="text/javascript" src="../../../node_modules/angular-dragdrop/src/angular-dragdrop.js"></script>
+        <script type="text/javascript" src="../../../node_modules/angular-dynamic-locale/src/tmhDynamicLocale.js"></script>
+        <script type="text/javascript" src="../../../node_modules/angular-gettext/dist/angular-gettext.js"></script>
+        <script type="text/javascript" src="../../../node_modules/angular-jquery-timepicker/src/timepickerdirective.js"></script>
+        <script type="text/javascript" src="../../../node_modules/angular-loading-bar/build/loading-bar.js"></script>
+        <script type="text/javascript" src="../../../node_modules/angular-local-storage/dist/angular-local-storage.js"></script>
+        <script type="text/javascript" src="../../../node_modules/angular-tree-control/angular-tree-control.js"></script>
+        <script type="text/javascript" src="../../../node_modules/angular-ui-router/release/angular-ui-router.js"></script>
+        <script type="text/javascript" src="../../../node_modules/angular-ui-select2/src/select2.js"></script>
+        <script type="text/javascript" src="../../../node_modules/ui-select/dist/select.js"></script>
+        <script type="text/javascript" src="../../../node_modules/angular-xeditable/dist/js/xeditable.js"></script>
+        <script type="text/javascript" src="../../../node_modules/summernote/dist/summernote.js"></script>
+        <script type="text/javascript" src="../../../node_modules/summernote/lang/summernote-fr-FR.js"></script>
+        <script type="text/javascript" src="../../../node_modules/angular-dashboard-framework/dist/angular-dashboard-framework.js"></script>
+        <script type="text/javascript" src="../../../node_modules/angular-svg-round-progressbar/build/roundProgress.js"></script>
+        <script type="text/javascript" src="../../../node_modules/angular-clipboard/angular-clipboard.js"></script>
+        <script type="text/javascript" src="../../../node_modules/angular-file-upload/dist/angular-file-upload.js"></script>
+        <script type="text/javascript" src="../../../node_modules/angular-file-saver/dist/angular-file-saver.bundle.js"></script>
+        <script type="text/javascript" src="../../../node_modules/sortablejs/Sortable.js"></script>
+        <!-- endbuild -->
+        <!-- build:js scripts/numahop.js -->
+        <!-- Général -->
+        <script type="text/javascript" src="scripts/http-auth-interceptor.js"></script>
+        <script type="text/javascript" src="scripts/truncate.js"></script>
+        <script type="text/javascript" src="scripts/app/app.js"></script>
+        <script type="text/javascript" src="scripts/app/app.constants.js"></script>
+        <script type="text/javascript" src="scripts/app/numahop.constants.js"></script>
+        <script type="text/javascript" src="scripts/utils.js"></script>
+        <script type="text/javascript" src="scripts/controllers.js"></script>
+        <script type="text/javascript" src="scripts/services.js"></script>
+        <script type="text/javascript" src="scripts/directives.js"></script>
+        <!--  Libraries -->
+        <script type="text/javascript" src="scripts/lib/JSOG.js"></script>
+        <script type="text/javascript" src="scripts/lib/stPaginationScroll.js"></script>
+        <!-- Composants -->
+        <script type="text/javascript" src="scripts/components/components/headerBar/headerBar.js"></script>
+        <script type="text/javascript" src="scripts/components/components/headerBar/headerBarCtrl.js"></script>
+        <script type="text/javascript" src="scripts/components/components/numaAlertAuditEntity/numaAlertAuditEntityComponent.js"></script>
+        <script type="text/javascript" src="scripts/components/components/numaAlertAuditEntity/numaAlertAuditEntityCtrl.js"></script>
+        <script type="text/javascript" src="scripts/components/components/numaAlertWorkflowTodo/numaAlertWorkflowTodoComponent.js"></script>
+        <script type="text/javascript" src="scripts/components/components/numaAlertWorkflowTodo/numaAlertWorkflowTodoCtrl.js"></script>
+        <script type="text/javascript" src="scripts/components/components/numaAlertWorkflowTodo/todoTable/todoTableComponent.js"></script>
+        <script type="text/javascript" src="scripts/components/components/numaAlertWorkflowTodo/todoTable/todoTableCtrl.js"></script>
+        <script type="text/javascript" src="scripts/components/components/numaCustomLink/numaCustomLinkComponent.js"></script>
+        <script type="text/javascript" src="scripts/components/components/numaWorkflowLink/numaWorkflowLinkComponent.js"></script>
+        <script type="text/javascript" src="scripts/components/components/numaEditableField/numaEditableFieldComponent.js"></script>
+        <script type="text/javascript" src="scripts/components/components/numaEditableField/numaEditableFieldCtrl.js"></script>
+        <script type="text/javascript" src="scripts/components/components/numaFilter/numaFilterFieldComponent.js"></script>
+        <script type="text/javascript" src="scripts/components/components/numaFilter/numaFilterComponent.js"></script>
+        <script type="text/javascript" src="scripts/components/components/numaSearchControl/numaSearchControlComponent.js"></script>
+        <script type="text/javascript" src="scripts/components/components/numaSearchControl/numaSearchControlCtrl.js"></script>
+        <script type="text/javascript" src="scripts/components/components/numaSearchControl/numaSearchControlSrvc.js"></script>
+        <script type="text/javascript" src="scripts/components/components/numaSearchControl/numaSearchControlsComponent.js"></script>
+        <script type="text/javascript" src="scripts/components/components/numaSearchControl/numaSearchControlsCtrl.js"></script>
+        <script type="text/javascript" src="scripts/components/components/numaResultFacet/numaResultFacetComponent.js"></script>
+        <script type="text/javascript" src="scripts/components/components/numaResultFacet/numaResultFacetCtrl.js"></script>
+        <script type="text/javascript" src="scripts/components/components/numaResultList/numaResultCondreportComponent.js"></script>
+        <script type="text/javascript" src="scripts/components/components/numaResultList/numaResultDocunitComponent.js"></script>
+        <script type="text/javascript" src="scripts/components/components/numaResultList/numaResultDeliveryComponent.js"></script>
+        <script type="text/javascript" src="scripts/components/components/numaResultList/numaResultLotComponent.js"></script>
+        <script type="text/javascript" src="scripts/components/components/numaResultList/numaResultProjectComponent.js"></script>
+        <script type="text/javascript" src="scripts/components/components/numaResultList/numaResultRecordComponent.js"></script>
+        <script type="text/javascript" src="scripts/components/components/numaResultList/numaResultTrainComponent.js"></script>
+        <script type="text/javascript" src="scripts/components/components/numaResultList/numaResultListComponent.js"></script>
+        <script type="text/javascript" src="scripts/components/components/numaResultList/numaResultListSelectionComponent.js"></script>
+        <!-- Directives -->
+        <script type="text/javascript" src="scripts/components/directives/directives.js"></script>
+        <script type="text/javascript" src="scripts/components/directives/semDatepicker/semDatepickerDirective.js"></script>
+        <script type="text/javascript" src="scripts/components/directives/semEditableBlock/semEditableBlockCtrl.js"></script>
+        <script type="text/javascript" src="scripts/components/directives/semEditableBlock/semEditableBlockDirective.js"></script>
+        <script type="text/javascript" src="scripts/components/directives/semEditableBlockHeader/semEditableBlockHeaderDirective.js"></script>
+        <script type="text/javascript" src="scripts/components/directives/inputSempercent/inputSempercentDirective.js"></script>
+        <script type="text/javascript" src="scripts/components/directives/editableSempercent/directive.js"></script>
+        <script type="text/javascript" src="scripts/components/directives/editableUiselect/editableUiselectDirective.js"></script>
+        <script type="text/javascript" src="scripts/components/directives/semEditableField/semEditableFieldCtrl.js"></script>
+        <script type="text/javascript" src="scripts/components/directives/semEditableField/semEditableFieldDirective.js"></script>
+        <script type="text/javascript" src="scripts/components/directives/semEditableForm/semEditableFormCtrl.js"></script>
+        <script type="text/javascript" src="scripts/components/directives/semEditableForm/semEditableFormDirective.js"></script>
+        <script type="text/javascript" src="scripts/components/directives/semEnterKey/semEnterKeyDirective.js"></script>
+        <script type="text/javascript" src="scripts/components/directives/semField/semFieldCtrl.js"></script>
+        <script type="text/javascript" src="scripts/components/directives/semField/semFieldDirective.js"></script>
+        <script type="text/javascript" src="scripts/components/directives/semRolesAllowed/semRolesAllowedDirective.js"></script>
+        <script type="text/javascript" src="scripts/components/directives/semTable/semTableCtrl.js"></script>
+        <script type="text/javascript" src="scripts/components/directives/semTable/semTableDirective.js"></script>
+        <script type="text/javascript" src="scripts/components/directives/editableSelect2/editableSelect2Directive.js"></script>
+        <script type="text/javascript" src="scripts/components/directives/editableDatepicker/editableDatepickerDirective.js"></script>
+        <script type="text/javascript" src="scripts/components/directives/editableRadiolist/editableRadiolistDirective.js"></script>
+        <script type="text/javascript" src="scripts/components/directives/editableSemnumber/editableSemnumberDirective.js"></script>
+        <script type="text/javascript" src="scripts/components/directives/inputSemnumber/inputSemnumberDirective.js"></script>
+        <!-- endbuild -->
 
-<!-- endbuild -->
-<!-- build:js scripts/numahop.js -->
-<!-- Général -->
-<script type="text/javascript" src="scripts/http-auth-interceptor.js"></script>
-<script type="text/javascript" src="scripts/truncate.js"></script>
-<script type="text/javascript" src="scripts/app/app.js"></script>
-<script type="text/javascript" src="scripts/app/app.constants.js"></script>
-<script type="text/javascript" src="scripts/app/numahop.constants.js"></script>
-<script type="text/javascript" src="scripts/utils.js"></script>
-<script type="text/javascript" src="scripts/controllers.js"></script>
-<script type="text/javascript" src="scripts/services.js"></script>
-<script type="text/javascript" src="scripts/directives.js"></script>
-<!--  Libraries -->
-<script type="text/javascript" src="scripts/lib/JSOG.js"></script>
-<script type="text/javascript" src="scripts/lib/stPaginationScroll.js"></script>
-<!-- Composants -->
-<script type="text/javascript" src="scripts/components/components/headerBar/headerBar.js"></script>
-<script type="text/javascript" src="scripts/components/components/headerBar/headerBarCtrl.js"></script>
-<script type="text/javascript" src="scripts/components/components/numaAlertAuditEntity/numaAlertAuditEntityComponent.js"></script>
-<script type="text/javascript" src="scripts/components/components/numaAlertAuditEntity/numaAlertAuditEntityCtrl.js"></script>
-<script type="text/javascript" src="scripts/components/components/numaAlertWorkflowTodo/numaAlertWorkflowTodoComponent.js"></script>
-<script type="text/javascript" src="scripts/components/components/numaAlertWorkflowTodo/numaAlertWorkflowTodoCtrl.js"></script>
-<script type="text/javascript" src="scripts/components/components/numaAlertWorkflowTodo/todoTable/todoTableComponent.js"></script>
-<script type="text/javascript" src="scripts/components/components/numaAlertWorkflowTodo/todoTable/todoTableCtrl.js"></script>
-<script type="text/javascript" src="scripts/components/components/numaCustomLink/numaCustomLinkComponent.js"></script>
-<script type="text/javascript" src="scripts/components/components/numaWorkflowLink/numaWorkflowLinkComponent.js"></script>
-<script type="text/javascript" src="scripts/components/components/numaEditableField/numaEditableFieldComponent.js"></script>
-<script type="text/javascript" src="scripts/components/components/numaEditableField/numaEditableFieldCtrl.js"></script>
-<script type="text/javascript" src="scripts/components/components/numaFilter/numaFilterFieldComponent.js"></script>
-<script type="text/javascript" src="scripts/components/components/numaFilter/numaFilterComponent.js"></script>
-<script type="text/javascript" src="scripts/components/components/numaSearchControl/numaSearchControlComponent.js"></script>
-<script type="text/javascript" src="scripts/components/components/numaSearchControl/numaSearchControlCtrl.js"></script>
-<script type="text/javascript" src="scripts/components/components/numaSearchControl/numaSearchControlSrvc.js"></script>
-<script type="text/javascript" src="scripts/components/components/numaSearchControl/numaSearchControlsComponent.js"></script>
-<script type="text/javascript" src="scripts/components/components/numaSearchControl/numaSearchControlsCtrl.js"></script>
-<script type="text/javascript" src="scripts/components/components/numaResultFacet/numaResultFacetComponent.js"></script>
-<script type="text/javascript" src="scripts/components/components/numaResultFacet/numaResultFacetCtrl.js"></script>
-<script type="text/javascript" src="scripts/components/components/numaResultList/numaResultCondreportComponent.js"></script>
-<script type="text/javascript" src="scripts/components/components/numaResultList/numaResultDocunitComponent.js"></script>
-<script type="text/javascript" src="scripts/components/components/numaResultList/numaResultDeliveryComponent.js"></script>
-<script type="text/javascript" src="scripts/components/components/numaResultList/numaResultLotComponent.js"></script>
-<script type="text/javascript" src="scripts/components/components/numaResultList/numaResultProjectComponent.js"></script>
-<script type="text/javascript" src="scripts/components/components/numaResultList/numaResultRecordComponent.js"></script>
-<script type="text/javascript" src="scripts/components/components/numaResultList/numaResultTrainComponent.js"></script>
-<script type="text/javascript" src="scripts/components/components/numaResultList/numaResultListComponent.js"></script>
-<script type="text/javascript" src="scripts/components/components/numaResultList/numaResultListSelectionComponent.js"></script>
-<!-- Directives -->
-<script type="text/javascript" src="scripts/components/directives/directives.js"></script>
-<script type="text/javascript" src="scripts/components/directives/semDatepicker/semDatepickerDirective.js"></script>
-<script type="text/javascript" src="scripts/components/directives/semEditableBlock/semEditableBlockCtrl.js"></script>
-<script type="text/javascript" src="scripts/components/directives/semEditableBlock/semEditableBlockDirective.js"></script>
-<script type="text/javascript" src="scripts/components/directives/semEditableBlockHeader/semEditableBlockHeaderDirective.js"></script>
-<script type="text/javascript" src="scripts/components/directives/inputSempercent/inputSempercentDirective.js"></script>
-<script type="text/javascript" src="scripts/components/directives/editableSempercent/directive.js"></script>
-<script type="text/javascript" src="scripts/components/directives/editableUiselect/editableUiselectDirective.js"></script>
-<script type="text/javascript" src="scripts/components/directives/semEditableField/semEditableFieldCtrl.js"></script>
-<script type="text/javascript" src="scripts/components/directives/semEditableField/semEditableFieldDirective.js"></script>
-<script type="text/javascript" src="scripts/components/directives/semEditableForm/semEditableFormCtrl.js"></script>
-<script type="text/javascript" src="scripts/components/directives/semEditableForm/semEditableFormDirective.js"></script>
-<script type="text/javascript" src="scripts/components/directives/semEnterKey/semEnterKeyDirective.js"></script>
-<script type="text/javascript" src="scripts/components/directives/semField/semFieldCtrl.js"></script>
-<script type="text/javascript" src="scripts/components/directives/semField/semFieldDirective.js"></script>
-<script type="text/javascript" src="scripts/components/directives/semRolesAllowed/semRolesAllowedDirective.js"></script>
-<script type="text/javascript" src="scripts/components/directives/semTable/semTableCtrl.js"></script>
-<script type="text/javascript" src="scripts/components/directives/semTable/semTableDirective.js"></script>
-<script type="text/javascript" src="scripts/components/directives/editableSelect2/editableSelect2Directive.js"></script>
-<script type="text/javascript" src="scripts/components/directives/editableDatepicker/editableDatepickerDirective.js"></script>
-<script type="text/javascript" src="scripts/components/directives/editableRadiolist/editableRadiolistDirective.js"></script>
-<script type="text/javascript" src="scripts/components/directives/editableSemnumber/editableSemnumberDirective.js"></script>
-<script type="text/javascript" src="scripts/components/directives/inputSemnumber/inputSemnumberDirective.js"></script>
-<!-- endbuild -->
+        <!--  Common -->
+        <!-- build:js scripts/common.js -->
+        <script type="text/javascript" src="scripts/components/util/objectTools.js"></script>
+        <!-- NE PAS DEPLACER -->
+        <script type="text/javascript" src="scripts/configuration.js"></script>
+        <!-- <script type="text/javascript" src="scripts/libTemplates.js"></script> -->
+        <script type="text/javascript" src="scripts/app/numahop/common/initialFilterCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/numahop/common/lockSrvc.js"></script>
+        <script type="text/javascript" src="scripts/app/numahop/common/semToggleInformations.js"></script>
+        <script type="text/javascript" src="scripts/app/numahop/common/semToggleFilters.js"></script>
+        <script type="text/javascript" src="scripts/app/numahop/common/validationSrvc.js"></script>
+        <script type="text/javascript" src="scripts/app/numahop/history/historyCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/numahop/history/historySrvc.js"></script>
+        <script type="text/javascript" src="scripts/components/filters/boolean.js"></script>
+        <script type="text/javascript" src="scripts/components/filters/duration.js"></script>
+        <script type="text/javascript" src="scripts/components/filters/initial.js"></script>
+        <script type="text/javascript" src="scripts/components/filters/filesize.js"></script>
+        <script type="text/javascript" src="scripts/components/filters/filtersCtrl.js"></script>
+        <script type="text/javascript" src="scripts/components/filters/moment.js"></script>
+        <script type="text/javascript" src="scripts/components/filters/percent.js"></script>
+        <script type="text/javascript" src="scripts/components/numahop/principal.service.js"></script>
+        <script type="text/javascript" src="scripts/components/websocket/websocketSrvc.js"></script>
+        <script type="text/javascript" src="scripts/components/message/codeSrvc.js"></script>
+        <script type="text/javascript" src="scripts/components/message/erreurSrvc.js"></script>
+        <script type="text/javascript" src="scripts/components/message/messageSrvc.js"></script>
+        <script type="text/javascript" src="scripts/components/message/messageInterceptor.js"></script>
+        <script type="text/javascript" src="scripts/components/document/numahopAutoCheckService.js"></script>
+        <script type="text/javascript" src="scripts/components/util/numahopEditService.js"></script>
+        <script type="text/javascript" src="scripts/components/util/numahopInitializationSrvc.js"></script>
+        <script type="text/javascript" src="scripts/components/util/numahopStatusService.js"></script>
+        <script type="text/javascript" src="scripts/components/util/numahopStorageService.js"></script>
+        <script type="text/javascript" src="scripts/components/util/numahopUrlService.js"></script>
+        <script type="text/javascript" src="scripts/components/util/dtoService.js"></script>
+        <script type="text/javascript" src="scripts/components/util/listTools.js"></script>
+        <script type="text/javascript" src="scripts/components/util/stringTools.js"></script>
+        <!-- Dashboard -->
+        <script type="text/javascript" src="scripts/app/dashboard/dashboard.js"></script>
+        <script type="text/javascript" src="scripts/app/dashboard/dashboardCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/dashboard/dashboardSrvc.js"></script>
+        <script type="text/javascript" src="scripts/app/dashboard/actions/actionListCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/dashboard/alerts/alertListCtrl.js"></script>
+        <!-- <script type="text/javascript" src="scripts/app/dashboard/widgets/clock/clockWidget.js"></script> -->
+        <script type="text/javascript" src="scripts/app/dashboard/widgets/projectState/projectStateWidget.js"></script>
+        <script type="text/javascript" src="scripts/app/dashboard/widgets/projectState/projectStateEditWidgetCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/dashboard/widgets/lotState/lotStateWidget.js"></script>
+        <script type="text/javascript" src="scripts/app/dashboard/widgets/lotState/lotStateEditWidgetCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/dashboard/widgets/trainState/trainStateWidget.js"></script>
+        <script type="text/javascript" src="scripts/app/dashboard/widgets/trainState/trainStateEditWidgetCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/dashboard/widgets/deliveryState/deliveryStateWidget.js"></script>
+        <script type="text/javascript" src="scripts/app/dashboard/widgets/deliveryState/deliveryStateEditWidgetCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/dashboard/widgets/docUnitState/docUnitStateWidget.js"></script>
+        <script type="text/javascript" src="scripts/app/dashboard/widgets/docUnitState/docUnitStateEditWidgetCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/dashboard/widgets/docStateRatioChart/docStateRatioChartWidget.js"></script>
+        <script type="text/javascript" src="scripts/app/dashboard/widgets/docStateRatioChart/docStateRatioChartEditWidgetCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/dashboard/widgets/docUnitList/docUnitListWidget.js"></script>
+        <script type="text/javascript" src="scripts/app/dashboard/widgets/docUnitList/docUnitListEditWidgetCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/dashboard/widgets/docUnitProcessed/docUnitProcessedWidget.js"></script>
+        <script type="text/javascript" src="scripts/app/dashboard/widgets/docUnitProcessed/docUnitProcessedEditWidgetCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/dashboard/widgets/checkDelay/checkDelayWidget.js"></script>
+        <script type="text/javascript" src="scripts/app/dashboard/widgets/checkDelay/checkDelayEditWidgetCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/dashboard/widgets/projectDetails/projectDetailsWidget.js"></script>
+        <script type="text/javascript" src="scripts/app/dashboard/widgets/projectDetails/projectDetailsEditWidgetCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/dashboard/widgets/statusChart/statusChartWidget.js"></script>
+        <script type="text/javascript" src="scripts/app/dashboard/widgets/statusChart/statusChartEditWidgetCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/dashboard/widgets/diskSpace/spaceChartWidget.js"></script>
+        <script type="text/javascript" src="scripts/app/dashboard/widgets/diskSpace/spaceChartEditWidgetCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/dashboard/widgets/userChart/userChartWidget.js"></script>
+        <script type="text/javascript" src="scripts/app/dashboard/widgets/userChart/userChartEditWidgetCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/dashboard/widgets/controlState/controlStateWidget.js"></script>
+        <script type="text/javascript" src="scripts/app/dashboard/widgets/controlState/controlStateEditWidgetCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/dashboard/widgets/sampleState/sampleStateWidget.js"></script>
+        <script type="text/javascript" src="scripts/app/dashboard/widgets/sampleState/sampleStateEditWidgetCtrl.js"></script>
 
-<!--  Common -->
-<!-- build:js scripts/common.js -->
-<script type="text/javascript" src="scripts/components/util/objectTools.js"></script><!-- NE PAS DEPLACER -->
-<script type="text/javascript" src="scripts/configuration.js"></script>
-<script type="text/javascript" src="scripts/libTemplates.js"></script>
-<script type="text/javascript" src="scripts/app/numahop/common/initialFilterCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/numahop/common/lockSrvc.js"></script>
-<script type="text/javascript" src="scripts/app/numahop/common/semToggleInformations.js"></script>
-<script type="text/javascript" src="scripts/app/numahop/common/semToggleFilters.js"></script>
-<script type="text/javascript" src="scripts/app/numahop/common/validationSrvc.js"></script>
-<script type="text/javascript" src="scripts/app/numahop/history/historyCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/numahop/history/historySrvc.js"></script>
-<script type="text/javascript" src="scripts/components/filters/boolean.js"></script>
-<script type="text/javascript" src="scripts/components/filters/duration.js"></script>
-<script type="text/javascript" src="scripts/components/filters/initial.js"></script>
-<script type="text/javascript" src="scripts/components/filters/filesize.js"></script>
-<script type="text/javascript" src="scripts/components/filters/filtersCtrl.js"></script>
-<script type="text/javascript" src="scripts/components/filters/moment.js"></script>
-<script type="text/javascript" src="scripts/components/filters/percent.js"></script>
-<script type="text/javascript" src="scripts/components/numahop/principal.service.js"></script>
-<script type="text/javascript" src="scripts/components/websocket/websocketSrvc.js"></script>
-<script type="text/javascript" src="scripts/components/message/codeSrvc.js"></script>
-<script type="text/javascript" src="scripts/components/message/erreurSrvc.js"></script>
-<script type="text/javascript" src="scripts/components/message/messageSrvc.js"></script>
-<script type="text/javascript" src="scripts/components/message/messageInterceptor.js"></script>
-<script type="text/javascript" src="scripts/components/document/numahopAutoCheckService.js"></script>
-<script type="text/javascript" src="scripts/components/util/numahopEditService.js"></script>
-<script type="text/javascript" src="scripts/components/util/numahopInitializationSrvc.js"></script>
-<script type="text/javascript" src="scripts/components/util/numahopStatusService.js"></script>
-<script type="text/javascript" src="scripts/components/util/numahopStorageService.js"></script>
-<script type="text/javascript" src="scripts/components/util/numahopUrlService.js"></script>
-<script type="text/javascript" src="scripts/components/util/dtoService.js"></script>
-<script type="text/javascript" src="scripts/components/util/listTools.js"></script>
-<script type="text/javascript" src="scripts/components/util/stringTools.js"></script>
-<!-- Dashboard -->
-<script type="text/javascript" src="scripts/app/dashboard/dashboard.js"></script>
-<script type="text/javascript" src="scripts/app/dashboard/dashboardCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/dashboard/dashboardSrvc.js"></script>
-<script type="text/javascript" src="scripts/app/dashboard/actions/actionListCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/dashboard/alerts/alertListCtrl.js"></script>
-<!-- <script type="text/javascript" src="scripts/app/dashboard/widgets/clock/clockWidget.js"></script> -->
-<script type="text/javascript" src="scripts/app/dashboard/widgets/projectState/projectStateWidget.js"></script>
-<script type="text/javascript" src="scripts/app/dashboard/widgets/projectState/projectStateEditWidgetCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/dashboard/widgets/lotState/lotStateWidget.js"></script>
-<script type="text/javascript" src="scripts/app/dashboard/widgets/lotState/lotStateEditWidgetCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/dashboard/widgets/trainState/trainStateWidget.js"></script>
-<script type="text/javascript" src="scripts/app/dashboard/widgets/trainState/trainStateEditWidgetCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/dashboard/widgets/deliveryState/deliveryStateWidget.js"></script>
-<script type="text/javascript" src="scripts/app/dashboard/widgets/deliveryState/deliveryStateEditWidgetCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/dashboard/widgets/docUnitState/docUnitStateWidget.js"></script>
-<script type="text/javascript" src="scripts/app/dashboard/widgets/docUnitState/docUnitStateEditWidgetCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/dashboard/widgets/docStateRatioChart/docStateRatioChartWidget.js"></script>
-<script type="text/javascript" src="scripts/app/dashboard/widgets/docStateRatioChart/docStateRatioChartEditWidgetCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/dashboard/widgets/docUnitList/docUnitListWidget.js"></script>
-<script type="text/javascript" src="scripts/app/dashboard/widgets/docUnitList/docUnitListEditWidgetCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/dashboard/widgets/docUnitProcessed/docUnitProcessedWidget.js"></script>
-<script type="text/javascript" src="scripts/app/dashboard/widgets/docUnitProcessed/docUnitProcessedEditWidgetCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/dashboard/widgets/checkDelay/checkDelayWidget.js"></script>
-<script type="text/javascript" src="scripts/app/dashboard/widgets/checkDelay/checkDelayEditWidgetCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/dashboard/widgets/projectDetails/projectDetailsWidget.js"></script>
-<script type="text/javascript" src="scripts/app/dashboard/widgets/projectDetails/projectDetailsEditWidgetCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/dashboard/widgets/statusChart/statusChartWidget.js"></script>
-<script type="text/javascript" src="scripts/app/dashboard/widgets/statusChart/statusChartEditWidgetCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/dashboard/widgets/diskSpace/spaceChartWidget.js"></script>
-<script type="text/javascript" src="scripts/app/dashboard/widgets/diskSpace/spaceChartEditWidgetCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/dashboard/widgets/userChart/userChartWidget.js"></script>
-<script type="text/javascript" src="scripts/app/dashboard/widgets/userChart/userChartEditWidgetCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/dashboard/widgets/controlState/controlStateWidget.js"></script>
-<script type="text/javascript" src="scripts/app/dashboard/widgets/controlState/controlStateEditWidgetCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/dashboard/widgets/sampleState/sampleStateWidget.js"></script>
-<script type="text/javascript" src="scripts/app/dashboard/widgets/sampleState/sampleStateEditWidgetCtrl.js"></script>
+        <!-- Users -->
+        <script type="text/javascript" src="scripts/app/user/accountCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/user/user.js"></script>
+        <script type="text/javascript" src="scripts/app/user/userAuthorizationCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/user/userCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/user/userEditCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/user/userRoleCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/user/userRoleEditCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/user/userSrvc.js"></script>
+        <!-- Modals -->
+        <script type="text/javascript" src="scripts/components/modal/modalCtrl.js"></script>
+        <script type="text/javascript" src="scripts/components/modal/modalCreateProjectCtrl.js"></script>
+        <script type="text/javascript" src="scripts/components/modal/modalConfigureCsvExportCtrl.js"></script>
+        <script type="text/javascript" src="scripts/components/modal/modalConfigureDeliverySlipCtrl.js"></script>
+        <script type="text/javascript" src="scripts/components/modal/modalGetRevisionsCtrl.js"></script>
+        <script type="text/javascript" src="scripts/components/modal/modalIntegrateToProjectCtrl.js"></script>
+        <script type="text/javascript" src="scripts/components/modal/modalIntegrateToTrainCtrl.js"></script>
+        <script type="text/javascript" src="scripts/components/modal/modalCheckTextOcrCtrl.js"></script>
+        <script type="text/javascript" src="scripts/components/modal/modalSelectFileCtrl.js"></script>
+        <script type="text/javascript" src="scripts/components/modal/modalSelectExportTypesCtrl.js"></script>
+        <script type="text/javascript" src="scripts/components/modal/modalSrvc.js"></script>
+        <script type="text/javascript" src="scripts/components/modal/modalWithValidationCtrl.js"></script>
+        <!-- Librairies -->
+        <script type="text/javascript" src="scripts/app/library/library.js"></script>
+        <script type="text/javascript" src="scripts/app/library/libraryCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/library/libraryEditCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/library/librarySrvc.js"></script>
+        <!-- Configuration FTP, SFTP, IA -->
+        <script type="text/javascript" src="scripts/app/platformconfiguration/configuration.js"></script>
+        <script type="text/javascript" src="scripts/app/platformconfiguration/configurationSrvc.js"></script>
+        <script type="text/javascript" src="scripts/app/platformconfiguration/ftpconfigurationCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/platformconfiguration/ftpconfigurationEditCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/platformconfiguration/sftpconfigurationCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/platformconfiguration/sftpconfigurationEditCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/platformconfiguration/iaconfigurationCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/platformconfiguration/iaconfigurationEditCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/platformconfiguration/cinesLanguageCodeSrvc.js"></script>
+        <script type="text/javascript" src="scripts/app/platformconfiguration/omekaconfigurationCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/platformconfiguration/omekaconfigurationEditCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/platformconfiguration/exportftpconfigurationCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/platformconfiguration/exportftpconfigurationEditCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/platformconfiguration/digitallibraryconfiguration/digitalLibraryConfigurationCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/platformconfiguration/digitallibraryconfiguration/digitalLibraryConfigurationEditCtrl.js"></script>
 
-<!-- Users -->
-<script type="text/javascript" src="scripts/app/user/accountCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/user/user.js"></script>
-<script type="text/javascript" src="scripts/app/user/userAuthorizationCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/user/userCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/user/userEditCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/user/userRoleCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/user/userRoleEditCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/user/userSrvc.js"></script>
-<!-- Modals -->
-<script type="text/javascript" src="scripts/components/modal/modalCtrl.js"></script>
-<script type="text/javascript" src="scripts/components/modal/modalCreateProjectCtrl.js"></script>
-<script type="text/javascript" src="scripts/components/modal/modalConfigureCsvExportCtrl.js"></script>
-<script type="text/javascript" src="scripts/components/modal/modalConfigureDeliverySlipCtrl.js"></script>
-<script type="text/javascript" src="scripts/components/modal/modalGetRevisionsCtrl.js"></script>
-<script type="text/javascript" src="scripts/components/modal/modalIntegrateToProjectCtrl.js"></script>
-<script type="text/javascript" src="scripts/components/modal/modalIntegrateToTrainCtrl.js"></script>
-<script type="text/javascript" src="scripts/components/modal/modalCheckTextOcrCtrl.js"></script>
-<script type="text/javascript" src="scripts/components/modal/modalSelectFileCtrl.js"></script>
-<script type="text/javascript" src="scripts/components/modal/modalSelectExportTypesCtrl.js"></script>
-<script type="text/javascript" src="scripts/components/modal/modalSrvc.js"></script>
-<script type="text/javascript" src="scripts/components/modal/modalWithValidationCtrl.js"></script>
-<!-- Librairies -->
-<script type="text/javascript" src="scripts/app/library/library.js"></script>
-<script type="text/javascript" src="scripts/app/library/libraryCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/library/libraryEditCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/library/librarySrvc.js"></script>
-<!-- Configuration FTP, SFTP, IA -->
-<script type="text/javascript" src="scripts/app/platformconfiguration/configuration.js"></script>
-<script type="text/javascript" src="scripts/app/platformconfiguration/configurationSrvc.js"></script>
-<script type="text/javascript" src="scripts/app/platformconfiguration/ftpconfigurationCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/platformconfiguration/ftpconfigurationEditCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/platformconfiguration/sftpconfigurationCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/platformconfiguration/sftpconfigurationEditCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/platformconfiguration/iaconfigurationCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/platformconfiguration/iaconfigurationEditCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/platformconfiguration/cinesLanguageCodeSrvc.js"></script>
-<script type="text/javascript" src="scripts/app/platformconfiguration/omekaconfigurationCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/platformconfiguration/omekaconfigurationEditCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/platformconfiguration/exportftpconfigurationCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/platformconfiguration/exportftpconfigurationEditCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/platformconfiguration/digitallibraryconfiguration/digitalLibraryConfigurationCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/platformconfiguration/digitallibraryconfiguration/digitalLibraryConfigurationEditCtrl.js"></script>
+        <!-- Configuration des contrôles -->
+        <script type="text/javascript" src="scripts/app/checkconfiguration/configuration.js"></script>
+        <script type="text/javascript" src="scripts/app/checkconfiguration/configurationCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/checkconfiguration/configurationSrvc.js"></script>
+        <script type="text/javascript" src="scripts/app/checkconfiguration/configurationEditCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/checkconfiguration/pctFilter.js"></script>
+        <!-- Configuration des langages OCR -->
+        <script type="text/javascript" src="scripts/app/ocrlangconfiguration/configuration.js"></script>
+        <script type="text/javascript" src="scripts/app/ocrlangconfiguration/configurationCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/ocrlangconfiguration/configurationSrvc.js"></script>
+        <script type="text/javascript" src="scripts/app/ocrlangconfiguration/configurationEditCtrl.js"></script>
+        <!--  Projects -->
+        <script type="text/javascript" src="scripts/app/project/project.js"></script>
+        <script type="text/javascript" src="scripts/app/project/projectCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/project/projectEditCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/project/projectSrvc.js"></script>
+        <script type="text/javascript" src="scripts/app/project/allOperationsCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/project/docsCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/project/lotsCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/project/trainsCtrl.js"></script>
+        <!-- Documents -->
+        <script type="text/javascript" src="scripts/app/document/document.js"></script>
+        <script type="text/javascript" src="scripts/app/document/docUnitCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/document/digitalDocumentCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/document/docUnitEditCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/document/docUnitListCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/document/recordCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/document/recordEditCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/document/recordListCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/document/documentSrvc.js"></script>
+        <script type="text/javascript" src="scripts/app/document/condreportListCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/document/condreportSrvc.js"></script>
+        <script type="text/javascript" src="scripts/app/document/selectionSrvc.js"></script>
+        <script type="text/javascript" src="scripts/app/document/modals/modalCreateItemInternetArchiveCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/document/modals/modalDeleteDocUnitResultsCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/document/modals/modalUnlinkDocUnitResultsCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/document/modals/modalUpdateDocUnitResultsCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/document/modals/modalExportCinesCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/document/modals/modalSelectBibRecord.js"></script>
+        <script type="text/javascript" src="scripts/app/document/modals/modalSelectDocUnit.js"></script>
+        <script type="text/javascript" src="scripts/app/document/modals/modalUpdateRecordsCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/document/allOperations/condreportCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/document/allOperations/docAllOperationsCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/document/allOperations/docUnitAllOperationsCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/document/allOperations/metadataCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/document/allOperations/recordAllOperationsCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/document/allOperations/digitalDocumentAllOperationsCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/document/allOperations/exportAllOperationsCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/document/allOperations/relationsAllOperationsCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/document/allOperations/workflowAllOperationsCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/document/util/docUnitBaseService.js"></script>
+        <!-- Check -->
+        <script type="text/javascript" src="scripts/app/document/check/autoCheckSrvc.js"></script>
+        <!-- Contrôles -->
+        <script type="text/javascript" src="scripts/app/document/pageCheckSrvc.js"></script>
+        <script type="text/javascript" src="scripts/app/document/pageCheckCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/checks/checkCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/checks/check.js"></script>
+        <script type="text/javascript" src="scripts/components/modal/modalConfirmCheckTerminatedCtrl.js"></script>
 
-<!-- Configuration des contrôles -->
-<script type="text/javascript" src="scripts/app/checkconfiguration/configuration.js"></script>
-<script type="text/javascript" src="scripts/app/checkconfiguration/configurationCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/checkconfiguration/configurationSrvc.js"></script>
-<script type="text/javascript" src="scripts/app/checkconfiguration/configurationEditCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/checkconfiguration/pctFilter.js"></script>
-<!-- Configuration des langages OCR -->
-<script type="text/javascript" src="scripts/app/ocrlangconfiguration/configuration.js"></script>
-<script type="text/javascript" src="scripts/app/ocrlangconfiguration/configurationCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/ocrlangconfiguration/configurationSrvc.js"></script>
-<script type="text/javascript" src="scripts/app/ocrlangconfiguration/configurationEditCtrl.js"></script>
-<!--  Projects -->
-<script type="text/javascript" src="scripts/app/project/project.js"></script>
-<script type="text/javascript" src="scripts/app/project/projectCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/project/projectEditCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/project/projectSrvc.js"></script>
-<script type="text/javascript" src="scripts/app/project/allOperationsCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/project/docsCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/project/lotsCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/project/trainsCtrl.js"></script>
-<!-- Documents -->
-<script type="text/javascript" src="scripts/app/document/document.js"></script>
-<script type="text/javascript" src="scripts/app/document/docUnitCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/document/digitalDocumentCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/document/docUnitEditCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/document/docUnitListCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/document/recordCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/document/recordEditCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/document/recordListCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/document/documentSrvc.js"></script>
-<script type="text/javascript" src="scripts/app/document/condreportListCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/document/condreportSrvc.js"></script>
-<script type="text/javascript" src="scripts/app/document/selectionSrvc.js"></script>
-<script type="text/javascript" src="scripts/app/document/modals/modalCreateItemInternetArchiveCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/document/modals/modalDeleteDocUnitResultsCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/document/modals/modalUnlinkDocUnitResultsCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/document/modals/modalUpdateDocUnitResultsCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/document/modals/modalExportCinesCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/document/modals/modalSelectBibRecord.js"></script>
-<script type="text/javascript" src="scripts/app/document/modals/modalSelectDocUnit.js"></script>
-<script type="text/javascript" src="scripts/app/document/modals/modalUpdateRecordsCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/document/allOperations/condreportCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/document/allOperations/docAllOperationsCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/document/allOperations/docUnitAllOperationsCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/document/allOperations/recordAllOperationsCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/document/allOperations/digitalDocumentAllOperationsCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/document/allOperations/exportAllOperationsCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/document/allOperations/relationsAllOperationsCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/document/allOperations/workflowAllOperationsCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/document/util/docUnitBaseService.js"></script>
-<!-- Check -->
-<script type="text/javascript" src="scripts/app/document/check/autoCheckSrvc.js"></script>
-<!-- Contrôles -->
-<script type="text/javascript" src="scripts/app/document/pageCheckSrvc.js"></script>
-<script type="text/javascript" src="scripts/app/document/pageCheckCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/checks/checkCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/checks/check.js"></script>
-<script type="text/javascript" src="scripts/components/modal/modalConfirmCheckTerminatedCtrl.js"></script>
+        <!-- Export -->
+        <script type="text/javascript" src="scripts/app/document/export/exportHandlerSrvc.js"></script>
+        <script type="text/javascript" src="scripts/app/document/export/exportSrvc.js"></script>
+        <!-- Import -->
+        <script type="text/javascript" src="scripts/app/document/import/import.js"></script>
+        <script type="text/javascript" src="scripts/app/document/import/importCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/document/import/importEditCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/document/import/importSrvc.js"></script>
+        <!-- Z39.50 -->
+        <script type="text/javascript" src="scripts/app/document/z3950/modalZ3950SearchCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/document/z3950/z3950Srvc.js"></script>
+        <!--  Lots -->
+        <script type="text/javascript" src="scripts/app/lot/lot.js"></script>
+        <script type="text/javascript" src="scripts/app/lot/lotCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/lot/lotListCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/lot/lotEditCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/lot/allOperationsCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/lot/deliveryCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/lot/docsCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/lot/lotSrvc.js"></script>
+        <!-- Trains -->
+        <script type="text/javascript" src="scripts/app/train/train.js"></script>
+        <script type="text/javascript" src="scripts/app/train/trainCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/train/trainEditCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/train/trainSrvc.js"></script>
+        <script type="text/javascript" src="scripts/app/train/allOperationsCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/train/docCtrl.js"></script>
+        <!--  Livraisons -->
+        <script type="text/javascript" src="scripts/app/multilotsdelivery/multiLotsDelivery.js"></script>
+        <script type="text/javascript" src="scripts/app/multilotsdelivery/multiDeliveryCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/multilotsdelivery/multiDeliveryEditCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/multilotsdelivery/multiDeliveryPrevalidateCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/multilotsdelivery/multiDeliverySrvc.js"></script>
+        <!--  Livraisons multi-lots -->
+        <script type="text/javascript" src="scripts/app/delivery/delivery.js"></script>
+        <script type="text/javascript" src="scripts/app/delivery/deliveryCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/delivery/deliveryEditCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/delivery/deliveryPrevalidateCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/delivery/deliverySrvc.js"></script>
+        <!-- Recherche -->
+        <script type="text/javascript" src="scripts/app/search/search.js"></script>
+        <script type="text/javascript" src="scripts/app/search/advSearchCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/search/searchResultsCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/search/searchSrvc.js"></script>
+        <!--  Visionneuse -->
+        <script type="text/javascript" src="scripts/app/viewer/viewer.js"></script>
+        <script type="text/javascript" src="scripts/app/viewer/viewerCtrl.js"></script>
+        <!-- Administration -->
+        <script type="text/javascript" src="scripts/app/configuration/appconfiguration.js"></script>
+        <script type="text/javascript" src="scripts/app/configuration/auditSrvc.js"></script>
+        <script type="text/javascript" src="scripts/app/configuration/mapping/mapping.js"></script>
+        <script type="text/javascript" src="scripts/app/configuration/mapping/mappingCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/configuration/mapping/mappingRuleCtxMenuSrvc.js"></script>
+        <script type="text/javascript" src="scripts/app/configuration/mapping/mappingRuleEadSrvc.js"></script>
+        <script type="text/javascript" src="scripts/app/configuration/mapping/mappingRuleMarcSrvc.js"></script>
+        <script type="text/javascript" src="scripts/app/configuration/mapping/mappingSrvc.js"></script>
+        <script type="text/javascript" src="scripts/app/configuration/mapping/modalEditRuleCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/configuration/deliverySlip/deliveryConf.js"></script>
+        <script type="text/javascript" src="scripts/app/configuration/deliverySlip/deliveryConfSrvc.js"></script>
+        <script type="text/javascript" src="scripts/app/configuration/deliverySlip/deliveryConfCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/configuration/deliverySlip/deliveryConfEditCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/configuration/checkSlip/checkSlipConfSrvc.js"></script>
+        <script type="text/javascript" src="scripts/app/configuration/checkSlip/checkSlipConfEditCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/configuration/condreportSlip/condReportSlipConfSrvc.js"></script>
+        <script type="text/javascript" src="scripts/app/configuration/condreportSlip/condReportSlipConfEditCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/configuration/condreport/condreport.js"></script>
+        <script type="text/javascript" src="scripts/app/configuration/condreport/condreportDescCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/configuration/condreport/condreportDescEditCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/configuration/condreport/condreportSrvc.js"></script>
+        <script type="text/javascript" src="scripts/app/configuration/csvMapping/csvMapping.js"></script>
+        <script type="text/javascript" src="scripts/app/configuration/csvMapping/csvMappingCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/configuration/csvMapping/csvMappingSrvc.js"></script>
+        <script type="text/javascript" src="scripts/app/configuration/csvMapping/csvModalEditRuleCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/configuration/mailbox/mailbox.js"></script>
+        <script type="text/javascript" src="scripts/app/configuration/mailbox/mailboxCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/configuration/mailbox/mailboxEditCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/configuration/mailbox/mailboxSrvc.js"></script>
+        <script type="text/javascript" src="scripts/app/configuration/docPropertyType/docPropertyType.js"></script>
+        <script type="text/javascript" src="scripts/app/configuration/docPropertyType/docPropertyTypeCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/configuration/docPropertyType/docPropertyTypeSrvc.js"></script>
+        <script type="text/javascript" src="scripts/app/configuration/imagesmetadata/imagesmetadata.js"></script>
+        <script type="text/javascript" src="scripts/app/configuration/imagesmetadata/imagesmetadataCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/configuration/imagesmetadata/imagesMetadataSrvc.js"></script>
+        <script type="text/javascript" src="scripts/app/configuration/imagesmetadata/editMetadataModalCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/configuration/template/template.js"></script>
+        <script type="text/javascript" src="scripts/app/configuration/template/templateCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/configuration/template/templateEditCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/configuration/template/templateSrvc.js"></script>
+        <script type="text/javascript" src="scripts/app/configuration/z3950/z3950Server.js"></script>
+        <script type="text/javascript" src="scripts/app/configuration/z3950/z3950ServerCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/configuration/z3950/z3950ServerEditCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/configuration/z3950/z3950ServerSrvc.js"></script>
+        <script type="text/javascript" src="scripts/app/admin/logs/logs.controller.js"></script>
+        <script type="text/javascript" src="scripts/app/configuration/viewsFormat/viewsFormat.js"></script>
+        <script type="text/javascript" src="scripts/app/configuration/viewsFormat/viewsFormatCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/configuration/viewsFormat/viewsFormatEditCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/configuration/viewsFormat/viewsFormatSrvc.js"></script>
+        <script type="text/javascript" src="scripts/app/admin/utilsworkflow/utilsWorkflow.js"></script>
+        <script type="text/javascript" src="scripts/app/admin/utilsworkflow/utilsWorkflowCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/admin/utilsprojectlot/utilsProjectLot.js"></script>
+        <script type="text/javascript" src="scripts/app/admin/utilsprojectlot/utilsProjectLotCtrl.js"></script>
 
-<!-- Export -->
-<script type="text/javascript" src="scripts/app/document/export/exportHandlerSrvc.js"></script>
-<script type="text/javascript" src="scripts/app/document/export/exportSrvc.js"></script>
-<!-- Import -->
-<script type="text/javascript" src="scripts/app/document/import/import.js"></script>
-<script type="text/javascript" src="scripts/app/document/import/importCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/document/import/importEditCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/document/import/importSrvc.js"></script>
-<!-- Z39.50 -->
-<script type="text/javascript" src="scripts/app/document/z3950/modalZ3950SearchCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/document/z3950/z3950Srvc.js"></script>
-<!--  Lots -->
-<script type="text/javascript" src="scripts/app/lot/lot.js"></script>
-<script type="text/javascript" src="scripts/app/lot/lotCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/lot/lotListCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/lot/lotEditCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/lot/allOperationsCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/lot/deliveryCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/lot/docsCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/lot/lotSrvc.js"></script>
-<!-- Trains -->
-<script type="text/javascript" src="scripts/app/train/train.js"></script>
-<script type="text/javascript" src="scripts/app/train/trainCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/train/trainEditCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/train/trainSrvc.js"></script>
-<script type="text/javascript" src="scripts/app/train/allOperationsCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/train/docCtrl.js"></script>
-<!--  Livraisons -->
-<script type="text/javascript" src="scripts/app/multilotsdelivery/multiLotsDelivery.js"></script>
-<script type="text/javascript" src="scripts/app/multilotsdelivery/multiDeliveryCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/multilotsdelivery/multiDeliveryEditCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/multilotsdelivery/multiDeliveryPrevalidateCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/multilotsdelivery/multiDeliverySrvc.js"></script>
-<!--  Livraisons multi-lots -->
-<script type="text/javascript" src="scripts/app/delivery/delivery.js"></script>
-<script type="text/javascript" src="scripts/app/delivery/deliveryCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/delivery/deliveryEditCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/delivery/deliveryPrevalidateCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/delivery/deliverySrvc.js"></script>
-<!-- Recherche -->
-<script type="text/javascript" src="scripts/app/search/search.js"></script>
-<script type="text/javascript" src="scripts/app/search/advSearchCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/search/searchResultsCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/search/searchSrvc.js"></script>
-<!--  Visionneuse -->
-<script type="text/javascript" src="scripts/app/viewer/viewer.js"></script>
-<script type="text/javascript" src="scripts/app/viewer/viewerCtrl.js"></script>
-<!-- Administration -->
-<script type="text/javascript" src="scripts/app/configuration/appconfiguration.js"></script>
-<script type="text/javascript" src="scripts/app/configuration/auditSrvc.js"></script>
-<script type="text/javascript" src="scripts/app/configuration/mapping/mapping.js"></script>
-<script type="text/javascript" src="scripts/app/configuration/mapping/mappingCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/configuration/mapping/mappingRuleCtxMenuSrvc.js"></script>
-<script type="text/javascript" src="scripts/app/configuration/mapping/mappingRuleEadSrvc.js"></script>
-<script type="text/javascript" src="scripts/app/configuration/mapping/mappingRuleMarcSrvc.js"></script>
-<script type="text/javascript" src="scripts/app/configuration/mapping/mappingSrvc.js"></script>
-<script type="text/javascript" src="scripts/app/configuration/mapping/modalEditRuleCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/configuration/deliverySlip/deliveryConf.js"></script>
-<script type="text/javascript" src="scripts/app/configuration/deliverySlip/deliveryConfSrvc.js"></script>
-<script type="text/javascript" src="scripts/app/configuration/deliverySlip/deliveryConfCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/configuration/deliverySlip/deliveryConfEditCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/configuration/checkSlip/checkSlipConfSrvc.js"></script>
-<script type="text/javascript" src="scripts/app/configuration/checkSlip/checkSlipConfEditCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/configuration/condreportSlip/condReportSlipConfSrvc.js"></script>
-<script type="text/javascript" src="scripts/app/configuration/condreportSlip/condReportSlipConfEditCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/configuration/condreport/condreport.js"></script>
-<script type="text/javascript" src="scripts/app/configuration/condreport/condreportDescCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/configuration/condreport/condreportDescEditCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/configuration/condreport/condreportSrvc.js"></script>
-<script type="text/javascript" src="scripts/app/configuration/csvMapping/csvMapping.js"></script>
-<script type="text/javascript" src="scripts/app/configuration/csvMapping/csvMappingCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/configuration/csvMapping/csvMappingSrvc.js"></script>
-<script type="text/javascript" src="scripts/app/configuration/csvMapping/csvModalEditRuleCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/configuration/mailbox/mailbox.js"></script>
-<script type="text/javascript" src="scripts/app/configuration/mailbox/mailboxCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/configuration/mailbox/mailboxEditCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/configuration/mailbox/mailboxSrvc.js"></script>
-<script type="text/javascript" src="scripts/app/configuration/docPropertyType/docPropertyType.js"></script>
-<script type="text/javascript" src="scripts/app/configuration/docPropertyType/docPropertyTypeCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/configuration/docPropertyType/docPropertyTypeSrvc.js"></script>
-<script type="text/javascript" src="scripts/app/configuration/template/template.js"></script>
-<script type="text/javascript" src="scripts/app/configuration/template/templateCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/configuration/template/templateEditCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/configuration/template/templateSrvc.js"></script>
-<script type="text/javascript" src="scripts/app/configuration/z3950/z3950Server.js"></script>
-<script type="text/javascript" src="scripts/app/configuration/z3950/z3950ServerCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/configuration/z3950/z3950ServerEditCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/configuration/z3950/z3950ServerSrvc.js"></script>
-<script type="text/javascript" src="scripts/app/admin/logs/logs.controller.js"></script>
-<script type="text/javascript" src="scripts/app/configuration/viewsFormat/viewsFormat.js"></script>
-<script type="text/javascript" src="scripts/app/configuration/viewsFormat/viewsFormatCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/configuration/viewsFormat/viewsFormatEditCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/configuration/viewsFormat/viewsFormatSrvc.js"></script>
-<script type="text/javascript" src="scripts/app/admin/utilsworkflow/utilsWorkflow.js"></script>
-<script type="text/javascript" src="scripts/app/admin/utilsworkflow/utilsWorkflowCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/admin/utilsprojectlot/utilsProjectLot.js"></script>
-<script type="text/javascript" src="scripts/app/admin/utilsprojectlot/utilsProjectLotCtrl.js"></script>
+        <!-- Gestion fichiers après archivage -->
+        <script type="text/javascript" src="scripts/app/filesgestion/filesGestion.js"></script>
+        <script type="text/javascript" src="scripts/app/filesgestion/filesGestionConfigSrvc.js"></script>
+        <script type="text/javascript" src="scripts/app/filesgestion/filesGestionConfigCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/filesgestion/filesGestionConfigEditCtrl.js"></script>
 
-<!-- Gestion fichiers après archivage -->
-<script type="text/javascript" src="scripts/app/filesgestion/filesGestion.js"></script>
-<script type="text/javascript" src="scripts/app/filesgestion/filesGestionConfigSrvc.js"></script>
-<script type="text/javascript" src="scripts/app/filesgestion/filesGestionConfigCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/filesgestion/filesGestionConfigEditCtrl.js"></script>
+        <!-- Stats -->
+        <script type="text/javascript" src="scripts/app/statistics/statisticsDocPublishedCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/statistics/statisticsDocRejectedCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/statistics/statisticsProjectCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/statistics/dashboard/statisticsDashboard.js"></script>
+        <script type="text/javascript" src="scripts/app/statistics/dashboard/statisticsDashboardProfileActivityCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/statistics/dashboard/statisticsDashboardUserActivityCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/statistics/dashboard/statisticsDashboardTrainProviderCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/statistics/dashboard/statisticsDashboardProjectProgressCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/statistics/workflow/statisticsWorkflow.js"></script>
+        <script type="text/javascript" src="scripts/app/statistics/workflow/statisticsWorkflowAvgCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/statistics/workflow/statisticsWorkflowDlvCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/statistics/workflow/statisticsWorkflowDocCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/statistics/workflow/statisticsWorkflowProviderCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/statistics/workflow/statisticsWorkflowStateCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/statistics/workflow/statisticsWorkflowUserCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/statistics/statisticsSrvc.js"></script>
+        <!-- Aide -->
+        <script type="text/javascript" src="scripts/app/help/help.js"></script>
+        <script type="text/javascript" src="scripts/app/help/helpPageCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/help/helpPageEditCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/help/helpPageSrvc.js"></script>
+        <!-- workflow -->
+        <script type="text/javascript" src="scripts/components/util/canvasUtil.js"></script>
+        <script type="text/javascript" src="scripts/components/workflow/workflowHandleSrvc.js"></script>
+        <script type="text/javascript" src="scripts/components/workflow/workflowLotHandleSrvc.js"></script>
+        <script type="text/javascript" src="scripts/app/workflow/workflow.js"></script>
+        <script type="text/javascript" src="scripts/app/workflow/workflowSrvc.js"></script>
+        <script type="text/javascript" src="scripts/app/workflow/workflowGroupCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/workflow/workflowGroupEditCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/workflow/workflowModelCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/workflow/workflowModelEditCtrl.js"></script>
+        <script type="text/javascript" src="scripts/app/workflow/modals/modalEditModelStateCtrl.js"></script>
+        <!-- endbuild -->
 
-<!-- Stats -->
-<script type="text/javascript" src="scripts/app/statistics/statisticsDocPublishedCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/statistics/statisticsDocRejectedCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/statistics/statisticsProjectCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/statistics/dashboard/statisticsDashboard.js"></script>
-<script type="text/javascript" src="scripts/app/statistics/dashboard/statisticsDashboardProfileActivityCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/statistics/dashboard/statisticsDashboardUserActivityCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/statistics/dashboard/statisticsDashboardTrainProviderCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/statistics/dashboard/statisticsDashboardProjectProgressCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/statistics/workflow/statisticsWorkflow.js"></script>
-<script type="text/javascript" src="scripts/app/statistics/workflow/statisticsWorkflowAvgCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/statistics/workflow/statisticsWorkflowDlvCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/statistics/workflow/statisticsWorkflowDocCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/statistics/workflow/statisticsWorkflowProviderCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/statistics/workflow/statisticsWorkflowStateCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/statistics/workflow/statisticsWorkflowUserCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/statistics/statisticsSrvc.js"></script>
-<!-- Aide -->
-<script type="text/javascript" src="scripts/app/help/help.js"></script>
-<script type="text/javascript" src="scripts/app/help/helpPageCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/help/helpPageEditCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/help/helpPageSrvc.js"></script>
-<!-- workflow -->
-<script type="text/javascript" src="scripts/components/util/canvasUtil.js"></script>
-<script type="text/javascript" src="scripts/components/workflow/workflowHandleSrvc.js"></script>
-<script type="text/javascript" src="scripts/components/workflow/workflowLotHandleSrvc.js"></script>
-<script type="text/javascript" src="scripts/app/workflow/workflow.js"></script>
-<script type="text/javascript" src="scripts/app/workflow/workflowSrvc.js"></script>
-<script type="text/javascript" src="scripts/app/workflow/workflowGroupCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/workflow/workflowGroupEditCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/workflow/workflowModelCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/workflow/workflowModelEditCtrl.js"></script>
-<script type="text/javascript" src="scripts/app/workflow/modals/modalEditModelStateCtrl.js"></script>
-<!-- endbuild -->
+        <!-- build:js scripts/admin.js -->
+        <script type="text/javascript" src="scripts/components/auth/auth.service.js"></script>
+        <script type="text/javascript" src="scripts/components/auth/authority.directive.js"></script>
+        <script type="text/javascript" src="scripts/components/auth/services/account.service.js"></script>
+        <script type="text/javascript" src="scripts/components/auth/services/activate.service.js"></script>
+        <script type="text/javascript" src="scripts/components/auth/services/password.service.js"></script>
+        <script type="text/javascript" src="scripts/components/form/form.directive.js"></script>
+        <script type="text/javascript" src="scripts/components/form/pager.directive.js"></script>
+        <script type="text/javascript" src="scripts/components/form/pagination.directive.js"></script>
+        <script type="text/javascript" src="scripts/components/admin/audits.service.js"></script>
+        <script type="text/javascript" src="scripts/components/admin/logs.service.js"></script>
+        <script type="text/javascript" src="scripts/components/admin/configuration.service.js"></script>
+        <script type="text/javascript" src="scripts/components/admin/monitoring.service.js"></script>
+        <script type="text/javascript" src="scripts/components/navbar/navbar.directive.js"></script>
+        <script type="text/javascript" src="scripts/components/navbar/navbar.controller.js"></script>
+        <script type="text/javascript" src="scripts/components/user/user.service.js"></script>
+        <script type="text/javascript" src="scripts/components/lot/lot.service.js"></script>
+        <script type="text/javascript" src="scripts/components/project/project.service.js"></script>
+        <script type="text/javascript" src="scripts/components/library/library.service.js"></script>
+        <script type="text/javascript" src="scripts/components/util/truncate.filter.js"></script>
+        <script type="text/javascript" src="scripts/components/util/parse-links.service.js"></script>
+        <script type="text/javascript" src="scripts/components/util/dateutil.service.js"></script>
+        <script type="text/javascript" src="scripts/app/account/account.js"></script>
+        <script type="text/javascript" src="scripts/app/account/activate/activate.js"></script>
+        <script type="text/javascript" src="scripts/app/account/activate/activate.controller.js"></script>
+        <script type="text/javascript" src="scripts/app/account/settings/settings.js"></script>
+        <script type="text/javascript" src="scripts/app/account/settings/settings.controller.js"></script>
+        <script type="text/javascript" src="scripts/app/admin/admin.js"></script>
+        <script type="text/javascript" src="scripts/app/admin/configuration/configuration.js"></script>
+        <script type="text/javascript" src="scripts/app/admin/configuration/configuration.controller.js"></script>
+        <script type="text/javascript" src="scripts/app/admin/health/health.js"></script>
+        <script type="text/javascript" src="scripts/app/admin/health/health.controller.js"></script>
+        <script type="text/javascript" src="scripts/app/admin/logs/logs.js"></script>
+        <script type="text/javascript" src="scripts/app/admin/logs/logs.controller.js"></script>
+        <script type="text/javascript" src="scripts/app/admin/metrics/metrics.js"></script>
+        <script type="text/javascript" src="scripts/app/admin/metrics/metrics.controller.js"></script>
+        <script type="text/javascript" src="scripts/app/error/error.js"></script>
+        <script type="text/javascript" src="scripts/components/auth/services/sessions.service.js"></script>
+        <script type="text/javascript" src="scripts/components/auth/provider/auth.session.service.js"></script>
+        <script type="text/javascript" src="scripts/app/account/sessions/sessions.js"></script>
+        <script type="text/javascript" src="scripts/app/account/sessions/sessions.controller.js"></script>
 
-<!-- build:js scripts/admin.js -->
-<script type="text/javascript" src="scripts/components/auth/auth.service.js"></script>
-<script type="text/javascript" src="scripts/components/auth/authority.directive.js"></script>
-<script type="text/javascript" src="scripts/components/auth/services/account.service.js"></script>
-<script type="text/javascript" src="scripts/components/auth/services/activate.service.js"></script>
-<script type="text/javascript" src="scripts/components/auth/services/password.service.js"></script>
-<script type="text/javascript" src="scripts/components/form/form.directive.js"></script>
-<script type="text/javascript" src="scripts/components/form/pager.directive.js"></script>
-<script type="text/javascript" src="scripts/components/form/pagination.directive.js"></script>
-<script type="text/javascript" src="scripts/components/admin/audits.service.js"></script>
-<script type="text/javascript" src="scripts/components/admin/logs.service.js"></script>
-<script type="text/javascript" src="scripts/components/admin/configuration.service.js"></script>
-<script type="text/javascript" src="scripts/components/admin/monitoring.service.js"></script>
-<script type="text/javascript" src="scripts/components/navbar/navbar.directive.js"></script>
-<script type="text/javascript" src="scripts/components/navbar/navbar.controller.js"></script>
-<script type="text/javascript" src="scripts/components/user/user.service.js"></script>
-<script type="text/javascript" src="scripts/components/lot/lot.service.js"></script>
-<script type="text/javascript" src="scripts/components/project/project.service.js"></script>
-<script type="text/javascript" src="scripts/components/library/library.service.js"></script>
-<script type="text/javascript" src="scripts/components/util/truncate.filter.js"></script>
-<script type="text/javascript" src="scripts/components/util/parse-links.service.js"></script>
-<script type="text/javascript" src="scripts/components/util/dateutil.service.js"></script>
-<script type="text/javascript" src="scripts/app/account/account.js"></script>
-<script type="text/javascript" src="scripts/app/account/activate/activate.js"></script>
-<script type="text/javascript" src="scripts/app/account/activate/activate.controller.js"></script>
-<script type="text/javascript" src="scripts/app/account/settings/settings.js"></script>
-<script type="text/javascript" src="scripts/app/account/settings/settings.controller.js"></script>
-<script type="text/javascript" src="scripts/app/admin/admin.js"></script>
-<script type="text/javascript" src="scripts/app/admin/configuration/configuration.js"></script>
-<script type="text/javascript" src="scripts/app/admin/configuration/configuration.controller.js"></script>
-<script type="text/javascript" src="scripts/app/admin/health/health.js"></script>
-<script type="text/javascript" src="scripts/app/admin/health/health.controller.js"></script>
-<script type="text/javascript" src="scripts/app/admin/logs/logs.js"></script>
-<script type="text/javascript" src="scripts/app/admin/logs/logs.controller.js"></script>
-<script type="text/javascript" src="scripts/app/admin/metrics/metrics.js"></script>
-<script type="text/javascript" src="scripts/app/admin/metrics/metrics.controller.js"></script>
-<script type="text/javascript" src="scripts/app/error/error.js"></script>
-<script type="text/javascript" src="scripts/components/auth/services/sessions.service.js"></script>
-<script type="text/javascript" src="scripts/components/auth/provider/auth.session.service.js"></script>
-<script type="text/javascript" src="scripts/app/account/sessions/sessions.js"></script>
-<script type="text/javascript" src="scripts/app/account/sessions/sessions.controller.js"></script>
-
-<!-- endbuild -->
-<script type="text/javascript" src="libs/angular-pdf/dist/angular-pdf.min.js"></script>
-<script type="text/javascript" src="libs/pdfjs-dist/build/pdf.js"></script>
-
-</body>
+        <!-- endbuild -->
+        <script type="text/javascript" src="libs/angular-pdf/dist/angular-pdf.min.js"></script>
+        <script type="text/javascript" src="libs/pdfjs-dist/build/pdf.js"></script>
+    </body>
 </html>

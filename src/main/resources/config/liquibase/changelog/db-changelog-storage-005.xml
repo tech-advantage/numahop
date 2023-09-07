@@ -1,7 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <changeSet id="pgcn-addcolumns-storage5" author="progilone">
 <!--         Ajout colonnes de donnees TOC -->
@@ -10,10 +12,7 @@
             <column name="order_toc" type="varchar(255)" />
         </addColumn>
 <!--         Modif nom colonne label_toc => title_toc -->
-         <renameColumn tableName="sto_stored_file" 
-            columnDataType="varchar(255)"
-            newColumnName="title_toc"
-            oldColumnName="label_toc" />
+         <renameColumn tableName="sto_stored_file" columnDataType="varchar(255)" newColumnName="title_toc" oldColumnName="label_toc" />
 
     </changeSet>
 

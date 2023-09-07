@@ -1,24 +1,6 @@
 package fr.progilone.pgcn.service.exchange.ead;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.google.common.collect.Iterables;
-
 import fr.progilone.pgcn.domain.document.BibliographicRecord;
 import fr.progilone.pgcn.domain.document.DocPropertyType;
 import fr.progilone.pgcn.domain.document.DocUnit;
@@ -29,6 +11,21 @@ import fr.progilone.pgcn.service.exchange.ExchangeHelper;
 import fr.progilone.pgcn.service.exchange.ead.mapping.CompiledMapping;
 import fr.progilone.pgcn.service.exchange.ead.mapping.CompiledMappingRule;
 import fr.progilone.pgcn.service.exchange.ead.mapping.RuleKey;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * Service assurant la conversion de notices au format EAD en unités documentaires
@@ -37,7 +34,7 @@ import fr.progilone.pgcn.service.exchange.ead.mapping.RuleKey;
  */
 @Service
 public class EadToDocUnitConvertService extends AbstractImportConvertService {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(EadToDocUnitConvertService.class);
 
     private final EadMappingEvaluationService eadMappingEvaluationService;
@@ -76,24 +73,18 @@ public class EadToDocUnitConvertService extends AbstractImportConvertService {
      * @param propertyTypes
      * @return
      */
-    public DocUnit convert(final DocUnit docUnit,
-                           final C c,
-                           final EadCParser eadCParser,
-                           final CompiledMapping mapping,
-                           final Map<String, DocPropertyType> propertyTypes) {
+    public DocUnit convert(final DocUnit docUnit, final C c, final EadCParser eadCParser, final CompiledMapping mapping, final Map<String, DocPropertyType> propertyTypes) {
         final BibliographicRecord bibRecord = docUnit.getRecords().iterator().next();
-        
 
         for (final CompiledMappingRule compiledRule : mapping.getCompiledRules()) {
             boolean applyOnDocUnit = true, applyOnBibRecord = true, applyOnProperty = true;
             final MappingRule rule = compiledRule.getRule();
-            
+
             // Règle par défaut: ne s'applique que si la valeur n'est pas déjà renseignée
             if (rule.isDefaultRule()) {
                 // UD
                 if (FIELD_DIGITAL_ID.equals(rule.getDocUnitField())) {
-                    applyOnDocUnit = rule.getDocUnitField() != null && !hasObjectField(Iterables.getOnlyElement(docUnit.getPhysicalDocuments()),
-                                                                                       rule.getDocUnitField());
+                    applyOnDocUnit = rule.getDocUnitField() != null && !hasObjectField(Iterables.getOnlyElement(docUnit.getPhysicalDocuments()), rule.getDocUnitField());
                 } else {
                     applyOnDocUnit = rule.getDocUnitField() != null && !hasObjectField(docUnit, rule.getDocUnitField());
                 }
@@ -103,7 +94,8 @@ public class EadToDocUnitConvertService extends AbstractImportConvertService {
                 if (rule.getProperty() != null) {
                     applyOnProperty = !hasDocProperty(bibRecord, rule.getProperty().getIdentifier());
                 }
-                if (!applyOnDocUnit && !applyOnBibRecord && !applyOnProperty) {
+                if (!applyOnDocUnit && !applyOnBibRecord
+                    && !applyOnProperty) {
                     continue;
                 }
             }
@@ -156,8 +148,7 @@ public class EadToDocUnitConvertService extends AbstractImportConvertService {
             final Set<String> commonFields = getCommonFields(allFields);
 
             final Map<String, List<Object>> dataByCommonField = commonFields.stream()
-                                                                            .map(field -> Pair.of(field,
-                                                                                                  (List<Object>) eadCParser.getValues(c, field)))
+                                                                            .map(field -> Pair.of(field, (List<Object>) eadCParser.getValues(c, field)))
                                                                             .filter(p -> !p.getRight().isEmpty())
                                                                             .collect(Collectors.toMap(Pair::getLeft, Pair::getRight));
             // Combinaisons des différents champs communs utilisés dans la règle de mapping
@@ -168,13 +159,17 @@ public class EadToDocUnitConvertService extends AbstractImportConvertService {
                 allFields.stream()
                          // Les valeurs n'ont pas déjà été récupérées
                          .filter(path -> !dataCombo.containsKey(path))
-                         .map(path -> dataCombo.keySet().stream().filter(k -> path.startsWith(k + ".")).findAny()
+                         .map(path -> dataCombo.keySet()
+                                               .stream()
+                                               .filter(k -> path.startsWith(k + "."))
+                                               .findAny()
                                                // on recherche la valeur à partir de son chemin relatif dans la valeur commune
                                                .map(rootPath -> {
                                                    final Object commonO = dataCombo.get(rootPath);
                                                    final String subPath = path.substring(rootPath.length() + 1);
                                                    final Object value = EadCParser.getObjectValue(commonO, subPath);
-                                                   return value != null ? Pair.of(path, value) : null;
+                                                   return value != null ? Pair.of(path, value)
+                                                                        : null;
                                                }))
                          .filter(Optional::isPresent)
                          .map(Optional::get)
@@ -188,7 +183,9 @@ public class EadToDocUnitConvertService extends AbstractImportConvertService {
                 for (final RuleKey k : rule.getRuleKeys()) {
                     final Object cData = dataCombo.get(k.getField());
                     // le binding est toujours renseigné même si on n'a pas trouvé de valeur, pour ne pas faire planter le script
-                    binding.put(k.getVariableName(), cData != null ? cData : "");
+                    binding.put(k.getVariableName(),
+                                cData != null ? cData
+                                              : "");
                 }
             }
             // expression constante et aucun binding défini: on rajoute un binding par défaut
@@ -201,8 +198,7 @@ public class EadToDocUnitConvertService extends AbstractImportConvertService {
             bindings = bindings.stream().filter(binding -> eadMappingEvaluationService.evalCondition(rule, binding)).collect(Collectors.toList());
 
             // Déduplication des bindings par rapport aux champs utilisés dans l'expression de la règle
-            final List<String> variables =
-                rule.getExpressionStatement().getRuleKeys().stream().map(RuleKey::getVariableName).collect(Collectors.toList());
+            final List<String> variables = rule.getExpressionStatement().getRuleKeys().stream().map(RuleKey::getVariableName).collect(Collectors.toList());
             bindings = ExchangeHelper.distinctBindings(bindings, variables);
         }
         // Évaluation de la règle de mapping pour les bindings respectant la condition
@@ -237,8 +233,7 @@ public class EadToDocUnitConvertService extends AbstractImportConvertService {
      */
     private Set<String> getCommonFields(final Set<String> fields) {
         final AtomicInteger counter = new AtomicInteger();
-        final List<Pair<Integer, String>> indexedFields =
-            fields.stream().map(field -> Pair.of(counter.getAndIncrement(), field)).collect(Collectors.toList());
+        final List<Pair<Integer, String>> indexedFields = fields.stream().map(field -> Pair.of(counter.getAndIncrement(), field)).collect(Collectors.toList());
 
         return indexedFields.stream().map(indField -> {
             final Integer ind = indField.getKey();
@@ -247,16 +242,14 @@ public class EadToDocUnitConvertService extends AbstractImportConvertService {
             boolean found;
             do {
                 final String fSubField = subField;
-                found = indexedFields.stream()
-                                     .anyMatch(oth -> !oth.getKey().equals(ind) && (oth.getValue().equals(fSubField) || oth.getValue()
-                                                                                                                           .startsWith(fSubField
-                                                                                                                                       + ".")));
+                found = indexedFields.stream().anyMatch(oth -> !oth.getKey().equals(ind) && (oth.getValue().equals(fSubField) || oth.getValue().startsWith(fSubField + ".")));
                 if (!found) {
                     subField = getParent(subField);
                 }
             } while (!found && subField != null);
 
-            return subField != null ? subField : field;
+            return subField != null ? subField
+                                    : field;
         }).collect(Collectors.toSet());
     }
 
@@ -268,6 +261,7 @@ public class EadToDocUnitConvertService extends AbstractImportConvertService {
      */
     private String getParent(final String path) {
         final int pos = path.lastIndexOf('.');
-        return pos < 0 ? null : path.substring(0, pos);
+        return pos < 0 ? null
+                       : path.substring(0, pos);
     }
 }

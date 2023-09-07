@@ -1,19 +1,18 @@
 package fr.progilone.pgcn.service.exchange.ead;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import fr.progilone.pgcn.domain.jaxb.ead.C;
 import fr.progilone.pgcn.domain.jaxb.ead.Eadheader;
 import fr.progilone.pgcn.domain.jaxb.ead.Physdesc;
 import fr.progilone.pgcn.domain.jaxb.ead.Title;
-import org.junit.Test;
-import org.xml.sax.SAXException;
-
-import javax.xml.bind.JAXBException;
-import javax.xml.parsers.ParserConfigurationException;
+import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
 import java.util.List;
-
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import javax.xml.parsers.ParserConfigurationException;
+import org.junit.jupiter.api.Test;
+import org.xml.sax.SAXException;
 
 /**
  * Created by Sébastien on 16/05/2017.
@@ -23,7 +22,9 @@ public class EadCParserTest {
     // Bonne construction de la hiérarchie
     @Test
     public void test01() throws ParserConfigurationException, JAXBException, SAXException, IOException {
-        final String xml = "<c id=\"toplevel-001\">" + "<c id=\"sublevel-001-a\"></c>" + "<c id=\"sublevel-001-b\"></c>" + "</c>";
+        final String xml = "<c id=\"toplevel-001\">" + "<c id=\"sublevel-001-a\"></c>"
+                           + "<c id=\"sublevel-001-b\"></c>"
+                           + "</c>";
         final C c = EadTestUtils.getCFromXml(xml);
 
         final EadCParser eadCParser = new EadCParser(null, c);
@@ -31,9 +32,7 @@ public class EadCParserTest {
         assertEquals("toplevel-001", eadCParser.getRoot().getId());
 
         assertEquals(2, eadCParser.getcLeaves().size());
-        assertTrue(eadCParser.getcLeaves()
-                             .stream()
-                             .allMatch(child -> "sublevel-001-a".equals(child.getId()) || "sublevel-001-b".equals(child.getId())));
+        assertTrue(eadCParser.getcLeaves().stream().allMatch(child -> "sublevel-001-a".equals(child.getId()) || "sublevel-001-b".equals(child.getId())));
 
         assertEquals(2, eadCParser.getParentMap().size());
         assertEquals("toplevel-001", eadCParser.getParentMap().get("sublevel-001-a").getId());
@@ -98,7 +97,7 @@ public class EadCParserTest {
         List<?> actual = new EadCParser(null, c).getValues(c, "did.physdesc.content");
         assertEquals(2, actual.size());
 
-        assertThat(actual.get(0), instanceOf(Title.class));
+        assertThat(actual.get(0)).isInstanceOf(Title.class);
         final Title title = (Title) actual.get(0);
         assertEquals(1, title.getContent().size());
         assertEquals("Le petit prince", title.getContent().get(0));
@@ -113,8 +112,7 @@ public class EadCParserTest {
     // Objets dans une hiérarchie
     @Test
     public void test06() throws ParserConfigurationException, JAXBException, SAXException, IOException {
-        final String xml = "<c id=\"toplevel-001\">"
-                           + "<did id=\"test-did\">"
+        final String xml = "<c id=\"toplevel-001\">" + "<did id=\"test-did\">"
                            + "<unitid type=\"division\">test top 001</unitid>"
                            + "<physdesc>physdesc top 001</physdesc>"
                            + "</did>"
@@ -142,14 +140,13 @@ public class EadCParserTest {
         // recherche de l'objet physdesc
         actual = eadCParser.getValues(subC, "did.physdesc");
         assertEquals(1, actual.size());
-        assertThat(actual.get(0), instanceOf(Physdesc.class));
+        assertThat(actual.get(0)).isInstanceOf(Physdesc.class);
     }
 
     // Objets dans une hiérarchie, remonter toute la hiérarchié
     @Test
     public void test06b() throws ParserConfigurationException, JAXBException, SAXException, IOException {
-        final String xml = "<c id=\"toplevel-001\">"
-                           + "<did id=\"test-did1\"><unitid type=\"division\">test top 001</unitid></did>"
+        final String xml = "<c id=\"toplevel-001\">" + "<did id=\"test-did1\"><unitid type=\"division\">test top 001</unitid></did>"
                            + "<c id=\"sublevel-001-a\">"
                            + "<did id=\"test-did2\"><unitid type=\"division\">test sub a</unitid></did>"
                            + "<c id=\"sublevel-001-a-a\">"
@@ -206,8 +203,7 @@ public class EadCParserTest {
     // Élément précis de la hiérarchie
     @Test
     public void test07() throws ParserConfigurationException, JAXBException, SAXException, IOException {
-        final String xml = "<c id=\"toplevel-001\">"
-                           + "  <did id=\"test-did\">"
+        final String xml = "<c id=\"toplevel-001\">" + "  <did id=\"test-did\">"
                            + "    <unittitle>Recueil</unittitle>"
                            + "    <physdesc>physdesc top 001</physdesc>"
                            + "  </did>"
@@ -241,8 +237,7 @@ public class EadCParserTest {
     // valeur de l'entête EAD
     @Test
     public void test08() throws ParserConfigurationException, JAXBException, SAXException, IOException {
-        final String xml = "<ead>\n"
-                           + "  <eadheader>\n"
+        final String xml = "<ead>\n" + "  <eadheader>\n"
                            + "    <profiledesc>\n"
                            + "      <langusage>Instrument de recherche rédigé en<language>français</language></langusage>\n"
                            + "    </profiledesc>\n"

@@ -1,18 +1,16 @@
 package fr.progilone.pgcn.domain.dto.statistics;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Set;
-
 import fr.progilone.pgcn.domain.dto.AbstractDTO;
-import fr.progilone.pgcn.domain.dto.document.SimpleDocUnitDTO;
 import fr.progilone.pgcn.domain.dto.library.SimpleLibraryDTO;
 import fr.progilone.pgcn.domain.dto.user.SimpleUserDTO;
+import java.time.LocalDate;
+import java.util.List;
 
 /**
  * DTO de statistiques : projet
+ *
  * @author jbrunet
- * Créé le 9 mai 2017
+ *         Créé le 9 mai 2017
  */
 public class StatisticsProjectDTO extends AbstractDTO {
 
@@ -29,7 +27,8 @@ public class StatisticsProjectDTO extends AbstractDTO {
     private SimpleUserDTO provider;
     private List<SimpleUserDTO> otherProviders;
 
-    public StatisticsProjectDTO() {}
+    public StatisticsProjectDTO() {
+    }
 
     public String getIdentifier() {
         return identifier;

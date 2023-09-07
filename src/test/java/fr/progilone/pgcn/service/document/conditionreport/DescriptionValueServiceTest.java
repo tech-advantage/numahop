@@ -1,5 +1,10 @@
 package fr.progilone.pgcn.service.document.conditionreport;
 
+import static fr.progilone.pgcn.exception.message.PgcnErrorCode.DESC_VALUE_PROPERTY_MANDATORY;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
 import fr.progilone.pgcn.domain.document.conditionreport.DescriptionProperty;
 import fr.progilone.pgcn.domain.document.conditionreport.DescriptionValue;
 import fr.progilone.pgcn.exception.PgcnValidationException;
@@ -7,21 +12,17 @@ import fr.progilone.pgcn.exception.message.PgcnErrorCode;
 import fr.progilone.pgcn.repository.document.conditionreport.DescriptionRepository;
 import fr.progilone.pgcn.repository.document.conditionreport.DescriptionValueRepository;
 import fr.progilone.pgcn.util.TestUtil;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.internal.stubbing.answers.ReturnsArgumentAt;
-import org.mockito.runners.MockitoJUnitRunner;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.internal.stubbing.answers.ReturnsArgumentAt;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import static fr.progilone.pgcn.exception.message.PgcnErrorCode.*;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class DescriptionValueServiceTest {
 
     @Mock
@@ -31,18 +32,17 @@ public class DescriptionValueServiceTest {
 
     private DescriptionValueService service;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         service = new DescriptionValueService(descriptionRepository, descriptionValueRepository);
     }
 
     @Test
     public void testFindByProperty() {
-        final DescriptionProperty property = new DescriptionProperty();
         final List<DescriptionValue> values = new ArrayList<>();
-        when(descriptionValueRepository.findByProperty(property)).thenReturn(values);
+        when(descriptionValueRepository.findByPropertyIdentifier("id")).thenReturn(values);
 
-        final List<DescriptionValue> actual = service.findByProperty(property);
+        final List<DescriptionValue> actual = service.findByPropertyIdentifier("id");
         assertSame(values, actual);
     }
 
@@ -59,7 +59,7 @@ public class DescriptionValueServiceTest {
     public void testDelete() {
         final String id = "ID-001";
         final DescriptionValue value = new DescriptionValue();
-        when(descriptionValueRepository.findOne(id)).thenReturn(value);
+        when(descriptionValueRepository.findById(id)).thenReturn(Optional.of(value));
 
         service.delete(id);
 
@@ -75,7 +75,7 @@ public class DescriptionValueServiceTest {
             final DescriptionValue value = new DescriptionValue();
             service.save(value);
             fail("testSave failed");
-        } catch (PgcnValidationException e) {
+        } catch (final PgcnValidationException e) {
             TestUtil.checkPgcnException(e, PgcnErrorCode.DESC_VALUE_LABEL_MANDATORY, DESC_VALUE_PROPERTY_MANDATORY);
         }
 
@@ -88,7 +88,7 @@ public class DescriptionValueServiceTest {
             final DescriptionValue actual = service.save(value);
             assertSame(value, actual);
 
-        } catch (PgcnValidationException e) {
+        } catch (final PgcnValidationException e) {
             fail("testSave failed");
         }
     }

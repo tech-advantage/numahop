@@ -5,22 +5,22 @@
 // Généré le : 2018.08.13 à 01:08:19 PM CEST
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.oaipmh;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-
 
 /**
- * <p>Classe Java pour IdentifyType complex type.
+ * <p>
+ * Classe Java pour IdentifyType complex type.
  *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="IdentifyType">
@@ -45,17 +45,16 @@ import javax.xml.bind.annotation.XmlType;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "IdentifyType", propOrder = {
-    "repositoryName",
-    "baseURL",
-    "protocolVersion",
-    "adminEmail",
-    "earliestDatestamp",
-    "deletedRecord",
-    "granularity",
-    "compression",
-    "description"
-})
+@XmlType(name = "IdentifyType",
+         propOrder = {"repositoryName",
+                      "baseURL",
+                      "protocolVersion",
+                      "adminEmail",
+                      "earliestDatestamp",
+                      "deletedRecord",
+                      "granularity",
+                      "compression",
+                      "description"})
 public class IdentifyType {
 
     @XmlElement(required = true)
@@ -82,8 +81,8 @@ public class IdentifyType {
      * Obtient la valeur de la propriété repositoryName.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getRepositoryName() {
@@ -94,8 +93,8 @@ public class IdentifyType {
      * Définit la valeur de la propriété repositoryName.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setRepositoryName(String value) {
@@ -106,8 +105,8 @@ public class IdentifyType {
      * Obtient la valeur de la propriété baseURL.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getBaseURL() {
@@ -118,8 +117,8 @@ public class IdentifyType {
      * Définit la valeur de la propriété baseURL.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setBaseURL(String value) {
@@ -130,8 +129,8 @@ public class IdentifyType {
      * Obtient la valeur de la propriété protocolVersion.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getProtocolVersion() {
@@ -142,8 +141,8 @@ public class IdentifyType {
      * Définit la valeur de la propriété protocolVersion.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setProtocolVersion(String value) {
@@ -161,8 +160,9 @@ public class IdentifyType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getAdminEmail().add(newItem);
+     * getAdminEmail().add(newItem);
      * </pre>
      *
      *
@@ -183,8 +183,8 @@ public class IdentifyType {
      * Obtient la valeur de la propriété earliestDatestamp.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getEarliestDatestamp() {
@@ -195,8 +195,8 @@ public class IdentifyType {
      * Définit la valeur de la propriété earliestDatestamp.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setEarliestDatestamp(String value) {
@@ -207,8 +207,8 @@ public class IdentifyType {
      * Obtient la valeur de la propriété deletedRecord.
      *
      * @return
-     *     possible object is
-     *     {@link DeletedRecordType }
+     *         possible object is
+     *         {@link DeletedRecordType }
      *
      */
     public DeletedRecordType getDeletedRecord() {
@@ -219,8 +219,8 @@ public class IdentifyType {
      * Définit la valeur de la propriété deletedRecord.
      *
      * @param value
-     *     allowed object is
-     *     {@link DeletedRecordType }
+     *            allowed object is
+     *            {@link DeletedRecordType }
      *
      */
     public void setDeletedRecord(DeletedRecordType value) {
@@ -231,8 +231,8 @@ public class IdentifyType {
      * Obtient la valeur de la propriété granularity.
      *
      * @return
-     *     possible object is
-     *     {@link GranularityType }
+     *         possible object is
+     *         {@link GranularityType }
      *
      */
     public GranularityType getGranularity() {
@@ -243,8 +243,8 @@ public class IdentifyType {
      * Définit la valeur de la propriété granularity.
      *
      * @param value
-     *     allowed object is
-     *     {@link GranularityType }
+     *            allowed object is
+     *            {@link GranularityType }
      *
      */
     public void setGranularity(GranularityType value) {
@@ -262,8 +262,9 @@ public class IdentifyType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getCompression().add(newItem);
+     * getCompression().add(newItem);
      * </pre>
      *
      *
@@ -291,8 +292,9 @@ public class IdentifyType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getDescription().add(newItem);
+     * getDescription().add(newItem);
      * </pre>
      *
      *

@@ -1,9 +1,5 @@
 package fr.progilone.pgcn.domain.dto.lot;
 
-import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.Set;
-
 import fr.progilone.pgcn.domain.dto.AbstractVersionedDTO;
 import fr.progilone.pgcn.domain.dto.administration.CinesPACDTO;
 import fr.progilone.pgcn.domain.dto.administration.InternetArchiveCollectionDTO;
@@ -11,15 +7,15 @@ import fr.progilone.pgcn.domain.dto.administration.omeka.OmekaConfigurationDTO;
 import fr.progilone.pgcn.domain.dto.administration.omeka.OmekaListDTO;
 import fr.progilone.pgcn.domain.dto.administration.viewsFormat.SimpleViewsFormatConfigurationDTO;
 import fr.progilone.pgcn.domain.dto.checkconfiguration.CheckConfigurationDTO;
-import fr.progilone.pgcn.domain.dto.document.SimpleDocUnitDTO;
 import fr.progilone.pgcn.domain.dto.ftpconfiguration.SimpleFTPConfigurationDTO;
 import fr.progilone.pgcn.domain.dto.ocrlangconfiguration.OcrLanguageDTO;
-import fr.progilone.pgcn.domain.dto.project.ProjectDTO;
 import fr.progilone.pgcn.domain.dto.project.SimpleProjectDTO;
 import fr.progilone.pgcn.domain.dto.user.SimpleUserDTO;
 import fr.progilone.pgcn.domain.dto.workflow.SimpleWorkflowModelDTO;
 import fr.progilone.pgcn.domain.lot.Lot;
 import fr.progilone.pgcn.domain.user.User;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * DTO représentant un lot
@@ -54,9 +50,9 @@ public class LotWithConfigRulesDTO extends AbstractVersionedDTO {
     private SimpleWorkflowModelDTO workflowModel;
     private OmekaConfigurationDTO omekaConfiguration;
     private OmekaListDTO omekaCollection;
-    private OmekaListDTO omekaItem; 
+    private OmekaListDTO omekaItem;
     private OcrLanguageDTO activeOcrLanguage;
-    
+
     /**
      * Ajout des infos de création
      */
@@ -69,33 +65,35 @@ public class LotWithConfigRulesDTO extends AbstractVersionedDTO {
     private LocalDateTime lastModifiedDate;
 
     public LotWithConfigRulesDTO(final String identifier,
-                  final String label,
-                  final String code,
-                  final String type,
-                  final String description,
-                  final Boolean active,
-                  final String status,
-                  final String condNotes,
-                  final String numNotes,
-                  final String requiredFormat,
-                  final Date deliveryDateForseen,
-                  final SimpleProjectDTO project,
-                  final SimpleFTPConfigurationDTO activeFTPConfiguration,
-                  final CheckConfigurationDTO activeCheckConfiguration,
-                  final SimpleViewsFormatConfigurationDTO activeFormatConfiguration,
-                 final InternetArchiveCollectionDTO collectionIA,
-                 final CinesPACDTO planClassementPAC, final SimpleUserDTO provider,
-                  final String requiredTypeCompression,
-                  final Integer requiredTauxCompression,
-                  final String requiredResolution,
-                  final String requiredColorspace,
-                  final String createdBy, final LocalDateTime createdDate, 
+                                 final String label,
+                                 final String code,
+                                 final String type,
+                                 final String description,
+                                 final Boolean active,
+                                 final String status,
+                                 final String condNotes,
+                                 final String numNotes,
+                                 final String requiredFormat,
+                                 final Date deliveryDateForseen,
+                                 final SimpleProjectDTO project,
+                                 final SimpleFTPConfigurationDTO activeFTPConfiguration,
+                                 final CheckConfigurationDTO activeCheckConfiguration,
+                                 final SimpleViewsFormatConfigurationDTO activeFormatConfiguration,
+                                 final InternetArchiveCollectionDTO collectionIA,
+                                 final CinesPACDTO planClassementPAC,
+                                 final SimpleUserDTO provider,
+                                 final String requiredTypeCompression,
+                                 final Integer requiredTauxCompression,
+                                 final String requiredResolution,
+                                 final String requiredColorspace,
+                                 final String createdBy,
+                                 final LocalDateTime createdDate,
                                  final String lastModifiedBy,
                                  final LocalDateTime lastModifiedDate,
                                  final OmekaConfigurationDTO omekaConfiguration,
-                  final OmekaListDTO omekaCollection,
-                  final OmekaListDTO omekaItem,
-                  final OcrLanguageDTO activeOcrLanguage) {
+                                 final OmekaListDTO omekaCollection,
+                                 final OmekaListDTO omekaItem,
+                                 final OcrLanguageDTO activeOcrLanguage) {
         this.identifier = identifier;
         this.label = label;
         this.code = code;
@@ -210,15 +208,15 @@ public class LotWithConfigRulesDTO extends AbstractVersionedDTO {
     public void setDeliveryDateForseen(final Date deliveryDateForseen) {
         this.deliveryDateForseen = deliveryDateForseen;
     }
-    
+
     public SimpleProjectDTO getProject() {
         return project;
     }
-    
+
     public void setProject(SimpleProjectDTO project) {
         this.project = project;
     }
-    
+
     public String getRequiredFormat() {
         return requiredFormat;
     }
@@ -374,7 +372,7 @@ public class LotWithConfigRulesDTO extends AbstractVersionedDTO {
     public void setOmekaItem(final OmekaListDTO omekaItem) {
         this.omekaItem = omekaItem;
     }
-    
+
     public SimpleViewsFormatConfigurationDTO getActiveFormatConfiguration() {
         return activeFormatConfiguration;
     }
@@ -382,7 +380,6 @@ public class LotWithConfigRulesDTO extends AbstractVersionedDTO {
     public void setActiveFormatConfiguration(final SimpleViewsFormatConfigurationDTO activeFormatConfiguration) {
         this.activeFormatConfiguration = activeFormatConfiguration;
     }
-    
 
     /**
      * Builder pour la classe LotDTO
@@ -505,7 +502,7 @@ public class LotWithConfigRulesDTO extends AbstractVersionedDTO {
             this.deliveryDateForseen = deliveryDateForseen;
             return this;
         }
-    
+
         public Builder setProject(final SimpleProjectDTO project) {
             this.project = project;
             return this;
@@ -525,7 +522,7 @@ public class LotWithConfigRulesDTO extends AbstractVersionedDTO {
             this.activeCheckConfiguration = activeCheckConfiguration;
             return this;
         }
-        
+
         public Builder setActiveFormatConfiguration(final SimpleViewsFormatConfigurationDTO activeFormatConfiguration) {
             this.activeFormatConfiguration = activeFormatConfiguration;
             return this;
@@ -540,16 +537,16 @@ public class LotWithConfigRulesDTO extends AbstractVersionedDTO {
             this.omekaConfiguration = omekaConfiguration;
             return this;
         }
-        
+
         public Builder setOmekaCollection(final OmekaListDTO omekaCollection) {
             this.omekaCollection = omekaCollection;
             return this;
         }
-        
+
         public Builder setOmekaItem(final OmekaListDTO omekaItem) {
             this.omekaItem = omekaItem;
             return this;
-        } 
+        }
 
         public Builder setPlanClassementPAC(final CinesPACDTO planClassementPAC) {
             this.planClassementPAC = planClassementPAC;
@@ -600,7 +597,7 @@ public class LotWithConfigRulesDTO extends AbstractVersionedDTO {
             this.lastModifiedDate = lastModifiedDate;
             return this;
         }
-        
+
         public Builder setActiveOcrLanguage(final OcrLanguageDTO activeOcrLanguage) {
             this.activeOcrLanguage = activeOcrLanguage;
             return this;
@@ -608,34 +605,35 @@ public class LotWithConfigRulesDTO extends AbstractVersionedDTO {
 
         public LotWithConfigRulesDTO build() {
             return new LotWithConfigRulesDTO(identifier,
-                              label,
-                              code,
-                              type,
-                              description,
-                              active,
-                              status,
-                              condNotes,
-                              numNotes,
-                              requiredFormat,
-                              deliveryDateForseen,
-                              project,
-                              activeFTPConfiguration,
-                              activeCheckConfiguration,
-                              activeFormatConfiguration,
-                              collectionIA,
-                              planClassementPAC, provider,
-                              requiredTypeCompression,
-                              requiredTauxCompression,
-                              requiredResolution,
-                              requiredColorspace,
-                                createdBy,
-                                createdDate,
-                                lastModifiedBy,
-                                lastModifiedDate,
+                                             label,
+                                             code,
+                                             type,
+                                             description,
+                                             active,
+                                             status,
+                                             condNotes,
+                                             numNotes,
+                                             requiredFormat,
+                                             deliveryDateForseen,
+                                             project,
+                                             activeFTPConfiguration,
+                                             activeCheckConfiguration,
+                                             activeFormatConfiguration,
+                                             collectionIA,
+                                             planClassementPAC,
+                                             provider,
+                                             requiredTypeCompression,
+                                             requiredTauxCompression,
+                                             requiredResolution,
+                                             requiredColorspace,
+                                             createdBy,
+                                             createdDate,
+                                             lastModifiedBy,
+                                             lastModifiedDate,
                                              omekaConfiguration,
-                                omekaCollection,
-                                omekaItem,
-                                activeOcrLanguage);
+                                             omekaCollection,
+                                             omekaItem,
+                                             activeOcrLanguage);
         }
     }
 }

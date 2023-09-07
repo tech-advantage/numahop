@@ -2,12 +2,6 @@ package fr.progilone.pgcn.service.exchange.marc.script.format;
 
 import fr.progilone.pgcn.service.exchange.marc.MarcMappingEvaluationService;
 import fr.progilone.pgcn.service.exchange.marc.script.CustomScript;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.marc4j.converter.CharConverter;
-import org.marc4j.marc.DataField;
-import org.marc4j.marc.Subfield;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -18,6 +12,11 @@ import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.marc4j.converter.CharConverter;
+import org.marc4j.marc.DataField;
+import org.marc4j.marc.Subfield;
 
 /**
  * Formatter de sous-champ, gérant les codes préfixés et les groupes de codes
@@ -82,7 +81,8 @@ public class SubfieldsFormatter extends CustomScript {
     public String format(final Subfield subfield) {
         final String readValue = convert(subfield.getData());
         final String transType = transliterations.get(subfield.getCode());
-        return transType != null && transliterate != null ? transliterate.apply(transType, readValue) : readValue;
+        return transType != null && transliterate != null ? transliterate.apply(transType, readValue)
+                                                          : readValue;
     }
 
     /**
@@ -120,7 +120,7 @@ public class SubfieldsFormatter extends CustomScript {
      * @param groupPrefix
      * @param groupSuffix
      * @param subfldCfg
-     *         liste de préfixes et de codes
+     *            liste de préfixes et de codes
      */
     public void addGroup(final String groupPrefix, final String groupSuffix, String... subfldCfg) {
         final SubfieldGroupConfig group = new SubfieldGroupConfig(groupPrefix, groupSuffix);
@@ -165,8 +165,7 @@ public class SubfieldsFormatter extends CustomScript {
 
     @Override
     public String getConfigScript() {
-        return "def "
-               + SCRIPT_NAME
+        return "def " + SCRIPT_NAME
                + "Add = {\n"
                + "      String code, String prefix = null, String suffix = null -> script."
                + getCode()
@@ -196,17 +195,28 @@ public class SubfieldsFormatter extends CustomScript {
                + "def "
                + SCRIPT_NAME
                + "Transliterate = {\n"
-               + "      String code, String type -> script." + getCode() + ".addTransliteration((char)code, type)\n"
+               + "      String code, String type -> script."
+               + getCode()
+               + ".addTransliteration((char)code, type)\n"
                + "}\n";
     }
 
     @Override
     public String getInitScript() {
-        return "def " + SCRIPT_NAME + " = {\n"
-               + "      DataField field -> script." + getCode() + ".format(field)\n"
+        return "def " + SCRIPT_NAME
+               + " = {\n"
+               + "      DataField field -> script."
+               + getCode()
+               + ".format(field)\n"
                + "}\n"
-               + "if(binding.hasVariable('" + MarcMappingEvaluationService.BINDING_FN_TRANSLITERATE + "')) {\n"
-               + "  script." + getCode() + ".setTransliterate(" + MarcMappingEvaluationService.BINDING_FN_TRANSLITERATE + ".&getValue)\n"
+               + "if(binding.hasVariable('"
+               + MarcMappingEvaluationService.BINDING_FN_TRANSLITERATE
+               + "')) {\n"
+               + "  script."
+               + getCode()
+               + ".setTransliterate("
+               + MarcMappingEvaluationService.BINDING_FN_TRANSLITERATE
+               + ".&getValue)\n"
                + "}\n";
     }
 
@@ -221,6 +231,7 @@ public class SubfieldsFormatter extends CustomScript {
      * Interface permettant de manipuler la configuration du formattage des sous-champs
      */
     private interface Config {
+
         /**
          * La configuration s'applique au code passé en paramètre
          *
@@ -278,7 +289,9 @@ public class SubfieldsFormatter extends CustomScript {
 
             subfields.forEach(subfield -> {
                 // on récupère la config définie pour ce champ
-                subConfigs.stream().filter(cfg -> cfg.match(subfield.getCode())).findAny()
+                subConfigs.stream()
+                          .filter(cfg -> cfg.match(subfield.getCode()))
+                          .findAny()
                           // si il y en a une, on applique le formattage associé
                           .ifPresent(cfg -> {
                               // Sous-champs groupés
@@ -287,8 +300,7 @@ public class SubfieldsFormatter extends CustomScript {
                                       runOnce.add(cfg);
 
                                       // Recherche tous les sous-champs faisant partie du groupe
-                                      final List<Subfield> matchingSubfields =
-                                          subfields.stream().filter(subfield2 -> cfg.match(subfield2.getCode())).collect(Collectors.toList());
+                                      final List<Subfield> matchingSubfields = subfields.stream().filter(subfield2 -> cfg.match(subfield2.getCode())).collect(Collectors.toList());
                                       // Application des sous-config sur la liste des sous-champs correspodants
                                       cfg.apply(groupValue, matchingSubfields);
                                   }
@@ -334,7 +346,8 @@ public class SubfieldsFormatter extends CustomScript {
         private final char code;
 
         private SubfieldConfig(final String prefix, final char code, final String suffix) {
-            this.prefix = prefix != null ? prefix : defaultSeparator;
+            this.prefix = prefix != null ? prefix
+                                         : defaultSeparator;
             this.code = code;
             this.suffix = suffix;
         }
@@ -363,7 +376,9 @@ public class SubfieldsFormatter extends CustomScript {
 
         @Override
         public String toString() {
-            return prefix + code + (suffix != null ? suffix : "");
+            return prefix + code
+                   + (suffix != null ? suffix
+                                     : "");
         }
     }
 }

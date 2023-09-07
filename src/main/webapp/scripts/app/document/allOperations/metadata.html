@@ -1,0 +1,84 @@
+<div ng-controller="MetadataCtrl as metaCtrl" ng-init="metaCtrl.init(mainCtrl)">
+    <div class="panel-body">
+        <form editable-form name="entityForm" onaftersave="metaCtrl.saveMetadata(metaCtrl.metadataList)">
+            <table class="table table-condensed no-border">
+                <tbody>
+                    <tr ng-repeat="meta in metaCtrl.metadataList" class="metadata-table__tr">
+                        <td ng-show="entityForm.$visible" class="metadata-table__tr__td">
+                            <span class="btn-group-xs margin-l15">
+                                <button type="button" class="btn btn-sem1 btn-removable" uib-tooltip="{{::'Supprimer' | translate}}" ng-click="metaCtrl.deleteMetadata(meta)">
+                                    <span class="glyphicon-halflings glyphicon-trash"></span>
+                                </button>
+                            </span>
+                        </td>
+                        <td class="metadata-table__tr__td-property">
+                            <numa-editable-field
+                                type="select"
+                                form="entityForm"
+                                model="meta.metadata"
+                                onbeforesave="metaCtrl.validation.required($data)"
+                                numa-readonly="meta.identifier"
+                                numa-onchange="metaCtrl.onchangeMetadata($data, meta)"
+                                config="{ data: metaCtrl.filterPropertiesList(meta.metadata),
+                                                           display: 'label',
+                                                           query: 'o.label for o in $ctrl.config.data track by o.identifier' }"
+                            ></numa-editable-field>
+                        </td>
+                        <td ng-if="meta.metadata.type === 'STRING'" class="metadata-table__tr__td-value">
+                            <numa-editable-field
+                                type="text"
+                                placeholder="{{::'Saisissez une valeur' | translate}}"
+                                form="entityForm"
+                                model="meta.value"
+                                onbeforesave="metaCtrl.validation.required($data)"
+                            ></numa-editable-field>
+                        </td>
+                        <td ng-if="meta.metadata.type === 'INTEGER' || meta.metadata.type === 'REAL'" class="metadata-table__tr__td-value">
+                            <numa-editable-field
+                                type="number"
+                                placeholder="{{::'Saisissez un nombre' | translate}}"
+                                form="entityForm"
+                                model="meta.value"
+                                onbeforesave="metaCtrl.validation.required($data)"
+                            ></numa-editable-field>
+                        </td>
+                        <td ng-if="meta.metadata.type === 'BOOLEAN'" class="metadata-table__tr__td-value">
+                            <numa-editable-field
+                                type="radiolist"
+                                model="meta.value"
+                                form="entityForm"
+                                config="{ data: metaCtrl.booleanObj, displayFn: metaCtrl.displayBoolean,
+                                                  query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }"
+                            ></numa-editable-field>
+                        </td>
+                        <td ng-if="meta.metadata.type === 'DATE'" class="metadata-table__tr__td-value">
+                            <numa-editable-field type="datepicker" form="entityForm" model="meta.value" onbeforesave="metaCtrl.validation.required($data)"></numa-editable-field>
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3">
+                            <span class="btn-group-xs margin-l15">
+                                <button type="button" class="btn btn-sem1" uib-tooltip="{{::'Ajouter' | translate}}" ng-click="metaCtrl.addMetadata()">
+                                    <span class="glyphicon-halflings glyphicon-plus"></span>
+                                    <i translate>Ajouter une nouvelle métadonnée</i>
+                                </button>
+                            </span>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+
+            <div class="text-center column-bottom column-6 margin-t10" ng-show="entityForm.$visible">
+                <div class="column-bottom-button">
+                    <!-- Création / Modification -->
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-sem4" ng-click="metaCtrl.cancel()"><span class="glyphicon-regular unshare"></span> {{::'Annuler' | translate}}</button>
+                        <button type="submit" class="btn btn-sem2" sem-roles-allowed="DOC_UNIT_HAB5" ng-disabled="formRO"><span class="glyphicon-regular floppy-save"></span> {{::'Enregistrer' | translate}}</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

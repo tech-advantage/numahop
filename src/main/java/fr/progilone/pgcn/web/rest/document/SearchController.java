@@ -4,15 +4,26 @@ import static fr.progilone.pgcn.service.es.EsConstant.*;
 import static fr.progilone.pgcn.web.rest.administration.security.AuthorizationConstants.*;
 import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.*;
 
+import com.codahale.metrics.annotation.Timed;
+import fr.progilone.pgcn.domain.AbstractDomainObject;
+import fr.progilone.pgcn.exception.PgcnException;
+import fr.progilone.pgcn.service.es.AbstractElasticsearchOperations.SearchEntity;
+import fr.progilone.pgcn.service.es.EsConditionReportService;
+import fr.progilone.pgcn.service.es.EsDeliveryService;
+import fr.progilone.pgcn.service.es.EsDocUnitService;
+import fr.progilone.pgcn.service.es.EsLotService;
+import fr.progilone.pgcn.service.es.EsProjectService;
+import fr.progilone.pgcn.service.es.EsTrainService;
+import fr.progilone.pgcn.service.es.IndexManagerService;
+import fr.progilone.pgcn.web.rest.AbstractRestController;
+import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletRequest;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,21 +37,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.codahale.metrics.annotation.Timed;
-
-import fr.progilone.pgcn.domain.AbstractDomainObject;
-import fr.progilone.pgcn.exception.PgcnException;
-import fr.progilone.pgcn.service.es.AbstractElasticsearchOperations.SearchEntity;
-import fr.progilone.pgcn.service.es.EsConditionReportService;
-import fr.progilone.pgcn.service.es.EsDeliveryService;
-import fr.progilone.pgcn.service.es.EsDocUnitService;
-import fr.progilone.pgcn.service.es.EsLotService;
-import fr.progilone.pgcn.service.es.EsProjectService;
-import fr.progilone.pgcn.service.es.EsTrainService;
-import fr.progilone.pgcn.service.es.IndexManagerService;
-import fr.progilone.pgcn.web.rest.AbstractRestController;
-import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
 
 @RestController
 @RequestMapping(value = "/api/rest/search")
@@ -89,21 +85,21 @@ public class SearchController extends AbstractRestController {
      *
      * @param request
      * @param searches
-     *         termes recherchés
+     *            termes recherchés
      * @param filters
-     *         filtres (post-filters), liés à la sélection d'une facette
+     *            filtres (post-filters), liés à la sélection d'une facette
      * @param page
-     *         n° de la page
+     *            n° de la page
      * @param size
-     *         taille de la page
+     *            taille de la page
      * @param searchOn
-     *         type de donnée recherche
+     *            type de donnée recherche
      * @param fuzzy
-     *         recherche approchée / exacte
+     *            recherche approchée / exacte
      * @param sorts
-     *         tris
+     *            tris
      * @param facet
-     *         inclure les facettes dans le résultat de la recherche
+     *            inclure les facettes dans le résultat de la recherche
      * @return
      * @throws PgcnException
      */
@@ -115,13 +111,10 @@ public class SearchController extends AbstractRestController {
                                                              @RequestParam(value = "filter", required = false) final String[] filters,
                                                              @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
                                                              @RequestParam(value = "size", required = false, defaultValue = "10") final Integer size,
-                                                             @RequestParam(name = "get", required = false, defaultValue = "DOCUNIT")
-                                                             final List<SearchEntity> searchOn,
-                                                             @RequestParam(name = "fuzzy", required = false, defaultValue = "true")
-                                                             final boolean fuzzy,
+                                                             @RequestParam(name = "get", required = false, defaultValue = "DOCUNIT") final List<SearchEntity> searchOn,
+                                                             @RequestParam(name = "fuzzy", required = false, defaultValue = "true") final boolean fuzzy,
                                                              @RequestParam(name = "sort", required = false) final String[] sorts,
-                                                             @RequestParam(name = "facet", required = false, defaultValue = "false")
-                                                             final boolean facet) throws PgcnException {
+                                                             @RequestParam(name = "facet", required = false, defaultValue = "false") final boolean facet) throws PgcnException {
 
         final List<String> libraries = libraryAccesssHelper.getLibraryFilter(request, null);
 

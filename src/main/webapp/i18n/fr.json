@@ -1,9 +1,6 @@
 {
     "fr": {
-        "(1 traité)": [
-            "(1 traité)",
-            "({{$count}} traités)"
-        ],
+        "(1 traité)": ["(1 traité)", "({{$count}} traités)"],
         "(modifications non sauvegardées)": "(modifications non sauvegardées)",
         "[Action par défaut]": "[Action par défaut]",
         "{{pgcnId}} {{label}}": "{{pgcnId}} {{label}}",
@@ -28,74 +25,23 @@
         "<strong>Téléphone</strong>": "<strong>Téléphone</strong>",
         "<strong>Une erreur est survenue!</strong> Le mot de passe n'a pas pu être modifié.": "<strong>Une erreur est survenue!</strong> Le mot de passe n'a pas pu être modifié.",
         "<strong>Ville</strong>": "<strong>Ville</strong>",
-        "1 bibliothèque trouvée": [
-            "1 bibliothèque trouvée",
-            "{{$count}} bibliothèques trouvées"
-        ],
-        "1 configuration CINES trouvée": [
-            "1 configuration CINES trouvée",
-            "{{$count}} configurations CINES trouvées"
-        ],
-        "1 configuration FTP trouvée": [
-            "1 configuration FTP trouvée",
-            "{{$count}} configurations FTP trouvées"
-        ],
-        "1 configuration pour Internet Archive trouvée": [
-            "1 configuration pour Internet Archive trouvée",
-            "{{$count}} configurations pour Internet Archive trouvées"
-        ],
-        "1 configuration trouvée": [
-            "1 configuration trouvée",
-            "{{$count}} configurations trouvées"
-        ],
-        "1 document": [
-            "1 document",
-            "{{mainCtrl.maxSize}} documents"
-        ],
-        "1 document contrôlé": [
-            "1 document contrôlé",
-            "{{mainCtrl.size || 0}} documents contrôlés"
-        ],
-        "1 document numérique trouvé": [
-            "1 document numérique trouvé",
-            "{{$count}} documents numériques trouvés"
-        ],
-        "1 doublon": [
-            "1 doublon",
-            "{{$count}} doublons"
-        ],
-        "1 livraison trouvée": [
-            "1 livraison trouvée",
-            "{{$count}} livraisons trouvées"
-        ],
-        "1 lot trouvé": [
-            "1 lot trouvé",
-            "{{$count}} lots trouvés"
-        ],
-        "1 notice trouvée": [
-            "1 notice trouvée",
-            "{{$count}} notices trouvées"
-        ],
-        "1 projet trouvé": [
-            "1 projet trouvé",
-            "{{$count}} projets trouvés"
-        ],
-        "1 résultat": [
-            "1 résultat",
-            "{{$count}} résultats"
-        ],
-        "1 train trouvé": [
-            "1 train trouvé",
-            "{{$count}} trains trouvés"
-        ],
-        "1 unité documentaire trouvée": [
-            "1 unité documentaire trouvée",
-            "{{$count}} unités documentaires trouvées"
-        ],
-        "1 utilisateur trouvé": [
-            "1 utilisateur trouvé",
-            "{{$count}} utilisateurs trouvés"
-        ],
+        "1 bibliothèque trouvée": ["1 bibliothèque trouvée", "{{$count}} bibliothèques trouvées"],
+        "1 configuration CINES trouvée": ["1 configuration CINES trouvée", "{{$count}} configurations CINES trouvées"],
+        "1 configuration FTP trouvée": ["1 configuration FTP trouvée", "{{$count}} configurations FTP trouvées"],
+        "1 configuration pour Internet Archive trouvée": ["1 configuration pour Internet Archive trouvée", "{{$count}} configurations pour Internet Archive trouvées"],
+        "1 configuration trouvée": ["1 configuration trouvée", "{{$count}} configurations trouvées"],
+        "1 document": ["1 document", "{{mainCtrl.maxSize}} documents"],
+        "1 document contrôlé": ["1 document contrôlé", "{{mainCtrl.size || 0}} documents contrôlés"],
+        "1 document numérique trouvé": ["1 document numérique trouvé", "{{$count}} documents numériques trouvés"],
+        "1 doublon": ["1 doublon", "{{$count}} doublons"],
+        "1 livraison trouvée": ["1 livraison trouvée", "{{$count}} livraisons trouvées"],
+        "1 lot trouvé": ["1 lot trouvé", "{{$count}} lots trouvés"],
+        "1 notice trouvée": ["1 notice trouvée", "{{$count}} notices trouvées"],
+        "1 projet trouvé": ["1 projet trouvé", "{{$count}} projets trouvés"],
+        "1 résultat": ["1 résultat", "{{$count}} résultats"],
+        "1 train trouvé": ["1 train trouvé", "{{$count}} trains trouvés"],
+        "1 unité documentaire trouvée": ["1 unité documentaire trouvée", "{{$count}} unités documentaires trouvées"],
+        "1 utilisateur trouvé": ["1 utilisateur trouvé", "{{$count}} utilisateurs trouvés"],
         "A contrôler": "A contrôler",
         "À contrôler": "À contrôler",
         "ABCDEFGHIJKLMNOPQRSTUVWXYZ": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
@@ -467,10 +413,7 @@
         "L'unité documentaire {{name}} a été sauvegardée": "L'unité documentaire {{name}} a été sauvegardée",
         "L'unité documentaire {{pgcnId}} {{label}} a été sauvegardée": "L'unité documentaire {{pgcnId}} {{label}} a été sauvegardée",
         "L'unité documentaire appartient à un projet": "L'unité documentaire appartient à un projet",
-        "l'unité documentaire sélectionnée": [
-            "l'unité documentaire sélectionnée",
-            "les {{n}} unités documentaires sélectionnées"
-        ],
+        "l'unité documentaire sélectionnée": ["l'unité documentaire sélectionnée", "les {{n}} unités documentaires sélectionnées"],
         "L'utilisateur {{fullname}} a été sauvegardé": "L'utilisateur {{fullname}} a été sauvegardé",
         "L'utilisateur {{fullname}} a été supprimé": "L'utilisateur {{fullname}} a été supprimé",
         "La bibliothèque {{name}} a été sauvegardée": "La bibliothèque {{name}} a été sauvegardée",
@@ -703,10 +646,7 @@
         "Retirer du lot": "Retirer du lot",
         "Retirer du projet": "Retirer du projet",
         "Retirer l'unité documentaire du projet": "Retirer l'unité documentaire du projet",
-        "retirer l'unité documentaire sélectionnée du projet": [
-            "retirer l'unité documentaire sélectionnée du projet",
-            "retirer les {{n}} unités documentaires sélectionnées du projet"
-        ],
+        "retirer l'unité documentaire sélectionnée du projet": ["retirer l'unité documentaire sélectionnée du projet", "retirer les {{n}} unités documentaires sélectionnées du projet"],
         "Retirer les unités documentaires sélectionnés du projet": "Retirer les unités documentaires sélectionnés du projet",
         "Retour au document": "Retour au document",
         "Retour au prestataire": "Retour au prestataire",

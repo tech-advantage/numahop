@@ -1,44 +1,9 @@
 package fr.progilone.pgcn.service.document.conditionreport;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyListOf;
-import static org.mockito.Matchers.anyMapOf;
-import static org.mockito.Matchers.argThat;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.isNull;
-import static org.mockito.Matchers.same;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
-import java.io.ByteArrayOutputStream;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import fr.progilone.pgcn.repository.project.ProjectRepository;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.internal.matchers.CapturingMatcher;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.security.authentication.TestingAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-
-import fr.opensagres.xdocreport.document.images.IImageProvider;
-import fr.opensagres.xdocreport.template.formatter.FieldsMetadata;
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.document.conditionreport.ConditionReport;
 import fr.progilone.pgcn.domain.document.conditionreport.ConditionReportDetail;
@@ -63,8 +28,28 @@ import fr.progilone.pgcn.service.library.LibraryService;
 import fr.progilone.pgcn.service.user.UserService;
 import fr.progilone.pgcn.util.CatchAndReturnArgumentAt;
 import fr.progilone.pgcn.util.TestUtil;
+import java.io.ByteArrayOutputStream;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.internal.matchers.CapturingMatcher;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ConditionReportServiceTest {
 
     private static final String USER_LIBRARY_ID = "70c32f28-0014-4a30-90ce-f494fe613e81";
@@ -85,7 +70,7 @@ public class ConditionReportServiceTest {
     private OdtEngineService odtEngineService;
     @Mock
     private UserService userService;
-    
+
     private ConditionReportService service;
 
     @Mock
@@ -93,7 +78,7 @@ public class ConditionReportServiceTest {
     @Mock
     private ConditionReportSlipConfigurationService conditionReportSlipConfigurationService;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         service = new ConditionReportService(conditionReportRepository,
                                              conditionReportDetailService,
@@ -106,10 +91,15 @@ public class ConditionReportServiceTest {
                                              jasperReportService,
                                              conditionReportSlipConfigurationService);
 
-        final CustomUserDetails customUserDetails =
-            new CustomUserDetails("90cdcf40-ff39-4d8d-aad5-249c29a94b3a", "mickey", null, null, USER_LIBRARY_ID, null, false, User.Category.OTHER);
-        final TestingAuthenticationToken authenticationToken =
-            new TestingAuthenticationToken(customUserDetails, "3b03c8c5-c552-450e-a91d-7bb850fd8186");
+        final CustomUserDetails customUserDetails = new CustomUserDetails("90cdcf40-ff39-4d8d-aad5-249c29a94b3a",
+                                                                          "mickey",
+                                                                          null,
+                                                                          null,
+                                                                          USER_LIBRARY_ID,
+                                                                          null,
+                                                                          false,
+                                                                          User.Category.OTHER);
+        final TestingAuthenticationToken authenticationToken = new TestingAuthenticationToken(customUserDetails, "3b03c8c5-c552-450e-a91d-7bb850fd8186");
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
     }
 
@@ -128,7 +118,7 @@ public class ConditionReportServiceTest {
 
         final CatchAndReturnArgumentAt<ConditionReport> saveAnswer = new CatchAndReturnArgumentAt<>(0, reportId);
 
-        when(docUnitRepository.findOne(docUnitId)).thenReturn(null, docUnit);
+        when(docUnitRepository.findById(docUnitId)).thenReturn(Optional.empty(), Optional.of(docUnit));
         when(conditionReportRepository.findByDocUnit(docUnitId)).thenReturn(new ConditionReport(), (ConditionReport) null);
         when(conditionReportRepository.save(any(ConditionReport.class))).then(saveAnswer);
         when(conditionReportRepository.findByIdentifier(reportId)).then(invocation -> saveAnswer.getDomainObject());
@@ -226,7 +216,7 @@ public class ConditionReportServiceTest {
 
         docUnit.setProject(project);
 
-        ConditionReport actual = service.getNewConditionReport(docUnit);
+        final ConditionReport actual = service.getNewConditionReport(docUnit);
 
         assertNotNull(actual);
         assertSame(docUnit, actual.getDocUnit());
@@ -253,7 +243,7 @@ public class ConditionReportServiceTest {
         library.setLibRespEmail(libRespEmail);
         docUnit.setLibrary(library);
 
-        ConditionReport actual = service.getNewConditionReport(docUnit);
+        final ConditionReport actual = service.getNewConditionReport(docUnit);
 
         assertNotNull(actual);
         assertSame(docUnit, actual.getDocUnit());
@@ -301,7 +291,7 @@ public class ConditionReportServiceTest {
         final ConditionReport report = new ConditionReport();
         report.setIdentifier(reportId);
 
-        when(conditionReportRepository.findOne(reportId)).thenReturn(report);
+        when(conditionReportRepository.findById(reportId)).thenReturn(Optional.of(report));
 
         service.delete(reportId);
 
@@ -342,8 +332,10 @@ public class ConditionReportServiceTest {
         final List<String> libraries = new ArrayList<>();
         final List<String> projects = new ArrayList<>();
         final List<String> lots = new ArrayList<>();
-        final ConditionReportRepositoryCustom.DimensionFilter dimensions =
-            new ConditionReportRepositoryCustom.DimensionFilter(ConditionReportRepositoryCustom.DimensionFilter.Operator.EQ, 1, 2, 3);
+        final ConditionReportRepositoryCustom.DimensionFilter dimensions = new ConditionReportRepositoryCustom.DimensionFilter(ConditionReportRepositoryCustom.DimensionFilter.Operator.EQ,
+                                                                                                                               1,
+                                                                                                                               2,
+                                                                                                                               3);
         final LocalDate from = LocalDate.now().minusMonths(1);
         final LocalDate to = LocalDate.now();
         final List<String> descriptions = Arrays.asList("a=TORTUE_NINJA", "a=COURGE_DU_NEBRASKA", "y=28_JOURS_PLUS_TARD");
@@ -361,26 +353,15 @@ public class ConditionReportServiceTest {
 
         final CapturingMatcher<Map<String, List<String>>> descMatcher = new CapturingMatcher<>();
 
-        when(conditionReportRepository.search(eq(libraries),
-                                              eq(projects),
-                                              eq(lots),
-                                              eq(from),
-                                              eq(to),
-                                              eq(dimensions),
-                                              argThat(descMatcher),
-                                              any(),
-                                              eq(false),
-                                              any(Pageable.class))).thenReturn(ids);
+        when(conditionReportRepository.search(eq(libraries), eq(projects), eq(lots), eq(from), eq(to), eq(dimensions), argThat(descMatcher), any(), eq(false), any(Pageable.class)))
+                                                                                                                                                                                    .thenReturn(ids);
         when(conditionReportRepository.findByIdentifierIn(ids.getContent())).thenReturn(reports);
-        when(docUnitRepository.findByIdentifierInWithProj(anyListOf(String.class))).thenReturn(Collections.singletonList(docUnit));
+        when(docUnitRepository.findByIdentifierInWithProj(anyList())).thenReturn(Collections.singletonList(docUnit));
 
-        final Page<ConditionReportService.SearchResult> actual =
-            service.search(libraries, projects, lots, dimensions, from, to, descriptions, null, false, page, size, sorts);
+        final Page<ConditionReportService.SearchResult> actual = service.search(libraries, projects, lots, dimensions, from, to, descriptions, null, false, page, size, sorts);
 
-        final List<ConditionReportDTO> actualReports =
-            actual.getContent().stream().map(ConditionReportService.SearchResult::getReport).collect(Collectors.toList());
-        final List<SimpleListDocUnitDTO> actualDocs =
-            actual.getContent().stream().map(ConditionReportService.SearchResult::getDocUnit).collect(Collectors.toList());
+        final List<ConditionReportDTO> actualReports = actual.getContent().stream().map(ConditionReportService.SearchResult::getReport).collect(Collectors.toList());
+        final List<SimpleListDocUnitDTO> actualDocs = actual.getContent().stream().map(ConditionReportService.SearchResult::getDocUnit).collect(Collectors.toList());
 
         // résultat
         TestUtil.checkCollectionContainsSameElements(reports.stream().map(ConditionReport::getIdentifier).collect(Collectors.toList()),
@@ -423,21 +404,12 @@ public class ConditionReportServiceTest {
         // ODT
         service.exportDocument(reportId, out, ConditionReportService.ConvertType.ODT);
 
-        verify(odtEngineService).generateDocumentODT(eq(Name.ConditionReport),
-                                                     eq(report.getDocUnit().getLibrary()),
-                                                     anyMapOf(String.class, Object.class),
-                                                     anyMapOf(String.class, IImageProvider.class),
-                                                     same(out));
+        verify(odtEngineService).generateDocumentODT(eq(Name.ConditionReport), eq(report.getDocUnit().getLibrary()), anyMap(), anyMap(), same(out));
 
         // PDF
         service.exportDocument(reportId, out, ConditionReportService.ConvertType.PDF);
 
-        verify(odtEngineService).generateDocumentPDF(eq(Name.ConditionReport),
-                                                     eq(report.getDocUnit().getLibrary()),
-                                                     anyMapOf(String.class, Object.class),
-                                                     anyMapOf(String.class, IImageProvider.class),
-                                                     same(out),
-                                                     isNull(FieldsMetadata.class));
+        verify(odtEngineService).generateDocumentPDF(eq(Name.ConditionReport), eq(report.getDocUnit().getLibrary()), anyMap(), anyMap(), same(out), isNull());
     }
 
 }

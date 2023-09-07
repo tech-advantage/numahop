@@ -3,11 +3,11 @@ package fr.progilone.pgcn.repository.lot;
 import fr.progilone.pgcn.domain.dto.lot.SimpleLotDTO;
 import fr.progilone.pgcn.domain.lot.Lot;
 import fr.progilone.pgcn.repository.lot.helper.LotSearchBuilder;
+import java.time.LocalDate;
+import java.util.Collection;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import java.time.LocalDate;
-import java.util.List;
 
 public interface LotRepositoryCustom {
 
@@ -17,7 +17,7 @@ public interface LotRepositoryCustom {
      * @param projectIds
      * @return
      */
-    List<SimpleLotDTO> findAllIdentifiersInProjectIds(Iterable<String> projectIds);
+    List<SimpleLotDTO> findAllIdentifiersInProjectIds(Collection<String> projectIds);
 
     List<Object[]> getLotGroupByStatus(List<String> libraries, List<String> projects);
 

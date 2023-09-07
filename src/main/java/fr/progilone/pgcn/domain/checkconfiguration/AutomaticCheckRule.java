@@ -1,19 +1,17 @@
 package fr.progilone.pgcn.domain.checkconfiguration;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-
 import fr.progilone.pgcn.domain.AbstractDomainObject;
 import fr.progilone.pgcn.domain.check.AutomaticCheckType;
-
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 /**
  * Classe métier permettant de gérer les contrôles d'une configuration.
- * 
+ *
  * @author Emmanuel RIZET
  *
  */
@@ -24,24 +22,24 @@ public class AutomaticCheckRule extends AbstractDomainObject {
     private static final long serialVersionUID = 5090553160924640906L;
 
     public static final String TABLE_NAME = "conf_automatic_check_rule";
-    
+
     @Column(name = "active")
     private boolean active;
-    
+
     @Column(name = "blocking")
     private boolean blocking;
-    
+
     /**
      * Entités liés
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "check_configuration")
     private CheckConfiguration checkConfiguration;
-    
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "check_type")
     private AutomaticCheckType automaticCheckType;
-    
+
     public boolean isActive() {
         return active;
     }

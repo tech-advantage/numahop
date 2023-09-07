@@ -4,9 +4,7 @@
             <div class="panel-heading">
                 <span translate>Constat d'état</span>
                 <div class="btn-group pull-right" uib-dropdown sem-roles-allowed="COND_REPORT_HAB6">
-                    <button type="button" class="btn btn-sem2 btn-xs pull-right"
-                            uib-tooltip="{{::'Créer une nouvelle propriété' | translate}}" 
-                            uib-dropdown-toggle>
+                    <button type="button" class="btn btn-sem2 btn-xs pull-right" uib-tooltip="{{::'Créer une nouvelle propriété' | translate}}" tooltip-append-to-body="true" uib-dropdown-toggle>
                         <span class="glyphicon-halflings glyphicon-plus"></span>
                         <b class="caret"></b>
                     </button>
@@ -19,8 +17,7 @@
             </div>
             <div class="panel-body">
                 <div class="list padding-b20">
-                    <div class="list" ng-class="{'margin-t20': !$first}" 
-                         ng-repeat-start="t in mainCtrl.types | orderBy:'pos'">
+                    <div class="list" ng-class="{'margin-t20': !$first}" ng-repeat-start="t in mainCtrl.types | orderBy:'pos'">
                         <div class="filter-title">{{ ::t.label }}</div>
                     </div>
                     <div class="list" ng-repeat="prop in mainCtrl.props | filter:{type: t.code} | orderBy:'label'" ng-repeat-end>

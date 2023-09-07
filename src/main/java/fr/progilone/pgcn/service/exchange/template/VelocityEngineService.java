@@ -1,5 +1,9 @@
 package fr.progilone.pgcn.service.exchange.template;
 
+import fr.progilone.pgcn.domain.exchange.template.Name;
+import fr.progilone.pgcn.domain.library.Library;
+import fr.progilone.pgcn.service.exchange.template.loader.ResourceName;
+import jakarta.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -8,9 +12,6 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
-
-import javax.annotation.PostConstruct;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
@@ -18,10 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import fr.progilone.pgcn.domain.exchange.template.Name;
-import fr.progilone.pgcn.domain.library.Library;
-import fr.progilone.pgcn.service.exchange.template.loader.ResourceName;
 
 /**
  * Service gérant la génération de documents avec le moteur de templates Velocity
@@ -49,13 +46,19 @@ public class VelocityEngineService {
          * -> la base de données (exc_template + stockage local)
          * -> la source par défaut (classpath, répertoire /templates/)
          */
-        Velocity.setProperty(Velocity.RESOURCE_LOADER, StringUtils.joinWith(",", PGCN_RSC_LOADER, DEFAULT_RSC_LOADER));
-        Velocity.setProperty(PGCN_RSC_LOADER + ".resource.loader.class",
+        Velocity.setProperty(Velocity.RESOURCE_LOADERS, StringUtils.joinWith(",", PGCN_RSC_LOADER, DEFAULT_RSC_LOADER));
+        Velocity.setProperty("resource.loader." + PGCN_RSC_LOADER
+                             + ".class",
                              "fr.progilone.pgcn.service.exchange.template.velocity.TemplateResourceLoader");
-        Velocity.setProperty(PGCN_RSC_LOADER + ".resource.loader.service", templateService);
-        Velocity.setProperty(DEFAULT_RSC_LOADER + ".resource.loader.class",
+        Velocity.setProperty("resource.loader." + PGCN_RSC_LOADER
+                             + ".service",
+                             templateService);
+        Velocity.setProperty("resource.loader." + DEFAULT_RSC_LOADER
+                             + ".class",
                              "fr.progilone.pgcn.service.exchange.template.velocity.DefaultResourceLoader");
-        Velocity.setProperty(DEFAULT_RSC_LOADER + ".resource.loader.basepath", "/templates/");
+        Velocity.setProperty("resource.loader." + DEFAULT_RSC_LOADER
+                             + ".basepath",
+                             "/templates/");
         Velocity.init();    // Singleton model
     }
 
@@ -64,14 +67,13 @@ public class VelocityEngineService {
      * Le résultat est un {@link Reader}
      *
      * @param templateName
-     *         nom du template
+     *            nom du template
      * @param library
-     *         bibliothèque
+     *            bibliothèque
      * @param parameters
      * @return
      */
-    public void generateDocument(final Name templateName, final Library library, final Map<String, Object> parameters, final OutputStream out) throws
-                                                                                                                                               IOException {
+    public void generateDocument(final Name templateName, final Library library, final Map<String, Object> parameters, final OutputStream out) throws IOException {
         LOG.debug("Génération du document {}, bibliothèque {} avec les paramètres {}", templateName, library.getIdentifier(), parameters);
 
         // Initialisation du contexte
@@ -92,9 +94,9 @@ public class VelocityEngineService {
      * Le résultat est une chaine de caractères
      *
      * @param templateName
-     *         nom du template
+     *            nom du template
      * @param library
-     *         bibliothèque
+     *            bibliothèque
      * @param parameters
      * @return
      */

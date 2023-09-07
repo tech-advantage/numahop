@@ -1,12 +1,11 @@
 package fr.progilone.pgcn.service.exchange.ead.mapping;
 
 import fr.progilone.pgcn.domain.exchange.MappingRule;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.script.CompiledScript;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import javax.script.CompiledScript;
+import org.apache.commons.lang3.StringUtils;
 
 public final class CompiledMappingRule {
 
@@ -89,10 +88,10 @@ public final class CompiledMappingRule {
         if (hasCondition()) {
             conditionStatement.getRuleKeys()
                               .stream()
-                              .filter(key -> expressionStatement == null || expressionStatement.getRuleKeys().stream()
+                              .filter(key -> expressionStatement == null || expressionStatement.getRuleKeys()
+                                                                                               .stream()
                                                                                                // les tags sont identiques
-                                                                                               .noneMatch(exprKey -> Objects.equals(exprKey,
-                                                                                                                                    key)))
+                                                                                               .noneMatch(exprKey -> Objects.equals(exprKey, key)))
                               .forEach(ruleKeys::add);
         }
         return ruleKeys;
@@ -104,8 +103,7 @@ public final class CompiledMappingRule {
      * @return
      */
     public boolean isConstant() {
-        return (conditionStatement == null || conditionStatement.getRuleKeys().isEmpty()) && (expressionStatement == null
-                                                                                              || expressionStatement.getRuleKeys().isEmpty());
+        return (conditionStatement == null || conditionStatement.getRuleKeys().isEmpty()) && (expressionStatement == null || expressionStatement.getRuleKeys().isEmpty());
     }
 
     /**
@@ -119,6 +117,8 @@ public final class CompiledMappingRule {
 
     @Override
     public String toString() {
-        return "CompiledMappingRule{" + "rule=" + rule + '}';
+        return "CompiledMappingRule{" + "rule="
+               + rule
+               + '}';
     }
 }

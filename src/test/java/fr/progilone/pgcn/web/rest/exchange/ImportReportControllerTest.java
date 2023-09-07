@@ -1,42 +1,39 @@
 package fr.progilone.pgcn.web.rest.exchange;
 
-import fr.progilone.pgcn.domain.exchange.ImportReport;
-import fr.progilone.pgcn.domain.library.Library;
-import fr.progilone.pgcn.service.exchange.ImportReportService;
-import fr.progilone.pgcn.util.TestConverterFactory;
-import fr.progilone.pgcn.util.TestUtil;
-import fr.progilone.pgcn.web.util.AccessHelper;
-import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.format.support.DefaultFormattingConversionService;
-import org.springframework.format.support.FormattingConversionService;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.RequestPostProcessor;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
-import static fr.progilone.pgcn.util.SecurityRequestPostProcessors.*;
+import static fr.progilone.pgcn.util.SecurityRequestPostProcessors.roles;
 import static fr.progilone.pgcn.web.rest.exchange.security.AuthorizationConstants.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import fr.progilone.pgcn.domain.exchange.ImportReport;
+import fr.progilone.pgcn.domain.library.Library;
+import fr.progilone.pgcn.service.exchange.ImportReportService;
+import fr.progilone.pgcn.util.TestConverterFactory;
+import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
+import jakarta.servlet.http.HttpServletRequest;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.format.support.DefaultFormattingConversionService;
+import org.springframework.format.support.FormattingConversionService;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.RequestPostProcessor;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
 /**
  * Created by Sébastien on 22/12/2016.
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ImportReportControllerTest {
 
     @Mock
@@ -48,16 +45,13 @@ public class ImportReportControllerTest {
 
     private final RequestPostProcessor allPermissions = roles(EXC_HAB0, EXC_HAB1);
 
-    @Before
+    @BeforeEach
     public void setUp() {
         final ImportReportController controller = new ImportReportController(importReportService, libraryAccesssHelper);
 
         final FormattingConversionService convService = new DefaultFormattingConversionService();
         convService.addConverter(String.class, Library.class, TestConverterFactory.getConverter(Library.class));
         this.restMockMvc = MockMvcBuilders.standaloneSetup(controller).setConversionService(convService).build();
-
-        //        when(libraryAccesssHelper.checkLibrary(any(HttpServletRequest.class), any(), any())).thenReturn(true);
-        when(libraryAccesssHelper.checkLibrary(any(HttpServletRequest.class), any(Library.class))).thenReturn(true);
     }
 
     @Test
@@ -69,16 +63,13 @@ public class ImportReportControllerTest {
         when(libraryAccesssHelper.checkLibrary(any(HttpServletRequest.class), any(ImportReport.class), any())).thenReturn(false, true);
 
         // 404
-        this.restMockMvc.perform(delete("/api/rest/importreport/{id}", identifier).contentType(TestUtil.APPLICATION_JSON_UTF8).with(allPermissions))
-                        .andExpect(status().isNotFound());
+        this.restMockMvc.perform(delete("/api/rest/importreport/{id}", identifier).contentType(MediaType.APPLICATION_JSON).with(allPermissions)).andExpect(status().isNotFound());
 
         // 403
-        this.restMockMvc.perform(delete("/api/rest/importreport/{id}", identifier).contentType(TestUtil.APPLICATION_JSON_UTF8).with(allPermissions))
-                        .andExpect(status().isForbidden());
+        this.restMockMvc.perform(delete("/api/rest/importreport/{id}", identifier).contentType(MediaType.APPLICATION_JSON).with(allPermissions)).andExpect(status().isForbidden());
 
         // test delete
-        this.restMockMvc.perform(delete("/api/rest/importreport/{id}", identifier).contentType(TestUtil.APPLICATION_JSON_UTF8).with(allPermissions))
-                        .andExpect(status().isOk());
+        this.restMockMvc.perform(delete("/api/rest/importreport/{id}", identifier).contentType(MediaType.APPLICATION_JSON).with(allPermissions)).andExpect(status().isOk());
 
         verify(importReportService).delete(identifier);
     }
@@ -88,13 +79,12 @@ public class ImportReportControllerTest {
         final ImportReport report = getImportReport("ABCD-1236");
         final Page<ImportReport> page = new PageImpl<>(Collections.singletonList(report));
 
-        when(importReportService.findAllByLibraryIn(anyListOf(String.class), eq(0), eq(10))).thenReturn(page);
-        when(libraryAccesssHelper.checkLibrary(any(HttpServletRequest.class), any(Library.class))).thenReturn(false, true);
+        when(importReportService.findAllByLibraryIn(any(), eq(0), eq(10))).thenReturn(page);
 
         // test delete
-        this.restMockMvc.perform(get("/api/rest/importreport").param("library", "BNF").accept(TestUtil.APPLICATION_JSON_UTF8).with(allPermissions))
+        this.restMockMvc.perform(get("/api/rest/importreport").param("library", "BNF").accept(MediaType.APPLICATION_JSON).with(allPermissions))
                         .andExpect(status().isOk())
-                        .andExpect(content().contentType(TestUtil.APPLICATION_JSON_UTF8))
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andExpect(jsonPath("content[0].identifier").value(report.getIdentifier()));
     }
 
@@ -105,18 +95,17 @@ public class ImportReportControllerTest {
         when(libraryAccesssHelper.checkLibrary(any(HttpServletRequest.class), any(ImportReport.class), any())).thenReturn(false, true);
 
         // 404
-        this.restMockMvc.perform(get("/api/rest/importreport/{id}", report.getIdentifier()).accept(TestUtil.APPLICATION_JSON_UTF8)
-                                                                                           .with(allPermissions)).andExpect(status().isNotFound());
+        this.restMockMvc.perform(get("/api/rest/importreport/{id}", report.getIdentifier()).accept(MediaType.APPLICATION_JSON).with(allPermissions))
+                        .andExpect(status().isNotFound());
 
         // 403
-        this.restMockMvc.perform(get("/api/rest/importreport/{id}", report.getIdentifier()).accept(TestUtil.APPLICATION_JSON_UTF8)
-                                                                                           .with(allPermissions)).andExpect(status().isForbidden());
+        this.restMockMvc.perform(get("/api/rest/importreport/{id}", report.getIdentifier()).accept(MediaType.APPLICATION_JSON).with(allPermissions))
+                        .andExpect(status().isForbidden());
 
         // test findAllActive
-        this.restMockMvc.perform(get("/api/rest/importreport/{id}", report.getIdentifier()).accept(TestUtil.APPLICATION_JSON_UTF8)
-                                                                                           .with(allPermissions))
+        this.restMockMvc.perform(get("/api/rest/importreport/{id}", report.getIdentifier()).accept(MediaType.APPLICATION_JSON).with(allPermissions))
                         .andExpect(status().isOk())
-                        .andExpect(content().contentType(TestUtil.APPLICATION_JSON_UTF8))
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andExpect(jsonPath("identifier").value(report.getIdentifier()));
     }
 
@@ -125,8 +114,7 @@ public class ImportReportControllerTest {
         final String identifier = "AAA";
         when(importReportService.findByIdentifier(identifier)).thenReturn(null);
 
-        this.restMockMvc.perform(get("/api/rest/importreport/{identifier}", identifier).accept(TestUtil.APPLICATION_JSON_UTF8).with(allPermissions))
-                        .andExpect(status().isNotFound());
+        this.restMockMvc.perform(get("/api/rest/importreport/{identifier}", identifier).accept(MediaType.APPLICATION_JSON).with(allPermissions)).andExpect(status().isNotFound());
     }
 
     @Test
@@ -140,21 +128,17 @@ public class ImportReportControllerTest {
         when(importReportService.getStatus(report)).thenReturn(response);
 
         // 404
-        this.restMockMvc.perform(get("/api/rest/importreport/{id}", report.getIdentifier()).param("status", "true")
-                                                                                           .accept(TestUtil.APPLICATION_JSON_UTF8)
-                                                                                           .with(allPermissions)).andExpect(status().isNotFound());
+        this.restMockMvc.perform(get("/api/rest/importreport/{id}", report.getIdentifier()).param("status", "true").accept(MediaType.APPLICATION_JSON).with(allPermissions))
+                        .andExpect(status().isNotFound());
 
         // 403
-        this.restMockMvc.perform(get("/api/rest/importreport/{id}", report.getIdentifier()).param("status", "true")
-                                                                                           .accept(TestUtil.APPLICATION_JSON_UTF8)
-                                                                                           .with(allPermissions)).andExpect(status().isForbidden());
+        this.restMockMvc.perform(get("/api/rest/importreport/{id}", report.getIdentifier()).param("status", "true").accept(MediaType.APPLICATION_JSON).with(allPermissions))
+                        .andExpect(status().isForbidden());
 
         // test getStatus
-        this.restMockMvc.perform(get("/api/rest/importreport/{id}", report.getIdentifier()).param("status", "true")
-                                                                                           .accept(TestUtil.APPLICATION_JSON_UTF8)
-                                                                                           .with(allPermissions))
+        this.restMockMvc.perform(get("/api/rest/importreport/{id}", report.getIdentifier()).param("status", "true").accept(MediaType.APPLICATION_JSON).with(allPermissions))
                         .andExpect(status().isOk())
-                        .andExpect(content().contentType(TestUtil.APPLICATION_JSON_UTF8))
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andExpect(jsonPath("status").value("OK"));
     }
 

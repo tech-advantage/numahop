@@ -1,31 +1,33 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <!-- Chargement des données du module Usager -->
     <changeSet id="pgcn-add-libResp-library-project" author="progilone">
 
         <!--- library -->
         <addColumn tableName="lib_library">
-            <column name="lib_resp_name" type="varchar(191)"/>
+            <column name="lib_resp_name" type="varchar(191)" />
         </addColumn>
         <addColumn tableName="lib_library">
-            <column name="lib_resp_phone" type="varchar(191)"/>
+            <column name="lib_resp_phone" type="varchar(191)" />
         </addColumn>
         <addColumn tableName="lib_library">
-            <column name="lib_resp_email" type="varchar(191)"/>
+            <column name="lib_resp_email" type="varchar(191)" />
         </addColumn>
 
         <!--- project -->
         <addColumn tableName="proj_project">
-            <column name="lib_resp_name" type="varchar(191)"/>
+            <column name="lib_resp_name" type="varchar(191)" />
         </addColumn>
         <addColumn tableName="proj_project">
-            <column name="lib_resp_phone" type="varchar(191)"/>
+            <column name="lib_resp_phone" type="varchar(191)" />
         </addColumn>
         <addColumn tableName="proj_project">
-            <column name="lib_resp_email" type="varchar(191)"/>
+            <column name="lib_resp_email" type="varchar(191)" />
         </addColumn>
     </changeSet>
 </databaseChangeLog>

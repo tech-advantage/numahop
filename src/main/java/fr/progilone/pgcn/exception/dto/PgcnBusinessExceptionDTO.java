@@ -1,10 +1,9 @@
 package fr.progilone.pgcn.exception.dto;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import fr.progilone.pgcn.exception.PgcnExceptionLevel;
 import fr.progilone.pgcn.exception.message.PgcnError;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Progilone_2 on 05/01/2016.
@@ -17,7 +16,7 @@ public class PgcnBusinessExceptionDTO {
     public PgcnBusinessExceptionDTO(final PgcnExceptionLevel level, List<PgcnError> errors) {
         this.level = level;
         this.errors.clear();
-        if(errors != null) {
+        if (errors != null) {
             this.errors.addAll(errors);
         }
     }
@@ -33,6 +32,5 @@ public class PgcnBusinessExceptionDTO {
     public List<PgcnError> getErrors() {
         return errors;
     }
-
 
 }

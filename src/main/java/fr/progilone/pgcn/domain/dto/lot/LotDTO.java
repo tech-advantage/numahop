@@ -1,8 +1,5 @@
 package fr.progilone.pgcn.domain.dto.lot;
 
-import java.util.Date;
-import java.util.Set;
-
 import fr.progilone.pgcn.domain.dto.AbstractVersionedDTO;
 import fr.progilone.pgcn.domain.dto.administration.CinesPACDTO;
 import fr.progilone.pgcn.domain.dto.administration.InternetArchiveCollectionDTO;
@@ -20,6 +17,8 @@ import fr.progilone.pgcn.domain.dto.user.SimpleUserDTO;
 import fr.progilone.pgcn.domain.dto.workflow.SimpleWorkflowModelDTO;
 import fr.progilone.pgcn.domain.lot.Lot;
 import fr.progilone.pgcn.domain.user.User;
+import java.util.Date;
+import java.util.Set;
 
 /**
  * DTO représentant un lot
@@ -242,11 +241,17 @@ public class LotDTO extends AbstractVersionedDTO {
         return activeFTPConfiguration;
     }
 
-    public void setActiveFTPConfiguration(final SimpleFTPConfigurationDTO activeFTPConfiguration) { this.activeFTPConfiguration = activeFTPConfiguration; }
+    public void setActiveFTPConfiguration(final SimpleFTPConfigurationDTO activeFTPConfiguration) {
+        this.activeFTPConfiguration = activeFTPConfiguration;
+    }
 
-    public ExportFTPConfigurationDTO getActiveExportFTPConfiguration() { return activeExportFTPConfiguration; }
+    public ExportFTPConfigurationDTO getActiveExportFTPConfiguration() {
+        return activeExportFTPConfiguration;
+    }
 
-    public void setActiveExportFTPConfiguration(ExportFTPConfigurationDTO activeExportFTPConfiguration) { this.activeExportFTPConfiguration = activeExportFTPConfiguration; }
+    public void setActiveExportFTPConfiguration(ExportFTPConfigurationDTO activeExportFTPConfiguration) {
+        this.activeExportFTPConfiguration = activeExportFTPConfiguration;
+    }
 
     public SimpleCheckConfigurationDTO getActiveCheckConfiguration() {
         return activeCheckConfiguration;
@@ -602,13 +607,15 @@ public class LotDTO extends AbstractVersionedDTO {
                               requiredFormat,
                               deliveryDateForseen,
                               realEndDate,
-                              project, docUnits,
+                              project,
+                              docUnits,
                               activeFTPConfiguration,
                               activeExportFTPConfiguration,
                               activeCheckConfiguration,
                               activeFormatConfiguration,
                               collectionIA,
-                              planClassementPAC, provider,
+                              planClassementPAC,
+                              provider,
                               requiredTypeCompression,
                               requiredTauxCompression,
                               requiredResolution,

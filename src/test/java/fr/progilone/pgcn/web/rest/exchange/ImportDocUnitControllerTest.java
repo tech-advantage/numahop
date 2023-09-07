@@ -1,44 +1,38 @@
 package fr.progilone.pgcn.web.rest.exchange;
 
-import fr.progilone.pgcn.domain.document.DocUnit;
+import static fr.progilone.pgcn.util.SecurityRequestPostProcessors.roles;
+import static fr.progilone.pgcn.web.rest.exchange.security.AuthorizationConstants.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 import fr.progilone.pgcn.domain.exchange.ImportReport;
 import fr.progilone.pgcn.domain.exchange.ImportedDocUnit;
 import fr.progilone.pgcn.service.exchange.ImportDocUnitService;
 import fr.progilone.pgcn.service.exchange.ImportReportService;
 import fr.progilone.pgcn.util.TestConverterFactory;
-import fr.progilone.pgcn.util.TestUtil;
 import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import jakarta.servlet.http.HttpServletRequest;
+import java.util.Collections;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.format.support.DefaultFormattingConversionService;
 import org.springframework.format.support.FormattingConversionService;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.Collections;
-
-import static fr.progilone.pgcn.util.SecurityRequestPostProcessors.*;
-import static fr.progilone.pgcn.web.rest.exchange.security.AuthorizationConstants.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyListOf;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.anyVararg;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 /**
  * Created by Sébastien on 22/12/2016.
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ImportDocUnitControllerTest {
 
     @Mock
@@ -52,7 +46,7 @@ public class ImportDocUnitControllerTest {
 
     private final RequestPostProcessor allPermissions = roles(EXC_HAB0, EXC_HAB2);
 
-    @Before
+    @BeforeEach
     public void setUp() {
         final ImportedDocUnitController controller = new ImportedDocUnitController(importDocUnitService, importReportService, libraryAccesssHelper);
 
@@ -60,7 +54,7 @@ public class ImportDocUnitControllerTest {
         convService.addConverter(String.class, ImportReport.class, TestConverterFactory.getConverter(ImportReport.class));
         this.restMockMvc = MockMvcBuilders.standaloneSetup(controller).setConversionService(convService).build();
 
-        when(libraryAccesssHelper.checkLibrary(any(HttpServletRequest.class), any(), any(), anyVararg())).thenReturn(true);
+        when(libraryAccesssHelper.checkLibrary(any(HttpServletRequest.class), any(), any(), any())).thenReturn(true);
     }
 
     @Test
@@ -72,20 +66,15 @@ public class ImportDocUnitControllerTest {
         final Page<ImportedDocUnit> page = new PageImpl<>(Collections.singletonList(units));
 
         when(importReportService.findByIdentifier(report.getIdentifier())).thenReturn(report);
-        when(importDocUnitService.findByImportReport(eq(report),
-                                                     eq(0),
-                                                     eq(10),
-                                                     anyListOf(DocUnit.State.class),
-                                                     anyBoolean(),
-                                                     anyBoolean())).thenReturn(page);
+        when(importDocUnitService.findByImportReport(eq(report), eq(0), eq(10), any(), anyBoolean(), anyBoolean())).thenReturn(page);
 
         // test findAllActive
         this.restMockMvc.perform(get("/api/rest/impdocunit").param("report", report.getIdentifier())
                                                             .param("state", "AVAILABLE")
-                                                            .accept(TestUtil.APPLICATION_JSON_UTF8)
+                                                            .accept(MediaType.APPLICATION_JSON)
                                                             .with(allPermissions))
                         .andExpect(status().isOk())
-                        .andExpect(content().contentType(TestUtil.APPLICATION_JSON_UTF8))
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andExpect(jsonPath("content[0].identifier").value(units.getIdentifier()));
     }
 
@@ -97,9 +86,8 @@ public class ImportDocUnitControllerTest {
         when(importDocUnitService.findByIdentifier(units.getIdentifier())).thenReturn(units);
 
         // test update
-        this.restMockMvc.perform(post("/api/rest/impdocunit/" + units.getIdentifier()).param("process", "ADD")
-                                                                                      .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                                                                                      .with(allPermissions)).andExpect(status().isOk());
+        this.restMockMvc.perform(post("/api/rest/impdocunit/" + units.getIdentifier()).param("process", "ADD").contentType(MediaType.APPLICATION_JSON).with(allPermissions))
+                        .andExpect(status().isOk());
 
         verify(importDocUnitService).updateProcess(units.getIdentifier(), ImportedDocUnit.Process.ADD);
     }

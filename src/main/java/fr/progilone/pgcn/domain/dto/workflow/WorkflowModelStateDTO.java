@@ -1,10 +1,9 @@
 package fr.progilone.pgcn.domain.dto.workflow;
 
-import java.time.Duration;
-
 import fr.progilone.pgcn.domain.dto.AbstractVersionedDTO;
 import fr.progilone.pgcn.domain.workflow.WorkflowModelStateType;
 import fr.progilone.pgcn.domain.workflow.WorkflowStateKey;
+import java.time.Duration;
 
 public class WorkflowModelStateDTO extends AbstractVersionedDTO {
 
@@ -13,7 +12,6 @@ public class WorkflowModelStateDTO extends AbstractVersionedDTO {
     private SimpleWorkflowGroupDTO group;
     private Duration duration;
     private WorkflowModelStateType type;
-    
 
     public WorkflowModelStateDTO() {
     }

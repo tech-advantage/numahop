@@ -1,22 +1,19 @@
 package fr.progilone.pgcn.domain.storage;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.google.common.base.MoreObjects;
-
 import fr.progilone.pgcn.domain.AbstractDomainObject;
 import fr.progilone.pgcn.domain.administration.viewsformat.ViewsFormatConfiguration;
 import fr.progilone.pgcn.domain.document.DocPage;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Domain for the stored File
@@ -40,19 +37,19 @@ public class StoredFile extends AbstractDomainObject {
 
     @Column(name = "length")
     private Long length;
-    
+
     @Column(name = "width")
     private Long width;
-    
+
     @Column(name = "height")
     private Long height;
-    
+
     @Column(name = "title_toc", columnDefinition = "TEXT")
     private String titleToc;
-    
+
     @Column(name = "type_toc")
     private String typeToc;
-    
+
     @Column(name = "order_toc")
     private String orderToc;
 
@@ -64,19 +61,19 @@ public class StoredFile extends AbstractDomainObject {
 
     @Column(name = "mimetype")
     private String mimetype;
-    
+
     @Column(name = "compression_type")
     private String compressionType;
-    
+
     @Column(name = "compression_rate")
     private Integer compressionRate;
-    
+
     @Column(name = "resolution")
     private Integer resolution;
-    
+
     @Column(name = "colorspace")
     private String colorspace;
-    
+
     @Column(name = "text_ocr", columnDefinition = "TEXT")
     private String textOcr;
 
@@ -87,11 +84,11 @@ public class StoredFile extends AbstractDomainObject {
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "page")
     private DocPage page;
-    
+
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "format_configuration")
     private ViewsFormatConfiguration formatConfiguration;
-    
+
     @Column(name = "file_format")
     @Enumerated(EnumType.STRING)
     private ViewsFormatConfiguration.FileFormat fileFormat;
@@ -252,12 +249,11 @@ public class StoredFile extends AbstractDomainObject {
                           .add("mimetype", mimetype)
                           .toString();
     }
-    
+
     public StoredFile getWithoutOcrText() {
         setTextOcr(null);
         return this;
     }
-    
 
     /**
      * Return digest based on identifier

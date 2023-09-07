@@ -6,5 +6,12 @@ package fr.progilone.pgcn.domain.exchange;
  * Created by Sebastien on 10/12/2015.
  */
 public enum FileFormat {
-    MARC, MARCJSON, MARCXML, CSV, DC, DCQ, EAD, OAIPMH
+    MARC,
+    MARCJSON,
+    MARCXML,
+    CSV,
+    DC,
+    DCQ,
+    EAD,
+    OAIPMH
 }

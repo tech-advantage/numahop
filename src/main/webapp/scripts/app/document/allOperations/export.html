@@ -1,12 +1,11 @@
 <div ng-controller="ExportAllOperationsCtrl as exportCtrl" ng-init="exportCtrl.init(mainCtrl)">
     <div class="panel-body" id="entityDetails">
-
         <!-- Début Export Internet Archive -->
         <uib-accordion>
-	        <div class="formBlock margin-t0">
-	            <div class="formBlockTitle">
+            <div class="formBlock margin-t0">
+                <div class="formBlockTitle">
                     <span translate>Export Internet Archive</span>
-				</div>
+                </div>
                 <!-- Infos visibles même lorsque l'accordion est replié -->
                 <div class="formBlockContent margin-t0 margin-b10" ng-if="exportCtrl.iaurl">
                     <div class="row">
@@ -17,116 +16,99 @@
                     <div class="row" ng-if="exportCtrl.docUnit.arkUrl">
                         <div class="col-xs-12">
                             <span translate>URL ARK :</span> <span> {{::exportCtrl.docUnit.arkUrl}}</span>
-                            <button type="button" class="btn btn-sem2 btn-xs"
-                                    clipboard text="::exportCtrl.docUnit.arkUrl"
-                                    uib-tooltip="{{::'Copier dans le presse-papiers' | translate}}">
+                            <button type="button" class="btn btn-sem2 btn-xs" clipboard text="::exportCtrl.docUnit.arkUrl" uib-tooltip="{{::'Copier dans le presse-papiers' | translate}}">
                                 <span class="glyphicon-regular copy"></span>
                             </button>
                         </div>
                     </div>
                 </div>
-	            <!-- Infos cachées lorsque l'accordion est replié -->
-	            <!-- Unités documentaires importées -->
-	            <div class="formBlockContent margin-t0">
-					<div class="row" ng-if="exportCtrl.docUnit.iaReports.length === 0">
-						<div class="col-xs-12 text-right">
-							<small translate>Aucun résultat</small>
-						</div>
-					</div>
-					<!-- Premier report -->
-					<div class="row" ng-if="exportCtrl.firstIA">
-						<div class="col-xs-12">
-
-		                    <table class="table table-hover table-import">
-                         <tbody>
-                         <tr ng-init="status = (exportCtrl.firstIA.status === 'ARCHIVED');" class="root" ng-class="{ true: 'sid-fourth', false: 'sid-third' }[status]">
-                             <td>
-                                 <span class="label label-primary">{{::exportCtrl.code[exportCtrl.firstIA.status] || exportCtrl.firstIA.status}}</span>
-                                 <table class="table table-hover table-import">
-                                   <tbody>
-                                       <tr class="sid-sec">
-                                         <td>{{'Nombre de fichiers envoyés' | translate}}</td>
-                                         <td>{{::exportCtrl.firstIA.number}}/{{::exportCtrl.firstIA.total}}</td>
-                                       </tr>
-                                       <tr ng-if="exportCtrl.firstIA.dateSent" class="sid-sec">
-                                           <td>{{'Date d\'envoi' | translate}}
-                                           </td>
-                                           <td>{{::exportCtrl.firstIA.dateSent | date:'short'}}
-                                           </td>
-                                       </tr>
-                                       <tr ng-if="exportCtrl.firstIA.message" class="sid-sec">
-                                           <td>{{'Message' | translate}}
-                                           </td>
-                                           <td>{{::exportCtrl.firstIA.message}}
-                                           </td>
-                                       </tr>
-                                       <tr ng-if="exportCtrl.firstIA.dateArchived" class="sid-sec">
-                                           <td>{{'Date de diffusion' | translate}}
-                                           </td>
-                                           <td>{{::exportCtrl.firstIA.dateArchived | date:'short'}}
-                                           </td>
-                                       </tr>
-                                   </tbody>
-                                 </table>
-                             </td>
-                         </tr>
-                         </tbody>
-                     </table>
-						</div>
-					</div>
-					<!-- Reports suivants, repliés par défaut -->
-					<div class="row" ng-click="exportCtrl.accIA = !exportCtrl.accIA" ng-if="exportCtrl._iaReports.length > 0">
-						<div class="col-xs-12">
-							<span class="glyphicon-halflings"
-								ng-class="{false: 'glyphicon-chevron-right',
-										   true: 'glyphicon-chevron-down'}[exportCtrl.accIA]"></span>
-							<span translate translate-n="exportCtrl._iaReports.length" translate-plural="{{$count}} résultats supplémentaires">
-								1 résultat supplémentaire
-							</span>
-						</div>
-					</div>
-		            <div class="row" ng-if="exportCtrl.docUnit.iaReports" uib-accordion-group is-open="exportCtrl.accIA">
-		                <div class="col-xs-12">
-		                    <table st-table="exportCtrl._iaReports"
-                            st-pagination-scroll="#scroll-import" class="table table-hover table-import">
-                         <tbody>
-                         <tr ng-repeat="report in exportCtrl._iaReports"
-                             ng-init="status = (report.status === 'ARCHIVED');" class="root" ng-class="{ true: 'sid-fourth', false: 'sid-third' }[status]">
-                             <td>
-                                 <span class="label label-primary">{{::exportCtrl.code[report.status] || report.status}}</span>
-                                 <table class="table table-hover table-import">
-                                   <tbody>
-                                       <tr class="sid-sec">
-                                         <td>{{'Nombre de fichiers envoyés' | translate}}</td>
-                                         <td>{{::report.number}}/{{::report.total}}</td>
-                                       </tr>
-                                       <tr ng-if="report.dateSent" class="sid-sec">
-                                           <td>{{'Date d\'envoi' | translate}}
-                                           </td>
-                                           <td>{{::report.dateSent | date:'short'}}
-                                           </td>
-                                       </tr>
-                                       <tr ng-if="report.message" class="sid-sec">
-                                           <td>{{'Message' | translate}}
-                                           </td>
-                                           <td>{{::report.message}}
-                                           </td>
-                                       </tr>
-                                       <tr ng-if="report.dateArchived" class="sid-sec">
-                                           <td>{{'Date de diffusion' | translate}}
-                                           </td>
-                                           <td>{{::report.dateArchived | date:'short'}}
-                                           </td>
-                                       </tr>
-                                   </tbody>
-                                 </table>
-                             </td>
-                         </tr>
-                         </tbody>
-                     </table>
-		                </div>
-					</div>
-		       </div>
+                <!-- Infos cachées lorsque l'accordion est replié -->
+                <!-- Unités documentaires importées -->
+                <div class="formBlockContent margin-t0">
+                    <div class="row" ng-if="exportCtrl.docUnit.iaReports.length === 0">
+                        <div class="col-xs-12 text-right">
+                            <small translate>Aucun résultat</small>
+                        </div>
+                    </div>
+                    <!-- Premier report -->
+                    <div class="row" ng-if="exportCtrl.firstIA">
+                        <div class="col-xs-12">
+                            <table class="table table-hover table-import">
+                                <tbody>
+                                    <tr ng-init="status = (exportCtrl.firstIA.status === 'ARCHIVED');" class="root" ng-class="{ true: 'sid-fourth', false: 'sid-third' }[status]">
+                                        <td>
+                                            <span class="label label-primary">{{::exportCtrl.code[exportCtrl.firstIA.status] || exportCtrl.firstIA.status}}</span>
+                                            <table class="table table-hover table-import">
+                                                <tbody>
+                                                    <tr class="sid-sec">
+                                                        <td>{{'Nombre de fichiers envoyés' | translate}}</td>
+                                                        <td>{{::exportCtrl.firstIA.number}}/{{::exportCtrl.firstIA.total}}</td>
+                                                    </tr>
+                                                    <tr ng-if="exportCtrl.firstIA.dateSent" class="sid-sec">
+                                                        <td>{{'Date d\'envoi' | translate}}</td>
+                                                        <td>{{::exportCtrl.firstIA.dateSent | date:'short'}}</td>
+                                                    </tr>
+                                                    <tr ng-if="exportCtrl.firstIA.message" class="sid-sec">
+                                                        <td>{{'Message' | translate}}</td>
+                                                        <td>{{::exportCtrl.firstIA.message}}</td>
+                                                    </tr>
+                                                    <tr ng-if="exportCtrl.firstIA.dateArchived" class="sid-sec">
+                                                        <td>{{'Date de diffusion' | translate}}</td>
+                                                        <td>{{::exportCtrl.firstIA.dateArchived | date:'short'}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- Reports suivants, repliés par défaut -->
+                    <div class="row" ng-click="exportCtrl.accIA = !exportCtrl.accIA" ng-if="exportCtrl._iaReports.length > 0">
+                        <div class="col-xs-12">
+                            <span
+                                class="glyphicon-halflings"
+                                ng-class="{false: 'glyphicon-chevron-right',
+										   true: 'glyphicon-chevron-down'}[exportCtrl.accIA]"
+                            ></span>
+                            <span translate translate-n="exportCtrl._iaReports.length" translate-plural="{{$count}} résultats supplémentaires"> 1 résultat supplémentaire </span>
+                        </div>
+                    </div>
+                    <div class="row" ng-if="exportCtrl.docUnit.iaReports" uib-accordion-group is-open="exportCtrl.accIA">
+                        <div class="col-xs-12">
+                            <table st-table="exportCtrl._iaReports" st-pagination-scroll="#scroll-import" class="table table-hover table-import">
+                                <tbody>
+                                    <tr ng-repeat="report in exportCtrl._iaReports" ng-init="status = (report.status === 'ARCHIVED');" class="root" ng-class="{ true: 'sid-fourth', false: 'sid-third' }[status]">
+                                        <td>
+                                            <span class="label label-primary">{{::exportCtrl.code[report.status] || report.status}}</span>
+                                            <table class="table table-hover table-import">
+                                                <tbody>
+                                                    <tr class="sid-sec">
+                                                        <td>{{'Nombre de fichiers envoyés' | translate}}</td>
+                                                        <td>{{::report.number}}/{{::report.total}}</td>
+                                                    </tr>
+                                                    <tr ng-if="report.dateSent" class="sid-sec">
+                                                        <td>{{'Date d\'envoi' | translate}}</td>
+                                                        <td>{{::report.dateSent | date:'short'}}</td>
+                                                    </tr>
+                                                    <tr ng-if="report.message" class="sid-sec">
+                                                        <td>{{'Message' | translate}}</td>
+                                                        <td>{{::report.message}}</td>
+                                                    </tr>
+                                                    <tr ng-if="report.dateArchived" class="sid-sec">
+                                                        <td>{{'Date de diffusion' | translate}}</td>
+                                                        <td>{{::report.dateArchived | date:'short'}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </uib-accordion>
         <!-- Fin Export Internet Archive -->
@@ -148,25 +130,22 @@
                     <!-- Premier report -->
                     <div class="row" ng-if="exportCtrl.docUnit.omekaExportStatus">
                         <div class="col-xs-12">
-
                             <table class="table table-hover table-import">
-                         <tbody>
-                         <tr ng-init="status = (exportCtrl.docUnit.omekaExportStatus === 'SENT');" class="root" ng-class="{ true: 'sid-fourth', false: 'sid-third' }[status]">
-                             <td>
-                                 <span class="label label-primary">{{::exportCtrl.omekaDistribStatus | translate}}</span>
-                                 <table class="table table-hover table-import">
-                                   <tbody>
-                                       <tr ng-if="exportCtrl.docUnit.omekaExportDate" class="sid-sec">
-                                           <td>{{'Date d\'envoi' | translate}}
-                                           </td>
-                                           <td>{{::exportCtrl.docUnit.omekaExportDate | date:'short'}}
-                                           </td>
-                                       </tr>
-                                   </tbody>
-                                 </table>
-                             </td>
-                         </tr>
-                         </tbody>
+                                <tbody>
+                                    <tr ng-init="status = (exportCtrl.docUnit.omekaExportStatus === 'SENT');" class="root" ng-class="{ true: 'sid-fourth', false: 'sid-third' }[status]">
+                                        <td>
+                                            <span class="label label-primary">{{::exportCtrl.omekaDistribStatus | translate}}</span>
+                                            <table class="table table-hover table-import">
+                                                <tbody>
+                                                    <tr ng-if="exportCtrl.docUnit.omekaExportDate" class="sid-sec">
+                                                        <td>{{'Date d\'envoi' | translate}}</td>
+                                                        <td>{{::exportCtrl.docUnit.omekaExportDate | date:'short'}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
                             </table>
                         </div>
                     </div>
@@ -192,24 +171,21 @@
                     <!-- Premier report -->
                     <div class="row" ng-if="exportCtrl.docUnit.digLibExportStatus">
                         <div class="col-xs-12">
-
                             <table class="table table-hover table-import">
                                 <tbody>
-                                <tr ng-init="status = (exportCtrl.docUnit.digLibExportStatus === 'SENT');" class="root" ng-class="{ true: 'sid-fourth', false: 'sid-third' }[status]">
-                                    <td>
-                                        <span class="label label-primary">{{::exportCtrl.digLibDistribStatus | translate}}</span>
-                                        <table class="table table-hover table-import">
-                                            <tbody>
-                                            <tr ng-if="exportCtrl.docUnit.digLibExportDate" class="sid-sec">
-                                                <td>{{'Date d\'envoi' | translate}}
-                                                </td>
-                                                <td>{{::exportCtrl.docUnit.digLibExportDate | date:'short'}}
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
+                                    <tr ng-init="status = (exportCtrl.docUnit.digLibExportStatus === 'SENT');" class="root" ng-class="{ true: 'sid-fourth', false: 'sid-third' }[status]">
+                                        <td>
+                                            <span class="label label-primary">{{::exportCtrl.digLibDistribStatus | translate}}</span>
+                                            <table class="table table-hover table-import">
+                                                <tbody>
+                                                    <tr ng-if="exportCtrl.docUnit.digLibExportDate" class="sid-sec">
+                                                        <td>{{'Date d\'envoi' | translate}}</td>
+                                                        <td>{{::exportCtrl.docUnit.digLibExportDate | date:'short'}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>

@@ -1,11 +1,9 @@
 (function () {
     'use strict';
 
-    angular.module("numaHopApp.controller")
-        .controller("ModalUpdateRecordsCtrl", ModalUpdateRecordsCtrl);
+    angular.module('numaHopApp.controller').controller('ModalUpdateRecordsCtrl', ModalUpdateRecordsCtrl);
 
     function ModalUpdateRecordsCtrl($uibModalInstance, gettextCatalog, MappingSrvc, NumaHopInitializationSrvc, options) {
-
         var mainCtrl = this;
         mainCtrl.addField = addField;
         mainCtrl.deleteField = deleteField;
@@ -16,14 +14,13 @@
 
         init();
 
-
         /**
          * Initialisation du contrôleur
          */
         function init() {
             mainCtrl.updates = {
                 fields: [],
-                properties: []
+                properties: [],
             };
             mainCtrl.fields = angular.copy(MappingSrvc.bibRecordFields);
             mainCtrl.fields.shift(); // on supprime le 1er élément -> valeur vide
@@ -44,8 +41,8 @@
 
         /**
          * Suppression d'un champ existant
-         * 
-         * @param {any} field 
+         *
+         * @param {any} field
          */
         function deleteField(field) {
             var idx = mainCtrl.updates.fields.indexOf(field);
@@ -63,8 +60,8 @@
 
         /**
          * Suppression d'une propriété existante
-         * 
-         * @param {any} property 
+         *
+         * @param {any} property
          */
         function deleteProperty(property) {
             var idx = mainCtrl.updates.properties.indexOf(property);
@@ -77,7 +74,7 @@
          * Fermeture/Annulation de la fenêtre modale
          */
         function close() {
-            $uibModalInstance.dismiss("cancel");
+            $uibModalInstance.dismiss('cancel');
         }
 
         /**
@@ -90,7 +87,7 @@
                     return angular.isDefined(f.type);
                 })
                 .map(function (f) {
-                    return _.pick(f, "type", "value");
+                    return _.pick(f, 'type', 'value');
                 })
                 .value();
             updates.properties = _.chain(mainCtrl.updates.properties)
@@ -100,7 +97,7 @@
                 .map(function (p) {
                     return {
                         type: p.type.identifier,
-                        value: p.value
+                        value: p.value,
                     };
                 })
                 .value();

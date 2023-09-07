@@ -1,5 +1,7 @@
 package fr.progilone.pgcn.service.exchange.dc;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import fr.progilone.pgcn.domain.document.BibliographicRecord;
 import fr.progilone.pgcn.domain.document.DocPropertyType;
 import fr.progilone.pgcn.domain.document.DocUnit;
@@ -7,14 +9,11 @@ import fr.progilone.pgcn.domain.jaxb.dc.ElementContainer;
 import fr.progilone.pgcn.domain.jaxb.dc.ObjectFactory;
 import fr.progilone.pgcn.domain.jaxb.dc.SimpleLiteral;
 import fr.progilone.pgcn.domain.library.Library;
-import org.apache.commons.lang3.StringUtils;
-import org.junit.Before;
-import org.junit.Test;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.Assert.*;
+import org.apache.commons.lang3.StringUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Created by Sébastien on 07/07/2017.
@@ -23,7 +22,7 @@ public class DcToDocUnitConvertServiceTest {
 
     private DcToDocUnitConvertService service;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         service = new DcToDocUnitConvertService();
     }
@@ -58,16 +57,12 @@ public class DcToDocUnitConvertServiceTest {
         final BibliographicRecord record = docUnit.getRecords().iterator().next();
         assertEquals(3, record.getProperties().size());
         // creator
-        assertTrue(record.getProperties()
-                         .stream()
-                         .anyMatch(p -> "creator".equals(p.getType().getIdentifier()) && "Sophie Marceau".equals(p.getValue())));
+        assertTrue(record.getProperties().stream().anyMatch(p -> "creator".equals(p.getType().getIdentifier()) && "Sophie Marceau".equals(p.getValue())));
         // title
         assertTrue(record.getProperties().stream().anyMatch(p -> "title".equals(p.getType().getIdentifier()) && titleStr.equals(p.getValue())));
         assertEquals(docUnit.getLabel(), StringUtils.abbreviate(titleStr, 255));
         // identifier
-        assertTrue(record.getProperties()
-                         .stream()
-                         .anyMatch(p -> "identifier".equals(p.getType().getIdentifier()) && "PGCNID-001".equals(p.getValue())));
+        assertTrue(record.getProperties().stream().anyMatch(p -> "identifier".equals(p.getType().getIdentifier()) && "PGCNID-001".equals(p.getValue())));
         assertEquals(docUnit.getPgcnId(), "PREFIX, PGCNID-001");
     }
 

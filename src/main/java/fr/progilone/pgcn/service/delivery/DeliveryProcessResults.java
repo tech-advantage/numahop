@@ -1,35 +1,35 @@
 package fr.progilone.pgcn.service.delivery;
 
+import fr.progilone.pgcn.domain.check.AutomaticCheckType.AutoCheckType;
+import fr.progilone.pgcn.domain.checkconfiguration.AutomaticCheckRule;
+import fr.progilone.pgcn.domain.dto.check.SplitFilename;
+import fr.progilone.pgcn.domain.dto.document.PreDeliveryDocumentFileDTO;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import fr.progilone.pgcn.domain.check.AutomaticCheckType.AutoCheckType;
-import fr.progilone.pgcn.domain.checkconfiguration.AutomaticCheckRule;
-import fr.progilone.pgcn.domain.dto.check.SplitFilename;
-import fr.progilone.pgcn.domain.dto.document.PreDeliveryDocumentFileDTO;
-
 /**
  * Permet de faire transiter des données pour la livraison entre service synchrone/asynchrone
- * 
+ *
  * @author jbrunet
- * Créé le 19 mai 2017
+ *         Créé le 19 mai 2017
  */
 public class DeliveryProcessResults {
 
     private Map<String, PrefixedDocumentsDTO> documentsDTOForPrefix = new HashMap<>();
     private Map<String, Optional<SplitFilename>> splitNames = new HashMap<>();
-    
+
     private Map<String, Set<PreDeliveryDocumentFileDTO>> metadatasDTOForPrefix = new HashMap<>();
     private Map<AutoCheckType, AutomaticCheckRule> checkingRules = new HashMap<>();
-    
+
     private String samplingMode;
     private Double samplingRate;
-    
+
     private String libraryId;
-    
-    public DeliveryProcessResults() {}
+
+    public DeliveryProcessResults() {
+    }
 
     public Map<String, PrefixedDocumentsDTO> getDocumentsDTOForPrefix() {
         return documentsDTOForPrefix;
@@ -71,7 +71,8 @@ public class DeliveryProcessResults {
     }
 
     /**
-     * @param samplingMode the samplingMode to set
+     * @param samplingMode
+     *            the samplingMode to set
      */
     public void setSamplingMode(final String samplingMode) {
         this.samplingMode = samplingMode;
@@ -85,7 +86,8 @@ public class DeliveryProcessResults {
     }
 
     /**
-     * @param samplingRate the samplingRate to set
+     * @param samplingRate
+     *            the samplingRate to set
      */
     public void setSamplingRate(final Double samplingRate) {
         this.samplingRate = samplingRate;
@@ -98,5 +100,5 @@ public class DeliveryProcessResults {
     public void setLibraryId(final String libraryId) {
         this.libraryId = libraryId;
     }
-    
+
 }

@@ -2,10 +2,9 @@ package fr.progilone.pgcn.domain.document.common;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import fr.progilone.pgcn.domain.AbstractDomainObject;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
 /**
  * Liste des langages pour la conversion des exports

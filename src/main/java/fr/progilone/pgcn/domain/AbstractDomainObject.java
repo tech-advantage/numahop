@@ -9,27 +9,22 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.voodoodyne.jackson.jsog.JSOGGenerator;
 import fr.progilone.pgcn.exception.message.PgcnError;
 import fr.progilone.pgcn.exception.message.PgcnList;
-import org.hibernate.annotations.GenericGenerator;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldIndex;
-import org.springframework.data.elasticsearch.annotations.FieldType;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import javax.persistence.Column;
-import javax.persistence.EntityListeners;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Transient;
-import javax.persistence.Version;
+import jakarta.persistence.Column;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.Id;
+import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.Transient;
+import jakarta.persistence.Version;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Objects;
+import org.hibernate.annotations.UuidGenerator;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 /**
  * Classe mère de tous les objets du domaine
@@ -43,10 +38,7 @@ public abstract class AbstractDomainObject implements Serializable, ObjectWithEr
      * Identifiant
      */
     @Id
-    @GeneratedValue(generator = "system-uuid")
-    @GenericGenerator(name = "system-uuid", strategy = "fr.progilone.pgcn.domain.util.CustomUUIDGenerator")
-    @org.springframework.data.annotation.Id
-    @Field(type = FieldType.String, index = FieldIndex.not_analyzed)
+    @UuidGenerator
     protected String identifier;
 
     /**
@@ -76,7 +68,6 @@ public abstract class AbstractDomainObject implements Serializable, ObjectWithEr
      */
     @CreatedDate
     @Column(name = "created_date", updatable = false, nullable = false)
-    @Field(type = FieldType.Date)
     @JsonIgnore
     private LocalDateTime createdDate = LocalDateTime.now();
 
@@ -85,7 +76,6 @@ public abstract class AbstractDomainObject implements Serializable, ObjectWithEr
      */
     @LastModifiedDate
     @Column(name = "last_modified_date", nullable = false)
-    @Field(type = FieldType.Date)
     @JsonIgnore
     private LocalDateTime lastModifiedDate = LocalDateTime.now();
 
@@ -112,7 +102,8 @@ public abstract class AbstractDomainObject implements Serializable, ObjectWithEr
     @JsonProperty("errors")
     @JsonInclude(Include.NON_NULL)
     public Collection<PgcnError> getErrorsAsList() {
-        return errors != null ? errors.get() : null;
+        return errors != null ? errors.get()
+                              : null;
     }
 
     @Override
@@ -165,7 +156,9 @@ public abstract class AbstractDomainObject implements Serializable, ObjectWithEr
 
     @Override
     public String toString() {
-        return this.getClass().getName() + " [identifier=" + identifier + "]";
+        return this.getClass().getName() + " [identifier="
+               + identifier
+               + "]";
     }
 
     public String getCreatedBy() {

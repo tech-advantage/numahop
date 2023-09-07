@@ -1,5 +1,13 @@
 package fr.progilone.pgcn.service.check;
 
+import fr.progilone.pgcn.domain.jaxb.facile.ValidatorType;
+import fr.progilone.pgcn.service.util.FileUtils;
+import fr.progilone.pgcn.service.util.FileUtils.CheckSumType;
+import jakarta.mail.MessagingException;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
@@ -7,13 +15,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
-
-import javax.mail.MessagingException;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.ParseException;
@@ -29,15 +30,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import fr.progilone.pgcn.domain.jaxb.facile.ValidatorType;
-import fr.progilone.pgcn.service.util.FileUtils;
-import fr.progilone.pgcn.service.util.FileUtils.CheckSumType;
-
 /**
  * Service de Validation FACILE
  *
  * @author jbrunet
- * Créé le 10 février 2017
+ *         Créé le 10 février 2017
  */
 @Service
 public class FacileCinesService {
@@ -57,13 +54,13 @@ public class FacileCinesService {
         return results;
     }
 
-    
     public ValidatorType checkFileAgainstFacile(final File file) {
         LOG.debug("Check Facile du fichier {}", file.getAbsolutePath());
         String errorMsg = null;
 
         if (!file.exists()) {
-            errorMsg = "Le fichier " + file.getAbsolutePath() + " n'existe pas";
+            errorMsg = "Le fichier " + file.getAbsolutePath()
+                       + " n'existe pas";
             LOG.error(errorMsg);
         } else {
             final HttpClient httpClient = initializeHttpClient();

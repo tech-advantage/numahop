@@ -1,18 +1,18 @@
 package fr.progilone.pgcn.service.document;
 
+import static fr.progilone.pgcn.domain.document.BibliographicRecord.*;
+
 import fr.progilone.pgcn.domain.document.DocProperty;
 import fr.progilone.pgcn.domain.document.DocPropertyType;
 import fr.progilone.pgcn.repository.document.DocPropertyRepository;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
-import static fr.progilone.pgcn.domain.document.BibliographicRecord.*;
-
 @Service
 public class DocPropertyService {
+
     private final DocPropertyRepository docPropertyRepository;
 
     @Autowired
@@ -27,7 +27,7 @@ public class DocPropertyService {
 
     @Transactional(readOnly = true)
     public DocProperty findOne(final String identifier) {
-        return docPropertyRepository.findOne(identifier);
+        return docPropertyRepository.findById(identifier).orElse(null);
     }
 
     /**
@@ -71,7 +71,8 @@ public class DocPropertyService {
                 currentRank = docPropertyRepository.findCurrentRankForProperty(property.getRecord());
             }
 
-            final Integer nextRank = currentRank != null ? currentRank + 1 : 1;
+            final Integer nextRank = currentRank != null ? currentRank + 1
+                                                         : 1;
             property.setRank(nextRank);
         }
     }

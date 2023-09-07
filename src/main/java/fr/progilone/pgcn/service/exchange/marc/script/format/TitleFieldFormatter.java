@@ -25,15 +25,21 @@ public class TitleFieldFormatter extends SubfieldsFormatter {
 
     @Override
     public String getConfigScript() {
-        return "def " + SCRIPT_NAME + "Filter = {\n"
-               + "      String... codes -> script." + getCode() + ".setFilterCodes((char[])codes)\n"
+        return "def " + SCRIPT_NAME
+               + "Filter = {\n"
+               + "      String... codes -> script."
+               + getCode()
+               + ".setFilterCodes((char[])codes)\n"
                + "}\n";
     }
 
     @Override
     public String getInitScript() {
-        return "def " + SCRIPT_NAME + " = {\n"
-               + "      DataField field -> script." + getCode() + ".format(field)\n"
+        return "def " + SCRIPT_NAME
+               + " = {\n"
+               + "      DataField field -> script."
+               + getCode()
+               + ".format(field)\n"
                + "}\n";
     }
 }

@@ -5,24 +5,20 @@ import fr.progilone.pgcn.domain.dto.AbstractDTO;
 
 public class OcrLanguageDTO extends AbstractDTO {
 
-    
     private String identifier;
     private String label;
     private String code;
     private boolean active = false;
 
-    public OcrLanguageDTO(final String identifier,
-                          final String label,
-                          final String code,
-                          final boolean active) {
+    public OcrLanguageDTO(final String identifier, final String label, final String code, final boolean active) {
         this.identifier = identifier;
         this.label = label;
         this.code = code;
         this.active = active;
     }
-    
+
     public OcrLanguageDTO() {
-        
+
     }
 
     public String getIdentifier() {
@@ -56,8 +52,5 @@ public class OcrLanguageDTO extends AbstractDTO {
     public void setActive(final boolean active) {
         this.active = active;
     }
-
-    
-    
 
 }

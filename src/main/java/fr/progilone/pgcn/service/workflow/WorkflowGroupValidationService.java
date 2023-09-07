@@ -1,7 +1,5 @@
 package fr.progilone.pgcn.service.workflow;
 
-import fr.progilone.pgcn.domain.library.Library;
-import fr.progilone.pgcn.domain.user.User;
 import fr.progilone.pgcn.domain.workflow.WorkflowGroup;
 import fr.progilone.pgcn.exception.PgcnValidationException;
 import fr.progilone.pgcn.exception.message.PgcnError;
@@ -43,8 +41,8 @@ public class WorkflowGroupValidationService {
         }
         // nom unique
         else {
-            final Long countDuplicates =
-                group.getIdentifier() == null ? repository.countByName(name) : repository.countByNameAndIdentifierNot(name, group.getIdentifier());
+            final Long countDuplicates = group.getIdentifier() == null ? repository.countByName(name)
+                                                                       : repository.countByNameAndIdentifierNot(name, group.getIdentifier());
 
             if (countDuplicates > 0) {
                 errors.add(builder.reinit().setCode(PgcnErrorCode.WORKFLOW_GROUP_DUPLICATE_NAME).setField("name").build());
@@ -52,19 +50,19 @@ public class WorkflowGroupValidationService {
         }
 
         // Vérification des utilisateurs (même bibliothèque)
-//        if (!group.getUsers().isEmpty()) {
-//            Library lib = null;
-//            for (User user : group.getUsers()) {
-//                if (lib == null) {
-//                    lib = user.getLibrary();
-//                } else {
-//                    if (!StringUtils.equals(lib.getIdentifier(), user.getLibrary().getIdentifier())) {
-//                        errors.add(builder.reinit().setCode(PgcnErrorCode.WORKFLOW_GROUP_MIXED_USERS).build());
-//                        break;
-//                    }
-//                }
-//            }
-//        }
+        // if (!group.getUsers().isEmpty()) {
+        // Library lib = null;
+        // for (User user : group.getUsers()) {
+        // if (lib == null) {
+        // lib = user.getLibrary();
+        // } else {
+        // if (!StringUtils.equals(lib.getIdentifier(), user.getLibrary().getIdentifier())) {
+        // errors.add(builder.reinit().setCode(PgcnErrorCode.WORKFLOW_GROUP_MIXED_USERS).build());
+        // break;
+        // }
+        // }
+        // }
+        // }
 
         /* Retour **/
         if (!errors.isEmpty()) {

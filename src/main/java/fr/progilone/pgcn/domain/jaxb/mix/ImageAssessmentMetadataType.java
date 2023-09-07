@@ -5,21 +5,21 @@
 // Généré le : 2017.08.25 à 03:15:17 PM CEST
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.mix;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
-
 
 /**
- * <p>Classe Java pour ImageAssessmentMetadataType complex type.
+ * <p>
+ * Classe Java pour ImageAssessmentMetadataType complex type.
  *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="ImageAssessmentMetadataType">
@@ -152,11 +152,10 @@ import javax.xml.bind.annotation.XmlType;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ImageAssessmentMetadataType", propOrder = {
-    "spatialMetrics",
-    "imageColorEncoding",
-    "targetData"
-})
+@XmlType(name = "ImageAssessmentMetadataType",
+         propOrder = {"spatialMetrics",
+                      "imageColorEncoding",
+                      "targetData"})
 public class ImageAssessmentMetadataType {
 
     @XmlElement(name = "SpatialMetrics")
@@ -170,8 +169,8 @@ public class ImageAssessmentMetadataType {
      * Obtient la valeur de la propriété spatialMetrics.
      *
      * @return
-     *     possible object is
-     *     {@link ImageAssessmentMetadataType.SpatialMetrics }
+     *         possible object is
+     *         {@link ImageAssessmentMetadataType.SpatialMetrics }
      *
      */
     public ImageAssessmentMetadataType.SpatialMetrics getSpatialMetrics() {
@@ -182,8 +181,8 @@ public class ImageAssessmentMetadataType {
      * Définit la valeur de la propriété spatialMetrics.
      *
      * @param value
-     *     allowed object is
-     *     {@link ImageAssessmentMetadataType.SpatialMetrics }
+     *            allowed object is
+     *            {@link ImageAssessmentMetadataType.SpatialMetrics }
      *
      */
     public void setSpatialMetrics(ImageAssessmentMetadataType.SpatialMetrics value) {
@@ -194,8 +193,8 @@ public class ImageAssessmentMetadataType {
      * Obtient la valeur de la propriété imageColorEncoding.
      *
      * @return
-     *     possible object is
-     *     {@link ImageAssessmentMetadataType.ImageColorEncoding }
+     *         possible object is
+     *         {@link ImageAssessmentMetadataType.ImageColorEncoding }
      *
      */
     public ImageAssessmentMetadataType.ImageColorEncoding getImageColorEncoding() {
@@ -206,8 +205,8 @@ public class ImageAssessmentMetadataType {
      * Définit la valeur de la propriété imageColorEncoding.
      *
      * @param value
-     *     allowed object is
-     *     {@link ImageAssessmentMetadataType.ImageColorEncoding }
+     *            allowed object is
+     *            {@link ImageAssessmentMetadataType.ImageColorEncoding }
      *
      */
     public void setImageColorEncoding(ImageAssessmentMetadataType.ImageColorEncoding value) {
@@ -218,8 +217,8 @@ public class ImageAssessmentMetadataType {
      * Obtient la valeur de la propriété targetData.
      *
      * @return
-     *     possible object is
-     *     {@link ImageAssessmentMetadataType.TargetData }
+     *         possible object is
+     *         {@link ImageAssessmentMetadataType.TargetData }
      *
      */
     public ImageAssessmentMetadataType.TargetData getTargetData() {
@@ -230,19 +229,20 @@ public class ImageAssessmentMetadataType {
      * Définit la valeur de la propriété targetData.
      *
      * @param value
-     *     allowed object is
-     *     {@link ImageAssessmentMetadataType.TargetData }
+     *            allowed object is
+     *            {@link ImageAssessmentMetadataType.TargetData }
      *
      */
     public void setTargetData(ImageAssessmentMetadataType.TargetData value) {
         this.targetData = value;
     }
 
-
     /**
-     * <p>Classe Java pour anonymous complex type.
+     * <p>
+     * Classe Java pour anonymous complex type.
      *
-     * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+     * <p>
+     * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
      *
      * <pre>
      * &lt;complexType>
@@ -324,15 +324,14 @@ public class ImageAssessmentMetadataType {
      *
      */
     @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "bitsPerSample",
-        "samplesPerPixel",
-        "extraSamples",
-        "colormap",
-        "grayResponse",
-        "whitePoint",
-        "primaryChromaticities"
-    })
+    @XmlType(name = "",
+             propOrder = {"bitsPerSample",
+                          "samplesPerPixel",
+                          "extraSamples",
+                          "colormap",
+                          "grayResponse",
+                          "whitePoint",
+                          "primaryChromaticities"})
     public static class ImageColorEncoding {
 
         @XmlElement(name = "BitsPerSample")
@@ -352,8 +351,8 @@ public class ImageAssessmentMetadataType {
          * Obtient la valeur de la propriété bitsPerSample.
          *
          * @return
-         *     possible object is
-         *     {@link ImageAssessmentMetadataType.ImageColorEncoding.BitsPerSample }
+         *         possible object is
+         *         {@link ImageAssessmentMetadataType.ImageColorEncoding.BitsPerSample }
          *
          */
         public ImageAssessmentMetadataType.ImageColorEncoding.BitsPerSample getBitsPerSample() {
@@ -364,8 +363,8 @@ public class ImageAssessmentMetadataType {
          * Définit la valeur de la propriété bitsPerSample.
          *
          * @param value
-         *     allowed object is
-         *     {@link ImageAssessmentMetadataType.ImageColorEncoding.BitsPerSample }
+         *            allowed object is
+         *            {@link ImageAssessmentMetadataType.ImageColorEncoding.BitsPerSample }
          *
          */
         public void setBitsPerSample(ImageAssessmentMetadataType.ImageColorEncoding.BitsPerSample value) {
@@ -376,8 +375,8 @@ public class ImageAssessmentMetadataType {
          * Obtient la valeur de la propriété samplesPerPixel.
          *
          * @return
-         *     possible object is
-         *     {@link PositiveIntegerType }
+         *         possible object is
+         *         {@link PositiveIntegerType }
          *
          */
         public PositiveIntegerType getSamplesPerPixel() {
@@ -388,8 +387,8 @@ public class ImageAssessmentMetadataType {
          * Définit la valeur de la propriété samplesPerPixel.
          *
          * @param value
-         *     allowed object is
-         *     {@link PositiveIntegerType }
+         *            allowed object is
+         *            {@link PositiveIntegerType }
          *
          */
         public void setSamplesPerPixel(PositiveIntegerType value) {
@@ -407,8 +406,9 @@ public class ImageAssessmentMetadataType {
          *
          * <p>
          * For example, to add a new item, do as follows:
+         *
          * <pre>
-         *    getExtraSamples().add(newItem);
+         * getExtraSamples().add(newItem);
          * </pre>
          *
          *
@@ -429,8 +429,8 @@ public class ImageAssessmentMetadataType {
          * Obtient la valeur de la propriété colormap.
          *
          * @return
-         *     possible object is
-         *     {@link ImageAssessmentMetadataType.ImageColorEncoding.Colormap }
+         *         possible object is
+         *         {@link ImageAssessmentMetadataType.ImageColorEncoding.Colormap }
          *
          */
         public ImageAssessmentMetadataType.ImageColorEncoding.Colormap getColormap() {
@@ -441,8 +441,8 @@ public class ImageAssessmentMetadataType {
          * Définit la valeur de la propriété colormap.
          *
          * @param value
-         *     allowed object is
-         *     {@link ImageAssessmentMetadataType.ImageColorEncoding.Colormap }
+         *            allowed object is
+         *            {@link ImageAssessmentMetadataType.ImageColorEncoding.Colormap }
          *
          */
         public void setColormap(ImageAssessmentMetadataType.ImageColorEncoding.Colormap value) {
@@ -453,8 +453,8 @@ public class ImageAssessmentMetadataType {
          * Obtient la valeur de la propriété grayResponse.
          *
          * @return
-         *     possible object is
-         *     {@link ImageAssessmentMetadataType.ImageColorEncoding.GrayResponse }
+         *         possible object is
+         *         {@link ImageAssessmentMetadataType.ImageColorEncoding.GrayResponse }
          *
          */
         public ImageAssessmentMetadataType.ImageColorEncoding.GrayResponse getGrayResponse() {
@@ -465,8 +465,8 @@ public class ImageAssessmentMetadataType {
          * Définit la valeur de la propriété grayResponse.
          *
          * @param value
-         *     allowed object is
-         *     {@link ImageAssessmentMetadataType.ImageColorEncoding.GrayResponse }
+         *            allowed object is
+         *            {@link ImageAssessmentMetadataType.ImageColorEncoding.GrayResponse }
          *
          */
         public void setGrayResponse(ImageAssessmentMetadataType.ImageColorEncoding.GrayResponse value) {
@@ -484,8 +484,9 @@ public class ImageAssessmentMetadataType {
          *
          * <p>
          * For example, to add a new item, do as follows:
+         *
          * <pre>
-         *    getWhitePoint().add(newItem);
+         * getWhitePoint().add(newItem);
          * </pre>
          *
          *
@@ -513,8 +514,9 @@ public class ImageAssessmentMetadataType {
          *
          * <p>
          * For example, to add a new item, do as follows:
+         *
          * <pre>
-         *    getPrimaryChromaticities().add(newItem);
+         * getPrimaryChromaticities().add(newItem);
          * </pre>
          *
          *
@@ -531,11 +533,12 @@ public class ImageAssessmentMetadataType {
             return this.primaryChromaticities;
         }
 
-
         /**
-         * <p>Classe Java pour anonymous complex type.
+         * <p>
+         * Classe Java pour anonymous complex type.
          *
-         * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+         * <p>
+         * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
          *
          * <pre>
          * &lt;complexType>
@@ -553,10 +556,9 @@ public class ImageAssessmentMetadataType {
          *
          */
         @XmlAccessorType(XmlAccessType.FIELD)
-        @XmlType(name = "", propOrder = {
-            "bitsPerSampleValue",
-            "bitsPerSampleUnit"
-        })
+        @XmlType(name = "",
+                 propOrder = {"bitsPerSampleValue",
+                              "bitsPerSampleUnit"})
         public static class BitsPerSample {
 
             protected List<PositiveIntegerType> bitsPerSampleValue;
@@ -573,8 +575,9 @@ public class ImageAssessmentMetadataType {
              *
              * <p>
              * For example, to add a new item, do as follows:
+             *
              * <pre>
-             *    getBitsPerSampleValue().add(newItem);
+             * getBitsPerSampleValue().add(newItem);
              * </pre>
              *
              *
@@ -595,8 +598,8 @@ public class ImageAssessmentMetadataType {
              * Obtient la valeur de la propriété bitsPerSampleUnit.
              *
              * @return
-             *     possible object is
-             *     {@link TypeOfBitsPerSampleUnitType }
+             *         possible object is
+             *         {@link TypeOfBitsPerSampleUnitType }
              *
              */
             public TypeOfBitsPerSampleUnitType getBitsPerSampleUnit() {
@@ -607,8 +610,8 @@ public class ImageAssessmentMetadataType {
              * Définit la valeur de la propriété bitsPerSampleUnit.
              *
              * @param value
-             *     allowed object is
-             *     {@link TypeOfBitsPerSampleUnitType }
+             *            allowed object is
+             *            {@link TypeOfBitsPerSampleUnitType }
              *
              */
             public void setBitsPerSampleUnit(TypeOfBitsPerSampleUnitType value) {
@@ -617,11 +620,12 @@ public class ImageAssessmentMetadataType {
 
         }
 
-
         /**
-         * <p>Classe Java pour anonymous complex type.
+         * <p>
+         * Classe Java pour anonymous complex type.
          *
-         * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+         * <p>
+         * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
          *
          * <pre>
          * &lt;complexType>
@@ -639,10 +643,9 @@ public class ImageAssessmentMetadataType {
          *
          */
         @XmlAccessorType(XmlAccessType.FIELD)
-        @XmlType(name = "", propOrder = {
-            "colormapReference",
-            "embeddedColormap"
-        })
+        @XmlType(name = "",
+                 propOrder = {"colormapReference",
+                              "embeddedColormap"})
         public static class Colormap {
 
             protected URIType colormapReference;
@@ -652,8 +655,8 @@ public class ImageAssessmentMetadataType {
              * Obtient la valeur de la propriété colormapReference.
              *
              * @return
-             *     possible object is
-             *     {@link URIType }
+             *         possible object is
+             *         {@link URIType }
              *
              */
             public URIType getColormapReference() {
@@ -664,8 +667,8 @@ public class ImageAssessmentMetadataType {
              * Définit la valeur de la propriété colormapReference.
              *
              * @param value
-             *     allowed object is
-             *     {@link URIType }
+             *            allowed object is
+             *            {@link URIType }
              *
              */
             public void setColormapReference(URIType value) {
@@ -676,8 +679,8 @@ public class ImageAssessmentMetadataType {
              * Obtient la valeur de la propriété embeddedColormap.
              *
              * @return
-             *     possible object is
-             *     {@link Base64BinaryType }
+             *         possible object is
+             *         {@link Base64BinaryType }
              *
              */
             public Base64BinaryType getEmbeddedColormap() {
@@ -688,8 +691,8 @@ public class ImageAssessmentMetadataType {
              * Définit la valeur de la propriété embeddedColormap.
              *
              * @param value
-             *     allowed object is
-             *     {@link Base64BinaryType }
+             *            allowed object is
+             *            {@link Base64BinaryType }
              *
              */
             public void setEmbeddedColormap(Base64BinaryType value) {
@@ -698,11 +701,12 @@ public class ImageAssessmentMetadataType {
 
         }
 
-
         /**
-         * <p>Classe Java pour anonymous complex type.
+         * <p>
+         * Classe Java pour anonymous complex type.
          *
-         * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+         * <p>
+         * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
          *
          * <pre>
          * &lt;complexType>
@@ -720,10 +724,9 @@ public class ImageAssessmentMetadataType {
          *
          */
         @XmlAccessorType(XmlAccessType.FIELD)
-        @XmlType(name = "", propOrder = {
-            "grayResponseCurve",
-            "grayResponseUnit"
-        })
+        @XmlType(name = "",
+                 propOrder = {"grayResponseCurve",
+                              "grayResponseUnit"})
         public static class GrayResponse {
 
             protected List<NonNegativeIntegerType> grayResponseCurve;
@@ -740,8 +743,9 @@ public class ImageAssessmentMetadataType {
              *
              * <p>
              * For example, to add a new item, do as follows:
+             *
              * <pre>
-             *    getGrayResponseCurve().add(newItem);
+             * getGrayResponseCurve().add(newItem);
              * </pre>
              *
              *
@@ -762,8 +766,8 @@ public class ImageAssessmentMetadataType {
              * Obtient la valeur de la propriété grayResponseUnit.
              *
              * @return
-             *     possible object is
-             *     {@link TypeOfGrayResponseUnitType }
+             *         possible object is
+             *         {@link TypeOfGrayResponseUnitType }
              *
              */
             public TypeOfGrayResponseUnitType getGrayResponseUnit() {
@@ -774,8 +778,8 @@ public class ImageAssessmentMetadataType {
              * Définit la valeur de la propriété grayResponseUnit.
              *
              * @param value
-             *     allowed object is
-             *     {@link TypeOfGrayResponseUnitType }
+             *            allowed object is
+             *            {@link TypeOfGrayResponseUnitType }
              *
              */
             public void setGrayResponseUnit(TypeOfGrayResponseUnitType value) {
@@ -784,11 +788,12 @@ public class ImageAssessmentMetadataType {
 
         }
 
-
         /**
-         * <p>Classe Java pour anonymous complex type.
+         * <p>
+         * Classe Java pour anonymous complex type.
          *
-         * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+         * <p>
+         * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
          *
          * <pre>
          * &lt;complexType>
@@ -810,14 +815,13 @@ public class ImageAssessmentMetadataType {
          *
          */
         @XmlAccessorType(XmlAccessType.FIELD)
-        @XmlType(name = "", propOrder = {
-            "primaryChromaticitiesRedX",
-            "primaryChromaticitiesRedY",
-            "primaryChromaticitiesGreenX",
-            "primaryChromaticitiesGreenY",
-            "primaryChromaticitiesBlueX",
-            "primaryChromaticitiesBlueY"
-        })
+        @XmlType(name = "",
+                 propOrder = {"primaryChromaticitiesRedX",
+                              "primaryChromaticitiesRedY",
+                              "primaryChromaticitiesGreenX",
+                              "primaryChromaticitiesGreenY",
+                              "primaryChromaticitiesBlueX",
+                              "primaryChromaticitiesBlueY"})
         public static class PrimaryChromaticities {
 
             protected RationalType primaryChromaticitiesRedX;
@@ -831,8 +835,8 @@ public class ImageAssessmentMetadataType {
              * Obtient la valeur de la propriété primaryChromaticitiesRedX.
              *
              * @return
-             *     possible object is
-             *     {@link RationalType }
+             *         possible object is
+             *         {@link RationalType }
              *
              */
             public RationalType getPrimaryChromaticitiesRedX() {
@@ -843,8 +847,8 @@ public class ImageAssessmentMetadataType {
              * Définit la valeur de la propriété primaryChromaticitiesRedX.
              *
              * @param value
-             *     allowed object is
-             *     {@link RationalType }
+             *            allowed object is
+             *            {@link RationalType }
              *
              */
             public void setPrimaryChromaticitiesRedX(RationalType value) {
@@ -855,8 +859,8 @@ public class ImageAssessmentMetadataType {
              * Obtient la valeur de la propriété primaryChromaticitiesRedY.
              *
              * @return
-             *     possible object is
-             *     {@link RationalType }
+             *         possible object is
+             *         {@link RationalType }
              *
              */
             public RationalType getPrimaryChromaticitiesRedY() {
@@ -867,8 +871,8 @@ public class ImageAssessmentMetadataType {
              * Définit la valeur de la propriété primaryChromaticitiesRedY.
              *
              * @param value
-             *     allowed object is
-             *     {@link RationalType }
+             *            allowed object is
+             *            {@link RationalType }
              *
              */
             public void setPrimaryChromaticitiesRedY(RationalType value) {
@@ -879,8 +883,8 @@ public class ImageAssessmentMetadataType {
              * Obtient la valeur de la propriété primaryChromaticitiesGreenX.
              *
              * @return
-             *     possible object is
-             *     {@link RationalType }
+             *         possible object is
+             *         {@link RationalType }
              *
              */
             public RationalType getPrimaryChromaticitiesGreenX() {
@@ -891,8 +895,8 @@ public class ImageAssessmentMetadataType {
              * Définit la valeur de la propriété primaryChromaticitiesGreenX.
              *
              * @param value
-             *     allowed object is
-             *     {@link RationalType }
+             *            allowed object is
+             *            {@link RationalType }
              *
              */
             public void setPrimaryChromaticitiesGreenX(RationalType value) {
@@ -903,8 +907,8 @@ public class ImageAssessmentMetadataType {
              * Obtient la valeur de la propriété primaryChromaticitiesGreenY.
              *
              * @return
-             *     possible object is
-             *     {@link RationalType }
+             *         possible object is
+             *         {@link RationalType }
              *
              */
             public RationalType getPrimaryChromaticitiesGreenY() {
@@ -915,8 +919,8 @@ public class ImageAssessmentMetadataType {
              * Définit la valeur de la propriété primaryChromaticitiesGreenY.
              *
              * @param value
-             *     allowed object is
-             *     {@link RationalType }
+             *            allowed object is
+             *            {@link RationalType }
              *
              */
             public void setPrimaryChromaticitiesGreenY(RationalType value) {
@@ -927,8 +931,8 @@ public class ImageAssessmentMetadataType {
              * Obtient la valeur de la propriété primaryChromaticitiesBlueX.
              *
              * @return
-             *     possible object is
-             *     {@link RationalType }
+             *         possible object is
+             *         {@link RationalType }
              *
              */
             public RationalType getPrimaryChromaticitiesBlueX() {
@@ -939,8 +943,8 @@ public class ImageAssessmentMetadataType {
              * Définit la valeur de la propriété primaryChromaticitiesBlueX.
              *
              * @param value
-             *     allowed object is
-             *     {@link RationalType }
+             *            allowed object is
+             *            {@link RationalType }
              *
              */
             public void setPrimaryChromaticitiesBlueX(RationalType value) {
@@ -951,8 +955,8 @@ public class ImageAssessmentMetadataType {
              * Obtient la valeur de la propriété primaryChromaticitiesBlueY.
              *
              * @return
-             *     possible object is
-             *     {@link RationalType }
+             *         possible object is
+             *         {@link RationalType }
              *
              */
             public RationalType getPrimaryChromaticitiesBlueY() {
@@ -963,8 +967,8 @@ public class ImageAssessmentMetadataType {
              * Définit la valeur de la propriété primaryChromaticitiesBlueY.
              *
              * @param value
-             *     allowed object is
-             *     {@link RationalType }
+             *            allowed object is
+             *            {@link RationalType }
              *
              */
             public void setPrimaryChromaticitiesBlueY(RationalType value) {
@@ -973,11 +977,12 @@ public class ImageAssessmentMetadataType {
 
         }
 
-
         /**
-         * <p>Classe Java pour anonymous complex type.
+         * <p>
+         * Classe Java pour anonymous complex type.
          *
-         * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+         * <p>
+         * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
          *
          * <pre>
          * &lt;complexType>
@@ -995,10 +1000,9 @@ public class ImageAssessmentMetadataType {
          *
          */
         @XmlAccessorType(XmlAccessType.FIELD)
-        @XmlType(name = "", propOrder = {
-            "whitePointXValue",
-            "whitePointYValue"
-        })
+        @XmlType(name = "",
+                 propOrder = {"whitePointXValue",
+                              "whitePointYValue"})
         public static class WhitePoint {
 
             protected RationalType whitePointXValue;
@@ -1008,8 +1012,8 @@ public class ImageAssessmentMetadataType {
              * Obtient la valeur de la propriété whitePointXValue.
              *
              * @return
-             *     possible object is
-             *     {@link RationalType }
+             *         possible object is
+             *         {@link RationalType }
              *
              */
             public RationalType getWhitePointXValue() {
@@ -1020,8 +1024,8 @@ public class ImageAssessmentMetadataType {
              * Définit la valeur de la propriété whitePointXValue.
              *
              * @param value
-             *     allowed object is
-             *     {@link RationalType }
+             *            allowed object is
+             *            {@link RationalType }
              *
              */
             public void setWhitePointXValue(RationalType value) {
@@ -1032,8 +1036,8 @@ public class ImageAssessmentMetadataType {
              * Obtient la valeur de la propriété whitePointYValue.
              *
              * @return
-             *     possible object is
-             *     {@link RationalType }
+             *         possible object is
+             *         {@link RationalType }
              *
              */
             public RationalType getWhitePointYValue() {
@@ -1044,8 +1048,8 @@ public class ImageAssessmentMetadataType {
              * Définit la valeur de la propriété whitePointYValue.
              *
              * @param value
-             *     allowed object is
-             *     {@link RationalType }
+             *            allowed object is
+             *            {@link RationalType }
              *
              */
             public void setWhitePointYValue(RationalType value) {
@@ -1056,11 +1060,12 @@ public class ImageAssessmentMetadataType {
 
     }
 
-
     /**
-     * <p>Classe Java pour anonymous complex type.
+     * <p>
+     * Classe Java pour anonymous complex type.
      *
-     * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+     * <p>
+     * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
      *
      * <pre>
      * &lt;complexType>
@@ -1080,12 +1085,11 @@ public class ImageAssessmentMetadataType {
      *
      */
     @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "samplingFrequencyPlane",
-        "samplingFrequencyUnit",
-        "xSamplingFrequency",
-        "ySamplingFrequency"
-    })
+    @XmlType(name = "",
+             propOrder = {"samplingFrequencyPlane",
+                          "samplingFrequencyUnit",
+                          "xSamplingFrequency",
+                          "ySamplingFrequency"})
     public static class SpatialMetrics {
 
         protected TypeOfSamplingFrequencyPlaneType samplingFrequencyPlane;
@@ -1097,8 +1101,8 @@ public class ImageAssessmentMetadataType {
          * Obtient la valeur de la propriété samplingFrequencyPlane.
          *
          * @return
-         *     possible object is
-         *     {@link TypeOfSamplingFrequencyPlaneType }
+         *         possible object is
+         *         {@link TypeOfSamplingFrequencyPlaneType }
          *
          */
         public TypeOfSamplingFrequencyPlaneType getSamplingFrequencyPlane() {
@@ -1109,8 +1113,8 @@ public class ImageAssessmentMetadataType {
          * Définit la valeur de la propriété samplingFrequencyPlane.
          *
          * @param value
-         *     allowed object is
-         *     {@link TypeOfSamplingFrequencyPlaneType }
+         *            allowed object is
+         *            {@link TypeOfSamplingFrequencyPlaneType }
          *
          */
         public void setSamplingFrequencyPlane(TypeOfSamplingFrequencyPlaneType value) {
@@ -1121,8 +1125,8 @@ public class ImageAssessmentMetadataType {
          * Obtient la valeur de la propriété samplingFrequencyUnit.
          *
          * @return
-         *     possible object is
-         *     {@link TypeOfSamplingFrequencyUnitType }
+         *         possible object is
+         *         {@link TypeOfSamplingFrequencyUnitType }
          *
          */
         public TypeOfSamplingFrequencyUnitType getSamplingFrequencyUnit() {
@@ -1133,8 +1137,8 @@ public class ImageAssessmentMetadataType {
          * Définit la valeur de la propriété samplingFrequencyUnit.
          *
          * @param value
-         *     allowed object is
-         *     {@link TypeOfSamplingFrequencyUnitType }
+         *            allowed object is
+         *            {@link TypeOfSamplingFrequencyUnitType }
          *
          */
         public void setSamplingFrequencyUnit(TypeOfSamplingFrequencyUnitType value) {
@@ -1145,8 +1149,8 @@ public class ImageAssessmentMetadataType {
          * Obtient la valeur de la propriété xSamplingFrequency.
          *
          * @return
-         *     possible object is
-         *     {@link RationalType }
+         *         possible object is
+         *         {@link RationalType }
          *
          */
         public RationalType getXSamplingFrequency() {
@@ -1157,8 +1161,8 @@ public class ImageAssessmentMetadataType {
          * Définit la valeur de la propriété xSamplingFrequency.
          *
          * @param value
-         *     allowed object is
-         *     {@link RationalType }
+         *            allowed object is
+         *            {@link RationalType }
          *
          */
         public void setXSamplingFrequency(RationalType value) {
@@ -1169,8 +1173,8 @@ public class ImageAssessmentMetadataType {
          * Obtient la valeur de la propriété ySamplingFrequency.
          *
          * @return
-         *     possible object is
-         *     {@link RationalType }
+         *         possible object is
+         *         {@link RationalType }
          *
          */
         public RationalType getYSamplingFrequency() {
@@ -1181,8 +1185,8 @@ public class ImageAssessmentMetadataType {
          * Définit la valeur de la propriété ySamplingFrequency.
          *
          * @param value
-         *     allowed object is
-         *     {@link RationalType }
+         *            allowed object is
+         *            {@link RationalType }
          *
          */
         public void setYSamplingFrequency(RationalType value) {
@@ -1191,11 +1195,12 @@ public class ImageAssessmentMetadataType {
 
     }
 
-
     /**
-     * <p>Classe Java pour anonymous complex type.
+     * <p>
+     * Classe Java pour anonymous complex type.
      *
-     * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+     * <p>
+     * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
      *
      * <pre>
      * &lt;complexType>
@@ -1228,12 +1233,11 @@ public class ImageAssessmentMetadataType {
      *
      */
     @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "targetType",
-        "targetID",
-        "externalTarget",
-        "performanceData"
-    })
+    @XmlType(name = "",
+             propOrder = {"targetType",
+                          "targetID",
+                          "externalTarget",
+                          "performanceData"})
     public static class TargetData {
 
         protected List<TypeOfTargetTypeType> targetType;
@@ -1253,8 +1257,9 @@ public class ImageAssessmentMetadataType {
          *
          * <p>
          * For example, to add a new item, do as follows:
+         *
          * <pre>
-         *    getTargetType().add(newItem);
+         * getTargetType().add(newItem);
          * </pre>
          *
          *
@@ -1282,8 +1287,9 @@ public class ImageAssessmentMetadataType {
          *
          * <p>
          * For example, to add a new item, do as follows:
+         *
          * <pre>
-         *    getTargetID().add(newItem);
+         * getTargetID().add(newItem);
          * </pre>
          *
          *
@@ -1311,8 +1317,9 @@ public class ImageAssessmentMetadataType {
          *
          * <p>
          * For example, to add a new item, do as follows:
+         *
          * <pre>
-         *    getExternalTarget().add(newItem);
+         * getExternalTarget().add(newItem);
          * </pre>
          *
          *
@@ -1340,8 +1347,9 @@ public class ImageAssessmentMetadataType {
          *
          * <p>
          * For example, to add a new item, do as follows:
+         *
          * <pre>
-         *    getPerformanceData().add(newItem);
+         * getPerformanceData().add(newItem);
          * </pre>
          *
          *
@@ -1358,11 +1366,12 @@ public class ImageAssessmentMetadataType {
             return this.performanceData;
         }
 
-
         /**
-         * <p>Classe Java pour anonymous complex type.
+         * <p>
+         * Classe Java pour anonymous complex type.
          *
-         * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+         * <p>
+         * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
          *
          * <pre>
          * &lt;complexType>
@@ -1382,12 +1391,11 @@ public class ImageAssessmentMetadataType {
          *
          */
         @XmlAccessorType(XmlAccessType.FIELD)
-        @XmlType(name = "", propOrder = {
-            "targetManufacturer",
-            "targetName",
-            "targetNo",
-            "targetMedia"
-        })
+        @XmlType(name = "",
+                 propOrder = {"targetManufacturer",
+                              "targetName",
+                              "targetNo",
+                              "targetMedia"})
         public static class TargetID {
 
             protected StringType targetManufacturer;
@@ -1399,8 +1407,8 @@ public class ImageAssessmentMetadataType {
              * Obtient la valeur de la propriété targetManufacturer.
              *
              * @return
-             *     possible object is
-             *     {@link StringType }
+             *         possible object is
+             *         {@link StringType }
              *
              */
             public StringType getTargetManufacturer() {
@@ -1411,8 +1419,8 @@ public class ImageAssessmentMetadataType {
              * Définit la valeur de la propriété targetManufacturer.
              *
              * @param value
-             *     allowed object is
-             *     {@link StringType }
+             *            allowed object is
+             *            {@link StringType }
              *
              */
             public void setTargetManufacturer(StringType value) {
@@ -1423,8 +1431,8 @@ public class ImageAssessmentMetadataType {
              * Obtient la valeur de la propriété targetName.
              *
              * @return
-             *     possible object is
-             *     {@link StringType }
+             *         possible object is
+             *         {@link StringType }
              *
              */
             public StringType getTargetName() {
@@ -1435,8 +1443,8 @@ public class ImageAssessmentMetadataType {
              * Définit la valeur de la propriété targetName.
              *
              * @param value
-             *     allowed object is
-             *     {@link StringType }
+             *            allowed object is
+             *            {@link StringType }
              *
              */
             public void setTargetName(StringType value) {
@@ -1447,8 +1455,8 @@ public class ImageAssessmentMetadataType {
              * Obtient la valeur de la propriété targetNo.
              *
              * @return
-             *     possible object is
-             *     {@link StringType }
+             *         possible object is
+             *         {@link StringType }
              *
              */
             public StringType getTargetNo() {
@@ -1459,8 +1467,8 @@ public class ImageAssessmentMetadataType {
              * Définit la valeur de la propriété targetNo.
              *
              * @param value
-             *     allowed object is
-             *     {@link StringType }
+             *            allowed object is
+             *            {@link StringType }
              *
              */
             public void setTargetNo(StringType value) {
@@ -1471,8 +1479,8 @@ public class ImageAssessmentMetadataType {
              * Obtient la valeur de la propriété targetMedia.
              *
              * @return
-             *     possible object is
-             *     {@link StringType }
+             *         possible object is
+             *         {@link StringType }
              *
              */
             public StringType getTargetMedia() {
@@ -1483,8 +1491,8 @@ public class ImageAssessmentMetadataType {
              * Définit la valeur de la propriété targetMedia.
              *
              * @param value
-             *     allowed object is
-             *     {@link StringType }
+             *            allowed object is
+             *            {@link StringType }
              *
              */
             public void setTargetMedia(StringType value) {

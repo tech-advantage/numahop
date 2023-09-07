@@ -1,5 +1,34 @@
 package fr.progilone.pgcn.service.exchange.cines;
 
+import fr.progilone.pgcn.domain.administration.MailboxConfiguration;
+import fr.progilone.pgcn.domain.document.DocUnit;
+import fr.progilone.pgcn.domain.exchange.cines.CinesReport;
+import fr.progilone.pgcn.domain.jaxb.aip.PacType;
+import fr.progilone.pgcn.domain.jaxb.avis.PacAvisType;
+import fr.progilone.pgcn.domain.library.Library;
+import fr.progilone.pgcn.exception.PgcnTechnicalException;
+import fr.progilone.pgcn.service.administration.MailboxConfigurationService;
+import fr.progilone.pgcn.service.document.DocUnitService;
+import fr.progilone.pgcn.service.exchange.mail.MailboxService;
+import fr.progilone.pgcn.service.storage.FileStorageManager;
+import fr.progilone.pgcn.service.util.DateUtils;
+import fr.progilone.pgcn.service.util.transaction.TransactionService;
+import jakarta.activation.DataHandler;
+import jakarta.activation.DataSource;
+import jakarta.annotation.PostConstruct;
+import jakarta.mail.Flags;
+import jakarta.mail.Message;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Multipart;
+import jakarta.mail.Part;
+import jakarta.mail.internet.MimeBodyPart;
+import jakarta.mail.internet.MimeMultipart;
+import jakarta.mail.util.ByteArrayDataSource;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.UnmarshalException;
+import jakarta.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -17,24 +46,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
-import javax.annotation.PostConstruct;
-import javax.mail.Flags;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Multipart;
-import javax.mail.Part;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMultipart;
-import javax.mail.util.ByteArrayDataSource;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.UnmarshalException;
-import javax.xml.bind.Unmarshaller;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -45,20 +56,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-
-import fr.progilone.pgcn.domain.administration.MailboxConfiguration;
-import fr.progilone.pgcn.domain.document.DocUnit;
-import fr.progilone.pgcn.domain.exchange.cines.CinesReport;
-import fr.progilone.pgcn.domain.jaxb.aip.PacType;
-import fr.progilone.pgcn.domain.jaxb.avis.PacAvisType;
-import fr.progilone.pgcn.domain.library.Library;
-import fr.progilone.pgcn.exception.PgcnTechnicalException;
-import fr.progilone.pgcn.service.administration.MailboxConfigurationService;
-import fr.progilone.pgcn.service.document.DocUnitService;
-import fr.progilone.pgcn.service.exchange.mail.MailboxService;
-import fr.progilone.pgcn.service.storage.FileStorageManager;
-import fr.progilone.pgcn.service.util.DateUtils;
-import fr.progilone.pgcn.service.util.transaction.TransactionService;
 
 /**
  * Service gérant l'évolution des éléments exportés vers le(s) serveur(s) CINES
@@ -212,7 +209,6 @@ public class CinesRequestHandlerService {
         }
     }
 
-
     /**
      * Parse le message à la recherche d'un corps au format avis.xsd et/ou d'une pièce jointe au format aip.xsd
      *
@@ -227,7 +223,8 @@ public class CinesRequestHandlerService {
         final Date sentDate = message.getSentDate();
         LOG.debug("Lecture du message {} du {}", message.getSubject(), sentDate);
         final CinesResponse response = new CinesResponse();
-        response.setMsgDate(sentDate != null ? DateUtils.convertToLocalDateTime(sentDate) : LocalDateTime.now());
+        response.setMsgDate(sentDate != null ? DateUtils.convertToLocalDateTime(sentDate)
+                                             : LocalDateTime.now());
 
         final Multipart multipart;
         if (message.isMimeType(MediaType.TEXT_HTML_VALUE) || message.isMimeType(MediaType.TEXT_XML_VALUE)) {
@@ -283,8 +280,7 @@ public class CinesRequestHandlerService {
 
             }
             // Pièce jointe xml
-            else if (StringUtils.equals(disposition, Part.ATTACHMENT) && (part.isMimeType(MediaType.TEXT_XML_VALUE)
-                                                                          || part.isMimeType(MediaType.APPLICATION_XML_VALUE))) {
+            else if (StringUtils.equals(disposition, Part.ATTACHMENT) && (part.isMimeType(MediaType.TEXT_XML_VALUE) || part.isMimeType(MediaType.APPLICATION_XML_VALUE))) {
 
                 parseResult = parsePart(part, fr.progilone.pgcn.domain.jaxb.aip.ObjectFactory.class);
 
@@ -306,11 +302,12 @@ public class CinesRequestHandlerService {
                         // stocke le fichier aip.xml
                         handleAip(response.getAip(), part);
 
-                        // il n'y a plus d'avis dans ce cas => on cree un avis  + un certificat de toutes pieces...
+                        // il n'y a plus d'avis dans ce cas => on cree un avis + un certificat de toutes pieces...
                         final String certif = "Archivé le " + pac.getDocMeta().getDateArchivage()
-                                            + " - Identifiant versement : " + pac.getDocMeta().getIdentifiantVersement()
-                                            + " - Identifiant docPac : " + pac.getDocMeta().getIdentifiantDocPac();
-
+                                              + " - Identifiant versement : "
+                                              + pac.getDocMeta().getIdentifiantVersement()
+                                              + " - Identifiant docPac : "
+                                              + pac.getDocMeta().getIdentifiantDocPac();
 
                         final fr.progilone.pgcn.domain.jaxb.avis.ObjectFactory avisFactory = new fr.progilone.pgcn.domain.jaxb.avis.ObjectFactory();
                         final PacAvisType avis = avisFactory.createPacAvisType();
@@ -361,7 +358,7 @@ public class CinesRequestHandlerService {
 
         } catch (final UnmarshalException e) {
             final String strFile;
-            if (IOUtils.toString(part.getInputStream(), "UTF-8").length() > 500 ) {
+            if (IOUtils.toString(part.getInputStream(), "UTF-8").length() > 500) {
                 strFile = IOUtils.toString(part.getInputStream(), "UTF-8").substring(0, 500);
             } else {
                 strFile = IOUtils.toString(part.getInputStream(), "UTF-8");
@@ -369,11 +366,14 @@ public class CinesRequestHandlerService {
 
             LOG.error("Le message {} n'a pas pu être parsé à l'aide des classes {}",
                       strFile,
-                      Arrays.stream(jaxbBoundedClasses).map(Class::getName).reduce((a, b) -> a + ", " + b).orElse("[Aucune classe fournie]"));
+                      Arrays.stream(jaxbBoundedClasses)
+                            .map(Class::getName)
+                            .reduce((a, b) -> a + ", "
+                                              + b)
+                            .orElse("[Aucune classe fournie]"));
             return Optional.empty();
         }
     }
-
 
     /**
      * Mise à jour du rapport d'export à partir de la réponse extraite du mail.
@@ -401,9 +401,8 @@ public class CinesRequestHandlerService {
             LOG.error("L'export CINES avec l'identifiant de versement {} n'a pas été trouvé", idVersement);
             return treated;
         }
-        if (report.getDocUnit() == null
-                || report.getDocUnit().getLibrary() == null
-                || ! StringUtils.equals(library.getIdentifier(), report.getDocUnit().getLibrary().getIdentifier())) {
+        if (report.getDocUnit() == null || report.getDocUnit().getLibrary() == null
+            || !StringUtils.equals(library.getIdentifier(), report.getDocUnit().getLibrary().getIdentifier())) {
             LOG.info("L'export CINES avec l'identifiant de versement {} ne depend pas de cette librairie...", idVersement);
             return treated;
         }
@@ -455,12 +454,14 @@ public class CinesRequestHandlerService {
      */
     private void handleAip(final PacType aip, final Part part) throws IOException, MessagingException {
         if (aip != null) {
-            final String idVersement = aip.getDocMeta() != null ? aip.getDocMeta().getIdentifiantDocProducteur() : null;
+            final String idVersement = aip.getDocMeta() != null ? aip.getDocMeta().getIdentifiantDocProducteur()
+                                                                : null;
             if (idVersement != null) {
                 final DocUnit availableDoc = docUnitService.findOneByPgcnIdAndState(idVersement, DocUnit.State.AVAILABLE);
                 final DocUnit closedDoc = docUnitService.findOneByPgcnIdAndState(idVersement, DocUnit.State.CLOSED);
                 if (availableDoc != null || closedDoc != null) {
-                    final DocUnit foundDoc = availableDoc != null ? availableDoc : closedDoc;
+                    final DocUnit foundDoc = availableDoc != null ? availableDoc
+                                                                  : closedDoc;
                     final Path root = Paths.get(workingDir, exportCinesService.getDocLibraryId(foundDoc.getIdentifier()), foundDoc.getIdentifier());
                     if (root != null) {
                         fm.copyInputStreamToFile(part.getInputStream(), root.toFile(), AIP_XML_FILE, true, false);
@@ -472,7 +473,6 @@ public class CinesRequestHandlerService {
         }
     }
 
-
     /**
      * Récupération du fichier aip.xml stocké
      * pour un docUnit donné
@@ -481,7 +481,7 @@ public class CinesRequestHandlerService {
      * @return
      */
     public File retrieveAip(final String docUnit) {
-        if(docUnit != null) {
+        if (docUnit != null) {
             final Path root = Paths.get(workingDir, exportCinesService.getDocLibraryId(docUnit), docUnit);
             if (root != null) {
                 return fm.retrieveFile(root.toFile(), AIP_XML_FILE);
@@ -499,10 +499,10 @@ public class CinesRequestHandlerService {
      */
     public File retrieveSip(final String docUnitId, final boolean exportError) {
 
-        if(docUnitId != null) {
+        if (docUnitId != null) {
             if (exportError) {
                 final DocUnit docUnit = docUnitService.findOne(docUnitId);
-                final Path root = Paths.get(cacheDir, exportCinesService.getDocLibraryId(docUnitId),  docUnit.getPgcnId());
+                final Path root = Paths.get(cacheDir, exportCinesService.getDocLibraryId(docUnitId), docUnit.getPgcnId());
                 if (root != null) {
                     return fm.retrieveFile(root.toFile(), SIP_XML_FILE);
                 }
@@ -526,10 +526,10 @@ public class CinesRequestHandlerService {
      */
     public File retrieveMets(final String docUnitId, final boolean exportError) {
 
-        if(docUnitId != null) {
+        if (docUnitId != null) {
             if (exportError) {
                 final DocUnit docUnit = docUnitService.findOne(docUnitId);
-                final Path root = Paths.get(cacheDir, exportCinesService.getDocLibraryId(docUnitId),  docUnit.getPgcnId());
+                final Path root = Paths.get(cacheDir, exportCinesService.getDocLibraryId(docUnitId), docUnit.getPgcnId());
                 if (root != null) {
                     return fm.retrieveFile(root.toFile(), METS_XML_FILE);
                 }

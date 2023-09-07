@@ -1,13 +1,30 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('CondreportCtrl', CondreportCtrl);
+    angular.module('numaHopApp.controller').controller('CondreportCtrl', CondreportCtrl);
 
-    function CondreportCtrl($http, $q, $location, $routeParams, $scope, $timeout, CondreportSrvc, CondreportAttachmentSrvc,
-        CondreportDetailSrvc, CondreportDescPropertySrvc, CondreportDescValueSrvc, CondreportPropertyConfSrvc,
-        WorkflowHandleSrvc, CONFIGURATION, gettext, gettextCatalog, ListTools, MessageSrvc, ModalSrvc, USER_ROLES) {
-
+    function CondreportCtrl(
+        $http,
+        $q,
+        $location,
+        $routeParams,
+        $scope,
+        $timeout,
+        CondreportSrvc,
+        CondreportAttachmentSrvc,
+        CondreportDetailSrvc,
+        CondreportDescPropertySrvc,
+        CondreportDescValueSrvc,
+        CondreportPropertyConfSrvc,
+        WorkflowHandleSrvc,
+        CONFIGURATION,
+        gettext,
+        gettextCatalog,
+        ListTools,
+        MessageSrvc,
+        ModalSrvc,
+        USER_ROLES
+    ) {
         var repCtrl = this;
 
         repCtrl.getTypeList = getTypeList;
@@ -53,7 +70,6 @@
         repCtrl.isPrestaUnauthorized = isPrestaUnauthorized;
         repCtrl.initCantModifAndIsReportValidated = initCantModifAndIsReportValidated;
 
-
         // listes déroulantes
         repCtrl.config = {
             _cache: {}, // mise en cache des listes déroulante
@@ -62,23 +78,23 @@
              * refresh est défini dans descriptionPropertyConfig
              */
             descriptionProperty: {
-                display: "label",
-                placeholder: gettextCatalog.getString("Propriété"),
-                trackby: "identifier",
+                display: 'label',
+                placeholder: gettextCatalog.getString('Propriété'),
+                trackby: 'identifier',
                 'refresh-delay': 300,
-                'allow-clear': true
+                'allow-clear': true,
             },
             /**
              * modèle de config pour les listes de valeurs
              * refresh est défini dans descriptionValueConfig
              */
             descriptionValue: {
-                display: "label",
-                placeholder: gettextCatalog.getString("Valeur"),
-                trackby: "identifier",
+                display: 'label',
+                placeholder: gettextCatalog.getString('Valeur'),
+                trackby: 'identifier',
                 'refresh-delay': 300,
-                'allow-clear': true
-            }
+                'allow-clear': true,
+            },
         };
 
         repCtrl.types = CondreportSrvc.types;
@@ -108,15 +124,14 @@
                 }
 
                 // Chargement de la liste en cache
-                if (angular.isUndefined(repCtrl.config._cache["__descProperty__"])) {
-                    repCtrl.config._cache["__descProperty__"] = CondreportDescPropertySrvc.queryAll();
+                if (angular.isUndefined(repCtrl.config._cache['__descProperty__'])) {
+                    repCtrl.config._cache['__descProperty__'] = CondreportDescPropertySrvc.queryAll();
                 }
-                return repCtrl.config._cache["__descProperty__"]
-                    .then(function (values) {
-                        return _.filter(values, function (v) {
-                            return v.type === type;
-                        });
+                return repCtrl.config._cache['__descProperty__'].then(function (values) {
+                    return _.filter(values, function (v) {
+                        return v.type === type;
                     });
+                });
             };
             return config;
         }
@@ -171,7 +186,6 @@
             loadConditionReport(parentCtrl.docUnit);
         }
 
-
         /**************************************
          *               Report               *
          **************************************/
@@ -186,9 +200,7 @@
             repCtrl.report = CondreportSrvc.get({ docUnit: docUnit.identifier });
 
             reportAfterload(repCtrl.report.$promise)
-
                 .then(function (report) {
-
                     // Conf des propriétés
                     var propPromise = loadPropertyConf();
                     // Détails
@@ -240,7 +252,7 @@
                     initConditionReportDetail(detail);
 
                     repCtrl.loaded = true;
-                    openForm("detailForm");
+                    openForm('detailForm');
                 });
         }
 
@@ -252,19 +264,18 @@
          * @returns
          */
         function reportAfterload(reportPromise) {
-            return reportPromise
-                .then(function (report) {
-                    // Lien de téléchargement du constat d'état
-                    repCtrl.parent._condreport_identifier = report.identifier;
+            return reportPromise.then(function (report) {
+                // Lien de téléchargement du constat d'état
+                repCtrl.parent._condreport_identifier = report.identifier;
 
-                    if (!report.identifier) {
-                        delete repCtrl.details;
-                        delete repCtrl.attachments;
-                        repCtrl.loaded = true;
-                        return $q.reject();
-                    }
-                    return report;
-                });
+                if (!report.identifier) {
+                    delete repCtrl.details;
+                    delete repCtrl.attachments;
+                    repCtrl.loaded = true;
+                    return $q.reject();
+                }
+                return report;
+            });
         }
 
         /**
@@ -273,7 +284,8 @@
          */
         function saveReport() {
             $timeout(function () {
-                repCtrl.report.$save()
+                repCtrl.report
+                    .$save()
                     .then(function () {
                         MessageSrvc.addSuccess(gettext("Le constat d'état a été sauvegardé"));
                     })
@@ -283,7 +295,7 @@
             });
         }
 
-		/**
+        /**
          * Liste des types d'état non encore créés
          *
          * @returns
@@ -292,18 +304,17 @@
             if (!repCtrl._typeList) {
                 if (repCtrl.isUserPresta) {
                     repCtrl._typeList = _.filter(repCtrl.types, function (l) {
-                        return l.code === "DIGITALIZATION" || l.code === "LIBRARY_BACK";
+                        return l.code === 'DIGITALIZATION' || l.code === 'LIBRARY_BACK';
                     });
                 } else {
                     repCtrl._typeList = _.filter(repCtrl.types, function (l) {
-                        return l.code !== "DIGITALIZATION" && l.code !== "LIBRARY_BACK";
+                        return l.code !== 'DIGITALIZATION' && l.code !== 'LIBRARY_BACK';
                     });
                     repCtrl._typeList.splice(0, 1);
                 }
             }
             return repCtrl._typeList;
         }
-
 
         /**************************************
          *               Detail               *
@@ -320,15 +331,14 @@
          * @param {any} type
          */
         function createDetail(type) {
-            CondreportDetailSrvc.save({ type: type, detail: getLastDetail().identifier }, {}).$promise
-                .then(function (newDetail) {
-                    MessageSrvc.addSuccess(gettext("Le constat d'état a été sauvegardé"));
-                    repCtrl.details.push(newDetail);
+            CondreportDetailSrvc.save({ type: type, detail: getLastDetail().identifier }, {}).$promise.then(function (newDetail) {
+                MessageSrvc.addSuccess(gettext("Le constat d'état a été sauvegardé"));
+                repCtrl.details.push(newDetail);
 
-                    repCtrl.currentDetail = newDetail;
-                    repCtrl.currentDescriptions = copyDescriptions(newDetail);
-                    initCantModifAndIsReportValidated();
-                });
+                repCtrl.currentDetail = newDetail;
+                repCtrl.currentDescriptions = copyDescriptions(newDetail);
+                initCantModifAndIsReportValidated();
+            });
         }
 
         /**
@@ -337,20 +347,18 @@
          * @param {any} detail
          */
         function deleteDetail(detail) {
-            ModalSrvc.confirmDeletion(gettextCatalog.getString("le constat d'état {{type}}", { type: repCtrl.types[detail.type].label }))
-                .then(function () {
-                    detail.$delete(function (value) {
-                        MessageSrvc.addSuccess(gettext("Le constat d'état {{type}} a été supprimé"), { type: repCtrl.types[value.type].label });
+            ModalSrvc.confirmDeletion(gettextCatalog.getString("le constat d'état {{type}}", { type: repCtrl.types[detail.type].label })).then(function () {
+                detail.$delete(function (value) {
+                    MessageSrvc.addSuccess(gettext("Le constat d'état {{type}} a été supprimé"), { type: repCtrl.types[value.type].label });
 
-                        ListTools.findAndRemoveItemFromList(detail, repCtrl.details);
-                        // sélection du dernier constat d'état
-                        selectLastDetail();
-                    });
+                    ListTools.findAndRemoveItemFromList(detail, repCtrl.details);
+                    // sélection du dernier constat d'état
+                    selectLastDetail();
                 });
+            });
         }
 
         function canValidateCondReport() {
-
             if (repCtrl.currentDetail && repCtrl.currentDetail.type === 'LIBRARY_LEAVING') {
                 if (repCtrl.isStateValidated('LIBRARY_LEAVING')) {
                     return false;
@@ -363,9 +371,7 @@
         }
 
         function canConfirmCondReport() {
-            return repCtrl.isUserPresta
-                        && repCtrl.isStateValidated('LIBRARY_LEAVING')
-                        && !repCtrl.isStateValidated('PROVIDER_RECEPTION');
+            return repCtrl.isUserPresta && repCtrl.isStateValidated('LIBRARY_LEAVING') && !repCtrl.isStateValidated('PROVIDER_RECEPTION');
         }
 
         function canPropagate() {
@@ -376,36 +382,36 @@
          * Enregistrement suivi d'une validation workflow du constat.
          */
         function validateCondReport(propagate) {
-
             var stateToValidate;
             switch (repCtrl.currentDetail.type) {
-                case "LIBRARY_LEAVING":
+                case 'LIBRARY_LEAVING':
                     stateToValidate = 'VALIDATION_CONSTAT_ETAT';
                     break;
-                case "PROVIDER_RECEPTION":
-                case "DIGITALIZATION":
+                case 'PROVIDER_RECEPTION':
+                case 'DIGITALIZATION':
                     stateToValidate = 'CONSTAT_ETAT_AVANT_NUMERISATION';
                     break;
-                case "LIBRARY_BACK":
+                case 'LIBRARY_BACK':
                     stateToValidate = 'CONSTAT_ETAT_APRES_NUMERISATION';
                     break;
-                default: return false;
+                default:
+                    return false;
             }
 
             $timeout(function () {
-                    repCtrl.report.$save()
+                repCtrl.report
+                    .$save()
                     .then(function () {
                         repCtrl.parent.validateCondReport(stateToValidate);
-                        $location.path("/document/all_operations/" + repCtrl.docUnitId).search({ tab: 'CONDREPORT' });
+                        $location.path('/document/all_operations/' + repCtrl.docUnitId).search({ tab: 'CONDREPORT' });
                     })
                     .then(function () {
                         if (propagate) {
                             // creation constats sur les UD filles
-                            CondreportSrvc.propagate({ docUnit: repCtrl.docUnitId, id: repCtrl.currentDetail.identifier}, {}).$promise
-                                .then(function (results) {
-                                    _.each(results, function(res) {
-                                        MessageSrvc.addSuccess(gettextCatalog.getString(res));
-                                    });
+                            CondreportSrvc.propagate({ docUnit: repCtrl.docUnitId, id: repCtrl.currentDetail.identifier }, {}).$promise.then(function (results) {
+                                _.each(results, function (res) {
+                                    MessageSrvc.addSuccess(gettextCatalog.getString(res));
+                                });
                             });
                         }
                     })
@@ -413,30 +419,25 @@
                         openForm('reportForm');
                     });
             });
-
         }
 
         function confirmValidatedCondReport() {
             $timeout(function () {
-
                 repCtrl.currentDetail.provWriterName = repCtrl.parent.user.firstname;
                 repCtrl.currentDetail.provWriterfunction = repCtrl.parent.user.function;
 
-               CondreportDetailSrvc.confirmInitialValid({ type: repCtrl.currentDetail.type, id: repCtrl.currentDetail.identifier }, repCtrl.currentDetail)
-                   .$promise
-                     .then(function(newDetail) {
-
+                CondreportDetailSrvc.confirmInitialValid({ type: repCtrl.currentDetail.type, id: repCtrl.currentDetail.identifier }, repCtrl.currentDetail)
+                    .$promise.then(function (newDetail) {
                         repCtrl.currentDetail = newDetail;
                         repCtrl.currentDescriptions = copyDescriptions(newDetail);
 
                         repCtrl.parent.validateCondReport('VALIDATION_BORDEREAU_CONSTAT_ETAT');
                         MessageSrvc.addSuccess(gettext("Le constat d'état a été validé"));
-                        $location.path("/document/all_operations/" + repCtrl.parent.docUnit.identifier).search({ tab: 'CONDREPORT' });
+                        $location.path('/document/all_operations/' + repCtrl.parent.docUnit.identifier).search({ tab: 'CONDREPORT' });
                     })
                     .catch(function () {
                         openForm('reportForm');
                     });
-
             });
         }
 
@@ -478,18 +479,18 @@
                     return d.property && !d.property.fake;
                 });
 
-                repCtrl.currentDetail.$save()
+                repCtrl.currentDetail
+                    .$save()
                     .then(function (det) {
                         MessageSrvc.addSuccess(gettext("Le constat d'état a été sauvegardé"));
                         repCtrl.currentDescriptions = copyDescriptions(repCtrl.currentDetail);
-
                     })
                     .catch(function (response) {
                         var descErrors;
                         if (response.data.errors) {
                             descErrors = _.chain(response.data.errors)
                                 .filter(function (e) {
-                                    return e.code === "CONDREPORT_DETAIL_DESC_EMPTY";
+                                    return e.code === 'CONDREPORT_DETAIL_DESC_EMPTY';
                                 })
                                 .map(function (e) {
                                     var p = CondreportDescPropertySrvc.getFakeProperty(e.field);
@@ -498,7 +499,7 @@
                                 .value();
                         }
                         if (descErrors && descErrors.length > 0) {
-                            MessageSrvc.addError(gettext("<b>Champs non renseignés: </b><br/>{{errors}}"), { errors: descErrors.join("<br/>") });
+                            MessageSrvc.addError(gettext('<b>Champs non renseignés: </b><br/>{{errors}}'), { errors: descErrors.join('<br/>') });
                         }
                         openForm('detailForm');
                     });
@@ -511,7 +512,7 @@
          * @param {any} detail
          */
         function getLastDetail() {
-            return _.max(repCtrl.details, "position");
+            return _.max(repCtrl.details, 'position');
         }
 
         /**
@@ -535,8 +536,7 @@
             // sélection du dernier constat d'état
             if (repCtrl.details.length > 0) {
                 selectDetail(getLastDetail());
-            }
-            else {
+            } else {
                 delete repCtrl.currentDetail;
                 delete repCtrl.currentDescriptions;
             }
@@ -549,7 +549,7 @@
          */
         function selectDetail(detail) {
             if (!isDetailSelected(detail)) {
-                closeForm("detailForm")
+                closeForm('detailForm')
                     .then(function () {
                         return loadConditionReportDetail(detail.identifier);
                     })
@@ -575,7 +575,7 @@
             }
         }
 
-		/**
+        /**
          * Le détail du constat d'état est-il sélectionné ?
          *
          * @param {any} detail
@@ -593,15 +593,15 @@
         }
 
         function isUserUnauthorized() {
-            return repCtrl.currentDetail
-                        && (repCtrl.currentDetail.type === 'DIGITALIZATION' || repCtrl.currentDetail.type === 'LIBRARY_BACK')
-                        && !repCtrl.isUserPresta;
+            return repCtrl.currentDetail && (repCtrl.currentDetail.type === 'DIGITALIZATION' || repCtrl.currentDetail.type === 'LIBRARY_BACK') && !repCtrl.isUserPresta;
         }
 
         function isPrestaUnauthorized() {
-            return repCtrl.isUserPresta && repCtrl.currentDetail
-                    && (repCtrl.currentDetail.createdBy !== repCtrl.loginUser
-                            || (repCtrl.currentDetail.type !== 'DIGITALIZATION' && repCtrl.currentDetail.type !== 'LIBRARY_BACK'));
+            return (
+                repCtrl.isUserPresta &&
+                repCtrl.currentDetail &&
+                (repCtrl.currentDetail.createdBy !== repCtrl.loginUser || (repCtrl.currentDetail.type !== 'DIGITALIZATION' && repCtrl.currentDetail.type !== 'LIBRARY_BACK'))
+            );
         }
 
         /**
@@ -627,8 +627,7 @@
          * @returns {string} le type de champ editable
          */
         function getEditableType(description, detailForm) {
-            return (description && detailForm && !detailForm.$visible || description.creationMode) ?
-                'uiselect' : 'readonly';
+            return (description && detailForm && !detailForm.$visible) || description.creationMode ? 'uiselect' : 'readonly';
         }
 
         /**
@@ -640,51 +639,49 @@
             var confPromise = loadPropertyConf();
             var propPromise = CondreportDescPropertySrvc.query().$promise;
 
-            return $q.all([confPromise, propPromise])
-                .then(function (data) {
-                    var confs = data[0];
-                    var descProperties = data[1];
-                    var type = repCtrl.parent.docUnit.condReportType;
+            return $q.all([confPromise, propPromise]).then(function (data) {
+                var confs = data[0];
+                var descProperties = data[1];
+                var type = repCtrl.parent.docUnit.condReportType;
 
-                    detail.descriptions = _.chain(descProperties)
-                        .filter(function (p) {
-                            var conf = _.find(confs, function (c) {
-                                return (c.descPropertyId && c.descPropertyId === p.identifier);
-                            });
-                            return !conf || (conf.showOnCreation && (!type || conf.types.indexOf(type) >= 0));
-                        })
-                        .map(function (p) {
-                            return { property: p };
-                        })
-                        .value();
-
-                    repCtrl.currentDescriptions = copyDescriptions(detail);
-
-                    // ppté internes
-                    _.chain(CondreportDescPropertySrvc.fakeProperties)
-                        .filter(function (p) {
-                            var conf = _.find(confs, function (c) {
-                                return (c.internalProperty && c.internalProperty === p.identifier);
-                            });
-                            return !conf || conf.showOnCreation;
-                        })
-                        .map(function (p) {
-                            return { property: p };
-                        })
-                        .each(function (p) {
-                            repCtrl.currentDescriptions.push(p);
+                detail.descriptions = _.chain(descProperties)
+                    .filter(function (p) {
+                        var conf = _.find(confs, function (c) {
+                            return c.descPropertyId && c.descPropertyId === p.identifier;
                         });
+                        return !conf || (conf.showOnCreation && (!type || conf.types.indexOf(type) >= 0));
+                    })
+                    .map(function (p) {
+                        return { property: p };
+                    })
+                    .value();
 
-                    return detail;
-                });
+                repCtrl.currentDescriptions = copyDescriptions(detail);
+
+                // ppté internes
+                _.chain(CondreportDescPropertySrvc.fakeProperties)
+                    .filter(function (p) {
+                        var conf = _.find(confs, function (c) {
+                            return c.internalProperty && c.internalProperty === p.identifier;
+                        });
+                        return !conf || conf.showOnCreation;
+                    })
+                    .map(function (p) {
+                        return { property: p };
+                    })
+                    .each(function (p) {
+                        repCtrl.currentDescriptions.push(p);
+                    });
+
+                return detail;
+            });
         }
-
 
         /**************************************
          *             Description            *
          **************************************/
 
-		/**
+        /**
          * Création d'une copie de la liste des descriptions de reliures,
          * qui sert pour l'affichage
          *
@@ -695,13 +692,13 @@
             var copyOfDescriptions = angular.copy(detail.descriptions);
             // Création des "fausses" descriptions
             if (detail.dim1 || detail.dim2 || detail.dim3) {
-                copyOfDescriptions.push({ property: CondreportDescPropertySrvc.getFakeProperty("DIMENSION") });
+                copyOfDescriptions.push({ property: CondreportDescPropertySrvc.getFakeProperty('DIMENSION') });
             }
             if (detail.bodyDesc) {
-                copyOfDescriptions.push({ property: CondreportDescPropertySrvc.getFakeProperty("BODY_DESC") });
+                copyOfDescriptions.push({ property: CondreportDescPropertySrvc.getFakeProperty('BODY_DESC') });
             }
             if (detail.bindingDesc) {
-                copyOfDescriptions.push({ property: CondreportDescPropertySrvc.getFakeProperty("BINDING_DESC") });
+                copyOfDescriptions.push({ property: CondreportDescPropertySrvc.getFakeProperty('BINDING_DESC') });
             }
 
             return copyOfDescriptions;
@@ -725,7 +722,7 @@
         function getDescriptionPos(description) {
             var property = description.property;
             // Si pas de property ou si fake, placer à la fin;
-            return (!property || property.fake) ? 9999 : property.order; //+ property.label;
+            return !property || property.fake ? 9999 : property.order; //+ property.label;
         }
 
         /**
@@ -755,15 +752,13 @@
             var ppty = description.property;
             if (ppty) {
                 // Suppression des "fausses" descriptions du document
-                if (ppty.identifier === "DIMENSION") {
+                if (ppty.identifier === 'DIMENSION') {
                     repCtrl.currentDetail.dim1 = 0;
                     repCtrl.currentDetail.dim2 = 0;
                     repCtrl.currentDetail.dim3 = 0;
-                }
-                else if (ppty.identifier === "BODY_DESC") {
+                } else if (ppty.identifier === 'BODY_DESC') {
                     repCtrl.currentDetail.bodyDesc = null;
-                }
-                else if (ppty.identifier === "BINDING_DESC") {
+                } else if (ppty.identifier === 'BINDING_DESC') {
                     repCtrl.currentDetail.bindingDesc = null;
                 }
             }
@@ -830,8 +825,7 @@
             // Si c'est la liste des valeurs n'a pas d'options, on la cache
             var hasValueItems = handler.valueSelect && handler.valueSelect.items && handler.valueSelect.items.length;
 
-            return (form.$visible && !!hasValueItems)
-                || (!form.$visible && (!!description.value || !allowComment || !description.comment));
+            return (form.$visible && !!hasValueItems) || (!form.$visible && (!!description.value || !allowComment || !description.comment));
         }
 
         /**
@@ -884,35 +878,35 @@
         }
 
         /**
-        * Sauvegarde des pièces jointes
-        */
+         * Sauvegarde des pièces jointes
+         */
         function saveAttachments(files) {
             var url = CONFIGURATION.numahop.url + 'api/rest/condreport_attachment';
 
             var formData = new FormData();
-            formData.append("report", repCtrl.report.identifier);
+            formData.append('report', repCtrl.report.identifier);
             _.each(files, function (file) {
-                formData.append("file", file);
+                formData.append('file', file);
             });
 
             var config = {
                 transformRequest: angular.identity,
                 headers: {
-                    'Content-Type': undefined
-                }
+                    'Content-Type': undefined,
+                },
             };
-            $http.post(url, formData, config)
+            $http
+                .post(url, formData, config)
                 .success(function (data) {
-                    MessageSrvc.addSuccess(gettext("Les pièces jointes ont été téléversées"));
+                    MessageSrvc.addSuccess(gettext('Les pièces jointes ont été téléversées'));
                     if (!repCtrl.attachments) {
                         repCtrl.attachments = data;
-                    }
-                    else {
+                    } else {
                         repCtrl.attachments = repCtrl.attachments.concat(data);
                     }
                 })
                 .error(function () {
-                    MessageSrvc.addError(gettext("Échec lors du téléversement des pièces jointes"));
+                    MessageSrvc.addError(gettext('Échec lors du téléversement des pièces jointes'));
                 });
         }
 
@@ -920,16 +914,14 @@
          * Suppression d'une pièce jointe
          *
          * @param {any} att
-        * */
+         * */
         function deleteAttachment(att) {
-            ModalSrvc.confirmDeletion(gettextCatalog.getString("la pièce jointe {{originalFilename}}", att))
-                .then(function () {
-                    CondreportAttachmentSrvc.delete({}, att).$promise
-                        .then(function () {
-                            MessageSrvc.addSuccess(gettext("La pièce jointe {{originalFilename}} a été supprimée"), att);
-                            ListTools.findAndRemoveItemFromList(att, repCtrl.attachments);
-                        });
+            ModalSrvc.confirmDeletion(gettextCatalog.getString('la pièce jointe {{originalFilename}}', att)).then(function () {
+                CondreportAttachmentSrvc.delete({}, att).$promise.then(function () {
+                    MessageSrvc.addSuccess(gettext('La pièce jointe {{originalFilename}} a été supprimée'), att);
+                    ListTools.findAndRemoveItemFromList(att, repCtrl.attachments);
                 });
+            });
         }
 
         /**
@@ -954,11 +946,16 @@
         function isStateValidated(type) {
             var workflow = repCtrl.parent.docUnit.workflow;
             switch (type) {
-                case "LIBRARY_LEAVING": return WorkflowHandleSrvc.isConstatValidated(workflow);
-                case "PROVIDER_RECEPTION": return WorkflowHandleSrvc.isConstatConfirmed(workflow);
-                case "DIGITALIZATION": return WorkflowHandleSrvc.isConstatBeforeNumValidated(workflow);
-                case "LIBRARY_BACK": return WorkflowHandleSrvc.isConstatAfterNumValidated(workflow);
-                default: return false;
+                case 'LIBRARY_LEAVING':
+                    return WorkflowHandleSrvc.isConstatValidated(workflow);
+                case 'PROVIDER_RECEPTION':
+                    return WorkflowHandleSrvc.isConstatConfirmed(workflow);
+                case 'DIGITALIZATION':
+                    return WorkflowHandleSrvc.isConstatBeforeNumValidated(workflow);
+                case 'LIBRARY_BACK':
+                    return WorkflowHandleSrvc.isConstatAfterNumValidated(workflow);
+                default:
+                    return false;
             }
         }
 
@@ -999,10 +996,10 @@
         function editReportForm() {
             // Ouverture de l'accordion
             repCtrl.reportAcc = true;
-            angular.element("#report-collapse").addClass("collapse in");
+            angular.element('#report-collapse').addClass('collapse in');
 
             // Édition du formulaire
-            openForm("reportForm");
+            openForm('reportForm');
         }
     }
 })();

@@ -2,11 +2,10 @@ package fr.progilone.pgcn.repository.delivery.helper;
 
 import fr.progilone.pgcn.domain.delivery.Delivery;
 import fr.progilone.pgcn.domain.workflow.WorkflowStateKey;
-import org.apache.commons.collections4.CollectionUtils;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import org.apache.commons.collections4.CollectionUtils;
 
 public class DeliverySearchBuilder {
 
@@ -122,6 +121,7 @@ public class DeliverySearchBuilder {
     }
 
     private static <T> Optional<List<T>> ofEmptiable(final List<T> list) {
-        return CollectionUtils.isEmpty(list) ? Optional.empty() : Optional.of(list);
+        return CollectionUtils.isEmpty(list) ? Optional.empty()
+                                             : Optional.of(list);
     }
 }

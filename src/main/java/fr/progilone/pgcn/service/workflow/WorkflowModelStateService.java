@@ -1,9 +1,5 @@
 package fr.progilone.pgcn.service.workflow;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import fr.progilone.pgcn.domain.workflow.WorkflowModelState;
 import fr.progilone.pgcn.domain.workflow.WorkflowModelStateType;
 import fr.progilone.pgcn.exception.PgcnValidationException;
@@ -11,6 +7,9 @@ import fr.progilone.pgcn.exception.message.PgcnError;
 import fr.progilone.pgcn.exception.message.PgcnErrorCode;
 import fr.progilone.pgcn.exception.message.PgcnList;
 import fr.progilone.pgcn.repository.workflow.WorkflowModelStateRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class WorkflowModelStateService {
@@ -24,7 +23,7 @@ public class WorkflowModelStateService {
 
     /**
      * Sauvegarde un modele
-     * 
+     *
      * @param state
      * @return
      * @throws PgcnValidationException
@@ -37,7 +36,7 @@ public class WorkflowModelStateService {
 
     /**
      * Retourne un modele
-     * 
+     *
      * @param identifier
      * @return
      */
@@ -48,16 +47,17 @@ public class WorkflowModelStateService {
 
     /**
      * Suppression de modele
-     * 
+     *
      * @param identifier
      */
     @Transactional
     public void delete(final String identifier) {
-        repository.delete(identifier);
+        repository.deleteById(identifier);
     }
-    
+
     /**
      * Validation
+     *
      * @param state
      * @return
      * @throws PgcnValidationException

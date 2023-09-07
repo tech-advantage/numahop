@@ -7,23 +7,26 @@
 
 package fr.progilone.pgcn.domain.jaxb.ead;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlID;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElements;
+import jakarta.xml.bind.annotation.XmlID;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.ArrayList;
 
 /**
- * <p>Classe Java pour dsc complex type.
  * <p>
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * Classe Java pour dsc complex type.
  * <p>
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ *
  * <pre>
  * &lt;complexType name="dsc">
  *   &lt;complexContent>
@@ -70,7 +73,13 @@ import java.util.ArrayList;
  * </pre>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "dsc", propOrder = {"head", "mBlocks", "thead", "cAndThead", "c01AndThead", "dsc"})
+@XmlType(name = "dsc",
+         propOrder = {"head",
+                      "mBlocks",
+                      "thead",
+                      "cAndThead",
+                      "c01AndThead",
+                      "dsc"})
 public class Dsc {
 
     protected Head head;
@@ -83,9 +92,11 @@ public class Dsc {
                   @XmlElement(name = "p", type = P.class)})
     protected java.util.List<Object> mBlocks;
     protected Thead thead;
-    @XmlElements({@XmlElement(name = "c", type = C.class), @XmlElement(name = "thead", type = Thead.class)})
+    @XmlElements({@XmlElement(name = "c", type = C.class),
+                  @XmlElement(name = "thead", type = Thead.class)})
     protected java.util.List<Object> cAndThead;
-    @XmlElements({@XmlElement(name = "c01", type = C01.class), @XmlElement(name = "thead", type = Thead.class)})
+    @XmlElements({@XmlElement(name = "c01", type = C01.class),
+                  @XmlElement(name = "thead", type = Thead.class)})
     protected java.util.List<Object> c01AndThead;
     protected java.util.List<Dsc> dsc;
     @XmlAttribute(name = "type")
@@ -118,7 +129,7 @@ public class Dsc {
      * Obtient la valeur de la propriété head.
      *
      * @return possible object is
-     * {@link Head }
+     *         {@link Head }
      */
     public Head getHead() {
         return head;
@@ -128,8 +139,8 @@ public class Dsc {
      * Définit la valeur de la propriété head.
      *
      * @param value
-     *         allowed object is
-     *         {@link Head }
+     *            allowed object is
+     *            {@link Head }
      */
     public void setHead(Head value) {
         this.head = value;
@@ -146,8 +157,9 @@ public class Dsc {
      * <p>
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getMBlocks().add(newItem);
+     * getMBlocks().add(newItem);
      * </pre>
      * <p>
      * <p>
@@ -172,7 +184,7 @@ public class Dsc {
      * Obtient la valeur de la propriété thead.
      *
      * @return possible object is
-     * {@link Thead }
+     *         {@link Thead }
      */
     public Thead getThead() {
         return thead;
@@ -182,8 +194,8 @@ public class Dsc {
      * Définit la valeur de la propriété thead.
      *
      * @param value
-     *         allowed object is
-     *         {@link Thead }
+     *            allowed object is
+     *            {@link Thead }
      */
     public void setThead(Thead value) {
         this.thead = value;
@@ -200,8 +212,9 @@ public class Dsc {
      * <p>
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getCAndThead().add(newItem);
+     * getCAndThead().add(newItem);
      * </pre>
      * <p>
      * <p>
@@ -228,8 +241,9 @@ public class Dsc {
      * <p>
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getC01AndThead().add(newItem);
+     * getC01AndThead().add(newItem);
      * </pre>
      * <p>
      * <p>
@@ -256,8 +270,9 @@ public class Dsc {
      * <p>
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getDsc().add(newItem);
+     * getDsc().add(newItem);
      * </pre>
      * <p>
      * <p>
@@ -276,7 +291,7 @@ public class Dsc {
      * Obtient la valeur de la propriété type.
      *
      * @return possible object is
-     * {@link String }
+     *         {@link String }
      */
     public String getType() {
         return type;
@@ -286,8 +301,8 @@ public class Dsc {
      * Définit la valeur de la propriété type.
      *
      * @param value
-     *         allowed object is
-     *         {@link String }
+     *            allowed object is
+     *            {@link String }
      */
     public void setType(String value) {
         this.type = value;
@@ -297,7 +312,7 @@ public class Dsc {
      * Obtient la valeur de la propriété othertype.
      *
      * @return possible object is
-     * {@link String }
+     *         {@link String }
      */
     public String getOthertype() {
         return othertype;
@@ -307,8 +322,8 @@ public class Dsc {
      * Définit la valeur de la propriété othertype.
      *
      * @param value
-     *         allowed object is
-     *         {@link String }
+     *            allowed object is
+     *            {@link String }
      */
     public void setOthertype(String value) {
         this.othertype = value;
@@ -318,7 +333,7 @@ public class Dsc {
      * Obtient la valeur de la propriété encodinganalog.
      *
      * @return possible object is
-     * {@link String }
+     *         {@link String }
      */
     public String getEncodinganalog() {
         return encodinganalog;
@@ -328,8 +343,8 @@ public class Dsc {
      * Définit la valeur de la propriété encodinganalog.
      *
      * @param value
-     *         allowed object is
-     *         {@link String }
+     *            allowed object is
+     *            {@link String }
      */
     public void setEncodinganalog(String value) {
         this.encodinganalog = value;
@@ -339,7 +354,7 @@ public class Dsc {
      * Obtient la valeur de la propriété tpattern.
      *
      * @return possible object is
-     * {@link String }
+     *         {@link String }
      */
     public String getTpattern() {
         return tpattern;
@@ -349,8 +364,8 @@ public class Dsc {
      * Définit la valeur de la propriété tpattern.
      *
      * @param value
-     *         allowed object is
-     *         {@link String }
+     *            allowed object is
+     *            {@link String }
      */
     public void setTpattern(String value) {
         this.tpattern = value;
@@ -360,7 +375,7 @@ public class Dsc {
      * Obtient la valeur de la propriété id.
      *
      * @return possible object is
-     * {@link String }
+     *         {@link String }
      */
     public String getId() {
         return id;
@@ -370,8 +385,8 @@ public class Dsc {
      * Définit la valeur de la propriété id.
      *
      * @param value
-     *         allowed object is
-     *         {@link String }
+     *            allowed object is
+     *            {@link String }
      */
     public void setId(String value) {
         this.id = value;
@@ -381,7 +396,7 @@ public class Dsc {
      * Obtient la valeur de la propriété altrender.
      *
      * @return possible object is
-     * {@link String }
+     *         {@link String }
      */
     public String getAltrender() {
         return altrender;
@@ -391,8 +406,8 @@ public class Dsc {
      * Définit la valeur de la propriété altrender.
      *
      * @param value
-     *         allowed object is
-     *         {@link String }
+     *            allowed object is
+     *            {@link String }
      */
     public void setAltrender(String value) {
         this.altrender = value;
@@ -402,7 +417,7 @@ public class Dsc {
      * Obtient la valeur de la propriété audience.
      *
      * @return possible object is
-     * {@link String }
+     *         {@link String }
      */
     public String getAudience() {
         return audience;
@@ -412,8 +427,8 @@ public class Dsc {
      * Définit la valeur de la propriété audience.
      *
      * @param value
-     *         allowed object is
-     *         {@link String }
+     *            allowed object is
+     *            {@link String }
      */
     public void setAudience(String value) {
         this.audience = value;

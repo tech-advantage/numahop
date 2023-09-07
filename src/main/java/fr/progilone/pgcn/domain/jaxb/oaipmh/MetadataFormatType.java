@@ -5,20 +5,20 @@
 // Généré le : 2018.08.13 à 01:08:19 PM CEST
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.oaipmh;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlType;
 
 /**
- * <p>Classe Java pour metadataFormatType complex type.
+ * <p>
+ * Classe Java pour metadataFormatType complex type.
  *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="metadataFormatType">
@@ -37,11 +37,10 @@ import javax.xml.bind.annotation.XmlType;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "metadataFormatType", propOrder = {
-    "metadataPrefix",
-    "schema",
-    "metadataNamespace"
-})
+@XmlType(name = "metadataFormatType",
+         propOrder = {"metadataPrefix",
+                      "schema",
+                      "metadataNamespace"})
 public class MetadataFormatType {
 
     @XmlElement(required = true)
@@ -57,8 +56,8 @@ public class MetadataFormatType {
      * Obtient la valeur de la propriété metadataPrefix.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getMetadataPrefix() {
@@ -69,8 +68,8 @@ public class MetadataFormatType {
      * Définit la valeur de la propriété metadataPrefix.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setMetadataPrefix(String value) {
@@ -81,8 +80,8 @@ public class MetadataFormatType {
      * Obtient la valeur de la propriété schema.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getSchema() {
@@ -93,8 +92,8 @@ public class MetadataFormatType {
      * Définit la valeur de la propriété schema.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setSchema(String value) {
@@ -105,8 +104,8 @@ public class MetadataFormatType {
      * Obtient la valeur de la propriété metadataNamespace.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getMetadataNamespace() {
@@ -117,8 +116,8 @@ public class MetadataFormatType {
      * Définit la valeur de la propriété metadataNamespace.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setMetadataNamespace(String value) {

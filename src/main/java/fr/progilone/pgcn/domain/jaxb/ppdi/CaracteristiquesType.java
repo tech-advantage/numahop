@@ -5,25 +5,25 @@
 // Généré le : 2017.12.08 à 03:23:15 PM CET
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.ppdi;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
-
 
 /**
  *
- * Pr�sentation des caract�ristiques du projet d'archives.
+ * Présentation des caractéristiques du projet d'archives.
  *
  *
- * <p>Classe Java pour CaracteristiquesType complex type.
+ * <p>
+ * Classe Java pour CaracteristiquesType complex type.
  *
- * <p>Le fragment de sch�ma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="CaracteristiquesType">
@@ -41,10 +41,9 @@ import javax.xml.bind.annotation.XmlType;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "CaracteristiquesType", propOrder = {
-    "documents",
-    "sipDescription"
-})
+@XmlType(name = "CaracteristiquesType",
+         propOrder = {"documents",
+                      "sipDescription"})
 public class CaracteristiquesType {
 
     @XmlElement(name = "Documents", required = true)
@@ -63,8 +62,9 @@ public class CaracteristiquesType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getDocuments().add(newItem);
+     * getDocuments().add(newItem);
      * </pre>
      *
      *
@@ -92,8 +92,9 @@ public class CaracteristiquesType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getSipDescription().add(newItem);
+     * getSipDescription().add(newItem);
      * </pre>
      *
      *

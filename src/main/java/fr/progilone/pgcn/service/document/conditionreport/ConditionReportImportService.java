@@ -1,5 +1,7 @@
 package fr.progilone.pgcn.service.document.conditionreport;
 
+import static fr.progilone.pgcn.domain.document.conditionreport.ConditionReportDetail.Type.LIBRARY_LEAVING;
+
 import com.google.common.base.MoreObjects;
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.document.conditionreport.ConditionReport;
@@ -13,19 +15,6 @@ import fr.progilone.pgcn.exception.message.PgcnError;
 import fr.progilone.pgcn.exception.message.PgcnList;
 import fr.progilone.pgcn.service.document.DocUnitService;
 import fr.progilone.pgcn.service.exchange.template.MessageService;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -43,8 +32,18 @@ import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static fr.progilone.pgcn.domain.document.conditionreport.ConditionReportDetail.Type.*;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ConditionReportImportService {
@@ -101,8 +100,7 @@ public class ConditionReportImportService {
         final Map<Library, List<PropertyConfiguration>> confCache = Collections.synchronizedMap(new HashMap<>()); // cache des PropertyConfiguration
 
         new SheetReader().setDescProperties(descProperties).setDescValues(descValues).filter(checkAccess).stream(in).process((report, detail) -> {
-            final List<PropertyConfiguration> confs =
-                confCache.computeIfAbsent(report.getDocUnit().getLibrary(), propertyConfigurationService::findByLibrary);
+            final List<PropertyConfiguration> confs = confCache.computeIfAbsent(report.getDocUnit().getLibrary(), propertyConfigurationService::findByLibrary);
             final PgcnList<PgcnError> pgcnErrors = conditionReportDetailService.validateSave(detail, confs);
 
             if (pgcnErrors.isEmpty()) {
@@ -259,7 +257,7 @@ public class ConditionReportImportService {
                     final Cell cell = row.getCell(i + 3);
 
                     if (cell != null) {
-                        switch (cell.getCellTypeEnum()) {
+                        switch (cell.getCellType()) {
                             case STRING:
                                 importData.setValue(i, cell.getStringCellValue());
                                 break;
@@ -276,15 +274,13 @@ public class ConditionReportImportService {
         private void setDescriptions(final ConditionReportDetail detail, final List<ImportData> data) {
             final Set<Description> descriptions = data.stream()
                                                       // Filtrage sur le type de données importée
-                                                      .filter(d -> Arrays.stream(DescriptionProperty.Type.values())
-                                                                         .anyMatch(type -> StringUtils.equals(type.name(), d.getType())))
+                                                      .filter(d -> Arrays.stream(DescriptionProperty.Type.values()).anyMatch(type -> StringUtils.equals(type.name(), d.getType())))
                                                       // Construction de l'objet Description
                                                       .map(d -> {
                                                           // Propriété
                                                           final Optional<DescriptionProperty> propOpt = this.descProperties.stream()
-                                                                                                                           .filter(prop -> StringUtils
-                                                                                                                               .equals(prop.getIdentifier(),
-                                                                                                                                       d.getProp()))
+                                                                                                                           .filter(prop -> StringUtils.equals(prop.getIdentifier(),
+                                                                                                                                                              d.getProp()))
                                                                                                                            .findAny();
 
                                                           if (!propOpt.isPresent()) {
@@ -307,7 +303,9 @@ public class ConditionReportImportService {
                                                           description.setComment(freeValue);
                                                           return description;
 
-                                                      }).filter(Objects::nonNull).collect(Collectors.toSet());
+                                                      })
+                                                      .filter(Objects::nonNull)
+                                                      .collect(Collectors.toSet());
             detail.setDescriptions(descriptions);
         }
 
@@ -391,8 +389,9 @@ public class ConditionReportImportService {
                 return Optional.empty();
             }
             return this.descValues.stream()
-                                  .filter(descValue -> StringUtils.equals(descValue.getProperty().getIdentifier(), property.getIdentifier())
-                                                       && StringUtils.equals(descValue.getLabel(), value))
+                                  .filter(descValue -> StringUtils.equals(descValue.getProperty().getIdentifier(), property.getIdentifier()) && StringUtils.equals(descValue
+                                                                                                                                                                            .getLabel(),
+                                                                                                                                                                   value))
                                   .findAny();
         }
     }
@@ -432,7 +431,10 @@ public class ConditionReportImportService {
         }
 
         public double[] getDblValues() {
-            return Arrays.stream(dblValues).mapToDouble(dbl -> dbl == null ? 0D : dbl).toArray();
+            return Arrays.stream(dblValues)
+                         .mapToDouble(dbl -> dbl == null ? 0D
+                                                         : dbl)
+                         .toArray();
         }
 
         public void setDblValue(final int idx, final Double dblValue) {
@@ -455,7 +457,11 @@ public class ConditionReportImportService {
         }
 
         private String streamToString(final Stream<?> values) {
-            return values.filter(Objects::nonNull).map(String::valueOf).reduce((a, b) -> a + ", " + b).orElse(null);
+            return values.filter(Objects::nonNull)
+                         .map(String::valueOf)
+                         .reduce((a, b) -> a + ", "
+                                           + b)
+                         .orElse(null);
         }
     }
 

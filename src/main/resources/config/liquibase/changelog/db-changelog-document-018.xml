@@ -1,13 +1,15 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <!-- Changeset du module Document -->
     <changeSet id="pgcn-document-18" author="progilone">
 
         <addColumn tableName="doc_unit">
-            <column name="archive_item" type="varchar(191)"></column>
+            <column name="archive_item" type="varchar(191)" />
         </addColumn>
 
 		<createTable tableName="doc_archive_item">
@@ -37,16 +39,16 @@
                 <constraints nullable="false" />
             </column>
             <column name="created_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>
 
@@ -63,16 +65,16 @@
                 <constraints nullable="false" />
             </column>
             <column name="created_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>
 
@@ -89,16 +91,16 @@
                 <constraints nullable="false" />
             </column>
             <column name="created_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>
 
@@ -116,29 +118,22 @@
                 <constraints nullable="false" />
             </column>
             <column name="created_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>
 
-		<addForeignKeyConstraint baseColumnNames="archive_item" baseTableName="doc_unit" constraintName="fk_doc_unit_ia_item"
-            referencedColumnNames="identifier" referencedTableName="doc_archive_item" />
-        <addForeignKeyConstraint baseColumnNames="item" baseTableName="doc_archive_collection"
-                                 constraintName="fk_doc_archive_collection"
-                                 referencedColumnNames="identifier" referencedTableName="doc_archive_item" />
-        <addForeignKeyConstraint baseColumnNames="item" baseTableName="doc_archive_subject"
-                                 constraintName="fk_doc_archive_subject"
-                                 referencedColumnNames="identifier" referencedTableName="doc_archive_item" />
-        <addForeignKeyConstraint baseColumnNames="item" baseTableName="doc_archive_header"
-                                 constraintName="fk_doc_archive_header"
-                                 referencedColumnNames="identifier" referencedTableName="doc_archive_item" />
+		<addForeignKeyConstraint baseColumnNames="archive_item" baseTableName="doc_unit" constraintName="fk_doc_unit_ia_item" referencedColumnNames="identifier" referencedTableName="doc_archive_item" />
+        <addForeignKeyConstraint baseColumnNames="item" baseTableName="doc_archive_collection" constraintName="fk_doc_archive_collection" referencedColumnNames="identifier" referencedTableName="doc_archive_item" />
+        <addForeignKeyConstraint baseColumnNames="item" baseTableName="doc_archive_subject" constraintName="fk_doc_archive_subject" referencedColumnNames="identifier" referencedTableName="doc_archive_item" />
+        <addForeignKeyConstraint baseColumnNames="item" baseTableName="doc_archive_header" constraintName="fk_doc_archive_header" referencedColumnNames="identifier" referencedTableName="doc_archive_item" />
     </changeSet>
 </databaseChangeLog>

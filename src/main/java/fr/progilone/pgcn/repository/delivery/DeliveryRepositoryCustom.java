@@ -3,11 +3,10 @@ package fr.progilone.pgcn.repository.delivery;
 import fr.progilone.pgcn.domain.delivery.Delivery;
 import fr.progilone.pgcn.domain.delivery.Delivery.DeliveryStatus;
 import fr.progilone.pgcn.repository.delivery.helper.DeliverySearchBuilder;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
 import java.time.LocalDate;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface DeliveryRepositoryCustom {
 
@@ -29,11 +28,7 @@ public interface DeliveryRepositoryCustom {
      */
     List<Delivery> findByProjectsAndLots(List<String> projectIds, List<String> lotIds);
 
-    List<Delivery> findByProviders(List<String> libraries,
-                                   List<String> providers,
-                                   List<DeliveryStatus> statuses,
-                                   LocalDate fromDate,
-                                   LocalDate toDate);
+    List<Delivery> findByProviders(List<String> libraries, List<String> providers, List<DeliveryStatus> statuses, LocalDate fromDate, LocalDate toDate);
 
     List<Object[]> getDeliveryGroupByStatus(List<String> libraries, List<String> projects, List<String> lots);
 

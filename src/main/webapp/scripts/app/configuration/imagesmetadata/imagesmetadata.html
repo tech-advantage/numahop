@@ -1,0 +1,87 @@
+<div class="row layout-columns">
+    <div class="col-xs-12 col-layout-columns">
+        <div class="panel panel-column-1 panel-column-end">
+            <div class="panel-heading">
+                <span translate>Métadonnées des images</span>
+                <span class="glyphicon-halflings glyphicon-question-sign cursor-help" uib-tooltip="{{::'Les valeurs sont communes à toutes les bibliothèques' | translate}}" tooltip-append-to-body="true"></span>
+
+                <div class="pull-right">
+                    <button
+                        type="button"
+                        class="btn btn-sem2 btn-xs"
+                        ng-click="mainCtrl.reload()"
+                        ng-show="mainCtrl.modified"
+                        uib-tooltip="{{::'Annuler les modifications' | translate}}"
+                        tooltip-append-to-body="true"
+                        sem-roles-allowed="DOC_UNIT_HAB5"
+                    >
+                        <span class="glyphicon-regular undo"></span>
+                    </button>
+                    <button
+                        type="button"
+                        class="btn btn-sem2 btn-xs"
+                        ng-click="mainCtrl.save()"
+                        ng-show="mainCtrl.modified"
+                        uib-tooltip="{{::'Sauvegarder' | translate}}"
+                        tooltip-append-to-body="true"
+                        sem-roles-allowed="DOC_UNIT_HAB5"
+                    >
+                        <span class="glyphicon-regular floppy-save"></span>
+                    </button>
+                </div>
+                <span>{{ mainCtrl.editedMapping.label }}</span>
+                <span ng-show="mainCtrl.modified" translate>(modifications non sauvegardées)</span>
+            </div>
+            <div class="panel-body">
+                <div class="table-responsive mapping margin-t20">
+                    <table class="table table-striped table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th class="text-left" translate>Label</th>
+                                <th class="text-left" translate>Répétable</th>
+                                <th class="text-left" translate>Type</th>
+                                <th class="text-left" translate>IPTC/IIM Tag ExifTool</th>
+                                <th class="text-left" translate>XMP Tag ExifTool</th>
+                                <th class="text-left" translate></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="metadata in mainCtrl.metadataList">
+                                <td>{{ metadata.label }}</td>
+                                <td>{{ metadata.repeat === "true" ? "Oui" : "Non" | translate}}</td>
+                                <td>{{ metadata.type.label | translate}}</td>
+                                <td>{{ metadata.iptcTag }}</td>
+                                <td>{{ metadata.xmpTag }}</td>
+                                <td>
+                                    <button
+                                        type="button"
+                                        class="btn btn-sem2 btn-xs"
+                                        ng-click="mainCtrl.editMetadata($index, metadata)"
+                                        uib-tooltip="{{::'Éditer la metadata' | translate}}"
+                                        sem-roles-allowed="DOC_UNIT_HAB5"
+                                    >
+                                        <span class="glyphicon-regular edit"></span>
+                                    </button>
+                                    <button
+                                        type="button"
+                                        class="btn btn-sem2 btn-xs"
+                                        ng-click="mainCtrl.removeMetadata($index, metadata)"
+                                        uib-tooltip="{{::'Supprimer la metadata' | translate}}"
+                                        sem-roles-allowed="DOC_UNIT_HAB5"
+                                    >
+                                        <span class="glyphicon-halflings glyphicon-trash"></span>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <button type="button" class="btn btn-sem2 btn-xs pull-right" ng-click="mainCtrl.addMetadata()" sem-roles-allowed="DOC_UNIT_HAB5">
+                        <span class="glyphicon-halflings glyphicon-plus"></span>
+                        {{ ::'Ajouter une métadonnées' | translate }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

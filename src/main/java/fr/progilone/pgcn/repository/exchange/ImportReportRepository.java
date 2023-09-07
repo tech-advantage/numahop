@@ -2,21 +2,19 @@ package fr.progilone.pgcn.repository.exchange;
 
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.exchange.ImportReport;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
-import java.util.List;
-
 /**
  * Created by Sebastien on 08/12/2016.
  */
 public interface ImportReportRepository extends JpaRepository<ImportReport, String>, ImportReportRepositoryCustom {
 
-    @Query("select r "
-           + "from ImportReport r "
+    @Query("select r " + "from ImportReport r "
            + "left join fetch r.mapping "
            + "left join fetch r.mappingChildren "
            + "left join fetch r.csvMapping "
@@ -33,16 +31,14 @@ public interface ImportReportRepository extends JpaRepository<ImportReport, Stri
 
     List<ImportReport> findByStatusIn(ImportReport.Status... status);
 
-    @Query("select d.identifier "
-           + "from ImportReport r "
+    @Query("select d.identifier " + "from ImportReport r "
            + "join r.docUnits i "
            + "join i.docUnit d "
            + "where r.identifier = ?1 "
            + "and d.state = ?2")
     List<String> findDocUnitIdentifiersByReportAndDocUnitState(String report, DocUnit.State state);
 
-    @Query("select i.identifier "
-           + "from ImportReport r "
+    @Query("select i.identifier " + "from ImportReport r "
            + "join r.docUnits i "
            + "where r.identifier = ?1")
     List<String> findImportIdentifiersByReport(String report);

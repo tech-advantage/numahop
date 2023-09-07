@@ -1,21 +1,19 @@
 package fr.progilone.pgcn.config;
 
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-import javax.servlet.annotation.WebListener;
-
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Session;
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
+import jakarta.servlet.annotation.WebListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.Session;
-
 /**
  * Gestion des tunnels SSH
- * 
- * 
+ *
+ *
  * Créé le 6 févr. 2018
  */
 @WebListener
@@ -28,7 +26,7 @@ public class SshPortForwardingConfigurer implements ServletContextListener {
      */
     @Value("${sshForwarding.enabled}")
     private boolean port_forwarding_enabled;
-    
+
     /**
      * Host checking by key
      */
@@ -36,7 +34,7 @@ public class SshPortForwardingConfigurer implements ServletContextListener {
     private String strictHostKeyChecking;
     @Value("${sshForwarding.knownHosts}")
     private String knownHosts;
-    
+
     /**
      * SSH server config
      */
@@ -48,7 +46,7 @@ public class SshPortForwardingConfigurer implements ServletContextListener {
     private String ssh_user;
     @Value("${sshForwarding.password}")
     private String ssh_password;
-    
+
     /**
      * Elasticsearch config
      */
@@ -58,7 +56,7 @@ public class SshPortForwardingConfigurer implements ServletContextListener {
     private int es_local_port;
     @Value("${sshForwarding.elasticsearch.remotePort}")
     private int es_remote_port;
-    
+
     /**
      * Database config
      */
@@ -101,7 +99,8 @@ public class SshPortForwardingConfigurer implements ServletContextListener {
      */
     @Override
     public void contextDestroyed(ServletContextEvent arg0) {
-        if (port_forwarding_enabled && sshSession != null && sshSession.isConnected()) {
+        if (port_forwarding_enabled && sshSession != null
+            && sshSession.isConnected()) {
             LOG.info("Destruction de la connection SSH");
             sshSession.disconnect();
         }

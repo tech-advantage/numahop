@@ -5,12 +5,7 @@ import fr.progilone.pgcn.domain.library.Library;
 import fr.progilone.pgcn.domain.util.CustomUserDetails;
 import fr.progilone.pgcn.security.SecurityUtils;
 import fr.progilone.pgcn.web.rest.administration.security.AuthorizationConstants;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -19,6 +14,10 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Regroupement des vérifications d'accès par bibliothèque
@@ -72,10 +71,7 @@ public class LibraryAccesssHelper {
      * @return
      */
     @Transactional(readOnly = true)
-    public <T> boolean checkLibrary(final HttpServletRequest request,
-                                    final T object,
-                                    final Function<T, Library> getLibraryFn,
-                                    final String... bypassRoles) {
+    public <T> boolean checkLibrary(final HttpServletRequest request, final T object, final Function<T, Library> getLibraryFn, final String... bypassRoles) {
         // On ne contrôle pas la bibliothèque pour les utilisateurs ayant un rôle dans bypassRoles
         final String[] roles = Arrays.copyOf(bypassRoles, bypassRoles.length + 2);
         roles[roles.length - 1] = AuthorizationConstants.SUPER_ADMIN;
@@ -112,13 +108,15 @@ public class LibraryAccesssHelper {
         roles[roles.length - 2] = AuthorizationConstants.ADMINISTRATION_LIB;
 
         if (Stream.of(roles).anyMatch(request::isUserInRole)) {
-            return libraryFilter != null ? libraryFilter : Collections.emptyList();
+            return libraryFilter != null ? libraryFilter
+                                         : Collections.emptyList();
         }
         // Filtrage des mappings par rapport à la bibliothèque de l'utilisateur, pour les non-admin
         else {
             final CustomUserDetails currentUser = SecurityUtils.getCurrentUser();
             return accessHelper.checkCurrentUser(currentUser)
-                               .map(check -> check && libraryFilter != null ? libraryFilter : Collections.<String>emptyList())
+                               .map(check -> check && libraryFilter != null ? libraryFilter
+                                                                            : Collections.<String> emptyList())
                                .orElseGet(() -> Collections.singletonList(currentUser.getLibraryId()));
         }
     }
@@ -149,7 +147,8 @@ public class LibraryAccesssHelper {
         else {
             final CustomUserDetails currentUser = SecurityUtils.getCurrentUser();
             return accessHelper.checkCurrentUser(currentUser)
-                               .map(check -> check ? objects : Collections.<T>emptyList())
+                               .map(check -> check ? objects
+                                                   : Collections.<T> emptyList())
                                .orElseGet(() -> objects.stream()
                                                        .filter(dto -> StringUtils.equals(getLibraryIdFn.apply(dto), currentUser.getLibraryId()))
                                                        .collect(Collectors.toList()));

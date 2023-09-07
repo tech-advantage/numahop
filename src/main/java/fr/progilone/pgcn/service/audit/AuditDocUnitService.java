@@ -3,11 +3,10 @@ package fr.progilone.pgcn.service.audit;
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.dto.audit.AuditDocUnitRevisionDTO;
 import fr.progilone.pgcn.repository.audit.AuditDocUnitRepository;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 public class AuditDocUnitService {

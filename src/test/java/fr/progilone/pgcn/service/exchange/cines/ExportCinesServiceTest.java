@@ -1,26 +1,6 @@
 package fr.progilone.pgcn.service.exchange.cines;
 
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.security.NoSuchAlgorithmException;
-
-import javax.xml.bind.JAXBException;
-
-import org.apache.commons.io.FileUtils;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.test.util.ReflectionTestUtils;
-import org.xml.sax.SAXException;
+import static org.junit.jupiter.api.Assertions.*;
 
 import fr.progilone.pgcn.domain.document.BibliographicRecord;
 import fr.progilone.pgcn.domain.document.DocProperty;
@@ -34,7 +14,7 @@ import fr.progilone.pgcn.service.administration.SftpConfigurationService;
 import fr.progilone.pgcn.service.document.DocUnitService;
 import fr.progilone.pgcn.service.document.mapper.UIExportDataMapper;
 import fr.progilone.pgcn.service.document.ui.UIBibliographicRecordService;
-import fr.progilone.pgcn.service.es.EsCinesReportService;
+import fr.progilone.pgcn.service.es.EsDocUnitService;
 import fr.progilone.pgcn.service.exchange.ssh.SftpService;
 import fr.progilone.pgcn.service.library.LibraryParameterService;
 import fr.progilone.pgcn.service.library.LibraryService;
@@ -42,11 +22,28 @@ import fr.progilone.pgcn.service.storage.BinaryStorageManager;
 import fr.progilone.pgcn.service.storage.FileStorageManager;
 import fr.progilone.pgcn.service.util.transaction.TransactionService;
 import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
+import jakarta.xml.bind.JAXBException;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.security.NoSuchAlgorithmException;
+import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
+import org.xml.sax.SAXException;
 
 /**
  * Created by Sébastien on 27/12/2016.
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ExportCinesServiceTest {
 
     private static final String WORKING_DIR = FileUtils.getTempDirectoryPath() + "/pgcn_test";
@@ -68,7 +65,7 @@ public class ExportCinesServiceTest {
     @Mock
     private CinesReportService cinesReportService;
     @Mock
-    private EsCinesReportService esCinesReportService;
+    private EsDocUnitService esDocUnitService;
     @Mock
     private SftpService sftpService;
     @Mock
@@ -86,21 +83,34 @@ public class ExportCinesServiceTest {
 
     private ExportCinesService service;
 
-    @BeforeClass
+    @BeforeAll
     public static void init() throws IOException {
         FileUtils.forceMkdir(new File(WORKING_DIR));
     }
 
-    @AfterClass
+    @AfterAll
     public static void clean() {
         FileUtils.deleteQuietly(new File(WORKING_DIR));
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
-        service = new ExportCinesService(exportMetsService, exportSipService, bm, docUnitService, uiExportDataMapper, 
-                                         uiBibliographicRecordService, libraryService, sftpConfigurationService, cinesReportService,
-                                         esCinesReportService, sftpService, fm, libraryParameterService, transactionService, lotRepository, libraryAccesssHelper);
+        service = new ExportCinesService(exportMetsService,
+                                         exportSipService,
+                                         bm,
+                                         docUnitService,
+                                         uiExportDataMapper,
+                                         uiBibliographicRecordService,
+                                         libraryService,
+                                         sftpConfigurationService,
+                                         cinesReportService,
+                                         sftpService,
+                                         fm,
+                                         libraryParameterService,
+                                         transactionService,
+                                         lotRepository,
+                                         libraryAccesssHelper,
+                                         esDocUnitService);
         ReflectionTestUtils.setField(service, "workingDir", WORKING_DIR);
     }
 
@@ -117,18 +127,16 @@ public class ExportCinesServiceTest {
 
     @Test
     public void testTarDepot() throws IOException, JAXBException, PgcnTechnicalException, SAXException, NoSuchAlgorithmException, ExportCinesException {
-        
+
         final DocUnit docUnit = getDocUnit();
         final Path depot = service.exportDocUnit(docUnit, false, null, false, true);
-        
+
         final Path newPath = Paths.get(depot.getParent().toFile().getAbsolutePath(), depot.toFile().getName());
         final Path tpath = service.tarDirectory(newPath);
         assertTrue(Files.exists(tpath));  // il existe
         assertTrue(Files.exists(Paths.get(WORKING_DIR, docUnit.getPgcnId() + ".tar"))); // et bien là ou on l'attend en +...
     }
-    
-    
-    
+
     private DocUnit getDocUnit() {
         final DocPropertyType dcCreator = new DocPropertyType();
         dcCreator.setIdentifier("creator");
@@ -152,7 +160,7 @@ public class ExportCinesServiceTest {
         record2.setIdentifier("REC-002");
         record2.addProperty(creator);
         record2.addProperty(title);
-        
+
         final Library lib = new Library();
         lib.setIdentifier("");
 

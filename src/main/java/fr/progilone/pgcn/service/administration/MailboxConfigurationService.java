@@ -11,13 +11,12 @@ import fr.progilone.pgcn.exception.message.PgcnList;
 import fr.progilone.pgcn.repository.administration.MailboxConfigurationRepository;
 import fr.progilone.pgcn.service.administration.mapper.MailboxConfigurationMapper;
 import fr.progilone.pgcn.service.util.CryptoService;
+import java.util.List;
+import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Set;
 
 /**
  * Created by Sébastien on 30/12/2016.
@@ -36,16 +35,14 @@ public class MailboxConfigurationService {
 
     @Transactional(readOnly = true)
     public Set<MailboxConfiguration> findAll(final boolean active) {
-        return Boolean.TRUE.equals(active) ?
-               mailboxConfigurationRepository.findByActiveWithDependencies(true) :
-               mailboxConfigurationRepository.findAllWithDependencies();
+        return Boolean.TRUE.equals(active) ? mailboxConfigurationRepository.findByActiveWithDependencies(true)
+                                           : mailboxConfigurationRepository.findAllWithDependencies();
     }
 
     @Transactional(readOnly = true)
     public List<MailboxConfigurationDTO> findAllDto(final Boolean active) {
-        final Set<MailboxConfiguration> confs = Boolean.TRUE.equals(active) ?
-                                                mailboxConfigurationRepository.findByActiveWithDependencies(true) :
-                                                mailboxConfigurationRepository.findAllWithDependencies();
+        final Set<MailboxConfiguration> confs = Boolean.TRUE.equals(active) ? mailboxConfigurationRepository.findByActiveWithDependencies(true)
+                                                                            : mailboxConfigurationRepository.findAllWithDependencies();
         return MailboxConfigurationMapper.INSTANCE.mailboxToDtos(confs);
     }
 
@@ -53,9 +50,8 @@ public class MailboxConfigurationService {
     public Set<MailboxConfiguration> findByLibrary(final String libraryId, final boolean active) {
         final Library library = new Library();
         library.setIdentifier(libraryId);
-        return Boolean.TRUE.equals(active) ?
-               mailboxConfigurationRepository.findByLibrary(library) :
-               mailboxConfigurationRepository.findByLibraryAndActive(library, true);
+        return Boolean.TRUE.equals(active) ? mailboxConfigurationRepository.findByLibrary(library)
+                                           : mailboxConfigurationRepository.findByLibraryAndActive(library, true);
     }
 
     @Transactional(readOnly = true)
@@ -71,7 +67,7 @@ public class MailboxConfigurationService {
 
     @Transactional
     public void delete(final String id) {
-        mailboxConfigurationRepository.delete(id);
+        mailboxConfigurationRepository.deleteById(id);
     }
 
     @Transactional

@@ -1,13 +1,26 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('DigitalLibraryConfigurationEditCtrl', DigitalLibraryConfigurationEditCtrl);
+    angular.module('numaHopApp.controller').controller('DigitalLibraryConfigurationEditCtrl', DigitalLibraryConfigurationEditCtrl);
 
-    function DigitalLibraryConfigurationEditCtrl($location, $route, $routeParams, $timeout, $scope, codeSrvc,
-        DocUnitBaseService, DigitalLibraryConfigurationSrvc, gettext, gettextCatalog, HistorySrvc, ListTools,
-        MessageSrvc, ModalSrvc, NumaHopInitializationSrvc, ValidationSrvc) {
-
+    function DigitalLibraryConfigurationEditCtrl(
+        $location,
+        $route,
+        $routeParams,
+        $timeout,
+        $scope,
+        codeSrvc,
+        DocUnitBaseService,
+        DigitalLibraryConfigurationSrvc,
+        gettext,
+        gettextCatalog,
+        HistorySrvc,
+        ListTools,
+        MessageSrvc,
+        ModalSrvc,
+        NumaHopInitializationSrvc,
+        ValidationSrvc
+    ) {
         var ctrl = this;
         ctrl.backToList = backToList;
         ctrl.delete = deleteConf;
@@ -20,10 +33,11 @@
         ctrl.options = {
             boolean: DocUnitBaseService.options.booleanObj,
             libraries: [],
-            recordFormats: DigitalLibraryConfigurationSrvc.config.recordFormats
+            recordFormats: DigitalLibraryConfigurationSrvc.config.recordFormats,
         };
 
         init();
+
         /** Initialisation */
         function init() {
             loadLibrarySelect();
@@ -31,23 +45,24 @@
         }
 
         function loadLibrarySelect() {
-            return NumaHopInitializationSrvc.loadLibraries()
-                .then(function (libs) {
-                    ctrl.options.libraries = libs;
-                });
+            return NumaHopInitializationSrvc.loadLibraries().then(function (libs) {
+                ctrl.options.libraries = libs;
+            });
         }
 
         /****************************************************************/
         /** Actions *****************************************************/
         /****************************************************************/
+
         // Sauvegarde une configuration
         function saveConfiguration() {
             $timeout(function () {
                 var creation = !ctrl.configuration.identifier;
 
-                ctrl.configuration.$save({},
+                ctrl.configuration.$save(
+                    {},
                     function (value) {
-                        MessageSrvc.addSuccess(gettext("La configuration {{name}} a été sauvegardée"), { name: value.name });
+                        MessageSrvc.addSuccess(gettext('La configuration {{name}} a été sauvegardée'), { name: value.name });
                         onSuccess();
                         // si création, on ajoute à la liste, sinon, on essaye de MAJ les infos dans la colonne du milieu
                         if (creation) {
@@ -55,48 +70,50 @@
                             $location.search({ id: value.identifier });
                             $route.reload();
                         } else {
-                            ctrl.updateConfiguration(ctrl.configuration.identifier, ctrl.configuration);
+                            loadConfiguration();
                         }
                     },
                     function (response) {
                         ctrl.errors = _.chain(response.data.errors)
-                            .groupBy("field")
+                            .groupBy('field')
                             .mapObject(function (list) {
-                                return _.pluck(list, "code");
+                                return _.pluck(list, 'code');
                             })
                             .value();
 
                         openForm();
-                    });
+                    }
+                );
             });
         }
 
         function deleteConf(configuration) {
-            ModalSrvc.confirmDeletion(gettextCatalog.getString("la configuration de diffusion {{label}}", configuration))
-                .then(function () {
-                    configuration.$delete(function (value) {
-                        MessageSrvc.addSuccess(gettext("La configuration {{label}} a été supprimée"), value);
-                        var removed = ListTools.findAndRemoveItemFromList(configuration, $scope.pagination.items);
-                        $location.search({ });
-                        $route.reload();
-                    });
+            ModalSrvc.confirmDeletion(gettextCatalog.getString('la configuration de diffusion {{label}}', configuration)).then(function () {
+                configuration.$delete(function (value) {
+                    MessageSrvc.addSuccess(gettext('La configuration {{label}} a été supprimée'), value);
+                    var removed = ListTools.findAndRemoveItemFromList(configuration, $scope.pagination.items);
+                    $location.search({});
+                    $route.reload();
                 });
+            });
         }
-
 
         function loadConfiguration() {
             ctrl.loaded = false;
 
             if (angular.isDefined($routeParams.id)) {
                 // Chargement configuration
-                ctrl.configuration = DigitalLibraryConfigurationSrvc.get({
-                    id: $routeParams.id
-                }, function () {
-                    afterLoadingConfiguration();
-                });
+                ctrl.configuration = DigitalLibraryConfigurationSrvc.get(
+                    {
+                        id: $routeParams.id,
+                    },
+                    function () {
+                        afterLoadingConfiguration();
+                    }
+                );
             } else if (angular.isDefined($routeParams.new)) {
                 // Création d'une nouvelle configuration
-                HistorySrvc.add(gettext("Nouvelle configuration"));
+                HistorySrvc.add(gettext('Nouvelle configuration'));
                 ctrl.configuration = new DigitalLibraryConfigurationSrvc();
                 ctrl.configuration.active = true;
                 afterLoadingConfiguration();
@@ -106,21 +123,22 @@
 
         /****************************************************************/
         /** Fonctions ***************************************************/
+
         /****************************************************************/
         function cancel() {
             if ($routeParams.new) {
                 backToList();
-            }
-            else {
+            } else {
                 $scope.digitalLibraryConfigForm.$cancel();
             }
         }
 
         // Gestion de la configuration renvoyée par le serveur
         function onSuccess() {
-            HistorySrvc.add(gettextCatalog.getString("Configuration {{label}}", ctrl.configuration));
+            HistorySrvc.add(gettextCatalog.getString('Configuration {{label}}', ctrl.configuration));
             displayMessages();
         }
+
         // Ouverture du formulaire et des sous formulaires
         function openForm() {
             $timeout(function () {
@@ -131,7 +149,7 @@
         }
 
         function backToList() {
-            $location.path("/platformconfiguration/digitallibraryconfiguration").search({});
+            $location.path('/platformconfiguration/digitallibraryconfiguration').search({});
         }
 
         // Met à jour la liste avec la nouvelle config
@@ -147,7 +165,7 @@
             var newConfiguration = {
                 _selected: true,
                 identifier: configuration.identifier,
-                label: configuration.label
+                label: configuration.label,
             };
             var i = 0;
             for (i = 0; i < configurations.length; i++) {

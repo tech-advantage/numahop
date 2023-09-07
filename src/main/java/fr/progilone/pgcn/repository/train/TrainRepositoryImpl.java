@@ -1,46 +1,41 @@
 package fr.progilone.pgcn.repository.train;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
-
-import fr.progilone.pgcn.domain.user.QUser;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-
-import com.mysema.query.BooleanBuilder;
-import com.mysema.query.Tuple;
-import com.mysema.query.jpa.JPASubQuery;
-import com.mysema.query.jpa.JPQLQuery;
-import com.mysema.query.jpa.impl.JPAQuery;
-import com.mysema.query.types.expr.BooleanExpression;
-
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.Tuple;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import fr.progilone.pgcn.domain.document.QDocUnit;
 import fr.progilone.pgcn.domain.document.QPhysicalDocument;
 import fr.progilone.pgcn.domain.document.conditionreport.QConditionReport;
 import fr.progilone.pgcn.domain.document.conditionreport.QConditionReportDetail;
+import fr.progilone.pgcn.domain.dto.train.QSimpleTrainDTO;
 import fr.progilone.pgcn.domain.dto.train.SimpleTrainDTO;
 import fr.progilone.pgcn.domain.library.QLibrary;
 import fr.progilone.pgcn.domain.project.QProject;
 import fr.progilone.pgcn.domain.train.QTrain;
 import fr.progilone.pgcn.domain.train.Train;
 import fr.progilone.pgcn.domain.train.Train.TrainStatus;
-import fr.progilone.pgcn.domain.user.User;
-import fr.progilone.pgcn.domain.util.CustomUserDetails;
+import fr.progilone.pgcn.domain.user.QUser;
 import fr.progilone.pgcn.repository.util.QueryDSLBuilderUtils;
-import fr.progilone.pgcn.security.SecurityUtils;
+import java.time.LocalDate;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 public class TrainRepositoryImpl implements TrainRepositoryCustom {
 
-    @PersistenceContext
-    private EntityManager em;
+    private final JPAQueryFactory queryFactory;
+
+    public TrainRepositoryImpl(final JPAQueryFactory queryFactory) {
+        this.queryFactory = queryFactory;
+    }
 
     @Override
     public List<Object[]> getTrainGroupByStatus(final List<String> libraries, final List<String> projects) {
@@ -59,15 +54,15 @@ public class TrainRepositoryImpl implements TrainRepositoryCustom {
         }
 
         // query
-        return new JPAQuery(em).from(qTrain)
-                               .leftJoin(qTrain.project, qProject)
-                               .leftJoin(qProject.library, qLibrary)
-                               .where(builder)
-                               .groupBy(qTrain.status)
-                               .list(qTrain.status, qTrain.identifier.countDistinct())
-                               .stream()
-                               .map(Tuple::toArray)
-                               .collect(Collectors.toList());
+        return queryFactory.select(qTrain.status, qTrain.identifier.countDistinct())
+                           .from(qTrain)
+                           .leftJoin(qTrain.project, qProject)
+                           .leftJoin(qProject.library, qLibrary)
+                           .where(builder)
+                           .groupBy(qTrain.status)
+                           .stream()
+                           .map(Tuple::toArray)
+                           .collect(Collectors.toList());
     }
 
     @Override
@@ -106,28 +101,20 @@ public class TrainRepositoryImpl implements TrainRepositoryCustom {
             builder.and(qTrain.active.eq(true));
         }
         // provider
-        final CustomUserDetails currentUser = SecurityUtils.getCurrentUser();
 
         // Prestataire: voit les projets sur lesquels il est prestataires + les données de sa bibliothèque
-//        if (currentUser != null && currentUser.getCategory() == User.Category.PROVIDER) {
-//            builder.and(qProject.provider.identifier.eq(currentUser.getIdentifier()).and(qLibrary.identifier.eq(currentUser.getLibraryId())))
-//                   .or(qTrain.createdBy.eq(currentUser.getLogin()));
-//        }
-//        // Sinon on applique les filtres demandés
-//        else {
-//            if (CollectionUtils.isNotEmpty(libraries)) {
-//                builder.and(qLibrary.identifier.in(libraries));
-//            }
-//        }
+        // if (currentUser != null && currentUser.getCategory() == User.Category.PROVIDER) {
+        // builder.and(qProject.provider.identifier.eq(currentUser.getIdentifier()).and(qLibrary.identifier.eq(currentUser.getLibraryId())))
+        // .or(qTrain.createdBy.eq(currentUser.getLogin()));
+        // }
+        // // Sinon on applique les filtres demandés
+        // else {
+        // if (CollectionUtils.isNotEmpty(libraries)) {
+        // builder.and(qLibrary.identifier.in(libraries));
+        // }
+        // }
         // provider, library
-        QueryDSLBuilderUtils.addAccessFilters(builder,
-                                              qLibrary,
-                                              null,
-                                              qProject,
-                                              qAssociatedLibrary,
-                                              qAssociatedUser,
-                                              libraries,
-                                              null);
+        QueryDSLBuilderUtils.addAccessFilters(builder, qLibrary, null, qProject, qAssociatedLibrary, qAssociatedUser, libraries, null);
 
         // projets
         if (CollectionUtils.isNotEmpty(projects)) {
@@ -162,34 +149,29 @@ public class TrainRepositoryImpl implements TrainRepositoryCustom {
             builder.and(qTrain.physicalDocuments.size().eq(docNumber));
         }
 
-        final JPQLQuery baseQuery = new JPAQuery(em);
-        final JPQLQuery countQuery = new JPAQuery(em);
+        final JPAQuery<Train> baseQuery = queryFactory.selectDistinct(qTrain)
+                                                      .from(qTrain)
+                                                      .leftJoin(qTrain.project, qProject)
+                                                      .leftJoin(qProject.associatedLibraries, qAssociatedLibrary)
+                                                      .leftJoin(qProject.associatedUsers, qAssociatedUser)
+                                                      .leftJoin(qProject.library)
+                                                      .where(builder.getValue())
+                                                      .orderBy(qTrain.label.asc());
 
         if (pageable != null) {
             baseQuery.offset(pageable.getOffset()).limit(pageable.getPageSize());
         }
 
-        final List<String> trainsIdentifiers = countQuery.from(qTrain)
-                                                         .leftJoin(qTrain.project, qProject)
-                                                         .leftJoin(qProject.associatedLibraries, qAssociatedLibrary)
-                                                         .leftJoin(qProject.associatedUsers, qAssociatedUser)
-                                                         .leftJoin(qProject.library)
-                                                         .groupBy(qTrain.identifier)
-                                                         .where(builder.getValue())
-                                                         .distinct()
-                                                         .list(qTrain.identifier);
-        final long total = trainsIdentifiers.size();
+        final long total = queryFactory.select(qTrain.countDistinct())
+                                       .from(qTrain)
+                                       .leftJoin(qTrain.project, qProject)
+                                       .leftJoin(qProject.associatedLibraries, qAssociatedLibrary)
+                                       .leftJoin(qProject.associatedUsers, qAssociatedUser)
+                                       .leftJoin(qProject.library)
+                                       .where(builder.getValue())
+                                       .fetchOne();
 
-        final List<Train> result = baseQuery.from(qTrain)
-                                            .leftJoin(qTrain.project, qProject)
-                                            .leftJoin(qProject.associatedLibraries, qAssociatedLibrary)
-                                            .leftJoin(qProject.associatedUsers, qAssociatedUser)
-                                            .leftJoin(qProject.library)
-                                            .where(builder.getValue())
-                                            .distinct()
-                                            .orderBy(qTrain.label.asc())
-                                            .list(qTrain);
-        return new PageImpl<>(result, pageable, total);
+        return new PageImpl<>(baseQuery.fetch(), pageable, total);
     }
 
     @Override
@@ -251,10 +233,10 @@ public class TrainRepositoryImpl implements TrainRepositoryCustom {
 
             final BooleanBuilder condreportBuilder = new BooleanBuilder();
             // dernier constat d'état
-            condreportBuilder.and(qConditionReportDetail.position.eq(new JPASubQuery().from(qConditionReportDetailMax)
-                                                                                      .where(qConditionReportDetailMax.report.eq(
-                                                                                          qConditionReportDetail.report))
-                                                                                      .unique(qConditionReportDetailMax.position.max())));
+            condreportBuilder.and(qConditionReportDetail.position.eq(JPAExpressions.select(qConditionReportDetailMax.position.max())
+                                                                                   .from(qConditionReportDetailMax)
+                                                                                   .where(qConditionReportDetailMax.report.eq(qConditionReportDetail.report))
+                                                                                   .fetchOne()));
             // lien avec le train
             condreportBuilder.and(qPhysicalDocument.train.eq(qTrain));
 
@@ -267,42 +249,26 @@ public class TrainRepositoryImpl implements TrainRepositoryCustom {
                 condreportHavingBuilder.and(qConditionReportDetail.insurance.sum().loe(insuranceTo));
             }
 
-            builder.and(new JPASubQuery().from(qConditionReportDetail)
-                                         .innerJoin(qConditionReportDetail.report, qConditionReport)
-                                         .innerJoin(qConditionReport.docUnit, qDocUnit)
-                                         .innerJoin(qDocUnit.physicalDocuments, qPhysicalDocument)
-                                         .where(condreportBuilder)
-                                         .groupBy(qPhysicalDocument.train)
-                                         .having(condreportHavingBuilder)
-                                         .exists());
+            builder.and(JPAExpressions.select(qConditionReportDetail)
+                                      .from(qConditionReportDetail)
+                                      .innerJoin(qConditionReportDetail.report, qConditionReport)
+                                      .innerJoin(qConditionReport.docUnit, qDocUnit)
+                                      .innerJoin(qDocUnit.physicalDocuments, qPhysicalDocument)
+                                      .where(condreportBuilder)
+                                      .groupBy(qPhysicalDocument.train)
+                                      .having(condreportHavingBuilder)
+                                      .exists());
         }
 
-        return new JPAQuery(em).from(qTrain)
-                               .leftJoin(qTrain.project, qProject)
-                               .leftJoin(qProject.library, qLibrary)
-                               .where(builder.getValue())
-                               .distinct()
-                               .list(qTrain);
+        return queryFactory.selectDistinct(qTrain).from(qTrain).leftJoin(qTrain.project, qProject).leftJoin(qProject.library, qLibrary).where(builder).fetch();
     }
 
     /**
      * récupère les trains attachés aux projets.
-     *
-     * @param projectIds
-     * @return
      */
     @Override
-    public List<SimpleTrainDTO> findAllIdentifiersInProjectIds(final Iterable<String> projectIds) {
-
-        final String q = "select t.identifier, t.label from Train t inner join t.project p where p.identifier in :projectIds ";
-        final TypedQuery<Object[]> query = em.createQuery(q, Object[].class); // NOSONAR : Non il n'y a pas de possiblité d'injection SQL...
-        query.setParameter("projectIds", projectIds);
-
-        final List<Object[]> queryResult = query.getResultList();
-        final SimpleTrainDTO.Builder builder = new SimpleTrainDTO.Builder();
-
-        return queryResult.stream()
-                          .map(result -> builder.reinit().setIdentifier((String) result[0]).setLabel((String) result[1]).build())
-                          .collect(Collectors.toList());
+    public List<SimpleTrainDTO> findAllIdentifiersInProjectIds(final Collection<String> projectIds) {
+        final QTrain train = QTrain.train;
+        return queryFactory.select(new QSimpleTrainDTO(train.identifier, train.label)).from(train).where(train.project.identifier.in(projectIds)).fetch();
     }
 }

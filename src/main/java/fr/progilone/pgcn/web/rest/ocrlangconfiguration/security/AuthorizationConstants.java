@@ -20,7 +20,6 @@ public final class AuthorizationConstants {
      */
     public static final String OCR_LANG_HAB2 = "OCR-LANG-HAB2";
 
-    
     // ne pas oublier de placer l'annotation @AuthorizationManager.Init sur la classe pour initialiser les relations entre autorisations
     static {
         AuthorizationManager.setRequirements(OCR_LANG_HAB1, OCR_LANG_HAB0);

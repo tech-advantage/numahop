@@ -1,27 +1,25 @@
 package fr.progilone.pgcn.repository.workflow;
 
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-
-import com.mysema.query.jpa.impl.JPAQuery;
-
+import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import fr.progilone.pgcn.domain.document.QDocUnit;
 import fr.progilone.pgcn.domain.workflow.DocUnitState;
 import fr.progilone.pgcn.domain.workflow.QDocUnitState;
 import fr.progilone.pgcn.domain.workflow.QDocUnitWorkflow;
 import fr.progilone.pgcn.repository.workflow.helper.DocUnitWorkflowHelper;
 import fr.progilone.pgcn.repository.workflow.helper.DocUnitWorkflowSearchBuilder;
+import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 public class DocUnitStateRepositoryImpl implements DocUnitStateRepositoryCustom {
 
-    @PersistenceContext
-    private EntityManager em;
+    private final JPAQueryFactory queryFactory;
+
+    public DocUnitStateRepositoryImpl(final JPAQueryFactory queryFactory) {
+        this.queryFactory = queryFactory;
+    }
 
     @Override
     public Page<DocUnitState> findDocUnitStates(final DocUnitWorkflowSearchBuilder searchBuilder, final Pageable pageable) {
@@ -29,11 +27,13 @@ public class DocUnitStateRepositoryImpl implements DocUnitStateRepositoryCustom 
         final QDocUnitState qDocUnitState = QDocUnitState.docUnitState;
         final QDocUnitWorkflow qDocUnitWorkflow = QDocUnitWorkflow.docUnitWorkflow;
 
-        JPAQuery query =
-            new JPAQuery(em).from(qDocUnitState).innerJoin(qDocUnitState.workflow, qDocUnitWorkflow).innerJoin(qDocUnitWorkflow.docUnit, qDocUnit);
+        JPAQuery<DocUnitState> query = queryFactory.select(qDocUnitState)
+                                                   .from(qDocUnitState)
+                                                   .innerJoin(qDocUnitState.workflow, qDocUnitWorkflow)
+                                                   .innerJoin(qDocUnitWorkflow.docUnit, qDocUnit);
         query = DocUnitWorkflowHelper.getFindDocUnitWorkflowQuery(query, searchBuilder, qDocUnit, qDocUnitWorkflow, qDocUnitState);
 
-        final long total = query.count();
+        final long total = query.clone().select(qDocUnitState.countDistinct()).fetchOne();
         final List<DocUnitState> content = query.offset(pageable.getOffset())
                                                 .limit(pageable.getPageSize())
                                                 .orderBy(qDocUnit.library.name.asc(),
@@ -41,7 +41,7 @@ public class DocUnitStateRepositoryImpl implements DocUnitStateRepositoryCustom 
                                                          qDocUnit.lot.label.asc(),
                                                          qDocUnit.pgcnId.asc(),
                                                          qDocUnitState.endDate.asc())
-                                                .list(qDocUnitState);
+                                                .fetch();
         return new PageImpl<>(content, pageable, total);
     }
 }

@@ -13,17 +13,16 @@ import fr.progilone.pgcn.repository.exchange.ImportReportRepository;
 import fr.progilone.pgcn.repository.exchange.MappingRepository;
 import fr.progilone.pgcn.repository.exchange.MappingRuleRepository;
 import fr.progilone.pgcn.service.exchange.mapper.MappingMapper;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by Sebastien on 23/11/2016.
@@ -36,9 +35,7 @@ public class MappingService {
     private final MappingRuleRepository mappingRuleRepository;
 
     @Autowired
-    public MappingService(final ImportReportRepository importReportRepository,
-                          final MappingRepository mappingRepository,
-                          final MappingRuleRepository mappingRuleRepository) {
+    public MappingService(final ImportReportRepository importReportRepository, final MappingRepository mappingRepository, final MappingRuleRepository mappingRuleRepository) {
         this.importReportRepository = importReportRepository;
         this.mappingRepository = mappingRepository;
         this.mappingRuleRepository = mappingRuleRepository;
@@ -77,7 +74,7 @@ public class MappingService {
     public void delete(final String id) {
         importReportRepository.setMappingNull(id);
         importReportRepository.setMappingChildrenNull(id);
-        mappingRepository.delete(id);
+        mappingRepository.deleteById(id);
     }
 
     @Transactional
@@ -149,7 +146,8 @@ public class MappingService {
         final PgcnError.Builder builder = new PgcnError.Builder();
 
         // le champ de la règle est obligatoire
-        if (rule.getProperty() == null && StringUtils.isBlank(rule.getDocUnitField()) && StringUtils.isBlank(rule.getBibRecordField())) {
+        if (rule.getProperty() == null && StringUtils.isBlank(rule.getDocUnitField())
+            && StringUtils.isBlank(rule.getBibRecordField())) {
             errors.add(builder.reinit().setCode(PgcnErrorCode.MAPPING_RULE_FIELD_MANDATORY).build());
         }
         // Retour
@@ -160,29 +158,26 @@ public class MappingService {
     }
 
     private Stream<PgcnError> validateMandatoryRules(final List<MappingRule> rules, final PgcnError.Builder builder) {
-        return Stream.of("label", "pgcnId", "rights", "type")
-                     .filter(field -> rules.stream().noneMatch(rule -> StringUtils.equals(rule.getDocUnitField(), field)))
-                     .map(field -> {
-                         final PgcnErrorCode code;
-                         switch (field) {
-                             case "label":
-                                 code = PgcnErrorCode.MAPPING_RULE_LABEL_MANDATORY;
-                                 break;
-                             case "pgcnId":
-                                 code = PgcnErrorCode.MAPPING_RULE_PGCNID_MANDATORY;
-                                 break;
-                             case "rights":
-                                 code = PgcnErrorCode.MAPPING_RULE_RIGHTS_MANDATORY;
-                                 break;
-                             default:
-                                 code = null;
-                         }
-                         if (code != null) {
-                             return builder.reinit().setCode(code).setField(field).build();
-                         }
-                         return null;
-                     })
-                     .filter(Objects::nonNull);
+        return Stream.of("label", "pgcnId", "rights", "type").filter(field -> rules.stream().noneMatch(rule -> StringUtils.equals(rule.getDocUnitField(), field))).map(field -> {
+            final PgcnErrorCode code;
+            switch (field) {
+                case "label":
+                    code = PgcnErrorCode.MAPPING_RULE_LABEL_MANDATORY;
+                    break;
+                case "pgcnId":
+                    code = PgcnErrorCode.MAPPING_RULE_PGCNID_MANDATORY;
+                    break;
+                case "rights":
+                    code = PgcnErrorCode.MAPPING_RULE_RIGHTS_MANDATORY;
+                    break;
+                default:
+                    code = null;
+            }
+            if (code != null) {
+                return builder.reinit().setCode(code).setField(field).build();
+            }
+            return null;
+        }).filter(Objects::nonNull);
     }
 
     @Transactional

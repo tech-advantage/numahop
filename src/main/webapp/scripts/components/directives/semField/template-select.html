@@ -1,12 +1,11 @@
-<div class="row vertical-align" ng-hide="hideIfEmpty && !model">
+<div class="semField__select" ng-hide="hideIfEmpty && !model">
     <div ng-class="labelclass || 'col-xs-4'" class="text-right" ng-if="label">
-        <label uib-tooltip="{{tooltip}}">{{::label}}</label>
+        <label uib-tooltip="{{tooltip}}">{{::label | translate}}</label>
         <!-- Mandatory -->
-        <span class="text-danger cursor-help" 
-              uib-tooltip="{{ ::'Ce champ est obligatoire' | translate }}" ng-if="mandatory">*</span>
+        <span class="text-danger cursor-help" uib-tooltip="{{ ::'Ce champ est obligatoire' | translate }}" ng-if="mandatory">*</span>
     </div>
-	<div class="model-container" ng-class="{true: (fieldclass || defaultcolsm) + ' has-error', false: (fieldclass || defaultcolsm) }[!!errMsg]">
-		<select main-field class="form-control" ng-model="model" ng-options="{{options}}" ng-disabled="readonly"></select>
-		<div class="help-block" ng-show="errMsg" ng-bind-html="errMsg"></div>
-	</div>
+    <div class="model-container" ng-class="{true: (fieldclass || defaultcolsm) + ' has-error', false: (fieldclass || defaultcolsm) }[!!errMsg]">
+        <select main-field class="form-control" ng-model="model" ng-options="{{options}}" ng-disabled="readonly"></select>
+        <div class="help-block" ng-show="errMsg" ng-bind-html="errMsg"></div>
+    </div>
 </div>

@@ -5,21 +5,21 @@
 // Généré le : 2018.08.13 à 01:08:19 PM CEST
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.oaipmh;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
-
 
 /**
- * <p>Classe Java pour setType complex type.
+ * <p>
+ * Classe Java pour setType complex type.
  *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="setType">
@@ -38,11 +38,10 @@ import javax.xml.bind.annotation.XmlType;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "setType", propOrder = {
-    "setSpec",
-    "setName",
-    "setDescription"
-})
+@XmlType(name = "setType",
+         propOrder = {"setSpec",
+                      "setName",
+                      "setDescription"})
 public class SetType {
 
     @XmlElement(required = true)
@@ -55,8 +54,8 @@ public class SetType {
      * Obtient la valeur de la propriété setSpec.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getSetSpec() {
@@ -67,8 +66,8 @@ public class SetType {
      * Définit la valeur de la propriété setSpec.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setSetSpec(String value) {
@@ -79,8 +78,8 @@ public class SetType {
      * Obtient la valeur de la propriété setName.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getSetName() {
@@ -91,8 +90,8 @@ public class SetType {
      * Définit la valeur de la propriété setName.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setSetName(String value) {
@@ -110,8 +109,9 @@ public class SetType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getSetDescription().add(newItem);
+     * getSetDescription().add(newItem);
      * </pre>
      *
      *

@@ -5,30 +5,30 @@
 // Généré le : 2017.05.16 à 10:56:55 AM CEST
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.ead;
 
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElementRef;
+import jakarta.xml.bind.annotation.XmlElementRefs;
+import jakarta.xml.bind.annotation.XmlID;
+import jakarta.xml.bind.annotation.XmlMixed;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElementRef;
-import javax.xml.bind.annotation.XmlElementRefs;
-import javax.xml.bind.annotation.XmlID;
-import javax.xml.bind.annotation.XmlMixed;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 
 /**
- * <p>Classe Java pour archref complex type.
+ * <p>
+ * Classe Java pour archref complex type.
  *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="archref">
@@ -54,37 +54,33 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "archref", propOrder = {
-    "content"
-})
+@XmlType(name = "archref", propOrder = {"content"})
 public class Archref {
 
-    @XmlElementRefs({
-        @XmlElementRef(name = "ptr", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
-        @XmlElementRef(name = "physdesc", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
-        @XmlElementRef(name = "langmaterial", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
-        @XmlElementRef(name = "title", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
-        @XmlElementRef(name = "container", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
-        @XmlElementRef(name = "extptr", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
-        @XmlElementRef(name = "daogrp", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
-        @XmlElementRef(name = "abstract", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
-        @XmlElementRef(name = "materialspec", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
-        @XmlElementRef(name = "abbr", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
-        @XmlElementRef(name = "expan", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
-        @XmlElementRef(name = "bibref", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
-        @XmlElementRef(name = "unitdate", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
-        @XmlElementRef(name = "physloc", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
-        @XmlElementRef(name = "unitid", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
-        @XmlElementRef(name = "lb", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
-        @XmlElementRef(name = "unittitle", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
-        @XmlElementRef(name = "origination", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
-        @XmlElementRef(name = "emph", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
-        @XmlElementRef(name = "extref", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
-        @XmlElementRef(name = "note", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
-        @XmlElementRef(name = "ref", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
-        @XmlElementRef(name = "dao", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
-        @XmlElementRef(name = "repository", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false)
-    })
+    @XmlElementRefs({@XmlElementRef(name = "ptr", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
+                     @XmlElementRef(name = "physdesc", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
+                     @XmlElementRef(name = "langmaterial", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
+                     @XmlElementRef(name = "title", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
+                     @XmlElementRef(name = "container", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
+                     @XmlElementRef(name = "extptr", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
+                     @XmlElementRef(name = "daogrp", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
+                     @XmlElementRef(name = "abstract", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
+                     @XmlElementRef(name = "materialspec", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
+                     @XmlElementRef(name = "abbr", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
+                     @XmlElementRef(name = "expan", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
+                     @XmlElementRef(name = "bibref", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
+                     @XmlElementRef(name = "unitdate", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
+                     @XmlElementRef(name = "physloc", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
+                     @XmlElementRef(name = "unitid", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
+                     @XmlElementRef(name = "lb", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
+                     @XmlElementRef(name = "unittitle", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
+                     @XmlElementRef(name = "origination", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
+                     @XmlElementRef(name = "emph", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
+                     @XmlElementRef(name = "extref", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
+                     @XmlElementRef(name = "note", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
+                     @XmlElementRef(name = "ref", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
+                     @XmlElementRef(name = "dao", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
+                     @XmlElementRef(name = "repository", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false)})
     @XmlMixed
     protected List<Serializable> content;
     @XmlAttribute(name = "entityref")
@@ -132,8 +128,9 @@ public class Archref {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getContent().add(newItem);
+     * getContent().add(newItem);
      * </pre>
      *
      *
@@ -178,8 +175,8 @@ public class Archref {
      * Obtient la valeur de la propriété entityref.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getEntityref() {
@@ -190,8 +187,8 @@ public class Archref {
      * Définit la valeur de la propriété entityref.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setEntityref(String value) {
@@ -202,8 +199,8 @@ public class Archref {
      * Obtient la valeur de la propriété xpointer.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getXpointer() {
@@ -214,8 +211,8 @@ public class Archref {
      * Définit la valeur de la propriété xpointer.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setXpointer(String value) {
@@ -226,8 +223,8 @@ public class Archref {
      * Obtient la valeur de la propriété id.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getId() {
@@ -238,8 +235,8 @@ public class Archref {
      * Définit la valeur de la propriété id.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setId(String value) {
@@ -250,8 +247,8 @@ public class Archref {
      * Obtient la valeur de la propriété altrender.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getAltrender() {
@@ -262,8 +259,8 @@ public class Archref {
      * Définit la valeur de la propriété altrender.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setAltrender(String value) {
@@ -274,8 +271,8 @@ public class Archref {
      * Obtient la valeur de la propriété audience.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getAudience() {
@@ -286,8 +283,8 @@ public class Archref {
      * Définit la valeur de la propriété audience.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setAudience(String value) {
@@ -298,8 +295,8 @@ public class Archref {
      * Obtient la valeur de la propriété type.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getType() {
@@ -314,8 +311,8 @@ public class Archref {
      * Définit la valeur de la propriété type.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setType(String value) {
@@ -326,8 +323,8 @@ public class Archref {
      * Obtient la valeur de la propriété href.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getHref() {
@@ -338,8 +335,8 @@ public class Archref {
      * Définit la valeur de la propriété href.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setHref(String value) {
@@ -350,8 +347,8 @@ public class Archref {
      * Obtient la valeur de la propriété role.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getRole() {
@@ -362,8 +359,8 @@ public class Archref {
      * Définit la valeur de la propriété role.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setRole(String value) {
@@ -374,8 +371,8 @@ public class Archref {
      * Obtient la valeur de la propriété arcrole.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getArcrole() {
@@ -386,8 +383,8 @@ public class Archref {
      * Définit la valeur de la propriété arcrole.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setArcrole(String value) {
@@ -398,8 +395,8 @@ public class Archref {
      * Obtient la valeur de la propriété title.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getTitle() {
@@ -410,8 +407,8 @@ public class Archref {
      * Définit la valeur de la propriété title.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setTitle(String value) {
@@ -422,8 +419,8 @@ public class Archref {
      * Obtient la valeur de la propriété show.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getShow() {
@@ -434,8 +431,8 @@ public class Archref {
      * Définit la valeur de la propriété show.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setShow(String value) {
@@ -446,8 +443,8 @@ public class Archref {
      * Obtient la valeur de la propriété actuate.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getActuate() {
@@ -458,8 +455,8 @@ public class Archref {
      * Définit la valeur de la propriété actuate.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setActuate(String value) {

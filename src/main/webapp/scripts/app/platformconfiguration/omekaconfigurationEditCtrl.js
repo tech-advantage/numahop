@@ -1,19 +1,34 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('OmekaConfigurationEditCtrl', OmekaConfigurationEditCtrl);
+    angular.module('numaHopApp.controller').controller('OmekaConfigurationEditCtrl', OmekaConfigurationEditCtrl);
 
-    function OmekaConfigurationEditCtrl($location, $q, $routeParams, $scope, $timeout, OmekaConfigurationSrvc, codeSrvc,
-        gettext, gettextCatalog, HistorySrvc, ListTools, NumahopEditService,
-        MessageSrvc, ModalSrvc, NumaHopInitializationSrvc, ValidationSrvc, DocUnitBaseService, VIEW_MODES) {
-
+    function OmekaConfigurationEditCtrl(
+        $location,
+        $q,
+        $routeParams,
+        $scope,
+        $timeout,
+        OmekaConfigurationSrvc,
+        codeSrvc,
+        gettext,
+        gettextCatalog,
+        HistorySrvc,
+        ListTools,
+        NumahopEditService,
+        MessageSrvc,
+        ModalSrvc,
+        NumaHopInitializationSrvc,
+        ValidationSrvc,
+        DocUnitBaseService,
+        VIEW_MODES
+    ) {
         $scope.semCodes = codeSrvc;
         $scope.preventDefault = NumahopEditService.preventDefault;
         $scope.viewModes = VIEW_MODES;
         $scope.validation = ValidationSrvc;
         $scope.displayBoolean = DocUnitBaseService.displayBoolean;
-        $scope.saveConfiguration= saveConfiguration;
+        $scope.saveConfiguration = saveConfiguration;
 
         // Définition des listes déroulantes
         $scope.options = {
@@ -22,16 +37,16 @@
 
         $scope.viewMode = $routeParams.mode || $scope.viewModes.VIEW;
 
-        $scope.binding = { resp: "" };
+        $scope.binding = { resp: '' };
         $scope.loaded = false;
 
         $scope.accordions = {
             collections: true,
-            items: true
+            items: true,
         };
         $scope.addCollection = function () {
             var newCollection = {
-                type: 'COLLECTION'
+                type: 'COLLECTION',
             };
             if ($scope.configuration.omekaCollections) {
                 $scope.configuration.omekaCollections.push(newCollection);
@@ -45,7 +60,7 @@
 
         $scope.addItem = function () {
             var newItem = {
-                type: 'ITEM'
+                type: 'ITEM',
             };
             if ($scope.configuration.omekaItems) {
                 $scope.configuration.omekaItems.push(newItem);
@@ -59,7 +74,6 @@
 
         init();
 
-
         /** Initialisation */
         function init() {
             loadLibrarySelect();
@@ -71,46 +85,47 @@
 
             $timeout(function () {
                 var savePromise = saveConfiguration($scope.configuration);
-                savePromise.then(function (value) {
-                    deferred.resolve(value);
-                }).catch(function (value) {
-                    deferred.reject(value);
-                });
+                savePromise
+                    .then(function (value) {
+                        deferred.resolve(value);
+                    })
+                    .catch(function (value) {
+                        deferred.reject(value);
+                    });
 
                 if ($scope.viewMode === $scope.viewModes.EDIT) {
-                    savePromise.then(function (value) {
-                        $scope.configurationForm.$cancel();
-                    }).catch(function (value) {
-                        openForm();
-                    });
+                    savePromise
+                        .then(function (value) {
+                            $scope.configurationForm.$cancel();
+                        })
+                        .catch(function (value) {
+                            openForm();
+                        });
                 }
             });
 
             return deferred.promise;
         };
-//        $scope.showAdd = function (index, collection) {
-//            return index === (collection.length - 1) && ($scope.viewMode === $scope.viewModes.EDIT || index >= 0 && angular.isDefined(collection[collection.length - 1].identifier));
-//        };
+        //        $scope.showAdd = function (index, collection) {
+        //            return index === (collection.length - 1) && ($scope.viewMode === $scope.viewModes.EDIT || index >= 0 && angular.isDefined(collection[collection.length - 1].identifier));
+        //        };
 
         /****************************************************************/
         /** Actions *****************************************************/
         /****************************************************************/
         $scope.delete = function (configuration) {
-            ModalSrvc.confirmDeletion(configuration.name)
-                .then(function () {
-
-                    configuration.$delete(function (value) {
-                        MessageSrvc.addSuccess(gettext("La configuration {{name}} a été supprimée"), { name: value.name });
-                        var removed = ListTools.findAndRemoveItemFromList(configuration, $scope.pagination.items);
-                        if (removed) {
-                            $scope.pagination.totalItems--;
-                        }
-                        else {
-                            ListTools.findAndRemoveItemFromList(configuration, $scope.newConfigurations);
-                        }
-                        $scope.backToList();
-                    });
+            ModalSrvc.confirmDeletion(configuration.name).then(function () {
+                configuration.$delete(function (value) {
+                    MessageSrvc.addSuccess(gettext('La configuration {{name}} a été supprimée'), { name: value.name });
+                    var removed = ListTools.findAndRemoveItemFromList(configuration, $scope.pagination.items);
+                    if (removed) {
+                        $scope.pagination.totalItems--;
+                    } else {
+                        ListTools.findAndRemoveItemFromList(configuration, $scope.newConfigurations);
+                    }
+                    $scope.backToList();
                 });
+            });
         };
         $scope.duplicate = function () {
             if ($scope.configuration) {
@@ -118,14 +133,13 @@
                 $scope.configuration._selected = false;
                 var identifier = $scope.configuration.identifier;
                 $scope.configuration = null;
-                $location.path("/platformconfiguration/omekaconfiguration").search({ id: identifier, mode: "edit", duplicate: true });
+                $location.path('/platformconfiguration/omekaconfiguration').search({ id: identifier, mode: 'edit', duplicate: true });
             }
         };
         $scope.cancel = function () {
             if ($routeParams.new) {
                 backToList();
-            }
-            else {
+            } else {
                 $scope.configurationForm.$cancel();
             }
         };
@@ -133,7 +147,7 @@
             $scope.loaded = false;
             // supprimer tous les paramètres
             $location.search({});
-            $location.path("/platformconfiguration/omekaconfiguration");
+            $location.path('/platformconfiguration/omekaconfiguration');
         };
 
         /****************************************************************/
@@ -147,15 +161,16 @@
                 var creation = angular.isUndefined($scope.configuration.identifier) || $scope.configuration.identifier === null;
                 var deferred = $q.defer();
 
-                $scope.configuration.$save({},
+                $scope.configuration.$save(
+                    {},
                     function (value) {
-                        MessageSrvc.addSuccess(gettext("La configuration {{name}} a été sauvegardée"), { name: value.name });
+                        MessageSrvc.addSuccess(gettext('La configuration {{name}} a été sauvegardée'), { name: value.name });
                         onSuccess(value);
                         deferred.resolve($scope.configuration);
                         // si création, on ajoute à la liste, sinon, on essaye de MAJ les infos dans la colonne du milieu
                         if (creation) {
                             $scope.clearSelection();
-                            NumahopEditService.addNewEntityToList(value, $scope.newConfigurations, $scope.pagination.items, ["label"]);
+                            NumahopEditService.addNewEntityToList(value, $scope.newConfigurations, $scope.pagination.items, ['label']);
                         } else {
                             NumahopEditService.updateMiddleColumn($scope.configuration, $scope.pagination.items, $scope.newConfigurations);
                         }
@@ -163,7 +178,8 @@
                     function (httpResponse) {
                         ObjectTools.setObjectErrors($scope.configuration, httpResponse.data);
                         deferred.reject(httpResponse.data);
-                    });
+                    }
+                );
                 return deferred.promise;
             });
         }
@@ -172,12 +188,14 @@
             var deferred = $q.defer();
             $timeout(function () {
                 var promise = NumaHopInitializationSrvc.loadLibraries();
-                promise.then(function (value) {
-                    deferred.resolve(value);
-                    $scope.options.libraries = value;
-                }).catch(function (value) {
-                    deferred.reject(value);
-                });
+                promise
+                    .then(function (value) {
+                        deferred.resolve(value);
+                        $scope.options.libraries = value;
+                    })
+                    .catch(function (value) {
+                        deferred.reject(value);
+                    });
             });
             return deferred.promise;
         }
@@ -186,7 +204,7 @@
         function onSuccess(value) {
             $scope.configuration = value;
 
-            HistorySrvc.add(gettextCatalog.getString("Configuration {{label}}", $scope.configuration));
+            HistorySrvc.add(gettextCatalog.getString('Configuration {{label}}', $scope.configuration));
 
             displayMessages();
         }
@@ -212,21 +230,27 @@
         function loadConfiguration() {
             if ('duplicate' in $routeParams && angular.isDefined($routeParams.id)) {
                 // Duplication
-                $scope.configuration = OmekaConfigurationSrvc.duplicate({
-                    id: $routeParams.id
-                }, function (configuration) {
-                    afterLoadingConfiguration(configuration);
-                });
+                $scope.configuration = OmekaConfigurationSrvc.duplicate(
+                    {
+                        id: $routeParams.id,
+                    },
+                    function (configuration) {
+                        afterLoadingConfiguration(configuration);
+                    }
+                );
             } else if (angular.isDefined($routeParams.id)) {
                 // Chargement confgiuration
-                $scope.configuration = OmekaConfigurationSrvc.get({
-                    id: $routeParams.id
-                }, function (configuration) {
-                    afterLoadingConfiguration(configuration);
-                });
+                $scope.configuration = OmekaConfigurationSrvc.get(
+                    {
+                        id: $routeParams.id,
+                    },
+                    function (configuration) {
+                        afterLoadingConfiguration(configuration);
+                    }
+                );
             } else if ($scope.viewMode === $scope.viewModes.EDIT) {
                 // Création d'une nouvelle configuration
-                HistorySrvc.add(gettext("Nouvelle configuration"));
+                HistorySrvc.add(gettext('Nouvelle configuration'));
                 $scope.configuration = new OmekaConfigurationSrvc();
                 $scope.configuration.active = true;
                 $scope.configuration.omekas = true;
@@ -237,7 +261,6 @@
         }
 
         // Clean
-        $scope.$on("$destroy", function () {
-        });
+        $scope.$on('$destroy', function () {});
     }
 })();

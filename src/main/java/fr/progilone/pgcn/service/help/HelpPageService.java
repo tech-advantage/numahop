@@ -5,13 +5,12 @@ import fr.progilone.pgcn.domain.dto.help.ModuleDto;
 import fr.progilone.pgcn.domain.help.HelpPage;
 import fr.progilone.pgcn.domain.help.HelpPageType;
 import fr.progilone.pgcn.repository.help.HelpPageRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 public class HelpPageService {
@@ -26,8 +25,7 @@ public class HelpPageService {
 
     public List<ModuleDto> search(final List<String> modules, final List<HelpPageType> types, final String search) {
         final List<HelpPageDto> pages = helpPageRepository.search(modules, types, search);
-        final Map<ModuleDto, List<HelpPageDto>> map = pages.stream().collect(Collectors.groupingBy(p -> new ModuleDto(p.getModule(), p.getType()),
-                                                                                                   Collectors.toList()));
+        final Map<ModuleDto, List<HelpPageDto>> map = pages.stream().collect(Collectors.groupingBy(p -> new ModuleDto(p.getModule(), p.getType()), Collectors.toList()));
         map.forEach((key, value) -> key.getPages().addAll(value));
         return map.keySet().stream().sorted(Comparator.comparing(ModuleDto::getName, String.CASE_INSENSITIVE_ORDER)).collect(Collectors.toList());
     }
@@ -45,7 +43,7 @@ public class HelpPageService {
     }
 
     public void delete(final String id) {
-        helpPageRepository.delete(id);
+        helpPageRepository.deleteById(id);
     }
 
     public HelpPageDto searchByTag(final String tag) {

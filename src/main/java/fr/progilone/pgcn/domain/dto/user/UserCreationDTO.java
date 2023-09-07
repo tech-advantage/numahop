@@ -3,7 +3,6 @@ package fr.progilone.pgcn.domain.dto.user;
 import fr.progilone.pgcn.domain.dto.library.SimpleLibraryDTO;
 import fr.progilone.pgcn.domain.user.Lang;
 import fr.progilone.pgcn.domain.user.User;
-
 import java.time.LocalDateTime;
 
 /**
@@ -36,25 +35,37 @@ public class UserCreationDTO extends UserDTO {
                            String createdBy,
                            LocalDateTime createdDate,
                            String lastModifiedBy,
-                           LocalDateTime lastModifiedDate
-                       ) {
-    	super(identifier, login, firstname, surname, active, category, lang, role, address, library, phoneNumber, email, companyName, function,
-            createdBy,
-            createdDate,
-            lastModifiedBy,
-            lastModifiedDate);
-        this.password= password;
+                           LocalDateTime lastModifiedDate) {
+        super(identifier,
+              login,
+              firstname,
+              surname,
+              active,
+              category,
+              lang,
+              role,
+              address,
+              library,
+              phoneNumber,
+              email,
+              companyName,
+              function,
+              createdBy,
+              createdDate,
+              lastModifiedBy,
+              lastModifiedDate);
+        this.password = password;
     }
 
     public UserCreationDTO() {
     }
 
-	public final String getPassword() {
-		return password;
-	}
+    public final String getPassword() {
+        return password;
+    }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
 }

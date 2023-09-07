@@ -1,116 +1,169 @@
-<div class="col-sm-8 col-lg-9 col-sm-offset-4 col-lg-offset-3 col-layout-columns"
-     ng-controller="CondreportDescEditCtrl as editCtrl"
-     ng-init="editCtrl.init(mainCtrl.editedProp)">
-
+<div class="col-sm-8 col-lg-9 col-sm-offset-4 col-lg-offset-3 col-layout-columns" ng-controller="CondreportDescEditCtrl as editCtrl" ng-init="editCtrl.init(mainCtrl.editedProp)">
     <div class="panel panel-column-2 panel-column-end">
         <div class="panel-heading">
             <div class="pull-right">
-                <button type="button" class="btn btn-sem2 btn-xs"
-                        ng-click="editCtrl.openForm()" uib-tooltip="{{::'Modifier' | translate}}"
-                        ng-show="editCtrl.loaded && !valuesForm.$visible">
+                <button type="button" class="btn btn-sem2 btn-xs" ng-click="editCtrl.openForm()" uib-tooltip="{{::'Modifier' | translate}}" tooltip-append-to-body="true" ng-show="editCtrl.loaded && !valuesForm.$visible">
                     <span class="glyphicon-regular edit"></span>
                 </button>
-                <button type="button" class="btn btn-sem2 btn-xs"
-                        uib-tooltip="{{ 'Supprimer cette propriété et ses valeurs' | translate}}"
-                        ng-click="editCtrl.removeProperty()" ng-show="editCtrl.loaded && editCtrl.admin && !editCtrl.isNew">
+                <button
+                    type="button"
+                    class="btn btn-sem2 btn-xs"
+                    uib-tooltip="{{ 'Supprimer cette propriété et ses valeurs' | translate}}"
+                    tooltip-append-to-body="true"
+                    ng-click="editCtrl.removeProperty()"
+                    ng-show="editCtrl.loaded && editCtrl.admin && !editCtrl.isNew"
+                >
                     <span class="glyphicon-halflings glyphicon-trash"></span>
                 </button>
             </div>
-            <span ng-show="editCtrl.prop"><b>{{editCtrl.getTypeLabel(editCtrl.prop.type)}}</b> :
-                {{editCtrl.prop.label || ('Nouvelle propriété' | translate)}}</span>
+            <span ng-show="editCtrl.prop"><b>{{editCtrl.getTypeLabel(editCtrl.prop.type)}}</b> : {{editCtrl.prop.label || ('Nouvelle propriété' | translate)}}</span>
         </div>
         <div class="panel-body">
             <form editable-form name="valuesForm" onaftersave="editCtrl.saveValues()" ng-show="editCtrl.loaded">
-                <numa-editable-field title="{{::'Libellé' | translate}}" placeholder="{{::'Libellé de la propriété' | translate}}" form="valuesForm"
-                                     model="editCtrl.prop.label" onbeforesave="editCtrl.validation.required($data)"
-                                     numa-onchange="editCtrl.propertyChanged()" numa-readonly="!editCtrl.admin || editCtrl.internal"></numa-editable-field>
-                <numa-editable-field data-title="{{::'Code' | translate}}" placeholder="{{::'Code de la propriété' | translate}}" form="valuesForm"
-                                     tooltip="{{::'Le code est utilisé pour identifier cette propriété dans l\'export PDF de constats d\'état' | translate}}"
-                                     model="editCtrl.prop.code" numa-onchange="editCtrl.propertyChanged()"
-                                     numa-readonly="!editCtrl.admin || editCtrl.internal"></numa-editable-field>
-                <numa-editable-field type="number" title="{{::'Ordre' | translate}}" placeholder="{{::'Ordre d\'affichage' | translate}}" form="valuesForm"
-                                     tooltip="{{::'Ordre d\'affichage de la propriété' | translate}}"
-                                     model="editCtrl.prop.order" numa-onchange="editCtrl.propertyChanged()"
-                                     numa-readonly="!editCtrl.admin || editCtrl.internal"></numa-editable-field>
+                <numa-editable-field
+                    title="{{::'Libellé' | translate}}"
+                    placeholder="{{::'Libellé de la propriété' | translate}}"
+                    form="valuesForm"
+                    model="editCtrl.prop.label"
+                    onbeforesave="editCtrl.validation.required($data)"
+                    numa-onchange="editCtrl.propertyChanged()"
+                    numa-readonly="!editCtrl.admin || editCtrl.internal"
+                ></numa-editable-field>
+                <numa-editable-field
+                    data-title="{{::'Code' | translate}}"
+                    placeholder="{{::'Code de la propriété' | translate}}"
+                    form="valuesForm"
+                    tooltip="{{::'Le code est utilisé pour identifier cette propriété dans l\'export PDF de constats d\'état' | translate}}"
+                    model="editCtrl.prop.code"
+                    numa-onchange="editCtrl.propertyChanged()"
+                    numa-readonly="!editCtrl.admin || editCtrl.internal"
+                ></numa-editable-field>
+                <numa-editable-field
+                    type="number"
+                    title="{{::'Ordre' | translate}}"
+                    placeholder="{{::'Ordre d\'affichage' | translate}}"
+                    form="valuesForm"
+                    tooltip="{{::'Ordre d\'affichage de la propriété' | translate}}"
+                    tooltip-append-to-body="true"
+                    model="editCtrl.prop.order"
+                    numa-onchange="editCtrl.propertyChanged()"
+                    numa-readonly="!editCtrl.admin || editCtrl.internal"
+                ></numa-editable-field>
 
                 <div class="formBlock" style="max-width: 640px; margin-top: 50px; margin-left: auto; margin-right: auto">
                     <div class="formBlockTitle" style="margin-top: -18px">
-                        <numa-editable-field type="select" form="valuesForm" field-class="col-xs-5"
-                                            model="editCtrl._propLibrary" errors="{{ errors.library }}"
-                                            tooltip="{{::'Ces paramètres sont propres à cette bibliothèque' | translate}}"
-                                            numa-readonly="formRO" numa-onchange="editCtrl.onchangeLibrary($data)"
-                                            config="{ data: editCtrl.options.libraries,
+                        <numa-editable-field
+                            type="select"
+                            form="valuesForm"
+                            field-class="col-xs-5"
+                            model="editCtrl._propLibrary"
+                            errors="{{ errors.library }}"
+                            tooltip="{{::'Ces paramètres sont propres à cette bibliothèque' | translate}}"
+                            numa-readonly="formRO"
+                            numa-onchange="editCtrl.onchangeLibrary($data)"
+                            config="{ data: editCtrl.options.libraries,
                                                     display: 'name',
                                                     query: 'o.name for o in $ctrl.config.data track by o.identifier' }"
-                                            ng-if="::editCtrl.administrationLib"></numa-editable-field>
-                        <numa-editable-field type="readonly" form="valuesForm" value="{{::editCtrl._propLibrary.name}}"
-                                            tooltip="{{::'Ces paramètres sont propres à cette bibliothèque' | translate}}"
-                                            ng-if="::!editCtrl.administrationLib"></numa-editable-field>
+                            ng-if="::editCtrl.administrationLib"
+                        ></numa-editable-field>
+                        <numa-editable-field
+                            type="readonly"
+                            form="valuesForm"
+                            value="{{::editCtrl._propLibrary.name}}"
+                            tooltip="{{::'Ces paramètres sont propres à cette bibliothèque' | translate}}"
+                            ng-if="::!editCtrl.administrationLib"
+                        ></numa-editable-field>
                     </div>
                     <div class="formBlockContent">
-                        <numa-editable-field data-title="{{::'Obligatoire' | translate}}" type="radiolist" data-id="conf_required"
-                                            form="valuesForm" model="editCtrl.propConf.required"
-                                            tooltip="{{::'Rendre ce champ obligatoire lors de la saisie d\'un constat d\'état' | translate}}"
-                                            numa-onchange="editCtrl.propertyConfChanged()"
-                                            config="{ data: editCtrl.options.boolean, displayFn: editCtrl.displayBoolean,
-                                                    query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }"></numa-editable-field>
-                        <numa-editable-field data-title="{{::'Commentaire' | translate}}" type="radiolist" data-id="conf_comment"
-                                            form="valuesForm" model="editCtrl.propConf.allowComment"
-                                            tooltip="{{::'Autoriser la saisie de texte libre sur cette propriété' | translate}}"
-                                            numa-onchange="editCtrl.propertyConfChanged()" ng-if="!editCtrl.propConf.internalProperty"
-                                            config="{ data: editCtrl.options.boolean, displayFn: editCtrl.displayBoolean,
-                                                    query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }"></numa-editable-field>
-                        <numa-editable-field data-title="{{::'Création' | translate}}" type="radiolist" data-id="conf_creation"
-                                            form="valuesForm" model="editCtrl.propConf.showOnCreation"
-                                            tooltip="{{::'Ajouter automatiquement ce champ à la création d\'un constat d\'état' | translate}}"
-                                            numa-onchange="editCtrl.propertyConfChanged()"
-                                            config="{ data: editCtrl.options.boolean, displayFn: editCtrl.displayBoolean,
-                                                    query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }"></numa-editable-field>
-                        <numa-editable-field type="uiselect" form="valuesForm" data-title="{{::'Type de constat d\'état' | translate}}"
-                                             model="editCtrl.propConf._types" config="editCtrl.options.types"
-                                             tooltip="{{::'Ajouter automatiquement ce champ à la création des constats d\'état de ces types' | translate}}"
-                                             numa-onchange="editCtrl.propertyConfChanged()"></numa-editable-field>
+                        <numa-editable-field
+                            data-title="{{::'Obligatoire' | translate}}"
+                            type="radiolist"
+                            data-id="conf_required"
+                            form="valuesForm"
+                            model="editCtrl.propConf.required"
+                            tooltip="{{::'Rendre ce champ obligatoire lors de la saisie d\'un constat d\'état' | translate}}"
+                            numa-onchange="editCtrl.propertyConfChanged()"
+                            config="{ data: editCtrl.options.boolean, displayFn: editCtrl.displayBoolean,
+                                                    query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }"
+                        ></numa-editable-field>
+                        <numa-editable-field
+                            data-title="{{::'Commentaire' | translate}}"
+                            type="radiolist"
+                            data-id="conf_comment"
+                            form="valuesForm"
+                            model="editCtrl.propConf.allowComment"
+                            tooltip="{{::'Autoriser la saisie de texte libre sur cette propriété' | translate}}"
+                            numa-onchange="editCtrl.propertyConfChanged()"
+                            ng-if="!editCtrl.propConf.internalProperty"
+                            config="{ data: editCtrl.options.boolean, displayFn: editCtrl.displayBoolean,
+                                                    query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }"
+                        ></numa-editable-field>
+                        <numa-editable-field
+                            data-title="{{::'Création' | translate}}"
+                            type="radiolist"
+                            data-id="conf_creation"
+                            form="valuesForm"
+                            model="editCtrl.propConf.showOnCreation"
+                            tooltip="{{::'Ajouter automatiquement ce champ à la création d\'un constat d\'état' | translate}}"
+                            numa-onchange="editCtrl.propertyConfChanged()"
+                            config="{ data: editCtrl.options.boolean, displayFn: editCtrl.displayBoolean,
+                                                    query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }"
+                        ></numa-editable-field>
+                        <numa-editable-field
+                            type="uiselect"
+                            form="valuesForm"
+                            data-title="{{::'Type de constat d\'état' | translate}}"
+                            model="editCtrl.propConf._types"
+                            config="editCtrl.options.types"
+                            tooltip="{{::'Ajouter automatiquement ce champ à la création des constats d\'état de ces types' | translate}}"
+                            numa-onchange="editCtrl.propertyConfChanged()"
+                        ></numa-editable-field>
                     </div>
                 </div>
 
                 <div class="formBlock" style="max-width: 640px; margin-top: 50px; margin-left: auto; margin-right: auto" ng-if="!editCtrl.internal">
                     <div class="formBlockTitle">
                         <span translate>Configuration des valeurs</span>
-                        <span class="glyphicon-halflings glyphicon-question-sign cursor-help"
-                              uib-tooltip="{{::'Les valeurs sont communes à toutes les bibliothèques' | translate}}"></span>
+                        <span class="glyphicon-halflings glyphicon-question-sign cursor-help" uib-tooltip="{{::'Les valeurs sont communes à toutes les bibliothèques' | translate}}" tooltip-append-to-body="true"></span>
                     </div>
                     <div class="formBlockContent">
                         <table class="table table-condensed table-hover">
-                        <tbody>
-                            <tr ng-repeat="val in editCtrl.values | orderBy:'label'">
-                                <td>
-                                    <numa-editable-field class="full-width" placeholder="Valeur"
-                                                        model="val.label" form="valuesForm"
-                                                        onbeforesave="editCtrl.validation.required($data)"
-                                                        numa-onchange="editCtrl.valueChanged(val)"
-                                                        numa-readonly="!editCtrl.admin"></numa-editable-field>
-                                </td>
-                                <td ng-show="valuesForm.$visible" style="padding-top: 10px; width: 35px" ng-if="editCtrl.admin">
-                                    <button type="button" class="btn btn-syr-cataloging-action btn-xs"
-                                            uib-tooltip="{{ 'Supprimer cette valeur' | translate}}"
-                                            ng-click="editCtrl.removeValue(val)">
-                                        <span class="glyphicon-halflings glyphicon-trash"></span>
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                        <tfoot ng-show="valuesForm.$visible && editCtrl.admin">
-                            <tr>
-                                <td colspan="2" class="text-right">
-                                    <!-- Création d'une nouvelle valeur -->
-                                    <button type="button" class="btn btn-syr-cataloging-action btn-xs"
+                            <tbody>
+                                <tr ng-repeat="val in editCtrl.values | orderBy:'label'">
+                                    <td>
+                                        <numa-editable-field
+                                            class="full-width"
+                                            placeholder="Valeur"
+                                            model="val.label"
+                                            form="valuesForm"
+                                            onbeforesave="editCtrl.validation.required($data)"
+                                            numa-onchange="editCtrl.valueChanged(val)"
+                                            numa-readonly="!editCtrl.admin"
+                                        ></numa-editable-field>
+                                    </td>
+                                    <td ng-show="valuesForm.$visible" style="padding-top: 10px; width: 35px" ng-if="editCtrl.admin">
+                                        <button type="button" class="btn btn-syr-cataloging-action btn-xs" uib-tooltip="{{ 'Supprimer cette valeur' | translate}}" ng-click="editCtrl.removeValue(val)">
+                                            <span class="glyphicon-halflings glyphicon-trash"></span>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot ng-show="valuesForm.$visible && editCtrl.admin">
+                                <tr>
+                                    <td colspan="2" class="text-right">
+                                        <!-- Création d'une nouvelle valeur -->
+                                        <button
+                                            type="button"
+                                            class="btn btn-syr-cataloging-action btn-xs"
                                             uib-tooltip="{{ ::'Ajouter une valeur' | translate}}"
-                                            ng-click="editCtrl.newValue()" ng-show="valuesForm.$visible">
-                                        <span class="glyphicon-halflings glyphicon-plus"></span>
-                                    </button>
-                                </td>
-                            </tr>
-                        </tfoot>
+                                            ng-click="editCtrl.newValue()"
+                                            ng-show="valuesForm.$visible"
+                                        >
+                                            <span class="glyphicon-halflings glyphicon-plus"></span>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>
@@ -119,12 +172,8 @@
                 <div class="text-center column-bottom column-8 margin-t10" ng-show="valuesForm.$visible">
                     <div class="column-bottom-button">
                         <div class="btn-group">
-                            <button type="button" class="btn btn-sem4" ng-disabled="valuesForm.$waiting" ng-click="editCtrl.cancel()">
-                                <span class="glyphicon-regular unshare"></span> {{::'Annuler' | translate}}
-                            </button>
-                            <button type="submit" class="btn btn-sem2">
-                                <span class="glyphicon-regular floppy-save"></span> {{::'Enregistrer' | translate}}
-                            </button>
+                            <button type="button" class="btn btn-sem4" ng-disabled="valuesForm.$waiting" ng-click="editCtrl.cancel()"><span class="glyphicon-regular unshare"></span> {{::'Annuler' | translate}}</button>
+                            <button type="submit" class="btn btn-sem2"><span class="glyphicon-regular floppy-save"></span> {{::'Enregistrer' | translate}}</button>
                         </div>
                     </div>
                 </div>

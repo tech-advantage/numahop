@@ -1,6 +1,7 @@
 package fr.progilone.pgcn.domain.exchange.template;
 
 public enum Name {
+
     /**
      * Constat d'état
      */

@@ -1,14 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <!-- Chargement des données du module Usager -->
     <changeSet id="pgcn-superuser-3" author="progilone">
 
-        <loadData encoding="UTF-8" separator=";"
-                  file="config/liquibase/numahop/user/superauth2.csv"
-                  tableName="user_role_authorization">
+        <loadData encoding="UTF-8" separator=";" file="config/liquibase/numahop/user/superauth2.csv" tableName="user_role_authorization">
         </loadData>
     </changeSet>
 </databaseChangeLog>

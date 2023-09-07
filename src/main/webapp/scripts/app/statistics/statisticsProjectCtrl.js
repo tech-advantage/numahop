@@ -1,11 +1,9 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('StatisticsProjectCtrl', StatisticsProjectCtrl);
+    angular.module('numaHopApp.controller').controller('StatisticsProjectCtrl', StatisticsProjectCtrl);
 
     function StatisticsProjectCtrl(codeSrvc, gettextCatalog, HistorySrvc, NumahopStorageService, StatisticsSrvc) {
-
         var statCtrl = this;
 
         /** others actions **/
@@ -17,8 +15,7 @@
         statCtrl.search = search;
 
         var PAGE_START = 1;
-        var FILTER_STORAGE_SERVICE_KEY = "stat_project_list";
-
+        var FILTER_STORAGE_SERVICE_KEY = 'stat_project_list';
 
         /**
          * Objet de pagination
@@ -28,7 +25,7 @@
             items: [],
             totalItems: 0,
             busy: false,
-            page: PAGE_START
+            page: PAGE_START,
         };
 
         /**
@@ -36,18 +33,18 @@
          * @type {Object}
          */
         statCtrl.sizeOptions = [
-            { value: 10, label: "10" },
-            { value: 20, label: "20" },
-            { value: 50, label: "50" },
-            { value: 100, label: "100" },
-            { value: 5000, label: "Tout" }
+            { value: 10, label: '10' },
+            { value: 20, label: '20' },
+            { value: 50, label: '50' },
+            { value: 100, label: '100' },
+            { value: 5000, label: 'Tout' },
         ];
 
         /**
          * Modèle pour le tri
          * @type {Object}
          */
-        statCtrl.sortModel = ["name"];
+        statCtrl.sortModel = ['name'];
 
         init();
 
@@ -56,7 +53,7 @@
          * @return {[type]} [description]
          */
         function init() {
-            HistorySrvc.add(gettextCatalog.getString("Statistiques des projets"));
+            HistorySrvc.add(gettextCatalog.getString('Statistiques des projets'));
             statCtrl.loaded = false;
 
             loadSearch();
@@ -98,8 +95,8 @@
 
         /**
          * Recherche  d'entités sur un changement de période
-         * @param {*} from 
-         * @param {*} to 
+         * @param {*} from
+         * @param {*} to
          */
         function searchValue(updatedField, updatedValue) {
             statCtrl.filters[updatedField] = updatedValue;
@@ -125,10 +122,10 @@
             var params = {
                 page: statCtrl.pagination.page - 1,
                 size: statCtrl.pagination.size,
-                search: statCtrl.filters.search || "",
+                search: statCtrl.filters.search || '',
                 from: statCtrl.filters.from,
                 to: statCtrl.filters.to,
-                sorts: statCtrl.sortModel
+                sorts: statCtrl.sortModel,
             };
             return params;
         }

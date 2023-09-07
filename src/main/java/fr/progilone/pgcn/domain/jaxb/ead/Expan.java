@@ -1,29 +1,29 @@
 //
-// Ce fichier a été généré par l'implémentation de référence JavaTM Architecture for XML Binding (JAXB), v2.2.8-b130911.1802 
-// Voir <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
-// Toute modification apportée à ce fichier sera perdue lors de la recompilation du schéma source. 
-// Généré le : 2017.05.16 à 10:56:55 AM CEST 
+// Ce fichier a été généré par l'implémentation de référence JavaTM Architecture for XML Binding (JAXB), v2.2.8-b130911.1802
+// Voir <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a>
+// Toute modification apportée à ce fichier sera perdue lors de la recompilation du schéma source.
+// Généré le : 2017.05.16 à 10:56:55 AM CEST
 //
-
 
 package fr.progilone.pgcn.domain.jaxb.ead;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlID;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.XmlValue;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlID;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlValue;
+import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
- * <p>Classe Java pour expan complex type.
- * 
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
- * 
+ * <p>
+ * Classe Java pour expan complex type.
+ *
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ *
  * <pre>
  * &lt;complexType name="expan">
  *   &lt;complexContent>
@@ -34,13 +34,11 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
+ *
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "expan", propOrder = {
-    "content"
-})
+@XmlType(name = "expan", propOrder = {"content"})
 public class Expan {
 
     @XmlValue
@@ -62,11 +60,11 @@ public class Expan {
 
     /**
      * Obtient la valeur de la propriété content.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *         possible object is
+     *         {@link String }
+     *
      */
     public String getContent() {
         return content;
@@ -74,11 +72,11 @@ public class Expan {
 
     /**
      * Définit la valeur de la propriété content.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is
+     *            {@link String }
+     *
      */
     public void setContent(String value) {
         this.content = value;
@@ -86,11 +84,11 @@ public class Expan {
 
     /**
      * Obtient la valeur de la propriété abbr.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *         possible object is
+     *         {@link String }
+     *
      */
     public String getAbbr() {
         return abbr;
@@ -98,11 +96,11 @@ public class Expan {
 
     /**
      * Définit la valeur de la propriété abbr.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is
+     *            {@link String }
+     *
      */
     public void setAbbr(String value) {
         this.abbr = value;
@@ -110,11 +108,11 @@ public class Expan {
 
     /**
      * Obtient la valeur de la propriété id.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *         possible object is
+     *         {@link String }
+     *
      */
     public String getId() {
         return id;
@@ -122,11 +120,11 @@ public class Expan {
 
     /**
      * Définit la valeur de la propriété id.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is
+     *            {@link String }
+     *
      */
     public void setId(String value) {
         this.id = value;
@@ -134,11 +132,11 @@ public class Expan {
 
     /**
      * Obtient la valeur de la propriété altrender.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *         possible object is
+     *         {@link String }
+     *
      */
     public String getAltrender() {
         return altrender;
@@ -146,11 +144,11 @@ public class Expan {
 
     /**
      * Définit la valeur de la propriété altrender.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is
+     *            {@link String }
+     *
      */
     public void setAltrender(String value) {
         this.altrender = value;
@@ -158,11 +156,11 @@ public class Expan {
 
     /**
      * Obtient la valeur de la propriété audience.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *         possible object is
+     *         {@link String }
+     *
      */
     public String getAudience() {
         return audience;
@@ -170,11 +168,11 @@ public class Expan {
 
     /**
      * Définit la valeur de la propriété audience.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is
+     *            {@link String }
+     *
      */
     public void setAudience(String value) {
         this.audience = value;

@@ -1,24 +1,28 @@
 package fr.progilone.pgcn.web.rest.project;
 
-import static fr.progilone.pgcn.domain.project.Project.ProjectStatus.CANCELED;
-import static fr.progilone.pgcn.domain.project.Project.ProjectStatus.CLOSED;
-import static fr.progilone.pgcn.web.rest.project.security.AuthorizationConstants.PROJ_HAB0;
-import static fr.progilone.pgcn.web.rest.project.security.AuthorizationConstants.PROJ_HAB1;
-import static fr.progilone.pgcn.web.rest.project.security.AuthorizationConstants.PROJ_HAB3;
-import static fr.progilone.pgcn.web.rest.project.security.AuthorizationConstants.PROJ_HAB4;
-import static fr.progilone.pgcn.web.rest.project.security.AuthorizationConstants.PROJ_HAB5;
-import static fr.progilone.pgcn.web.rest.project.security.AuthorizationConstants.PROJ_HAB6;
-import static fr.progilone.pgcn.web.rest.project.security.AuthorizationConstants.PROJ_HAB7;
+import static fr.progilone.pgcn.domain.project.Project.ProjectStatus.*;
+import static fr.progilone.pgcn.web.rest.project.security.AuthorizationConstants.*;
 
+import com.codahale.metrics.annotation.Timed;
+import fr.progilone.pgcn.domain.dto.audit.AuditProjectRevisionDTO;
+import fr.progilone.pgcn.domain.dto.project.ProjectDTO;
+import fr.progilone.pgcn.domain.dto.project.SimpleProjectDTO;
+import fr.progilone.pgcn.domain.project.Project;
+import fr.progilone.pgcn.domain.project.Project.ProjectStatus;
+import fr.progilone.pgcn.exception.PgcnException;
+import fr.progilone.pgcn.service.es.EsProjectService;
+import fr.progilone.pgcn.service.project.ProjectService;
+import fr.progilone.pgcn.service.project.ui.UIProjectService;
+import fr.progilone.pgcn.web.rest.AbstractRestController;
+import fr.progilone.pgcn.web.util.AccessHelper;
+import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -32,21 +36,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.codahale.metrics.annotation.Timed;
-
-import fr.progilone.pgcn.domain.dto.audit.AuditProjectRevisionDTO;
-import fr.progilone.pgcn.domain.dto.project.ProjectDTO;
-import fr.progilone.pgcn.domain.dto.project.SimpleProjectDTO;
-import fr.progilone.pgcn.domain.project.Project;
-import fr.progilone.pgcn.domain.project.Project.ProjectStatus;
-import fr.progilone.pgcn.exception.PgcnException;
-import fr.progilone.pgcn.service.es.EsProjectService;
-import fr.progilone.pgcn.service.project.ProjectService;
-import fr.progilone.pgcn.service.project.ui.UIProjectService;
-import fr.progilone.pgcn.web.rest.AbstractRestController;
-import fr.progilone.pgcn.web.util.AccessHelper;
-import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
 
 @RestController
 @RequestMapping(value = "/api/rest/project")
@@ -101,8 +90,7 @@ public class ProjectController extends AbstractRestController {
     @RolesAllowed({PROJ_HAB4})
     public void delete(final HttpServletResponse response, @RequestBody final List<ProjectDTO> projects) {
         // Droits d'accès
-        final Collection<Project> filteredProjects =
-            accessHelper.filterProjects(projects.stream().map(ProjectDTO::getIdentifier).collect(Collectors.toList()));
+        final Collection<Project> filteredProjects = accessHelper.filterProjects(projects.stream().map(ProjectDTO::getIdentifier).collect(Collectors.toList()));
         uiProjectService.delete(filteredProjects);
         response.setStatus(HttpServletResponse.SC_OK);
     }
@@ -141,12 +129,10 @@ public class ProjectController extends AbstractRestController {
                                                          @RequestParam(value = "status", required = false) final List<ProjectStatus> status,
                                                          @RequestParam(value = "provider", required = false) final List<String> providers,
                                                          @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
-                                                         @RequestParam(value = "size", required = false, defaultValue = "" + Integer.MAX_VALUE) final
-                                                             Integer size) {
+                                                         @RequestParam(value = "size", required = false, defaultValue = "" + Integer.MAX_VALUE) final Integer size) {
         // Droits d'accès
         final List<String> filteredLibraries = libraryAccesssHelper.getLibraryFilter(request, libraries);
-        return new ResponseEntity<>(uiProjectService.search(search, initiale, active, filteredLibraries, status, providers, page, size),
-                                    HttpStatus.OK);
+        return new ResponseEntity<>(uiProjectService.search(search, initiale, active, filteredLibraries, status, providers, page, size), HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.GET, params = {"searchProject"}, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -155,24 +141,24 @@ public class ProjectController extends AbstractRestController {
     public ResponseEntity<List<SimpleProjectDTO>> searchProject(final HttpServletRequest request,
                                                                 @RequestParam(value = "searchProject", required = false) final String searchProject,
                                                                 @RequestParam(value = "initiale", required = false) final String initiale,
-                                                                @RequestParam(value = "active", required = false, defaultValue = "true")
-                                                                final boolean active,
+                                                                @RequestParam(value = "active", required = false, defaultValue = "true") final boolean active,
                                                                 @RequestParam(value = "libraries", required = false) final List<String> libraries,
-                                                                @RequestParam(value = "statuses", required = false)
-                                                                final List<ProjectStatus> statuses) {
+                                                                @RequestParam(value = "statuses", required = false) final List<ProjectStatus> statuses) {
         // Droits d'accès
         final List<String> filteredLibraries = libraryAccesssHelper.getLibraryFilter(request, libraries);
-        return new ResponseEntity<>(uiProjectService.loadCreatedProjects(searchProject, initiale, filteredLibraries, statuses, active),
-                                    HttpStatus.OK);
+        return new ResponseEntity<>(uiProjectService.loadCreatedProjects(searchProject, initiale, filteredLibraries, statuses, active), HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.GET, params = {"widget", "from"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.GET,
+                    params = {"widget",
+                              "from"},
+                    produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed({PROJ_HAB7})
-    public ResponseEntity<List<AuditProjectRevisionDTO>> getProjectsForWidget (final HttpServletRequest request,
-                                                                        @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "from") final LocalDate fromDate,
-                                                                        @RequestParam(value = "library", required = false) final List<String> libraries,
-                                                                        @RequestParam(value = "status", required = false) final List<Project.ProjectStatus> statuses) {
+    public ResponseEntity<List<AuditProjectRevisionDTO>> getProjectsForWidget(final HttpServletRequest request,
+                                                                              @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "from") final LocalDate fromDate,
+                                                                              @RequestParam(value = "library", required = false) final List<String> libraries,
+                                                                              @RequestParam(value = "status", required = false) final List<Project.ProjectStatus> statuses) {
         // Droits d'accès
         final List<String> filteredLibraries = libraryAccesssHelper.getLibraryFilter(request, libraries);
         // Chargement
@@ -197,16 +183,20 @@ public class ProjectController extends AbstractRestController {
     @Timed
     @RolesAllowed({PROJ_HAB7})
     public ResponseEntity<Collection<SimpleProjectDTO>> findAllActiveDTO(final HttpServletRequest request) {
-        Collection<SimpleProjectDTO> simpleProjectDTOs = uiProjectService.findAllActiveDTO();
+        final Collection<SimpleProjectDTO> simpleProjectDTOs = uiProjectService.findAllActiveDTO();
         // Droits d'accès
-        //simpleProjectDTOs = libraryAccesssHelper.filterObjectsByLibrary(request, simpleProjectDTOs, dto -> dto.getLibrary().getIdentifier());
+        // simpleProjectDTOs = libraryAccesssHelper.filterObjectsByLibrary(request, simpleProjectDTOs, dto -> dto.getLibrary().getIdentifier());
         // controle suppl pour le user
-        final Collection<SimpleProjectDTO> filteredProjects = simpleProjectDTOs.stream().filter(proj -> accessHelper.checkProject(proj.getIdentifier()))
-                                                                                        .collect(Collectors.toList());
+        final Collection<SimpleProjectDTO> filteredProjects = simpleProjectDTOs.stream()
+                                                                               .filter(proj -> accessHelper.checkProject(proj.getIdentifier()))
+                                                                               .collect(Collectors.toList());
         return createResponseEntity(filteredProjects);
     }
 
-    @RequestMapping(method = RequestMethod.GET, params = {"dto", "libraries"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.GET,
+                    params = {"dto",
+                              "libraries"},
+                    produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<Collection<SimpleProjectDTO>> findAllActiveDTO(final HttpServletRequest request, @RequestParam final List<String> libraries) {
         Collection<SimpleProjectDTO> simpleProjectDTOs = uiProjectService.findAllActiveByLibraryIn(libraries);
@@ -222,19 +212,22 @@ public class ProjectController extends AbstractRestController {
         // Droits d'accès
         simpleProjectDTOs = libraryAccesssHelper.filterObjectsByLibrary(request, simpleProjectDTOs, dto -> dto.getLibrary().getIdentifier());
         // controle suppl pour le user
-        final Collection<SimpleProjectDTO> filteredProjects = simpleProjectDTOs.stream().filter(proj -> accessHelper.checkProject(proj.getIdentifier()))
-                                                                                        .collect(Collectors.toList());
+        final Collection<SimpleProjectDTO> filteredProjects = simpleProjectDTOs.stream()
+                                                                               .filter(proj -> accessHelper.checkProject(proj.getIdentifier()))
+                                                                               .collect(Collectors.toList());
         return createResponseEntity(filteredProjects);
     }
 
-    @RequestMapping(method = RequestMethod.GET, params = {"dto2", "libraries"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.GET,
+                    params = {"dto2",
+                              "libraries"},
+                    produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<Collection<SimpleProjectDTO>> findAllDTO(final HttpServletRequest request, @RequestParam final List<String> libraries) {
         Collection<SimpleProjectDTO> simpleProjectDTOs = uiProjectService.findAllByLibraryIn(libraries);
         simpleProjectDTOs = libraryAccesssHelper.filterObjectsByLibrary(request, simpleProjectDTOs, dto -> dto.getLibrary().getIdentifier());
         return createResponseEntity(simpleProjectDTOs);
     }
-
 
     @RequestMapping(value = "/{id}", method = RequestMethod.POST)
     @Timed
@@ -253,12 +246,12 @@ public class ProjectController extends AbstractRestController {
             final Project project = projectService.findByIdentifier(projectDTO.getIdentifier());
 
             // Le projet est désactivé ou cloturé
-            if (!canDisableProj && (project.isActive() && !projectDTO.isActive() || (project.getStatus() != CLOSED
-                                                                                     && StringUtils.equals(projectDTO.getStatus(), "CLOSED")))) {
+            if (!canDisableProj && (project.isActive() && !projectDTO.isActive() || (project.getStatus() != CLOSED && StringUtils.equals(projectDTO.getStatus(), "CLOSED")))) {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
             // Le projet est annulé
-            if (!canCancelProj && project.getStatus() != CANCELED && StringUtils.equals(projectDTO.getStatus(), "CANCELED")) {
+            if (!canCancelProj && project.getStatus() != CANCELED
+                && StringUtils.equals(projectDTO.getStatus(), "CANCELED")) {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
         }

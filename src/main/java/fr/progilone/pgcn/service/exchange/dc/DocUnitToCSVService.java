@@ -1,5 +1,7 @@
 package fr.progilone.pgcn.service.exchange.dc;
 
+import static com.opencsv.CSVWriter.*;
+
 import com.google.common.collect.Ordering;
 import com.opencsv.CSVWriter;
 import fr.progilone.pgcn.domain.document.BibliographicRecord;
@@ -11,15 +13,7 @@ import fr.progilone.pgcn.domain.lot.Lot;
 import fr.progilone.pgcn.service.document.DocPropertyTypeService;
 import fr.progilone.pgcn.service.document.DocUnitService;
 import fr.progilone.pgcn.service.lot.LotService;
-import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.collections4.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.servlet.ServletOutputStream;
+import jakarta.servlet.ServletOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -30,8 +24,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static com.opencsv.CSVWriter.*;
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.collections4.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by Sébastien on 27/12/2016.
@@ -161,7 +160,8 @@ public class DocUnitToCSVService {
                     .sorted(Ordering.explicit(DocPropertySuperType.DC, DocPropertySuperType.DCQ, DocPropertySuperType.CUSTOM)
                                     .nullsLast()
                                     .onResultOf(DocPropertyType::getSuperType)
-                                    .compound(Ordering.natural().nullsFirst().onResultOf(DocPropertyType::getRank))).collect(Collectors.toList());
+                                    .compound(Ordering.natural().nullsFirst().onResultOf(DocPropertyType::getRank)))
+                    .collect(Collectors.toList());
     }
 
     /**
@@ -205,15 +205,15 @@ public class DocUnitToCSVService {
             // Champs de la notice bibliographique
             final List<String> bibValues = getObjectValues(record, bibFields);
 
-            final Map<DocPropertyType, List<DocProperty>> propByType =
-                record.getProperties().stream().collect(Collectors.groupingBy(DocProperty::getType));
+            final Map<DocPropertyType, List<DocProperty>> propByType = record.getProperties().stream().collect(Collectors.groupingBy(DocProperty::getType));
 
             // Ajout de propriétés DC, DCQ et CUSTOM
             final List<String> line = propertyTypes.stream()
                                                    .map(type -> propByType.getOrDefault(type, Collections.emptyList()))
                                                    .map(values -> values.stream()
                                                                         .map(DocProperty::getValue)
-                                                                        .reduce((a, b) -> a + CSV_REPEATED_FIELD_SEPARATOR + b)
+                                                                        .reduce((a, b) -> a + CSV_REPEATED_FIELD_SEPARATOR
+                                                                                          + b)
                                                                         .orElse(""))
                                                    .collect(Collectors.toList());
             // Champs de l'unité documentaire
@@ -249,11 +249,14 @@ public class DocUnitToCSVService {
      * @return
      */
     private List<String> getCollectionOfObjectsValues(final Collection<?> objects, final List<String> fields) {
-        return CollectionUtils.isNotEmpty(objects) && CollectionUtils.isNotEmpty(fields) ?
-               fields.stream()
-                     .map(f -> objects.stream().map(o -> getObjectValue(o, f)).reduce((a, b) -> a + CSV_REPEATED_FIELD_SEPARATOR + b).orElse(""))
-                     .collect(Collectors.toList()) :
-               Collections.emptyList();
+        return CollectionUtils.isNotEmpty(objects) && CollectionUtils.isNotEmpty(fields) ? fields.stream()
+                                                                                                 .map(f -> objects.stream()
+                                                                                                                  .map(o -> getObjectValue(o, f))
+                                                                                                                  .reduce((a, b) -> a + CSV_REPEATED_FIELD_SEPARATOR
+                                                                                                                                    + b)
+                                                                                                                  .orElse(""))
+                                                                                                 .collect(Collectors.toList())
+                                                                                         : Collections.emptyList();
     }
 
     /**
@@ -264,9 +267,8 @@ public class DocUnitToCSVService {
      * @return
      */
     private List<String> getObjectValues(final Object object, final List<String> fields) {
-        return CollectionUtils.isNotEmpty(fields) ?
-               fields.stream().map(f -> getObjectValue(object, f)).collect(Collectors.toList()) :
-               Collections.emptyList();
+        return CollectionUtils.isNotEmpty(fields) ? fields.stream().map(f -> getObjectValue(object, f)).collect(Collectors.toList())
+                                                  : Collections.emptyList();
     }
 
     /**
@@ -279,7 +281,8 @@ public class DocUnitToCSVService {
     private String getObjectValue(final Object object, final String fieldName) {
         try {
             final Object current = PropertyUtils.getSimpleProperty(object, fieldName);
-            return current != null ? String.valueOf(current) : "";
+            return current != null ? String.valueOf(current)
+                                   : "";
 
         } catch (ReflectiveOperationException | IllegalArgumentException e) {
             LOG.error(e.getMessage(), e);

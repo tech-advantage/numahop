@@ -1,0 +1,13 @@
+node_modules
+target
+build
+package-lock.json
+.git
+.mvn
+gradle
+.gradle
+bower_components
+dist
+pom.xml
+src/main/resources/scripts/lib/*
+src/test/resources/*

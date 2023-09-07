@@ -1,13 +1,24 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('RecordListCtrl', RecordListCtrl);
+    angular.module('numaHopApp.controller').controller('RecordListCtrl', RecordListCtrl);
 
-    function RecordListCtrl($q, $scope, DocUnitBaseService, gettext, gettextCatalog, HistorySrvc,
-        NumahopUrlService, MessageSrvc, ModalSrvc, NumaHopInitializationSrvc, NumahopStorageService, RecordSrvc,
-        DocUnitSrvc, WorkflowSrvc) {
-
+    function RecordListCtrl(
+        $q,
+        $scope,
+        DocUnitBaseService,
+        gettext,
+        gettextCatalog,
+        HistorySrvc,
+        NumahopUrlService,
+        MessageSrvc,
+        ModalSrvc,
+        NumaHopInitializationSrvc,
+        NumahopStorageService,
+        RecordSrvc,
+        DocUnitSrvc,
+        WorkflowSrvc
+    ) {
         $scope.doFilter = search;
         $scope.doFilterLibrary = searchLibrary;
         $scope.doFilterProject = searchProject;
@@ -27,9 +38,8 @@
             lot_filter: true,
             train_filter: true,
             created_date_filter: true,
-            wkf_status_filter: true
+            wkf_status_filter: true,
         };
-
 
         var mainCtrl = this;
 
@@ -57,7 +67,7 @@
         mainCtrl.changePageSize = changePageSize;
 
         var PAGE_START = 1;
-        var FILTER_STORAGE_SERVICE_KEY = "record_list";
+        var FILTER_STORAGE_SERVICE_KEY = 'record_list';
 
         /**
          * Recherche
@@ -78,14 +88,14 @@
             items: [],
             totalItems: 0,
             busy: false,
-            page: PAGE_START
+            page: PAGE_START,
         };
 
         mainCtrl.sizeOptions = [
-            { value: 10, label: "10" },
-            { value: 20, label: "20" },
-            { value: 50, label: "50" },
-            { value: 100, label: "100" }
+            { value: 10, label: '10' },
+            { value: 20, label: '20' },
+            { value: 50, label: '50' },
+            { value: 100, label: '100' },
         ];
 
         /**
@@ -118,45 +128,42 @@
          * @return {[type]} [description]
          */
         function init() {
-            HistorySrvc.add(gettextCatalog.getString("Gestion des notices"));
+            HistorySrvc.add(gettextCatalog.getString('Gestion des notices'));
             // Chargement des données
-            $q.all([NumaHopInitializationSrvc.loadLibraries(),
-            NumaHopInitializationSrvc.loadProjects(),
-            NumaHopInitializationSrvc.loadLots(),
-            NumaHopInitializationSrvc.loadTrains(),
-            DocUnitSrvc.getConfigFilterStatuses()])
-
-                .then(function (data) {
-                    mainCtrl.options.libraries = data[0];
-                    mainCtrl.options.projects = data[1];
-                    mainCtrl.options.lots = data[2];
-                    mainCtrl.options.trains = data[3];
-                    mainCtrl.options.statuses = data[4];
-                    loadFilters();
-                    loadPageSize();
-                    getPage().then(function () {
-                        mainCtrl.loaded = true;
-                    });
-                    // Affichage pour un temps limité à l'ouverture
-                    MessageSrvc.initPanel();
+            $q.all([
+                NumaHopInitializationSrvc.loadLibraries(),
+                NumaHopInitializationSrvc.loadProjects(),
+                NumaHopInitializationSrvc.loadLots(),
+                NumaHopInitializationSrvc.loadTrains(),
+                DocUnitSrvc.getConfigFilterStatuses(),
+            ]).then(function (data) {
+                mainCtrl.options.libraries = data[0];
+                mainCtrl.options.projects = data[1];
+                mainCtrl.options.lots = data[2];
+                mainCtrl.options.trains = data[3];
+                mainCtrl.options.statuses = data[4];
+                loadFilters();
+                loadPageSize();
+                getPage().then(function () {
+                    mainCtrl.loaded = true;
                 });
+                // Affichage pour un temps limité à l'ouverture
+                MessageSrvc.initPanel();
+            });
         }
 
         function refreshFilterLists() {
-            var librariesIds = _.pluck(mainCtrl.filters.libraries, "identifier");
-            var projectsIds = _.pluck(mainCtrl.filters.projects, "identifier");
-            NumaHopInitializationSrvc.loadProjects(librariesIds)
-                .then(function (data) {
-                    mainCtrl.options.projects = data;
-                    NumaHopInitializationSrvc.loadLots(librariesIds, projectsIds)
-                        .then(function (data) {
-                            mainCtrl.options.lots = data;
-                        });
-                    NumaHopInitializationSrvc.loadTrains(librariesIds, projectsIds)
-                    .then(function (data) {
-                        mainCtrl.options.trains = data;
-                    });
+            var librariesIds = _.pluck(mainCtrl.filters.libraries, 'identifier');
+            var projectsIds = _.pluck(mainCtrl.filters.projects, 'identifier');
+            NumaHopInitializationSrvc.loadProjects(librariesIds).then(function (data) {
+                mainCtrl.options.projects = data;
+                NumaHopInitializationSrvc.loadLots(librariesIds, projectsIds).then(function (data) {
+                    mainCtrl.options.lots = data;
                 });
+                NumaHopInitializationSrvc.loadTrains(librariesIds, projectsIds).then(function (data) {
+                    mainCtrl.options.trains = data;
+                });
+            });
         }
 
         function searchLibrary() {
@@ -181,7 +188,7 @@
             mainCtrl.pagination.size = mainCtrl.pageSize;
 
             $scope.filters = mainCtrl.filters = {
-                inactive: false
+                inactive: false,
             };
             mainCtrl.sortModel = [];
             search();
@@ -233,51 +240,51 @@
          */
         function getSearchParams(newValue, field) {
             var params = {};
-            params["page"] = mainCtrl.pagination.page - 1;
-            params["size"] = mainCtrl.pagination.size;
+            params['page'] = mainCtrl.pagination.page - 1;
+            params['size'] = mainCtrl.pagination.size;
             //params["searchAsList"] = mainCtrl.filterWith || "";
-            params["orphan"] = $scope.filters.orphan;
+            params['orphan'] = $scope.filters.orphan;
 
             // Bibliothèque
             if (mainCtrl.filters.libraries) {
-                var librariesIds = _.pluck(mainCtrl.filters.libraries, "identifier");
-                params["libraries"] = librariesIds;
+                var librariesIds = _.pluck(mainCtrl.filters.libraries, 'identifier');
+                params['libraries'] = librariesIds;
             }
             // Projet
             if (mainCtrl.filters.projects) {
-                var projectsIds = _.pluck(mainCtrl.filters.projects, "identifier");
-                params["projects"] = projectsIds;
+                var projectsIds = _.pluck(mainCtrl.filters.projects, 'identifier');
+                params['projects'] = projectsIds;
             }
             // Lot
             if (mainCtrl.filters.lots) {
-                var lotsIds = _.pluck(mainCtrl.filters.lots, "identifier");
-                params["lots"] = lotsIds;
+                var lotsIds = _.pluck(mainCtrl.filters.lots, 'identifier');
+                params['lots'] = lotsIds;
             }
             // Train
             if (mainCtrl.filters.trains) {
-                var trainsIds = _.pluck(mainCtrl.filters.trains, "identifier");
-                params["trains"] = trainsIds;
+                var trainsIds = _.pluck(mainCtrl.filters.trains, 'identifier');
+                params['trains'] = trainsIds;
             }
             // Statuses
             if ($scope.filters.wkf_statuses) {
-                var statusesIds = _.pluck(mainCtrl.filters.wkf_statuses, "identifier");
-                params["statuses"] = statusesIds;
+                var statusesIds = _.pluck(mainCtrl.filters.wkf_statuses, 'identifier');
+                params['statuses'] = statusesIds;
             }
             if (mainCtrl.filters.createdDateFrom) {
-                params["createdDateFrom"] = mainCtrl.filters.createdDateFrom;
+                params['createdDateFrom'] = mainCtrl.filters.createdDateFrom;
             }
             if (mainCtrl.filters.createdDateTo) {
-                params["createdDateTo"] = mainCtrl.filters.createdDateTo;
+                params['createdDateTo'] = mainCtrl.filters.createdDateTo;
             }
             if (mainCtrl.filters.lastModifiedDateFrom) {
-                params["lastModifiedDateFrom"] = mainCtrl.filters.lastModifiedDateFrom;
+                params['lastModifiedDateFrom'] = mainCtrl.filters.lastModifiedDateFrom;
             }
             if (mainCtrl.filters.lastModifiedDateTo) {
-                params["lastModifiedDateTo"] = mainCtrl.filters.lastModifiedDateTo;
+                params['lastModifiedDateTo'] = mainCtrl.filters.lastModifiedDateTo;
             }
 
-            params["searchAsList"] = mainCtrl.searchRequest || "";
-            params["sorts"] = mainCtrl.sortModel;
+            params['searchAsList'] = mainCtrl.searchRequest || '';
+            params['sorts'] = mainCtrl.sortModel;
 
             if (field) {
                 if (newValue) {
@@ -372,66 +379,66 @@
          */
         function updateSelection() {
             if (mainCtrl.selectedLength === 0) {
-                MessageSrvc.addWarn(gettext("La sélection est vide"), {}, false);
+                MessageSrvc.addWarn(gettext('La sélection est vide'), {}, false);
                 return;
             }
 
             // Sélection de la notice parente
-            ModalSrvc.updateRecords()
-                .then(function (updates) {
-                    updates.recordIds = _.chain(mainCtrl.selection).values().pluck("identifier").value();
-                    RecordSrvc.update(updates).$promise.then(function () {
-                        MessageSrvc.addSuccess(gettext("Les notices ont été mises à jour"));
-                        search();
-                    });
+            ModalSrvc.updateRecords().then(function (updates) {
+                updates.recordIds = _.chain(mainCtrl.selection).values().pluck('identifier').value();
+                RecordSrvc.update(updates).$promise.then(function () {
+                    MessageSrvc.addSuccess(gettext('Les notices ont été mises à jour'));
+                    search();
                 });
+            });
         }
 
         /**
          * Suppression des unités documentaires sélectionnées
-         * 
+         *
          */
         function deleteSelection() {
             if (mainCtrl.selectedLength === 0) {
-                MessageSrvc.addWarn(gettext("La sélection est vide"), {}, false);
+                MessageSrvc.addWarn(gettext('La sélection est vide'), {}, false);
                 return;
             }
-            ModalSrvc.confirmDeletion(gettextCatalog.getPlural(mainCtrl.selectedLength,
-                "la notice sélectionnée",
-                "les {{n}} notices sélectionnées", { n: mainCtrl.selectedLength }))
-                .then(function () {
-                    RecordSrvc.deleteSelection({}, _.keys(mainCtrl.selection), function () {
-                        MessageSrvc.addSuccess(gettext("Les notices ont été supprimées"));
-                        search();
-                    });
+            ModalSrvc.confirmDeletion(gettextCatalog.getPlural(mainCtrl.selectedLength, 'la notice sélectionnée', 'les {{n}} notices sélectionnées', { n: mainCtrl.selectedLength })).then(function () {
+                RecordSrvc.deleteSelection({}, _.keys(mainCtrl.selection), function () {
+                    MessageSrvc.addSuccess(gettext('Les notices ont été supprimées'));
+                    search();
                 });
+            });
         }
 
-        function validateSelection(){
+        function validateSelection() {
             if (mainCtrl.selectedLength === 0) {
-                MessageSrvc.addWarn(gettext("La sélection est vide"), {}, false);
+                MessageSrvc.addWarn(gettext('La sélection est vide'), {}, false);
                 return;
             }
-            mainCtrl.selection = _.filter(mainCtrl.selection, function (selection){ return selection.lot != null; });
-            if(mainCtrl.selection.length == 0){
+            mainCtrl.selection = _.filter(mainCtrl.selection, function (selection) {
+                return selection.lot != null;
+            });
+            if (mainCtrl.selection.length == 0) {
                 MessageSrvc.addWarn(gettext("Aucun des documents n'appartient à un lot"), {}, false);
                 return;
             }
-            ModalSrvc.confirmAction(gettextCatalog.getString("valider ") + gettextCatalog.getPlural(mainCtrl.selectedLength,
-                "la notice sélectionnée",
-                "les {{n}} notices sélectionnées", { n: mainCtrl.selectedLength }))
-                .then(function () {
-                    var docUnitIds = _.map(mainCtrl.selection, function (selection){ return selection.docUnit.identifier; });
-                    var lotStatus = _.map(mainCtrl.selection, function (selection){ return selection.lot.status; });
-                    WorkflowSrvc.massValidateRecords({massValidateRecords: true}, docUnitIds).$promise
-                        .then(function () {
-                            if(_.contains(lotStatus, "CREATED")){
-                                MessageSrvc.addWarn(gettextCatalog.getString("Certains des documents n'appartiennent à un lot en cours"));
-                            }
-                            MessageSrvc.addSuccess(gettextCatalog.getString("La sélection a été validée"));
-                            search();
-                    });
+            ModalSrvc.confirmAction(
+                gettextCatalog.getString('valider ') + gettextCatalog.getPlural(mainCtrl.selectedLength, 'la notice sélectionnée', 'les {{n}} notices sélectionnées', { n: mainCtrl.selectedLength })
+            ).then(function () {
+                var docUnitIds = _.map(mainCtrl.selection, function (selection) {
+                    return selection.docUnit.identifier;
                 });
+                var lotStatus = _.map(mainCtrl.selection, function (selection) {
+                    return selection.lot.status;
+                });
+                WorkflowSrvc.massValidateRecords({ massValidateRecords: true }, docUnitIds).$promise.then(function () {
+                    if (_.contains(lotStatus, 'CREATED')) {
+                        MessageSrvc.addWarn(gettextCatalog.getString("Certains des documents n'appartiennent à un lot en cours"));
+                    }
+                    MessageSrvc.addSuccess(gettextCatalog.getString('La sélection a été validée'));
+                    search();
+                });
+            });
         }
     }
 })();

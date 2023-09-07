@@ -2,35 +2,29 @@
     <div ng-class="labelclass || 'col-xs-4'" class="text-right" ng-if="label || removable">
         <label ng-if="label" uib-tooltip="{{tooltip}}">{{::label}}</label>
         <!-- Mandatory -->
-		<span class="text-danger cursor-help" 
-		      uib-tooltip="{{ ::'Ce champ est obligatoire' | translate }}" ng-if="mandatory">*</span>
+        <span class="text-danger cursor-help" uib-tooltip="{{ ::'Ce champ est obligatoire' | translate }}" ng-if="mandatory">*</span>
         <span class="btn-group-xs pull-left" ng-hide="readonly" ng-if="removable">
-            <button type="button" class="btn btn-sem1 btn-removable" uib-tooltip="{{ ::'Supprimer' | translate }}" ng-click="ondelete()"
-                    ng-show="showdelete">
-                   <span class="glyphicon-halflings glyphicon-trash"></span>
+            <button type="button" class="btn btn-sem1 btn-removable" uib-tooltip="{{ ::'Supprimer' | translate }}" ng-click="ondelete()" ng-show="showdelete">
+                <span class="glyphicon-halflings glyphicon-trash"></span>
             </button>
-            <button type="button" class="btn btn-sem1 btn-removable" uib-tooltip="{{ ::'Ajouter' | translate }}" ng-click="onadd()"
-                    ng-show="showadd">
+            <button type="button" class="btn btn-sem1 btn-removable" uib-tooltip="{{ ::'Ajouter' | translate }}" ng-click="onadd()" ng-show="showadd">
                 <span class="glyphicon-halflings glyphicon-plus"></span>
             </button>
         </span>
     </div>
-	<div ng-class="fieldclass || defaultcolsm" class="model-container">
-		<span main-field ng-hide="hideIfEmpty && !model">
-			<span ng-show="transcluding" ng-transclude></span>
-			<span ng-hide="transcluding" class="preserve-line-breaks">{{model || model === 0 ? model : defaultDisplay}}</span>
-		</span>
-		<a type="button" target="_blank" class="btn btn-sem2 btn-xs" uib-tooltip="{{ ::'Voir' | translate }}" 
-              ng-href="{{model}}" ng-if="model && urlLink">
+    <div ng-class="fieldclass || defaultcolsm" class="model-container">
+        <span main-field ng-hide="hideIfEmpty && !model">
+            <span ng-show="transcluding" ng-transclude></span>
+            <span ng-hide="transcluding" class="preserve-line-breaks">{{model || model === 0 ? model : defaultDisplay}}</span>
+        </span>
+        <a type="button" target="_blank" class="btn btn-sem2 btn-xs" uib-tooltip="{{ ::'Voir' | translate }}" ng-href="{{model}}" ng-if="model && urlLink">
             <span class="glyphicon-halflings glyphicon-share"></span>
         </a>
-        <a type="button" target="_blank" class="btn btn-sem2 btn-xs" uib-tooltip="{{ ::'Envoyer un mail' | translate }}" 
-              ng-href="mailto:{{model}}" ng-if="model && mailLink">
+        <a type="button" target="_blank" class="btn btn-sem2 btn-xs" uib-tooltip="{{ ::'Envoyer un mail' | translate }}" ng-href="mailto:{{model}}" ng-if="model && mailLink">
             <span class="glyphicon-halflings glyphicon-share"></span>
         </a>
-        <a type="button" class="btn btn-sem2 btn-xs" uib-tooltip="{{ ::'Voir' | translate }}" 
-              ng-href="{{entityLink}}" ng-if="model && entityLink">
+        <a type="button" class="btn btn-sem2 btn-xs" uib-tooltip="{{ ::'Voir' | translate }}" ng-href="{{entityLink}}" ng-if="model && entityLink">
             <span class="glyphicon-halflings glyphicon-share"></span>
         </a>
-	</div>
+    </div>
 </div>

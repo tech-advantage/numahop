@@ -20,12 +20,7 @@ public class SimpleUserDTO {
     public SimpleUserDTO() {
     }
 
-    public SimpleUserDTO(final String identifier,
-                         final String firstname,
-                         final String surname,
-                         final String fullName,
-                         final String login,
-                         final SimpleLibraryDTO library) {
+    public SimpleUserDTO(final String identifier, final String firstname, final String surname, final String fullName, final String login, final SimpleLibraryDTO library) {
         super();
         this.surname = surname;
         this.firstname = firstname;

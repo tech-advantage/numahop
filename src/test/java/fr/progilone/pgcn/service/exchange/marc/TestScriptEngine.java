@@ -1,54 +1,51 @@
 package fr.progilone.pgcn.service.exchange.marc;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import groovy.lang.GroovyShell;
 import groovy.util.Eval;
-import org.codehaus.groovy.jsr223.GroovyScriptEngineFactory;
-import org.junit.Ignore;
-import org.junit.Test;
-
-import javax.script.*;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.function.IntConsumer;
 import java.util.stream.IntStream;
-
-import static org.junit.Assert.assertEquals;
+import javax.script.Bindings;
+import javax.script.Compilable;
+import javax.script.CompiledScript;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+import org.codehaus.groovy.jsr223.GroovyScriptEngineFactory;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 /**
  * Created by Sebastien on 23/11/2016.
  */
-@Ignore
+@Disabled
 public class TestScriptEngine {
 
     private static final int NB_WARM_UP = 10;
     private static final int NB_ITERATIONS = 10000;
 
     /*
-     Résultats pour 1000
-
-     # Java
-     durée exécution: 26
-
-     # Javascript (avec compilation)
-     durée compilation: 300
-     durée exécution: 4156
-
-     # Groovy (sans compilation)
-     durée exécution: 111
-
-     # Groovy (avec compilation)
-     durée compilation: 18
-     durée exécution: 106
-
-     # Groovy (GroovyScriptEngineFactory, avec compilation)
-     durée compilation: 31
-     durée exécution: 190
-
-     # Groovy (eval)
-     durée exécution: 12993
-
-     # Groovy (shell)
-     durée exécution: 8135
+     * Résultats pour 1000
+     * # Java
+     * durée exécution: 26
+     * # Javascript (avec compilation)
+     * durée compilation: 300
+     * durée exécution: 4156
+     * # Groovy (sans compilation)
+     * durée exécution: 111
+     * # Groovy (avec compilation)
+     * durée compilation: 18
+     * durée exécution: 106
+     * # Groovy (GroovyScriptEngineFactory, avec compilation)
+     * durée compilation: 31
+     * durée exécution: 190
+     * # Groovy (eval)
+     * durée exécution: 12993
+     * # Groovy (shell)
+     * durée exécution: 8135
      */
 
     @Test
@@ -58,7 +55,8 @@ public class TestScriptEngine {
         final IntConsumer testFn = i -> {
             String first = "HELLO";
             String second = "world";
-            final String result = first.toLowerCase() + ' ' + second.toUpperCase();
+            final String result = first.toLowerCase() + ' '
+                                  + second.toUpperCase();
             assertEquals("hello WORLD", result);
         };
 
@@ -66,10 +64,11 @@ public class TestScriptEngine {
         LocalDateTime start = LocalDateTime.now();
 
         IntStream.range(1, NB_ITERATIONS).forEach(testFn);
-        System.out.println("durée exécution: " + ChronoUnit.MILLIS.between(start, LocalDateTime.now()) + "\n");
+        System.out.println("durée exécution: " + ChronoUnit.MILLIS.between(start, LocalDateTime.now())
+                           + "\n");
     }
 
-    @Ignore
+    @Disabled
     @Test
     public void testJs() throws ScriptException {
         System.out.println("# Javascript (avec compilation)");
@@ -97,7 +96,8 @@ public class TestScriptEngine {
         start = LocalDateTime.now();
 
         IntStream.range(1, NB_ITERATIONS).forEach(testFn);
-        System.out.println("durée exécution: " + ChronoUnit.MILLIS.between(start, LocalDateTime.now()) + "\n");
+        System.out.println("durée exécution: " + ChronoUnit.MILLIS.between(start, LocalDateTime.now())
+                           + "\n");
     }
 
     @Test
@@ -122,7 +122,8 @@ public class TestScriptEngine {
         LocalDateTime start = LocalDateTime.now();
 
         IntStream.range(1, NB_ITERATIONS).forEach(testFn);
-        System.out.println("durée exécution: " + ChronoUnit.MILLIS.between(start, LocalDateTime.now()) + "\n");
+        System.out.println("durée exécution: " + ChronoUnit.MILLIS.between(start, LocalDateTime.now())
+                           + "\n");
     }
 
     @Test
@@ -153,7 +154,8 @@ public class TestScriptEngine {
         start = LocalDateTime.now();
 
         IntStream.range(1, NB_ITERATIONS).forEach(testFn);
-        System.out.println("durée exécution: " + ChronoUnit.MILLIS.between(start, LocalDateTime.now()) + "\n");
+        System.out.println("durée exécution: " + ChronoUnit.MILLIS.between(start, LocalDateTime.now())
+                           + "\n");
     }
 
     @Test
@@ -177,7 +179,8 @@ public class TestScriptEngine {
         LocalDateTime start = LocalDateTime.now();
 
         IntStream.range(1, NB_ITERATIONS).forEach(testFn);
-        System.out.println("durée exécution: " + ChronoUnit.MILLIS.between(start, LocalDateTime.now()) + "\n");
+        System.out.println("durée exécution: " + ChronoUnit.MILLIS.between(start, LocalDateTime.now())
+                           + "\n");
     }
 
     @Test
@@ -207,10 +210,11 @@ public class TestScriptEngine {
         start = LocalDateTime.now();
 
         IntStream.range(1, NB_ITERATIONS).forEach(testFn);
-        System.out.println("durée exécution: " + ChronoUnit.MILLIS.between(start, LocalDateTime.now()) + "\n");
+        System.out.println("durée exécution: " + ChronoUnit.MILLIS.between(start, LocalDateTime.now())
+                           + "\n");
     }
 
-    @Ignore
+    @Disabled
     @Test
     public void testGroovy4() throws ScriptException {
         System.out.println("# Groovy (eval)");
@@ -223,10 +227,11 @@ public class TestScriptEngine {
         LocalDateTime start = LocalDateTime.now();
 
         IntStream.range(1, NB_ITERATIONS).forEach(testFn);
-        System.out.println("durée exécution: " + ChronoUnit.MILLIS.between(start, LocalDateTime.now()) + "\n");
+        System.out.println("durée exécution: " + ChronoUnit.MILLIS.between(start, LocalDateTime.now())
+                           + "\n");
     }
 
-    @Ignore
+    @Disabled
     @Test
     public void testGroovy5() throws ScriptException {
         System.out.println("# Groovy (shell)");
@@ -243,6 +248,7 @@ public class TestScriptEngine {
         LocalDateTime start = LocalDateTime.now();
 
         IntStream.range(1, NB_ITERATIONS).forEach(testFn);
-        System.out.println("durée exécution: " + ChronoUnit.MILLIS.between(start, LocalDateTime.now()) + "\n");
+        System.out.println("durée exécution: " + ChronoUnit.MILLIS.between(start, LocalDateTime.now())
+                           + "\n");
     }
 }

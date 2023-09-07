@@ -1,10 +1,9 @@
 package fr.progilone.pgcn.domain.dto.document.conditionreport;
 
 import com.google.common.base.MoreObjects;
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 
 public class ConditionReportValueVelocityDTO {
 
@@ -61,11 +60,7 @@ public class ConditionReportValueVelocityDTO {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
-                          .add("propertyId", propertyId)
-                          .add("propertyLabel", propertyLabel)
-                          .add("values", StringUtils.join(values, ", "))
-                          .toString();
+        return MoreObjects.toStringHelper(this).add("propertyId", propertyId).add("propertyLabel", propertyLabel).add("values", StringUtils.join(values, ", ")).toString();
     }
 
     public static final class StringValue {

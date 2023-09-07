@@ -1,5 +1,15 @@
 package fr.progilone.pgcn.service.document;
 
+import fr.progilone.pgcn.domain.document.BibliographicRecord;
+import fr.progilone.pgcn.domain.document.DocProperty;
+import fr.progilone.pgcn.domain.document.DocPropertyType;
+import fr.progilone.pgcn.domain.document.DocUnit;
+import fr.progilone.pgcn.domain.dto.document.BibliographicRecordDcDTO;
+import fr.progilone.pgcn.domain.dto.document.BibliographicRecordMassUpdateDTO;
+import fr.progilone.pgcn.repository.document.BibliographicRecordRepository;
+import fr.progilone.pgcn.service.document.mapper.DocPropertyMapper;
+import fr.progilone.pgcn.service.es.EsDocUnitService;
+import fr.progilone.pgcn.service.util.SortUtils;
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -8,7 +18,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -23,17 +32,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import fr.progilone.pgcn.domain.document.BibliographicRecord;
-import fr.progilone.pgcn.domain.document.DocProperty;
-import fr.progilone.pgcn.domain.document.DocPropertyType;
-import fr.progilone.pgcn.domain.document.DocUnit;
-import fr.progilone.pgcn.domain.dto.document.BibliographicRecordDcDTO;
-import fr.progilone.pgcn.domain.dto.document.BibliographicRecordMassUpdateDTO;
-import fr.progilone.pgcn.repository.document.BibliographicRecordRepository;
-import fr.progilone.pgcn.service.document.mapper.DocPropertyMapper;
-import fr.progilone.pgcn.service.es.EsBibliographicRecordService;
-import fr.progilone.pgcn.service.util.SortUtils;
-
 @Service
 public class BibliographicRecordService {
 
@@ -41,17 +39,17 @@ public class BibliographicRecordService {
     private static final int COL_MAX_WIDTH = 255;
 
     private final BibliographicRecordRepository bibliographicRecordRepository;
-    private final EsBibliographicRecordService esBibliographicRecordService;
+    private final EsDocUnitService esDocUnitService;
     private final DocPropertyService docPropertyService;
     private final DocPropertyTypeService docPropertyTypeService;
 
     @Autowired
     public BibliographicRecordService(final BibliographicRecordRepository bibliographicRecordRepository,
-                                      final EsBibliographicRecordService esBibliographicRecordService,
+                                      final EsDocUnitService esDocUnitService,
                                       final DocPropertyService docPropertyService,
                                       final DocPropertyTypeService docPropertyTypeService) {
         this.bibliographicRecordRepository = bibliographicRecordRepository;
-        this.esBibliographicRecordService = esBibliographicRecordService;
+        this.esDocUnitService = esDocUnitService;
         this.docPropertyService = docPropertyService;
         this.docPropertyTypeService = docPropertyTypeService;
     }
@@ -89,9 +87,10 @@ public class BibliographicRecordService {
 
     @Transactional
     public void delete(final String identifier) {
-        final BibliographicRecord record = bibliographicRecordRepository.findOne(identifier);
-        bibliographicRecordRepository.delete(record);
-        esBibliographicRecordService.deleteAsync(record);
+        bibliographicRecordRepository.findById(identifier).ifPresent(r -> {
+            esDocUnitService.delete(r.getDocUnit().getIdentifier());
+            bibliographicRecordRepository.deleteById(identifier);
+        });
     }
 
     @Transactional
@@ -118,9 +117,9 @@ public class BibliographicRecordService {
                                             final List<String> sorts) {
         Sort sort = SortUtils.getSort(sorts);
         if (sort == null) {
-            sort = new Sort("docUnit.label");
+            sort = Sort.by("docUnit.label");
         }
-        final Pageable pageRequest = new PageRequest(page, size, sort);
+        final Pageable pageRequest = PageRequest.of(page, size, sort);
 
         return bibliographicRecordRepository.search(search,
                                                     libraries,
@@ -154,9 +153,6 @@ public class BibliographicRecordService {
 
     /**
      * Recherche de l'unité documentaire d'une notice
-     *
-     * @param recordId
-     * @return
      */
     @Transactional(readOnly = true)
     public DocUnit findDocUnitByIdentifier(final String recordId) {
@@ -165,18 +161,22 @@ public class BibliographicRecordService {
 
     @Transactional(readOnly = true)
     public BibliographicRecordDcDTO bibliographicRecordToDcDTO(final BibliographicRecord record) {
-        if(record == null) {
+        if (record == null) {
             return null;
         }
         final BibliographicRecordDcDTO dto = new BibliographicRecordDcDTO();
         // il faut reordonner les props custom selon le rank
-        final List<DocProperty> customProps = record.getProperties().stream()
-                                .filter(p -> p.getType().getSuperType() == DocPropertyType.DocPropertySuperType.CUSTOM || p.getType().getSuperType() == DocPropertyType.DocPropertySuperType.CUSTOM_CINES || p.getType().getSuperType() == DocPropertyType.DocPropertySuperType.CUSTOM_OMEKA)
-                                .sorted(Comparator.comparing(DocProperty::getRank))
-                                .collect(Collectors.toCollection(ArrayList::new));
+        final List<DocProperty> customProps = record.getProperties()
+                                                    .stream()
+                                                    .filter(p -> p.getType().getSuperType() == DocPropertyType.DocPropertySuperType.CUSTOM || p.getType().getSuperType()
+                                                                                                                                              == DocPropertyType.DocPropertySuperType.CUSTOM_CINES
+                                                                 || p.getType().getSuperType() == DocPropertyType.DocPropertySuperType.CUSTOM_OMEKA)
+                                                    .sorted(Comparator.comparing(DocProperty::getRank))
+                                                    .collect(Collectors.toCollection(ArrayList::new));
         dto.setCustomProperties(DocPropertyMapper.INSTANCE.docPropsToDto(customProps));
 
-        record.getProperties().stream()
+        record.getProperties()
+              .stream()
               .filter(p -> p.getType().getSuperType() == DocPropertyType.DocPropertySuperType.DC)
               .sorted(Comparator.comparing(DocProperty::getRank))
               .forEach(p -> {
@@ -191,7 +191,6 @@ public class BibliographicRecordService {
               });
         return dto;
     }
-
 
     @Transactional
     public BibliographicRecord duplicate(final String id) {
@@ -221,23 +220,19 @@ public class BibliographicRecordService {
 
     /**
      * Mise à jour de plusieurs notices simultanément
-     *
-     * @param updates
      */
     @Transactional
     public List<BibliographicRecord> update(final BibliographicRecordMassUpdateDTO updates) {
         if (updates.isEmpty()) {
             return Collections.emptyList();
         }
-        final List<BibliographicRecord> records = bibliographicRecordRepository.findAll(updates.getRecordIds());
+        final List<BibliographicRecord> records = bibliographicRecordRepository.findAllById(updates.getRecordIds());
         final List<DocPropertyType> types = docPropertyTypeService.findAll();
         final List<DocPropertyType> updatedTypes = updates.getProperties()
                                                           .stream()
                                                           .map(BibliographicRecordMassUpdateDTO.Update::getType)
                                                           .distinct()
-                                                          .map(type -> types.stream()
-                                                                            .filter(t -> StringUtils.equals(t.getIdentifier(), type))
-                                                                            .findAny())
+                                                          .map(type -> types.stream().filter(t -> StringUtils.equals(t.getIdentifier(), type)).findAny())
                                                           .filter(Optional::isPresent)
                                                           .map(Optional::get)
                                                           .collect(Collectors.toList());
@@ -248,9 +243,7 @@ public class BibliographicRecordService {
             updates.getFields().forEach(upd -> updateField(record, upd));
             // Suppression des propriété impactées par la mise à jour
             record.getProperties()
-                  .removeIf(docProperty -> updatedTypes.stream()
-                                                       .anyMatch(updatedType -> StringUtils.equals(updatedType.getIdentifier(),
-                                                                                                   docProperty.getType().getIdentifier())));
+                  .removeIf(docProperty -> updatedTypes.stream().anyMatch(updatedType -> StringUtils.equals(updatedType.getIdentifier(), docProperty.getType().getIdentifier())));
             // Mise à jour des propriétés
             updates.getProperties().forEach(upd -> {
                 updateProperty(record, upd, types).ifPresent(docPropertyService::save);
@@ -283,9 +276,7 @@ public class BibliographicRecordService {
      * @param types
      * @return
      */
-    private Optional<DocProperty> updateProperty(final BibliographicRecord record,
-                                                 final BibliographicRecordMassUpdateDTO.Update update,
-                                                 final List<DocPropertyType> types) {
+    private Optional<DocProperty> updateProperty(final BibliographicRecord record, final BibliographicRecordMassUpdateDTO.Update update, final List<DocPropertyType> types) {
         // On ne créé pas de propriété vide
         if (StringUtils.isBlank(update.getValue())) {
             return Optional.empty();

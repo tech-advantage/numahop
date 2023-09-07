@@ -1,5 +1,7 @@
 package fr.progilone.pgcn.web.rest.exchange.template;
 
+import static fr.progilone.pgcn.web.rest.exchange.security.AuthorizationConstants.*;
+
 import com.codahale.metrics.annotation.Timed;
 import fr.progilone.pgcn.domain.exchange.template.Template;
 import fr.progilone.pgcn.domain.library.Library;
@@ -7,6 +9,12 @@ import fr.progilone.pgcn.exception.PgcnTechnicalException;
 import fr.progilone.pgcn.service.exchange.template.TemplateService;
 import fr.progilone.pgcn.web.rest.AbstractRestController;
 import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.util.Collection;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,15 +28,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.util.Collection;
-import java.util.List;
-
-import static fr.progilone.pgcn.web.rest.exchange.security.AuthorizationConstants.*;
 
 @RestController
 @RequestMapping(value = "/api/rest/template")
@@ -96,8 +95,7 @@ public class TemplateController extends AbstractRestController {
      */
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<Collection<Template>> findTemplates(final HttpServletRequest request,
-                                                              @RequestParam(name = "library", required = false) final Library library) {
+    public ResponseEntity<Collection<Template>> findTemplates(final HttpServletRequest request, @RequestParam(name = "library", required = false) final Library library) {
         // Vérification des droits d'accès par rapport à la bibliothèque de l'utilisateur
         if (library != null && !libraryAccesssHelper.checkLibrary(request, library)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
@@ -128,9 +126,7 @@ public class TemplateController extends AbstractRestController {
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, params = {"download"}, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @Timed
-    public void downloadTemplate(final HttpServletRequest request,
-                                 final HttpServletResponse response,
-                                 @PathVariable("id") final String templateId) throws PgcnTechnicalException {
+    public void downloadTemplate(final HttpServletRequest request, final HttpServletResponse response, @PathVariable("id") final String templateId) throws PgcnTechnicalException {
 
         final Template template = templateService.findByIdentifier(templateId);
         // Non trouvé

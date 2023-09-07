@@ -1,24 +1,21 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('DocUnitProcessedEditWidgetCtrl', DocUnitProcessedEditWidgetCtrl);
+    angular.module('numaHopApp.controller').controller('DocUnitProcessedEditWidgetCtrl', DocUnitProcessedEditWidgetCtrl);
 
     function DocUnitProcessedEditWidgetCtrl(config, DocUnitBaseService, gettextCatalog) {
-
         var mainCtrl = this;
         mainCtrl.isConfigured = isConfigured;
 
         mainCtrl.options = {
             boolean: DocUnitBaseService.options.booleanObj,
             types: [
-                { value: "ARCHIVE", text: gettextCatalog.getString('UD archivées') },
-                { value: "EXPORT", text: gettextCatalog.getString('UD diffusées') },
-                { value: "EXPORT_OMEKA", text: gettextCatalog.getString('UD diffusées sur OMEKA') },
-                { value: "EXPORT_LOCAL", text: gettextCatalog.getString('UD diffusées localement') }
-            ]
+                { value: 'ARCHIVE', text: gettextCatalog.getString('UD archivées') },
+                { value: 'EXPORT', text: gettextCatalog.getString('UD diffusées') },
+                { value: 'EXPORT_OMEKA', text: gettextCatalog.getString('UD diffusées sur OMEKA') },
+                { value: 'EXPORT_LOCAL', text: gettextCatalog.getString('UD diffusées localement') },
+            ],
         };
-
 
         init();
 

@@ -1,58 +1,60 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <!-- Changeset du module Administration - gestion OCR -->
     <changeSet id="pgcn-create-conf-ocr-lang-01" author="progilone">
 
         <createTable tableName="conf_language_ocr">
             <column name="identifier" type="varchar(191)">
-                <constraints primaryKey="true" nullable="false"/>
+                <constraints primaryKey="true" nullable="false" />
             </column>
             <column name="code" type="varchar(255)" />
             <column name="label" type="varchar(255)" />
             <column name="version" type="BIGINT">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_by" type="varchar(255)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_by" type="varchar(255)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>    
 
         <createTable tableName="conf_ocr_lang">
             <column name="identifier" type="varchar(191)">
-                <constraints primaryKey="true" nullable="false"/>
+                <constraints primaryKey="true" nullable="false" />
             </column>
             <column name="label" type="varchar(255)" />
             <column name="description" type="varchar(255)" />
             <column name="active" type="boolean" defaultValueBoolean="false">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="library" type="varchar(191)" />
             <column name="version" type="BIGINT">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_by" type="varchar(255)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_by" type="varchar(255)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>
         
@@ -71,54 +73,66 @@
                 <constraints nullable="false" />
             </column>
             <column name="created_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>
     
-        <addForeignKeyConstraint baseColumnNames="ocr_lang_configuration" baseTableName="conf_activated_ocr_lang"
+        <addForeignKeyConstraint
+            baseColumnNames="ocr_lang_configuration"
+            baseTableName="conf_activated_ocr_lang"
             constraintName="fk_conf_configuration_ocr_lang"
-            referencedColumnNames="identifier" referencedTableName="conf_ocr_lang" />
-        <addForeignKeyConstraint baseColumnNames="ocr_language" baseTableName="conf_activated_ocr_lang"
+            referencedColumnNames="identifier"
+            referencedTableName="conf_ocr_lang"
+        />
+        <addForeignKeyConstraint
+            baseColumnNames="ocr_language"
+            baseTableName="conf_activated_ocr_lang"
             constraintName="fk_conf_ocr_lang_language"
-            referencedColumnNames="identifier" referencedTableName="conf_language_ocr" />
+            referencedColumnNames="identifier"
+            referencedTableName="conf_language_ocr"
+        />
         
         
         <addColumn tableName="lib_library">
-            <column name="active_configuration_ocr_lang" type="varchar(191)"/>
+            <column name="active_configuration_ocr_lang" type="varchar(191)" />
         </addColumn>
-        <addForeignKeyConstraint constraintName="fk_library_configuration_ocr_lang"
-                                 baseTableName="lib_library" baseColumnNames="active_configuration_ocr_lang"
-                                 referencedTableName="conf_ocr_lang" referencedColumnNames="identifier"/>
+        <addForeignKeyConstraint
+            constraintName="fk_library_configuration_ocr_lang"
+            baseTableName="lib_library"
+            baseColumnNames="active_configuration_ocr_lang"
+            referencedTableName="conf_ocr_lang"
+            referencedColumnNames="identifier"
+        />
         
         
         <addColumn tableName="lot_lot">
-            <column name="active_ocr_lang" type="varchar(191)"></column>
+            <column name="active_ocr_lang" type="varchar(191)" />
         </addColumn>
         
         <addColumn tableName="doc_unit">
-            <column name="active_ocr_lang" type="varchar(191)"></column>
+            <column name="active_ocr_lang" type="varchar(191)" />
         </addColumn>
-        <addForeignKeyConstraint constraintName="fk_lot_ocr_lang"
-                                 baseTableName="lot_lot" baseColumnNames="active_ocr_lang"
-                                 referencedTableName="conf_language_ocr" referencedColumnNames="identifier"/>
+        <addForeignKeyConstraint constraintName="fk_lot_ocr_lang" baseTableName="lot_lot" baseColumnNames="active_ocr_lang" referencedTableName="conf_language_ocr" referencedColumnNames="identifier" />
                                  
-        <addForeignKeyConstraint constraintName="fk_doc_ocr_lang"
-                                 baseTableName="doc_unit" baseColumnNames="active_ocr_lang"
-                                 referencedTableName="conf_language_ocr" referencedColumnNames="identifier"/>                         
+        <addForeignKeyConstraint
+            constraintName="fk_doc_ocr_lang"
+            baseTableName="doc_unit"
+            baseColumnNames="active_ocr_lang"
+            referencedTableName="conf_language_ocr"
+            referencedColumnNames="identifier"
+        />                         
         
         <!-- Chargement des données de language OCR -->
-        <loadData encoding="UTF-8" separator=";"
-            file="config/liquibase/numahop/ocrlang/ocr_languages.csv"
-            tableName="conf_language_ocr" />
+        <loadData encoding="UTF-8" separator=";" file="config/liquibase/numahop/ocrlang/ocr_languages.csv" tableName="conf_language_ocr" />
             
         <sql>
             INSERT INTO user_authorization(module,identifier,code,label,description,version)

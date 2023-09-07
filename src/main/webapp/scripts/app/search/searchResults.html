@@ -1,26 +1,33 @@
-
 <div class="row layout-columns">
     <div class="col-sm-12 col-layout-columns">
         <div class="panel panel-column-1 panel-column-end">
             <div class="panel-heading">
                 <div class="pull-right">
                     <!-- Taille des pages de résultats -->
-                    <select class="form-control"
-                            ng-model="searchCtrl.pagination.size"
-                            ng-options="size.value as size.label for size in searchCtrl.sizeOptions" 
-                            ng-change="searchCtrl.search()"></select>
+                    <select class="form-control" ng-model="searchCtrl.pagination.size" ng-options="size.value as size.label for size in searchCtrl.sizeOptions" ng-change="searchCtrl.search()"></select>
                 </div>
-                <div class="pull-right margin-r25"><!-- Actions sur la sélection courante -->
+                <div class="pull-right margin-r25">
+                    <!-- Actions sur la sélection courante -->
                     <!-- Quitter le mode sélection -->
-                    <button type="button" class="btn btn-sm btn-sem2" ng-show="searchCtrl.modeSelect"
-                            ng-click="searchCtrl.toggleSelectionMode()"
-                            uib-tooltip="{{::'Quitter le mode sélection' | translate}}">
+                    <button
+                        type="button"
+                        class="btn btn-sm btn-sem2"
+                        ng-show="searchCtrl.modeSelect"
+                        ng-click="searchCtrl.toggleSelectionMode()"
+                        uib-tooltip="{{::'Quitter le mode sélection' | translate}}"
+                        tooltip-append-to-body="true"
+                    >
                         <span class="fa fa-hand-pointer-o"></span>
                     </button>
                     <!-- Entrer en mode sélection -->
-                    <button type="button" class="btn btn-sm btn-sem3" ng-show="!searchCtrl.modeSelect"
-                            ng-click="searchCtrl.toggleSelectionMode()"
-                            uib-tooltip="{{::'Passer en mode sélection' | translate}}">
+                    <button
+                        type="button"
+                        class="btn btn-sm btn-sem3"
+                        ng-show="!searchCtrl.modeSelect"
+                        ng-click="searchCtrl.toggleSelectionMode()"
+                        uib-tooltip="{{::'Passer en mode sélection' | translate}}"
+                        tooltip-append-to-body="true"
+                    >
                         <span class="fa fa-hand-pointer-o"></span>
                     </button>
                 </div>
@@ -32,89 +39,113 @@
                     <div ng-class="searchCtrl.facet ? 'col-xs-12 col-sm-9 col-lg-10' : 'col-xs-12'">
                         <div class="row">
                             <div ng-if="searchCtrl.isEnabled('DOCUNIT')" ng-class="searchCtrl.getClass()">
-                                <numa-result-list get-page="searchCtrl.getPage('DOCUNIT')"
-                                                pagination="searchCtrl.pagination.DOCUNIT"
-                                                page-size="searchCtrl.pagination.size"
-                                                sort-options="searchCtrl.sortOptions.DOCUNIT"
-                                                title="{{::'Unités documentaires' | translate}}"
-                                                select-title="searchCtrl.selectSearch('DOCUNIT')">
-                                    <numa-result-list-selection ng-if="searchCtrl.modeSelect"
-                                                base-url="'#/document/docunit_list?searchresult=true'"
-                                                clear-selection="searchCtrl.clearSelection('DOCUNIT')"
-                                                is-page-selected="searchCtrl.isPageSelected('DOCUNIT')"
-                                                select-page="searchCtrl.selectPage('DOCUNIT')"
-                                                selection-count="searchCtrl.selectionCount('DOCUNIT')"
-                                                unselect-page="searchCtrl.unselectPage('DOCUNIT')"></numa-result-list-selection>
-                                    <numa-result-docunit numa-is-selected="searchCtrl.isSelected('DOCUNIT', $item)"
-                                                         numa-mode-select="searchCtrl.modeSelect"
-                                                         numa-toggle-selection="searchCtrl.toggleSelection('DOCUNIT', $item)"></numa-result-docunit>
+                                <numa-result-list
+                                    get-page="searchCtrl.getPage('DOCUNIT')"
+                                    pagination="searchCtrl.pagination.DOCUNIT"
+                                    page-size="searchCtrl.pagination.size"
+                                    sort-options="searchCtrl.sortOptions.DOCUNIT"
+                                    title="{{::'Unités documentaires' | translate}}"
+                                    select-title="searchCtrl.selectSearch('DOCUNIT')"
+                                >
+                                    <numa-result-list-selection
+                                        ng-if="searchCtrl.modeSelect"
+                                        base-url="'#/document/docunit_list?searchresult=true'"
+                                        clear-selection="searchCtrl.clearSelection('DOCUNIT')"
+                                        is-page-selected="searchCtrl.isPageSelected('DOCUNIT')"
+                                        select-page="searchCtrl.selectPage('DOCUNIT')"
+                                        selection-count="searchCtrl.selectionCount('DOCUNIT')"
+                                        unselect-page="searchCtrl.unselectPage('DOCUNIT')"
+                                    ></numa-result-list-selection>
+                                    <numa-result-docunit
+                                        numa-is-selected="searchCtrl.isSelected('DOCUNIT', $item)"
+                                        numa-mode-select="searchCtrl.modeSelect"
+                                        numa-toggle-selection="searchCtrl.toggleSelection('DOCUNIT', $item)"
+                                    ></numa-result-docunit>
                                 </numa-result-list>
                             </div>
                             <div ng-if="searchCtrl.isEnabled('CONDREPORT')" ng-class="searchCtrl.getClass()">
-                                <numa-result-list get-page="searchCtrl.getPage('CONDREPORT')"
-                                                pagination="searchCtrl.pagination.CONDREPORT"
-                                                page-size="searchCtrl.pagination.size"
-                                                sort-options="searchCtrl.sortOptions.CONDREPORT"
-                                                title="{{::'Constats d\'état' | translate}}"
-                                                select-title="searchCtrl.selectSearch('CONDREPORT')">
-                                    <numa-result-list-selection ng-if="searchCtrl.modeSelect"
-                                                base-url="'#/document/condreport_list?searchresult=true'"
-                                                clear-selection="searchCtrl.clearSelection('CONDREPORT')"
-                                                is-page-selected="searchCtrl.isPageSelected('CONDREPORT')"
-                                                select-page="searchCtrl.selectPage('CONDREPORT')"
-                                                selection-count="searchCtrl.selectionCount('CONDREPORT')"
-                                                unselect-page="searchCtrl.unselectPage('CONDREPORT')"></numa-result-list-selection>
-                                    <numa-result-condreport numa-is-selected="searchCtrl.isSelected('CONDREPORT', $item)"
-                                                            numa-mode-select="searchCtrl.modeSelect"
-                                                            numa-toggle-selection="searchCtrl.toggleSelection('CONDREPORT', $item)"></numa-result-condreport>
+                                <numa-result-list
+                                    get-page="searchCtrl.getPage('CONDREPORT')"
+                                    pagination="searchCtrl.pagination.CONDREPORT"
+                                    page-size="searchCtrl.pagination.size"
+                                    sort-options="searchCtrl.sortOptions.CONDREPORT"
+                                    title="{{::'Constats d\'état' | translate}}"
+                                    select-title="searchCtrl.selectSearch('CONDREPORT')"
+                                >
+                                    <numa-result-list-selection
+                                        ng-if="searchCtrl.modeSelect"
+                                        base-url="'#/document/condreport_list?searchresult=true'"
+                                        clear-selection="searchCtrl.clearSelection('CONDREPORT')"
+                                        is-page-selected="searchCtrl.isPageSelected('CONDREPORT')"
+                                        select-page="searchCtrl.selectPage('CONDREPORT')"
+                                        selection-count="searchCtrl.selectionCount('CONDREPORT')"
+                                        unselect-page="searchCtrl.unselectPage('CONDREPORT')"
+                                    ></numa-result-list-selection>
+                                    <numa-result-condreport
+                                        numa-is-selected="searchCtrl.isSelected('CONDREPORT', $item)"
+                                        numa-mode-select="searchCtrl.modeSelect"
+                                        numa-toggle-selection="searchCtrl.toggleSelection('CONDREPORT', $item)"
+                                    ></numa-result-condreport>
                                 </numa-result-list>
                             </div>
                             <div ng-if="searchCtrl.isEnabled('PROJECT')" ng-class="searchCtrl.getClass()">
-                                <numa-result-list get-page="searchCtrl.getPage('PROJECT')"
-                                                pagination="searchCtrl.pagination.PROJECT"
-                                                page-size="searchCtrl.pagination.size"
-                                                sort-options="searchCtrl.sortOptions.PROJECT"
-                                                title="{{::'Projets' | translate}}"
-                                                select-title="searchCtrl.selectSearch('PROJECT')">
+                                <numa-result-list
+                                    get-page="searchCtrl.getPage('PROJECT')"
+                                    pagination="searchCtrl.pagination.PROJECT"
+                                    page-size="searchCtrl.pagination.size"
+                                    sort-options="searchCtrl.sortOptions.PROJECT"
+                                    title="{{::'Projets' | translate}}"
+                                    select-title="searchCtrl.selectSearch('PROJECT')"
+                                >
                                     <numa-result-project numa-mode-select="searchCtrl.modeSelect"></numa-result-project>
                                 </numa-result-list>
                             </div>
                             <div ng-if="searchCtrl.isEnabled('LOT')" ng-class="searchCtrl.getClass()">
-                                <numa-result-list get-page="searchCtrl.getPage('LOT')"
-                                                pagination="searchCtrl.pagination.LOT"
-                                                page-size="searchCtrl.pagination.size"
-                                                sort-options="searchCtrl.sortOptions.LOT"
-                                                title="{{::'Lots' | translate}}"
-                                                select-title="searchCtrl.selectSearch('LOT')">
-                                    <numa-result-list-selection ng-if="searchCtrl.modeSelect"
-                                                base-url="'#/lot/lot_list?searchresult=true'"
-                                                clear-selection="searchCtrl.clearSelection('LOT')"
-                                                is-page-selected="searchCtrl.isPageSelected('LOT')"
-                                                select-page="searchCtrl.selectPage('LOT')"
-                                                selection-count="searchCtrl.selectionCount('LOT')"
-                                                unselect-page="searchCtrl.unselectPage('LOT')"></numa-result-list-selection>
-                                    <numa-result-lot numa-is-selected="searchCtrl.isSelected('LOT', $item)"
-                                                     numa-mode-select="searchCtrl.modeSelect"
-                                                     numa-toggle-selection="searchCtrl.toggleSelection('LOT', $item)"></numa-result-lot>
+                                <numa-result-list
+                                    get-page="searchCtrl.getPage('LOT')"
+                                    pagination="searchCtrl.pagination.LOT"
+                                    page-size="searchCtrl.pagination.size"
+                                    sort-options="searchCtrl.sortOptions.LOT"
+                                    title="{{::'Lots' | translate}}"
+                                    select-title="searchCtrl.selectSearch('LOT')"
+                                >
+                                    <numa-result-list-selection
+                                        ng-if="searchCtrl.modeSelect"
+                                        base-url="'#/lot/lot_list?searchresult=true'"
+                                        clear-selection="searchCtrl.clearSelection('LOT')"
+                                        is-page-selected="searchCtrl.isPageSelected('LOT')"
+                                        select-page="searchCtrl.selectPage('LOT')"
+                                        selection-count="searchCtrl.selectionCount('LOT')"
+                                        unselect-page="searchCtrl.unselectPage('LOT')"
+                                    ></numa-result-list-selection>
+                                    <numa-result-lot
+                                        numa-is-selected="searchCtrl.isSelected('LOT', $item)"
+                                        numa-mode-select="searchCtrl.modeSelect"
+                                        numa-toggle-selection="searchCtrl.toggleSelection('LOT', $item)"
+                                    ></numa-result-lot>
                                 </numa-result-list>
                             </div>
                             <div ng-if="searchCtrl.isEnabled('TRAIN')" ng-class="searchCtrl.getClass()">
-                                <numa-result-list get-page="searchCtrl.getPage('TRAIN')"
-                                                pagination="searchCtrl.pagination.TRAIN"
-                                                page-size="searchCtrl.pagination.size"
-                                                sort-options="searchCtrl.sortOptions.TRAIN"
-                                                title="{{::'Trains' | translate}}"
-                                                select-title="searchCtrl.selectSearch('TRAIN')">
+                                <numa-result-list
+                                    get-page="searchCtrl.getPage('TRAIN')"
+                                    pagination="searchCtrl.pagination.TRAIN"
+                                    page-size="searchCtrl.pagination.size"
+                                    sort-options="searchCtrl.sortOptions.TRAIN"
+                                    title="{{::'Trains' | translate}}"
+                                    select-title="searchCtrl.selectSearch('TRAIN')"
+                                >
                                     <numa-result-train numa-mode-select="searchCtrl.modeSelect"></numa-result-train>
                                 </numa-result-list>
                             </div>
                             <div ng-if="searchCtrl.isEnabled('DELIVERY')" ng-class="searchCtrl.getClass()">
-                                <numa-result-list get-page="searchCtrl.getPage('DELIVERY')"
-                                                pagination="searchCtrl.pagination.DELIVERY"
-                                                page-size="searchCtrl.pagination.size"
-                                                sort-options="searchCtrl.sortOptions.DELIVERY"
-                                                title="{{::'Livraisons' | translate}}"
-                                                select-title="searchCtrl.selectSearch('DELIVERY')">
+                                <numa-result-list
+                                    get-page="searchCtrl.getPage('DELIVERY')"
+                                    pagination="searchCtrl.pagination.DELIVERY"
+                                    page-size="searchCtrl.pagination.size"
+                                    sort-options="searchCtrl.sortOptions.DELIVERY"
+                                    title="{{::'Livraisons' | translate}}"
+                                    select-title="searchCtrl.selectSearch('DELIVERY')"
+                                >
                                     <numa-result-delivery numa-mode-select="searchCtrl.modeSelect"></numa-result-delivery>
                                 </numa-result-list>
                             </div>

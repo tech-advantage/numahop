@@ -1,42 +1,43 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.service')
-        .factory('DocUnitBaseService', DocUnitBaseService);
+    angular.module('numaHopApp.service').factory('DocUnitBaseService', DocUnitBaseService);
 
     function DocUnitBaseService(gettextCatalog, DocUnitSrvc) {
-
         var service = this;
 
         // Définition des listes déroulantes
         service.options = {
             boolean: {
-                "true": gettextCatalog.getString('Oui'),
-                "false": gettextCatalog.getString('Non')
+                true: gettextCatalog.getString('Oui'),
+                false: gettextCatalog.getString('Non'),
             },
             booleanObj: [
                 { value: true, text: gettextCatalog.getString('Oui') },
-                { value: false, text: gettextCatalog.getString('Non') }
+                { value: false, text: gettextCatalog.getString('Non') },
             ],
-            condreportTypes: [{
-                identifier: "MONO_PAGE",
-                label: gettextCatalog.getString("Monofeuillet")
-            }, {
-                identifier: "MULTI_PAGE",
-                label: gettextCatalog.getString("Multifeuillet")
-            }],
+            condreportTypes: [
+                {
+                    identifier: 'MONO_PAGE',
+                    label: gettextCatalog.getString('Monofeuillet'),
+                },
+                {
+                    identifier: 'MULTI_PAGE',
+                    label: gettextCatalog.getString('Multifeuillet'),
+                },
+            ],
             rights: {
-                "TO_CHECK": gettextCatalog.getString("Droits à vérifier"),
-                "FREE": gettextCatalog.getString('Libre de droits'),
-                "RESTRICTED": gettextCatalog.getString('Sous droits'),
-                "RESTRICTED_WITH_AUTHORIZATION": gettextCatalog.getString('Sous droits avec accord de l\'auteur')
+                TO_CHECK: gettextCatalog.getString('Droits à vérifier'),
+                FREE: gettextCatalog.getString('Libre de droits'),
+                RESTRICTED: gettextCatalog.getString('Sous droits'),
+                RESTRICTED_WITH_AUTHORIZATION: gettextCatalog.getString("Sous droits avec accord de l'auteur"),
             },
             progressStatuses: {
-                "NOT_AVAILABLE": gettextCatalog.getString("Inconnu"),
-                "REQUESTED": gettextCatalog.getString("Demandée"),
-                "VALIDATED": gettextCatalog.getString("Validée"),
-                "REFUSED": gettextCatalog.getString("Refusée")
-            }
+                NOT_AVAILABLE: gettextCatalog.getString('Inconnu'),
+                REQUESTED: gettextCatalog.getString('Demandée'),
+                VALIDATED: gettextCatalog.getString('Validée'),
+                REFUSED: gettextCatalog.getString('Refusée'),
+            },
         };
 
         function removeProject(docUnit, callback) {
@@ -56,37 +57,35 @@
         }
 
         /**
-        * Une unité documentaire peut être retirée d'un projet si:
-        * * elle n'est pas attachée à un lot
-        * * le statut du projet est Créé (ie. le workflow n'est pas démarré)
-        */
+         * Une unité documentaire peut être retirée d'un projet si:
+         * * elle n'est pas attachée à un lot
+         * * le statut du projet est Créé (ie. le workflow n'est pas démarré)
+         */
         function canRemoveProject(docUnit) {
-            return !docUnit.lot
-                && docUnit.project
-                && _.contains(["CREATED"], docUnit.project.status);
+            return !docUnit.lot && docUnit.project && _.contains(['CREATED'], docUnit.project.status);
         }
 
         /**
-        * Une unité documentaire peut être retirée d'un lot si:
-        * * le statut du lot est Créé (ie. le workflow n'est pas démarré)
-        */
+         * Une unité documentaire peut être retirée d'un lot si:
+         * * le statut du lot est Créé (ie. le workflow n'est pas démarré)
+         */
         function canRemoveLot(docUnit) {
-            return docUnit.lot && _.contains(["CREATED"], docUnit.lot.status);
+            return docUnit.lot && _.contains(['CREATED'], docUnit.lot.status);
         }
 
         /**
-        * Une unité documentaire peut être retirée d'un train si:
-        * * le statut du train est Créé (ie. le workflow n'est pas démarré)
-        */
+         * Une unité documentaire peut être retirée d'un train si:
+         * * le statut du train est Créé (ie. le workflow n'est pas démarré)
+         */
         function canRemoveTrain(docUnit) {
-            return docUnit.train && _.contains(["CREATED"], docUnit.train.status);
+            return docUnit.train && _.contains(['CREATED'], docUnit.train.status);
         }
 
         /**
          * Libellé de la valeur booléenne passée en paramètre
-         * 
-         * @param {any} value 
-         * @returns 
+         *
+         * @param {any} value
+         * @returns
          */
         function displayBoolean(value) {
             var found = _.find(service.options.booleanObj, function (b) {
@@ -109,7 +108,7 @@
         function displayRight(value) {
             return service.options.rights[value] || value;
         }
-        
+
         function displayProgressStatus(value) {
             return service.options.progressStatuses[value] || value;
         }

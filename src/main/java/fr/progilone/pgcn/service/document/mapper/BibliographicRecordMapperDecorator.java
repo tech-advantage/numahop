@@ -1,9 +1,5 @@
 package fr.progilone.pgcn.service.document.mapper;
 
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-
 import fr.progilone.pgcn.domain.document.BibliographicRecord;
 import fr.progilone.pgcn.domain.document.BibliographicRecord.PropertyOrder;
 import fr.progilone.pgcn.domain.dto.document.BibliographicRecordDTO;
@@ -11,6 +7,8 @@ import fr.progilone.pgcn.domain.dto.document.DocPropertyDTO;
 import fr.progilone.pgcn.domain.dto.document.DocPropertyTypeDTO;
 import fr.progilone.pgcn.domain.dto.document.DocUnitBibliographicRecordDTO;
 import fr.progilone.pgcn.domain.dto.document.SimpleBibliographicRecordDTO;
+import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 
 public abstract class BibliographicRecordMapperDecorator implements BibliographicRecordMapper {
 
@@ -60,10 +58,15 @@ public abstract class BibliographicRecordMapperDecorator implements Bibliographi
      * @param properties
      */
     private void createWeightedValueOrderByType(final List<DocPropertyDTO> properties) {
-        final int maxPropertyRank = properties.stream().mapToInt(p -> p.getRank() != null ? p.getRank() : 0).max().orElse(Integer.MIN_VALUE);
+        final int maxPropertyRank = properties.stream()
+                                              .mapToInt(p -> p.getRank() != null ? p.getRank()
+                                                                                 : 0)
+                                              .max()
+                                              .orElse(Integer.MIN_VALUE);
         properties.forEach(property -> {
             final DocPropertyTypeDTO type = property.getType();
-            final int rank = property.getRank() != null ? property.getRank() : 0;
+            final int rank = property.getRank() != null ? property.getRank()
+                                                        : 0;
             property.setWeightedRank((double) (rank + type.getRank() * maxPropertyRank));
         });
     }
@@ -75,7 +78,8 @@ public abstract class BibliographicRecordMapperDecorator implements Bibliographi
      */
     private void createWeightedValue(final List<DocPropertyDTO> properties) {
         properties.forEach(property -> {
-            final int rank = property.getRank() != null ? property.getRank() : 0;
+            final int rank = property.getRank() != null ? property.getRank()
+                                                        : 0;
             property.setWeightedRank((double) rank);
         });
     }

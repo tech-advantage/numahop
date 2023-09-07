@@ -1,7 +1,5 @@
 package fr.progilone.pgcn.service.exchange;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -9,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * Created by Sebastien on 24/11/2016.
@@ -98,10 +97,8 @@ public class ExchangeHelper {
                                                             .collect(Collectors.toMap(Pair::getLeft, Pair::getRight));
             // Le sous-binding a-t-il déjà été ajouté à la liste distinctBindings ?
             final boolean found = distinctBindings.stream()
-                                                  .anyMatch(oth -> oth.keySet().containsAll(subBinding.keySet())
-                                                                   && subBinding.keySet().containsAll(oth.keySet())
-                                                                   && variables.stream()
-                                                                               .allMatch(tag -> Objects.equals(oth.get(tag), subBinding.get(tag))));
+                                                  .anyMatch(oth -> oth.keySet().containsAll(subBinding.keySet()) && subBinding.keySet().containsAll(oth.keySet())
+                                                                   && variables.stream().allMatch(tag -> Objects.equals(oth.get(tag), subBinding.get(tag))));
             if (!found) {
                 distinctBindings.add(subBinding);
             }

@@ -138,11 +138,12 @@ public class SimpleProjectDTO {
             this.description = description;
             return this;
         }
-        
+
         public Builder setCancelingComment(final String comment) {
             this.cancelingComment = comment;
             return this;
         }
+
         public Builder setFilesArchived(final boolean archived) {
             this.filesArchived = archived;
             return this;

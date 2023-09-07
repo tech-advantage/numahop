@@ -1,14 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <changeSet id="pgcn-project-6" author="progilone">
         <addColumn tableName="lot_lot">
-            <column name="project" type="varchar(191)"></column>
+            <column name="project" type="varchar(191)" />
         </addColumn>
         <addColumn tableName="doc_physical_document">
-            <column name="name" type="varchar(191)"></column>
+            <column name="name" type="varchar(191)" />
         </addColumn>
     </changeSet>
 

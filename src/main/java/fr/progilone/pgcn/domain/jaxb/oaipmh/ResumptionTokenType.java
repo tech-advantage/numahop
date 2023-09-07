@@ -5,27 +5,27 @@
 // Généré le : 2018.08.13 à 01:08:19 PM CEST
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.oaipmh;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlValue;
 import java.math.BigInteger;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.XmlValue;
 import javax.xml.datatype.XMLGregorianCalendar;
-
 
 /**
  * A resumptionToken may have 3 optional attributes
- *        and can be used in ListSets, ListIdentifiers, ListRecords
- *        responses.
+ * and can be used in ListSets, ListIdentifiers, ListRecords
+ * responses.
  *
- * <p>Classe Java pour resumptionTokenType complex type.
+ * <p>
+ * Classe Java pour resumptionTokenType complex type.
  *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="resumptionTokenType">
@@ -42,9 +42,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "resumptionTokenType", propOrder = {
-    "value"
-})
+@XmlType(name = "resumptionTokenType", propOrder = {"value"})
 public class ResumptionTokenType {
 
     @XmlValue
@@ -63,8 +61,8 @@ public class ResumptionTokenType {
      * Obtient la valeur de la propriété value.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getValue() {
@@ -75,8 +73,8 @@ public class ResumptionTokenType {
      * Définit la valeur de la propriété value.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setValue(String value) {
@@ -87,8 +85,8 @@ public class ResumptionTokenType {
      * Obtient la valeur de la propriété expirationDate.
      *
      * @return
-     *     possible object is
-     *     {@link XMLGregorianCalendar }
+     *         possible object is
+     *         {@link XMLGregorianCalendar }
      *
      */
     public XMLGregorianCalendar getExpirationDate() {
@@ -99,8 +97,8 @@ public class ResumptionTokenType {
      * Définit la valeur de la propriété expirationDate.
      *
      * @param value
-     *     allowed object is
-     *     {@link XMLGregorianCalendar }
+     *            allowed object is
+     *            {@link XMLGregorianCalendar }
      *
      */
     public void setExpirationDate(XMLGregorianCalendar value) {
@@ -111,8 +109,8 @@ public class ResumptionTokenType {
      * Obtient la valeur de la propriété completeListSize.
      *
      * @return
-     *     possible object is
-     *     {@link BigInteger }
+     *         possible object is
+     *         {@link BigInteger }
      *
      */
     public BigInteger getCompleteListSize() {
@@ -123,8 +121,8 @@ public class ResumptionTokenType {
      * Définit la valeur de la propriété completeListSize.
      *
      * @param value
-     *     allowed object is
-     *     {@link BigInteger }
+     *            allowed object is
+     *            {@link BigInteger }
      *
      */
     public void setCompleteListSize(BigInteger value) {
@@ -135,8 +133,8 @@ public class ResumptionTokenType {
      * Obtient la valeur de la propriété cursor.
      *
      * @return
-     *     possible object is
-     *     {@link BigInteger }
+     *         possible object is
+     *         {@link BigInteger }
      *
      */
     public BigInteger getCursor() {
@@ -147,8 +145,8 @@ public class ResumptionTokenType {
      * Définit la valeur de la propriété cursor.
      *
      * @param value
-     *     allowed object is
-     *     {@link BigInteger }
+     *            allowed object is
+     *            {@link BigInteger }
      *
      */
     public void setCursor(BigInteger value) {

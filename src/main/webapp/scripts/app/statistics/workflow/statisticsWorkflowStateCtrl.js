@@ -1,12 +1,9 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('StatisticsWorkflowStateCtrl', StatisticsWorkflowStateCtrl);
+    angular.module('numaHopApp.controller').controller('StatisticsWorkflowStateCtrl', StatisticsWorkflowStateCtrl);
 
-    function StatisticsWorkflowStateCtrl($q, codeSrvc, gettextCatalog, HistorySrvc, LibrarySrvc,
-        NumahopStorageService, StatisticsSrvc, WorkflowModelSrvc, WorkflowSrvc) {
-
+    function StatisticsWorkflowStateCtrl($q, codeSrvc, gettextCatalog, HistorySrvc, LibrarySrvc, NumahopStorageService, StatisticsSrvc, WorkflowModelSrvc, WorkflowSrvc) {
         var statCtrl = this;
 
         statCtrl.code = codeSrvc;
@@ -15,69 +12,66 @@
         statCtrl.search = search;
         statCtrl.searchValue = searchValue;
 
-        var FILTER_STORAGE_SERVICE_KEY = "stat_workflow_state";
+        var FILTER_STORAGE_SERVICE_KEY = 'stat_workflow_state';
 
         /**
          * Listes déroulantes
          */
         statCtrl.config = {
             libraries: {
-                text: "name",
-                placeholder: gettextCatalog.getString("Bibliothèque"),
-                trackby: "identifier",
+                text: 'name',
+                placeholder: gettextCatalog.getString('Bibliothèque'),
+                trackby: 'identifier',
                 // Chargement avec mise en cache du résultat
                 refresh: function () {
                     if (!statCtrl.config.libraries.data) {
                         statCtrl.config.libraries.data = LibrarySrvc.query({ dto: true });
-                        return statCtrl.config.libraries.data.$promise
-                            .then(function (lib) {
-                                return _.map(lib, function (l) {
-                                    return _.pick(l, "identifier", "name");
-                                });
+                        return statCtrl.config.libraries.data.$promise.then(function (lib) {
+                            return _.map(lib, function (l) {
+                                return _.pick(l, 'identifier', 'name');
                             });
-                    }
-                    else {
+                        });
+                    } else {
                         return $q.when(statCtrl.config.libraries.data);
                     }
                 },
                 'refresh-delay': 0, // pas de refresh-delay, car on lit les données en cache après le 1er chargement
                 'allow-clear': true,
-                multiple: true
+                multiple: true,
             },
             states: {
                 data: WorkflowSrvc.getConfigWorkflow(),
-                text: "label",
-                placeholder: gettextCatalog.getString("État"),
-                trackby: "identifier",
+                text: 'label',
+                placeholder: gettextCatalog.getString('État'),
+                trackby: 'identifier',
                 multiple: true,
-                'allow-clear': true
+                'allow-clear': true,
             },
             workflows: {
-                text: "name",
-                placeholder: gettextCatalog.getString("Workflow"),
-                trackby: "identifier",
+                text: 'name',
+                placeholder: gettextCatalog.getString('Workflow'),
+                trackby: 'identifier',
                 refresh: function ($select) {
                     var searchParams = {
                         page: 0,
-                        search: $select.search
+                        search: $select.search,
                     };
                     return WorkflowModelSrvc.search(searchParams).$promise;
                 },
                 'refresh-delay': 300,
                 multiple: true,
-                'allow-clear': true
+                'allow-clear': true,
             },
         };
 
         init();
-
 
         /**
          * Initialisation du controleur
          * @return {[type]} [description]
          */
         function init() {
-            HistorySrvc.add(gettextCatalog.getString("Statistiques des workflows"));
+            HistorySrvc.add(gettextCatalog.getString('Statistiques des workflows'));
             statCtrl.loaded = false;
 
             loadSearch();
@@ -106,8 +100,8 @@
 
         /**
          * Recherche  d'entités sur un changement de période
-         * @param {*} from 
-         * @param {*} to 
+         * @param {*} from
+         * @param {*} to
          */
         function searchValue(updatedField, updatedValue) {
             statCtrl.filters[updatedField] = updatedValue;
@@ -130,11 +124,11 @@
          */
         function getSearchParams() {
             var params = {
-                library: _.pluck(statCtrl.filters.library, "identifier"),
-                state: _.pluck(statCtrl.filters.state, "identifier"),
-                workflow: _.pluck(statCtrl.filters.workflow, "identifier"),
+                library: _.pluck(statCtrl.filters.library, 'identifier'),
+                state: _.pluck(statCtrl.filters.state, 'identifier'),
+                workflow: _.pluck(statCtrl.filters.workflow, 'identifier'),
                 from: statCtrl.filters.from,
-                to: statCtrl.filters.to
+                to: statCtrl.filters.to,
             };
             return params;
         }
@@ -153,7 +147,7 @@
         function getExportUrl() {
             var params = getSearchParams();
             params.wstate = true;
-            return StatisticsSrvc.getExportUrl(params, "workflow");
+            return StatisticsSrvc.getExportUrl(params, 'workflow');
         }
     }
 })();

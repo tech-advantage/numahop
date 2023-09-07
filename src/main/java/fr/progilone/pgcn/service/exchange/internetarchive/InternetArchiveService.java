@@ -1,40 +1,5 @@
 package fr.progilone.pgcn.service.exchange.internetarchive;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.text.Normalizer;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.util.UriUtils;
-
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.ClientConfiguration;
@@ -45,7 +10,6 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-
 import fr.progilone.pgcn.domain.AbstractDomainObject;
 import fr.progilone.pgcn.domain.administration.InternetArchiveConfiguration;
 import fr.progilone.pgcn.domain.administration.viewsformat.ViewsFormatConfiguration;
@@ -85,18 +49,50 @@ import fr.progilone.pgcn.service.util.CryptoService;
 import fr.progilone.pgcn.service.util.DateIso8601Util;
 import fr.progilone.pgcn.service.util.transaction.TransactionService;
 import fr.progilone.pgcn.service.workflow.WorkflowService;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.text.Normalizer;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.util.UriUtils;
 
 /**
  * Service pour l'interface avec Internet Archive
  *
  * @author jbrunet
- * Créé le 18 avr. 2017
+ *         Créé le 18 avr. 2017
  */
 @Service
 public class InternetArchiveService {
 
     private static final Logger LOG = LoggerFactory.getLogger(InternetArchiveService.class);
-    
+
     @Value("${services.archive.alto}")
     private String outputPath;
 
@@ -115,7 +111,7 @@ public class InternetArchiveService {
     private final AltoService altoService;
 
     private final ArchiveItemMapper archiveItemMapper = ArchiveItemMapper.INSTANCE;
-    
+
     private final long TIME_SECONDS_BEFORE_RETRY = 60;
 
     @Autowired
@@ -153,9 +149,9 @@ public class InternetArchiveService {
      * @return
      */
     public InternetArchiveItemDTO prepareItem(final String docUnitId) {
-        
+
         final DocUnit docUnit = docUnitService.findOneWithAllDependencies(docUnitId);
-        
+
         final InternetArchiveItemDTO item;
         final String libraryId = docUnit.getLibrary().getIdentifier();
         if (docUnit.getArchiveItem() != null) {
@@ -172,7 +168,7 @@ public class InternetArchiveService {
                 customHeader.setType(archiveHeader.getType());
                 item.getCustomHeaders().add(customHeader);
             }
-            
+
             // Nombre de pages
             final DigitalDocument dd = docUnit.getDigitalDocuments().stream().findAny().orElse(null);
             if (dd != null) {
@@ -185,13 +181,12 @@ public class InternetArchiveService {
                     item.setTotal(getFilesForDocUnit(docUnit, ViewsFormatConfiguration.FileFormat.VIEW, libraryId).size());
                 }
             }
-            
+
             return item;
         }
 
         item = new InternetArchiveItemDTO();
-        
-        
+
         if (docUnit.getCollectionIA() != null) {
             item.addCollection(docUnit.getCollectionIA().getName());
         }
@@ -258,22 +253,19 @@ public class InternetArchiveService {
                             item.setSource(docProperty.getValue());
                             break;
                     }
-                } else if (type.getSuperType() == DocPropertyType.DocPropertySuperType.CUSTOM_ARCHIVE 
-                        || type.getSuperType() == DocPropertyType.DocPropertySuperType.CUSTOM) {
-                	// on charge les dependances du type
-                	final Set<DocProperty> dProperties = docPropertyTypeRepository
-                										.findOneWithDependencies(type.getIdentifier())
-                										.getDocProperties();
-                	dProperties.stream()
-                            .filter(dp -> StringUtils.equals(record.getIdentifier(), dp.getRecord().getIdentifier()))
-                            .filter( dp -> StringUtils.equals(dp.getType().getIdentifier(), type.getIdentifier()))
-                            .sorted(Comparator.comparing(DocProperty::getRank))
-                            .forEach(dp -> {
-                                final CustomHeader header = new CustomHeader();
-                                header.setType(normalizeLabel(dp.getType().getLabel()));
-                                header.setValue(dp.getValue());
-                                item.getCustomHeaders().add(header);
-                            });
+                } else if (type.getSuperType() == DocPropertyType.DocPropertySuperType.CUSTOM_ARCHIVE || type.getSuperType() == DocPropertyType.DocPropertySuperType.CUSTOM) {
+                    // on charge les dependances du type
+                    final Set<DocProperty> dProperties = docPropertyTypeRepository.findOneWithDependencies(type.getIdentifier()).getDocProperties();
+                    dProperties.stream()
+                               .filter(dp -> StringUtils.equals(record.getIdentifier(), dp.getRecord().getIdentifier()))
+                               .filter(dp -> StringUtils.equals(dp.getType().getIdentifier(), type.getIdentifier()))
+                               .sorted(Comparator.comparing(DocProperty::getRank))
+                               .forEach(dp -> {
+                                   final CustomHeader header = new CustomHeader();
+                                   header.setType(normalizeLabel(dp.getType().getLabel()));
+                                   header.setValue(dp.getValue());
+                                   item.getCustomHeaders().add(header);
+                               });
                 }
             }
         }
@@ -281,29 +273,29 @@ public class InternetArchiveService {
         // Ajout nb pages
         item.setTotal(getFilesForDocUnit(docUnit, ViewsFormatConfiguration.FileFormat.VIEW, libraryId).size());
         // Ajout URL de la license
-        if(docUnit.getProject().getLicenseUrl() != null){
+        if (docUnit.getProject().getLicenseUrl() != null) {
             item.setLicenseUrl(docUnit.getProject().getLicenseUrl());
         }
 
         return item;
     }
-    
+
     /**
      * Supprime espace, accents etc..
-     * 
+     *
      * @param label
      * @return
      */
     private String normalizeLabel(final String label) {
-    	String norm = Normalizer.normalize(label, Normalizer.Form.NFD);
-    	norm = norm.replaceAll("[^\\p{ASCII}]", "");
-    	norm.trim().replace("_", "-");
-    	return norm.trim().replace(" ", "-");
+        String norm = Normalizer.normalize(label, Normalizer.Form.NFD);
+        norm = norm.replaceAll("[^\\p{ASCII}]", "");
+        norm.trim().replace("_", "-");
+        return norm.trim().replace(" ", "-");
     }
 
     public InternetArchiveReport createItem(final String docUnitId, final boolean automaticExport) {
         final DocUnit docUnit = docUnitService.findOneWithAllDependencies(docUnitId);
-        final InternetArchiveItemDTO item =  transactionService.executeInNewTransactionWithReturn(() -> prepareItem(docUnitId));
+        final InternetArchiveItemDTO item = transactionService.executeInNewTransactionWithReturn(() -> prepareItem(docUnitId));
         // pas de transaction pour les upload...
         return createItem(docUnit, item, true, null);
     }
@@ -313,13 +305,13 @@ public class InternetArchiveService {
         // pas de transaction pour les upload...
         return createItem(docUnit, item, true, userId);
     }
-    
+
     public InternetArchiveReport createItem(final DocUnit docUnit, final InternetArchiveItemDTO item, final boolean automaticEport, final String userId) {
 
         // TODO FIXME : choix / config par défaut (à paramétrer)
         final Set<InternetArchiveConfiguration> confs = confService.findByLibraryAndActive(docUnit.getLibrary(), true);
         final InternetArchiveReport resultReport;
-        
+
         if (CollectionUtils.isNotEmpty(confs)) {
             final InternetArchiveConfiguration conf = confs.iterator().next();
             final InternetArchiveReport report = iaReportService.createInternetArchiveReport(docUnit, item.getArchiveIdentifier());
@@ -329,12 +321,12 @@ public class InternetArchiveService {
             LOG.warn("Aucune configuration pour Internet Archive : aucun export n'a été réalisé");
             return null;
         }
-        
+
         if (resultReport.getStatus() == Status.ARCHIVED) {
             // On ouvre une transation en fin d'export du doc si success.
             transactionService.executeInNewTransaction(() -> {
-                
-                if (StringUtils.isNotBlank(resultReport.getArkUrl())) {           
+
+                if (StringUtils.isNotBlank(resultReport.getArkUrl())) {
                     docUnit.setArkUrl(resultReport.getArkUrl());
                     docUnitService.save(docUnit);
                 }
@@ -346,9 +338,9 @@ public class InternetArchiveService {
                     }
                 }
             });
-            
-        } 
-        return resultReport; 
+
+        }
+        return resultReport;
     }
 
     /**
@@ -366,7 +358,7 @@ public class InternetArchiveService {
                                          final InternetArchiveConfiguration conf,
                                          final ViewsFormatConfiguration.FileFormat format,
                                          InternetArchiveReport report) {
-    	
+
         try {
             final BasicAWSCredentials awsCreds = new BasicAWSCredentials(conf.getAccessKey(), cryptoService.decrypt(conf.getSecretKey()));
             final AmazonS3 s3Client = AmazonS3ClientBuilder.standard()
@@ -405,7 +397,8 @@ public class InternetArchiveService {
             if (item.getCustomMediatype() != null && StringUtils.isNotBlank(item.getCustomMediatype())) {
                 metadata.setHeader("x-archive-meta-mediatype", getUTF8String(item.getCustomMediatype()));
             } else if (item.getMediatype() != null && StringUtils.isNotBlank(item.getMediatype().name())) {
-                final String media = InternetArchiveItemDTO.MediaType.autre == item.getMediatype() ? "data" : item.getMediatype().name();
+                final String media = InternetArchiveItemDTO.MediaType.autre == item.getMediatype() ? "data"
+                                                                                                   : item.getMediatype().name();
                 metadata.setHeader("x-archive-meta-mediatype", media);
             }
             if (StringUtils.isNotBlank(item.getNotes())) {
@@ -423,25 +416,33 @@ public class InternetArchiveService {
             if (StringUtils.isNotBlank(item.getSource())) {
                 metadata.setHeader("x-archive-meta-source", getUTF8String(item.getSource()));
             }
-    
+
             // Creator
             int countCreator = 1;
             for (final String creator : item.getCreators()) {
                 if (countCreator < 10) {
-                    metadata.setHeader("x-archive-meta0" + countCreator + "-creator", getUTF8String(creator));
+                    metadata.setHeader("x-archive-meta0" + countCreator
+                                       + "-creator",
+                                       getUTF8String(creator));
                 } else {
-                    metadata.setHeader("x-archive-meta" + countCreator + "-creator", getUTF8String(creator));
+                    metadata.setHeader("x-archive-meta" + countCreator
+                                       + "-creator",
+                                       getUTF8String(creator));
                 }
                 countCreator++;
             }
-            
+
             // Collections
             int count = 1;
             for (final String collection : item.getCollections()) {
                 if (count < 10) {
-                    metadata.setHeader("x-archive-meta0" + count + "-collection", getUTF8String(collection));
+                    metadata.setHeader("x-archive-meta0" + count
+                                       + "-collection",
+                                       getUTF8String(collection));
                 } else {
-                    metadata.setHeader("x-archive-meta" + count + "-collection", getUTF8String(collection));
+                    metadata.setHeader("x-archive-meta" + count
+                                       + "-collection",
+                                       getUTF8String(collection));
                 }
                 count++;
             }
@@ -469,19 +470,20 @@ public class InternetArchiveService {
             alto.ifPresent(f -> files.put(f.getName(), f));
 
             report = iaReportService.setReportSending(report, files.size());
-            
+
             LOG.info("Export => Internet Archive: Debut upload doc {} - docType: {}", docUnit.getPgcnId(), item.getType());
-            int cpt = 0; 
-            
+            int cpt = 0;
+
             for (final Entry<String, File> entry : files.entrySet()) {
                 cpt++;
                 final String sfName = entry.getKey();
                 final File file = entry.getValue();
                 if (!file.exists()) {
-                    throw new PgcnTechnicalException("Le fichier " + file.getAbsolutePath() + " n'existe pas");
+                    throw new PgcnTechnicalException("Le fichier " + file.getAbsolutePath()
+                                                     + " n'existe pas");
                 }
-                if (cpt%10==0) {
-                    LOG.info("Export => Internet Archive: {} fichiers traités", cpt); 
+                if (cpt % 10 == 0) {
+                    LOG.info("Export => Internet Archive: {} fichiers traités", cpt);
                 }
                 try (final FileInputStream in = new FileInputStream(file)) {
                     metadata.setContentLength(in.available());
@@ -490,38 +492,37 @@ public class InternetArchiveService {
                     }
                     final PutObjectRequest por = new PutObjectRequest(item.getArchiveIdentifier(), sfName, in, metadata);
                     try {
-                    	
-                    	s3Client.putObject(por);
-                    } 
-                    catch (final AmazonServiceException ase) {
-                    	// cas particulier erreur 503 SlowDown => on pause 30sec et on re essaie 1 fois....
-                    	if (ase.getStatusCode() == 503 
-                    			&& StringUtils.contains(ase.getErrorCode(), "SlowDown")) {
-                    		
-                    		LOG.error("Caught AmazonServiceException 503 : SlowDown - retries to put file {} in {} seconds", sfName, TIME_SECONDS_BEFORE_RETRY);
-                    		try {
-								TimeUnit.SECONDS.sleep(TIME_SECONDS_BEFORE_RETRY);
+
+                        s3Client.putObject(por);
+                    } catch (final AmazonServiceException ase) {
+                        // cas particulier erreur 503 SlowDown => on pause 30sec et on re essaie 1 fois....
+                        if (ase.getStatusCode() == 503 && StringUtils.contains(ase.getErrorCode(), "SlowDown")) {
+
+                            LOG.error("Caught AmazonServiceException 503 : SlowDown - retries to put file {} in {} seconds", sfName, TIME_SECONDS_BEFORE_RETRY);
+                            try {
+                                TimeUnit.SECONDS.sleep(TIME_SECONDS_BEFORE_RETRY);
                             } catch (final InterruptedException e) {
-								LOG.error("InterruptedException when retries to put {} in S3", sfName);
-								throw ase;
-							}
-                    		// tentative 2 apres 1 pause
-                    		s3Client.putObject(por);
-                    		LOG.info("{} put successfully in S3 after retry", sfName);
-                    		
-                    	} else {
-                    		throw ase;
-                    	}
-                  }	 
-                } 
+                                LOG.error("InterruptedException when retries to put {} in S3", sfName);
+                                throw ase;
+                            }
+                            // tentative 2 apres 1 pause
+                            s3Client.putObject(por);
+                            LOG.info("{} put successfully in S3 after retry", sfName);
+
+                        } else {
+                            throw ase;
+                        }
+                    }
+                }
                 report = iaReportService.updateReport(report, 1);
             }
-            
+
             LOG.info("Export => Internet Archive: Fin export doc {}", docUnit.getPgcnId());
             report = iaReportService.setReportSent(report);
 
             final HttpClient client = HttpClientBuilder.create().build();
-            final HttpGet request = new HttpGet("https://archive.org/metadata/" + report.getInternetArchiveIdentifier() + "/metadata");
+            final HttpGet request = new HttpGet("https://archive.org/metadata/" + report.getInternetArchiveIdentifier()
+                                                + "/metadata");
             final HttpResponse response = client.execute(request);
             final String json = EntityUtils.toString(response.getEntity());
             final JSONObject temp = new JSONObject(json);
@@ -534,7 +535,7 @@ public class InternetArchiveService {
             } else {
                 final JSONObject result = (JSONObject) temp.get("result");
                 if (result.has("identifier-ark")) {
-                    //docUnit.setArkUrl((String) result.get("identifier-ark"));
+                    // docUnit.setArkUrl((String) result.get("identifier-ark"));
                     report.setArkUrl((String) result.get("identifier-ark"));
                 }
                 if (result.has("fail-reasons")) {
@@ -549,10 +550,10 @@ public class InternetArchiveService {
             // Close
 
         } catch (final AmazonServiceException ase) {
-            LOG.error("Caught an AmazonServiceException, which "
-                      + "means your request made it "
+            LOG.error("Caught an AmazonServiceException, which " + "means your request made it "
                       + "to Amazon S3, but was rejected with an error response"
-                      + " for some reason.", ase);
+                      + " for some reason.",
+                      ase);
             LOG.error("Error Message:    {}", ase.getMessage());
             LOG.error("HTTP Status Code: {}", ase.getStatusCode());
             LOG.error("AWS Error Code:   {}", ase.getErrorCode());
@@ -561,11 +562,11 @@ public class InternetArchiveService {
             report = iaReportService.failReport(report, ase.getMessage());
 
         } catch (final AmazonClientException ace) {
-            LOG.error("Caught an AmazonClientException, which "
-                      + "means the client encountered "
+            LOG.error("Caught an AmazonClientException, which " + "means the client encountered "
                       + "an internal error while trying to "
                       + "communicate with S3, "
-                      + "such as not being able to access the network.", ace);
+                      + "such as not being able to access the network.",
+                      ace);
             LOG.error("Error Message: {}", ace.getMessage());
             report = iaReportService.failReport(report, ace.getMessage());
 
@@ -599,8 +600,7 @@ public class InternetArchiveService {
 
         } else {
             final DigitalDocument dd = doc.getDigitalDocuments().iterator().next();
-            final String pgId =
-                dd.getPages().stream().filter(pg -> pg.getNumber() == null).map(AbstractDomainObject::getIdentifier).findFirst().orElse(null);
+            final String pgId = dd.getPages().stream().filter(pg -> pg.getNumber() == null).map(AbstractDomainObject::getIdentifier).findFirst().orElse(null);
 
             if (pgId != null) {
                 final StoredFile sfPdf = binaryRepository.getOneByPageIdentifierAndFileFormat(pgId, ViewsFormatConfiguration.FileFormat.MASTER);
@@ -614,13 +614,13 @@ public class InternetArchiveService {
         }
         return pdfFile;
     }
-    
+
     public Optional<File> retrieveAlto(final DocUnit doc, final String libraryId) throws IOException {
         final Optional<File> altoFile;
         if (CollectionUtils.isEmpty(doc.getDigitalDocuments())) {
             altoFile = Optional.empty();
         } else {
-            final DigitalDocument dd = doc.getDigitalDocuments().iterator().next();            
+            final DigitalDocument dd = doc.getDigitalDocuments().iterator().next();
             final List<File> xmlAlto = altoService.retrieveAlto(dd.getDigitalId(), libraryId, true, false);
             if (!xmlAlto.isEmpty()) {
                 altoFile = xmlAlto.stream().findFirst();
@@ -628,7 +628,7 @@ public class InternetArchiveService {
                 altoFile = Optional.empty();
             }
         }
-        
+
         return altoFile;
     }
 
@@ -639,13 +639,8 @@ public class InternetArchiveService {
      * @return
      */
     private String getUTF8String(final String string) {
-        try {
-            return "uri(" + UriUtils.encode(string, "UTF-8") + ")";
-
-        } catch (final UnsupportedEncodingException e) {
-            LOG.debug("Conversion non supportée", e);
-        }
-        return string;
+        return "uri(" + UriUtils.encode(string, "UTF-8")
+               + ")";
     }
 
     /**
@@ -657,13 +652,13 @@ public class InternetArchiveService {
      * @return
      */
     private Map<String, File> getFilesForDocUnit(DocUnit docUnit, final ViewsFormatConfiguration.FileFormat format, final String libraryId) {
-        
+
         docUnit = docUnitService.findOneWithAllDependencies(docUnit.getIdentifier());
-        
+
         final Map<String, File> results = new LinkedHashMap<>();
         docUnit.getDigitalDocuments().forEach(digitalDoc -> {
             digitalDoc.getOrderedPages().forEach(page -> {
-                
+
                 final StoredFile storedFile = binaryRepository.getOneByPageIdentifierAndFileFormat(page.getIdentifier(), format);
 
                 if (storedFile != null) {
@@ -706,40 +701,36 @@ public class InternetArchiveService {
     public List<String> findDocUnitsReadyForArchiveExport() {
         final List<String> docsToExport = new ArrayList<>();
         final List<Library> libraries = libraryService.findAllByActive(true);
-        
+
         libraries.stream().filter(lib -> CollectionUtils.isNotEmpty(confService.findByLibraryAndActive(lib, true))).forEach(lib -> {
-           
+
             final List<String> archivableDocIds = workflowService.findDocUnitWorkflowsForArchiveExport(lib.getIdentifier())
-                                                .stream()
-                                                .map(DocUnitWorkflow::getDocUnit)
-                                                .map(DocUnit::getIdentifier)
-                                                .collect(Collectors.toList());
-            
+                                                                 .stream()
+                                                                 .map(DocUnitWorkflow::getDocUnit)
+                                                                 .map(DocUnit::getIdentifier)
+                                                                 .collect(Collectors.toList());
+
             if (!archivableDocIds.isEmpty()) {
                 final List<DocUnit> archivables = docUnitService.findDocUnitWithArchiveExportDepIn(archivableDocIds);
-                
-                archivables.stream()
-                    .filter(doc -> CollectionUtils.isNotEmpty(doc.getRecords()))
-                    .filter(doc -> {
-                        // la propriete identifier doit etre renseignee => l'id de l'export ds Archive
-                        final BibliographicRecord record = doc.getRecords().iterator().next();
-                        final DocProperty prop = record.getProperties()
-                                                       .stream()
-                                                       .filter(p -> p.getType().getSuperType() == DocPropertyType.DocPropertySuperType.DC)
-                                                       .filter(p -> StringUtils.equals("identifier", p.getType().getIdentifier()))
-                                                       .findFirst()
-                                                       .orElse(null);
-                        return prop != null && StringUtils.isNotBlank(prop.getValue());
+
+                archivables.stream().filter(doc -> CollectionUtils.isNotEmpty(doc.getRecords())).filter(doc -> {
+                    // la propriete identifier doit etre renseignee => l'id de l'export ds Archive
+                    final BibliographicRecord record = doc.getRecords().iterator().next();
+                    final DocProperty prop = record.getProperties()
+                                                   .stream()
+                                                   .filter(p -> p.getType().getSuperType() == DocPropertyType.DocPropertySuperType.DC)
+                                                   .filter(p -> StringUtils.equals("identifier", p.getType().getIdentifier()))
+                                                   .findFirst()
+                                                   .orElse(null);
+                    return prop != null && StringUtils.isNotBlank(prop.getValue());
                 }).filter(doc -> {
                     return iaReportService.findByDocUnit(doc.getIdentifier())
-                                                                  .stream()
-                                                                  .filter(iar -> InternetArchiveReport.Status.ARCHIVED == iar.getStatus())
-                                                                  .collect(Collectors.toList())
-                                                                  .isEmpty();
-                })
-                .map(DocUnit::getIdentifier)
-                .forEach(docsToExport::add);
-            }    
+                                          .stream()
+                                          .filter(iar -> InternetArchiveReport.Status.ARCHIVED == iar.getStatus())
+                                          .collect(Collectors.toList())
+                                          .isEmpty();
+                }).map(DocUnit::getIdentifier).forEach(docsToExport::add);
+            }
         });
         return docsToExport;
     }

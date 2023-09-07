@@ -1,10 +1,12 @@
 package fr.progilone.pgcn.service.exchange.digitallibrary;
 
+import fr.progilone.pgcn.domain.document.DocUnit;
+import fr.progilone.pgcn.domain.workflow.WorkflowStateKey;
+import fr.progilone.pgcn.service.workflow.WorkflowService;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,13 +16,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import fr.progilone.pgcn.domain.document.DocUnit;
-import fr.progilone.pgcn.domain.workflow.WorkflowStateKey;
-import fr.progilone.pgcn.service.workflow.WorkflowService;
-
 @Service
 public class DigitalLibraryDiffusionRequestHandlerService {
-
 
     private static final Logger LOG = LoggerFactory.getLogger(DigitalLibraryDiffusionRequestHandlerService.class);
 
@@ -32,7 +29,6 @@ public class DigitalLibraryDiffusionRequestHandlerService {
 
     private final DigitalLibraryDiffusionService digitalLibraryDiffusionService;
     private final WorkflowService workflowService;
-
 
     @Autowired
     public DigitalLibraryDiffusionRequestHandlerService(final DigitalLibraryDiffusionService digitalLibraryDiffusionService, final WorkflowService workflowService) {
@@ -56,8 +52,7 @@ public class DigitalLibraryDiffusionRequestHandlerService {
             });
         }
     }
-    
-    
+
     /**
      * Lanceur de l'export automatique vers la bibliothèque numérique.
      */
@@ -81,25 +76,23 @@ public class DigitalLibraryDiffusionRequestHandlerService {
                 }
             }
         }
-       LOG.info("Fin export vers la bibliothèque numérique");
+        LOG.info("Fin export vers la bibliothèque numérique");
     }
 
-    
     /**
      * Export manuel.
      */
     @Async
-    public void
-           exportDocToDigitalLibrary(final DocUnit doc, final String userId, final boolean multiple, final boolean firstDoc, final boolean lastDoc) {
+    public void exportDocToDigitalLibrary(final DocUnit doc, final String userId, final boolean multiple, final boolean firstDoc, final boolean lastDoc) {
         if (digitalLibraryDiffusionService.exportDocToDigitalLibrary(doc, multiple, firstDoc, lastDoc)) {
             if (workflowService.isStateRunning(doc.getIdentifier(), WorkflowStateKey.DIFFUSION_DOCUMENT_DIGITAL_LIBRARY)) {
                 workflowService.processState(doc.getIdentifier(), WorkflowStateKey.DIFFUSION_DOCUMENT_DIGITAL_LIBRARY, userId);
             }
-       } else {
+        } else {
             if (workflowService.isStateRunning(doc.getIdentifier(), WorkflowStateKey.DIFFUSION_DOCUMENT_DIGITAL_LIBRARY)) {
                 workflowService.rejectState(doc.getIdentifier(), WorkflowStateKey.DIFFUSION_DOCUMENT_DIGITAL_LIBRARY, userId);
-           }
-       }
-        
+            }
+        }
+
     }
 }

@@ -1,7 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <!-- Index manquant-->
     <changeSet id="pgcn-fk-missing-001" author="progilone">
@@ -10,7 +12,6 @@
                 SELECT identifier FROM lib_library l WHERE l.identifier = library
             )
         </sql>
-        <addForeignKeyConstraint baseTableName="conf_configuration_check" baseColumnNames="library" constraintName="fk_configuration_check_library"
-                                 referencedTableName="lib_library" referencedColumnNames="identifier"/>
+        <addForeignKeyConstraint baseTableName="conf_configuration_check" baseColumnNames="library" constraintName="fk_configuration_check_library" referencedTableName="lib_library" referencedColumnNames="identifier" />
     </changeSet>
 </databaseChangeLog>

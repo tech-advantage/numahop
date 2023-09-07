@@ -9,14 +9,42 @@
     angular.module('numaHopApp.component', []);
     angular.module('numaHopApp.filter', []);
 
-    angular.module('numaHopApp',
-        ['numaHopApp.controller', 'numaHopApp.service', 'numaHopApp.directive', 'numaHopApp.component', 'numaHopApp.utils', 'numaHopApp.filter', 'ui.router',
-            'angular-loading-bar', 'chart.js', 'frapontillo.bootstrap-switch', 'gettext', 'LocalStorageModule', 'ngAnimate', 'ngAria', 'ngCookies',
-            'ngDragDrop', 'ngSanitize', 'smart-table', 'tmh.dynamicLocale', 'truncate', 'treeControl', 'ui.bootstrap',
-            'ui.select', 'ui.timepicker', 'xeditable', 'adf', 'angular-svg-round-progressbar', 'ui.bootstrap.contextMenu', 'ngFileSaver',
-            'sem.toggle-informations', 'sem.toggle-filters', 'angular-clipboard']);
+    angular.module('numaHopApp', [
+        'numaHopApp.controller',
+        'numaHopApp.service',
+        'numaHopApp.directive',
+        'numaHopApp.component',
+        'numaHopApp.utils',
+        'numaHopApp.filter',
+        'ui.router',
+        'angular-loading-bar',
+        'chart.js',
+        'frapontillo.bootstrap-switch',
+        'gettext',
+        'LocalStorageModule',
+        'ngAnimate',
+        'ngAria',
+        'ngCookies',
+        'ngDragDrop',
+        'ngSanitize',
+        'smart-table',
+        'tmh.dynamicLocale',
+        'truncate',
+        'ui.bootstrap',
+        'ui.select',
+        'ui.timepicker',
+        'xeditable',
+        'adf',
+        'angular-svg-round-progressbar',
+        'ui.bootstrap.contextMenu',
+        'ngFileSaver',
+        'sem.toggle-informations',
+        'sem.toggle-filters',
+        'angular-clipboard',
+    ]);
 
-    angular.module('numaHopApp')
+    angular
+        .module('numaHopApp')
         .config(function ($routeProvider, $httpProvider, $sceDelegateProvider, $compileProvider, gettext, tmhDynamicLocaleProvider, CONFIGURATION, USER_ROLES, cfpLoadingBarProvider, localStorageServiceProvider) {
             //enable CSRF
             $httpProvider.defaults.xsrfCookieName = 'CSRF-TOKEN';
@@ -54,59 +82,64 @@
             // On n'affiche pas le spinner de la loading bar
             cfpLoadingBarProvider.includeSpinner = true;
 
-            $routeProvider.when('/error', {
-                templateUrl: 'scripts/app/main/error.html',
-                access: {
-                    authorizedRoles: [USER_ROLES.all]
-                }
-            }).when('/account', {
-                // controller: function($location, Principal) {
-                //     if (angular.isDefined(Principal.identifier())) {
-                //         $location.path("/user/user").search({
-                //             id: Principal.identifier()
-                //         });
-                //     }
-                // },
-                // template: '',
-                templateUrl: 'scripts/app/user/account.html',
-                controller: 'AccountCtrl',
-                controllerAs: 'mainCtrl',
-                title: gettext("Mon profil"),
-                access: {
-                    authorizedRoles: [USER_ROLES.all]
-                }
-            }).when('/password', {
-                templateUrl: 'scripts/app/account/password/password.html',
-                controller: 'PasswordController',
-                access: {
-                    authorizedRoles: [USER_ROLES.all]
-                }
-            }).when('/login', {
-                templateUrl: 'scripts/app/account/login/login.html',
-                controller: 'LoginController',
-                access: {
-                    authorizedRoles: [USER_ROLES.all]
-                }
-            }).when('/logout', {
-                templateUrl: 'scripts/app/account/login/login.html',
-                controller: 'LogoutController'
-            }).otherwise({
-                redirectTo: "/dashboard"
-            });
+            $routeProvider
+                .when('/error', {
+                    templateUrl: 'scripts/app/main/error.html',
+                    access: {
+                        authorizedRoles: [USER_ROLES.all],
+                    },
+                })
+                .when('/account', {
+                    // controller: function($location, Principal) {
+                    //     if (angular.isDefined(Principal.identifier())) {
+                    //         $location.path("/user/user").search({
+                    //             id: Principal.identifier()
+                    //         });
+                    //     }
+                    // },
+                    // template: '',
+                    templateUrl: 'scripts/app/user/account.html',
+                    controller: 'AccountCtrl',
+                    controllerAs: 'mainCtrl',
+                    title: gettext('Mon profil'),
+                    access: {
+                        authorizedRoles: [USER_ROLES.all],
+                    },
+                })
+                .when('/password', {
+                    templateUrl: 'scripts/app/account/password/password.html',
+                    controller: 'PasswordController',
+                    access: {
+                        authorizedRoles: [USER_ROLES.all],
+                    },
+                })
+                .when('/login', {
+                    templateUrl: 'scripts/app/account/login/login.html',
+                    controller: 'LoginController',
+                    access: {
+                        authorizedRoles: [USER_ROLES.all],
+                    },
+                })
+                .when('/logout', {
+                    templateUrl: 'scripts/app/account/login/login.html',
+                    controller: 'LogoutController',
+                })
+                .otherwise({
+                    redirectTo: '/dashboard',
+                });
 
             $sceDelegateProvider.resourceUrlWhitelist([
                 // Allow same origin resource loads.
                 'self',
                 // allow semantheque-sid
-                CONFIGURATION.numahop.url + "**"
+                CONFIGURATION.numahop.url + '**',
                 // Allow loading from our assets domain. Notice the
                 // difference between * and **.
             ]);
 
             tmhDynamicLocaleProvider.localeLocationPattern('i18n/angular-i18n/angular-locale_{{locale}}.js');
-            tmhDynamicLocaleProvider.useCookieStorage('NG_TRANSLATE_LANG_KEY');
+            // tmhDynamicLocaleProvider.useCookieStorage('NG_TRANSLATE_LANG_KEY');
             localStorageServiceProvider.setPrefix('numahop');
-
 
             //Pour que la fonction naturalSort trie sans tenir compte de la casse
             naturalSort.insensitive = true;
@@ -116,14 +149,13 @@
             $routeProvider.when = function (path, route) {
                 route.resolve || (route.resolve = {});
                 angular.extend(route.resolve, {
-                    CurrentUser: /*@ngInject*/function (Principal) {
+                    CurrentUser: /*@ngInject*/ function (Principal) {
                         return Principal.identity();
-                    }
+                    },
                 });
 
                 return originalWhen.call($routeProvider, path, route);
             };
-
         })
         .run(function ($cookies, editableOptions, editableThemes, uibTimepickerConfig, LocaleService) {
             //Initialisation de la locale à partir du cookie ou FR sinon
@@ -135,16 +167,15 @@
                 buttonsClass: 'btn-sm',
                 // Les templates de validation et cancel sont inversés pour inverser l'ordre des boutons Enregistrer et Annuler à l'écran
                 cancelTpl: '<button type="submit" tooltip="{{\'Enregistrer\' | translate }}" tooltip-append-to-body="false" class="btn btn-primary"><span class="glyphicon-regular floppy-save"></span></button>',
-                submitTpl: '<button type="button" tooltip="{{\'Annuler\' | translate }}" tooltip-append-to-body="false" class="btn btn-sem4 btn-default" ng-click="$form.$cancel()"><span class="glyphicon-regular unshare"></span></button>',
-                errorTpl: '<div class="editable-error help-block" ng-show="$error" ng-bind-html="$error"></div>'
+                submitTpl:
+                    '<button type="button" tooltip="{{\'Annuler\' | translate }}" tooltip-append-to-body="false" class="btn btn-sem4 btn-default" ng-click="$form.$cancel()"><span class="glyphicon-regular unshare"></span></button>',
+                errorTpl: '<div class="editable-error help-block" ng-show="$error" ng-bind-html="$error"></div>',
             });
 
             // bootstrap timepicker
             uibTimepickerConfig.showMeridian = false;
         })
-        .run(function ($location, $rootScope, $timeout, AuthenticationSharedService, gettext, MessageSrvc,
-            Principal, USER_ROLES, WebsocketSrvc, VersionCheckerService) {
-
+        .run(function ($location, $rootScope, $timeout, AuthenticationSharedService, gettext, MessageSrvc, Principal, USER_ROLES, WebsocketSrvc, VersionCheckerService) {
             $rootScope.isAuthenticated = AuthenticationSharedService.isAuthenticated;
             $rootScope.isAuthorized = AuthenticationSharedService.isAuthorized;
             $rootScope.isLoginPage = isLoginPage;
@@ -153,7 +184,6 @@
             $rootScope.userRoles = USER_ROLES;
             $rootScope.newVersionAvailable = false;
             //        VersionCheckerService.checkNewVersionAvailable('%build-date%');
-
 
             $rootScope.getPermanentMessages = function (level) {
                 return _.filter(MessageSrvc.getMessages(level), function (msg) {
@@ -172,7 +202,6 @@
                     return angular.isDefined(msg.delayedDeletion);
                 });
             };
-
 
             $rootScope.$on('$routeChangeStart', function (event, next) {
                 if (angular.isDefined(next.access)) {
@@ -216,18 +245,19 @@
             });
 
             function isLoginPage() {
-                return $location.path() === "/login";
+                return $location.path() === '/login';
             }
 
             function redirectToLogin() {
                 Principal.authenticate(null);
                 var path = $location.path();
-                if (path !== "/" && path !== "" && path !== "/login" && path !== "/logout") {
+                if (path !== '/' && path !== '' && path !== '/login' && path !== '/logout') {
                     $location.path('/login').search('redirect', path).replace();
                 } else {
                     $location.path('/login').replace();
                 }
             }
+
             function setVersion() {
                 VersionCheckerService.getVersion().then(function (version) {
                     $rootScope.version = version;

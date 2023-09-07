@@ -1,40 +1,44 @@
 package fr.progilone.pgcn.service.exchange;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import fr.progilone.pgcn.domain.exchange.DataEncoding;
 import fr.progilone.pgcn.domain.exchange.FileFormat;
 import fr.progilone.pgcn.domain.exchange.ImportReport;
 import fr.progilone.pgcn.domain.user.User;
 import fr.progilone.pgcn.domain.util.CustomUserDetails;
 import fr.progilone.pgcn.repository.document.DocUnitRepository;
+import fr.progilone.pgcn.repository.document.conditionreport.ConditionReportRepository;
 import fr.progilone.pgcn.repository.exchange.ImportReportRepository;
 import fr.progilone.pgcn.repository.exchange.ImportedDocUnitRepository;
+import fr.progilone.pgcn.repository.imagemetadata.ImageMetadataValuesRepository;
 import fr.progilone.pgcn.service.storage.FileStorageManager;
-import fr.progilone.pgcn.service.util.transaction.StatefullTransactionalLoopService;
 import fr.progilone.pgcn.service.util.transaction.TransactionService;
 import fr.progilone.pgcn.web.websocket.WebsocketService;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.internal.stubbing.answers.ReturnsArgumentAt;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyMapOf;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
 
 /**
  * Created by Sebastien on 05/08/2016.
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ImportReportServiceTest {
 
     @Mock
     private DocUnitRepository docUnitRepository;
+    @Mock
+    private ConditionReportRepository conditionReportRepository;
     @Mock
     private FileStorageManager fm;
     @Mock
@@ -42,27 +46,28 @@ public class ImportReportServiceTest {
     @Mock
     private ImportedDocUnitRepository importedDocUnitRepository;
     @Mock
-    private StatefullTransactionalLoopService transactionalLoopService;
-    @Mock
     private TransactionService transactionService;
     @Mock
     private WebsocketService websocketService;
+    @Mock
+    private ImageMetadataValuesRepository imageMetadataValuesRepository;
 
     private ImportReportService service;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         service = new ImportReportService(docUnitRepository,
                                           fm,
                                           importReportRepository,
                                           importedDocUnitRepository,
-                                          transactionalLoopService,
                                           transactionService,
-                                          websocketService);
+                                          websocketService,
+                                          conditionReportRepository,
+                                          imageMetadataValuesRepository);
 
         final CustomUserDetails customUserDetails = new CustomUserDetails(null, "tortor", null, null, null, null, false, User.Category.OTHER);
-        final TestingAuthenticationToken authenticationToken =
-            new TestingAuthenticationToken(customUserDetails, "Mauris quis imperdiet libero. Aenean porttitor sem ac nibh euismod congue.");
+        final TestingAuthenticationToken authenticationToken = new TestingAuthenticationToken(customUserDetails,
+                                                                                              "Mauris quis imperdiet libero. Aenean porttitor sem ac nibh euismod congue.");
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
         when(importReportRepository.save(any(ImportReport.class))).thenAnswer(new ReturnsArgumentAt(0));
@@ -79,8 +84,7 @@ public class ImportReportServiceTest {
         final String lotId = "lot_bsg";
         final String mappingId = "6b378e41-8083-4b11-b83c-57a20f7fb432";
 
-        final ImportReport actual =
-            service.createSimpleImportReport(fileName, fileSize, fileFormat, dataEncoding, libraryId, projectId, lotId, mappingId);
+        final ImportReport actual = service.createSimpleImportReport(fileName, fileSize, fileFormat, dataEncoding, libraryId, projectId, lotId, mappingId);
 
         assertNotNull(actual.getMapping());
         assertEquals(mappingId, actual.getMapping().getIdentifier());
@@ -107,7 +111,7 @@ public class ImportReportServiceTest {
 
         assertNotNull(actual.getStart());
         assertEquals(ImportReport.Status.PRE_IMPORTING, actual.getStatus());
-        verify(websocketService).sendObject(eq(report.getIdentifier()), anyMapOf(String.class, Object.class));
+        verify(websocketService).sendObject(eq(report.getIdentifier()), any());
     }
 
     @Test
@@ -119,7 +123,7 @@ public class ImportReportServiceTest {
         final ImportReport actual = service.setReportStatus(report, newStatus);
 
         assertEquals(newStatus, actual.getStatus());
-        verify(websocketService).sendObject(eq(report.getIdentifier()), anyMapOf(String.class, Object.class));
+        verify(websocketService).sendObject(eq(report.getIdentifier()), any());
     }
 
     @Test
@@ -132,7 +136,7 @@ public class ImportReportServiceTest {
         assertNotNull(actual.getStart());
         assertNotNull(actual.getEnd());
         assertEquals(ImportReport.Status.COMPLETED, actual.getStatus());
-        verify(websocketService).sendObject(eq(report.getIdentifier()), anyMapOf(String.class, Object.class));
+        verify(websocketService).sendObject(eq(report.getIdentifier()), any());
     }
 
     @Test
@@ -150,6 +154,6 @@ public class ImportReportServiceTest {
         assertNotNull(actual.getEnd());
         assertEquals(ImportReport.Status.FAILED, actual.getStatus());
         assertNotNull(report.getMessage());
-        verify(websocketService).sendObject(eq(report.getIdentifier()), anyMapOf(String.class, Object.class));
+        verify(websocketService).sendObject(eq(report.getIdentifier()), any());
     }
 }

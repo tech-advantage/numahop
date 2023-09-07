@@ -1,17 +1,5 @@
 package fr.progilone.pgcn.service.exchange.exportftp;
 
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.exportftpconfiguration.ExportFTPConfiguration;
 import fr.progilone.pgcn.domain.library.Library;
@@ -23,6 +11,16 @@ import fr.progilone.pgcn.service.exportftpconfiguration.ExportFTPConfigurationSe
 import fr.progilone.pgcn.service.library.LibraryService;
 import fr.progilone.pgcn.service.workflow.DocUnitWorkflowService;
 import fr.progilone.pgcn.service.workflow.WorkflowService;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Service gérant l'export local
@@ -82,8 +80,7 @@ public class ExportFtpService {
     }
 
     private boolean exportDocToLocalFtp(final DocUnit doc) throws IOException {
-        ExportFTPConfiguration ftpConfig = Optional.of(doc.getLot().getActiveExportFTPConfiguration())
-            .orElse(doc.getProject().getActiveExportFTPConfiguration());
+        ExportFTPConfiguration ftpConfig = Optional.of(doc.getLot().getActiveExportFTPConfiguration()).orElse(doc.getProject().getActiveExportFTPConfiguration());
 
         if (ftpConfig != null) {
             final List<String> exportTypes = new ArrayList<>();
@@ -105,7 +102,7 @@ public class ExportFtpService {
             if (ftpConfig.isExportView()) {
                 exportTypes.add("VIEW");
             }
-            if(ftpConfig.isExportAlto()) {
+            if (ftpConfig.isExportAlto()) {
                 exportTypes.add("ALTO");
             }
 
@@ -125,16 +122,14 @@ public class ExportFtpService {
         final List<DocUnit> docsToExport = new ArrayList<>();
 
         final List<Library> libraries = libraryService.findAllByActive(true);
-        libraries.stream()
-                 .filter(lib -> CollectionUtils.isNotEmpty(configurationService.findByLibraryAndActive(lib, true)))
-                 .forEach(lib -> {
-                     final List<DocUnit> localExportableDoc = docUnitWorkflowService.findDocUnitWorkflowsForLocalExport(lib.getIdentifier())
-                                                                                    .stream()
-                                                                                    .map(DocUnitWorkflow::getDocUnit)
-                                                                                    .peek(doc -> doc.setLibrary(lib))
-                                                                                    .collect(Collectors.toList());
-                     docsToExport.addAll(localExportableDoc);
-                 });
+        libraries.stream().filter(lib -> CollectionUtils.isNotEmpty(configurationService.findByLibraryAndActive(lib, true))).forEach(lib -> {
+            final List<DocUnit> localExportableDoc = docUnitWorkflowService.findDocUnitWorkflowsForLocalExport(lib.getIdentifier())
+                                                                           .stream()
+                                                                           .map(DocUnitWorkflow::getDocUnit)
+                                                                           .peek(doc -> doc.setLibrary(lib))
+                                                                           .collect(Collectors.toList());
+            docsToExport.addAll(localExportableDoc);
+        });
         return docsToExport;
     }
 

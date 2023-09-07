@@ -1,7 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <!-- Changeset du module Import/Export -->
     <changeSet id="pgcn-create-exchange" author="progilone">
@@ -9,201 +11,192 @@
         <!-- Mapping -->
         <createTable tableName="exc_mapping">
             <column name="identifier" type="varchar(191)">
-                <constraints primaryKey="true" nullable="false"/>
+                <constraints primaryKey="true" nullable="false" />
             </column>
             <column name="label" type="varchar(255)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="library" type="varchar(191)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
-            <column name="type" type="varchar(255)"/>
+            <column name="type" type="varchar(255)" />
             <column name="version" type="BIGINT">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_by" type="varchar(255)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_by" type="varchar(255)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>
 
         <!-- Règles de mapping -->
         <createTable tableName="exc_mapping_rule">
             <column name="identifier" type="varchar(191)">
-                <constraints primaryKey="true" nullable="false"/>
+                <constraints primaryKey="true" nullable="false" />
             </column>
-            <column name="doc_unit_field" type="varchar(255)"/>
-            <column name="bib_record_field" type="varchar(255)"/>
-            <column name="property" type="varchar(191)"/>
-            <column name="expression" type="text"/>
-            <column name="expression_conf" type="text"/>
-            <column name="apply_if" type="text"/>
-            <column name="apply_if_conf" type="text"/>
+            <column name="doc_unit_field" type="varchar(255)" />
+            <column name="bib_record_field" type="varchar(255)" />
+            <column name="property" type="varchar(191)" />
+            <column name="expression" type="text" />
+            <column name="expression_conf" type="text" />
+            <column name="apply_if" type="text" />
+            <column name="apply_if_conf" type="text" />
             <column name="mapping" type="varchar(191)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="version" type="BIGINT">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_by" type="varchar(255)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_by" type="varchar(255)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>
 
         <!-- Rapports d'exécution des imports -->
         <createTable tableName="exc_import_report">
             <column name="identifier" type="varchar(191)">
-                <constraints primaryKey="true" nullable="false"/>
+                <constraints primaryKey="true" nullable="false" />
             </column>
             <column name="library" type="varchar(191)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="mapping" type="varchar(191)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
-            <column name="original_filename" type="varchar(1024)"/>
-            <column name="file_size" type="BIGINT"/>
-            <column name="file_format" type="varchar(255)"/>
-            <column name="data_encoding" type="varchar(255)"/>
-            <column name="start_import" type="timestamp"/>
-            <column name="end_import" type="timestamp"/>
-            <column name="run_by" type="varchar(255)"/>
-            <column name="status" type="varchar(255)"/>
-            <column name="message" type="text"/>
+            <column name="original_filename" type="varchar(1024)" />
+            <column name="file_size" type="BIGINT" />
+            <column name="file_format" type="varchar(255)" />
+            <column name="data_encoding" type="varchar(255)" />
+            <column name="start_import" type="timestamp" />
+            <column name="end_import" type="timestamp" />
+            <column name="run_by" type="varchar(255)" />
+            <column name="status" type="varchar(255)" />
+            <column name="message" type="text" />
             <column name="version" type="BIGINT">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_by" type="varchar(255)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_by" type="varchar(255)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>
 
         <!-- Récapitulatifs des imports d'unités documentaires -->
         <createTable tableName="exc_doc_unit">
             <column name="identifier" type="varchar(191)">
-                <constraints primaryKey="true" nullable="false"/>
+                <constraints primaryKey="true" nullable="false" />
             </column>
-            <column name="report" type="varchar(191)"/>
-            <column name="process" type="varchar(255)"/>
-            <column name="date_import" type="timestamp"/>
-            <column name="doc_unit" type="varchar(191)"/>
+            <column name="report" type="varchar(191)" />
+            <column name="process" type="varchar(255)" />
+            <column name="date_import" type="timestamp" />
+            <column name="doc_unit" type="varchar(191)" />
             <column name="version" type="BIGINT">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_by" type="varchar(255)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_by" type="varchar(255)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>
 
         <!-- Unités documentaires doublons -->
         <createTable tableName="exc_doc_unit_dupl">
-            <column name="imp_unit" type="varchar(191)"/>
-            <column name="doc_unit" type="varchar(191)"/>
+            <column name="imp_unit" type="varchar(191)" />
+            <column name="doc_unit" type="varchar(191)" />
         </createTable>
-        <addPrimaryKey tableName="exc_doc_unit_dupl" columnNames="imp_unit, doc_unit"/>
+        <addPrimaryKey tableName="exc_doc_unit_dupl" columnNames="imp_unit, doc_unit" />
 
         <!-- unités documentaires -->
         <addColumn tableName="doc_unit">
             <column name="state" type="varchar(191)" defaultValue="AVAILABLE">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </addColumn>
 
         <!-- Clés étrangères exc_mapping -->
-        <addForeignKeyConstraint baseTableName="exc_mapping" baseColumnNames="library" constraintName="fk_exc_mapping_library"
-                                 referencedTableName="lib_library" referencedColumnNames="identifier"/>
+        <addForeignKeyConstraint baseTableName="exc_mapping" baseColumnNames="library" constraintName="fk_exc_mapping_library" referencedTableName="lib_library" referencedColumnNames="identifier" />
 
         <!-- Clés étrangères exc_mapping_rule -->
-        <addForeignKeyConstraint baseTableName="exc_mapping_rule" baseColumnNames="mapping" constraintName="fk_exc_mapping_rule_mapping"
-                                 referencedTableName="exc_mapping" referencedColumnNames="identifier"/>
-        <addForeignKeyConstraint baseTableName="exc_mapping_rule" baseColumnNames="property" constraintName="fk_exc_mapping_rule_property"
-                                 referencedTableName="doc_property_type" referencedColumnNames="identifier"/>
+        <addForeignKeyConstraint baseTableName="exc_mapping_rule" baseColumnNames="mapping" constraintName="fk_exc_mapping_rule_mapping" referencedTableName="exc_mapping" referencedColumnNames="identifier" />
+        <addForeignKeyConstraint baseTableName="exc_mapping_rule" baseColumnNames="property" constraintName="fk_exc_mapping_rule_property" referencedTableName="doc_property_type" referencedColumnNames="identifier" />
 
         <!-- Clés étrangères exc_import_report -->
-        <addForeignKeyConstraint baseTableName="exc_import_report" baseColumnNames="library" constraintName="fk_exc_import_report_library"
-                                 referencedTableName="lib_library" referencedColumnNames="identifier"/>
-        <addForeignKeyConstraint baseTableName="exc_import_report" baseColumnNames="mapping" constraintName="fk_exc_import_report_mapping"
-                                 referencedTableName="exc_mapping" referencedColumnNames="identifier"/>
+        <addForeignKeyConstraint baseTableName="exc_import_report" baseColumnNames="library" constraintName="fk_exc_import_report_library" referencedTableName="lib_library" referencedColumnNames="identifier" />
+        <addForeignKeyConstraint baseTableName="exc_import_report" baseColumnNames="mapping" constraintName="fk_exc_import_report_mapping" referencedTableName="exc_mapping" referencedColumnNames="identifier" />
 
         <!-- Clés étrangères doc_unit_imp -->
-        <addForeignKeyConstraint baseTableName="exc_doc_unit" baseColumnNames="report" constraintName="fk_exc_doc_unit_report"
-                                 referencedTableName="exc_import_report" referencedColumnNames="identifier"/>
-        <addForeignKeyConstraint baseTableName="exc_doc_unit" baseColumnNames="doc_unit" constraintName="fk_exc_doc_unit_doc_unit"
-                                 referencedTableName="doc_unit" referencedColumnNames="identifier"/>
+        <addForeignKeyConstraint baseTableName="exc_doc_unit" baseColumnNames="report" constraintName="fk_exc_doc_unit_report" referencedTableName="exc_import_report" referencedColumnNames="identifier" />
+        <addForeignKeyConstraint baseTableName="exc_doc_unit" baseColumnNames="doc_unit" constraintName="fk_exc_doc_unit_doc_unit" referencedTableName="doc_unit" referencedColumnNames="identifier" />
 
         <!-- Clés étrangères exc_doc_unit_dupl -->
-        <addForeignKeyConstraint baseTableName="exc_doc_unit_dupl" baseColumnNames="imp_unit" constraintName="fk_exc_doc_unit_dupl_imp"
-                                 referencedTableName="exc_doc_unit" referencedColumnNames="identifier"/>
-        <addForeignKeyConstraint baseTableName="exc_doc_unit_dupl" baseColumnNames="doc_unit" constraintName="fk_exc_doc_unit_dupl_doc"
-                                 referencedTableName="doc_unit" referencedColumnNames="identifier"/>
+        <addForeignKeyConstraint baseTableName="exc_doc_unit_dupl" baseColumnNames="imp_unit" constraintName="fk_exc_doc_unit_dupl_imp" referencedTableName="exc_doc_unit" referencedColumnNames="identifier" />
+        <addForeignKeyConstraint baseTableName="exc_doc_unit_dupl" baseColumnNames="doc_unit" constraintName="fk_exc_doc_unit_dupl_doc" referencedTableName="doc_unit" referencedColumnNames="identifier" />
 
         <!-- Index exc_mapping -->
         <createIndex tableName="exc_mapping" indexName="idx_exc_mapping_library">
-            <column name="library"/>
+            <column name="library" />
         </createIndex>
 
         <!-- Index exc_mapping_rule -->
         <createIndex tableName="exc_mapping_rule" indexName="idx_exc_mapping_rule_mapping">
-            <column name="mapping"/>
+            <column name="mapping" />
         </createIndex>
         <createIndex tableName="exc_mapping_rule" indexName="idx_exc_mapping_rule_property">
-            <column name="property"/>
+            <column name="property" />
         </createIndex>
 
         <!-- Index exc_import_report -->
         <createIndex tableName="exc_import_report" indexName="idx_exc_import_report_library">
-            <column name="library"/>
+            <column name="library" />
         </createIndex>
         <createIndex tableName="exc_import_report" indexName="idx_exc_import_report_mapping">
-            <column name="mapping"/>
+            <column name="mapping" />
         </createIndex>
 
         <!-- Index doc_unit_imp -->
         <createIndex tableName="exc_doc_unit" indexName="idx_exc_doc_unit_report">
-            <column name="report"/>
+            <column name="report" />
         </createIndex>
         <createIndex tableName="exc_doc_unit" indexName="idx_exc_doc_unit_doc_unit">
-            <column name="doc_unit"/>
+            <column name="doc_unit" />
         </createIndex>
 
         <!-- Index sur doc_unit.state -->
         <createIndex tableName="doc_unit" indexName="idx_doc_unit_state">
-            <column name="state"/>
+            <column name="state" />
         </createIndex>
 
     </changeSet>

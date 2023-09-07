@@ -14,9 +14,7 @@ public class ResultAdminLotDTO {
     public ResultAdminLotDTO() {
     }
 
-    public ResultAdminLotDTO(final String identifier,
-                             final String msg,
-                             final boolean success) {
+    public ResultAdminLotDTO(final String identifier, final String msg, final boolean success) {
         super();
         this.identifier = identifier;
         this.msg = msg;

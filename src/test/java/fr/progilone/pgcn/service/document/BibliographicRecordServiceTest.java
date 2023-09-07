@@ -1,5 +1,9 @@
 package fr.progilone.pgcn.service.document;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+
 import fr.progilone.pgcn.domain.document.BibliographicRecord;
 import fr.progilone.pgcn.domain.document.DocProperty;
 import fr.progilone.pgcn.domain.document.DocPropertyType;
@@ -7,31 +11,27 @@ import fr.progilone.pgcn.domain.dto.document.BibliographicRecordDcDTO;
 import fr.progilone.pgcn.domain.dto.document.BibliographicRecordMassUpdateDTO;
 import fr.progilone.pgcn.domain.library.Library;
 import fr.progilone.pgcn.repository.document.BibliographicRecordRepository;
-import fr.progilone.pgcn.service.es.EsBibliographicRecordService;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import fr.progilone.pgcn.service.es.EsDocUnitService;
+import java.util.Collections;
+import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.internal.matchers.CapturingMatcher;
 import org.mockito.internal.stubbing.answers.ReturnsArgumentAt;
-import org.mockito.runners.MockitoJUnitRunner;
-
-import java.util.Collections;
-import java.util.List;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Created by Sébastien on 10/07/2017.
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class BibliographicRecordServiceTest {
 
     @Mock
     private BibliographicRecordRepository bibliographicRecordRepository;
     @Mock
-    private EsBibliographicRecordService esBibliographicRecordService;
+    private EsDocUnitService esDocUnitService;
     @Mock
     private DocPropertyService docPropertyService;
     @Mock
@@ -39,10 +39,9 @@ public class BibliographicRecordServiceTest {
 
     private BibliographicRecordService service;
 
-    @Before
+    @BeforeEach
     public void setUp() {
-        service =
-            new BibliographicRecordService(bibliographicRecordRepository, esBibliographicRecordService, docPropertyService, docPropertyTypeService);
+        service = new BibliographicRecordService(bibliographicRecordRepository, esDocUnitService, docPropertyService, docPropertyTypeService);
     }
 
     @Test
@@ -146,7 +145,7 @@ public class BibliographicRecordServiceTest {
         chinois.setValue("最長的路徑是一個人獨自行走");
         record.addProperty(chinois);
 
-        when(bibliographicRecordRepository.findAll(updates.getRecordIds())).thenReturn(Collections.singletonList(record));
+        when(bibliographicRecordRepository.findAllById(updates.getRecordIds())).thenReturn(Collections.singletonList(record));
         when(docPropertyTypeService.findAll()).thenReturn(Collections.singletonList(descType));
 
         service.update(updates);

@@ -2,12 +2,10 @@ package fr.progilone.pgcn.domain.util;
 
 import fr.progilone.pgcn.domain.user.Lang;
 import fr.progilone.pgcn.domain.user.User;
-import net.bytebuddy.dynamic.ClassFileLocator;
+import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.Collection;
 
 /**
  * Classe permettant de stocker des informations sur l'utilisateur connecté.
@@ -25,14 +23,14 @@ public class CustomUserDetails implements UserDetails {
     private final boolean superuser;
     private final User.Category category;
 
-    public CustomUserDetails(String identifier,
-                             String login,
-                             String password,
-                             Lang lang,
-                             String libraryId,
-                             Collection<GrantedAuthority> authorities,
-                             boolean superuser,
-                             User.Category category) {
+    public CustomUserDetails(final String identifier,
+                             final String login,
+                             final String password,
+                             final Lang lang,
+                             final String libraryId,
+                             final Collection<GrantedAuthority> authorities,
+                             final boolean superuser,
+                             final User.Category category) {
         super();
         this.identifier = identifier;
         this.login = login;
@@ -107,7 +105,7 @@ public class CustomUserDetails implements UserDetails {
         return category;
     }
 
-    public boolean isUserInRole(String role){
+    public boolean isUserInRole(final String role) {
         final String prefix = "ROLE_";
         final SimpleGrantedAuthority authority = new SimpleGrantedAuthority(prefix + role);
         return role == null || authorities.contains(authority);

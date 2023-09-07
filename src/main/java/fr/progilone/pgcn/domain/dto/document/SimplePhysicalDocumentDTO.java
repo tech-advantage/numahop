@@ -13,7 +13,8 @@ public class SimplePhysicalDocumentDTO extends AbstractDTO {
     private String digitalId;
     private SimpleTrainDTO train;
 
-    public SimplePhysicalDocumentDTO(){}
+    public SimplePhysicalDocumentDTO() {
+    }
 
     public SimplePhysicalDocumentDTO(String identifier, String name, String digitalId, SimpleTrainDTO train) {
         this.identifier = identifier;

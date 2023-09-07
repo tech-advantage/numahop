@@ -1,18 +1,8 @@
 package fr.progilone.pgcn.service.workflow;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.AdditionalAnswers;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.user.User;
@@ -33,22 +23,30 @@ import fr.progilone.pgcn.service.lot.LotService;
 import fr.progilone.pgcn.service.project.ProjectService;
 import fr.progilone.pgcn.service.user.UserService;
 import fr.progilone.pgcn.service.util.NumahopCollectors;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.AdditionalAnswers;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
- * 
+ *
  * @author jbrunet
- * Créé le 16 oct. 2017
+ *         Créé le 16 oct. 2017
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class WorkflowServiceTest {
-    
+
     private static final String LOGIN_USER1 = "user1";
     private static final String LOGIN_PRESTA = "presta";
 
     private final static String SYSTEM_LOGIN = "system";
-    
+
     private WorkflowService service;
-    
+
     private DocUnitWorkflowService docUnitWorkflowService;
     @Mock
     private DocUnitWorkflowRepository docUnitWorkflowRepository;
@@ -70,17 +68,24 @@ public class WorkflowServiceTest {
     private ProjectService projectService;
     @Mock
     private DocCheckHistoryService docCheckHistoryService;
-    
 
-    @Before
+    @BeforeEach
     public void setUp() {
         docUnitWorkflowService = new DocUnitWorkflowService(docUnitWorkflowRepository, docUnitStateRepository);
-        service = new WorkflowService(docUnitWorkflowService, workflowGroupService, docUnitService, recordService,
-                                      userService, conditionReportService, lotService, projectService, docCheckHistoryService, docUnitWorkflowRepository);
+        service = new WorkflowService(docUnitWorkflowService,
+                                      workflowGroupService,
+                                      docUnitService,
+                                      recordService,
+                                      userService,
+                                      conditionReportService,
+                                      lotService,
+                                      projectService,
+                                      docCheckHistoryService,
+                                      docUnitWorkflowRepository);
         when(docUnitWorkflowService.save(any(DocUnitWorkflow.class))).then(AdditionalAnswers.returnsFirstArg());
         when(docUnitWorkflowService.save(any(DocUnitState.class))).then(AdditionalAnswers.returnsFirstArg());
     }
-    
+
     /**
      * Vérification de la première étape (validation des constats d'état) en attente
      */
@@ -108,26 +113,26 @@ public class WorkflowServiceTest {
         final DocUnit doc = generateDummyDocUnit();
         final WorkflowModel model = generateModelOptionnal();
         final DocUnitWorkflow workflowInstance = service.initializeWorkflow(doc, model, null);
-        
+
         processState(workflowInstance, WorkflowStateKey.VALIDATION_NOTICES, generateDummyUser());
-        
+
         // Récupération de l'étape en cours (PENDING)
         validateStateIsPending(workflowInstance, WorkflowStateKey.VALIDATION_CONSTAT_ETAT);
-        
+
         // On valide les constats d'état (première étape obligatoire)
         processState(workflowInstance, WorkflowStateKey.VALIDATION_CONSTAT_ETAT, generateDummyUser());
-        
+
         // On vérifie que l'étape est bien terminée
         validateCompletedState(workflowInstance, WorkflowStateKey.VALIDATION_CONSTAT_ETAT, WorkflowStateStatus.FINISHED, LOGIN_USER1);
-        
+
         // On vérifie que les étapes Validation bordereau et constat d'état avant numérisation sont bien passées
         validateCompletedState(workflowInstance, WorkflowStateKey.VALIDATION_BORDEREAU_CONSTAT_ETAT, WorkflowStateStatus.SKIPPED, SYSTEM_LOGIN);
         validateCompletedState(workflowInstance, WorkflowStateKey.CONSTAT_ETAT_AVANT_NUMERISATION, WorkflowStateStatus.SKIPPED, SYSTEM_LOGIN);
-        
+
         // En attente de numérisation doit être l'étape en cours
         validateStateIsWaitingNextCompleted(workflowInstance, WorkflowStateKey.NUMERISATION_EN_ATTENTE);
     }
-    
+
     /**
      * Test jusqu'à la livraison
      */
@@ -136,47 +141,47 @@ public class WorkflowServiceTest {
         final DocUnit doc = generateDummyDocUnit();
         final WorkflowModel model = generateModelOptionnal();
         final DocUnitWorkflow workflowInstance = service.initializeWorkflow(doc, model, null);
-        
+
         // on doit pouvoir valider la notice tt de suite (ert dec 2018)
         processState(workflowInstance, WorkflowStateKey.VALIDATION_NOTICES, generateDummyUser());
-        
+
         // Récupération de l'étape en cours (PENDING)
         validateStateIsPending(workflowInstance, WorkflowStateKey.VALIDATION_CONSTAT_ETAT);
-        
+
         // On valide les constats d'état (première étape obligatoire)
         processState(workflowInstance, WorkflowStateKey.VALIDATION_CONSTAT_ETAT, generateDummyUser());
-        
+
         // On vérifie que l'étape est bien terminée
         validateCompletedState(workflowInstance, WorkflowStateKey.VALIDATION_CONSTAT_ETAT, WorkflowStateStatus.FINISHED, LOGIN_USER1);
-        
+
         // On vérifie que les étapes Validation bordereau et constat d'état avant numérisation sont bien passées
         validateCompletedState(workflowInstance, WorkflowStateKey.VALIDATION_BORDEREAU_CONSTAT_ETAT, WorkflowStateStatus.SKIPPED, SYSTEM_LOGIN);
         validateCompletedState(workflowInstance, WorkflowStateKey.CONSTAT_ETAT_AVANT_NUMERISATION, WorkflowStateStatus.SKIPPED, SYSTEM_LOGIN);
-        
+
         // En attente de numérisation doit être une étape en attente d'autre étape
         validateStateIsWaitingNextCompleted(workflowInstance, WorkflowStateKey.NUMERISATION_EN_ATTENTE);
         // La livraison doit être l'étape en cours
         validateStateIsPending(workflowInstance, WorkflowStateKey.LIVRAISON_DOCUMENT_EN_COURS);
-        
+
         // On valide la livraison
         processState(workflowInstance, WorkflowStateKey.LIVRAISON_DOCUMENT_EN_COURS, generateDummyPrestataire());
         // On vérifie que l'étape est bien terminée
         validateCompletedState(workflowInstance, WorkflowStateKey.LIVRAISON_DOCUMENT_EN_COURS, WorkflowStateStatus.FINISHED, LOGIN_PRESTA);
         // On vérifie que l'étape de numérisation par ricochet est bien terminée
         validateCompletedState(workflowInstance, WorkflowStateKey.NUMERISATION_EN_ATTENTE, WorkflowStateStatus.FINISHED, SYSTEM_LOGIN);
-        
+
         // Contrôles automatiques doit être l'étape en cours
         validateStateIsPending(workflowInstance, WorkflowStateKey.CONTROLES_AUTOMATIQUES_EN_COURS);
-        
+
         // On valide l'étpe de contrôle
         processState(workflowInstance, WorkflowStateKey.CONTROLES_AUTOMATIQUES_EN_COURS, null);
         // On vérifie que l'étape est bien terminée
         validateCompletedState(workflowInstance, WorkflowStateKey.CONTROLES_AUTOMATIQUES_EN_COURS, WorkflowStateStatus.FINISHED, SYSTEM_LOGIN);
-        
+
         // Il doit y avoir une étape en cours : contrôle qualité (renommage est passée)
         validateStateIsPending(workflowInstance, WorkflowStateKey.CONTROLE_QUALITE_EN_COURS);
     }
-    
+
     /**
      * Vérification d'un enchaînement à partir de deux étapes
      */
@@ -193,25 +198,25 @@ public class WorkflowServiceTest {
         validateStateIsPending(workflowInstance, WorkflowStateKey.VALIDATION_CONSTAT_ETAT);
         validateStateIsPending(workflowInstance, WorkflowStateKey.GENERATION_BORDEREAU);
         validateStateIsPending(workflowInstance, WorkflowStateKey.VALIDATION_NOTICES);
-        
+
         // On va valider la génération du bordereau et vérifier que validation constat d'état est toujours en attente
         processState(workflowInstance, WorkflowStateKey.GENERATION_BORDEREAU, generateDummyUser());
-        
+
         // Il doit y avoir 2 étapes en attente
         assertEquals(2, workflowInstance.getCurrentStates().size());
-        // Ce doit être l'étape VALIDATION_CONSTAT_ETAT 
+        // Ce doit être l'étape VALIDATION_CONSTAT_ETAT
         validateStateIsPending(workflowInstance, WorkflowStateKey.VALIDATION_CONSTAT_ETAT);
-        
+
         // On va valider la suite et vérifier le passage à la nouvelle étape
         processState(workflowInstance, WorkflowStateKey.VALIDATION_CONSTAT_ETAT, generateDummyUser());
-        
+
         // Il doit y avoir 2 étapes en attente
         assertEquals(2, workflowInstance.getCurrentStates().size());
-        // Ce doit être l'étape VALIDATION_BORDEREAU_CONSTAT_ETAT  et VALIDATION_NOTICES
+        // Ce doit être l'étape VALIDATION_BORDEREAU_CONSTAT_ETAT et VALIDATION_NOTICES
         validateStateIsPending(workflowInstance, WorkflowStateKey.VALIDATION_BORDEREAU_CONSTAT_ETAT);
         validateStateIsPending(workflowInstance, WorkflowStateKey.VALIDATION_NOTICES);
     }
-    
+
     /**
      * Test d'annulation à partir d'un workflow complet
      */
@@ -220,6 +225,7 @@ public class WorkflowServiceTest {
         final WorkflowModel model = generateModelComplete();
         cancelWorkflow(model);
     }
+
     /**
      * Test d'annulation à partir d'un workflow avec des étapes optionnelles
      */
@@ -228,17 +234,17 @@ public class WorkflowServiceTest {
         final WorkflowModel model = generateModelOptionnal();
         cancelWorkflow(model);
     }
-    
+
     private void cancelWorkflow(final WorkflowModel model) {
         final DocUnit doc = generateDummyDocUnit();
         final DocUnitWorkflow workflowInstance = service.initializeWorkflow(doc, model, null);
         // Il y a 20 étapes en tout
         assertEquals(21, workflowInstance.getStates().size());
         validateStateIsPending(workflowInstance, WorkflowStateKey.VALIDATION_CONSTAT_ETAT);
-        
+
         // Annulation du workflow
         docUnitWorkflowService.endWorkflow(workflowInstance);
-        
+
         // On vérifie qu'aucune étape n'est en cours
         assertEquals(0, workflowInstance.getCurrentStates().size());
         // Vérification que l'étape de fin est terminée
@@ -248,7 +254,7 @@ public class WorkflowServiceTest {
         validateStateIsCanceled(workflowInstance, WorkflowStateKey.VALIDATION_CONSTAT_ETAT);
         validateStateIsCanceled(workflowInstance, WorkflowStateKey.PREVALIDATION_DOCUMENT);
     }
-    
+
     @Test
     public void isStateDone() {
         final DocUnit doc = generateDummyDocUnit();
@@ -259,7 +265,7 @@ public class WorkflowServiceTest {
         // Etat non franchi
         assertFalse(service.isStateDone(doc.getIdentifier(), WorkflowStateKey.VALIDATION_CONSTAT_ETAT));
         processState(workflowInstance, WorkflowStateKey.VALIDATION_CONSTAT_ETAT, generateDummyUser());
-        
+
         // Mise à jour du doc avec le workflow
         doc.setWorkflow(workflowInstance);
         assertTrue(service.isStateDone(doc.getIdentifier(), WorkflowStateKey.VALIDATION_CONSTAT_ETAT));
@@ -267,6 +273,7 @@ public class WorkflowServiceTest {
 
     /**
      * Vérification de la bonne complétion d'une tâche
+     *
      * @param workflow
      * @param key
      * @param status
@@ -282,45 +289,50 @@ public class WorkflowServiceTest {
         assertNotNull(completedState.getEndDate());
         assertEquals(status, completedState.getStatus());
     }
-    
+
     /**
      * Vérification que l'étape est en cours
+     *
      * @param workflow
      * @param key
      */
     private void validateStateIsPending(final DocUnitWorkflow workflow, final WorkflowStateKey key) {
         checkStepState(workflow, key, WorkflowStateStatus.PENDING);
     }
-    
+
     /**
      * Vérification que l'étape est en attente
+     *
      * @param workflow
      * @param key
      */
     private void validateStateIsWaiting(final DocUnitWorkflow workflow, final WorkflowStateKey key) {
         checkStepState(workflow, key, WorkflowStateStatus.WAITING);
     }
-    
+
     /**
      * Vérification que l'étape est annulée
+     *
      * @param workflow
      * @param key
      */
     private void validateStateIsCanceled(final DocUnitWorkflow workflow, final WorkflowStateKey key) {
         checkStepStateEndedWithStatus(workflow, key, WorkflowStateStatus.CANCELED);
     }
-    
+
     /**
      * Vérification que l'étape s'est terminée
+     *
      * @param workflow
      * @param key
      */
     private void validateStateIsFinished(final DocUnitWorkflow workflow, final WorkflowStateKey key) {
         checkStepStateEndedWithStatus(workflow, key, WorkflowStateStatus.FINISHED);
     }
-    
+
     /**
      * Vérification que l'étape de numéristation est en attente passive
+     *
      * @param workflow
      * @param key
      */
@@ -330,9 +342,10 @@ public class WorkflowServiceTest {
         assertNull(state.getEndDate());
         assertEquals(WorkflowStateStatus.WAITING_NEXT_COMPLETED, state.getStatus());
     }
-    
+
     /**
      * Vérification de l'étape (en cours)
+     *
      * @param workflow
      * @param key
      * @param status
@@ -343,34 +356,33 @@ public class WorkflowServiceTest {
         assertNull(state.getEndDate());
         assertEquals(status, state.getStatus());
     }
-    
+
     /**
      * Vérification du déroulement d'une étape
+     *
      * @param workflow
      * @param key
      * @param status
      */
     private void checkStepStateEndedWithStatus(final DocUnitWorkflow workflow, final WorkflowStateKey key, final WorkflowStateStatus status) {
-        final List<DocUnitState> states = workflow.getStates().stream()
-                .filter(step -> key.equals(step.getKey()))
-                .collect(Collectors.toList());
+        final List<DocUnitState> states = workflow.getStates().stream().filter(step -> key.equals(step.getKey())).collect(Collectors.toList());
         states.forEach(state -> {
             assertNotNull(state.getStartDate());
             assertNotNull(state.getEndDate());
             assertEquals(status, state.getStatus());
         });
     }
-    
+
     /**
      * Réalisation de la tâche
-     * 
+     *
      * @param workflow
      * @param key
      * @param user
      */
     private void processState(final DocUnitWorkflow workflow, final WorkflowStateKey key, final User user) {
         final DocUnitState state = workflow.getFutureOrRunningByKey(key);
-        if(state == null) {
+        if (state == null) {
             fail("Unable to process : " + key);
         }
         state.process(user);
@@ -378,6 +390,7 @@ public class WorkflowServiceTest {
 
     /**
      * Génère un workflow avec le minimum d'étape possible
+     *
      * @return
      */
     private WorkflowModel generateModelOptionnal() {
@@ -405,9 +418,10 @@ public class WorkflowServiceTest {
         model.addModelState(generateModelState(model, WorkflowStateKey.CLOTURE_DOCUMENT, false));
         return model;
     }
-    
+
     /**
      * Génère un workflow avec le maximum d'étape possible
+     *
      * @return
      */
     private WorkflowModel generateModelComplete() {
@@ -438,6 +452,7 @@ public class WorkflowServiceTest {
 
     /**
      * Génère un modèle d'étape
+     *
      * @param model
      * @param key
      * @param toSkip
@@ -446,7 +461,7 @@ public class WorkflowServiceTest {
     private WorkflowModelState generateModelState(final WorkflowModel model, final WorkflowStateKey key, final boolean toSkip) {
         final WorkflowModelState state = new WorkflowModelState();
         state.setKey(key);
-        if(toSkip) {
+        if (toSkip) {
             state.setType(WorkflowModelStateType.TO_SKIP);
         } else {
             state.setType(WorkflowModelStateType.REQUIRED);
@@ -454,9 +469,10 @@ public class WorkflowServiceTest {
         state.setModel(model);
         return state;
     }
-    
+
     /**
      * Génère une étape d'attente
+     *
      * @param model
      * @param key
      * @return
@@ -471,6 +487,7 @@ public class WorkflowServiceTest {
 
     /**
      * Génère une {@link DocUnit} de test
+     *
      * @return
      */
     private DocUnit generateDummyDocUnit() {
@@ -478,9 +495,10 @@ public class WorkflowServiceTest {
         doc.setIdentifier("id");
         return doc;
     }
-    
+
     /**
      * gènère un {@link User} de test
+     *
      * @return
      */
     private User generateDummyUser() {
@@ -488,9 +506,10 @@ public class WorkflowServiceTest {
         user.setLogin(LOGIN_USER1);
         return user;
     }
-    
+
     /**
      * génère un {@link User} de test de type prestataire
+     *
      * @return
      */
     private User generateDummyPrestataire() {

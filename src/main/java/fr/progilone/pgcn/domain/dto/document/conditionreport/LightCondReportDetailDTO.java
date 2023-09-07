@@ -5,13 +5,12 @@ import com.google.common.base.MoreObjects;
 public class LightCondReportDetailDTO {
 
     private String identifier;
-    
+
     private int nbViewTotal = 0;
     private Integer dim1;
     private Integer dim2;
     private Integer dim3;
     private String insurance;
-
 
     public String getIdentifier() {
         return identifier;
@@ -20,7 +19,6 @@ public class LightCondReportDetailDTO {
     public void setIdentifier(final String identifier) {
         this.identifier = identifier;
     }
-
 
     public int getNbViewTotal() {
         return nbViewTotal;

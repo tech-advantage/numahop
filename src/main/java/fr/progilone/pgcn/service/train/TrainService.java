@@ -1,5 +1,14 @@
 package fr.progilone.pgcn.service.train;
 
+import fr.progilone.pgcn.domain.document.DocUnit;
+import fr.progilone.pgcn.domain.document.PhysicalDocument;
+import fr.progilone.pgcn.domain.dto.train.SimpleTrainDTO;
+import fr.progilone.pgcn.domain.train.Train;
+import fr.progilone.pgcn.exception.PgcnTechnicalException;
+import fr.progilone.pgcn.repository.train.TrainRepository;
+import fr.progilone.pgcn.service.document.conditionreport.ConditionReportService;
+import fr.progilone.pgcn.service.es.EsTrainService;
+import jakarta.servlet.ServletOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Collections;
@@ -8,9 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import javax.servlet.ServletOutputStream;
-
 import org.apache.commons.collections4.IterableUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,15 +26,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import fr.progilone.pgcn.domain.document.DocUnit;
-import fr.progilone.pgcn.domain.document.PhysicalDocument;
-import fr.progilone.pgcn.domain.dto.train.SimpleTrainDTO;
-import fr.progilone.pgcn.domain.train.Train;
-import fr.progilone.pgcn.exception.PgcnTechnicalException;
-import fr.progilone.pgcn.repository.train.TrainRepository;
-import fr.progilone.pgcn.service.document.conditionreport.ConditionReportService;
-import fr.progilone.pgcn.service.es.EsTrainService;
-
 @Service
 public class TrainService {
 
@@ -37,9 +34,7 @@ public class TrainService {
     private final ConditionReportService conditionReportService;
 
     @Autowired
-    public TrainService(final EsTrainService esTrainService,
-                        final TrainRepository trainRepository,
-                        final ConditionReportService conditionReportService) {
+    public TrainService(final EsTrainService esTrainService, final TrainRepository trainRepository, final ConditionReportService conditionReportService) {
         this.esTrainService = esTrainService;
         this.trainRepository = trainRepository;
         this.conditionReportService = conditionReportService;
@@ -47,15 +42,6 @@ public class TrainService {
 
     /**
      * Recherche de trains
-     *
-     * @param search
-     * @param projects
-     * @param active
-     * @param trainStatuses
-     * @param libraries
-     * @param page
-     * @param size
-     * @return
      */
     @Transactional(readOnly = true)
     public Page<SimpleTrainDTO> search(final String search,
@@ -71,7 +57,7 @@ public class TrainService {
                                        final Integer page,
                                        final Integer size) {
 
-        final Pageable pageRequest = new PageRequest(page, size);
+        final Pageable pageRequest = PageRequest.of(page, size);
         List<Train.TrainStatus> statuses = null;
         if (trainStatuses != null) {
             statuses = trainStatuses.stream().map(Train.TrainStatus::valueOf).collect(Collectors.toList());
@@ -88,7 +74,7 @@ public class TrainService {
                                                           docNumber,
                                                           pageRequest);
         final List<SimpleTrainDTO> trainDTOs = trains.getContent().stream().map(this::mapToSimpleTrainDTO).collect(Collectors.toList());
-        return new PageImpl<>(trainDTOs, new PageRequest(trains.getNumber(), trains.getSize(), trains.getSort()), trains.getTotalElements());
+        return new PageImpl<>(trainDTOs, PageRequest.of(trains.getNumber(), trains.getSize(), trains.getSort()), trains.getTotalElements());
     }
 
     @Transactional(readOnly = true)
@@ -107,12 +93,7 @@ public class TrainService {
     }
 
     private SimpleTrainDTO mapToSimpleTrainDTO(final Train train) {
-        return new SimpleTrainDTO(train.getIdentifier(),
-                                  train.getLabel(),
-                                  train.getDescription(),
-                                  train.getStatus(),
-                                  train.getProviderSendingDate(),
-                                  train.getReturnDate());
+        return new SimpleTrainDTO(train.getIdentifier(), train.getLabel(), train.getDescription(), train.getStatus(), train.getProviderSendingDate(), train.getReturnDate());
     }
 
     @Transactional(readOnly = true)
@@ -124,7 +105,7 @@ public class TrainService {
     public List<Train> findAllByActive(final boolean active) {
         return trainRepository.findAllByActive(active);
     }
-    
+
     @Transactional(readOnly = true)
     public List<Train> findAll() {
         return trainRepository.findAll();
@@ -137,9 +118,8 @@ public class TrainService {
 
     @Transactional
     public void delete(final String id) {
-        final Train train = trainRepository.findOne(id);
-        trainRepository.delete(id);
-        esTrainService.deleteAsync(train);
+        trainRepository.deleteById(id);
+        esTrainService.deleteAsync(id);
     }
 
     @Transactional(readOnly = true)
@@ -152,7 +132,7 @@ public class TrainService {
         if (IterableUtils.isEmpty(identifiers)) {
             return Collections.emptyList();
         }
-        return trainRepository.findAll(identifiers);
+        return trainRepository.findAllById(identifiers);
     }
 
     @Transactional(readOnly = true)
@@ -163,8 +143,6 @@ public class TrainService {
     /**
      * Recherche les lots par bibliothèque, groupés par statut
      *
-     * @param libraries
-     * @param projects
      * @return liste de map avec 2 clés: statut et décompte
      */
     @Transactional(readOnly = true)

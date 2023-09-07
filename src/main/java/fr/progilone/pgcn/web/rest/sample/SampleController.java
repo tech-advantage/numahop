@@ -2,8 +2,10 @@ package fr.progilone.pgcn.web.rest.sample;
 
 import static fr.progilone.pgcn.web.rest.delivery.security.AuthorizationConstants.DEL_HAB0;
 
-import javax.annotation.security.RolesAllowed;
-
+import com.codahale.metrics.annotation.Timed;
+import fr.progilone.pgcn.domain.dto.sample.SampleDTO;
+import fr.progilone.pgcn.service.sample.SampleService;
+import jakarta.annotation.security.RolesAllowed;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -12,17 +14,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.codahale.metrics.annotation.Timed;
-
-import fr.progilone.pgcn.domain.dto.sample.SampleDTO;
-import fr.progilone.pgcn.service.sample.SampleService;
-
 @RestController
 @RequestMapping(value = "/api/rest/sample")
 public class SampleController {
-    
+
     private final SampleService sampleService;
-    
+
     public SampleController(final SampleService sampleService) {
         this.sampleService = sampleService;
     }
@@ -35,5 +32,5 @@ public class SampleController {
         final SampleDTO sample = sampleService.getOne(id);
         return new ResponseEntity<>(sample, HttpStatus.OK);
     }
-    
+
 }

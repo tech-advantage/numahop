@@ -1,13 +1,9 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('UserCtrl', UserCtrl);
+    angular.module('numaHopApp.controller').controller('UserCtrl', UserCtrl);
 
-    function UserCtrl($location, $scope, $timeout, $q, $routeParams,
-        UserSrvc, gettextCatalog, HistorySrvc, AuthenticationSharedService, USER_ROLES,
-        StringTools, NumahopStorageService, NumaHopInitializationSrvc) {
-
+    function UserCtrl($location, $scope, $timeout, $q, $routeParams, UserSrvc, gettextCatalog, HistorySrvc, AuthenticationSharedService, USER_ROLES, StringTools, NumahopStorageService, NumaHopInitializationSrvc) {
         $scope.applyFilter = applyFilter;
         $scope.clearSelection = clearSelection;
         $scope.create = create;
@@ -24,33 +20,34 @@
         $scope.selectedIndex = null;
         $scope.selectedInNew = false;
 
-        $scope.userInclude = "scripts/app/user/userEdit.html";
+        $scope.userInclude = 'scripts/app/user/userEdit.html';
         $scope.user = null;
 
-        var FILTER_STORAGE_SERVICE_KEY = "users";
+        var FILTER_STORAGE_SERVICE_KEY = 'users';
 
         $scope.filters = {
             libraries: [],
-            available: false
+            available: false,
         };
         $scope.listFilters = {
             initial_filter: true,
             inactive_filter: true,
             library_filter: true,
             category_filter: true,
-            role_filter: true
+            role_filter: true,
         };
         $scope.filterLabels = {
-            inactive: "Voir les utilisateurs inactifs"
+            inactive: 'Voir les utilisateurs inactifs',
         };
 
         /**
          * Liste des options pour les listes déroulantes
          */
         $scope.options = {
-            categories: [{ identifier: "PROVIDER", label: gettextCatalog.getString("Prestataire") },
-            { identifier: "OTHER", label: gettextCatalog.getString("Autre") }
-            ]
+            categories: [
+                { identifier: 'PROVIDER', label: gettextCatalog.getString('Prestataire') },
+                { identifier: 'OTHER', label: gettextCatalog.getString('Autre') },
+            ],
         };
 
         $scope.pagination = {
@@ -58,29 +55,26 @@
             totalItems: 0,
             busy: false,
             last: false,
-            page: 0
+            page: 0,
         };
         $scope.newUsers = []; // liste des usagers récemment créés
 
         init();
 
-
         /** Initialisation */
         function init() {
-            if(AuthenticationSharedService.isAuthorized(USER_ROLES.USER_HAB0)){
-                HistorySrvc.add(gettextCatalog.getString("Utilisateurs"));
+            if (AuthenticationSharedService.isAuthorized(USER_ROLES.USER_HAB0)) {
+                HistorySrvc.add(gettextCatalog.getString('Utilisateurs'));
                 reinitFilters(false);
                 loadOptionsAndFilters();
 
-                $scope.$on("$routeUpdate",
-                    function ($currentRoute, $previousRoute) {
-                        $timeout(function () {
-                            $scope.userInclude = null;
-                            $scope.$apply();
-                            $scope.userInclude = "scripts/app/user/userEdit.html";
-                        });
-                    }
-                );
+                $scope.$on('$routeUpdate', function ($currentRoute, $previousRoute) {
+                    $timeout(function () {
+                        $scope.userInclude = null;
+                        $scope.$apply();
+                        $scope.userInclude = 'scripts/app/user/userEdit.html';
+                    });
+                });
             }
         }
 
@@ -99,13 +93,12 @@
         /** Options *****************************************************/
         /****************************************************************/
         function loadOptionsAndFilters() {
-            $q.all([NumaHopInitializationSrvc.loadRoles(), NumaHopInitializationSrvc.loadLibraries()])
-                .then(function (data) {
-                    $scope.options.roles = _.sortBy(data[0], "label");
-                    $scope.options.libraries = _.sortBy(data[1], "name");
-                    handleRedirect();
-                    nextPage();
-                });
+            $q.all([NumaHopInitializationSrvc.loadRoles(), NumaHopInitializationSrvc.loadLibraries()]).then(function (data) {
+                $scope.options.roles = _.sortBy(data[0], 'label');
+                $scope.options.libraries = _.sortBy(data[1], 'name');
+                handleRedirect();
+                nextPage();
+            });
         }
 
         // CRUD
@@ -114,7 +107,7 @@
                 $scope.user._selected = false;
                 $scope.user = null;
             }
-            $location.path("/user/user").search({ id: null, new: true });
+            $location.path('/user/user').search({ id: null, new: true });
         }
         function edit(user, index, selectedInNew) {
             clearSelection();
@@ -129,7 +122,7 @@
                 search = { id: user.identifier };
             }
 
-            $location.path("/user/user").search(search);
+            $location.path('/user/user').search(search);
         }
 
         function filterUsers() {
@@ -137,27 +130,27 @@
 
             var searchParams = {
                 page: $scope.pagination.page,
-                search: $scope.filterWith || "",
-                active: !$scope.filters.inactive
+                search: $scope.filterWith || '',
+                active: !$scope.filters.inactive,
             };
 
             if ($scope.filters.initiale) {
-                searchParams["initiale"] = $scope.filters.initiale;
+                searchParams['initiale'] = $scope.filters.initiale;
             }
 
             if ($scope.filters.categories) {
-                var categoriesIds = _.pluck($scope.filters.categories, "identifier");
-                searchParams["categories"] = categoriesIds;
+                var categoriesIds = _.pluck($scope.filters.categories, 'identifier');
+                searchParams['categories'] = categoriesIds;
             }
 
             if ($scope.filters.libraries) {
-                var librariesIds = _.pluck($scope.filters.libraries, "identifier");
-                searchParams["libraries"] = librariesIds;
+                var librariesIds = _.pluck($scope.filters.libraries, 'identifier');
+                searchParams['libraries'] = librariesIds;
             }
 
             if ($scope.filters.roles) {
-                var rolesIds = _.pluck($scope.filters.roles, "identifier");
-                searchParams["roles"] = rolesIds;
+                var rolesIds = _.pluck($scope.filters.roles, 'identifier');
+                searchParams['roles'] = rolesIds;
             }
 
             return UserSrvc.search(searchParams).$promise;
@@ -173,7 +166,7 @@
             doFilter();
         }
         function applyFilter(filterWith, event) {
-            if (event.type === "keypress" && event.keyCode === 13) {
+            if (event.type === 'keypress' && event.keyCode === 13) {
                 doFilter();
             }
         }
@@ -197,8 +190,7 @@
                         } else {
                             $scope.pagination.items.push(value.content[i]);
                         }
-                    }
-                    else {
+                    } else {
                         // On ne compte pas 2 fois les nouvelles configurations rechargées
                         $scope.pagination.totalItems--;
                     }
@@ -240,7 +232,7 @@
                 categories: [],
                 libraries: [],
                 roles: [],
-                inactive: false
+                inactive: false,
             };
             if (reload) {
                 doFilter();
@@ -249,7 +241,9 @@
 
         // liste
         function nextPage() {
-            if ($scope.pagination.busy || $scope.pagination.last) { return; }
+            if ($scope.pagination.busy || $scope.pagination.last) {
+                return;
+            }
             $scope.pagination.busy = true;
 
             filterUsers().then(function (value, responseHeaders) {
@@ -261,13 +255,12 @@
             });
         }
         function clearSelection() {
-            _.union($scope.pagination.items, $scope.newUsers)
-                .forEach(function (elt, i) {
-                    elt._selected = false;
-                });
+            _.union($scope.pagination.items, $scope.newUsers).forEach(function (elt, i) {
+                elt._selected = false;
+            });
         }
         function getFirstLetter(user) {
-            return StringTools.getFirstLetter(user.surname, "OTHER");
+            return StringTools.getFirstLetter(user.surname, 'OTHER');
         }
         function moveUp() {
             var index;

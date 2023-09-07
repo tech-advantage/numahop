@@ -1,11 +1,10 @@
 package fr.progilone.pgcn.repository.lot.helper;
 
 import fr.progilone.pgcn.domain.lot.Lot;
-import org.apache.commons.collections4.CollectionUtils;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import org.apache.commons.collections4.CollectionUtils;
 
 public class LotSearchBuilder {
 
@@ -121,6 +120,7 @@ public class LotSearchBuilder {
     }
 
     private static <T> Optional<List<T>> ofEmptiable(final List<T> list) {
-        return CollectionUtils.isEmpty(list) ? Optional.empty() : Optional.of(list);
+        return CollectionUtils.isEmpty(list) ? Optional.empty()
+                                             : Optional.of(list);
     }
 }

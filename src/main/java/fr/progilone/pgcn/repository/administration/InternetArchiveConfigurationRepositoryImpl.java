@@ -1,30 +1,27 @@
 package fr.progilone.pgcn.repository.administration;
 
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import fr.progilone.pgcn.domain.administration.InternetArchiveConfiguration;
+import fr.progilone.pgcn.domain.administration.QInternetArchiveConfiguration;
 import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-import com.mysema.query.BooleanBuilder;
-import com.mysema.query.jpa.JPQLQuery;
-import com.mysema.query.jpa.impl.JPAQuery;
-import com.mysema.query.types.expr.BooleanExpression;
-
-import fr.progilone.pgcn.domain.administration.InternetArchiveConfiguration;
-import fr.progilone.pgcn.domain.administration.QInternetArchiveConfiguration;
-
 public class InternetArchiveConfigurationRepositoryImpl implements InternetArchiveConfigurationRepositoryCustom {
 
-    @PersistenceContext
-    private EntityManager em;
+    private final JPAQueryFactory queryFactory;
+
+    public InternetArchiveConfigurationRepositoryImpl(final JPAQueryFactory queryFactory) {
+        this.queryFactory = queryFactory;
+    }
 
     @Override
-    public Page<InternetArchiveConfiguration> search(String search, List<String> libraries, Pageable pageable) {
+    public Page<InternetArchiveConfiguration> search(final String search, final List<String> libraries, final Pageable pageable) {
 
         final QInternetArchiveConfiguration configuration = QInternetArchiveConfiguration.internetArchiveConfiguration;
 
@@ -39,25 +36,15 @@ public class InternetArchiveConfigurationRepositoryImpl implements InternetArchi
             builder.and(libraryFilter);
         }
 
-        JPQLQuery baseQuery = new JPAQuery(em);
-        JPQLQuery countQuery = new JPAQuery(em);
+        final JPAQuery<InternetArchiveConfiguration> baseQuery = queryFactory.selectDistinct(configuration).from(configuration).where(builder);
+
+        final long total = baseQuery.clone().select(configuration.identifier.countDistinct()).fetchOne();
 
         if (pageable != null) {
-            baseQuery.offset(pageable.getOffset())
-                     .limit(pageable.getPageSize());
+            baseQuery.offset(pageable.getOffset()).limit(pageable.getPageSize());
         }
 
-        final List<String> librariesIdentifiers = countQuery.from(configuration)
-                                                            .leftJoin(configuration.library)
-                                                            .groupBy(configuration.identifier)
-                                                            .where(builder.getValue()).distinct().list(configuration.identifier);
-        final long total = librariesIdentifiers.size();
-
-        List<InternetArchiveConfiguration> result = baseQuery.from(configuration)
-                                                 .leftJoin(configuration.library).fetch()
-                                                 .where(builder.getValue())
-                                                 .orderBy(configuration.label.asc())
-                                                 .distinct().list(configuration);
+        final List<InternetArchiveConfiguration> result = baseQuery.leftJoin(configuration.library).fetchJoin().orderBy(configuration.label.asc()).fetch();
 
         return new PageImpl<>(result, pageable, total);
     }

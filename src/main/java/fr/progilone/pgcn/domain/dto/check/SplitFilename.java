@@ -1,22 +1,20 @@
 package fr.progilone.pgcn.domain.dto.check;
 
+import fr.progilone.pgcn.exception.PgcnTechnicalException;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-
-import fr.progilone.pgcn.exception.PgcnTechnicalException;
 
 /**
  * Découpage des noms de fichiers pour les contrôles
  *
  * @author jbrunet
- * Créé le 9 mars 2017
+ *         Créé le 9 mars 2017
  */
 public class SplitFilename {
 
@@ -27,12 +25,7 @@ public class SplitFilename {
     private final String piece;
     private final String directory;
 
-    public SplitFilename(final String library,
-                         final String prefix,
-                         final Integer number,
-                         final String extension,
-                         final String piece,
-                         final String directory) {
+    public SplitFilename(final String library, final String prefix, final Integer number, final String extension, final String piece, final String directory) {
         this.library = library;
         this.prefix = prefix;
         this.number = number;
@@ -73,8 +66,11 @@ public class SplitFilename {
      * Sépare une chaîne de type BIBLIOTHEQUE_RAD1_RAD2_RADN_315.jpg
      * en un SplitFilename
      *
-     * <p>Ex : sc_002156_04564_0646_view_001_L_M.jpg</p>
-     * <p><b>result : </b>
+     * <p>
+     * Ex : sc_002156_04564_0646_view_001_L_M.jpg
+     * </p>
+     * <p>
+     * <b>result : </b>
      * <ul>
      * <li>library : sc</li>
      * <li>prefix : 002156_04564_0646_view</li>
@@ -85,7 +81,7 @@ public class SplitFilename {
      *
      * @param filename
      * @param splitNames
-     *         : map remplie sous la forme filename => SplitFilename
+     *            : map remplie sous la forme filename => SplitFilename
      * @return
      */
     public static SplitFilename split(final String filename,
@@ -128,13 +124,13 @@ public class SplitFilename {
         // check separator
         final String seqSep = Pattern.quote(seqSeparator);
         final String[] splitName = rebuildedName.toString().split(seqSep);
-        final int minNbParts = bibPrefixMandatory ?
-                               isPdfDelivery ? 2 // Prefix de bibliothèque et livraison pdf -> prefix_nom.pdf
-                                             : isJustOneEstampe ? 2 // Prefix de bibliothèque et livraison estampe -> prefix_nom.tif
-                                                                : 3 // Prefix de bibliothèque -> prefix_nom_sequence.tif
+        final int minNbParts = bibPrefixMandatory ? isPdfDelivery ? 2 // Prefix de bibliothèque et livraison pdf -> prefix_nom.pdf
+                                                                  : isJustOneEstampe ? 2 // Prefix de bibliothèque et livraison estampe ->
+                                                                                         // prefix_nom.tif
+                                                                  : 3 // Prefix de bibliothèque -> prefix_nom_sequence.tif
                                                   : isPdfDelivery ? 1  // Pas de prefix de bibliothèque et livraison pdf-> nom.pdf
-                                                                  : isJustOneEstampe ? 1 // Pas de prefix de bibliothèque et livraison estampe -> nom.tif
-                                                                                     : 2; // Pas de prefix de bibliothèque -> nom_sequence.tif
+                                                  : isJustOneEstampe ? 1 // Pas de prefix de bibliothèque et livraison estampe -> nom.tif
+                                                  : 2; // Pas de prefix de bibliothèque -> nom_sequence.tif
         if (splitName.length < minNbParts) {
             splitNames.put(filename, Optional.empty());
             throw new PgcnTechnicalException("[Livraison] Mauvais format de nom de fichier : " + filename);
@@ -169,12 +165,7 @@ public class SplitFilename {
             }
         }
 
-        final SplitFilename splitFilename = new SplitFilename(library,
-                                                              prefix,
-                                                              number,
-                                                              nameAndExtension[nameAndExtension.length - 1],
-                                                              prefix,
-                                                              prefixDirectory);
+        final SplitFilename splitFilename = new SplitFilename(library, prefix, number, nameAndExtension[nameAndExtension.length - 1], prefix, prefixDirectory);
         splitNames.put(filename, Optional.of(splitFilename));
         return splitFilename;
     }

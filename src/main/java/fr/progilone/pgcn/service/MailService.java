@@ -1,21 +1,20 @@
 package fr.progilone.pgcn.service;
 
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.stereotype.Service;
-
-import javax.inject.Inject;
-import javax.mail.internet.MimeMessage;
-import javax.mail.util.ByteArrayDataSource;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.util.ByteArrayDataSource;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.stereotype.Service;
 
 /**
  * Service for sending e-mails.
@@ -25,7 +24,7 @@ public class MailService {
 
     private static final Logger LOG = LoggerFactory.getLogger(MailService.class);
 
-    @Inject
+    @Autowired
     private JavaMailSenderImpl javaMailSender;
 
     @Value("${spring.mail.activated}")
@@ -34,12 +33,7 @@ public class MailService {
     @Value("${spring.mail.from}")
     private String defaultFrom;
 
-    public boolean sendEmail(final String from,
-                             final String to[],
-                             final String subject,
-                             final String content,
-                             final boolean isMultipart,
-                             final boolean isHtml) {
+    public boolean sendEmail(final String from, final String to[], final String subject, final String content, final boolean isMultipart, final boolean isHtml) {
         return sendEmail(from, to, null, subject, content, null, null, null, isMultipart, isHtml);
     }
 
@@ -89,7 +83,8 @@ public class MailService {
                   isMultipart,
                   isHtml,
                   from,
-                  to.length > 0 ? to[0] : "",
+                  to.length > 0 ? to[0]
+                                : "",
                   subject);
         if (activated) {
             // Prepare message using a Spring helper
@@ -100,7 +95,8 @@ public class MailService {
                 if (StringUtils.isNotEmpty(cc)) {
                     message.setCc(cc);
                 }
-                message.setFrom(StringUtils.isNotBlank(from) ? from : defaultFrom);
+                message.setFrom(StringUtils.isNotBlank(from) ? from
+                                                             : defaultFrom);
                 message.setSubject(subject);
                 message.setText(content, isHtml);
                 // Handle attachment if present
@@ -109,7 +105,9 @@ public class MailService {
                     message.addAttachment(attachmentName, new ByteArrayDataSource(attachment, contentType));
                 }
                 javaMailSender.send(mimeMessage);
-                LOG.debug("Sent e-mail to User '{}'", to.length > 0 ? to[0] : "");
+                LOG.debug("Sent e-mail to User '{}'",
+                          to.length > 0 ? to[0]
+                                        : "");
                 return true;
             } catch (final Exception e) {
                 LOG.error("E-mail could not be sent, exception is: {}", e.getMessage(), e);

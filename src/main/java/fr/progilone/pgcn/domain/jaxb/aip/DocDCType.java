@@ -5,23 +5,23 @@
 // Généré le : 2017.01.03 à 11:16:35 AM CET
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.aip;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
-
 
 /**
  * Métadonnées descriptives du document sur une base Dublin Core
  *
- * <p>Classe Java pour DocDCType complex type.
+ * <p>
+ * Classe Java pour DocDCType complex type.
  *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="DocDCType"&gt;
@@ -52,23 +52,22 @@ import javax.xml.bind.annotation.XmlType;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "DocDCType", propOrder = {
-    "title",
-    "creator",
-    "subject",
-    "description",
-    "publisher",
-    "contributor",
-    "date",
-    "type",
-    "format",
-    "identifier",
-    "source",
-    "language",
-    "relation",
-    "coverage",
-    "rights"
-})
+@XmlType(name = "DocDCType",
+         propOrder = {"title",
+                      "creator",
+                      "subject",
+                      "description",
+                      "publisher",
+                      "contributor",
+                      "date",
+                      "type",
+                      "format",
+                      "identifier",
+                      "source",
+                      "language",
+                      "relation",
+                      "coverage",
+                      "rights"})
 public class DocDCType {
 
     @XmlElement(required = true)
@@ -109,8 +108,9 @@ public class DocDCType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getTitle().add(newItem);
+     * getTitle().add(newItem);
      * </pre>
      *
      *
@@ -138,8 +138,9 @@ public class DocDCType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getCreator().add(newItem);
+     * getCreator().add(newItem);
      * </pre>
      *
      *
@@ -167,8 +168,9 @@ public class DocDCType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getSubject().add(newItem);
+     * getSubject().add(newItem);
      * </pre>
      *
      *
@@ -196,8 +198,9 @@ public class DocDCType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getDescription().add(newItem);
+     * getDescription().add(newItem);
      * </pre>
      *
      *
@@ -225,8 +228,9 @@ public class DocDCType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getPublisher().add(newItem);
+     * getPublisher().add(newItem);
      * </pre>
      *
      *
@@ -254,8 +258,9 @@ public class DocDCType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getContributor().add(newItem);
+     * getContributor().add(newItem);
      * </pre>
      *
      *
@@ -276,8 +281,8 @@ public class DocDCType {
      * Obtient la valeur de la propriété date.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getDate() {
@@ -288,8 +293,8 @@ public class DocDCType {
      * Définit la valeur de la propriété date.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setDate(String value) {
@@ -307,8 +312,9 @@ public class DocDCType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getType().add(newItem);
+     * getType().add(newItem);
      * </pre>
      *
      *
@@ -336,8 +342,9 @@ public class DocDCType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getFormat().add(newItem);
+     * getFormat().add(newItem);
      * </pre>
      *
      *
@@ -358,8 +365,8 @@ public class DocDCType {
      * Obtient la valeur de la propriété identifier.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getIdentifier() {
@@ -370,8 +377,8 @@ public class DocDCType {
      * Définit la valeur de la propriété identifier.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setIdentifier(String value) {
@@ -389,8 +396,9 @@ public class DocDCType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getSource().add(newItem);
+     * getSource().add(newItem);
      * </pre>
      *
      *
@@ -418,8 +426,9 @@ public class DocDCType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getLanguage().add(newItem);
+     * getLanguage().add(newItem);
      * </pre>
      *
      *
@@ -447,8 +456,9 @@ public class DocDCType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getRelation().add(newItem);
+     * getRelation().add(newItem);
      * </pre>
      *
      *
@@ -476,8 +486,9 @@ public class DocDCType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getCoverage().add(newItem);
+     * getCoverage().add(newItem);
      * </pre>
      *
      *
@@ -505,8 +516,9 @@ public class DocDCType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getRights().add(newItem);
+     * getRights().add(newItem);
      * </pre>
      *
      *

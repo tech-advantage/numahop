@@ -1,50 +1,36 @@
 package fr.progilone.pgcn.repository.es;
 
-import fr.progilone.pgcn.domain.AbstractDomainObject;
+import co.elastic.clients.elasticsearch._types.aggregations.Aggregation;
+import co.elastic.clients.elasticsearch._types.query_dsl.Query;
+import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders;
+import co.elastic.clients.json.JsonData;
 import fr.progilone.pgcn.repository.es.helper.EsBoolOperator;
 import fr.progilone.pgcn.repository.es.helper.EsQueryBuilder;
+import fr.progilone.pgcn.repository.es.helper.EsQueryHelper;
 import fr.progilone.pgcn.repository.es.helper.EsSearchOperation;
-import fr.progilone.pgcn.repository.es.helper.SearchResultMapper;
+import fr.progilone.pgcn.repository.es.helper.SearchResultPage;
 import fr.progilone.pgcn.service.util.DateUtils;
-import org.apache.commons.collections4.CollectionUtils;
-import org.elasticsearch.action.bulk.BulkItemResponse;
-import org.elasticsearch.action.bulk.BulkRequestBuilder;
-import org.elasticsearch.action.bulk.BulkResponse;
-import org.elasticsearch.action.suggest.SuggestResponse;
-import org.elasticsearch.client.Client;
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
-import org.elasticsearch.search.highlight.HighlightBuilder;
-import org.elasticsearch.search.suggest.Suggest;
-import org.elasticsearch.search.suggest.SuggestBuilder.SuggestionBuilder;
-import org.elasticsearch.search.suggest.completion.CompletionSuggestion;
-import org.elasticsearch.search.suggest.completion.CompletionSuggestionFuzzyBuilder;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.elasticsearch.ElasticsearchException;
-import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
-import org.springframework.data.elasticsearch.core.EntityMapper;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
-import org.springframework.data.elasticsearch.core.query.SearchQuery;
-import org.springframework.data.elasticsearch.repository.support.ElasticsearchEntityInformation;
-import org.springframework.data.elasticsearch.repository.support.MappingElasticsearchEntityInformation;
-
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.apache.commons.collections4.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.elasticsearch.client.elc.NativeQuery;
+import org.springframework.data.elasticsearch.client.elc.NativeQueryBuilder;
+import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.SearchOperations;
+import org.springframework.data.elasticsearch.core.query.HighlightQuery;
 
-import static fr.progilone.pgcn.service.es.EsConstant.*;
+public abstract class AbstractEsRepository<T> {
 
-public abstract class AbstractEsRepository<T extends AbstractDomainObject> {
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractEsRepository.class);
 
     protected static final String FIELD_SUGG_TEXT = "text";
     protected static final String FIELD_SUGG_PAYLOAD = "payload";
@@ -62,15 +48,11 @@ public abstract class AbstractEsRepository<T extends AbstractDomainObject> {
     protected static final String INDEX_TRAIN = "train";
 
     protected final Class<T> clazz;
-    protected final ElasticsearchEntityInformation<T, String> entityInformation;
-    protected final ElasticsearchTemplate elasticsearchTemplate;
-    protected final EntityMapper entityMapper;
+    protected final SearchOperations searchOperations;
 
-    public AbstractEsRepository(final Class<T> clazz, final ElasticsearchTemplate elasticsearchTemplate, final EntityMapper entityMapper) {
+    public AbstractEsRepository(final Class<T> clazz, final SearchOperations searchOperations) {
         this.clazz = clazz;
-        this.entityInformation = new MappingElasticsearchEntityInformation<>(elasticsearchTemplate.getPersistentEntityFor(clazz));
-        this.elasticsearchTemplate = elasticsearchTemplate;
-        this.entityMapper = entityMapper;
+        this.searchOperations = searchOperations;
     }
 
     /**
@@ -80,7 +62,7 @@ public abstract class AbstractEsRepository<T extends AbstractDomainObject> {
      * @param fuzzy
      * @return
      */
-    protected abstract QueryBuilder getSearchQueryBuilder(final EsSearchOperation searchOp, final boolean fuzzy);
+    protected abstract Query getSearchQueryBuilder(final EsSearchOperation searchOp, final boolean fuzzy);
 
     /**
      * Requête de filtrage des résultats suivant les droits de l'utilisateur
@@ -88,7 +70,7 @@ public abstract class AbstractEsRepository<T extends AbstractDomainObject> {
      * @param libraries
      * @return
      */
-    protected abstract Optional<QueryBuilder> getLibraryQueryBuilder(final List<String> libraries);
+    protected abstract Optional<Query> getLibraryQueryBuilder(final List<String> libraries);
 
     /**
      * Requête de filtrage des résultats de recherche (sélection de facettes)
@@ -97,9 +79,9 @@ public abstract class AbstractEsRepository<T extends AbstractDomainObject> {
      * @param values
      * @return
      */
-    protected QueryBuilder getFilterQueryBuilder(final String field, final List<String> values) {
+    protected Query getFilterQueryBuilder(final String field, final List<String> values) {
         if (CollectionUtils.isNotEmpty(values)) {
-            return QueryBuilders.termsQuery(field, values.toArray(new String[0]));
+            return EsQueryHelper.getExactQueryBuilder(field, values);
         }
         return null;
     }
@@ -111,7 +93,7 @@ public abstract class AbstractEsRepository<T extends AbstractDomainObject> {
      * @param values
      * @return
      */
-    protected QueryBuilder getDateFilterQueryBuilder(final String field, final List<String> values) {
+    protected Query getDateFilterQueryBuilder(final String field, final List<String> values) {
         if (CollectionUtils.isNotEmpty(values)) {
             final EsQueryBuilder builder = new EsQueryBuilder();
 
@@ -122,7 +104,7 @@ public abstract class AbstractEsRepository<T extends AbstractDomainObject> {
                 }
                 final LocalDate to = from.plusDays(1);
 
-                return QueryBuilders.rangeQuery(field).gte(from.toString()).lt(to.toString());
+                return QueryBuilders.range(b -> b.field(field).gte(JsonData.of(from)).lt(JsonData.of(to)));
 
             }).filter(Objects::nonNull).forEach(builder::should);
 
@@ -136,8 +118,8 @@ public abstract class AbstractEsRepository<T extends AbstractDomainObject> {
      *
      * @return
      */
-    protected HighlightBuilder.Field[] getHighlightField() {
-        return new HighlightBuilder.Field[0];
+    protected HighlightQuery getHighlightField() {
+        return null;
     }
 
     /**
@@ -145,29 +127,21 @@ public abstract class AbstractEsRepository<T extends AbstractDomainObject> {
      *
      * @return
      */
-    protected List<AbstractAggregationBuilder> getAggregationBuilders() {
-        return Collections.emptyList();
+    protected Map<String, Aggregation> getAggregationBuilders() {
+        return Collections.emptyMap();
     }
 
     /**
      * Recherche d'entité.
      * La requête utilisée est celle renvoyée par getSearchQueryBuilder
-     *
-     * @param searches
-     * @param libraries
-     * @param fuzzy
-     * @param filters
-     * @param pageable
-     * @param facet
-     * @return
      */
-    public Page<T> search(final EsSearchOperation[] searches,
-                          final List<String> libraries,
-                          final boolean fuzzy,
-                          final EsSearchOperation[] filters,
-                          final PageRequest pageable,
-                          final boolean facet) {
-        final NativeSearchQueryBuilder builder = new NativeSearchQueryBuilder().withPageable(pageable);
+    public SearchResultPage<T> search(final EsSearchOperation[] searches,
+                                      final List<String> libraries,
+                                      final boolean fuzzy,
+                                      final EsSearchOperation[] filters,
+                                      final PageRequest pageable,
+                                      final boolean facet) {
+        final NativeQueryBuilder builder = new NativeQueryBuilder().withPageable(pageable);
 
         // Requête
         final EsQueryBuilder queryBuilder = new EsQueryBuilder();
@@ -188,123 +162,30 @@ public abstract class AbstractEsRepository<T extends AbstractDomainObject> {
         builder.withFilter(filterBuilder.build());
 
         // Highlight
-        final HighlightBuilder.Field[] highlightFields = getHighlightField();
-        for (final HighlightBuilder.Field field : highlightFields) {
-            field.numOfFragments(0).preTags("<span class=\"result-match\">").postTags("</span>");
+        final HighlightQuery highlightQuery = getHighlightField();
+        if (highlightQuery != null) {
+            builder.withHighlightQuery(highlightQuery);
         }
-        builder.withHighlightFields(highlightFields);
 
         // Facettes
         if (facet) {
-            getAggregationBuilders().forEach(builder::addAggregation);
+            getAggregationBuilders().entrySet().forEach(e -> builder.withAggregation(e.getKey(), e.getValue()));
+        }
+
+        final NativeQuery query = builder.build();
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("Query : {}", query.getQuery());
+            if (query.getAggregations() != null) {
+                LOG.trace("Aggregations : {}", query.getAggregations());
+            }
+            if (query.getHighlightQuery().isPresent()) {
+                LOG.trace("Highlight : {}", query.getHighlightQuery().get());
+            }
         }
 
         // Recherche
-        return elasticsearchTemplate.queryForPage(builder.build(), clazz, new SearchResultMapper(entityMapper));
-    }
-
-    /**
-     * Suggestions avec payload, et filtrage par contexte sur la bibliothèque
-     *
-     * @param text
-     * @param size
-     * @param libraries
-     * @return
-     */
-    public List<Map<String, Object>> suggest(final String text, final int size, final List<String> libraries) {
-        final SuggestionBuilder suggestionBuilder = new CompletionSuggestionFuzzyBuilder(SUGGEST_FIELD).text(text)
-                                                                                                       .size(size)
-                                                                                                       .field(SUGGEST_FIELD)
-                                                                                                       .addContextField(SUGGEST_CTX_LIBRARY,
-                                                                                                                        libraries);
-        final SuggestResponse response = elasticsearchTemplate.suggest(suggestionBuilder, clazz);
-
-        final Suggest.Suggestion<Suggest.Suggestion.Entry<Suggest.Suggestion.Entry.Option>> suggestions =
-            response.getSuggest().getSuggestion(SUGGEST_FIELD);
-        if (suggestions == null) {
-            return Collections.emptyList();
-        }
-        return suggestions.getEntries()
-                          .stream()
-                          .flatMap(e -> e.getOptions().stream())
-                          .map(option -> (CompletionSuggestion.Entry.Option) option)
-                          .map(option -> {
-                              final Map<String, Object> resultOption = new HashMap<>();
-                              resultOption.put(FIELD_SUGG_TEXT, option.getText().string());
-
-                              if (option.getPayload().length() > 0) {
-                                  resultOption.put(FIELD_SUGG_PAYLOAD, option.getPayloadAsMap());
-                              }
-                              return resultOption;
-                          })
-                          .collect(Collectors.toList());
-    }
-
-    /**
-     * Indexation des entités avec spécification de l'index
-     *
-     * @param index
-     * @param entities
-     */
-    public void index(final String index, final Collection<T> entities) {
-        if (entities.isEmpty()) {
-            return;
-        }
-        final Client client = elasticsearchTemplate.getClient();
-        final String type = entityInformation.getType();
-        final BulkRequestBuilder bulkRequest = client.prepareBulk();
-
-        // Indexation des entités mises à jour
-        for (final T entity : entities) {
-            try {
-                bulkRequest.add(client.prepareIndex(index, type, entity.getIdentifier()).setSource(entityMapper.mapToString(entity)));
-
-            } catch (IOException e) {
-                throw new ElasticsearchException("Échec de l'indexation de l'entité [id: " + entity.getIdentifier() + "]", e);
-            }
-        }
-        // Exécution de la requête
-        executeBulk(index, bulkRequest);
-    }
-
-    /**
-     * Recherche d'entités à partir de leurs identifiants
-     *
-     * @param identifiers
-     * @return
-     */
-    public List<T> findByIds(final List<String> identifiers) {
-        if (CollectionUtils.isEmpty(identifiers)) {
-            return Collections.emptyList();
-        }
-        final SearchQuery searchQuery = new NativeSearchQueryBuilder().withIds(identifiers).build();
-        return elasticsearchTemplate.multiGet(searchQuery, clazz);
-    }
-
-    /**
-     * Exécution de la requête bulk avec gestion des erreurs et rafraichissement de l'index
-     *
-     * @param index
-     * @param requestBuilder
-     */
-    protected void executeBulk(final String index, final BulkRequestBuilder requestBuilder) {
-        if (requestBuilder.numberOfActions() > 0) {
-            final BulkResponse response = requestBuilder.execute().actionGet();
-
-            // Gestion des erreurs
-            if (response.hasFailures()) {
-                Map<String, String> failedDocuments = new HashMap<>();
-
-                for (BulkItemResponse item : response.getItems()) {
-                    if (item.isFailed()) {
-                        failedDocuments.put(item.getId(), item.getFailureMessage());
-                    }
-                }
-                throw new ElasticsearchException("Échec de la requête bulk [" + failedDocuments + "]", failedDocuments);
-            }
-            // Refresh
-            elasticsearchTemplate.refresh(index);
-        }
+        final SearchHits<T> results = searchOperations.search(query, clazz);
+        return new SearchResultPage<>(results, pageable);
     }
 
     /**
@@ -327,7 +208,8 @@ public abstract class AbstractEsRepository<T extends AbstractDomainObject> {
             obj = defaultObj;
             field = index;
         }
-        return new String[] {obj, field};
+        return new String[] {obj,
+                             field};
     }
 
 }

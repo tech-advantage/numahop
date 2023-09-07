@@ -1,6 +1,8 @@
 package fr.progilone.pgcn.config;
 
 import groovy.lang.GroovyClassLoader;
+import java.util.List;
+import javax.script.ScriptEngine;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
 import org.codehaus.groovy.control.customizers.SecureASTCustomizer;
@@ -16,25 +18,20 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import javax.script.ScriptEngine;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 /**
  * Created by Sebastien on 23/11/2016.
  */
 @Configuration
 public class ScriptEngineConfiguration {
 
-    private static final Logger LOG = LoggerFactory.getLogger(MetricsConfiguration.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ScriptEngineConfiguration.class);
 
     @Bean(name = "groovy")
     public ScriptEngine getGroovyScriptEngine() {
         LOG.info("Initialisation du moteur de script...");
         // version pas sécurisée
-        //        final ScriptEngineManager factory = new ScriptEngineManager();
-        //        return factory.getEngineByName("groovy");
+        // final ScriptEngineManager factory = new ScriptEngineManager();
+        // return factory.getEngineByName("groovy");
 
         // version sécurisée (filtrage par listes blanches)
         final SecureASTCustomizer secure = new SecureASTCustomizer();
@@ -42,28 +39,40 @@ public class ScriptEngineConfiguration {
         secure.setMethodDefinitionAllowed(false);
         secure.setClosuresAllowed(true);
         // imports
-        secure.setImportsWhitelist(Collections.emptyList());
+        secure.setAllowedImports(List.of());
         // static imports
-        secure.setStaticImportsWhitelist(Collections.emptyList());
+        secure.setAllowedStaticImports(List.of());
         // star imports
-        secure.setStarImportsWhitelist(Collections.singletonList("org.marc4j.marc.*"));
+        secure.setAllowedStarImports(List.of("org.marc4j.marc.*"));
         // static star imports
-        secure.setStaticStarImportsWhitelist(Collections.emptyList());
+        secure.setAllowedStaticStarImports(List.of());
         // tokens
         // secure.setTokensWhitelist(Arrays.asList(Types.PLUS));
         // constant types
-        secure.setConstantTypesClassesWhiteList(Arrays.asList(Boolean.TYPE, Character.TYPE, Integer.TYPE, char[].class, int[].class,
-                                                              Boolean.class, Character.class, Object.class, String.class, String[].class,
-                                                              // Classes marc4j
-                                                              ControlField.class, DataField.class, Leader.class,
-                                                              Record.class, Subfield.class, VariableField.class));
+        secure.setAllowedConstantTypesClasses(List.of(Boolean.TYPE,
+                                                      Character.TYPE,
+                                                      Integer.TYPE,
+                                                      char[].class,
+                                                      int[].class,
+                                                      Boolean.class,
+                                                      Character.class,
+                                                      Object.class,
+                                                      String.class,
+                                                      String[].class,
+                                                      // Classes marc4j
+                                                      ControlField.class,
+                                                      DataField.class,
+                                                      Leader.class,
+                                                      Record.class,
+                                                      Subfield.class,
+                                                      VariableField.class));
         // receivers
-        secure.setReceiversClassesWhiteList(Arrays.asList(Object.class, List.class, String.class));
+        secure.setAllowedReceiversClasses(List.of(Object.class, List.class, String.class));
 
         final CompilerConfiguration config = new CompilerConfiguration();
         config.addCompilationCustomizers(new ImportCustomizer(), secure);
 
-        GroovyClassLoader classLoader = new GroovyClassLoader(Thread.currentThread().getContextClassLoader(), config);
+        final GroovyClassLoader classLoader = new GroovyClassLoader(Thread.currentThread().getContextClassLoader(), config);
         return new GroovyScriptEngineImpl(classLoader);
     }
 }

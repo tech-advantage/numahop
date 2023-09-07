@@ -35,6 +35,7 @@ public class PgcnValidationException extends PgcnException {
 
     @Override
     public String toString() {
-        return invalidObject + ": " + super.toString();
+        return invalidObject + ": "
+               + super.toString();
     }
 }

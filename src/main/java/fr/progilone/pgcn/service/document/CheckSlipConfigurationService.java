@@ -1,18 +1,16 @@
 package fr.progilone.pgcn.service.document;
 
+import fr.progilone.pgcn.domain.document.CheckSlipConfiguration;
+import fr.progilone.pgcn.domain.library.Library;
+import fr.progilone.pgcn.service.library.LibraryService;
 import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import fr.progilone.pgcn.domain.document.CheckSlipConfiguration;
-import fr.progilone.pgcn.domain.library.Library;
-import fr.progilone.pgcn.service.library.LibraryService;
-
 @Service
 public class CheckSlipConfigurationService {
-    
+
     private final LibraryService libraryService;
 
     @Autowired
@@ -27,7 +25,7 @@ public class CheckSlipConfigurationService {
             return Optional.empty();
         }
         CheckSlipConfiguration config = library.getCheckSlipConfiguration();
-        if(config == null) {
+        if (config == null) {
             config = getDefaultConfig();
             library.setCheckSlipConfiguration(config);
             config.setLibrary(library);
@@ -45,8 +43,7 @@ public class CheckSlipConfigurationService {
         libraryService.save(library);
         return checkSlipConfiguration;
     }
-    
-    
+
     private CheckSlipConfiguration getDefaultConfig() {
         final CheckSlipConfiguration config = new CheckSlipConfiguration();
         config.setPgcnId(true);
@@ -55,7 +52,7 @@ public class CheckSlipConfigurationService {
         config.setErrors(true);
         config.setNbPages(true);
         config.setNbPagesToBill(true);
-        
+
         return config;
     }
 

@@ -5,21 +5,21 @@
 // Généré le : 2017.08.25 à 03:15:17 PM CEST
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.mix;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
-
 
 /**
- * <p>Classe Java pour BasicDigitalObjectInformationType complex type.
+ * <p>
+ * Classe Java pour BasicDigitalObjectInformationType complex type.
  *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="BasicDigitalObjectInformationType">
@@ -100,15 +100,14 @@ import javax.xml.bind.annotation.XmlType;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "BasicDigitalObjectInformationType", propOrder = {
-    "objectIdentifier",
-    "fileSize",
-    "formatDesignation",
-    "formatRegistry",
-    "byteOrder",
-    "compression",
-    "fixity"
-})
+@XmlType(name = "BasicDigitalObjectInformationType",
+         propOrder = {"objectIdentifier",
+                      "fileSize",
+                      "formatDesignation",
+                      "formatRegistry",
+                      "byteOrder",
+                      "compression",
+                      "fixity"})
 public class BasicDigitalObjectInformationType {
 
     @XmlElement(name = "ObjectIdentifier")
@@ -135,8 +134,9 @@ public class BasicDigitalObjectInformationType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getObjectIdentifier().add(newItem);
+     * getObjectIdentifier().add(newItem);
      * </pre>
      *
      *
@@ -157,8 +157,8 @@ public class BasicDigitalObjectInformationType {
      * Obtient la valeur de la propriété fileSize.
      *
      * @return
-     *     possible object is
-     *     {@link NonNegativeIntegerType }
+     *         possible object is
+     *         {@link NonNegativeIntegerType }
      *
      */
     public NonNegativeIntegerType getFileSize() {
@@ -169,8 +169,8 @@ public class BasicDigitalObjectInformationType {
      * Définit la valeur de la propriété fileSize.
      *
      * @param value
-     *     allowed object is
-     *     {@link NonNegativeIntegerType }
+     *            allowed object is
+     *            {@link NonNegativeIntegerType }
      *
      */
     public void setFileSize(NonNegativeIntegerType value) {
@@ -181,8 +181,8 @@ public class BasicDigitalObjectInformationType {
      * Obtient la valeur de la propriété formatDesignation.
      *
      * @return
-     *     possible object is
-     *     {@link BasicDigitalObjectInformationType.FormatDesignation }
+     *         possible object is
+     *         {@link BasicDigitalObjectInformationType.FormatDesignation }
      *
      */
     public BasicDigitalObjectInformationType.FormatDesignation getFormatDesignation() {
@@ -193,8 +193,8 @@ public class BasicDigitalObjectInformationType {
      * Définit la valeur de la propriété formatDesignation.
      *
      * @param value
-     *     allowed object is
-     *     {@link BasicDigitalObjectInformationType.FormatDesignation }
+     *            allowed object is
+     *            {@link BasicDigitalObjectInformationType.FormatDesignation }
      *
      */
     public void setFormatDesignation(BasicDigitalObjectInformationType.FormatDesignation value) {
@@ -205,8 +205,8 @@ public class BasicDigitalObjectInformationType {
      * Obtient la valeur de la propriété formatRegistry.
      *
      * @return
-     *     possible object is
-     *     {@link BasicDigitalObjectInformationType.FormatRegistry }
+     *         possible object is
+     *         {@link BasicDigitalObjectInformationType.FormatRegistry }
      *
      */
     public BasicDigitalObjectInformationType.FormatRegistry getFormatRegistry() {
@@ -217,8 +217,8 @@ public class BasicDigitalObjectInformationType {
      * Définit la valeur de la propriété formatRegistry.
      *
      * @param value
-     *     allowed object is
-     *     {@link BasicDigitalObjectInformationType.FormatRegistry }
+     *            allowed object is
+     *            {@link BasicDigitalObjectInformationType.FormatRegistry }
      *
      */
     public void setFormatRegistry(BasicDigitalObjectInformationType.FormatRegistry value) {
@@ -229,8 +229,8 @@ public class BasicDigitalObjectInformationType {
      * Obtient la valeur de la propriété byteOrder.
      *
      * @return
-     *     possible object is
-     *     {@link TypeOfByteOrderType }
+     *         possible object is
+     *         {@link TypeOfByteOrderType }
      *
      */
     public TypeOfByteOrderType getByteOrder() {
@@ -241,8 +241,8 @@ public class BasicDigitalObjectInformationType {
      * Définit la valeur de la propriété byteOrder.
      *
      * @param value
-     *     allowed object is
-     *     {@link TypeOfByteOrderType }
+     *            allowed object is
+     *            {@link TypeOfByteOrderType }
      *
      */
     public void setByteOrder(TypeOfByteOrderType value) {
@@ -260,8 +260,9 @@ public class BasicDigitalObjectInformationType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getCompression().add(newItem);
+     * getCompression().add(newItem);
      * </pre>
      *
      *
@@ -289,8 +290,9 @@ public class BasicDigitalObjectInformationType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getFixity().add(newItem);
+     * getFixity().add(newItem);
      * </pre>
      *
      *
@@ -307,11 +309,12 @@ public class BasicDigitalObjectInformationType {
         return this.fixity;
     }
 
-
     /**
-     * <p>Classe Java pour anonymous complex type.
+     * <p>
+     * Classe Java pour anonymous complex type.
      *
-     * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+     * <p>
+     * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
      *
      * <pre>
      * &lt;complexType>
@@ -331,12 +334,11 @@ public class BasicDigitalObjectInformationType {
      *
      */
     @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "compressionScheme",
-        "compressionSchemeLocalList",
-        "compressionSchemeLocalValue",
-        "compressionRatio"
-    })
+    @XmlType(name = "",
+             propOrder = {"compressionScheme",
+                          "compressionSchemeLocalList",
+                          "compressionSchemeLocalValue",
+                          "compressionRatio"})
     public static class Compression {
 
         protected StringType compressionScheme;
@@ -348,8 +350,8 @@ public class BasicDigitalObjectInformationType {
          * Obtient la valeur de la propriété compressionScheme.
          *
          * @return
-         *     possible object is
-         *     {@link StringType }
+         *         possible object is
+         *         {@link StringType }
          *
          */
         public StringType getCompressionScheme() {
@@ -360,8 +362,8 @@ public class BasicDigitalObjectInformationType {
          * Définit la valeur de la propriété compressionScheme.
          *
          * @param value
-         *     allowed object is
-         *     {@link StringType }
+         *            allowed object is
+         *            {@link StringType }
          *
          */
         public void setCompressionScheme(StringType value) {
@@ -372,8 +374,8 @@ public class BasicDigitalObjectInformationType {
          * Obtient la valeur de la propriété compressionSchemeLocalList.
          *
          * @return
-         *     possible object is
-         *     {@link URIType }
+         *         possible object is
+         *         {@link URIType }
          *
          */
         public URIType getCompressionSchemeLocalList() {
@@ -384,8 +386,8 @@ public class BasicDigitalObjectInformationType {
          * Définit la valeur de la propriété compressionSchemeLocalList.
          *
          * @param value
-         *     allowed object is
-         *     {@link URIType }
+         *            allowed object is
+         *            {@link URIType }
          *
          */
         public void setCompressionSchemeLocalList(URIType value) {
@@ -396,8 +398,8 @@ public class BasicDigitalObjectInformationType {
          * Obtient la valeur de la propriété compressionSchemeLocalValue.
          *
          * @return
-         *     possible object is
-         *     {@link StringType }
+         *         possible object is
+         *         {@link StringType }
          *
          */
         public StringType getCompressionSchemeLocalValue() {
@@ -408,8 +410,8 @@ public class BasicDigitalObjectInformationType {
          * Définit la valeur de la propriété compressionSchemeLocalValue.
          *
          * @param value
-         *     allowed object is
-         *     {@link StringType }
+         *            allowed object is
+         *            {@link StringType }
          *
          */
         public void setCompressionSchemeLocalValue(StringType value) {
@@ -420,8 +422,8 @@ public class BasicDigitalObjectInformationType {
          * Obtient la valeur de la propriété compressionRatio.
          *
          * @return
-         *     possible object is
-         *     {@link RationalType }
+         *         possible object is
+         *         {@link RationalType }
          *
          */
         public RationalType getCompressionRatio() {
@@ -432,8 +434,8 @@ public class BasicDigitalObjectInformationType {
          * Définit la valeur de la propriété compressionRatio.
          *
          * @param value
-         *     allowed object is
-         *     {@link RationalType }
+         *            allowed object is
+         *            {@link RationalType }
          *
          */
         public void setCompressionRatio(RationalType value) {
@@ -442,11 +444,12 @@ public class BasicDigitalObjectInformationType {
 
     }
 
-
     /**
-     * <p>Classe Java pour anonymous complex type.
+     * <p>
+     * Classe Java pour anonymous complex type.
      *
-     * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+     * <p>
+     * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
      *
      * <pre>
      * &lt;complexType>
@@ -465,11 +468,10 @@ public class BasicDigitalObjectInformationType {
      *
      */
     @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "messageDigestAlgorithm",
-        "messageDigest",
-        "messageDigestOriginator"
-    })
+    @XmlType(name = "",
+             propOrder = {"messageDigestAlgorithm",
+                          "messageDigest",
+                          "messageDigestOriginator"})
     public static class Fixity {
 
         protected TypeOfMessageDigestAlgorithmType messageDigestAlgorithm;
@@ -480,8 +482,8 @@ public class BasicDigitalObjectInformationType {
          * Obtient la valeur de la propriété messageDigestAlgorithm.
          *
          * @return
-         *     possible object is
-         *     {@link TypeOfMessageDigestAlgorithmType }
+         *         possible object is
+         *         {@link TypeOfMessageDigestAlgorithmType }
          *
          */
         public TypeOfMessageDigestAlgorithmType getMessageDigestAlgorithm() {
@@ -492,8 +494,8 @@ public class BasicDigitalObjectInformationType {
          * Définit la valeur de la propriété messageDigestAlgorithm.
          *
          * @param value
-         *     allowed object is
-         *     {@link TypeOfMessageDigestAlgorithmType }
+         *            allowed object is
+         *            {@link TypeOfMessageDigestAlgorithmType }
          *
          */
         public void setMessageDigestAlgorithm(TypeOfMessageDigestAlgorithmType value) {
@@ -504,8 +506,8 @@ public class BasicDigitalObjectInformationType {
          * Obtient la valeur de la propriété messageDigest.
          *
          * @return
-         *     possible object is
-         *     {@link StringType }
+         *         possible object is
+         *         {@link StringType }
          *
          */
         public StringType getMessageDigest() {
@@ -516,8 +518,8 @@ public class BasicDigitalObjectInformationType {
          * Définit la valeur de la propriété messageDigest.
          *
          * @param value
-         *     allowed object is
-         *     {@link StringType }
+         *            allowed object is
+         *            {@link StringType }
          *
          */
         public void setMessageDigest(StringType value) {
@@ -528,8 +530,8 @@ public class BasicDigitalObjectInformationType {
          * Obtient la valeur de la propriété messageDigestOriginator.
          *
          * @return
-         *     possible object is
-         *     {@link StringType }
+         *         possible object is
+         *         {@link StringType }
          *
          */
         public StringType getMessageDigestOriginator() {
@@ -540,8 +542,8 @@ public class BasicDigitalObjectInformationType {
          * Définit la valeur de la propriété messageDigestOriginator.
          *
          * @param value
-         *     allowed object is
-         *     {@link StringType }
+         *            allowed object is
+         *            {@link StringType }
          *
          */
         public void setMessageDigestOriginator(StringType value) {
@@ -550,11 +552,12 @@ public class BasicDigitalObjectInformationType {
 
     }
 
-
     /**
-     * <p>Classe Java pour anonymous complex type.
+     * <p>
+     * Classe Java pour anonymous complex type.
      *
-     * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+     * <p>
+     * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
      *
      * <pre>
      * &lt;complexType>
@@ -572,10 +575,9 @@ public class BasicDigitalObjectInformationType {
      *
      */
     @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "formatName",
-        "formatVersion"
-    })
+    @XmlType(name = "",
+             propOrder = {"formatName",
+                          "formatVersion"})
     public static class FormatDesignation {
 
         protected StringType formatName;
@@ -585,8 +587,8 @@ public class BasicDigitalObjectInformationType {
          * Obtient la valeur de la propriété formatName.
          *
          * @return
-         *     possible object is
-         *     {@link StringType }
+         *         possible object is
+         *         {@link StringType }
          *
          */
         public StringType getFormatName() {
@@ -597,8 +599,8 @@ public class BasicDigitalObjectInformationType {
          * Définit la valeur de la propriété formatName.
          *
          * @param value
-         *     allowed object is
-         *     {@link StringType }
+         *            allowed object is
+         *            {@link StringType }
          *
          */
         public void setFormatName(StringType value) {
@@ -609,8 +611,8 @@ public class BasicDigitalObjectInformationType {
          * Obtient la valeur de la propriété formatVersion.
          *
          * @return
-         *     possible object is
-         *     {@link StringType }
+         *         possible object is
+         *         {@link StringType }
          *
          */
         public StringType getFormatVersion() {
@@ -621,8 +623,8 @@ public class BasicDigitalObjectInformationType {
          * Définit la valeur de la propriété formatVersion.
          *
          * @param value
-         *     allowed object is
-         *     {@link StringType }
+         *            allowed object is
+         *            {@link StringType }
          *
          */
         public void setFormatVersion(StringType value) {
@@ -631,11 +633,12 @@ public class BasicDigitalObjectInformationType {
 
     }
 
-
     /**
-     * <p>Classe Java pour anonymous complex type.
+     * <p>
+     * Classe Java pour anonymous complex type.
      *
-     * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+     * <p>
+     * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
      *
      * <pre>
      * &lt;complexType>
@@ -653,10 +656,9 @@ public class BasicDigitalObjectInformationType {
      *
      */
     @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "formatRegistryName",
-        "formatRegistryKey"
-    })
+    @XmlType(name = "",
+             propOrder = {"formatRegistryName",
+                          "formatRegistryKey"})
     public static class FormatRegistry {
 
         protected StringType formatRegistryName;
@@ -666,8 +668,8 @@ public class BasicDigitalObjectInformationType {
          * Obtient la valeur de la propriété formatRegistryName.
          *
          * @return
-         *     possible object is
-         *     {@link StringType }
+         *         possible object is
+         *         {@link StringType }
          *
          */
         public StringType getFormatRegistryName() {
@@ -678,8 +680,8 @@ public class BasicDigitalObjectInformationType {
          * Définit la valeur de la propriété formatRegistryName.
          *
          * @param value
-         *     allowed object is
-         *     {@link StringType }
+         *            allowed object is
+         *            {@link StringType }
          *
          */
         public void setFormatRegistryName(StringType value) {
@@ -690,8 +692,8 @@ public class BasicDigitalObjectInformationType {
          * Obtient la valeur de la propriété formatRegistryKey.
          *
          * @return
-         *     possible object is
-         *     {@link StringType }
+         *         possible object is
+         *         {@link StringType }
          *
          */
         public StringType getFormatRegistryKey() {
@@ -702,8 +704,8 @@ public class BasicDigitalObjectInformationType {
          * Définit la valeur de la propriété formatRegistryKey.
          *
          * @param value
-         *     allowed object is
-         *     {@link StringType }
+         *            allowed object is
+         *            {@link StringType }
          *
          */
         public void setFormatRegistryKey(StringType value) {
@@ -712,11 +714,12 @@ public class BasicDigitalObjectInformationType {
 
     }
 
-
     /**
-     * <p>Classe Java pour anonymous complex type.
+     * <p>
+     * Classe Java pour anonymous complex type.
      *
-     * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+     * <p>
+     * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
      *
      * <pre>
      * &lt;complexType>
@@ -734,10 +737,9 @@ public class BasicDigitalObjectInformationType {
      *
      */
     @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "objectIdentifierType",
-        "objectIdentifierValue"
-    })
+    @XmlType(name = "",
+             propOrder = {"objectIdentifierType",
+                          "objectIdentifierValue"})
     public static class ObjectIdentifier {
 
         protected StringType objectIdentifierType;
@@ -747,8 +749,8 @@ public class BasicDigitalObjectInformationType {
          * Obtient la valeur de la propriété objectIdentifierType.
          *
          * @return
-         *     possible object is
-         *     {@link StringType }
+         *         possible object is
+         *         {@link StringType }
          *
          */
         public StringType getObjectIdentifierType() {
@@ -759,8 +761,8 @@ public class BasicDigitalObjectInformationType {
          * Définit la valeur de la propriété objectIdentifierType.
          *
          * @param value
-         *     allowed object is
-         *     {@link StringType }
+         *            allowed object is
+         *            {@link StringType }
          *
          */
         public void setObjectIdentifierType(StringType value) {
@@ -771,8 +773,8 @@ public class BasicDigitalObjectInformationType {
          * Obtient la valeur de la propriété objectIdentifierValue.
          *
          * @return
-         *     possible object is
-         *     {@link StringType }
+         *         possible object is
+         *         {@link StringType }
          *
          */
         public StringType getObjectIdentifierValue() {
@@ -783,8 +785,8 @@ public class BasicDigitalObjectInformationType {
          * Définit la valeur de la propriété objectIdentifierValue.
          *
          * @param value
-         *     allowed object is
-         *     {@link StringType }
+         *            allowed object is
+         *            {@link StringType }
          *
          */
         public void setObjectIdentifierValue(StringType value) {

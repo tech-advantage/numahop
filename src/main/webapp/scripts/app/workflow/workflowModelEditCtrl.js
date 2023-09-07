@@ -1,13 +1,28 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('WorkflowModelEditCtrl', WorkflowModelEditCtrl);
+    angular.module('numaHopApp.controller').controller('WorkflowModelEditCtrl', WorkflowModelEditCtrl);
 
-    function WorkflowModelEditCtrl($location, $q, $routeParams, $scope, $timeout, codeSrvc,
-        gettext, gettextCatalog, HistorySrvc, ListTools, Principal, NumahopEditService,
-        DocUnitBaseService, MessageSrvc, ModalSrvc, ValidationSrvc, WorkflowModelSrvc, NumaHopInitializationSrvc) {
-
+    function WorkflowModelEditCtrl(
+        $location,
+        $q,
+        $routeParams,
+        $scope,
+        $timeout,
+        codeSrvc,
+        gettext,
+        gettextCatalog,
+        HistorySrvc,
+        ListTools,
+        Principal,
+        NumahopEditService,
+        DocUnitBaseService,
+        MessageSrvc,
+        ModalSrvc,
+        ValidationSrvc,
+        WorkflowModelSrvc,
+        NumaHopInitializationSrvc
+    ) {
         $scope.codes = codeSrvc;
         $scope.validation = ValidationSrvc;
         $scope.fullName = getFullName;
@@ -26,12 +41,11 @@
         $scope.options = {
             booleanValue: [
                 { value: true, text: gettextCatalog.getString('Oui') },
-                { value: false, text: gettextCatalog.getString('Non') }
-            ]
+                { value: false, text: gettextCatalog.getString('Non') },
+            ],
         };
 
         init();
-
 
         /****************************************************************/
         /** Initialisation **********************************************/
@@ -40,20 +54,23 @@
             loadOptions();
 
             // Message d'avertissement si l'utilisateur quitte la page alors que des modifications sont en cours
-            $scope.$on("$locationChangeStart", checkModificationsOnLocationChange);
+            $scope.$on('$locationChangeStart', checkModificationsOnLocationChange);
         }
 
         function loadEntity() {
             if (angular.isDefined($routeParams.id)) {
                 /** Chargement de l'entité **/
-                $scope.model = WorkflowModelSrvc.get({
-                    id: $routeParams.id
-                }, function (entity) {
-                    afterLoadingEntity(entity);
-                });
+                $scope.model = WorkflowModelSrvc.get(
+                    {
+                        id: $routeParams.id,
+                    },
+                    function (entity) {
+                        afterLoadingEntity(entity);
+                    }
+                );
             } else if (angular.isDefined($routeParams.new)) {
                 /** Création d'une nouvelle entité **/
-                HistorySrvc.add(gettext("Nouveau modèle de workflow"));
+                HistorySrvc.add(gettext('Nouveau modèle de workflow'));
                 $scope.model = new WorkflowModelSrvc();
                 $scope.model.active = true;
                 initStates();
@@ -75,18 +92,16 @@
             if (angular.isDefined(currentUser)) {
                 currentUser.then(function (result) {
                     if (result.library) {
-                        $q.all([NumaHopInitializationSrvc.loadLibraries(), NumaHopInitializationSrvc.loadWorkflowGroups(result.library)])
-                            .then(function (data) {
-                                $scope.sel2Libraries = data[0];
-                                $scope.sel2Groups = data[1];
-                                loadEntity();
-                            });
+                        $q.all([NumaHopInitializationSrvc.loadLibraries(), NumaHopInitializationSrvc.loadWorkflowGroups(result.library)]).then(function (data) {
+                            $scope.sel2Libraries = data[0];
+                            $scope.sel2Groups = data[1];
+                            loadEntity();
+                        });
                     } else {
-                        $q.all([NumaHopInitializationSrvc.loadLibraries()])
-                            .then(function (data) {
-                                $scope.sel2Libraries = data[0];
-                                loadEntity();
-                            });
+                        $q.all([NumaHopInitializationSrvc.loadLibraries()]).then(function (data) {
+                            $scope.sel2Libraries = data[0];
+                            loadEntity();
+                        });
                     }
                 });
             }
@@ -94,28 +109,27 @@
 
         function initStates() {
             $scope.model.states = [];
-            $scope.model.states.push({ key: "INITIALISATION_DOCUMENT", type: "OTHER" });
-            $scope.model.states.push({ key: "CLOTURE_DOCUMENT", type: "OTHER" });
-            $scope.model.states.push({ key: "ARCHIVAGE_DOCUMENT", type: "TO_SKIP" });
-            $scope.model.states.push({ key: "CONSTAT_ETAT_APRES_NUMERISATION", type: "TO_SKIP" });
-            $scope.model.states.push({ key: "CONSTAT_ETAT_AVANT_NUMERISATION", type: "TO_SKIP" });
-            $scope.model.states.push({ key: "DIFFUSION_DOCUMENT", type: "TO_SKIP" });
-            $scope.model.states.push({ key: "DIFFUSION_DOCUMENT_OMEKA", type: "TO_SKIP" });
-            $scope.model.states.push({ key: "DIFFUSION_DOCUMENT_DIGITAL_LIBRARY", type: "TO_SKIP" });
-            $scope.model.states.push({ key: "DIFFUSION_DOCUMENT_LOCALE", type: "TO_SKIP" });
-            $scope.model.states.push({ key: "GENERATION_BORDEREAU", type: "TO_SKIP" });
-            $scope.model.states.push({ key: "PREREJET_DOCUMENT", type: "TO_SKIP" });
-            $scope.model.states.push({ key: "PREVALIDATION_DOCUMENT", type: "TO_SKIP" });
-            $scope.model.states.push({ key: "VALIDATION_BORDEREAU_CONSTAT_ETAT", type: "TO_SKIP" });
-            $scope.model.states.push({ key: "CONTROLES_AUTOMATIQUES_EN_COURS", type: "TO_WAIT" });
-            $scope.model.states.push({ key: "LIVRAISON_DOCUMENT_EN_COURS", type: "REQUIRED" });
-            $scope.model.states.push({ key: "NUMERISATION_EN_ATTENTE", type: "TO_WAIT" });
-            $scope.model.states.push({ key: "RAPPORT_CONTROLES", type: "TO_WAIT" });
-            $scope.model.states.push({ key: "CONTROLE_QUALITE_EN_COURS", type: "REQUIRED" });
-            $scope.model.states.push({ key: "VALIDATION_CONSTAT_ETAT", type: "TO_SKIP" });
-            $scope.model.states.push({ key: "VALIDATION_DOCUMENT", type: "REQUIRED" });
-            $scope.model.states.push({ key: "VALIDATION_NOTICES", type: "REQUIRED" });
-
+            $scope.model.states.push({ key: 'INITIALISATION_DOCUMENT', type: 'OTHER' });
+            $scope.model.states.push({ key: 'CLOTURE_DOCUMENT', type: 'OTHER' });
+            $scope.model.states.push({ key: 'ARCHIVAGE_DOCUMENT', type: 'TO_SKIP' });
+            $scope.model.states.push({ key: 'CONSTAT_ETAT_APRES_NUMERISATION', type: 'TO_SKIP' });
+            $scope.model.states.push({ key: 'CONSTAT_ETAT_AVANT_NUMERISATION', type: 'TO_SKIP' });
+            $scope.model.states.push({ key: 'DIFFUSION_DOCUMENT', type: 'TO_SKIP' });
+            $scope.model.states.push({ key: 'DIFFUSION_DOCUMENT_OMEKA', type: 'TO_SKIP' });
+            $scope.model.states.push({ key: 'DIFFUSION_DOCUMENT_DIGITAL_LIBRARY', type: 'TO_SKIP' });
+            $scope.model.states.push({ key: 'DIFFUSION_DOCUMENT_LOCALE', type: 'TO_SKIP' });
+            $scope.model.states.push({ key: 'GENERATION_BORDEREAU', type: 'TO_SKIP' });
+            $scope.model.states.push({ key: 'PREREJET_DOCUMENT', type: 'TO_SKIP' });
+            $scope.model.states.push({ key: 'PREVALIDATION_DOCUMENT', type: 'TO_SKIP' });
+            $scope.model.states.push({ key: 'VALIDATION_BORDEREAU_CONSTAT_ETAT', type: 'TO_SKIP' });
+            $scope.model.states.push({ key: 'CONTROLES_AUTOMATIQUES_EN_COURS', type: 'TO_WAIT' });
+            $scope.model.states.push({ key: 'LIVRAISON_DOCUMENT_EN_COURS', type: 'REQUIRED' });
+            $scope.model.states.push({ key: 'NUMERISATION_EN_ATTENTE', type: 'TO_WAIT' });
+            $scope.model.states.push({ key: 'RAPPORT_CONTROLES', type: 'TO_WAIT' });
+            $scope.model.states.push({ key: 'CONTROLE_QUALITE_EN_COURS', type: 'REQUIRED' });
+            $scope.model.states.push({ key: 'VALIDATION_CONSTAT_ETAT', type: 'TO_SKIP' });
+            $scope.model.states.push({ key: 'VALIDATION_DOCUMENT', type: 'REQUIRED' });
+            $scope.model.states.push({ key: 'VALIDATION_NOTICES', type: 'REQUIRED' });
         }
 
         /****************************************************************/
@@ -127,25 +141,23 @@
             }
         };
         $scope.delete = function (entity) {
-            ModalSrvc.confirmDeletion(entity.name)
-                .then(function () {
-                    entity.$delete(function (value) {
-                        MessageSrvc.addSuccess(gettext("Le modèle de workflow {{id}} a été supprimé"), { id: value.name });
-                        $location.search({});
-                        $scope.entityForm.$cancel();
-                        var removed = ListTools.findAndRemoveItemFromList(entity, $scope.pagination.items);
-                        if (!removed) {
-                            ListTools.findAndRemoveItemFromList(entity, $scope.newEntities);
-                        }
-                        $scope.modified = false;
-                    });
+            ModalSrvc.confirmDeletion(entity.name).then(function () {
+                entity.$delete(function (value) {
+                    MessageSrvc.addSuccess(gettext('Le modèle de workflow {{id}} a été supprimé'), { id: value.name });
+                    $location.search({});
+                    $scope.entityForm.$cancel();
+                    var removed = ListTools.findAndRemoveItemFromList(entity, $scope.pagination.items);
+                    if (!removed) {
+                        ListTools.findAndRemoveItemFromList(entity, $scope.newEntities);
+                    }
+                    $scope.modified = false;
                 });
+            });
         };
         $scope.cancel = function () {
             if ($scope.saveCallback) {
                 $scope.saveCallback();
-            }
-            else {
+            } else {
                 $scope.entityForm.$cancel();
             }
         };
@@ -155,13 +167,12 @@
         /****************************************************************/
 
         function editState(model, key) {
-            return ModalSrvc.editModelState(angular.copy(_.where(model.states, { key: key })[0]), $scope.sel2Groups)
-                .then(function (editedState) {
-                    $scope.modified = true;
-                    _.extend(_.findWhere(model.states, { key: editedState.key }), editedState);
-                    openForm();
-                    return editedState;
-                });
+            return ModalSrvc.editModelState(angular.copy(_.where(model.states, { key: key })[0]), $scope.sel2Groups).then(function (editedState) {
+                $scope.modified = true;
+                _.extend(_.findWhere(model.states, { key: editedState.key }), editedState);
+                openForm();
+                return editedState;
+            });
         }
 
         /**
@@ -174,7 +185,7 @@
                     return state.type;
                 }
             }
-            return "OTHER";
+            return 'OTHER';
         }
 
         /**
@@ -184,27 +195,26 @@
             if (angular.isDefined(model) && model !== null) {
                 var state = _.where(model.states, { key: key })[0];
                 if (angular.isDefined(state)) {
-                    if (state.type === "REQUIRED" && angular.isDefined(state.group) && state.group !== null) {
-                        return "STATE_OK";
-                    } else if (state.type === "REQUIRED") {
-                        return "STATE_KO";
+                    if (state.type === 'REQUIRED' && angular.isDefined(state.group) && state.group !== null) {
+                        return 'STATE_OK';
+                    } else if (state.type === 'REQUIRED') {
+                        return 'STATE_KO';
                     }
                 }
             }
-            return "";
+            return '';
         }
 
         /****************************************************************/
         /** Fonctions ***************************************************/
         /****************************************************************/
         function onChangeLibrary(library) {
-            $q.all([NumaHopInitializationSrvc.loadWorkflowGroups(library.identifier)])
-                .then(function (data) {
-                    $scope.sel2Groups = data[0];
-                });
+            $q.all([NumaHopInitializationSrvc.loadWorkflowGroups(library.identifier)]).then(function (data) {
+                $scope.sel2Groups = data[0];
+            });
         }
         function getFullName(user) {
-            return user.surname + " " + user.firstname;
+            return user.surname + ' ' + user.firstname;
         }
         /** Sauvegarde une entité **/
         function saveEntity(entity) {
@@ -212,32 +222,32 @@
             $timeout(function () {
                 var creation = angular.isUndefined(entity.identifier) || entity.identifier === null;
 
-                entity.$save({},
+                entity.$save(
+                    {},
                     function (value) {
-                        MessageSrvc.addSuccess(gettext("Le modèle de workflow {{name}} a été sauvegardé"), { name: value.name });
+                        MessageSrvc.addSuccess(gettext('Le modèle de workflow {{name}} a été sauvegardé'), { name: value.name });
                         onSuccess(value);
                         // si création, on ajoute à la liste, sinon, on essaye de MAJ les infos dans la colonne du milieu
                         if (creation) {
                             $scope.clearSelection();
-                            NumahopEditService.addNewEntityToList(value, $scope.newEntities, $scope.pagination.items, ["name"]);
+                            NumahopEditService.addNewEntityToList(value, $scope.newEntities, $scope.pagination.items, ['name']);
                             $location.search({ id: value.identifier }); // suppression des paramètres
                         } else {
-                            NumahopEditService.updateMiddleColumn($scope.model, ["name"],
-                                $scope.pagination.items, $scope.newEntities);
+                            NumahopEditService.updateMiddleColumn($scope.model, ['name'], $scope.pagination.items, $scope.newEntities);
                         }
                     },
                     function (response) {
                         $scope.errors = _.chain(response.data.errors)
-                            .groupBy("field")
+                            .groupBy('field')
                             .mapObject(function (list) {
-                                return _.pluck(list, "code");
+                                return _.pluck(list, 'code');
                             })
                             .value();
-                        if (creation){
-
+                        if (creation) {
                         }
                         openForm();
-                    });
+                    }
+                );
             });
         }
         // Gestion de l'entité renvoyée par le serveur
@@ -245,13 +255,12 @@
             $scope.model = value;
             $scope.modified = false;
             if ((!$scope.sel2Groups || $scope.sel2Groups.length === 0) && $scope.model.library) {
-                $q.all([NumaHopInitializationSrvc.loadWorkflowGroups($scope.model.library.identifier)])
-                    .then(function (data) {
-                        $scope.sel2Groups = data[0];
-                    });
+                $q.all([NumaHopInitializationSrvc.loadWorkflowGroups($scope.model.library.identifier)]).then(function (data) {
+                    $scope.sel2Groups = data[0];
+                });
             }
 
-            HistorySrvc.add(gettextCatalog.getString("Modèle de workflow") + ": " + $scope.model.name);
+            HistorySrvc.add(gettextCatalog.getString('Modèle de workflow') + ': ' + $scope.model.name);
 
             displayMessages($scope.model);
         }
@@ -271,14 +280,12 @@
             // ... puis on affiche les infos de création ...
             if (angular.isDefined(entity.createdDate)) {
                 var dateCreated = new Date(entity.createdDate);
-                MessageSrvc.addInfo(gettext("Créé le {{date}}"),
-                    { date: dateCreated.toLocaleString() }, true);
+                MessageSrvc.addInfo(gettext('Créé le {{date}}'), { date: dateCreated.toLocaleString() }, true);
             }
             // ... puis on affiche les infos de modification ...
             if (angular.isDefined(entity.lastModifiedDate)) {
                 var dateModif = new Date(entity.lastModifiedDate);
-                MessageSrvc.addInfo(gettext("Dernière modification le {{date}} par {{author}}"),
-                    { date: dateModif.toLocaleString(), author: entity.lastModifiedBy }, true);
+                MessageSrvc.addInfo(gettext('Dernière modification le {{date}} par {{author}}'), { date: dateModif.toLocaleString(), author: entity.lastModifiedBy }, true);
             }
 
             // Affichage pour un temps limité à l'ouverture
@@ -299,8 +306,7 @@
         /** Validation */
 
         // Clean
-        $scope.$on("$destroy", function () {
-        });
+        $scope.$on('$destroy', function () {});
 
         /**
          * Vérifications
@@ -319,17 +325,16 @@
                 // Annulation de l'action en cours, dans l'attente d'une confirmation de l'utilisateur
                 event.preventDefault();
 
-                ModalSrvc.confirmAction(gettextCatalog.getString("continuer alors que vous avez des modifications non sauvegardées"))
-                    .then(function () {
-                        $scope.modified = false;
+                ModalSrvc.confirmAction(gettextCatalog.getString('continuer alors que vous avez des modifications non sauvegardées')).then(function () {
+                    $scope.modified = false;
 
-                        // on force le changement de page
-                        $location.url(url);
-                    });
+                    // on force le changement de page
+                    $location.url(url);
+                });
             }
         }
 
-        function stateExist(model, key){
+        function stateExist(model, key) {
             return _.where(model.states, { key: key }).length > 0;
         }
     }

@@ -2,36 +2,52 @@
     <div class="panel panel-column-3">
         <div class="panel-heading">
             <div class="pull-right">
-                <button type="button" class="btn btn-sem2 btn-xs" ng-click="trainForm.$show()" ng-disabled="!train || !train.identifier"
-                    uib-tooltip="{{::'Modifier' | translate}}" ng-show="!trainForm.$visible && loaded" sem-roles-allowed="TRA_HAB1">
+                <button
+                    type="button"
+                    class="btn btn-sem2 btn-xs"
+                    ng-click="trainForm.$show()"
+                    ng-disabled="!train || !train.identifier"
+                    uib-tooltip="{{::'Modifier' | translate}}"
+                    tooltip-append-to-body="true"
+                    ng-show="!trainForm.$visible && loaded"
+                    sem-roles-allowed="TRA_HAB1"
+                >
                     <span class="glyphicon-regular edit"></span>
                 </button>
-                <button type="button" class="btn btn-sem2 btn-xs" ng-click="goToAllOperations()" ng-disabled="!train || !train.identifier"
-                    uib-tooltip="{{::'Détails' | translate}}" ng-show="!trainForm.$visible && loaded">
+                <button
+                    type="button"
+                    class="btn btn-sem2 btn-xs"
+                    ng-click="goToAllOperations()"
+                    ng-disabled="!train || !train.identifier"
+                    uib-tooltip="{{::'Détails' | translate}}"
+                    tooltip-append-to-body="true"
+                    ng-show="!trainForm.$visible && loaded"
+                >
                     <span class="glyphicon-regular list-alt"></span>
                 </button>
 
                 <div class="btn-group" ng-show="!trainForm.$visible && loaded" uib-dropdown dropdown-append-to-body>
-                    <button type="button" class="btn btn-sem2 btn-xs dropdown-toggle pull-right" ng-disabled="!train || !train.identifier" uib-tooltip="{{::'Autres actions' | translate}}"
-                        uib-dropdown-toggle sem-roles-allowed="TRA_HAB1">
+                    <button
+                        type="button"
+                        class="btn btn-sem2 btn-xs dropdown-toggle pull-right"
+                        ng-disabled="!train || !train.identifier"
+                        uib-tooltip="{{::'Autres actions' | translate}}"
+                        tooltip-append-to-body="true"
+                        uib-dropdown-toggle
+                        sem-roles-allowed="TRA_HAB1"
+                    >
                         <span class="glyphicon-halflings glyphicon-align-justify"></span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-right" role="menu" uib-dropdown-menu>
                         <li ng-class="{ 'disabled': !loaded || !train || !train.identifier }" ng-show="!trainForm.$visible" sem-roles-allowed="TRA_HAB2">
-                            <a ng-click="!(!loaded || !train || !train.identifier) && delete(train)">
-                                <span class="glyphicon-halflings glyphicon-trash"></span> {{ ::'Supprimer' | translate }}
-                            </a>
+                            <a ng-click="!(!loaded || !train || !train.identifier) && delete(train)"> <span class="glyphicon-halflings glyphicon-trash"></span> {{ ::'Supprimer' | translate }} </a>
                         </li>
                         <li role="separator" class="divider" ng-show="!trainForm.$visible" sem-roles-allowed="TRA_HAB2"></li>
                         <li>
-                            <a ng-click="downloadSlip('pdf')">
-                                {{ ::'Bordereau d\'envoi du train PDF' | translate }}
-                            </a>
+                            <a ng-click="downloadSlip('pdf')"> {{ ::'Bordereau d\'envoi du train PDF' | translate }} </a>
                         </li>
                         <li>
-                            <a ng-click="downloadSlip('csv')">
-                                {{ ::'Bordereau d\'envoi du train CSV' | translate }}
-                            </a>
+                            <a ng-click="downloadSlip('csv')"> {{ ::'Bordereau d\'envoi du train CSV' | translate }} </a>
                         </li>
                         <li ng-click="duplicate()" sem-roles-allowed="TRA_HAB0"><a translate>Dupliquer</a></li>
                     </ul>
@@ -41,27 +57,41 @@
         </div>
         <div class="panel-body" ng-show="loaded" id="trainDetails">
             <div>
-                <form editable-form name="trainForm" onaftersave="saveTrain(train)" ng-init="formRO = !isAuthorized([userRoles.TRA_HAB0, userRoles.TRA_HAB1])"
-                    ng-show="loaded">
-
-
+                <form editable-form name="trainForm" onaftersave="saveTrain(train)" ng-init="formRO = !isAuthorized([userRoles.TRA_HAB0, userRoles.TRA_HAB1])" ng-show="loaded">
                     <uib-accordion close-others="false">
                         <!-- Détail du lot -->
                         <div uib-accordion-group is-open="accordions.train">
                             <uib-accordion-heading>
-                                <span class="pull-left glyphicon-halflings" ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordions.train]">&nbsp;</span>
-                                <h4 translate>Train</h4>
+                                <i ng-class="{false: 'fa fa-chevron-right rotate-icon-up', true: 'fa fa-chevron-right rotate-icon-down'}[accordions.train]"></i>
+                                <span translate>Train</span>
                             </uib-accordion-heading>
 
-                            <numa-editable-field title="{{::'Libellé' | translate}}" placeholder="{{::'Libellé' | translate}}" form="trainForm" model="train.label"
-                                numa-readonly="formRO" errors="{{ errors.label }}" onbeforesave="validation.required($data)" mandatory="true">
+                            <numa-editable-field
+                                title="{{::'Libellé' | translate}}"
+                                placeholder="{{::'Libellé' | translate}}"
+                                form="trainForm"
+                                model="train.label"
+                                numa-readonly="formRO"
+                                errors="{{ errors.label }}"
+                                onbeforesave="validation.required($data)"
+                                mandatory="true"
+                            >
                             </numa-editable-field>
 
-                            <numa-editable-field title="{{::'Projet' | translate}}" type="select" form="trainForm" model="train.project" numa-readonly="formRO || fromReject"
-                                errors="{{ errors.project }}" mandatory="true" 
+                            <numa-editable-field
+                                title="{{::'Projet' | translate}}"
+                                type="select"
+                                form="trainForm"
+                                model="train.project"
+                                numa-readonly="formRO || fromReject"
+                                errors="{{ errors.project }}"
+                                mandatory="true"
                                 config="{ data: sel2Projects, display: 'name',
-                                query: 'o.name for o in $ctrl.config.data track by o.identifier'}" link="{ type: 'project', parameters: {'id': train.project.identifier} }"
-                                onbeforesave="validation.required($data)"> </numa-editable-field>
+                                query: 'o.name for o in $ctrl.config.data track by o.identifier'}"
+                                link="{ type: 'project', parameters: {'id': train.project.identifier} }"
+                                onbeforesave="validation.required($data)"
+                            >
+                            </numa-editable-field>
 
                             <div class="row">
                                 <div class="col-xs-4 text-right">
@@ -72,30 +102,51 @@
                                 </div>
                             </div>
 
-                            <numa-editable-field title="{{::'Actif' | translate}}" type="radiolist" form="trainForm" model="train.active" numa-readonly="formRO"
-                                errors="{{ errors.active }}" config="{ data: options.boolean, displayFn: displayBoolean, 
-                                query: 'key as value for (key, value) in $ctrl.config.data'}" onbeforesave="validation.required($data)">
+                            <numa-editable-field
+                                title="{{::'Actif' | translate}}"
+                                type="radiolist"
+                                form="trainForm"
+                                model="train.active"
+                                numa-readonly="formRO"
+                                errors="{{ errors.active }}"
+                                config="{ data: options.boolean, displayFn: displayBoolean,
+                                query: 'key as value for (key, value) in $ctrl.config.data'}"
+                                onbeforesave="validation.required($data)"
+                            >
                             </numa-editable-field>
 
-                            <numa-editable-field title="{{::'Description' | translate}}" placeholder="{{::'Description' | translate}}" type="textarea"
-                                form="trainForm" model="train.description" numa-readonly="formRO" errors="{{ errors.description }}">
+                            <numa-editable-field
+                                title="{{::'Description' | translate}}"
+                                placeholder="{{::'Description' | translate}}"
+                                type="textarea"
+                                form="trainForm"
+                                model="train.description"
+                                numa-readonly="formRO"
+                                errors="{{ errors.description }}"
+                            >
                             </numa-editable-field>
 
-                            <numa-editable-field title="{{::'Date d\'envoi au prestataire' | translate}}" type="datepicker" form="trainForm" model="train.providerSendingDate"
-                                numa-readonly="formRO" errors="{{ errors.providerSendingDate }}"> </numa-editable-field>
+                            <numa-editable-field
+                                title="{{::'Date d\'envoi au prestataire' | translate}}"
+                                type="datepicker"
+                                form="trainForm"
+                                model="train.providerSendingDate"
+                                numa-readonly="formRO"
+                                errors="{{ errors.providerSendingDate }}"
+                            >
+                            </numa-editable-field>
 
-                            <numa-editable-field title="{{::'Date de retour' | translate}}" type="datepicker" form="trainForm" model="train.returnDate"
-                                numa-readonly="formRO" errors="{{ errors.returnDate }}"> </numa-editable-field>
-
+                            <numa-editable-field title="{{::'Date de retour' | translate}}" type="datepicker" form="trainForm" model="train.returnDate" numa-readonly="formRO" errors="{{ errors.returnDate }}">
+                            </numa-editable-field>
                         </div>
-
 
                         <div class="row" ng-if="train.identifier || (fromReject && physDocs.length > 1)">
                             <div class="col-sm-12">
                                 <div uib-accordion-group is-open="accordions.physDoc">
                                     <uib-accordion-heading>
                                         <span class="pull-left glyphicon-halflings" ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordions.physDoc]">&nbsp;</span>
-                                        <h4>{{ 'Unités documentaires' | translate }}
+                                        <h4>
+                                            {{ 'Unités documentaires' | translate }}
                                             <span class="badge btn-sem2">{{ physDocs.length - 1 }}</span>
                                         </h4>
                                     </uib-accordion-heading>
@@ -113,44 +164,34 @@
                                         </thead>
                                         <tbody>
                                             <tr ng-repeat="physDoc in physDocs | orderBy:['label']">
-                                                <td uib-tooltip="{{::physDoc.docUnit.label}}" tooltip-enable="physDoc.docUnit.label.length > 20">
-                                                    {{::physDoc.docUnit.label | characters: 20}}
-                                                </td>
-                                                <td ng-if="!$last" uib-tooltip="{{::physDoc.docUnit.pgcnId}}" tooltip-enable="physDoc.docUnit.pgcnId.length > 15">
-                                                    {{::physDoc.docUnit.pgcnId | characters: 18}}
-                                                </td>
+                                                <td uib-tooltip="{{::physDoc.docUnit.label}}" tooltip-enable="physDoc.docUnit.label.length > 20">{{::physDoc.docUnit.label | characters: 20}}</td>
+                                                <td ng-if="!$last" uib-tooltip="{{::physDoc.docUnit.pgcnId}}" tooltip-enable="physDoc.docUnit.pgcnId.length > 15">{{::physDoc.docUnit.pgcnId | characters: 18}}</td>
                                                 <td ng-if="$last"><b>TOTAL :</b></td>
                                                 <td ng-if="!$last" class="text-center">{{::physDoc.totalPage || '0' }}</td>
                                                 <td ng-if="$last" class="text-center">{{::physDoc.totalPage || '0' }} pages</td>
                                                 <td class="text-center">{{::physDoc.reportDetailInsurance}}</td>
                                                 <td class="text-center">{{::physDoc.reportDetailDim}}</td>
                                                 <td class="text-center">{{::physDoc.reportDetailOperture}}</td>
-                                                
+
                                                 <td>
                                                     <a ng-if="!$last" class="btn btn-sem2 btn-xs" uib-tooltip="{{ ::'Voir' | translate }}" ng-href="/#/document/all_operations/{{::physDoc.docUnit.identifier}}">
                                                         <span class="glyphicon-halflings glyphicon-share"></span>
                                                     </a>
                                                 </td>
                                             </tr>
-                                            
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
                         </div>
-
                     </uib-accordion>
 
                     <div class="text-center column-bottom column-5 margin-t10" ng-if="trainForm.$visible">
                         <div class="column-bottom-button">
                             <!-- Création / Modification -->
                             <div class="btn-group">
-                                <button type="button" class="btn btn-sem4" ng-click="cancel()">
-                                    <span class="glyphicon-regular unshare"></span> {{::'Annuler' | translate}}
-                                </button>
-                                <button type="submit" class="btn btn-sem2" sem-roles-allowed="TRA_HAB0,TRA_HAB1">
-                                    <span class="glyphicon-regular floppy-save"></span> {{::'Enregistrer' | translate}}
-                                </button>
+                                <button type="button" class="btn btn-sem4" ng-click="cancel()"><span class="glyphicon-regular unshare"></span> {{::'Annuler' | translate}}</button>
+                                <button type="submit" class="btn btn-sem2" sem-roles-allowed="TRA_HAB0,TRA_HAB1"><span class="glyphicon-regular floppy-save"></span> {{::'Enregistrer' | translate}}</button>
                             </div>
                         </div>
                     </div>

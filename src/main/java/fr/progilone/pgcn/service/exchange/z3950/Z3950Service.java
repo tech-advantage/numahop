@@ -11,6 +11,16 @@ import fr.progilone.pgcn.exception.message.PgcnErrorCode;
 import fr.progilone.pgcn.repository.administration.z3950.Z3950ServerRepository;
 import fr.progilone.pgcn.service.administration.mapper.Z3950ServerMapper;
 import fr.progilone.pgcn.service.exchange.marc.MarcUtils;
+import jakarta.annotation.PostConstruct;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.marc4j.MarcReader;
 import org.marc4j.MarcStreamReader;
@@ -30,17 +40,6 @@ import org.yaz4j.Record;
 import org.yaz4j.ResultSet;
 import org.yaz4j.exception.ConnectionUnavailableException;
 import org.yaz4j.exception.ZoomException;
-
-import javax.annotation.PostConstruct;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
 
 /**
  * Service gérant l'import de notices à partir d'un serveur Z3950
@@ -77,7 +76,44 @@ public class Z3950Service {
 
     // MOCK à garder...
     // final String xml =
-    // "<?xml version=\"1.0\" encoding=\"UTF-8\"?><marcxml:collection xmlns:marcxml=\"http://www.loc.gov/MARC21/slim\">\r\n  <marcxml:record>\r\n    <marcxml:leader>01096cam  2200265   450 </marcxml:leader>\r\n    <marcxml:controlfield tag=\"001\">FRBNF437004190000002</marcxml:controlfield>\r\n    <marcxml:controlfield tag=\"003\">http://catalogue.bnf.fr/ark:/12148/cb43700419m</marcxml:controlfield>\r\n    <marcxml:datafield tag=\"010\" ind1=\" \" ind2=\" \">\r\n      <marcxml:subfield code=\"a\">978-2-35287-505-5</marcxml:subfield>\r\n      <marcxml:subfield code=\"b\">rel.</marcxml:subfield>\r\n      <marcxml:subfield code=\"d\">12 EUR</marcxml:subfield>\r\n    </marcxml:datafield>\r\n    <marcxml:datafield tag=\"020\" ind1=\" \" ind2=\" \">\r\n      <marcxml:subfield code=\"a\">FR</marcxml:subfield>\r\n      <marcxml:subfield code=\"b\">01363771</marcxml:subfield>\r\n    </marcxml:datafield>\r\n    <marcxml:datafield tag=\"073\" ind1=\" \" ind2=\"0\">\r\n      <marcxml:subfield code=\"a\">9782352875055</marcxml:subfield>\r\n    </marcxml:datafield>\r\n    <marcxml:datafield tag=\"100\" ind1=\" \" ind2=\" \">\r\n      <marcxml:subfield code=\"a\">20131028d2013    m  y0frey50      ba</marcxml:subfield>\r\n    </marcxml:datafield>\r\n    <marcxml:datafield tag=\"101\" ind1=\"0\" ind2=\" \">\r\n      <marcxml:subfield code=\"a\">fre</marcxml:subfield>\r\n    </marcxml:datafield>\r\n    <marcxml:datafield tag=\"102\" ind1=\" \" ind2=\" \">\r\n      <marcxml:subfield code=\"a\">FR</marcxml:subfield>\r\n    </marcxml:datafield>\r\n    <marcxml:datafield tag=\"105\" ind1=\" \" ind2=\" \">\r\n      <marcxml:subfield code=\"a\">    z   00 a </marcxml:subfield>\r\n    </marcxml:datafield>\r\n    <marcxml:datafield tag=\"106\" ind1=\" \" ind2=\" \">\r\n      <marcxml:subfield code=\"a\">r</marcxml:subfield>\r\n    </marcxml:datafield>\r\n    <marcxml:datafield tag=\"200\" ind1=\"1\" ind2=\" \">\r\n      <marcxml:subfield code=\"a\"> Les  trois mousquetaires</marcxml:subfield>\r\n      <marcxml:subfield code=\"b\">Texte imprim\u00E9</marcxml:subfield>\r\n      <marcxml:subfield code=\"f\">Alexandre Dumas</marcxml:subfield>\r\n    </marcxml:datafield>\r\n    <marcxml:datafield tag=\"210\" ind1=\" \" ind2=\" \">\r\n      <marcxml:subfield code=\"a\">Paris</marcxml:subfield>\r\n      <marcxml:subfield code=\"c\">[Archipoche]</marcxml:subfield>\r\n      <marcxml:subfield code=\"d\">cop. 2013</marcxml:subfield>\r\n      <marcxml:subfield code=\"e\">59-Villeneuve-d'Ascq</marcxml:subfield>\r\n      <marcxml:subfield code=\"g\">Impr. Imago</marcxml:subfield>\r\n    </marcxml:datafield>\r\n    <marcxml:datafield tag=\"215\" ind1=\" \" ind2=\" \">\r\n      <marcxml:subfield code=\"a\">1 vol. (947 p.)</marcxml:subfield>\r\n      <marcxml:subfield code=\"c\">jaquette ill. en coul.</marcxml:subfield>\r\n      <marcxml:subfield code=\"d\">16 cm</marcxml:subfield>\r\n    </marcxml:datafield>\r\n    <marcxml:datafield tag=\"225\" ind1=\"|\" ind2=\" \">\r\n      <marcxml:subfield code=\"a\"> La  biblioth\u00E8que du collectionneur</marcxml:subfield>\r\n      <marcxml:subfield code=\"v\">21</marcxml:subfield>\r\n    </marcxml:datafield>\r\n    <marcxml:datafield tag=\"410\" ind1=\" \" ind2=\"0\">\r\n      <marcxml:subfield code=\"0\">42537932</marcxml:subfield>\r\n      <marcxml:subfield code=\"t\"> La  Biblioth\u00E8que du collectionneur (Paris)</marcxml:subfield>\r\n      <marcxml:subfield code=\"x\">2264-3168</marcxml:subfield>\r\n      <marcxml:subfield code=\"v\">21</marcxml:subfield>\r\n    </marcxml:datafield>\r\n    <marcxml:datafield tag=\"517\" ind1=\"1\" ind2=\" \">\r\n      <marcxml:subfield code=\"a\"/>\r\n    </marcxml:datafield>\r\n    <marcxml:datafield tag=\"686\" ind1=\" \" ind2=\" \">\r\n      <marcxml:subfield code=\"a\">803</marcxml:subfield>\r\n      <marcxml:subfield code=\"2\">Cadre de classement de la Bibliographie nationale fran\u00E7aise</marcxml:subfield>\r\n    </marcxml:datafield>\r\n    <marcxml:datafield tag=\"700\" ind1=\" \" ind2=\"|\">\r\n      <marcxml:subfield code=\"3\">11901063</marcxml:subfield>\r\n      <marcxml:subfield code=\"a\">Dumas</marcxml:subfield>\r\n      <marcxml:subfield code=\"b\">Alexandre</marcxml:subfield>\r\n      <marcxml:subfield code=\"f\">1802-1870</marcxml:subfield>\r\n      <marcxml:subfield code=\"4\">070</marcxml:subfield>\r\n    </marcxml:datafield>\r\n    <marcxml:datafield tag=\"801\" ind1=\" \" ind2=\"0\">\r\n      <marcxml:subfield code=\"a\">FR</marcxml:subfield>\r\n      <marcxml:subfield code=\"b\">FR-751131015</marcxml:subfield>\r\n      <marcxml:subfield code=\"c\">20131028</marcxml:subfield>\r\n      <marcxml:subfield code=\"g\">AFNOR</marcxml:subfield>\r\n      <marcxml:subfield code=\"h\">FRBNF437004190000002</marcxml:subfield>\r\n      <marcxml:subfield code=\"2\">intermrc</marcxml:subfield>\r\n    </marcxml:datafield>\r\n    <marcxml:datafield tag=\"930\" ind1=\" \" ind2=\" \">\r\n      <marcxml:subfield code=\"5\">FR-751131010:43700419001001</marcxml:subfield>\r\n      <marcxml:subfield code=\"a\">2013-391006</marcxml:subfield>\r\n      <marcxml:subfield code=\"b\">759999999</marcxml:subfield>\r\n      <marcxml:subfield code=\"c\">Tolbiac - Rez de Jardin - Litt\u00E9rature et art - Magasin</marcxml:subfield>\r\n      <marcxml:subfield code=\"d\">O</marcxml:subfield>\r\n    </marcxml:datafield>\r\n  </marcxml:record>\r\n</marcxml:collection>";
+    // "<?xml version=\"1.0\" encoding=\"UTF-8\"?><marcxml:collection xmlns:marcxml=\"http://www.loc.gov/MARC21/slim\">\r\n <marcxml:record>\r\n
+    // <marcxml:leader>01096cam 2200265 450 </marcxml:leader>\r\n <marcxml:controlfield tag=\"001\">FRBNF437004190000002</marcxml:controlfield>\r\n
+    // <marcxml:controlfield tag=\"003\">http://catalogue.bnf.fr/ark:/12148/cb43700419m</marcxml:controlfield>\r\n <marcxml:datafield tag=\"010\"
+    // ind1=\" \" ind2=\" \">\r\n <marcxml:subfield code=\"a\">978-2-35287-505-5</marcxml:subfield>\r\n <marcxml:subfield
+    // code=\"b\">rel.</marcxml:subfield>\r\n <marcxml:subfield code=\"d\">12 EUR</marcxml:subfield>\r\n </marcxml:datafield>\r\n <marcxml:datafield
+    // tag=\"020\" ind1=\" \" ind2=\" \">\r\n <marcxml:subfield code=\"a\">FR</marcxml:subfield>\r\n <marcxml:subfield
+    // code=\"b\">01363771</marcxml:subfield>\r\n </marcxml:datafield>\r\n <marcxml:datafield tag=\"073\" ind1=\" \" ind2=\"0\">\r\n <marcxml:subfield
+    // code=\"a\">9782352875055</marcxml:subfield>\r\n </marcxml:datafield>\r\n <marcxml:datafield tag=\"100\" ind1=\" \" ind2=\" \">\r\n
+    // <marcxml:subfield code=\"a\">20131028d2013 m y0frey50 ba</marcxml:subfield>\r\n </marcxml:datafield>\r\n <marcxml:datafield tag=\"101\"
+    // ind1=\"0\" ind2=\" \">\r\n <marcxml:subfield code=\"a\">fre</marcxml:subfield>\r\n </marcxml:datafield>\r\n <marcxml:datafield tag=\"102\"
+    // ind1=\" \" ind2=\" \">\r\n <marcxml:subfield code=\"a\">FR</marcxml:subfield>\r\n </marcxml:datafield>\r\n <marcxml:datafield tag=\"105\"
+    // ind1=\" \" ind2=\" \">\r\n <marcxml:subfield code=\"a\"> z 00 a </marcxml:subfield>\r\n </marcxml:datafield>\r\n <marcxml:datafield tag=\"106\"
+    // ind1=\" \" ind2=\" \">\r\n <marcxml:subfield code=\"a\">r</marcxml:subfield>\r\n </marcxml:datafield>\r\n <marcxml:datafield tag=\"200\"
+    // ind1=\"1\" ind2=\" \">\r\n <marcxml:subfield code=\"a\"> Les trois mousquetaires</marcxml:subfield>\r\n <marcxml:subfield code=\"b\">Texte
+    // imprim\u00E9</marcxml:subfield>\r\n <marcxml:subfield code=\"f\">Alexandre Dumas</marcxml:subfield>\r\n </marcxml:datafield>\r\n
+    // <marcxml:datafield tag=\"210\" ind1=\" \" ind2=\" \">\r\n <marcxml:subfield code=\"a\">Paris</marcxml:subfield>\r\n <marcxml:subfield
+    // code=\"c\">[Archipoche]</marcxml:subfield>\r\n <marcxml:subfield code=\"d\">cop. 2013</marcxml:subfield>\r\n <marcxml:subfield
+    // code=\"e\">59-Villeneuve-d'Ascq</marcxml:subfield>\r\n <marcxml:subfield code=\"g\">Impr. Imago</marcxml:subfield>\r\n </marcxml:datafield>\r\n
+    // <marcxml:datafield tag=\"215\" ind1=\" \" ind2=\" \">\r\n <marcxml:subfield code=\"a\">1 vol. (947 p.)</marcxml:subfield>\r\n <marcxml:subfield
+    // code=\"c\">jaquette ill. en coul.</marcxml:subfield>\r\n <marcxml:subfield code=\"d\">16 cm</marcxml:subfield>\r\n </marcxml:datafield>\r\n
+    // <marcxml:datafield tag=\"225\" ind1=\"|\" ind2=\" \">\r\n <marcxml:subfield code=\"a\"> La biblioth\u00E8que du
+    // collectionneur</marcxml:subfield>\r\n <marcxml:subfield code=\"v\">21</marcxml:subfield>\r\n </marcxml:datafield>\r\n <marcxml:datafield
+    // tag=\"410\" ind1=\" \" ind2=\"0\">\r\n <marcxml:subfield code=\"0\">42537932</marcxml:subfield>\r\n <marcxml:subfield code=\"t\"> La
+    // Biblioth\u00E8que du collectionneur (Paris)</marcxml:subfield>\r\n <marcxml:subfield code=\"x\">2264-3168</marcxml:subfield>\r\n
+    // <marcxml:subfield code=\"v\">21</marcxml:subfield>\r\n </marcxml:datafield>\r\n <marcxml:datafield tag=\"517\" ind1=\"1\" ind2=\" \">\r\n
+    // <marcxml:subfield code=\"a\"/>\r\n </marcxml:datafield>\r\n <marcxml:datafield tag=\"686\" ind1=\" \" ind2=\" \">\r\n <marcxml:subfield
+    // code=\"a\">803</marcxml:subfield>\r\n <marcxml:subfield code=\"2\">Cadre de classement de la Bibliographie nationale
+    // fran\u00E7aise</marcxml:subfield>\r\n </marcxml:datafield>\r\n <marcxml:datafield tag=\"700\" ind1=\" \" ind2=\"|\">\r\n <marcxml:subfield
+    // code=\"3\">11901063</marcxml:subfield>\r\n <marcxml:subfield code=\"a\">Dumas</marcxml:subfield>\r\n <marcxml:subfield
+    // code=\"b\">Alexandre</marcxml:subfield>\r\n <marcxml:subfield code=\"f\">1802-1870</marcxml:subfield>\r\n <marcxml:subfield
+    // code=\"4\">070</marcxml:subfield>\r\n </marcxml:datafield>\r\n <marcxml:datafield tag=\"801\" ind1=\" \" ind2=\"0\">\r\n <marcxml:subfield
+    // code=\"a\">FR</marcxml:subfield>\r\n <marcxml:subfield code=\"b\">FR-751131015</marcxml:subfield>\r\n <marcxml:subfield
+    // code=\"c\">20131028</marcxml:subfield>\r\n <marcxml:subfield code=\"g\">AFNOR</marcxml:subfield>\r\n <marcxml:subfield
+    // code=\"h\">FRBNF437004190000002</marcxml:subfield>\r\n <marcxml:subfield code=\"2\">intermrc</marcxml:subfield>\r\n </marcxml:datafield>\r\n
+    // <marcxml:datafield tag=\"930\" ind1=\" \" ind2=\" \">\r\n <marcxml:subfield code=\"5\">FR-751131010:43700419001001</marcxml:subfield>\r\n
+    // <marcxml:subfield code=\"a\">2013-391006</marcxml:subfield>\r\n <marcxml:subfield code=\"b\">759999999</marcxml:subfield>\r\n <marcxml:subfield
+    // code=\"c\">Tolbiac - Rez de Jardin - Litt\u00E9rature et art - Magasin</marcxml:subfield>\r\n <marcxml:subfield
+    // code=\"d\">O</marcxml:subfield>\r\n </marcxml:datafield>\r\n </marcxml:record>\r\n</marcxml:collection>";
     // final Z3950ServerDTO z3950ServerDTO = null;
     //
     // final Z3950RecordDTO z3950RecordDTO = new Z3950RecordDTO();
@@ -88,17 +124,25 @@ public class Z3950Service {
     //
     // return new Z3950ResultDTO(z3950records, 1);
     @Transactional(readOnly = true)
-    public Page<Z3950RecordDTO> search(final Map<String, String> fields, final List<String> serverIdentifiers, final int page, final int size) throws
-                                                                                                                                               PgcnBusinessException {
+    public Page<Z3950RecordDTO> search(final Map<String, String> fields, final List<String> serverIdentifiers, final int page, final int size) throws PgcnBusinessException {
         final List<Z3950RecordDTO> z3950records = new ArrayList<>();
-        final List<Z3950Server> servers = z3950ServerRepository.findAll(serverIdentifiers);
+        final List<Z3950Server> servers = z3950ServerRepository.findAllById(serverIdentifiers);
         long totalCount = 0;
 
         LOG.debug("Recherche Z39.50 de {} sur les serveurs: {}, page {}, taille {}",
-                  fields.entrySet().stream().map(a -> a.getKey() + " = " + a.getValue()).reduce((a, b) -> a + ", " + b).orElse("[recherche vide !]"),
+                  fields.entrySet()
+                        .stream()
+                        .map(a -> a.getKey() + " = "
+                                  + a.getValue())
+                        .reduce((a, b) -> a + ", "
+                                          + b)
+                        .orElse("[recherche vide !]"),
                   servers.stream()
-                         .map(srv -> srv.getName() + " (" + srv.getIdentifier() + ")")
-                         .reduce((a, b) -> a + ", " + b)
+                         .map(srv -> srv.getName() + " ("
+                                     + srv.getIdentifier()
+                                     + ")")
+                         .reduce((a, b) -> a + ", "
+                                           + b)
                          .orElse("[aucun serveur sélectionné !]"),
                   page,
                   size);
@@ -115,21 +159,22 @@ public class Z3950Service {
                 if ((page + 1) * size > totalCount) {
                     count = totalCount - page * size;
                 }
-                result.getRecords(page * size, (int) count).stream()
+                result.getRecords((long) page * size, (int) count)
+                      .stream()
                       // Conversion des résultat en record marc4j
-                      .map(yazRecord -> convertToMarcRecord(yazRecord, z3950Server.getDataEncoding())).filter(Optional::isPresent).map(Optional::get)
+                      .map(yazRecord -> convertToMarcRecord(yazRecord, z3950Server.getDataEncoding()))
+                      .filter(Optional::isPresent)
+                      .map(Optional::get)
                       // Création des DTOs
-                      .map(rec -> getResult(rec, z3950Server)).forEach(z3950records::add);
+                      .map(rec -> getResult(rec, z3950Server))
+                      .forEach(z3950records::add);
 
                 break;  // On s'arrête au premier serveur qui répond
 
             } catch (final ConnectionUnavailableException e) {
                 LOG.error(e.getMessage(), e);
                 final PgcnError.Builder builder = new PgcnError.Builder();
-                throw new PgcnBusinessException(builder.reinit()
-                                                       .setCode(PgcnErrorCode.Z3950_CONNECTION_FAILURE)
-                                                       .addComplement(e.getMessage())
-                                                       .build());
+                throw new PgcnBusinessException(builder.reinit().setCode(PgcnErrorCode.Z3950_CONNECTION_FAILURE).addComplement(e.getMessage()).build());
             } catch (final ZoomException e) {
                 LOG.error(e.getMessage(), e);
                 final PgcnError.Builder builder = new PgcnError.Builder();
@@ -142,14 +187,14 @@ public class Z3950Service {
             record.setAuthor(record.getAuthor().replaceAll("[^A-Za-z0-9À-ÖØ-öø-ÿЀ-ӿ]", " "));
         });
 
-        return new PageImpl<>(z3950records, new PageRequest(page, size), totalCount);
+        return new PageImpl<>(z3950records, PageRequest.of(page, size), totalCount);
     }
 
     /**
      * Etablit et retourne une connection à un serveur Z39.50
      *
      * @param z3950Server
-     *         le serveur Z39.50
+     *            le serveur Z39.50
      * @return
      * @throws ZoomException
      */
@@ -167,7 +212,7 @@ public class Z3950Service {
          *
          * => Install sous debian: apt-get install libyaz4
          * => Install sous windows: http://www.indexdata.com/yaz
-         *    + La librairie yaz4j.dll et ses dépendances sont accessibles via la variable d'environnement PATH
+         * + La librairie yaz4j.dll et ses dépendances sont accessibles via la variable d'environnement PATH
          */
         final Connection c = new Connection(host, port);
 
@@ -243,10 +288,9 @@ public class Z3950Service {
      * @param dataEncoding
      * @return
      */
-    private Optional<org.marc4j.marc.Record> convertToMarcRecord(Record yazRecord, final DataEncoding dataEncoding) {
-        final String encoding = dataEncoding == DataEncoding.UTF_8 ?
-                                StandardCharsets.UTF_8.name() :
-                                dataEncoding == DataEncoding.ISO_8859_1 ? StandardCharsets.ISO_8859_1.name() : null;
+    private Optional<org.marc4j.marc.Record> convertToMarcRecord(final Record yazRecord, final DataEncoding dataEncoding) {
+        final String encoding = dataEncoding == DataEncoding.UTF_8 ? StandardCharsets.UTF_8.name() : dataEncoding == DataEncoding.ISO_8859_1 ? StandardCharsets.ISO_8859_1.name()
+                                             : null;
         final InputStream stream = new ByteArrayInputStream(yazRecord.getContent());
         final MarcReader marcStreamReader = new MarcStreamReader(stream, encoding);
 

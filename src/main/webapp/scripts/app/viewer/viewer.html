@@ -2,10 +2,10 @@
     <div class="col-sm-9 col-layout-columns">
         <div class="panel panel-column-1">
             <div class="panel-heading">
-                <header-bar ng-if="digitalDocument" library="delivery.lot.project.library" project="delivery.lot.project" lot="delivery.lot" delivery="delivery" doc-unit="digitalDocument.docUnit" > </header-bar>
-                <header-bar ng-if="sampling" library="delivery.lot.project.library" project="delivery.lot.project" lot="delivery.lot" delivery="delivery" > </header-bar>
+                <header-bar ng-if="digitalDocument" library="delivery.lot.project.library" project="delivery.lot.project" lot="delivery.lot" delivery="delivery" doc-unit="digitalDocument.docUnit"></header-bar>
+                <header-bar ng-if="sampling" library="delivery.lot.project.library" project="delivery.lot.project" lot="delivery.lot" delivery="delivery"></header-bar>
             </div>
-            <div class="panel-body" style="padding: 0 0 0 0;">
+            <div class="panel-body" style="padding: 0 0 0 0">
                 <!-- Integration viewer -->
                 <a ng-include src="'scripts/app/viewer/vision.html'" width="100%" height="98%"></a>
             </div>
@@ -17,13 +17,12 @@
                 <span ng-show="!loaded" translate>Prévisualisation du document numérique</span>
                 <span ng-show="loaded" translate>Contrôles du document numérique</span>
                 <div ng-if="digitalDocument" class="text-right margin-t-15">
-                    <button type="button" class="btn btn-sem2 btn-xs margin-b5" ng-click="downloadToc()"
-                            uib-tooltip="{{:: 'Télécharger la table des matières initiale' | translate}}">
+                    <button type="button" class="btn btn-sem2 btn-xs margin-b5" ng-click="downloadToc()" uib-tooltip="{{:: 'Télécharger la table des matières initiale' | translate}}" tooltip-append-to-body="true">
                         <span class="glyphicon-halflings glyphicon-download-alt"></span>
                     </button>
                 </div>
             </div>
-            <div class="panel-body" style="height: 92%;">
+            <div class="panel-body" style="height: 92%">
                 <div style="padding: 7px" ng-if="nbMinErr + nbMajErr > 0">
                     <div class="row text-left">
                         <h5 translate>Erreurs recensées: {{nbMinErr}} mineure(s) - {{nbMajErr}} majeure(s)</h5>
@@ -33,8 +32,11 @@
                 <uib-accordion>
                     <div class="formBlock margin-t0">
                         <div class="formBlockTitle" ng-click="accConstat = !accConstat">
-                            <span class="glyphicon-halflings" ng-class="{false: 'glyphicon-chevron-right',
-		                                     true: 'glyphicon-chevron-down'}[accConstat]"></span>
+                            <span
+                                class="glyphicon-halflings"
+                                ng-class="{false: 'glyphicon-chevron-right',
+		                                     true: 'glyphicon-chevron-down'}[accConstat]"
+                            ></span>
                             <span translate>Constat d'état :&nbsp;</span>
                         </div>
                         <div class="formBlockContent margin-t0">
@@ -51,7 +53,7 @@
                         </div>
                         <!-- Infos cachées lorsque l'accordion est replié -->
                         <div class="formBlockContent margin-t0" uib-accordion-group is-open="accConstat">
-                            <div class="row" ng-repeat='line in detailsConstat track by $index' >
+                            <div class="row" ng-repeat="line in detailsConstat track by $index">
                                 <div class="col-xs-12 text-left" ng-if="$index > 0">
                                     <label translate>{{line}}</label>
                                 </div>
@@ -63,33 +65,33 @@
 
                 <!-- Infos globales doc / sample -->
                 <div ng-if="!loaded" style="padding: 10px">
-
                     <!-- Livraisons precedentes -->
                     <div class="panel panel-column-3 no-margin no-padding">
-	                    <div class="row text-left panel-heading padding-l5" ng-if="previousDelivs.length > 0">
+                        <div class="row text-left panel-heading padding-l5" ng-if="previousDelivs.length > 0">
                             <label labelfor="previousDeliv" translate>Résultats précédents &nbsp;</label>
-                            <a ng-click="downloadCheckSlip(selPreviousDelivery)" ng-disabled="!selPreviousDelivery"
-                               uib-tooltip="{{::'Télécharger le résultat des contrôles' | translate}}">
+                            <a ng-click="downloadCheckSlip(selPreviousDelivery)" ng-disabled="!selPreviousDelivery" uib-tooltip="{{::'Télécharger le résultat des contrôles' | translate}}">
                                 <span class="glyphicon-halflings glyphicon-download-alt"></span>
                             </a>
-                            <select id="previousDeliv" name="previousDeliv" class="form-control input-previousres"
-                                    ng-model="selPreviousDelivery"
-                                    ng-options="del.identifier as del.label for del in previousDelivs"
-                                    ng-change="changeSelectedDelivery(selPreviousDelivery)">
-                            </select>
+                            <select
+                                id="previousDeliv"
+                                name="previousDeliv"
+                                class="form-control input-previousres"
+                                ng-model="selPreviousDelivery"
+                                ng-options="del.identifier as del.label for del in previousDelivs"
+                                ng-change="changeSelectedDelivery(selPreviousDelivery)"
+                            ></select>
                         </div>
-
                     </div>
                     <div class="row">
                         <div translate class="col-xs-6">Notes de livraison</div>
                         <div class="col-xs-6">{{deliveryNotes}}</div>
                     </div>
-                    <HR>
+                    <hr />
                     <div ng_if="!sampling" class="row">
                         <div translate class="col-xs-6">Informations de contrôle</div>
                         <div class="col-xs-6">{{digitalDocument.docUnit.digitizingNotes}}</div>
                     </div>
-                    <HR>
+                    <hr />
                     <div ng_if="nbPieces > 1" class="row">
                         <div translate class="col-xs-6">Nombre de pièces</div>
                         <div class="col-xs-6">{{nbPieces}}</div>
@@ -103,7 +105,7 @@
                         <textarea ng_if="sampling" ng-disabled="!isAuthorized([userRoles.CHECK_HAB4])" class="form-control" rows="3" ng-model="sample.delivery.controlNotes" maxlength="255"></textarea>
                     </div>
                     <div class="row">
-                        <label>Erreurs globales</label>
+                        <label translate>Erreurs globales</label>
                         <ui-select multiple ng-model="select.selectedErrors" theme="select2" on-select="" on-remove="" class="form-control" ng-disabled="!isAuthorized([userRoles.CHECK_HAB4])">
                             <ui-select-match placeholder="{{::'Erreurs' | translate}}">{{$item.value}}</ui-select-match>
                             <ui-select-choices group-by="groupErrorLabels" repeat="item in options.errors | filter: $select.search track by item.key">
@@ -115,8 +117,12 @@
                         <button type="button" class="btn btn-sem2" ng-click="goToPageCheck()" sem-roles-allowed="CHECK_HAB4">
                             <span translate>Contrôles pages</span>
                         </button>
-                        <div class="btn-group" style="padding: 5px" ng_if="digitalDocument.status === 'TO_CHECK' || digitalDocument.status === 'CHECKING'
-                                                    || digitalDocument.status === 'PRE_REJECTED' || digitalDocument.status === 'PRE_VALIDATED' || sampling">
+                        <div
+                            class="btn-group"
+                            style="padding: 5px"
+                            ng_if="digitalDocument.status === 'TO_CHECK' || digitalDocument.status === 'CHECKING'
+                                                    || digitalDocument.status === 'PRE_REJECTED' || digitalDocument.status === 'PRE_VALIDATED' || sampling"
+                        >
                             <button type="button" class="btn btn-sem4" ng-click="reject()" ng-hide="rejected" sem-roles-allowed="CHECK_HAB4">
                                 <span translate>Rejeter</span>
                                 <span class="glyphicon-regular remove"></span>
@@ -136,148 +142,161 @@
                     </div>
                     <!-- Panneau 1ere img  -->
                     <div class="row text-center">
-	                    <uib-accordion>
-	                      <div class="formBlock margin-t0">
-	                        <div class="formBlockTitle">
-	                            <span class="glyphicon-halflings" ></span>
-	                            <span  translate>{{data.metadataFile.name}} &nbsp; </span>
-	                        </div>
-			                <!-- Infos affichées lorsque l'accordion est replié -->
-			                <div class="formBlockContent margin-t0">
-			                     <!-- Début metadonnees 1 -->
-                                <uib-accordion>
-                                     <div class="formBlock margin-0">
-                                        <div class="formBlockTitle subTitle" ng-click="accMd1 = !accMd1">
-                                            <span class="glyphicon-halflings" ng-class="{false: 'glyphicon-chevron-right',
-                                                             true: 'glyphicon-chevron-down'}[accMd1]"></span>
-                                            <span translate>Données techniques :&nbsp;</span>
-                                        </div>
-                                        <!-- Infos cachées lorsque l'accordion est replié -->
-                                        <div class="formBlockContent margin-t0" uib-accordion-group is-open="accMd1">
-                                            <div class="row">
-			                                   <div class="col-xs-2 text-right">
-			                                        <label translate>size</label>
-			                                    </div>
-			                                    <div class="col-xs-8 text-center">
-			                                             <span translate>{{data.metadataFile.size}}</span>
-			                                    </div>
-			                                    <div class="col-xs-2 text-right">
-			                                       <button type="button" class="btn btn-sem2 btn-xs" ng-click="downloadMaster()"
-			                                            uib-tooltip="{{:: 'Télécharger le master' | translate}}">
-			                                            <span class="glyphicon-halflings glyphicon-download-alt"></span>
-			                                        </button>
-			                                   </div>
-			                                </div>
-			                                <div class="row">
-	                                           <div class="col-xs-2 text-right">
-	                                                <label translate>fileName</label>
-	                                            </div>
-	                                            <div class="col-xs-10 text-right">
-	                                                 <span uib-tooltip="{{data.metadataFile.fileName}}">
-                                                        {{ data.metadataFile.fileName | characters: 25 : true }}
-                                                    </span>
-	                                            </div>
-                                            </div>
-			                                <div class="row" ng-repeat='(key, value) in data.metadataFile'>
-			                                    <div class="col-xs-2 text-right">
-			                                        <label translate ng-if="key.indexOf('TOC')===-1 && key.indexOf('size')===-1 && key.indexOf('fileName')===-1
-			                                                     && key.indexOf('name')===-1 && key.indexOf('textOcr')===-1">{{key}}</label>
-			                                    </div>
-			                                    <div class="col-xs-10 text-right" ng-if="key.indexOf('TOC')===-1 && key.indexOf('size')===-1 && key.indexOf('fileName')===-1
-			                                                     && key.indexOf('name')===-1 && key.indexOf('textOcr')===-1">{{value}}</div>
-			                                </div>
-                                        </div>
-                                    </div>
-                                </uib-accordion>
-
-			                    <!-- Début TOC 1 -->
-			                    <uib-accordion>
-			                         <div class="formBlock margin-0">
-                                        <div class="formBlockTitle subTitle" ng-click="accToc1 = !accToc1">
-                                            <span class="glyphicon-halflings" ng-class="{false: 'glyphicon-chevron-right',
-                                                             true: 'glyphicon-chevron-down'}[accToc1]"></span>
-                                            <span translate>Table des matières :&nbsp;</span>
-                                        </div>
-                                        <!-- Infos cachées lorsque l'accordion est replié -->
-                                        <div class="formBlockContent margin-t0" uib-accordion-group is-open="accToc1">
-                                            <div class="row">
-		                                        <div class="col-xs-2 text-right">
-		                                            <label translate>Type</label>
-		                                        </div>
-		                                        <div class="col-xs-8 text-center">
-		                                          <input type="text" class="form-control" id="typeToc" ng-model="data.metadataFile.typeTOC" ng-disabled="!isAuthorized([userRoles.CHECK_HAB4])">
-		                                        </div>
-		                                    </div>
-		                                    <div class="row">
-		                                        <div class="col-xs-2 text-right">
-		                                            <label translate>Page</label>
-		                                        </div>
-		                                        <div class="col-xs-8 text-center">
-		                                          <input type="text" class="form-control" id="orderToc" ng-model="data.metadataFile.orderTOC" ng-disabled="!isAuthorized([userRoles.CHECK_HAB4])">
-		                                        </div>
-		                                    </div>
-	                                     <div class="row">
-	                                        <div class="col-xs-2 text-right">
-	                                            <label translate >Titre</label>
-	                                        </div>
-	                                        <div class="col-xs-8 text-center">
-	                                          <textarea ng-disabled="!isAuthorized([userRoles.CHECK_HAB4])"
-                                                                class="form-control" rows="2" id="labelToc" ng-model="data.metadataFile.nameTOC"></textarea>
-	                                        </div>
-	                                    </div>
-                                        </div>
-                                    </div>
-                                </uib-accordion>
-
-                                 <!-- Début texte OCR 1 -->
-				                <uib-accordion ng-if="data.metadataFile.textOcr.trim().length > 0">
-				                    <div class="formBlock margin-0">
-				                        <div class="formBlockTitle subTitle" ng-click="accOcr1 = !accOcr1">
-				                            <span class="glyphicon-halflings" ng-class="{false: 'glyphicon-chevron-right',
-				                                             true: 'glyphicon-chevron-down'}[accOcr1]"></span>
-				                            <span translate>Ocr :&nbsp;</span>
-				                        </div>
-				                        <!-- Infos cachées lorsque l'accordion est replié -->
-				                        <div class="formBlockContent margin-t0" uib-accordion-group is-open="accOcr1">
-				                            <div class="row">
-				                                <div class="col-xs-12 text-left">
-				                                    <label ng-bind-html="convertLineBreak(data.metadataFile.textOcr)"></label>
-				                                </div>
-				                            </div>
-				                        </div>
-				                    </div>
-				                </uib-accordion>
-
-                                <div class="formBlockContent without-sem-editable-block margin-l17">
-                                   <div class="row text-center">
-	                                    <h5 translate>Notes de contrôle</h5>
-	                                </div>
-	                                <div class="row">
-	                                    <textarea ng-disabled="!isAuthorized([userRoles.CHECK_HAB4])"
-	                                                            class="form-control" rows="3" ng-model="data.checkNotes" maxlength="2000"></textarea>
-	                                </div>
-	                                <div class="row text-center">
-	                                    <label translate>Erreurs</label>
-	                                </div>
-	                                <div class="row">
-	                                    <ui-select multiple ng-model="select.selectedErrors"
-	                                                    ng-disabled="!isAuthorized([userRoles.CHECK_HAB4])" theme="select2" on-select="" on-remove="" class="form-control">
-	                                        <ui-select-match placeholder="{{::'Erreurs' | translate}}">{{$item.value}}</ui-select-match>
-                                            <ui-select-choices group-by="groupErrorLabels" repeat="item in options.errors | filter: $select.search track by item.key">
-                                                <div ng-bind-html="item.value | highlight: $select.search"></div>
-                                            </ui-select-choices>
-	                                    </ui-select>
-		                            </div>
-	                        </div>
-			            </div>
-	                </uib-accordion>
-	              </div>
-	            </div>
-
-	            <!-- Panneau 2eme img  -->
-	            <div class="row text-center" ng-show="loaded && bookView && imgDoublePaged && currentPage > 1 && currentPage < data.totalPages">
                         <uib-accordion>
-                          <div class="formBlock margin-t0">
+                            <div class="formBlock margin-t0">
+                                <div class="formBlockTitle">
+                                    <span class="glyphicon-halflings"></span>
+                                    <span translate>{{data.metadataFile.name}} &nbsp; </span>
+                                </div>
+                                <!-- Infos affichées lorsque l'accordion est replié -->
+                                <div class="formBlockContent margin-t0">
+                                    <!-- Début metadonnees 1 -->
+                                    <uib-accordion>
+                                        <div class="formBlock margin-0">
+                                            <div class="formBlockTitle subTitle" ng-click="accMd1 = !accMd1">
+                                                <span
+                                                    class="glyphicon-halflings"
+                                                    ng-class="{false: 'glyphicon-chevron-right',
+                                                             true: 'glyphicon-chevron-down'}[accMd1]"
+                                                ></span>
+                                                <span translate>Données techniques :&nbsp;</span>
+                                            </div>
+                                            <!-- Infos cachées lorsque l'accordion est replié -->
+                                            <div class="formBlockContent margin-t0" uib-accordion-group is-open="accMd1">
+                                                <div class="row">
+                                                    <div class="col-xs-2 text-right">
+                                                        <label translate>size</label>
+                                                    </div>
+                                                    <div class="col-xs-8 text-center">
+                                                        <span translate>{{data.metadataFile.size}}</span>
+                                                    </div>
+                                                    <div class="col-xs-2 text-right">
+                                                        <button type="button" class="btn btn-sem2 btn-xs" ng-click="downloadMaster()" uib-tooltip="{{:: 'Télécharger le master' | translate}}">
+                                                            <span class="glyphicon-halflings glyphicon-download-alt"></span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-xs-2 text-right">
+                                                        <label translate>fileName</label>
+                                                    </div>
+                                                    <div class="col-xs-10 text-right">
+                                                        <span uib-tooltip="{{data.metadataFile.fileName}}"> {{ data.metadataFile.fileName | characters: 25 : true }} </span>
+                                                    </div>
+                                                </div>
+                                                <div class="row" ng-repeat="(key, value) in data.metadataFile">
+                                                    <div class="col-xs-2 text-right">
+                                                        <label
+                                                            translate
+                                                            ng-if="key.indexOf('TOC')===-1 && key.indexOf('size')===-1 && key.indexOf('fileName')===-1
+			                                                     && key.indexOf('name')===-1 && key.indexOf('textOcr')===-1"
+                                                            >{{key}}</label
+                                                        >
+                                                    </div>
+                                                    <div
+                                                        class="col-xs-10 text-right"
+                                                        ng-if="key.indexOf('TOC')===-1 && key.indexOf('size')===-1 && key.indexOf('fileName')===-1
+			                                                     && key.indexOf('name')===-1 && key.indexOf('textOcr')===-1"
+                                                    >
+                                                        {{value}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </uib-accordion>
+
+                                    <!-- Début TOC 1 -->
+                                    <uib-accordion>
+                                        <div class="formBlock margin-0">
+                                            <div class="formBlockTitle subTitle" ng-click="accToc1 = !accToc1">
+                                                <span
+                                                    class="glyphicon-halflings"
+                                                    ng-class="{false: 'glyphicon-chevron-right',
+                                                             true: 'glyphicon-chevron-down'}[accToc1]"
+                                                ></span>
+                                                <span translate>Table des matières :&nbsp;</span>
+                                            </div>
+                                            <!-- Infos cachées lorsque l'accordion est replié -->
+                                            <div class="formBlockContent margin-t0" uib-accordion-group is-open="accToc1">
+                                                <div class="row">
+                                                    <div class="col-xs-2 text-right">
+                                                        <label translate>Type</label>
+                                                    </div>
+                                                    <div class="col-xs-8 text-center">
+                                                        <input type="text" class="form-control" id="typeToc" ng-model="data.metadataFile.typeTOC" ng-disabled="!isAuthorized([userRoles.CHECK_HAB4])" />
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-xs-2 text-right">
+                                                        <label translate>Page</label>
+                                                    </div>
+                                                    <div class="col-xs-8 text-center">
+                                                        <input type="text" class="form-control" id="orderToc" ng-model="data.metadataFile.orderTOC" ng-disabled="!isAuthorized([userRoles.CHECK_HAB4])" />
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-xs-2 text-right">
+                                                        <label translate>Titre</label>
+                                                    </div>
+                                                    <div class="col-xs-8 text-center">
+                                                        <textarea ng-disabled="!isAuthorized([userRoles.CHECK_HAB4])" class="form-control" rows="2" id="labelToc" ng-model="data.metadataFile.nameTOC"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </uib-accordion>
+
+                                    <!-- Début texte OCR 1 -->
+                                    <uib-accordion ng-if="data.metadataFile.textOcr.trim().length > 0">
+                                        <div class="formBlock margin-0">
+                                            <div class="formBlockTitle subTitle" ng-click="accOcr1 = !accOcr1">
+                                                <span
+                                                    class="glyphicon-halflings"
+                                                    ng-class="{false: 'glyphicon-chevron-right',
+				                                             true: 'glyphicon-chevron-down'}[accOcr1]"
+                                                ></span>
+                                                <span translate>Ocr :&nbsp;</span>
+                                            </div>
+                                            <!-- Infos cachées lorsque l'accordion est replié -->
+                                            <div class="formBlockContent margin-t0" uib-accordion-group is-open="accOcr1">
+                                                <div class="row">
+                                                    <div class="col-xs-12 text-left">
+                                                        <label ng-bind-html="convertLineBreak(data.metadataFile.textOcr)"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </uib-accordion>
+
+                                    <div class="formBlockContent without-sem-editable-block margin-l17">
+                                        <div class="row text-center">
+                                            <h5 translate>Notes de contrôle</h5>
+                                        </div>
+                                        <div class="row">
+                                            <textarea ng-disabled="!isAuthorized([userRoles.CHECK_HAB4])" class="form-control" rows="3" ng-model="data.checkNotes" maxlength="2000"></textarea>
+                                        </div>
+                                        <div class="row text-center">
+                                            <label translate>Erreurs</label>
+                                        </div>
+                                        <div class="row">
+                                            <ui-select multiple ng-model="select.selectedErrors" ng-disabled="!isAuthorized([userRoles.CHECK_HAB4])" theme="select2" on-select="" on-remove="" class="form-control">
+                                                <ui-select-match placeholder="{{::'Erreurs' | translate}}"> {{$item.value}} </ui-select-match>
+                                                <ui-select-choices group-by="groupErrorLabels" repeat="item in options.errors | filter: $select.search track by item.key">
+                                                    <div ng-bind-html="item.value | highlight: $select.search"></div>
+                                                </ui-select-choices>
+                                            </ui-select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </uib-accordion>
+                    </div>
+                </div>
+
+                <!-- Panneau 2eme img  -->
+                <div class="row text-center" ng-show="loaded && bookView && imgDoublePaged && currentPage > 1 && currentPage < data.totalPages">
+                    <uib-accordion>
+                        <div class="formBlock margin-t0">
                             <div class="formBlockTitle">
                                 <span class="glyphicon-halflings"></span>
                                 <span translate>{{data.metadataFile2.name}} &nbsp; </span>
@@ -286,45 +305,54 @@
                             <div class="formBlockContent margin-t0">
                                 <!-- Début metadonnees 2 -->
                                 <uib-accordion>
-                                     <div class="formBlock margin-0">
+                                    <div class="formBlock margin-0">
                                         <div class="formBlockTitle subTitle" ng-click="accMd2 = !accMd2">
-                                            <span class="glyphicon-halflings" ng-class="{false: 'glyphicon-chevron-right',
-                                                             true: 'glyphicon-chevron-down'}[accToc1]"></span>
+                                            <span
+                                                class="glyphicon-halflings"
+                                                ng-class="{false: 'glyphicon-chevron-right',
+                                                             true: 'glyphicon-chevron-down'}[accToc1]"
+                                            ></span>
                                             <span translate>Données techniques :&nbsp;</span>
                                         </div>
                                         <!-- Infos cachées lorsque l'accordion est replié -->
                                         <div class="formBlockContent margin-t0" uib-accordion-group is-open="accMd2">
                                             <div class="row">
-			                                   <div class="col-xs-2 text-right">
-			                                        <label translate>size</label>
-			                                    </div>
-			                                    <div class="col-xs-8 text-center">
-			                                        <span  translate>{{data.metadataFile2.size}}</span>
-			                                    </div>
-			                                    <div class="col-xs-2 text-right">
-			                                       <button type="button" class="btn btn-sem2 btn-xs" ng-click="downloadMaster(true)"
-			                                            uib-tooltip="{{::'Télécharger le master' | translate}}">
-			                                            <span class="glyphicon-halflings glyphicon-download-alt"></span>
-			                                        </button>
-			                                   </div>
-			                                </div>
-			                                <div class="row">
-                                               <div class="col-xs-2 text-right">
+                                                <div class="col-xs-2 text-right">
+                                                    <label translate>size</label>
+                                                </div>
+                                                <div class="col-xs-8 text-center">
+                                                    <span translate>{{data.metadataFile2.size}}</span>
+                                                </div>
+                                                <div class="col-xs-2 text-right">
+                                                    <button type="button" class="btn btn-sem2 btn-xs" ng-click="downloadMaster(true)" uib-tooltip="{{::'Télécharger le master' | translate}}">
+                                                        <span class="glyphicon-halflings glyphicon-download-alt"></span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-xs-2 text-right">
                                                     <label translate>fileName</label>
                                                 </div>
                                                 <div class="col-xs-10 text-right">
-                                                     <span uib-tooltip="{{data.metadataFile2.fileName}}">
-                                                        {{ data.metadataFile2.fileName | characters: 25 : true }}
-                                                    </span>
+                                                    <span uib-tooltip="{{data.metadataFile2.fileName}}"> {{ data.metadataFile2.fileName | characters: 25 : true }} </span>
                                                 </div>
                                             </div>
-			                                <div class="row" ng-repeat='(key, value) in data.metadataFile2'>
+                                            <div class="row" ng-repeat="(key, value) in data.metadataFile2">
                                                 <div class="col-xs-2 text-right">
-                                                    <label translate ng-if="key.indexOf('TOC')===-1 && key.indexOf('size')===-1 && key.indexOf('fileName')===-1
-                                                                 && key.indexOf('name')===-1 && key.indexOf('textOcr')===-1">{{key}}</label>
+                                                    <label
+                                                        translate
+                                                        ng-if="key.indexOf('TOC')===-1 && key.indexOf('size')===-1 && key.indexOf('fileName')===-1
+                                                                 && key.indexOf('name')===-1 && key.indexOf('textOcr')===-1"
+                                                        >{{key}}</label
+                                                    >
                                                 </div>
-                                                <div class="col-xs-10 text-right" ng-if="key.indexOf('TOC')===-1 && key.indexOf('size')===-1 && key.indexOf('fileName')===-1
-                                                                 && key.indexOf('name')===-1 && key.indexOf('textOcr')===-1">{{value}}</div>
+                                                <div
+                                                    class="col-xs-10 text-right"
+                                                    ng-if="key.indexOf('TOC')===-1 && key.indexOf('size')===-1 && key.indexOf('fileName')===-1
+                                                                 && key.indexOf('name')===-1 && key.indexOf('textOcr')===-1"
+                                                >
+                                                    {{value}}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -332,49 +360,54 @@
 
                                 <!-- Début TOC 1 -->
                                 <uib-accordion>
-                                     <div class="formBlock margin-0">
+                                    <div class="formBlock margin-0">
                                         <div class="formBlockTitle subTitle" ng-click="accToc2 = !accToc2">
-                                            <span class="glyphicon-halflings" ng-class="{false: 'glyphicon-chevron-right',
-                                                             true: 'glyphicon-chevron-down'}[accToc2]"></span>
+                                            <span
+                                                class="glyphicon-halflings"
+                                                ng-class="{false: 'glyphicon-chevron-right',
+                                                             true: 'glyphicon-chevron-down'}[accToc2]"
+                                            ></span>
                                             <span translate>Table des matières :&nbsp;</span>
                                         </div>
                                         <!-- Infos cachées lorsque l'accordion est replié -->
                                         <div class="formBlockContent margin-t0" uib-accordion-group is-open="accToc2">
-			                                <div class="row">
-			                                    <div class="col-xs-2 text-right">
-			                                        <label translate>Type</label>
-			                                    </div>
-			                                    <div class="col-xs-8 text-center">
-			                                      <input type="text" class="form-control" id="typeToc" ng-model="data.metadataFile2.typeTOC" ng-disabled="!isAuthorized([userRoles.CHECK_HAB4])">
-			                                    </div>
-			                                </div>
-			                                <div class="row">
-			                                    <div class="col-xs-2 text-right">
-			                                        <label translate>Page</label>
-			                                    </div>
-			                                    <div class="col-xs-8 text-center">
-			                                      <input type="text" class="form-control" id="orderToc" ng-model="data.metadataFile2.orderTOC" ng-disabled="!isAuthorized([userRoles.CHECK_HAB4])">
-			                                    </div>
-			                                </div>
-			                                 <div class="row">
-			                                    <div class="col-xs-2 text-right">
-			                                        <label translate >titre</label>
-			                                    </div>
-			                                    <div class="col-xs-8 text-center">
-			                                      <textarea ng-disabled="!isAuthorized([userRoles.CHECK_HAB4])"
-                                                                class="form-control" rows="2" id="labelToc" ng-model="data.metadataFile2.nameTOC"></textarea>
-			                                    </div>
-			                                </div>
+                                            <div class="row">
+                                                <div class="col-xs-2 text-right">
+                                                    <label translate>Type</label>
+                                                </div>
+                                                <div class="col-xs-8 text-center">
+                                                    <input type="text" class="form-control" id="typeToc" ng-model="data.metadataFile2.typeTOC" ng-disabled="!isAuthorized([userRoles.CHECK_HAB4])" />
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-xs-2 text-right">
+                                                    <label translate>Page</label>
+                                                </div>
+                                                <div class="col-xs-8 text-center">
+                                                    <input type="text" class="form-control" id="orderToc" ng-model="data.metadataFile2.orderTOC" ng-disabled="!isAuthorized([userRoles.CHECK_HAB4])" />
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-xs-2 text-right">
+                                                    <label translate>titre</label>
+                                                </div>
+                                                <div class="col-xs-8 text-center">
+                                                    <textarea ng-disabled="!isAuthorized([userRoles.CHECK_HAB4])" class="form-control" rows="2" id="labelToc" ng-model="data.metadataFile2.nameTOC"></textarea>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </uib-accordion>
 
-                                 <!-- Début texte OCR 2 -->
+                                <!-- Début texte OCR 2 -->
                                 <uib-accordion ng-if="data.metadataFile2.textOcr.trim().length > 0">
                                     <div class="formBlock margin-0">
                                         <div class="formBlockTitle subTitle" ng-click="accOcr2 = !accOcr2">
-                                            <span class="glyphicon-halflings" ng-class="{false: 'glyphicon-chevron-right',
-                                                             true: 'glyphicon-chevron-down'}[accOcr2]"></span>
+                                            <span
+                                                class="glyphicon-halflings"
+                                                ng-class="{false: 'glyphicon-chevron-right',
+                                                             true: 'glyphicon-chevron-down'}[accOcr2]"
+                                            ></span>
                                             <span translate>Ocr :&nbsp;</span>
                                         </div>
                                         <!-- Infos cachées lorsque l'accordion est replié -->
@@ -389,47 +422,46 @@
                                 </uib-accordion>
 
                                 <div class="formBlockContent without-sem-editable-block margin-l17">
-                                 <div class="row text-center">
-                                    <h5 translate>Notes de contrôle</h5>
+                                    <div class="row text-center">
+                                        <h5 translate>Notes de contrôle</h5>
+                                    </div>
+                                    <div class="row">
+                                        <textarea class="form-control" rows="3" ng-model="data.checkNotes2" maxlength="2000" ng-disabled="!isAuthorized([userRoles.CHECK_HAB4])"></textarea>
+                                    </div>
+                                    <div class="row text-center">
+                                        <label translate>Erreurs</label>
+                                    </div>
+                                    <div class="row">
+                                        <ui-select multiple ng-model="select.selectedErrors2" ng-disabled="!isAuthorized([userRoles.CHECK_HAB4])" theme="select2" on-select="" on-remove="" class="form-control">
+                                            <ui-select-match placeholder="{{::'Erreurs' | translate}}">{{$item.value}} </ui-select-match>
+                                            <ui-select-choices group-by="groupErrorLabels" repeat="item in options.errors | filter: $select.search track by item.key">
+                                                <div ng-bind-html="item.value | highlight: $select.search"></div>
+                                            </ui-select-choices>
+                                        </ui-select>
+                                    </div>
                                 </div>
-                                <div class="row">
-                                    <textarea class="form-control" rows="3" ng-model="data.checkNotes2" maxlength="2000"
-                                              ng-disabled="!isAuthorized([userRoles.CHECK_HAB4])"></textarea>
-                                </div>
-                                <div class="row text-center">
-                                    <label translate>Erreurs</label>
-                                </div>
-                                <div class="row">
-                                    <ui-select multiple ng-model="select.selectedErrors2" ng-disabled="!isAuthorized([userRoles.CHECK_HAB4])"
-                                                                                                                            theme="select2" on-select="" on-remove="" class="form-control">
-                                        <ui-select-match placeholder="{{::'Erreurs' | translate}}">{{$item.value}}</ui-select-match>
-                                        <ui-select-choices group-by="groupErrorLabels" repeat="item in options.errors | filter: $select.search track by item.key">
-                                            <div ng-bind-html="item.value | highlight: $select.search"></div>
-                                        </ui-select-choices>
-                                    </ui-select>
-                                </div>
-                            </div>
                             </div>
                         </div>
                     </uib-accordion>
-                  </div>
                 </div>
             </div>
 
-                <div class="panel-body margin-t0">
-                    <div class="text-right">
-                        <h6 class="text-left"><a class=" margin-t5" ng-click="back()" ng-show="loaded" translate>&lt; Revenir au contrôle global</a></h6>
-			            <div class="btn-group" style="margin-top: -30px;" ng-if="complete && typeView !== 'ThumbnailsView' &&
-                                   (digitalDocument.status === 'TO_CHECK' || digitalDocument.status === 'CHECKING' || digitalDocument.status=== 'PRE_REJECTED')">
-			                <button type="button" class="btn btn-sem2" style="padding: 4px 10px;" ng-click="done()" sem-roles-allowed="CHECK_HAB4">
-			                    <span translate>Terminer contrôle</span>
-			                    <span class="glyphicon-regular ok"></span>
-			                </button>
-			            </div>
+            <div class="panel-body margin-t0">
+                <div class="text-right">
+                    <h6 class="text-left"><a class="margin-t5" ng-click="back()" ng-show="loaded" translate>&lt; Revenir au contrôle global</a></h6>
+                    <div
+                        class="btn-group"
+                        style="margin-top: -30px"
+                        ng-if="complete && typeView !== 'ThumbnailsView' &&
+                               (digitalDocument.status === 'TO_CHECK' || digitalDocument.status === 'CHECKING' || digitalDocument.status=== 'PRE_REJECTED')"
+                    >
+                        <button type="button" class="btn btn-sem2" style="padding: 4px 10px" ng-click="done()" sem-roles-allowed="CHECK_HAB4">
+                            <span translate>Terminer contrôle</span>
+                            <span class="glyphicon-regular ok"></span>
+                        </button>
                     </div>
                 </div>
-
-
+            </div>
         </div>
     </div>
 </div>

@@ -5,13 +5,12 @@ import fr.progilone.pgcn.domain.dto.statistics.StatisticsProcessedDocUnitDTO;
 import fr.progilone.pgcn.domain.exchange.cines.CinesReport;
 import fr.progilone.pgcn.service.exchange.cines.CinesReportService;
 import fr.progilone.pgcn.service.exchange.cines.mapper.CinesReportMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Service dédié à les gestion des vues des unités documentaires

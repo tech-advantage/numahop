@@ -1,8 +1,7 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('NumaEditableFieldCtrl', NumaEditableFieldCtrl);
+    angular.module('numaHopApp.controller').controller('NumaEditableFieldCtrl', NumaEditableFieldCtrl);
 
     function NumaEditableFieldCtrl($parse, ErreurSrvc, gettextCatalog) {
         var ctrl = this;
@@ -11,15 +10,16 @@
         ctrl.getTooltip = getTooltip;
         ctrl.onchange = onchange;
         ctrl.onchangeUiselect = onchangeUiselect;
+        ctrl.getPasswordType = getPasswordType;
 
         init();
 
         function init() {
             if (angular.isUndefined(ctrl.placeholder)) {
-                ctrl.placeholder = " ";
+                ctrl.placeholder = ' ';
             }
             if (angular.isUndefined(ctrl.defaultText)) {
-                ctrl.defaultText = gettextCatalog.getString("Non renseigné");
+                ctrl.defaultText = gettextCatalog.getString('Non renseigné');
             }
             ctrl.currentModel = ctrl.model;
         }
@@ -27,12 +27,11 @@
         /**
          * Génération du libellé affiché quand le champ xeditable est fermé
          * (utilisé pour les listes)
-         * 
+         *
          */
         function getDisplayModel() {
             var display;
             if (angular.isDefined(ctrl.model) && ctrl.model !== null) {
-
                 if (angular.isArray(ctrl.model)) {
                     display = _.chain(ctrl.model)
                         .map(function (value) {
@@ -42,11 +41,10 @@
                             return !!value;
                         })
                         .reduce(function (a, b) {
-                            return a ? a + ", " + b : b;
+                            return a ? a + ', ' + b : b;
                         }, false)
                         .value();
-                }
-                else {
+                } else {
                     display = getDisplayValue(ctrl.model, ctrl.config);
                 }
             }
@@ -54,7 +52,7 @@
         }
 
         function getDisplayValue(value, config) {
-            var display = "";
+            var display = '';
 
             // affichage du champ
             if (config.display) {
@@ -73,19 +71,23 @@
 
         /**
          * Génération du message d'erreur
-         * 
-         * @returns 
+         *
+         * @returns
          */
         function getMessage() {
             if (ctrl.errors && !ctrl.errMsg) {
                 var pErrors = $parse(ctrl.errors)();
-                ctrl.errMsg = _.reduce(pErrors, function (a, b) {
-                    var errMsg = ErreurSrvc.getMessage(b) || b;
-                    return a.length === 0 ? errMsg : a + "<br/>" + errMsg;
-                }, "");
+                ctrl.errMsg = _.reduce(
+                    pErrors,
+                    function (a, b) {
+                        var errMsg = ErreurSrvc.getMessage(b) || b;
+                        return a.length === 0 ? errMsg : a + '<br/>' + errMsg;
+                    },
+                    ''
+                );
             }
             if (!ctrl.errors) {
-                ctrl.errMsg = "";
+                ctrl.errMsg = '';
             }
             return ctrl.errMsg;
         }
@@ -95,6 +97,13 @@
          */
         function getTooltip() {
             return ctrl.tooltipFn({ model: ctrl.currentModel }) || ctrl.tooltip;
+        }
+
+        /**
+         * Tooltip
+         */
+        function getPasswordType() {
+            return ctrl.passwordType;
         }
 
         /**

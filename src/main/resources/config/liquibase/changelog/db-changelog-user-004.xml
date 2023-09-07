@@ -1,15 +1,19 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <!-- Mise à jour des libellés et descriptions des rôles -->
     <changeSet author="progilone" id="pgcn-create-user-4">
         <sql>UPDATE user_authorization SET label='label', description='description' where identifier='identifier'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des configuration des contrôles: visualisation', description='Habilitation contrôle: visualisation' where identifier='CHECK-HAB0'</sql>
-        <sql>UPDATE user_authorization SET label='Gestion des configuration des contrôles: création / modification', description='Habilitation configuration contrôles: création / modification' where identifier='CHECK-HAB1'</sql>
+        <sql
+        >UPDATE user_authorization SET label='Gestion des configuration des contrôles: création / modification', description='Habilitation configuration contrôles: création / modification' where identifier='CHECK-HAB1'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des configuration des contrôles: suppression', description='Habilitation configuration contrôles: suppression' where identifier='CHECK-HAB2'</sql>
-        <sql>UPDATE user_authorization SET label='Gestion des contrôles: visualisation', description='Habilitation contrôles: visualisation des documents contrôlés et du détail des contrôles effectués' where identifier='CHECK-HAB3'</sql>
+        <sql
+        >UPDATE user_authorization SET label='Gestion des contrôles: visualisation', description='Habilitation contrôles: visualisation des documents contrôlés et du détail des contrôles effectués' where identifier='CHECK-HAB3'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des contrôles: effectuer le contrôle', description='Habilitation contrôles: effectuer le contrôle des documents' where identifier='CHECK-HAB4'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des constats d''état: visualisation', description='Habilitation à la gestion des constats d''état: visualisation' where identifier='COND-REPORT-HAB0'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des constats d''état: création', description='Habilitation à la gestion des constats d''état: création' where identifier='COND-REPORT-HAB1'</sql>
@@ -17,26 +21,32 @@
         <sql>UPDATE user_authorization SET label='Gestion des constats d''état: suppression', description='Habilitation à la gestion des constats d''état: suppression' where identifier='COND-REPORT-HAB3'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des constats d''état: export', description='Habilitation à la gestion des constats d''état: export' where identifier='COND-REPORT-HAB4'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des constats d''état: administration', description='Habilitation à la gestion des constats d''état: administration' where identifier='COND-REPORT-HAB5'</sql>
-        <sql>UPDATE user_authorization SET label='Gestion des configurations Internet Archive: visualisation', description='Habilitation à la gestion des configurations Internet Archive: visualisation' where identifier='CONF-INTERNET-ARCHIVE-HAB0'</sql>
-        <sql>UPDATE user_authorization SET label='Gestion des configurations Internet Archive: création / modification', description='Habilitation à la gestion des configurations Internet Archive: création / modification' where identifier='CONF-INTERNET-ARCHIVE-HAB1'</sql>
-        <sql>UPDATE user_authorization SET label='Gestion des configurations Internet Archive: suppression', description='Habilitation à la gestion des configurations Internet Archive: suppression' where identifier='CONF-INTERNET-ARCHIVE-HAB2'</sql>
+        <sql
+        >UPDATE user_authorization SET label='Gestion des configurations Internet Archive: visualisation', description='Habilitation à la gestion des configurations Internet Archive: visualisation' where identifier='CONF-INTERNET-ARCHIVE-HAB0'</sql>
+        <sql
+        >UPDATE user_authorization SET label='Gestion des configurations Internet Archive: création / modification', description='Habilitation à la gestion des configurations Internet Archive: création / modification' where identifier='CONF-INTERNET-ARCHIVE-HAB1'</sql>
+        <sql
+        >UPDATE user_authorization SET label='Gestion des configurations Internet Archive: suppression', description='Habilitation à la gestion des configurations Internet Archive: suppression' where identifier='CONF-INTERNET-ARCHIVE-HAB2'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des livraisons : visualisation', description='Habilitation à la gestion des mappings: visualisation' where identifier='DEL-HAB0'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des livraisons : création', description='Habilitation à la gestion des livraisons : création' where identifier='DEL-HAB1'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des livraisons : modification', description='Habilitation à la gestion des livraisons : modification' where identifier='DEL-HAB2'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des livraisons : suppression', description='Habilitation à la gestion des livraisons : suppression' where identifier='DEL-HAB3'</sql>
-        <sql>UPDATE user_authorization SET label='Gestion des livraisons : édition du bordereau de livraison', description='Habilitation à la gestion des livraisons : édition du bordereau de livraison' where identifier='DEL-HAB4'</sql>
+        <sql
+        >UPDATE user_authorization SET label='Gestion des livraisons : édition du bordereau de livraison', description='Habilitation à la gestion des livraisons : édition du bordereau de livraison' where identifier='DEL-HAB4'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des livraisons : livraison', description='Habilitation à la gestion des livraisons : livraison' where identifier='DEL-HAB5'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des livraisons : export CSV', description='Habilitation à la gestion des livraisons : export CSV' where identifier='DEL-HAB6'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des livraisons : impression', description='Habilitation à la gestion des livraisons : impression' where identifier='DEL-HAB7'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des unités documentaires : visualisation', description='Habilitation à la gestion des unités documentaires : visualisation' where identifier='DOC-UNIT-HAB0'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des unités documentaires : création', description='Habilitation à la gestion des unités documentaires : création' where identifier='DOC-UNIT-HAB1'</sql>
-        <sql>UPDATE user_authorization SET label='Gestion des unités documentaires : modification', description='Habilitation à la gestion des unités documentaires : modification d''un rôle' where identifier='DOC-UNIT-HAB2'</sql>
+        <sql
+        >UPDATE user_authorization SET label='Gestion des unités documentaires : modification', description='Habilitation à la gestion des unités documentaires : modification d''un rôle' where identifier='DOC-UNIT-HAB2'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des unités documentaires : suppression', description='Habilitation à la gestion des unités documentaires : suppression' where identifier='DOC-UNIT-HAB3'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des unités documentaires : export CSV', description='Habilitation à la gestion des unités documentaires : export CSV' where identifier='DOC-UNIT-HAB4'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des imports / exports: visualisation', description='Habilitation à la gestion des imports / exports: visualisation' where identifier='EXC-HAB0'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des imports / exports: suppression', description='Habilitation à la gestion des imports / exports: suppression' where identifier='EXC-HAB1'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des imports / exports: exécution', description='Habilitation à la gestion des imports / exports: exécution' where identifier='EXC-HAB2'</sql>
-        <sql>UPDATE user_authorization SET label='Gestion des imports / exports: recherche sur un serveur Z39.50', description='Habilitation à la gestion des imports / exports: recherche sur un serveur Z39.50' where identifier='EXC-HAB3'</sql>
+        <sql
+        >UPDATE user_authorization SET label='Gestion des imports / exports: recherche sur un serveur Z39.50', description='Habilitation à la gestion des imports / exports: recherche sur un serveur Z39.50' where identifier='EXC-HAB3'</sql>
         <sql>UPDATE user_authorization SET label='Gestion Internet Archive : export', description='Habilitation à l’export Internet Archive' where identifier='EXPORT-INTERNET-ARCHIVE-HAB0'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des configuration FTP: visualisation', description='Habilitation configuration FTP: visualisation' where identifier='FTP-HAB0'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des configuration FTP: création / modification', description='Habilitation configuration FTP: création / modification' where identifier='FTP-HAB1'</sql>
@@ -45,20 +55,29 @@
         <sql>UPDATE user_authorization SET label='Gestion des bibliothèques : modification', description='Habilitation à la gestion des bibliothèque: modification' where identifier='LIB-HAB2'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des bibliothèques : suppression', description='Habilitation à la gestion des bibliothèque: suppression' where identifier='LIB-HAB3'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des bibliothèques : désactivation', description='Habilitation à la gestion des bibliothèques: désactivation' where identifier='LIB-HAB4'</sql>
-        <sql>UPDATE user_authorization SET label='Gestion des bibliothèques : visualisation (hors données de production)', description='Habilitation à la gestion des bibliothèques: visualisation (hors données de production)' where identifier='LIB-HAB5'</sql>
-        <sql>UPDATE user_authorization SET label='Gestion des bibliothèques : visualisation des utilisateurs', description='Habilitation à la gestion des bibliothèques: visualisation des utilisateurs' where identifier='LIB-HAB6'</sql>
-        <sql>UPDATE user_authorization SET label='Gestion des bibliothèques : visualisation des projets et des données de production', description='Habilitation à la gestion des bibliothèques: visualisation des projets et des données de production' where identifier='LIB-HAB7'</sql>
-        <sql>UPDATE user_authorization SET label='Gestion des bibliothèques : export de la liste / d''une fiche au format CSV', description='Habilitation à la gestion des bibliothèques: export de la liste / d''une fiche au format CSV' where identifier='LIB-HAB8'</sql>
-        <sql>UPDATE user_authorization SET label='Gestion des bibliothèques : impression de la liste / une fiche', description='Habilitation à la gestion des bibliothèque: impression de la liste / une fiche' where identifier='LIB-HAB9'</sql>
+        <sql
+        >UPDATE user_authorization SET label='Gestion des bibliothèques : visualisation (hors données de production)', description='Habilitation à la gestion des bibliothèques: visualisation (hors données de production)' where identifier='LIB-HAB5'</sql>
+        <sql
+        >UPDATE user_authorization SET label='Gestion des bibliothèques : visualisation des utilisateurs', description='Habilitation à la gestion des bibliothèques: visualisation des utilisateurs' where identifier='LIB-HAB6'</sql>
+        <sql
+        >UPDATE user_authorization SET label='Gestion des bibliothèques : visualisation des projets et des données de production', description='Habilitation à la gestion des bibliothèques: visualisation des projets et des données de production' where identifier='LIB-HAB7'</sql>
+        <sql
+        >UPDATE user_authorization SET label='Gestion des bibliothèques : export de la liste / d''une fiche au format CSV', description='Habilitation à la gestion des bibliothèques: export de la liste / d''une fiche au format CSV' where identifier='LIB-HAB8'</sql>
+        <sql
+        >UPDATE user_authorization SET label='Gestion des bibliothèques : impression de la liste / une fiche', description='Habilitation à la gestion des bibliothèque: impression de la liste / une fiche' where identifier='LIB-HAB9'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des lots : création', description='Habilitation à la gestion des lots: création' where identifier='LOT-HAB0'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des lots : modification', description='Habilitation à la gestion des lots : modification' where identifier='LOT-HAB1'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des lots : suppression', description='Habilitation à la gestion des lots : suppression' where identifier='LOT-HAB2'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des lots : visualisation', description='Habilitation à la gestion des lots : visualisation' where identifier='LOT-HAB3'</sql>
-        <sql>UPDATE user_authorization SET label='Gestion des lots : contrôle après réception et comptage', description='Habilitation à la gestion des lots : contrôle après réception et comptage (physique ou numérique) : valider, rejeter…' where identifier='LOT-HAB4'</sql>
-        <sql>UPDATE user_authorization SET label='Gestion des lots : export de la liste / une fiche au format CSV', description='Habilitation à la gestion des lots : export la liste / une fiche au format CSV' where identifier='LOT-HAB5'</sql>
-        <sql>UPDATE user_authorization SET label='Gestion des lots : impression de la liste / une fiche', description='Habilitation à la gestion des lots : impression de la liste / une fiche' where identifier='LOT-HAB6'</sql>
+        <sql
+        >UPDATE user_authorization SET label='Gestion des lots : contrôle après réception et comptage', description='Habilitation à la gestion des lots : contrôle après réception et comptage (physique ou numérique) : valider, rejeter…' where identifier='LOT-HAB4'</sql>
+        <sql
+        >UPDATE user_authorization SET label='Gestion des lots : export de la liste / une fiche au format CSV', description='Habilitation à la gestion des lots : export la liste / une fiche au format CSV' where identifier='LOT-HAB5'</sql>
+        <sql
+        >UPDATE user_authorization SET label='Gestion des lots : impression de la liste / une fiche', description='Habilitation à la gestion des lots : impression de la liste / une fiche' where identifier='LOT-HAB6'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des configurations email: visualisation', description='Habilitation à la gestion des configurations email: visualisation' where identifier='MAIL-HAB0'</sql>
-        <sql>UPDATE user_authorization SET label='Gestion des configurations email: création / modification', description='Habilitation à la gestion des configurations email: création / modification' where identifier='MAIL-HAB1'</sql>
+        <sql
+        >UPDATE user_authorization SET label='Gestion des configurations email: création / modification', description='Habilitation à la gestion des configurations email: création / modification' where identifier='MAIL-HAB1'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des configurations email: suppression', description='Habilitation à la gestion des configurations email: suppression' where identifier='MAIL-HAB2'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des mappings: visualisation', description='Habilitation à la gestion des mappings: visualisation' where identifier='MAP-HAB0'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des mappings: création / modification', description='Habilitation à la gestion des mappings: création / modification' where identifier='MAP-HAB1'</sql>
@@ -73,8 +92,10 @@
         <sql>UPDATE user_authorization SET label='Gestion des projets : suspension', description='Habilitation à la gestion des projets : suspension' where identifier='PROJ-HAB5'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des projets : annulation', description='Habilitation à la gestion des projets : annulation' where identifier='PROJ-HAB6'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des projets : visualisation', description='Habilitation à la gestion des projets : visualisation' where identifier='PROJ-HAB7'</sql>
-        <sql>UPDATE user_authorization SET label='Gestion des projets : export de la liste / une fiche au format CSV', description='Habilitation à la gestion des projets : export de la liste / une fiche au format CSV' where identifier='PROJ-HAB8'</sql>
-        <sql>UPDATE user_authorization SET label='Gestion des projets : impression de la liste / une fiche', description='Habilitation à la gestion des projets : impression de la liste / une fiche' where identifier='PROJ-HAB9'</sql>
+        <sql
+        >UPDATE user_authorization SET label='Gestion des projets : export de la liste / une fiche au format CSV', description='Habilitation à la gestion des projets : export de la liste / une fiche au format CSV' where identifier='PROJ-HAB8'</sql>
+        <sql
+        >UPDATE user_authorization SET label='Gestion des projets : impression de la liste / une fiche', description='Habilitation à la gestion des projets : impression de la liste / une fiche' where identifier='PROJ-HAB9'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des profils : visualisation', description='Habilitation à la gestion des profils : visualisation' where identifier='ROLE-HAB0'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des profils : création', description='Habilitation à la gestion des profils : création' where identifier='ROLE-HAB1'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des profils : modification', description='Habilitation à la gestion des profils : modification d''un rôle' where identifier='ROLE-HAB2'</sql>
@@ -82,23 +103,28 @@
         <sql>UPDATE user_authorization SET label='Gestion des profils : désactivation', description='Habilitation à la gestion des profils : désactivation' where identifier='ROLE-HAB4'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des profils : export CSV', description='Habilitation à la gestion des profils : export au format CSV' where identifier='ROLE-HAB5'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des configurations SFTP: visualisation', description='Habilitation à la gestion des configurations SFTP: visualisation' where identifier='SFTP-HAB0'</sql>
-        <sql>UPDATE user_authorization SET label='Gestion des configurations SFTP: création / modification', description='Habilitation à la gestion des configurations SFTP: création / modification' where identifier='SFTP-HAB1'</sql>
+        <sql
+        >UPDATE user_authorization SET label='Gestion des configurations SFTP: création / modification', description='Habilitation à la gestion des configurations SFTP: création / modification' where identifier='SFTP-HAB1'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des configurations SFTP: suppression', description='Habilitation à la gestion des configurations SFTP: suppression' where identifier='SFTP-HAB2'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des templates', description='Habilitation à la gestion des templates (gabarits de génération de documents)' where identifier='TPL-HAB0'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des trains : création', description='Habilitation à la gestion des trains: création' where identifier='TRA-HAB0'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des trains : modification', description='Habilitation à la gestion des trains : modification' where identifier='TRA-HAB1'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des trains : suppression', description='Habilitation à la gestion des trains : suppression' where identifier='TRA-HAB2'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des trains : visualisation', description='Habilitation à la gestion des trains : visualisation' where identifier='TRA-HAB3'</sql>
-        <sql>UPDATE user_authorization SET label='Gestion des trains : contrôle après réception et comptage (physique ou numérique) : valider, rejeter…', description='Habilitation à la gestion des trains : contrôle après réception et comptage (physique ou numérique) : valider, rejeter…' where identifier='TRA-HAB4'</sql>
-        <sql>UPDATE user_authorization SET label='Gestion des trains : export de la liste / une fiche au format CSV', description='Habilitation à la gestion des trains : export de la liste / une fiche au format CSV' where identifier='TRA-HAB5'</sql>
-        <sql>UPDATE user_authorization SET label='Gestion des trains : impression de la liste / une fiche', description='Habilitation à la gestion des trains : impression de la liste / une fiche' where identifier='TRA-HAB6'</sql>
+        <sql
+        >UPDATE user_authorization SET label='Gestion des trains : contrôle après réception et comptage (physique ou numérique) : valider, rejeter…', description='Habilitation à la gestion des trains : contrôle après réception et comptage (physique ou numérique) : valider, rejeter…' where identifier='TRA-HAB4'</sql>
+        <sql
+        >UPDATE user_authorization SET label='Gestion des trains : export de la liste / une fiche au format CSV', description='Habilitation à la gestion des trains : export de la liste / une fiche au format CSV' where identifier='TRA-HAB5'</sql>
+        <sql
+        >UPDATE user_authorization SET label='Gestion des trains : impression de la liste / une fiche', description='Habilitation à la gestion des trains : impression de la liste / une fiche' where identifier='TRA-HAB6'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des utilisateurs : visualisation', description='Habilitation à la gestion des utilisateurs : visualisation' where identifier='USER-HAB0'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des utilisateurs : création', description='Habilitation à la gestion des utilisateurs : création' where identifier='USER-HAB1'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des utilisateurs : modification', description='Habilitation à la gestion des utilisateurs : modification d''un utilisateur' where identifier='USER-HAB2'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des utilisateurs : suppression', description='Habilitation à la gestion des utilisateurs : suppression' where identifier='USER-HAB3'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des utilisateurs : désactivation', description='Habilitation à la gestion des utilisateurs : désactivation' where identifier='USER-HAB4'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des utilisateurs : export CSV', description='Habilitation à la gestion des utilisateurs : export au format CSV' where identifier='USER-HAB5'</sql>
-        <sql>UPDATE user_authorization SET label='Gestion des utilisateurs : modification de son propre profil', description='Habilitation à la gestion des utilisateurs : modification de son propre profil' where identifier='USER-HAB6'</sql>
+        <sql
+        >UPDATE user_authorization SET label='Gestion des utilisateurs : modification de son propre profil', description='Habilitation à la gestion des utilisateurs : modification de son propre profil' where identifier='USER-HAB6'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des serveurs Z39.50: visualisation', description='Habilitation serveurs Z39.50: visualisation' where identifier='Z3950-HAB0'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des serveurs Z39.50: création / modification', description='Habilitation serveurs Z39.50: création / modification' where identifier='Z3950-HAB1'</sql>
         <sql>UPDATE user_authorization SET label='Gestion des serveurs Z39.50: suppression', description='Habilitation serveurs Z39.50: suppression' where identifier='Z3950-HAB2'</sql>
@@ -109,12 +135,6 @@
             VALUES
             ('ADMINISTRATION','ADMINISTRATION-LIB','ADMINISTRATION-LIB','Administration: visualisation inter-bibliothèque','Habilitation à la visualisation des données d''administration des autres bibliothèques (mapping)',0),
             ('DOCUMENT','DOCUMENT-LIB','DOCUMENT-LIB','Gestion des unités documentaires: visualisation inter-bibliothèque','Habilitation à la gestion des unités documentaires: visualisation des données des autres bibliothèques',0)
-        </sql>
-        <sql>
-            INSERT INTO user_role_authorization(user_authorization, role)
-            VALUES
-            ('ADMINISTRATION-LIB','c8505374-370b-4090-96c7-5a0a9eb6e481'),
-            ('DOCUMENT-LIB','c8505374-370b-4090-96c7-5a0a9eb6e481')
         </sql>
 
     </changeSet>

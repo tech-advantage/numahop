@@ -5,36 +5,39 @@
 // Généré le : 2016.12.29 à 11:54:46 AM CET
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.mets;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAnyAttribute;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlID;
+import jakarta.xml.bind.annotation.XmlIDREF;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAnyAttribute;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlID;
-import javax.xml.bind.annotation.XmlIDREF;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlSeeAlso;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
-
 
 /**
  * fileGrpType: Complex Type for File Groups
- * 				The file group is used to cluster all of the digital files composing a digital library object in a hierarchical arrangement (fileGrp is recursively defined to enable the creation of the hierarchy).  Any file group may contain zero or more file elements.  File elements in turn can contain one or more FLocat elements (a pointer to a file containing content for this object) and/or a FContent element (the contents of the file, in either XML or  Base64 encoding).
+ * The file group is used to cluster all of the digital files composing a digital library object in a hierarchical arrangement (fileGrp is recursively
+ * defined to enable the creation of the hierarchy). Any file group may contain zero or more file elements. File elements in turn can contain one or
+ * more FLocat elements (a pointer to a file containing content for this object) and/or a FContent element (the contents of the file, in either XML or
+ * Base64 encoding).
  *
  *
- * <p>Classe Java pour fileGrpType complex type.
+ * <p>
+ * Classe Java pour fileGrpType complex type.
  *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="fileGrpType"&gt;
@@ -57,13 +60,10 @@ import javax.xml.namespace.QName;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "fileGrpType", propOrder = {
-    "fileGrp",
-    "file"
-})
-@XmlSeeAlso({
-    MetsType.FileSec.FileGrp.class
-})
+@XmlType(name = "fileGrpType",
+         propOrder = {"fileGrp",
+                      "file"})
+@XmlSeeAlso({MetsType.FileSec.FileGrp.class})
 public class FileGrpType {
 
     protected List<FileGrpType> fileGrp;
@@ -96,8 +96,9 @@ public class FileGrpType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getFileGrp().add(newItem);
+     * getFileGrp().add(newItem);
      * </pre>
      *
      *
@@ -125,8 +126,9 @@ public class FileGrpType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getFile().add(newItem);
+     * getFile().add(newItem);
      * </pre>
      *
      *
@@ -147,8 +149,8 @@ public class FileGrpType {
      * Obtient la valeur de la propriété id.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getID() {
@@ -159,8 +161,8 @@ public class FileGrpType {
      * Définit la valeur de la propriété id.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setID(String value) {
@@ -171,8 +173,8 @@ public class FileGrpType {
      * Obtient la valeur de la propriété versdate.
      *
      * @return
-     *     possible object is
-     *     {@link LocalDateTime }
+     *         possible object is
+     *         {@link LocalDateTime }
      *
      */
     public LocalDateTime getVERSDATE() {
@@ -183,8 +185,8 @@ public class FileGrpType {
      * Définit la valeur de la propriété versdate.
      *
      * @param value
-     *     allowed object is
-     *     {@link LocalDateTime }
+     *            allowed object is
+     *            {@link LocalDateTime }
      *
      */
     public void setVERSDATE(LocalDateTime value) {
@@ -202,8 +204,9 @@ public class FileGrpType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getADMID().add(newItem);
+     * getADMID().add(newItem);
      * </pre>
      *
      *
@@ -224,8 +227,8 @@ public class FileGrpType {
      * Obtient la valeur de la propriété use.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getUSE() {
@@ -236,8 +239,8 @@ public class FileGrpType {
      * Définit la valeur de la propriété use.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setUSE(String value) {
@@ -256,7 +259,7 @@ public class FileGrpType {
      *
      *
      * @return
-     *     always non-null
+     *         always non-null
      */
     public Map<QName, String> getOtherAttributes() {
         return otherAttributes;

@@ -1,17 +1,15 @@
 package fr.progilone.pgcn.service.exchange.marc.script.test;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import fr.progilone.pgcn.service.exchange.marc.script.AbstractScriptTest;
-import org.junit.Test;
+import java.util.HashMap;
+import java.util.Map;
+import javax.script.ScriptException;
+import org.junit.jupiter.api.Test;
 import org.marc4j.marc.DataField;
 import org.marc4j.marc.MarcFactory;
 import org.marc4j.marc.Record;
-
-import javax.script.ScriptException;
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Created by Sebastien on 06/12/2016.
@@ -22,7 +20,7 @@ public class ExistsConditionTest extends AbstractScriptTest {
 
     @Test
     public void test() {
-        ExistsCondition condition = new ExistsCondition("test", null);
+        final ExistsCondition condition = new ExistsCondition("test", null);
 
         final DataField fld = MARC_FACTORY.newDataField("200", ' ', ' ');
         fld.addSubfield(MARC_FACTORY.newSubfield('a', "titre"));

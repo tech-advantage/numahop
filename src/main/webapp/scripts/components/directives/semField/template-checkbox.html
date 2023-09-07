@@ -2,11 +2,11 @@
     <div ng-class="labelclass || 'col-xs-4'" class="text-right" ng-if="label">
         <label uib-tooltip="{{tooltip}}">{{::label}}</label>
     </div>
-	<div class="model-container" ng-class="{true: (fieldclass || defaultcolsm) + ' has-error', false: (fieldclass || defaultcolsm) }[!!errMsg]">
+    <div class="model-container" ng-class="{true: (fieldclass || defaultcolsm) + ' has-error', false: (fieldclass || defaultcolsm) }[!!errMsg]">
         <div class="checkbox checkbox-sid-main">
             <input main-field type="{{type}}" ng-model="model" ng-disabled="readonly" />
             <label onclick="$(this).prev('input').click()" class="no-select"></label>
         </div>
         <div class="help-block" ng-show="errMsg" ng-bind-html="errMsg"></div>
-	</div>
+    </div>
 </div>

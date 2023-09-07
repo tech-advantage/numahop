@@ -1,43 +1,5 @@
 package fr.progilone.pgcn.service.exchange.cines;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.math.BigInteger;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
-import javax.xml.XMLConstants;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.validation.SchemaFactory;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.xml.sax.SAXException;
-
-import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
-
 import fr.progilone.pgcn.domain.document.DigitalDocument;
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.dto.document.BibliographicRecordDcDTO;
@@ -65,14 +27,46 @@ import fr.progilone.pgcn.service.document.TableOfContentsService;
 import fr.progilone.pgcn.service.exchange.ead.ExportEadService;
 import fr.progilone.pgcn.service.exchange.iiif.manifest.Structures;
 import fr.progilone.pgcn.service.util.FileUtils;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.Unmarshaller;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.math.BigInteger;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import javax.xml.XMLConstants;
+import javax.xml.validation.SchemaFactory;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.xml.sax.SAXException;
 
 /**
  * Service de génération du fichier mets.xml
  *
  * @see <a href="http://www.loc.gov/standards/mets/METSOverview.v2_fr.html">description</a>
  * @see <a href="http://www.loc.gov/standards/mets/mets.xsd">xsd</a><br/>
- * <p>
- * Created by Sébastien on 28/12/2016.
+ *      <p>
+ *      Created by Sébastien on 28/12/2016.
  */
 @Service
 public class ExportMetsService {
@@ -83,8 +77,8 @@ public class ExportMetsService {
     private static final fr.progilone.pgcn.domain.jaxb.mets.ObjectFactory METS_FACTORY = new fr.progilone.pgcn.domain.jaxb.mets.ObjectFactory();
     private static final String METS_SCHEMA_VALIDATION = "https://www.loc.gov/standards/mets/mets.xsd";
     private static final String METS_SCHEMA_LOCATION = "http://www.loc.gov/METS/ https://www.loc.gov/standards/mets/mets.xsd";
-    // #4412 aout 2019 - changement au cines  (bien formé, mais pas valide White spaces are required between publicId and systemId)...                                                   
-    //+ "http://purl.org/dc/elements/1.1/ http://dublincore.org/schemas/xmls/simpledc20021212.xsd";
+    // #4412 aout 2019 - changement au cines (bien formé, mais pas valide White spaces are required between publicId and systemId)...
+    // + "http://purl.org/dc/elements/1.1/ http://dublincore.org/schemas/xmls/simpledc20021212.xsd";
 
     private static final Logger LOG = LoggerFactory.getLogger(ExportMetsService.class);
 
@@ -93,9 +87,7 @@ public class ExportMetsService {
     private final TableOfContentsService tocService;
 
     @Autowired
-    public ExportMetsService(final ExportEadService exportEadService,
-                             final MetaDatasCheckService mdCheckService,
-                             final TableOfContentsService tocService) {
+    public ExportMetsService(final ExportEadService exportEadService, final MetaDatasCheckService mdCheckService, final TableOfContentsService tocService) {
         this.exportEadService = exportEadService;
         this.mdCheckService = mdCheckService;
         this.tocService = tocService;
@@ -136,13 +128,12 @@ public class ExportMetsService {
         }
 
         dmdSec.addAll(mdSecs);
-        
+
         final String libraryId = docUnit.getLibrary().getIdentifier();
 
         // amdSec - Recup depuis mets de livraison s'il existe
-        docUnit.getDigitalDocuments().stream()
-                            .findFirst().ifPresent(dd -> {
-                                    getMasterAmdSec(dd.getDigitalId(), libraryId).ifPresent(asecs -> mets.getAmdSec().addAll(asecs));
+        docUnit.getDigitalDocuments().stream().findFirst().ifPresent(dd -> {
+            getMasterAmdSec(dd.getDigitalId(), libraryId).ifPresent(asecs -> mets.getAmdSec().addAll(asecs));
         });
 
         // Inventaire des fichiers
@@ -163,7 +154,6 @@ public class ExportMetsService {
         m.setProperty(Marshaller.JAXB_ENCODING, StandardCharsets.UTF_8.name());
         m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         m.setProperty(Marshaller.JAXB_SCHEMA_LOCATION, METS_SCHEMA_LOCATION);
-        m.setProperty("com.sun.xml.bind.namespacePrefixMapper", new MetsNamespacePrefixMapper());
         m.marshal(mets, out);
     }
 
@@ -211,9 +201,7 @@ public class ExportMetsService {
             final Optional<Mets> inputMets = mdCheckService.getMetaDataMetsFile(digitalId, libraryId);
             if (inputMets.isPresent()) {
                 final String TYPE_STRUCT_PHYSICAL = "physical";
-                return inputMets.get().getStructMap().stream()
-                                            .filter(smt -> StringUtils.equals(smt.getTYPE(), TYPE_STRUCT_PHYSICAL))
-                                            .findAny();
+                return inputMets.get().getStructMap().stream().filter(smt -> StringUtils.equals(smt.getTYPE(), TYPE_STRUCT_PHYSICAL)).findAny();
             }
         }
         return Optional.empty();
@@ -316,17 +304,14 @@ public class ExportMetsService {
         List<CheckSummedStoredFile> realListStoredFiles = listStoredFiles;
         if (!format.equals("PDF")) {
             // elimine le master pdf
-            realListStoredFiles = listStoredFiles.stream()
-                                                 .filter(cssf -> cssf.getStoredFile().getPage().getNumber() != null)
-                                                 .collect(Collectors.toList());
+            realListStoredFiles = listStoredFiles.stream().filter(cssf -> cssf.getStoredFile().getPage().getNumber() != null).collect(Collectors.toList());
         }
 
         final List<CheckSummedStoredFile> finalRealListStoredFiles = realListStoredFiles;
-        IntStream.range(0, realListStoredFiles.size())
-                 .forEach(idx -> {
-                     final CheckSummedStoredFile cSStoredFile = finalRealListStoredFiles.get(idx);
-                     fileGrp.getFile().add(buildFileGrp(cSStoredFile, idx));
-                 });
+        IntStream.range(0, realListStoredFiles.size()).forEach(idx -> {
+            final CheckSummedStoredFile cSStoredFile = finalRealListStoredFiles.get(idx);
+            fileGrp.getFile().add(buildFileGrp(cSStoredFile, idx));
+        });
         fileSec.getFileGrp().add(fileGrp);
         return fileSec;
     }
@@ -358,8 +343,8 @@ public class ExportMetsService {
         try {
             checkSummed.setCheckSum(fr.progilone.pgcn.service.util.FileUtils.checkSum(sourceFile, FileUtils.CheckSumType.MD5));
         } catch (final NoSuchAlgorithmException e) {
-                LOG.error(e.getMessage(), e);
-                throw new PgcnUncheckedException(e);
+            LOG.error(e.getMessage(), e);
+            throw new PgcnUncheckedException(e);
         }
         return checkSummed;
     }
@@ -379,12 +364,12 @@ public class ExportMetsService {
         final DigitalDocument dDoc = getDigitalDocFromDocUnit(docUnit).orElse(null);
         final String libraryId = docUnit.getLibrary().getIdentifier();
         // structure physique mets initial
-        final Optional<StructMapType> initialStructMets = dDoc != null ? getPhysicalStruct(dDoc.getIdentifier(), libraryId) : Optional.empty();
+        final Optional<StructMapType> initialStructMets = dDoc != null ? getPhysicalStruct(dDoc.getIdentifier(), libraryId)
+                                                                       : Optional.empty();
         final List<DivType> listDivsToc = new ArrayList<>();
         // structure excel initial
-        final Optional<List<Structures>> initialStructExcel = initialStructMets.isPresent()?
-                                                                            Optional.empty():
-                                                                            getExcelStructures(dDoc, docUnit.getLabel());
+        final Optional<List<Structures>> initialStructExcel = initialStructMets.isPresent() ? Optional.empty()
+                                                                                            : getExcelStructures(dDoc, docUnit.getLabel());
 
         final DivType div = METS_FACTORY.createDivType();
         structMap.setID("structmap_physical");
@@ -401,56 +386,59 @@ public class ExportMetsService {
         }
 
         final List<CheckSummedStoredFile> realListStoredFiles = listStoredFiles.stream()
-                            .filter(cssf-> cssf.getStoredFile().getPage().getNumber() != null) // elimine le master pdf
-                            .collect(Collectors.toList());
-        final int firstIndex = realListStoredFiles.isEmpty() ? 0 : realListStoredFiles.get(0).getStoredFile().getPage().getNumber();  // demarre à 0 ou 1 ?
+                                                                               .filter(cssf -> cssf.getStoredFile().getPage().getNumber() != null) // elimine
+                                                                                                                                                   // le
+                                                                                                                                                   // master
+                                                                                                                                                   // pdf
+                                                                               .collect(Collectors.toList());
+        final int firstIndex = realListStoredFiles.isEmpty() ? 0
+                                                             : realListStoredFiles.get(0).getStoredFile().getPage().getNumber();  // demarre à 0 ou 1
+                                                                                                                                  // ?
 
-        fileSec.getFileGrp()
-                .stream()
-                .filter(fg -> StringUtils.equalsIgnoreCase("master", fg.getUSE()))
-                .forEach(fg -> {
+        fileSec.getFileGrp().stream().filter(fg -> StringUtils.equalsIgnoreCase("master", fg.getUSE())).forEach(fg -> {
 
-                    IntStream.range(0, realListStoredFiles.size())
-                                                .forEach(idx -> {
-                        final StoredFile sf = realListStoredFiles.get(idx).getStoredFile();
-                        final int rectifiedIndex = idx+firstIndex;
+            IntStream.range(0, realListStoredFiles.size()).forEach(idx -> {
+                final StoredFile sf = realListStoredFiles.get(idx).getStoredFile();
+                final int rectifiedIndex = idx + firstIndex;
 
-                        final FileType ft = fg.getFile().get(idx);
+                final FileType ft = fg.getFile().get(idx);
 
-                        final DivType subDiv = METS_FACTORY.createDivType();
-                        final Fptr fptr = METS_FACTORY.createDivTypeFptr();
-                        fptr.setFILEID(ft);
-                        subDiv.getFptr().add(fptr);
+                final DivType subDiv = METS_FACTORY.createDivType();
+                final Fptr fptr = METS_FACTORY.createDivTypeFptr();
+                fptr.setFILEID(ft);
+                subDiv.getFptr().add(fptr);
 
-                        subDiv.setORDER(BigInteger.valueOf(rectifiedIndex));
-                        subDiv.setID("id_"+ rectifiedIndex);
+                subDiv.setORDER(BigInteger.valueOf(rectifiedIndex));
+                subDiv.setID("id_" + rectifiedIndex);
 
-                        if (StringUtils.isAllBlank(sf.getOrderToc(), sf.getTitleToc(), sf.getTypeToc())) {
-                            // recup depuis le mets de la livraison s'il existe
-                            if (initialStructMets.isPresent()) {
-                                final DivType divToc = listDivsToc.get(idx);
-                                subDiv.setLABEL(divToc.getLABEL());
-                                subDiv.setORDERLABEL(divToc.getORDERLABEL());
-                                subDiv.setTYPE(divToc.getTYPE());
-                            } else if (initialStructExcel.isPresent()) {
-                                 // recup depuis le xlsx de la livraison s'il existe
-                                 if (initialStructExcel.get().size() > idx+2 &&
-                                         initialStructExcel.get().get(idx+2) != null) {
-                                     final Map<String, Object> excelToc = initialStructExcel.get().get(idx+2).getAdditionalProperties();
-                                     subDiv.setLABEL(excelToc.get("label")!=null?excelToc.get("label").toString():"");
-                                     subDiv.setORDERLABEL(excelToc.get("order")!=null?excelToc.get("order").toString():"");
-                                     subDiv.setTYPE(excelToc.get("type")!=null?excelToc.get("type").toString():"");
-                                 }
-                            }
-                        } else {
-                            // et sinon Recup des données saisies au controle.
-                            subDiv.setLABEL(sf.getTitleToc());
-                            subDiv.setORDERLABEL(sf.getOrderToc());
-                            subDiv.setTYPE(sf.getTypeToc());
+                if (StringUtils.isAllBlank(sf.getOrderToc(), sf.getTitleToc(), sf.getTypeToc())) {
+                    // recup depuis le mets de la livraison s'il existe
+                    if (initialStructMets.isPresent()) {
+                        final DivType divToc = listDivsToc.get(idx);
+                        subDiv.setLABEL(divToc.getLABEL());
+                        subDiv.setORDERLABEL(divToc.getORDERLABEL());
+                        subDiv.setTYPE(divToc.getTYPE());
+                    } else if (initialStructExcel.isPresent()) {
+                        // recup depuis le xlsx de la livraison s'il existe
+                        if (initialStructExcel.get().size() > idx + 2 && initialStructExcel.get().get(idx + 2) != null) {
+                            final Map<String, Object> excelToc = initialStructExcel.get().get(idx + 2).getAdditionalProperties();
+                            subDiv.setLABEL(excelToc.get("label") != null ? excelToc.get("label").toString()
+                                                                          : "");
+                            subDiv.setORDERLABEL(excelToc.get("order") != null ? excelToc.get("order").toString()
+                                                                               : "");
+                            subDiv.setTYPE(excelToc.get("type") != null ? excelToc.get("type").toString()
+                                                                        : "");
                         }
-                        div.getDiv().add(subDiv);
-                    });
-                });
+                    }
+                } else {
+                    // et sinon Recup des données saisies au controle.
+                    subDiv.setLABEL(sf.getTitleToc());
+                    subDiv.setORDERLABEL(sf.getOrderToc());
+                    subDiv.setTYPE(sf.getTypeToc());
+                }
+                div.getDiv().add(subDiv);
+            });
+        });
         structMap.setDiv(div);
         return structMap;
     }
@@ -478,15 +466,14 @@ public class ExportMetsService {
     private Optional<List<Structures>> getExcelStructures(final DigitalDocument dDoc, final String title) {
 
         Optional<List<Structures>> struct = Optional.empty();
- 
+
         if (dDoc != null) {
             final String libraryId = dDoc.getDocUnit().getLibrary().getIdentifier();
             final Optional<File> excel = mdCheckService.getMetaDataExcelFile(dDoc.getDigitalId(), libraryId);
             if (excel.isPresent() && excel.get().canRead()) {
                 try (final InputStream is = org.apache.commons.io.FileUtils.openInputStream(excel.get())) {
-                    final List<Structures> structures =
-                                    tocService.getTableOfContentExcel(dDoc.getIdentifier(), is, title);
-                    if(CollectionUtils.isNotEmpty(structures)) {
+                    final List<Structures> structures = tocService.getTableOfContentExcel(dDoc.getIdentifier(), is, title);
+                    if (CollectionUtils.isNotEmpty(structures)) {
                         struct = Optional.of(structures);
                     }
 
@@ -505,9 +492,7 @@ public class ExportMetsService {
      * @param dcProperties
      * @param getElement
      */
-    private void addSimpleLiteral(final MdSecType.MdWrap.XmlData xmlData,
-                                  final List<String> dcProperties,
-                                  final Function<SimpleLiteral, JAXBElement<SimpleLiteral>> getElement) {
+    private void addSimpleLiteral(final MdSecType.MdWrap.XmlData xmlData, final List<String> dcProperties, final Function<SimpleLiteral, JAXBElement<SimpleLiteral>> getElement) {
         if (!dcProperties.isEmpty()) {
             // #1916 : pas de concatenation des proprietes
             dcProperties.forEach(p -> {
@@ -515,26 +500,6 @@ public class ExportMetsService {
                 value.getContent().add(p);
                 xmlData.getAny().add(getElement.apply(value));
             });
-        }
-    }
-
-    /**
-     * Personnalisation des préfixes des namespaces utilisés
-     */
-    private static class MetsNamespacePrefixMapper extends NamespacePrefixMapper {
-
-        private final Map<String, String> namespaceMap = new HashMap<>();
-
-        public MetsNamespacePrefixMapper() {
-            namespaceMap.put("http://www.loc.gov/METS/", "mets");
-            namespaceMap.put("http://purl.org/dc/elements/1.1/", "dc");
-            namespaceMap.put("http://www.w3.org/1999/xlink", "xlink");
-            namespaceMap.put("urn:isbn:1-931666-22-9", "ead");
-        }
-
-        @Override
-        public String getPreferredPrefix(final String namespaceUri, final String suggestion, final boolean requirePrefix) {
-            return namespaceMap.getOrDefault(namespaceUri, suggestion);
         }
     }
 }

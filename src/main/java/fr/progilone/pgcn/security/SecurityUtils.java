@@ -1,12 +1,11 @@
 package fr.progilone.pgcn.security;
 
+import fr.progilone.pgcn.domain.user.Lang;
+import fr.progilone.pgcn.domain.util.CustomUserDetails;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import fr.progilone.pgcn.domain.user.Lang;
-import fr.progilone.pgcn.domain.util.CustomUserDetails;
 
 /**
  * Utility class for Spring Security.
@@ -86,8 +85,6 @@ public final class SecurityUtils {
 
     /**
      * Change la langue de l'utilisateur connecté.
-     *
-     * @param lang
      */
     public static void setCurrentLanguage(final Lang lang) {
         final SecurityContext securityContext = SecurityContextHolder.getContext();

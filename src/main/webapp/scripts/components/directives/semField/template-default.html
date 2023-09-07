@@ -2,13 +2,22 @@
     <div ng-class="labelclass || 'col-xs-4'" class="text-right" ng-if="label">
         <label uib-tooltip="{{tooltip}}">{{::label}}</label>
         <!-- Mandatory -->
-        <span class="text-danger cursor-help" 
-            uib-tooltip="{{ ::'Ce champ est obligatoire' | translate }}" ng-if="mandatory">*</span>
+        <span class="text-danger cursor-help" uib-tooltip="{{ ::'Ce champ est obligatoire' | translate }}" ng-if="mandatory">*</span>
     </div>
-	<div class="model-container" ng-class="{true: (fieldclass || defaultcolsm) + ' has-error', false: (fieldclass || defaultcolsm) }[!!errMsg]">
-		<input main-field type="{{type}}" class="form-control" ng-model="model" ng-readonly="readonly"
-               placeholder="{{placeholder || label}}" min="{{min}}" max="{{max}}" step="{{step}}"
-               ng-model-options="innerModelOptions" sem-precision="{{precision}}"/>
-		<div class="help-block" ng-show="errMsg" ng-bind-html="errMsg"></div>
-	</div>
+    <div class="model-container" ng-class="{true: (fieldclass || defaultcolsm) + ' has-error', false: (fieldclass || defaultcolsm) }[!!errMsg]">
+        <input
+            main-field
+            type="{{type}}"
+            class="form-control"
+            ng-model="model"
+            ng-readonly="readonly"
+            placeholder="{{placeholder || label}}"
+            min="{{min}}"
+            max="{{max}}"
+            step="{{step}}"
+            ng-model-options="innerModelOptions"
+            sem-precision="{{precision}}"
+        />
+        <div class="help-block" ng-show="errMsg" ng-bind-html="errMsg"></div>
+    </div>
 </div>

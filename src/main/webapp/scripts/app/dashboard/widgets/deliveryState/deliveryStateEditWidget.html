@@ -1,20 +1,17 @@
 <!-- Bibliothèques -->
-<sem-field sem-type="uiselect" sem-label="{{::'Bibliothèque' | translate}}" 
-           sem-model="config.library" sem-label-class="col-xs-3" sem-field-class="col-xs-9"
-           sem-option-data="mainCtrl.options.libraries"></sem-field>
+<sem-field sem-type="uiselect" sem-label="{{::'Bibliothèque' | translate}}" sem-model="config.library" sem-label-class="col-xs-3" sem-field-class="col-xs-9" sem-option-data="mainCtrl.options.libraries"></sem-field>
 <!-- Projet -->
-<sem-field sem-type="uiselect" sem-label="{{::'Projet' | translate}}" 
-            sem-label-class="col-xs-3" sem-field-class="col-xs-9"
-            sem-model="config.project" sem-option-data="mainCtrl.options.projects"></sem-field>
+<sem-field sem-type="uiselect" sem-label="{{::'Projet' | translate}}" sem-label-class="col-xs-3" sem-field-class="col-xs-9" sem-model="config.project" sem-option-data="mainCtrl.options.projects"></sem-field>
 <!-- Lot -->
-<sem-field sem-type="uiselect" sem-label="{{::'Lot' | translate}}" 
-            sem-label-class="col-xs-3" sem-field-class="col-xs-9"
-            sem-model="config.lot" sem-option-data="mainCtrl.options.lots"></sem-field>
+<sem-field sem-type="uiselect" sem-label="{{::'Lot' | translate}}" sem-label-class="col-xs-3" sem-field-class="col-xs-9" sem-model="config.lot" sem-option-data="mainCtrl.options.lots"></sem-field>
 <!-- Statut -->
-<sem-field sem-type="uiselect" sem-label="{{::'Statut de la livraison' | translate}}" 
-           sem-label-class="col-xs-3" sem-field-class="col-xs-9"
-           sem-model="config.status" sem-option-data="mainCtrl.options.status"></sem-field>
+<sem-field sem-type="uiselect" sem-label="{{::'Statut de la livraison' | translate}}" sem-label-class="col-xs-3" sem-field-class="col-xs-9" sem-model="config.status" sem-option-data="mainCtrl.options.status"></sem-field>
 <!-- Depuis le -->
-<sem-field sem-type="semnumber" sem-model="config.from"
-           sem-label="{{::'Depuis (jours)' | translate}}" sem-placeholder="{{::'Depuis (jours)' | translate}}"
-           sem-label-class="col-xs-3" sem-field-class="col-xs-9"></sem-field>
+<sem-field
+    sem-type="semnumber"
+    sem-model="config.from"
+    sem-label="{{::'Depuis (jours)' | translate}}"
+    sem-placeholder="{{::'Depuis (jours)' | translate}}"
+    sem-label-class="col-xs-3"
+    sem-field-class="col-xs-9"
+></sem-field>

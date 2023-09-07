@@ -10,6 +10,7 @@ import org.mapstruct.factory.Mappers;
  */
 @Mapper
 public interface SimpleFTPConfigurationMapper {
+
     SimpleFTPConfigurationMapper INSTANCE = Mappers.getMapper(SimpleFTPConfigurationMapper.class);
 
     SimpleFTPConfigurationDTO ftpConfigurationToSimpleFTPConfigurationDTO(FTPConfiguration ftpConfiguration);

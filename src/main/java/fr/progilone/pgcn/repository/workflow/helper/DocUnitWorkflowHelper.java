@@ -1,10 +1,9 @@
 package fr.progilone.pgcn.repository.workflow.helper;
 
-import com.mysema.query.BooleanBuilder;
-import com.mysema.query.jpa.JPASubQuery;
-import com.mysema.query.jpa.impl.JPAQuery;
-import com.mysema.query.types.Predicate;
-
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Predicate;
+import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.impl.JPAQuery;
 import fr.progilone.pgcn.domain.administration.QInternetArchiveCollection;
 import fr.progilone.pgcn.domain.administration.omeka.QOmekaList;
 import fr.progilone.pgcn.domain.delivery.QDeliveredDocument;
@@ -19,11 +18,14 @@ import fr.progilone.pgcn.repository.util.QueryDSLBuilderUtils;
 
 public class DocUnitWorkflowHelper {
 
-    public static JPAQuery getFindDocUnitWorkflowQuery(final JPAQuery query,
-                                                       final DocUnitWorkflowSearchBuilder searchBuilder,
-                                                       final QDocUnit qDocUnit,
-                                                       final QDocUnitWorkflow qDocUnitWorkflow,
-                                                       final QDocUnitState qDocUnitState) {
+    private DocUnitWorkflowHelper() {
+    }
+
+    public static <T> JPAQuery<T> getFindDocUnitWorkflowQuery(final JPAQuery<T> query,
+                                                              final DocUnitWorkflowSearchBuilder searchBuilder,
+                                                              final QDocUnit qDocUnit,
+                                                              final QDocUnitWorkflow qDocUnitWorkflow,
+                                                              final QDocUnitState qDocUnitState) {
 
         final BooleanBuilder builder = new BooleanBuilder();
 
@@ -40,18 +42,17 @@ public class DocUnitWorkflowHelper {
 
             final BooleanBuilder subBuilder = new BooleanBuilder().and(qDeliveredDocument.delivery.identifier.in(deliveries))
                                                                   .and(qDigitalDocument.docUnit.identifier.eq(qDocUnit.identifier));
-            final Predicate subQuery = new JPASubQuery().from(qDeliveredDocument)
-                                                        .innerJoin(qDeliveredDocument.digitalDocument, qDigitalDocument)
-                                                        .where(subBuilder.getValue())
-                                                        .exists();
+            final Predicate subQuery = JPAExpressions.select(qDeliveredDocument)
+                                                     .from(qDeliveredDocument)
+                                                     .innerJoin(qDeliveredDocument.digitalDocument, qDigitalDocument)
+                                                     .where(subBuilder)
+                                                     .exists();
             builder.and(subQuery);
         });
         // Rôles des intervenants
         searchBuilder.getRoles().ifPresent(roles -> {
             final QUser qUser = QUser.user;
-            builder.and(new JPASubQuery().from(qUser)
-                                         .where(new BooleanBuilder().and(qUser.role.identifier.in(roles)).and(qUser.login.eq(qDocUnitState.user)))
-                                         .exists());
+            builder.and(JPAExpressions.select(qUser).from(qUser).where(new BooleanBuilder().and(qUser.role.identifier.in(roles)).and(qUser.login.eq(qDocUnitState.user))).exists());
         });
         // Workflows
         searchBuilder.getWorkflows().ifPresent(workflows -> {
@@ -62,20 +63,19 @@ public class DocUnitWorkflowHelper {
         // Étapes terminées avec succès
         searchBuilder.getStates().ifPresent(states -> {
             if (searchBuilder.isWithFailedStatuses()) {
-                builder.and(qDocUnitState.discriminator.in(states)).and(qDocUnitState.status.eq(WorkflowStateStatus.FINISHED)
-                                                                        .or(qDocUnitState.status.eq(WorkflowStateStatus.FAILED)));
+                builder.and(qDocUnitState.discriminator.in(states))
+                       .and(qDocUnitState.status.eq(WorkflowStateStatus.FINISHED).or(qDocUnitState.status.eq(WorkflowStateStatus.FAILED)));
             } else {
                 builder.and(qDocUnitState.discriminator.in(states)).and(qDocUnitState.status.eq(WorkflowStateStatus.FINISHED));
             }
-            
+
         });
         // Période
         searchBuilder.getFromDate().ifPresent(fromDate -> {
             builder.and(new BooleanBuilder().or(qDocUnitState.endDate.isNull()).or(qDocUnitState.endDate.after(fromDate.atStartOfDay())));
         });
         searchBuilder.getToDate().ifPresent(toDate -> {
-            builder.and(new BooleanBuilder().or(qDocUnitState.startDate.isNull())
-                                            .or(qDocUnitState.startDate.before(toDate.plusDays(1).atStartOfDay())));
+            builder.and(new BooleanBuilder().or(qDocUnitState.startDate.isNull()).or(qDocUnitState.startDate.before(toDate.plusDays(1).atStartOfDay())));
         });
         // Type de document
         searchBuilder.getTypes().ifPresent(types -> {
@@ -89,9 +89,6 @@ public class DocUnitWorkflowHelper {
             builder.and(new BooleanBuilder().or(qIACollection.identifier.in(collections)).or(qOmekaCollection.identifier.in(collections)));
         });
         // Requête
-        return query.fetchAll().where(builder.getValue()).distinct();
-    }
-
-    private DocUnitWorkflowHelper() {
+        return query.where(builder.getValue()).distinct();
     }
 }

@@ -5,26 +5,25 @@
 // Généré le : 2017.05.16 à 10:56:55 AM CEST
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.ead;
 
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.annotation.XmlElementDecl;
-import javax.xml.bind.annotation.XmlRegistry;
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.annotation.XmlElementDecl;
+import jakarta.xml.bind.annotation.XmlRegistry;
 import javax.xml.namespace.QName;
-
 
 /**
  * This object contains factory methods for each
  * Java content interface and Java element interface
  * generated in the fr.progilone.pgcn.domain.jaxb.ead package.
- * <p>An ObjectFactory allows you to programatically
+ * <p>
+ * An ObjectFactory allows you to programatically
  * construct new instances of the Java representation
  * for XML content. The Java representation of XML
  * content can consist of schema derived interfaces
  * and classes representing the binding of schema
  * type definitions, element declarations and model
- * groups.  Factory methods for each of these are
+ * groups. Factory methods for each of these are
  * provided in this class.
  *
  */
@@ -1832,7 +1831,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link Ptr }{@code >}}
      *
      */
-    @XmlElementDecl(namespace = "urn:isbn:1-931666-22-9", name = "ptr", scope = Head01 .class)
+    @XmlElementDecl(namespace = "urn:isbn:1-931666-22-9", name = "ptr", scope = Head01.class)
     public JAXBElement<Ptr> createHead01Ptr(Ptr value) {
         return new JAXBElement<>(_ContainerPtr_QNAME, Ptr.class, Head01.class, value);
     }
@@ -1841,7 +1840,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link Emph }{@code >}}
      *
      */
-    @XmlElementDecl(namespace = "urn:isbn:1-931666-22-9", name = "emph", scope = Head01 .class)
+    @XmlElementDecl(namespace = "urn:isbn:1-931666-22-9", name = "emph", scope = Head01.class)
     public JAXBElement<Emph> createHead01Emph(Emph value) {
         return new JAXBElement<>(_ContainerEmph_QNAME, Emph.class, Head01.class, value);
     }
@@ -1850,7 +1849,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link Extptr }{@code >}}
      *
      */
-    @XmlElementDecl(namespace = "urn:isbn:1-931666-22-9", name = "extptr", scope = Head01 .class)
+    @XmlElementDecl(namespace = "urn:isbn:1-931666-22-9", name = "extptr", scope = Head01.class)
     public JAXBElement<Extptr> createHead01Extptr(Extptr value) {
         return new JAXBElement<>(_ContainerExtptr_QNAME, Extptr.class, Head01.class, value);
     }
@@ -1859,7 +1858,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link Lb }{@code >}}
      *
      */
-    @XmlElementDecl(namespace = "urn:isbn:1-931666-22-9", name = "lb", scope = Head01 .class)
+    @XmlElementDecl(namespace = "urn:isbn:1-931666-22-9", name = "lb", scope = Head01.class)
     public JAXBElement<Lb> createHead01Lb(Lb value) {
         return new JAXBElement<>(_ContainerLb_QNAME, Lb.class, Head01.class, value);
     }
@@ -4190,7 +4189,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link Ptr }{@code >}}
      *
      */
-    @XmlElementDecl(namespace = "urn:isbn:1-931666-22-9", name = "ptr", scope = Head02 .class)
+    @XmlElementDecl(namespace = "urn:isbn:1-931666-22-9", name = "ptr", scope = Head02.class)
     public JAXBElement<Ptr> createHead02Ptr(Ptr value) {
         return new JAXBElement<>(_ContainerPtr_QNAME, Ptr.class, Head02.class, value);
     }
@@ -4199,7 +4198,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link Emph }{@code >}}
      *
      */
-    @XmlElementDecl(namespace = "urn:isbn:1-931666-22-9", name = "emph", scope = Head02 .class)
+    @XmlElementDecl(namespace = "urn:isbn:1-931666-22-9", name = "emph", scope = Head02.class)
     public JAXBElement<Emph> createHead02Emph(Emph value) {
         return new JAXBElement<>(_ContainerEmph_QNAME, Emph.class, Head02.class, value);
     }
@@ -4208,7 +4207,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link Extptr }{@code >}}
      *
      */
-    @XmlElementDecl(namespace = "urn:isbn:1-931666-22-9", name = "extptr", scope = Head02 .class)
+    @XmlElementDecl(namespace = "urn:isbn:1-931666-22-9", name = "extptr", scope = Head02.class)
     public JAXBElement<Extptr> createHead02Extptr(Extptr value) {
         return new JAXBElement<>(_ContainerExtptr_QNAME, Extptr.class, Head02.class, value);
     }
@@ -4217,7 +4216,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link Lb }{@code >}}
      *
      */
-    @XmlElementDecl(namespace = "urn:isbn:1-931666-22-9", name = "lb", scope = Head02 .class)
+    @XmlElementDecl(namespace = "urn:isbn:1-931666-22-9", name = "lb", scope = Head02.class)
     public JAXBElement<Lb> createHead02Lb(Lb value) {
         return new JAXBElement<>(_ContainerLb_QNAME, Lb.class, Head02.class, value);
     }

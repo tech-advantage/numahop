@@ -1,11 +1,9 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('PageCheckCtrl', PageCheckCtrl);
+    angular.module('numaHopApp.controller').controller('PageCheckCtrl', PageCheckCtrl);
 
     function PageCheckCtrl($routeParams, $location, $scope, DigitalDocumentSrvc, PageCheckSrvc, MessageSrvc) {
-
         $scope.url_viewer = undefined;
         $scope.typeView = 'ImageView';
         $scope.options = {};
@@ -13,8 +11,8 @@
         $scope.select = {};
         $scope.select.selectedErrors = [];
         $scope.data = {};
-        $scope.data.digitizingNotes = "";
-        $scope.data.checkNotes = "";
+        $scope.data.digitizingNotes = '';
+        $scope.data.checkNotes = '';
         $scope.data.pagesToControl = [];
         $scope.data.totalPages = 0;
 
@@ -26,14 +24,13 @@
         init();
 
         function init() {
-
             /* Parametres visionneuse */
             if (angular.isDefined($routeParams.typeView)) {
                 $scope.typeView = $routeParams.typeView;
             }
 
             if (angular.isDefined($routeParams.validation)) {
-                $scope.data.validation = $routeParams.validation === "true";
+                $scope.data.validation = $routeParams.validation === 'true';
             }
             if (angular.isDefined($routeParams.page)) {
                 $scope.currentPage = $routeParams.page;
@@ -42,7 +39,7 @@
             }
 
             var params = {
-                id: $routeParams.id
+                id: $routeParams.id,
             };
 
             DigitalDocumentSrvc.get(params, function (value) {
@@ -57,11 +54,10 @@
                     $scope.data.totalPages = $scope.digitalDocument.nbPages;
                 }
             });
-
         }
 
         function groupErrorLabels(error) {
-            return error.isMajor ? "Erreurs majeures" : "Erreurs mineures";
+            return error.isMajor ? 'Erreurs majeures' : 'Erreurs mineures';
         }
         $scope.groupErrorLabels = groupErrorLabels;
 
@@ -70,13 +66,13 @@
             $scope.select.selectedErrors = [];
             var params = {
                 id: $routeParams.id,
-                pageNumber: pageNumber + 1
+                pageNumber: pageNumber + 1,
             };
 
             if (!typeView) {
                 typeView = 'BookView';
             }
-            $scope.url_viewer = "scripts/app/viewer/mirador.html?idDocument=" + params.id + '&typeView=' + typeView + '&page=' + params.pageNumber;
+            $scope.url_viewer = 'scripts/app/viewer/mirador.html?idDocument=' + params.id + '&typeView=' + typeView + '&page=' + params.pageNumber;
 
             DigitalDocumentSrvc.getPage(params, function (page) {
                 $scope.data.checkNotes = page.checkNotes;
@@ -94,11 +90,11 @@
         function nextPage() {
             var params = {
                 id: $routeParams.id,
-                pageNumber: $scope.currentPage + 1
+                pageNumber: $scope.currentPage + 1,
             };
             var body = {
-                failedChecks: _.pluck($scope.select.selectedErrors, "key"),
-                checkNotes: $scope.data.checkNotes
+                failedChecks: _.pluck($scope.select.selectedErrors, 'key'),
+                checkNotes: $scope.data.checkNotes,
             };
             PageCheckSrvc.setErrorsForPage(params, body, function (value) {
                 if (value.minorErrorRateExceeded) {
@@ -108,7 +104,7 @@
                     $scope.complete = true;
                 } else {
                     $scope.currentPage++;
-                    $location.search("page", $scope.currentPage);
+                    $location.search('page', $scope.currentPage);
                     loadPage($scope.currentPage);
                 }
             });
@@ -117,7 +113,7 @@
 
         function previousPage() {
             $scope.currentPage--;
-            $location.search("page", $scope.currentPage);
+            $location.search('page', $scope.currentPage);
             loadPage($scope.currentPage);
         }
         $scope.previousPage = previousPage;
@@ -134,35 +130,34 @@
 
         function reject() {
             var params = {
-                id: $routeParams.id
+                id: $routeParams.id,
             };
             DigitalDocumentSrvc.reject(params, {}, function () {
-                $location.path("/checks/checks");
-                $location.search("");
+                $location.path('/checks/checks');
+                $location.search('');
             });
         }
         $scope.reject = reject;
 
         function accept() {
             var params = {
-                id: $routeParams.id
+                id: $routeParams.id,
             };
             DigitalDocumentSrvc.accept(params, {}, function () {
-                $location.path("/checks/checks");
-                $location.search("");
+                $location.path('/checks/checks');
+                $location.search('');
             });
         }
         $scope.accept = accept;
 
         function done() {
-            $location.path("/document/digital");
+            $location.path('/document/digital');
         }
         $scope.done = done;
 
         function back() {
-            $location.path("/document/digital");
+            $location.path('/document/digital');
         }
         $scope.back = back;
-
     }
 })();

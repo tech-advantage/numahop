@@ -3,39 +3,7 @@ package fr.progilone.pgcn.web.rest.document;
 import static fr.progilone.pgcn.web.rest.checkconfiguration.security.AuthorizationConstants.*;
 import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.*;
 
-import java.io.File;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.codahale.metrics.annotation.Timed;
-
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.dto.checkconfiguration.CheckConfigurationDTO;
 import fr.progilone.pgcn.domain.dto.document.DigitalDocumentDTO;
@@ -53,6 +21,34 @@ import fr.progilone.pgcn.web.util.AccessHelper;
 import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
 import fr.progilone.pgcn.web.util.WorkflowAccessHelper;
 import fr.progilone.pgcn.web.util.WorkflowUserAccessHelper;
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/api/rest/digitaldocument")
@@ -66,7 +62,6 @@ public class DigitalDocumentController extends AbstractRestController {
     private final WorkflowAccessHelper workflowAccessHelper;
     private final WorkflowUserAccessHelper workflowUserAccessHelper;
     private final SampleService sampleService;
-    
 
     @Autowired
     public DigitalDocumentController(final UIDigitalDocumentService uiDigitalDocumentService,
@@ -89,13 +84,6 @@ public class DigitalDocumentController extends AbstractRestController {
 
     /**
      * Retourne le thumbnail correspondant à l'identifiant de doc numérique et à la page donnée
-     *
-     * @param request
-     * @param response
-     * @param identifier
-     * @param pageNumber
-     * @return
-     * @throws PgcnTechnicalException
      */
     @RequestMapping(value = "/{identifier}", params = {"thumbnail"}, method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
     @Timed
@@ -113,13 +101,6 @@ public class DigitalDocumentController extends AbstractRestController {
 
     /**
      * Retourne le format VIEW correspondant à l'identifiant de doc numérique et à la page donnée
-     *
-     * @param request
-     * @param response
-     * @param identifier
-     * @param pageNumber
-     * @return
-     * @throws PgcnTechnicalException
      */
     @RequestMapping(value = "/{identifier}", params = {"view"}, method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
     @Timed
@@ -138,10 +119,6 @@ public class DigitalDocumentController extends AbstractRestController {
 
     /**
      * Récupération d'un {@link DigitalDocumentDTO} à partir de son identifiant
-     *
-     * @param request
-     * @param identifier
-     * @return
      */
     @RequestMapping(value = "/{identifier}", method = RequestMethod.GET)
     @Timed
@@ -155,7 +132,7 @@ public class DigitalDocumentController extends AbstractRestController {
     }
 
     /**
-     * Recuperation de la config de controle  du document.
+     * Recuperation de la config de controle du document.
      *
      */
     @RequestMapping(value = "/{identifier}", method = RequestMethod.GET, params = {"docUnit"})
@@ -173,18 +150,13 @@ public class DigitalDocumentController extends AbstractRestController {
         if (!accessHelper.checkDigitalDocument(identifier)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
-        final Map<String,String> m = new HashMap<>();
+        final Map<String, String> m = new HashMap<>();
         m.put("deliveryNotes", digitalDocumentService.getDeliveryNotes(identifier));
         return new ResponseEntity<>(m, HttpStatus.OK);
     }
 
     /**
      * Retourne le nom de fichier correspondant à la page du document passé en identifiant
-     *
-     * @param request
-     * @param identifier
-     * @param pageNumber
-     * @return
      */
     @RequestMapping(value = "/{identifier}", method = RequestMethod.GET, params = {"filename"})
     @Timed
@@ -195,13 +167,9 @@ public class DigitalDocumentController extends AbstractRestController {
         final String filename = digitalDocumentService.getFilename(identifier, pageNumber);
         return new ResponseEntity<>(filename, HttpStatus.OK);
     }
-    
+
     /**
      * Renvoie le taille/nom du master pdf.
-     *
-     * @param request
-     * @param identifier
-     * @return
      */
     @RequestMapping(value = "/{identifier}", method = RequestMethod.GET, params = "masterPdfInfos")
     @Timed
@@ -214,28 +182,19 @@ public class DigitalDocumentController extends AbstractRestController {
         return new ResponseEntity<>(names, HttpStatus.OK);
     }
 
-    /**
-     * @param request
-     * @param identifier
-     * @return
-     * @throws PgcnTechnicalException
-     */
     @RequestMapping(value = "/{identifier}", method = RequestMethod.GET, params = "metadata")
     @Timed
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public ResponseEntity<Map<String, Map<String, String>>> getMetadataForFiles(final HttpServletRequest request,
-                                                                                @PathVariable final String identifier) throws PgcnTechnicalException {
+    public ResponseEntity<Map<String, Map<String, String>>> getMetadataForFiles(final HttpServletRequest request, @PathVariable final String identifier) {
 
         final Map<String, Map<String, String>> mdForFiles = viewerService.getMetadatasForFiles(identifier);
         return new ResponseEntity<>(mdForFiles, HttpStatus.OK);
     }
 
-
     @RequestMapping(value = "/{identifier}", method = RequestMethod.GET, params = "samplemetadata")
     @Timed
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public ResponseEntity<Map<String, Map<String, String>>> getMetadataForSample(final HttpServletRequest request,
-                                                                                @PathVariable final String identifier) throws PgcnTechnicalException {
+    public ResponseEntity<Map<String, Map<String, String>>> getMetadataForSample(final HttpServletRequest request, @PathVariable final String identifier) {
 
         final Map<String, Map<String, String>> mdForFiles = viewerService.getMetadatasForSample(identifier);
         return new ResponseEntity<>(mdForFiles, HttpStatus.OK);
@@ -243,10 +202,6 @@ public class DigitalDocumentController extends AbstractRestController {
 
     /**
      * Retourne la liste des noms de fichier en erreur
-     *
-     * @param request
-     * @param identifier
-     * @return
      */
     @RequestMapping(value = "/{identifier}", method = RequestMethod.GET, params = "filenamesErrors")
     @Timed
@@ -260,10 +215,6 @@ public class DigitalDocumentController extends AbstractRestController {
 
     /**
      * Retourne la liste des pages en erreur
-     *
-     * @param request
-     * @param identifier
-     * @return
      */
     @RequestMapping(value = "/{identifier}", method = RequestMethod.GET, params = "filesErrors")
     @Timed
@@ -277,31 +228,31 @@ public class DigitalDocumentController extends AbstractRestController {
 
     /**
      * Clôture la validation de contrôle (validé / rejeté)
-     *
-     * @param request
-     * @param identifier
-     * @param checksOK
-     * @return
      */
-    @RequestMapping(value = "/{identifier}", method = RequestMethod.POST, params = {"checksOK", "sampling"})
+    @RequestMapping(value = "/{identifier}",
+                    method = RequestMethod.POST,
+                    params = {"checksOK",
+                              "sampling"})
     @Timed
     @RolesAllowed(CHECK_HAB4)
-    public ResponseEntity<?> endChecks(final HttpServletRequest request, @PathVariable final String identifier, @RequestParam final boolean checksOK, @RequestParam final boolean sampling) {
+    public ResponseEntity<?> endChecks(final HttpServletRequest request,
+                                       @PathVariable final String identifier,
+                                       @RequestParam final boolean checksOK,
+                                       @RequestParam final boolean sampling) {
 
         if (sampling) {
             // Droits echantillon
             final SampleDTO sample = sampleService.getOne(identifier);
             final List<String> forbiddenIds = new ArrayList<>();
 
-            sample.getDocuments().forEach(doc-> {
+            sample.getDocuments().forEach(doc -> {
                 final String docId = doc.getIdentifier();
                 if (!accessHelper.checkDigitalDocument(docId)) {
                     forbiddenIds.add(docId);
                 } else {
                     // Droit par rapport au workflow
                     final DocUnit docUnit = digitalDocumentService.findDocUnitByIdentifier(docId);
-                    if(!workflowAccessHelper.canCheckBePerformed(docUnit.getIdentifier())
-                            || !workflowUserAccessHelper.canCurrentUserProcessCheck(docUnit.getIdentifier()) ) {
+                    if (!workflowAccessHelper.canCheckBePerformed(docUnit.getIdentifier()) || !workflowUserAccessHelper.canCurrentUserProcessCheck(docUnit.getIdentifier())) {
                         forbiddenIds.add(docUnit.getIdentifier());
                     }
                 }
@@ -321,11 +272,11 @@ public class DigitalDocumentController extends AbstractRestController {
 
             // Droit par rapport au workflow
             final DocUnit docUnit = digitalDocumentService.findDocUnitByIdentifier(identifier);
-            if(!workflowAccessHelper.canCheckBePerformed(docUnit.getIdentifier())) {
+            if (!workflowAccessHelper.canCheckBePerformed(docUnit.getIdentifier())) {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
-            if(!workflowUserAccessHelper.canCurrentUserProcessCheck(docUnit.getIdentifier())) {
-               return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            if (!workflowUserAccessHelper.canCurrentUserProcessCheck(docUnit.getIdentifier())) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
             // process de cloture
             uiDigitalDocumentService.endChecks(identifier, checksOK);
@@ -336,10 +287,6 @@ public class DigitalDocumentController extends AbstractRestController {
 
     /**
      * Mise à jour des documents
-     *
-     * @param request
-     * @param dto
-     * @return
      */
     @RequestMapping(value = "/{identifier}", method = RequestMethod.POST)
     @Timed
@@ -353,9 +300,6 @@ public class DigitalDocumentController extends AbstractRestController {
 
     /**
      * Récupération de la liste des documents à contrôler
-     *
-     * @param request
-     * @return
      */
     @RequestMapping(method = RequestMethod.GET, params = "toCheck")
     @Timed
@@ -368,17 +312,10 @@ public class DigitalDocumentController extends AbstractRestController {
 
     /**
      * Récupération d'une page
-     *
-     * @param request
-     * @param identifier
-     * @param pageNumber
-     * @return
      */
     @RequestMapping(value = "/{identifier}", method = RequestMethod.GET, params = "page")
     @Timed
-    public ResponseEntity<SimpleDocPageDTO> getPage(final HttpServletRequest request,
-                                                    @PathVariable final String identifier,
-                                                    @RequestParam final int pageNumber) {
+    public ResponseEntity<SimpleDocPageDTO> getPage(final HttpServletRequest request, @PathVariable final String identifier, @RequestParam final int pageNumber) {
         if (!accessHelper.checkDigitalDocument(identifier)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
@@ -387,30 +324,6 @@ public class DigitalDocumentController extends AbstractRestController {
 
     /**
      * Recherche filtrée.
-     *
-     * @param request
-     * @param search
-     * @param status
-     * @param libraries
-     * @param projects
-     * @param lots
-     * @param trains
-     * @param deliveries
-     * @param page
-     * @param dateFrom
-     * @param dateTo
-     * @param dateLimitFrom
-     * @param dateLimitTo
-     * @param searchPgcnId
-     * @param searchTitre
-     * @param searchRadical
-     * @param searchPageFrom
-     * @param searchPageTo
-     * @param searchPageCheckFrom
-     * @param searchPageCheckTo
-     * @param size
-     * @param sorts
-     * @return
      */
     @RequestMapping(method = RequestMethod.GET, params = {"search"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
@@ -418,21 +331,20 @@ public class DigitalDocumentController extends AbstractRestController {
     public ResponseEntity<Page<SimpleListDigitalDocumentDTO>> search(final HttpServletRequest request,
                                                                      @RequestParam(value = "search", required = false) final String search,
                                                                      @RequestParam(value = "status", required = false) final List<String> status,
-                                                                     @RequestParam(value = "libraries", required = false)
-                                                                     final List<String> libraries,
+                                                                     @RequestParam(value = "libraries", required = false) final List<String> libraries,
                                                                      @RequestParam(value = "projects", required = false) final List<String> projects,
                                                                      @RequestParam(value = "lots", required = false) final List<String> lots,
                                                                      @RequestParam(value = "trains", required = false) final List<String> trains,
                                                                      @RequestParam(value = "deliveries", required = false) final List<String> deliveries,
                                                                      @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
-                                                                     @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "dateFrom", required = false)
-                                                                     final LocalDate dateFrom,
-                                                                     @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "dateTo", required = false)
-                                                                     final LocalDate dateTo,
-                                                                     @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "dateLimitFrom", required = false)
-                                                                     final LocalDate dateLimitFrom,
-                                                                     @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "dateLimitTo", required = false)
-                                                                     final LocalDate dateLimitTo,
+                                                                     @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "dateFrom",
+                                                                                                                           required = false) final LocalDate dateFrom,
+                                                                     @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "dateTo",
+                                                                                                                           required = false) final LocalDate dateTo,
+                                                                     @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "dateLimitFrom",
+                                                                                                                           required = false) final LocalDate dateLimitFrom,
+                                                                     @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "dateLimitTo",
+                                                                                                                           required = false) final LocalDate dateLimitTo,
                                                                      @RequestParam(value = "searchPgcnId", required = false) final String searchPgcnId,
                                                                      @RequestParam(value = "searchTitre", required = false) final String searchTitre,
                                                                      @RequestParam(value = "searchRadical", required = false) final String searchRadical,
@@ -440,8 +352,8 @@ public class DigitalDocumentController extends AbstractRestController {
                                                                      @RequestParam(value = "maxAngles", required = false) final List<String> searchMaxAngles,
                                                                      @RequestParam(value = "searchPageFrom", required = false) final Integer searchPageFrom,
                                                                      @RequestParam(value = "searchPageTo", required = false) final Integer searchPageTo,
-                                                                     @RequestParam(value = "searchPageCheckFrom", required = false) final Integer searchPageCheckFrom,
-                                                                     @RequestParam(value = "searchPageCheckTo", required = false) final Integer searchPageCheckTo,
+                                                                     @RequestParam(value = "searchPageCheckFrom", required = false) final Long searchPageCheckFrom,
+                                                                     @RequestParam(value = "searchPageCheckTo", required = false) final Long searchPageCheckTo,
                                                                      @RequestParam(value = "searchMinSize", required = false) final Double searchMinSize,
                                                                      @RequestParam(value = "searchMaxSize", required = false) final Double searchMaxSize,
                                                                      @RequestParam(value = "validated", required = false) final boolean validated,
@@ -449,13 +361,33 @@ public class DigitalDocumentController extends AbstractRestController {
                                                                      @RequestParam(value = "sorts", required = false) final List<String> sorts) {
         // projects et lots sont déjà filtrés.
         final List<String> filteredLibraries = libraryAccesssHelper.getLibraryFilter(request, libraries);
-        return createResponseEntity(uiDigitalDocumentService.search(search, status, filteredLibraries, projects, lots, trains, deliveries,
-                                                                    dateFrom, dateTo, dateLimitFrom, dateLimitTo,
-                                                                    searchPgcnId, searchTitre, searchRadical, searchFileFormats, searchMaxAngles,
-                                                                    searchPageFrom, searchPageTo, searchPageCheckFrom, searchPageCheckTo,
-                                                                    searchMinSize, searchMaxSize, validated, page, size, sorts));
+        return createResponseEntity(uiDigitalDocumentService.search(search,
+                                                                    status,
+                                                                    filteredLibraries,
+                                                                    projects,
+                                                                    lots,
+                                                                    trains,
+                                                                    deliveries,
+                                                                    dateFrom,
+                                                                    dateTo,
+                                                                    dateLimitFrom,
+                                                                    dateLimitTo,
+                                                                    searchPgcnId,
+                                                                    searchTitre,
+                                                                    searchRadical,
+                                                                    searchFileFormats,
+                                                                    searchMaxAngles,
+                                                                    searchPageFrom,
+                                                                    searchPageTo,
+                                                                    searchPageCheckFrom,
+                                                                    searchPageCheckTo,
+                                                                    searchMinSize,
+                                                                    searchMaxSize,
+                                                                    validated,
+                                                                    page,
+                                                                    size,
+                                                                    sorts));
     }
-
 
     /**
      * Filtrage d'une liste de LotDTO sur les droits d'accès de l'utilisateur.
@@ -473,12 +405,6 @@ public class DigitalDocumentController extends AbstractRestController {
                            .collect(Collectors.toList());
     }
 
-    /**
-     * 
-     * @param request
-     * @param identifier
-     * @return
-     */
     @RequestMapping(value = "/{identifier}", method = RequestMethod.GET, params = {"nbPieces"})
     @Timed
     public ResponseEntity<Map<String, String>> getPiecesNumber(final HttpServletRequest request, @PathVariable final String identifier) {

@@ -1,16 +1,7 @@
 package fr.progilone.pgcn.web.util;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.document.conditionreport.ConditionReportDetail.Type;
@@ -22,8 +13,14 @@ import fr.progilone.pgcn.service.document.DocUnitService;
 import fr.progilone.pgcn.service.lot.LotService;
 import fr.progilone.pgcn.service.workflow.WorkflowGroupService;
 import fr.progilone.pgcn.service.workflow.WorkflowService;
+import jakarta.servlet.http.HttpServletRequest;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class WorkflowAccessHelperTest {
 
     private static final String IDENTIFIER = "71d96e0e-27e5-4ae6-a2fa-4ba95acfb30a";
@@ -40,7 +37,7 @@ public class WorkflowAccessHelperTest {
 
     private WorkflowAccessHelper accessHelper;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         accessHelper = new WorkflowAccessHelper(lotService, service, workflowGroupService);
     }
@@ -49,12 +46,11 @@ public class WorkflowAccessHelperTest {
     public void testDeleteConstat() {
         final DocUnit doc = new DocUnit();
 
-        when(docUnitService.findOneWithAllDependenciesForWorkflow(IDENTIFIER)).thenReturn(doc);
         when(service.isStateSkippedOrRunning(IDENTIFIER, WorkflowStateKey.VALIDATION_CONSTAT_ETAT)).thenReturn(true, true).thenReturn(false);
         when(service.isStateSkippedOrRunning(IDENTIFIER, WorkflowStateKey.CONSTAT_ETAT_AVANT_NUMERISATION)).thenReturn(true).thenReturn(false).thenReturn(true);
         when(service.isStateSkippedOrRunning(IDENTIFIER, WorkflowStateKey.CONSTAT_ETAT_APRES_NUMERISATION)).thenReturn(true);
         when(accessHelper.isDocUnitLockedByWorkflow(IDENTIFIER)).thenReturn(true).thenReturn(true).thenReturn(true);
-        
+
         // états non passés
         boolean actual = accessHelper.canConstatBeDeleted(IDENTIFIER);
         assertTrue(actual);
@@ -72,11 +68,9 @@ public class WorkflowAccessHelperTest {
     public void testUpdateConstatLeaving() {
         final DocUnit doc = new DocUnit();
 
-        when(docUnitService.findOneWithAllDependenciesForWorkflow(IDENTIFIER)).thenReturn(doc);
         when(service.isStateSkippedOrRunning(IDENTIFIER, WorkflowStateKey.VALIDATION_CONSTAT_ETAT)).thenReturn(true).thenReturn(true).thenReturn(false);
-        when(service.isStateSkippedOrRunning(IDENTIFIER, WorkflowStateKey.CONSTAT_ETAT_AVANT_NUMERISATION)).thenReturn(true).thenReturn(false).thenReturn(true);
         when(accessHelper.isDocUnitLockedByWorkflow(IDENTIFIER)).thenReturn(true).thenReturn(true).thenReturn(true);
-        
+
         // états non passés
         boolean actual = accessHelper.canConstatDetailBeModified(IDENTIFIER, Type.LIBRARY_LEAVING);
         assertTrue(actual);
@@ -89,7 +83,7 @@ public class WorkflowAccessHelperTest {
         actual = accessHelper.canConstatDetailBeModified(IDENTIFIER, Type.LIBRARY_LEAVING);
         assertFalse(actual);
     }
-    
+
     @Test
     public void testLotAccess() {
         final Lot lot = new Lot();
@@ -98,11 +92,11 @@ public class WorkflowAccessHelperTest {
 
         when(lotService.findByIdentifier(IDENTIFIER)).thenReturn(lot);
         when(lotService.getWorkflowModel(lot)).thenReturn(new WorkflowModel());
-        
+
         // état CREATED doit pouvoir être validé
         boolean actual = accessHelper.canLotBeValidated(IDENTIFIER);
         assertTrue(actual);
-        
+
         // Un lot ONGOING ne peut pas être validé
         lot.setStatus(LotStatus.ONGOING);
         actual = accessHelper.canLotBeValidated(IDENTIFIER);

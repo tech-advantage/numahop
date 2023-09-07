@@ -5,22 +5,22 @@
 // Généré le : 2017.12.08 à 03:23:15 PM CET
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.ppdi;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
 import javax.xml.datatype.Duration;
 
-
 /**
- * <p>Classe Java pour DocMetaDescriptionType complex type.
+ * <p>
+ * Classe Java pour DocMetaDescriptionType complex type.
  *
- * <p>Le fragment de sch�ma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="DocMetaDescriptionType">
@@ -47,19 +47,18 @@ import javax.xml.datatype.Duration;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "DocMetaDescriptionType", propOrder = {
-    "dureeConservation",
-    "identifiantDocProducteur",
-    "docRelation",
-    "evaluation",
-    "communicabilite",
-    "noteDocument",
-    "serviceVersant",
-    "planClassement",
-    "structureDocument",
-    "version",
-    "versionPrecedente"
-})
+@XmlType(name = "DocMetaDescriptionType",
+         propOrder = {"dureeConservation",
+                      "identifiantDocProducteur",
+                      "docRelation",
+                      "evaluation",
+                      "communicabilite",
+                      "noteDocument",
+                      "serviceVersant",
+                      "planClassement",
+                      "structureDocument",
+                      "version",
+                      "versionPrecedente"})
 public class DocMetaDescriptionType {
 
     protected List<Duration> dureeConservation;
@@ -95,8 +94,9 @@ public class DocMetaDescriptionType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getDureeConservation().add(newItem);
+     * getDureeConservation().add(newItem);
      * </pre>
      *
      *
@@ -124,8 +124,9 @@ public class DocMetaDescriptionType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getIdentifiantDocProducteur().add(newItem);
+     * getIdentifiantDocProducteur().add(newItem);
      * </pre>
      *
      *
@@ -153,8 +154,9 @@ public class DocMetaDescriptionType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getDocRelation().add(newItem);
+     * getDocRelation().add(newItem);
      * </pre>
      *
      *
@@ -182,8 +184,9 @@ public class DocMetaDescriptionType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getEvaluation().add(newItem);
+     * getEvaluation().add(newItem);
      * </pre>
      *
      *
@@ -211,8 +214,9 @@ public class DocMetaDescriptionType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getCommunicabilite().add(newItem);
+     * getCommunicabilite().add(newItem);
      * </pre>
      *
      *
@@ -240,8 +244,9 @@ public class DocMetaDescriptionType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getNoteDocument().add(newItem);
+     * getNoteDocument().add(newItem);
      * </pre>
      *
      *
@@ -269,8 +274,9 @@ public class DocMetaDescriptionType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getServiceVersant().add(newItem);
+     * getServiceVersant().add(newItem);
      * </pre>
      *
      *
@@ -298,8 +304,9 @@ public class DocMetaDescriptionType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getPlanClassement().add(newItem);
+     * getPlanClassement().add(newItem);
      * </pre>
      *
      *
@@ -327,8 +334,9 @@ public class DocMetaDescriptionType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getStructureDocument().add(newItem);
+     * getStructureDocument().add(newItem);
      * </pre>
      *
      *
@@ -356,8 +364,9 @@ public class DocMetaDescriptionType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getVersion().add(newItem);
+     * getVersion().add(newItem);
      * </pre>
      *
      *
@@ -385,8 +394,9 @@ public class DocMetaDescriptionType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getVersionPrecedente().add(newItem);
+     * getVersionPrecedente().add(newItem);
      * </pre>
      *
      *

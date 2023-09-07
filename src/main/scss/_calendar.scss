@@ -11,7 +11,7 @@ div.calendar {
     .clndr {
         overflow: hidden;
         .controls {
-            background-color: #004B63;
+            background-color: #004b63;
             color: white;
         }
         .controls .clndr-previous-button,
@@ -75,14 +75,14 @@ div.calendar {
             padding-bottom: 8px;
             font-size: 12px;
             text-align: center;
-            color: #004B63;
+            color: #004b63;
             /*color: #212121;
 			border-right: 1px solid rgba(255, 255, 255, 0.5);
 			border-bottom: 1px solid rgba(255, 255, 255, 0.5);*/
         }
         .days-container .days .empty.event {
             background-color: #fff;
-            color: #4D91FF;
+            color: #4d91ff;
             -webkit-transition: background-color 0.5s;
             -moz-transition: background-color 0.5s;
             -ms-transition: background-color 0.5s;
@@ -91,7 +91,7 @@ div.calendar {
             cursor: pointer;
         }
         .days-container .days .day.event {
-            color: #FFF;
+            color: #fff;
             -webkit-transition: background-color 0.5s;
             -moz-transition: background-color 0.5s;
             -ms-transition: background-color 0.5s;
@@ -100,8 +100,8 @@ div.calendar {
             cursor: pointer;
         }
         .days-container .days .day.event.NORMAL_DAY {
-            background-color: #8ABD5D;
-            color: #FFF;
+            background-color: #8abd5d;
+            color: #fff;
             -webkit-transition: background-color 0.5s;
             -moz-transition: background-color 0.5s;
             -ms-transition: background-color 0.5s;
@@ -113,10 +113,10 @@ div.calendar {
             box-shadow: 0 0 12px 2px #009900 inset;
         }
         .days-container .day.currentDay {
-            box-shadow: 0 0 12px 2px #004B63 inset;
+            box-shadow: 0 0 12px 2px #004b63 inset;
         }
         .days-container .days .day.event.SPECIAL_PERIOD {
-            background-color: #9C4D88;
+            background-color: #9c4d88;
             color: #fff;
             -webkit-transition: background-color 0.5s;
             -moz-transition: background-color 0.5s;
@@ -126,7 +126,7 @@ div.calendar {
             cursor: pointer;
         }
         .days-container .days .day.event.SPECIAL_OPENING {
-            background-color: #E3A764;
+            background-color: #e3a764;
             color: #fff;
             -webkit-transition: background-color 0.5s;
             -moz-transition: background-color 0.5s;
@@ -136,7 +136,7 @@ div.calendar {
             cursor: pointer;
         }
         .days-container .days .day.event.SPECIAL_CLOSING {
-            background-color: #D36868;
+            background-color: #d36868;
             color: #fff;
             -webkit-transition: background-color 0.5s;
             -moz-transition: background-color 0.5s;
@@ -145,9 +145,10 @@ div.calendar {
             transition: background-color 0.5s;
             cursor: pointer;
         }
-        .days-container .days .day.event {}
+        .days-container .days .day.event {
+        }
         .DATE_PARUTION {
-            background-color: #D36868;
+            background-color: #d36868;
             color: #fff;
             -webkit-transition: background-color 0.5s;
             -moz-transition: background-color 0.5s;
@@ -175,7 +176,7 @@ div.calendar {
             vertical-align: bottom;
         }
         .days-container .days .headers {
-            background-color: #004B63;
+            background-color: #004b63;
             padding-top: 5px;
             padding-bottom: 5px;
         }
@@ -300,6 +301,6 @@ div.calendar {
         background-color: grey;
     }
     .provisional-list {
-        color: #FFF;
+        color: #fff;
     }
 }

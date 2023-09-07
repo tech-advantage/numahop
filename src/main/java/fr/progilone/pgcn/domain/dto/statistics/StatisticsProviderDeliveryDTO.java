@@ -2,8 +2,7 @@ package fr.progilone.pgcn.domain.dto.statistics;
 
 import com.google.common.collect.Ordering;
 import com.opencsv.bean.CsvBindByName;
-
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 public class StatisticsProviderDeliveryDTO implements Comparable<StatisticsProviderDeliveryDTO> {
 

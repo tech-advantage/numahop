@@ -1,12 +1,5 @@
 package fr.progilone.pgcn.service.document.mapper;
 
-import java.util.Set;
-
-import org.mapstruct.AfterMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.factory.Mappers;
-
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.document.PhysicalDocument;
 import fr.progilone.pgcn.domain.dto.document.MinimalListDocUnitDTO;
@@ -17,8 +10,15 @@ import fr.progilone.pgcn.service.library.mapper.SimpleLibraryMapper;
 import fr.progilone.pgcn.service.lot.mapper.SimpleLotMapper;
 import fr.progilone.pgcn.service.project.mapper.SimpleProjectMapper;
 import fr.progilone.pgcn.service.train.mapper.SimpleTrainMapper;
+import java.util.Set;
+import org.mapstruct.AfterMapping;
+import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.factory.Mappers;
 
-@Mapper(uses = {SimpleLibraryMapper.class, SimpleProjectMapper.class, SimpleLotMapper.class})
+@Mapper(uses = {SimpleLibraryMapper.class,
+                SimpleProjectMapper.class,
+                SimpleLotMapper.class})
 public abstract class SimpleDocUnitMapper {
 
     public static final SimpleDocUnitMapper INSTANCE = Mappers.getMapper(SimpleDocUnitMapper.class);
@@ -27,7 +27,7 @@ public abstract class SimpleDocUnitMapper {
     public abstract SimpleDocUnitDTO docUnitToSimpleDocUnitDTO(DocUnit doc);
 
     public abstract SimpleListDocUnitDTO docUnitToSimpleListDocUnitDTO(DocUnit doc);
-    
+
     public abstract MinimalListDocUnitDTO docUnitToMinimalListDocUnitDTO(DocUnit doc);
 
     /**
@@ -59,17 +59,16 @@ public abstract class SimpleDocUnitMapper {
         }
 
     }
-    
+
     @AfterMapping
     protected void updateSimpleDto(final DocUnit doc, @MappingTarget final SimpleDocUnitDTO dto) {
-        
+
         // parent
         final DocUnit parent = doc.getParent();
         if (parent != null && parent.getState() == DocUnit.State.AVAILABLE) {
             dto.setParentIdentifier(parent.getIdentifier());
         }
-        
+
     }
-    
-    
+
 }

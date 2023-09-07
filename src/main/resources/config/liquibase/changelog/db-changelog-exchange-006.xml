@@ -1,41 +1,47 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <changeSet id="pgcn-create-exchange-006" author="progilone">
 
         <!-- Gestion d'un mapping spécifique à l'import des exemplaires de périodiques -->
         <addColumn tableName="exc_import_report">
-            <column name="mapping_perio" type="varchar(191)" afterColumn="mapping"/>
+            <column name="mapping_perio" type="varchar(191)" afterColumn="mapping" />
             <column name="type" type="varchar(255)" beforeColumn="fileFormat" defaultValue="SIMPLE">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </addColumn>
 
-        <addForeignKeyConstraint baseTableName="exc_import_report" baseColumnNames="mapping_perio" constraintName="fk_exc_import_report_mapping_perio"
-                                 referencedTableName="exc_mapping" referencedColumnNames="identifier"/>
+        <addForeignKeyConstraint
+            baseTableName="exc_import_report"
+            baseColumnNames="mapping_perio"
+            constraintName="fk_exc_import_report_mapping_perio"
+            referencedTableName="exc_mapping"
+            referencedColumnNames="identifier"
+        />
 
         <createIndex tableName="exc_import_report" indexName="idx_exc_import_report_mapping_perio">
-            <column name="mapping_perio"/>
+            <column name="mapping_perio" />
         </createIndex>
 
         <!-- Table gérant l'import multi-fichiers -->
         <createTable tableName="exc_import_file">
             <column name="report" type="varchar(191)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="original_filename" type="varchar(1024)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
-            <column name="file_size" type="BIGINT"/>
+            <column name="file_size" type="BIGINT" />
         </createTable>
 
-        <addForeignKeyConstraint baseTableName="exc_import_file" baseColumnNames="report" constraintName="fk_exc_import_file_report"
-                                 referencedTableName="exc_import_report" referencedColumnNames="identifier"/>
+        <addForeignKeyConstraint baseTableName="exc_import_file" baseColumnNames="report" constraintName="fk_exc_import_file_report" referencedTableName="exc_import_report" referencedColumnNames="identifier" />
 
         <createIndex tableName="exc_import_file" indexName="idx_exc_import_file_report">
-            <column name="report"/>
+            <column name="report" />
         </createIndex>
 
         <sql>
@@ -43,19 +49,18 @@
             SELECT identifier, original_filename, file_size FROM exc_import_report
         </sql>
 
-        <dropColumn tableName="exc_import_report" columnName="original_filename"/>
-        <dropColumn tableName="exc_import_report" columnName="file_size"/>
+        <dropColumn tableName="exc_import_report" columnName="original_filename" />
+        <dropColumn tableName="exc_import_report" columnName="file_size" />
 
         <!-- Ajout d'une relation hiérarchique entre unités documentaires -->
         <addColumn tableName="doc_unit">
-            <column name="parent" type="varchar(191)"/>
+            <column name="parent" type="varchar(191)" />
         </addColumn>
 
-        <addForeignKeyConstraint baseTableName="doc_unit" baseColumnNames="parent" constraintName="fk_doc_unit_parent"
-                                 referencedTableName="doc_unit" referencedColumnNames="identifier"/>
+        <addForeignKeyConstraint baseTableName="doc_unit" baseColumnNames="parent" constraintName="fk_doc_unit_parent" referencedTableName="doc_unit" referencedColumnNames="identifier" />
 
         <createIndex tableName="doc_unit" indexName="idx_doc_unit_parent">
-            <column name="parent"/>
+            <column name="parent" />
         </createIndex>
 
     </changeSet>

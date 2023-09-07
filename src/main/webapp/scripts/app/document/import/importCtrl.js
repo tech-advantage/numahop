@@ -1,11 +1,9 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('ImportCtrl', ImportCtrl);
+    angular.module('numaHopApp.controller').controller('ImportCtrl', ImportCtrl);
 
-    function ImportCtrl($location, $routeParams, $scope, $timeout, gettextCatalog, HistorySrvc, ImportReportSrvc, Principal, USER_ROLES, NumaHopInitializationSrvc,
-        $q, NumahopStorageService) {
+    function ImportCtrl($location, $routeParams, $scope, $timeout, gettextCatalog, HistorySrvc, ImportReportSrvc, Principal, USER_ROLES, NumaHopInitializationSrvc, $q, NumahopStorageService) {
         var mainCtrl = this;
         mainCtrl.create = create;
         mainCtrl.edit = edit;
@@ -17,32 +15,32 @@
         mainCtrl.doFilter = doFilter;
         mainCtrl.reinitFilters = reinitFilters;
 
-        var FILTER_STORAGE_SERVICE_KEY = "importReports";
+        var FILTER_STORAGE_SERVICE_KEY = 'importReports';
 
         mainCtrl.pagination = {
             totalItems: 0,
             page: 0,
             itemsByPage: 30,
-            busy: false
+            busy: false,
         };
         mainCtrl.reports = [];
         mainCtrl.loaded = false;
 
         mainCtrl.filters = {
             statuses: null,
-            users: null
+            users: null,
         };
         mainCtrl.options = {
             statuses: [
-                { identifier: "PENDING", label: gettextCatalog.getString('En attente') },
-                { identifier: "PRE_IMPORTING", label: gettextCatalog.getString('Pré-import') },
-                { identifier: "DEDUPLICATING", label: gettextCatalog.getString('Recherche de doublons') },
-                { identifier: "USER_VALIDATION", label: gettextCatalog.getString('Attente validation utilisateur') },
-                { identifier: "IMPORTING", label: gettextCatalog.getString('Import des unités documentaires') },
-                { identifier: "INDEXING", label: gettextCatalog.getString('Indexation des unités documentaires') },
-                { identifier: "COMPLETED", label: gettextCatalog.getString('Import réussi') },
-                { identifier: "FAILED", label: gettextCatalog.getString('Import échoué') }
-            ]
+                { identifier: 'PENDING', label: gettextCatalog.getString('En attente') },
+                { identifier: 'PRE_IMPORTING', label: gettextCatalog.getString('Pré-import') },
+                { identifier: 'DEDUPLICATING', label: gettextCatalog.getString('Recherche de doublons') },
+                { identifier: 'USER_VALIDATION', label: gettextCatalog.getString('Attente validation utilisateur') },
+                { identifier: 'IMPORTING', label: gettextCatalog.getString('Import des unités documentaires') },
+                { identifier: 'INDEXING', label: gettextCatalog.getString('Indexation des unités documentaires') },
+                { identifier: 'COMPLETED', label: gettextCatalog.getString('Import réussi') },
+                { identifier: 'FAILED', label: gettextCatalog.getString('Import échoué') },
+            ],
         };
 
         init();
@@ -56,13 +54,13 @@
             mainCtrl.library = Principal.library();
 
             // Vue de gestion de l'import sélectionné
-            mainCtrl.importInclude = "scripts/app/document/import/importEdit.html";
-            $scope.$on("$routeUpdate", reloadTemplate);
+            mainCtrl.importInclude = 'scripts/app/document/import/importEdit.html';
+            $scope.$on('$routeUpdate', reloadTemplate);
 
             // Appels du scope enfant
-            $scope.$on("editCtrl:create", createWrapper);
-            $scope.$on("editCtrl:synchro", synchro);
-            $scope.$on("editCtrl:synchroDeletion", synchroDeletion);
+            $scope.$on('editCtrl:create', createWrapper);
+            $scope.$on('editCtrl:synchro', synchro);
+            $scope.$on('editCtrl:synchroDeletion', synchroDeletion);
 
             loadOptions();
 
@@ -75,16 +73,15 @@
             $timeout(function () {
                 mainCtrl.importInclude = null;
                 $scope.$apply();
-                mainCtrl.importInclude = "scripts/app/document/import/importEdit.html";
+                mainCtrl.importInclude = 'scripts/app/document/import/importEdit.html';
             });
         }
 
         /** Chargement utilisateurs pour filtre */
         function loadOptions() {
-            $q.all([NumaHopInitializationSrvc.loadUsers()])
-                .then(function (data) {
-                    mainCtrl.options.users = data[0];
-                });
+            $q.all([NumaHopInitializationSrvc.loadUsers()]).then(function (data) {
+                mainCtrl.options.users = data[0];
+            });
         }
 
         /** Chargement des imports */
@@ -109,17 +106,17 @@
 
             var searchParams = {
                 page: mainCtrl.pagination.page,
-                size: mainCtrl.pagination.itemsByPage
+                size: mainCtrl.pagination.itemsByPage,
             };
 
             if (mainCtrl.filters.users) {
-                var usersIds = _.pluck(mainCtrl.filters.users, "login");
-                searchParams["users"] = usersIds;
+                var usersIds = _.pluck(mainCtrl.filters.users, 'login');
+                searchParams['users'] = usersIds;
             }
 
             if (mainCtrl.filters.statuses) {
-                var statusesIds = _.pluck(mainCtrl.filters.statuses, "identifier");
-                searchParams["status"] = statusesIds;
+                var statusesIds = _.pluck(mainCtrl.filters.statuses, 'identifier');
+                searchParams['status'] = statusesIds;
             }
             return ImportReportSrvc.search(searchParams).$promise;
         }
@@ -160,7 +157,7 @@
         function reinitFilters(reload) {
             mainCtrl.filters = {
                 statuses: [],
-                users: []
+                users: [],
             };
             if (reload) {
                 doFilter();
@@ -177,41 +174,41 @@
                 format: $routeParams.format,
                 source: source,
                 parent: parent,
-                ts: moment().unix() // Force le rechargement
+                ts: moment().unix(), // Force le rechargement
             };
-            $location.path("/document/import").search(params);
+            $location.path('/document/import').search(params);
         }
 
         /** Édition d'un import existant */
         function edit(report) {
             // Sélection de l'import dans la liste
             _.each(mainCtrl.reports, function (oth) {
-                oth._selected = (report === oth);
+                oth._selected = report === oth;
             });
             // Ouverture de l'import sélectionné
             var params = {
-                id: report.identifier
+                id: report.identifier,
             };
-            $location.path("/document/import").search(params);
+            $location.path('/document/import').search(params);
         }
 
         /** Libellé de regroupement des rapports d'import */
         function getGroupLabel(report) {
             if (report.start) {
-                return moment(report.start).format("L");
+                return moment(report.start).format('L');
             }
-            return "";
+            return '';
         }
 
         /** Synchro de la liste des imports */
         function createWrapper(event, report) {
-            event.stopPropagation();    // ce contrôleur est l'unique destinataire de l'évènement
+            event.stopPropagation(); // ce contrôleur est l'unique destinataire de l'évènement
             create(null, report.identifier);
         }
 
         /** Synchro de la liste des imports */
         function synchro(event, report) {
-            event.stopPropagation();    // ce contrôleur est l'unique destinataire de l'évènement
+            event.stopPropagation(); // ce contrôleur est l'unique destinataire de l'évènement
 
             var found = _.find(mainCtrl.reports, function (oth) {
                 return oth.identifier === report.identifier;
@@ -231,14 +228,14 @@
             // Mise à jour de la sélection
             if (!found._selected) {
                 _.each(mainCtrl.reports, function (oth) {
-                    oth._selected = (found === oth);
+                    oth._selected = found === oth;
                 });
             }
         }
 
         /** Synchro suppression */
         function synchroDeletion(event, report) {
-            event.stopPropagation();    // ce contrôleur est l'unique destinataire de l'évènement
+            event.stopPropagation(); // ce contrôleur est l'unique destinataire de l'évènement
 
             mainCtrl.reports = _.filter(mainCtrl.reports, function (oth) {
                 return oth.identifier !== report.identifier;

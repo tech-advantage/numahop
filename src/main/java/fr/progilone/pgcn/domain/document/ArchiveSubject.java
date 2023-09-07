@@ -2,8 +2,7 @@ package fr.progilone.pgcn.domain.document;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import fr.progilone.pgcn.domain.AbstractDomainObject;
-
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 /**
  * Classe représentant un sujet d'un objet d'export IA

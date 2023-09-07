@@ -6,6 +6,12 @@ import fr.progilone.pgcn.repository.security.PersistentTokenRepository;
 import fr.progilone.pgcn.security.SecurityUtils;
 import fr.progilone.pgcn.web.rest.administration.security.AuthorizationConstants;
 import fr.progilone.pgcn.web.rest_int.dto.UserAccountDTO;
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.Collections;
+import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,13 +24,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * REST controller for managing the current user's account.
@@ -64,8 +63,7 @@ public class InternalAccountResource {
     public ResponseEntity<UserAccountDTO> getAccount() {
         final String currentLogin = SecurityUtils.getCurrentLogin();
         if (StringUtils.equals(currentLogin, adminLogin)) {
-            return new ResponseEntity<>(new UserAccountDTO(currentLogin, null, "Admin", "Pgcn", null, null, Collections.singletonList("ROLE_ADMIN")),
-                                        HttpStatus.OK);
+            return new ResponseEntity<>(new UserAccountDTO(currentLogin, null, "Admin", "Pgcn", null, null, Collections.singletonList("ROLE_ADMIN")), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
@@ -86,6 +84,6 @@ public class InternalAccountResource {
     @Timed
     public void invalidateSession(@PathVariable final String series) throws UnsupportedEncodingException {
         final String decodedSeries = URLDecoder.decode(series, "UTF-8");
-        persistentTokenRepository.delete(decodedSeries);
+        persistentTokenRepository.deleteById(decodedSeries);
     }
 }

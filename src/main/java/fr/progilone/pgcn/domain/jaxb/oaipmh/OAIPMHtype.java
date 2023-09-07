@@ -5,23 +5,23 @@
 // Généré le : 2018.08.13 à 01:08:19 PM CEST
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.oaipmh;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-
 /**
- * <p>Classe Java pour OAI-PMHtype complex type.
+ * <p>
+ * Classe Java pour OAI-PMHtype complex type.
  *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="OAI-PMHtype">
@@ -48,17 +48,16 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "OAI-PMHtype", propOrder = {
-    "responseDate",
-    "request",
-    "error",
-    "identify",
-    "listMetadataFormats",
-    "listSets",
-    "getRecord",
-    "listIdentifiers",
-    "listRecords"
-})
+@XmlType(name = "OAI-PMHtype",
+         propOrder = {"responseDate",
+                      "request",
+                      "error",
+                      "identify",
+                      "listMetadataFormats",
+                      "listSets",
+                      "getRecord",
+                      "listIdentifiers",
+                      "listRecords"})
 public class OAIPMHtype {
 
     @XmlElement(required = true)
@@ -84,8 +83,8 @@ public class OAIPMHtype {
      * Obtient la valeur de la propriété responseDate.
      *
      * @return
-     *     possible object is
-     *     {@link XMLGregorianCalendar }
+     *         possible object is
+     *         {@link XMLGregorianCalendar }
      *
      */
     public XMLGregorianCalendar getResponseDate() {
@@ -96,8 +95,8 @@ public class OAIPMHtype {
      * Définit la valeur de la propriété responseDate.
      *
      * @param value
-     *     allowed object is
-     *     {@link XMLGregorianCalendar }
+     *            allowed object is
+     *            {@link XMLGregorianCalendar }
      *
      */
     public void setResponseDate(XMLGregorianCalendar value) {
@@ -108,8 +107,8 @@ public class OAIPMHtype {
      * Obtient la valeur de la propriété request.
      *
      * @return
-     *     possible object is
-     *     {@link RequestType }
+     *         possible object is
+     *         {@link RequestType }
      *
      */
     public RequestType getRequest() {
@@ -120,8 +119,8 @@ public class OAIPMHtype {
      * Définit la valeur de la propriété request.
      *
      * @param value
-     *     allowed object is
-     *     {@link RequestType }
+     *            allowed object is
+     *            {@link RequestType }
      *
      */
     public void setRequest(RequestType value) {
@@ -139,8 +138,9 @@ public class OAIPMHtype {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getError().add(newItem);
+     * getError().add(newItem);
      * </pre>
      *
      *
@@ -161,8 +161,8 @@ public class OAIPMHtype {
      * Obtient la valeur de la propriété identify.
      *
      * @return
-     *     possible object is
-     *     {@link IdentifyType }
+     *         possible object is
+     *         {@link IdentifyType }
      *
      */
     public IdentifyType getIdentify() {
@@ -173,8 +173,8 @@ public class OAIPMHtype {
      * Définit la valeur de la propriété identify.
      *
      * @param value
-     *     allowed object is
-     *     {@link IdentifyType }
+     *            allowed object is
+     *            {@link IdentifyType }
      *
      */
     public void setIdentify(IdentifyType value) {
@@ -185,8 +185,8 @@ public class OAIPMHtype {
      * Obtient la valeur de la propriété listMetadataFormats.
      *
      * @return
-     *     possible object is
-     *     {@link ListMetadataFormatsType }
+     *         possible object is
+     *         {@link ListMetadataFormatsType }
      *
      */
     public ListMetadataFormatsType getListMetadataFormats() {
@@ -197,8 +197,8 @@ public class OAIPMHtype {
      * Définit la valeur de la propriété listMetadataFormats.
      *
      * @param value
-     *     allowed object is
-     *     {@link ListMetadataFormatsType }
+     *            allowed object is
+     *            {@link ListMetadataFormatsType }
      *
      */
     public void setListMetadataFormats(ListMetadataFormatsType value) {
@@ -209,8 +209,8 @@ public class OAIPMHtype {
      * Obtient la valeur de la propriété listSets.
      *
      * @return
-     *     possible object is
-     *     {@link ListSetsType }
+     *         possible object is
+     *         {@link ListSetsType }
      *
      */
     public ListSetsType getListSets() {
@@ -221,8 +221,8 @@ public class OAIPMHtype {
      * Définit la valeur de la propriété listSets.
      *
      * @param value
-     *     allowed object is
-     *     {@link ListSetsType }
+     *            allowed object is
+     *            {@link ListSetsType }
      *
      */
     public void setListSets(ListSetsType value) {
@@ -233,8 +233,8 @@ public class OAIPMHtype {
      * Obtient la valeur de la propriété getRecord.
      *
      * @return
-     *     possible object is
-     *     {@link GetRecordType }
+     *         possible object is
+     *         {@link GetRecordType }
      *
      */
     public GetRecordType getGetRecord() {
@@ -245,8 +245,8 @@ public class OAIPMHtype {
      * Définit la valeur de la propriété getRecord.
      *
      * @param value
-     *     allowed object is
-     *     {@link GetRecordType }
+     *            allowed object is
+     *            {@link GetRecordType }
      *
      */
     public void setGetRecord(GetRecordType value) {
@@ -257,8 +257,8 @@ public class OAIPMHtype {
      * Obtient la valeur de la propriété listIdentifiers.
      *
      * @return
-     *     possible object is
-     *     {@link ListIdentifiersType }
+     *         possible object is
+     *         {@link ListIdentifiersType }
      *
      */
     public ListIdentifiersType getListIdentifiers() {
@@ -269,8 +269,8 @@ public class OAIPMHtype {
      * Définit la valeur de la propriété listIdentifiers.
      *
      * @param value
-     *     allowed object is
-     *     {@link ListIdentifiersType }
+     *            allowed object is
+     *            {@link ListIdentifiersType }
      *
      */
     public void setListIdentifiers(ListIdentifiersType value) {
@@ -281,8 +281,8 @@ public class OAIPMHtype {
      * Obtient la valeur de la propriété listRecords.
      *
      * @return
-     *     possible object is
-     *     {@link ListRecordsType }
+     *         possible object is
+     *         {@link ListRecordsType }
      *
      */
     public ListRecordsType getListRecords() {
@@ -293,8 +293,8 @@ public class OAIPMHtype {
      * Définit la valeur de la propriété listRecords.
      *
      * @param value
-     *     allowed object is
-     *     {@link ListRecordsType }
+     *            allowed object is
+     *            {@link ListRecordsType }
      *
      */
     public void setListRecords(ListRecordsType value) {

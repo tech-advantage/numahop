@@ -1,26 +1,23 @@
 package fr.progilone.pgcn.domain.workflow;
 
+import com.google.common.base.MoreObjects;
+import fr.progilone.pgcn.domain.AbstractDomainObject;
+import fr.progilone.pgcn.domain.user.User;
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorColumn;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-
-import com.google.common.base.MoreObjects;
-
-import fr.progilone.pgcn.domain.AbstractDomainObject;
-import fr.progilone.pgcn.domain.user.User;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -146,8 +143,11 @@ public abstract class DocUnitState extends AbstractDomainObject {
      * @return
      */
     public boolean isFutureOrCurrentState() {
-        return WorkflowStateStatus.NOT_STARTED.equals(status) || WorkflowStateStatus.PENDING.equals(status) || WorkflowStateStatus.TO_SKIP.equals(
-            status) || WorkflowStateStatus.TO_WAIT.equals(status) || WorkflowStateStatus.WAITING.equals(status) || WorkflowStateStatus.WAITING_NEXT_COMPLETED.equals(status) ;
+        return WorkflowStateStatus.NOT_STARTED.equals(status) || WorkflowStateStatus.PENDING.equals(status)
+               || WorkflowStateStatus.TO_SKIP.equals(status)
+               || WorkflowStateStatus.TO_WAIT.equals(status)
+               || WorkflowStateStatus.WAITING.equals(status)
+               || WorkflowStateStatus.WAITING_NEXT_COMPLETED.equals(status);
     }
 
     /**
@@ -156,8 +156,7 @@ public abstract class DocUnitState extends AbstractDomainObject {
      * @return
      */
     public boolean isCurrentState() {
-        return WorkflowStateStatus.PENDING.equals(status)
-               || WorkflowStateStatus.WAITING.equals(status)
+        return WorkflowStateStatus.PENDING.equals(status) || WorkflowStateStatus.WAITING.equals(status)
                || WorkflowStateStatus.WAITING_NEXT_COMPLETED.equals(status);
     }
 
@@ -193,10 +192,10 @@ public abstract class DocUnitState extends AbstractDomainObject {
      * Initialisation de l'étape
      *
      * @param startDate
-     *         (si null alors {@link LocalDateTime#now()})
+     *            (si null alors {@link LocalDateTime#now()})
      * @param endDate
      * @param status
-     *         (si non précisé, calculé automatiquement)
+     *            (si non précisé, calculé automatiquement)
      */
     public void initializeState(LocalDateTime startDate, final LocalDateTime endDate, final WorkflowStateStatus status) {
         if (isDone()) {
@@ -211,8 +210,7 @@ public abstract class DocUnitState extends AbstractDomainObject {
 
         if (status != null) {
             setStatus(status);
-            if (WorkflowStateStatus.FINISHED.equals(status)
-                || WorkflowStateStatus.FAILED.equals(status)
+            if (WorkflowStateStatus.FINISHED.equals(status) || WorkflowStateStatus.FAILED.equals(status)
                 || WorkflowStateStatus.CANCELED.equals(status)
                 || WorkflowStateStatus.SKIPPED.equals(status)) {
                 setUser(SYSTEM_USER);
@@ -235,14 +233,10 @@ public abstract class DocUnitState extends AbstractDomainObject {
                         final List<DocUnitState> currentStates = getWorkflow().getCurrentStates();
                         final List<DocUnitState> notStartedNextStates = getWorkflow().getFutureOrRunning()
                                                                                      .stream()
-                                                                                     .filter(state -> state.getStatus()
-                                                                                                           .equals(WorkflowStateStatus.NOT_STARTED)
-                                                                                                      && !state.getKey()
-                                                                                                               .equals(WorkflowStateKey.CLOTURE_DOCUMENT))
+                                                                                     .filter(state -> state.getStatus().equals(WorkflowStateStatus.NOT_STARTED) && !state.getKey()
+                                                                                                                                                                         .equals(WorkflowStateKey.CLOTURE_DOCUMENT))
                                                                                      .collect(Collectors.toList());
-                        if(currentStates.isEmpty() 
-                                || (currentStates.size() == 1 
-                                        && WorkflowStateKey.VALIDATION_NOTICES == currentStates.get(0).getKey())) {
+                        if (currentStates.isEmpty() || (currentStates.size() == 1 && WorkflowStateKey.VALIDATION_NOTICES == currentStates.get(0).getKey())) {
                             for (final DocUnitState state : getNextStates()) {
                                 // #5455 - Ne pas cloture le workflow s'il y a des étapes NOT_STARTED à après (cas CINES ignoré qui entraine la
                                 // cloture du document)
@@ -274,7 +268,7 @@ public abstract class DocUnitState extends AbstractDomainObject {
         }
 
         // Cas de l'étape de fin
-        if(WorkflowStateKey.CLOTURE_DOCUMENT.equals(getKey())) {
+        if (WorkflowStateKey.CLOTURE_DOCUMENT.equals(getKey())) {
             setStatus(WorkflowStateStatus.FINISHED);
             setUser(SYSTEM_USER);
             setEndDate(startDate);
@@ -317,7 +311,6 @@ public abstract class DocUnitState extends AbstractDomainObject {
         return WorkflowStateStatus.TO_SKIP.equals(status);
     }
 
-    
     /**
      * Retourne vrai si la tâche a été ignorée ou annulée.
      *
@@ -333,8 +326,8 @@ public abstract class DocUnitState extends AbstractDomainObject {
      * @return
      */
     public boolean isWaiting() {
-        return startDate != null && endDate == null 
-                && (WorkflowStateStatus.WAITING.equals(status) || WorkflowStateStatus.PENDING.equals(status));
+        return startDate != null && endDate == null
+               && (WorkflowStateStatus.WAITING.equals(status) || WorkflowStateStatus.PENDING.equals(status));
     }
 
     /**
@@ -345,7 +338,7 @@ public abstract class DocUnitState extends AbstractDomainObject {
     public boolean isValidated() {
         return isDone() && WorkflowStateStatus.FINISHED.equals(status);
     }
-    
+
     public boolean isRejected() {
         return isDone() && WorkflowStateStatus.FAILED.equals(status);
     }
@@ -391,10 +384,11 @@ public abstract class DocUnitState extends AbstractDomainObject {
 
     /**
      * Retire les states inexistantes
+     *
      * @param states
      */
     protected void cleanNullStates(final List<DocUnitState> states) {
-        if(states != null) {
+        if (states != null) {
             states.removeIf(Objects::isNull);
         }
     }

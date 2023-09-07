@@ -1,73 +1,56 @@
 package fr.progilone.pgcn.config;
 
+import com.codahale.metrics.MetricRegistry;
+import fr.progilone.pgcn.web.filter.CachingHttpHeadersFilter;
+import fr.progilone.pgcn.web.filter.StaticResourcesProductionFilter;
+import io.dropwizard.metrics.servlet.InstrumentedFilter;
+import io.dropwizard.metrics.servlets.MetricsServlet;
+import jakarta.servlet.DispatcherType;
+import jakarta.servlet.FilterRegistration;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRegistration;
 import java.util.Arrays;
 import java.util.EnumSet;
-
-import javax.inject.Inject;
-import javax.servlet.DispatcherType;
-import javax.servlet.FilterRegistration;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRegistration;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletContainer;
-import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
-import org.springframework.boot.context.embedded.MimeMappings;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
-
-import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.servlet.InstrumentedFilter;
-import com.codahale.metrics.servlets.MetricsServlet;
-
-import fr.progilone.pgcn.web.filter.CachingHttpHeadersFilter;
-import fr.progilone.pgcn.web.filter.StaticResourcesProductionFilter;
+import org.springframework.core.env.Profiles;
+import org.springframework.data.web.config.EnableSpringDataWebSupport;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * Configuration of web application with Servlet 3.0 APIs.
  */
 @Configuration
-@AutoConfigureAfter(CacheConfiguration.class)
-public class WebConfigurer implements ServletContextInitializer, EmbeddedServletContainerCustomizer {
+@EnableSpringDataWebSupport
+public class WebConfigurer implements WebMvcConfigurer, ServletContextInitializer {
 
     private static final Logger LOG = LoggerFactory.getLogger(WebConfigurer.class);
 
-    @Inject
-    private Environment env;
+    private final Environment env;
+    private final MetricRegistry metricRegistry;
 
-    @Autowired(required = false)
-    private MetricRegistry metricRegistry;
+    public WebConfigurer(final Environment env, @Autowired(required = false) final MetricRegistry metricRegistry) {
+        this.env = env;
+        this.metricRegistry = metricRegistry;
+    }
 
     @Override
     public void onStartup(final ServletContext servletContext) throws ServletException {
         LOG.info("Web application configuration, using profiles: {}", Arrays.toString(env.getActiveProfiles()));
         final EnumSet<DispatcherType> disps = EnumSet.of(DispatcherType.REQUEST, DispatcherType.FORWARD, DispatcherType.ASYNC);
-        if (!env.acceptsProfiles(Constants.SPRING_PROFILE_FAST)) {
+        if (metricRegistry != null) {
             initMetrics(servletContext, disps);
         }
-        if (env.acceptsProfiles(Constants.SPRING_PROFILE_PRODUCTION)) {
+        if (env.acceptsProfiles(Profiles.of(Constants.SPRING_PROFILE_PRODUCTION))) {
             initCachingHttpHeadersFilter(servletContext, disps);
             initStaticResourcesProductionFilter(servletContext, disps);
         }
         LOG.info("Web application fully configured");
-    }
-
-    /**
-     * Set up Mime types.
-     */
-    @Override
-    public void customize(final ConfigurableEmbeddedServletContainer container) {
-        final MimeMappings mappings = new MimeMappings(MimeMappings.DEFAULT);
-        // IE issue, see https://github.com/jhipster/generator-jhipster/pull/711
-        mappings.add("html", "text/html;charset=utf-8");
-        // CloudFoundry issue, see https://github.com/cloudfoundry/gorouter/issues/64
-        mappings.add("json", "text/html;charset=utf-8");
-        container.setMimeMappings(mappings);
     }
 
     /**
@@ -76,8 +59,7 @@ public class WebConfigurer implements ServletContextInitializer, EmbeddedServlet
     private void initStaticResourcesProductionFilter(final ServletContext servletContext, final EnumSet<DispatcherType> disps) {
 
         LOG.debug("Registering static resources production Filter");
-        final FilterRegistration.Dynamic staticResourcesProductionFilter = servletContext.addFilter("staticResourcesProductionFilter",
-                                                                                                    new StaticResourcesProductionFilter());
+        final FilterRegistration.Dynamic staticResourcesProductionFilter = servletContext.addFilter("staticResourcesProductionFilter", new StaticResourcesProductionFilter());
 
         staticResourcesProductionFilter.addMappingForUrlPatterns(disps, true, "/");
         staticResourcesProductionFilter.addMappingForUrlPatterns(disps, true, "/index.html");
@@ -93,8 +75,7 @@ public class WebConfigurer implements ServletContextInitializer, EmbeddedServlet
      */
     private void initCachingHttpHeadersFilter(final ServletContext servletContext, final EnumSet<DispatcherType> disps) {
         LOG.debug("Registering Caching HTTP Headers Filter");
-        final FilterRegistration.Dynamic cachingHttpHeadersFilter = servletContext.addFilter("cachingHttpHeadersFilter",
-                                                                                             new CachingHttpHeadersFilter(env));
+        final FilterRegistration.Dynamic cachingHttpHeadersFilter = servletContext.addFilter("cachingHttpHeadersFilter", new CachingHttpHeadersFilter(env));
 
         cachingHttpHeadersFilter.addMappingForUrlPatterns(disps, true, "/assets/*");
         cachingHttpHeadersFilter.addMappingForUrlPatterns(disps, true, "/scripts/*");

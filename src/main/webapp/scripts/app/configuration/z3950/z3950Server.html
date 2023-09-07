@@ -12,22 +12,19 @@
     <div class="col-sm-3 col-sm-offset-3 col-layout-columns">
         <div class="panel panel-column-2">
             <div class="panel-heading">
-                <button type="button" class="btn btn-sem2 btn-xs pull-right" ng-click="create()"
-                        uib-tooltip="{{::'Créer' | translate}}" sem-roles-allowed="Z3950_HAB1">
+                <button type="button" class="btn btn-sem2 btn-xs pull-right" ng-click="create()" uib-tooltip="{{::'Créer' | translate}}" tooltip-append-to-body="true" sem-roles-allowed="Z3950_HAB1">
                     <span class="glyphicon-halflings glyphicon-plus"></span>
                 </button>
                 <div class="input-group padding-r20">
-                    <input type="text" class="form-control sem-input-xs" id="nameSearchInput"
-                           ng-model="binding.filterWith" />
+                    <input type="text" class="form-control sem-input-xs" id="nameSearchInput" ng-model="binding.filterWith" />
                     <span class="input-group-btn">
-		               <button type="button" class="btn btn-sem2 btn-xs" uib-tooltip="{{::'Rechercher' | translate}}">
-		                   <span class="glyphicon syrtis-icon-loupe"></span>
-		               </button>
-		            </span>
+                        <button type="button" class="btn btn-sem2 btn-xs" uib-tooltip="{{::'Rechercher' | translate}}" tooltip-append-to-body="true">
+                            <span class="glyphicon syrtis-icon-loupe"></span>
+                        </button>
+                    </span>
                 </div>
             </div>
             <div class="panel-body" ng-switch="filteredServers.length == 0 && newServers.length == 0 && listLoaded">
-
                 <!-- Serveurs récemment créés -->
                 <div ng-show="newServers.length > 0" class="col-infinite-scroll">
                     <div class="pagination-break" translate>Récemment créés</div>
@@ -44,8 +41,7 @@
 
                 <div ng-switch-default>
                     <div ng-repeat="server in displayedServers" class="col-infinite-scroll">
-                        <div ng-show="$index == 0 || getFirstLetter(server) != getFirstLetter(displayedServers[$index-1])"
-                             class="pagination-break">{{server.name|initial:'OTHER'}}</div>
+                        <div ng-show="$index == 0 || getFirstLetter(server) != getFirstLetter(displayedServers[$index-1])" class="pagination-break">{{server.name|initial:'OTHER'}}</div>
                         <div class="list" ng-class="{active: server._selected}">
                             <a ng-click="edit(server)">
                                 <span class="principal">{{server.name}}</span>

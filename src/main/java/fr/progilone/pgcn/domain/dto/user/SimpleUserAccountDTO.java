@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class SimpleUserAccountDTO {
 
-	private final String identifier;
+    private final String identifier;
     private final String surname;
     private final String firstname;
     private final String login;
@@ -46,39 +46,37 @@ public class SimpleUserAccountDTO {
     }
 
     public final String getIdentifier() {
-		return identifier;
-	}
+        return identifier;
+    }
 
-	public final String getLogin() {
-		return login;
-	}
+    public final String getLogin() {
+        return login;
+    }
 
-	public final String getDashboard() {
-		return dashboard;
-	}
+    public final String getDashboard() {
+        return dashboard;
+    }
 
-	public final String getLibrary() {
-		return library;
-	}
+    public final String getLibrary() {
+        return library;
+    }
 
     public String getCategory() {
         return category;
     }
 
     public final List<String> getRoles() {
-		return roles;
-	}
+        return roles;
+    }
 
-
-
-	/**
+    /**
      * Builder pour la classe SimpleUserDTO
      *
      * @author jbrunet
      */
     public static final class Builder {
 
-    	private String identifier;
+        private String identifier;
         private String firstname;
         private String surname;
         private String login;
@@ -88,7 +86,7 @@ public class SimpleUserAccountDTO {
         private List<String> roles;
 
         public Builder reinit() {
-        	this.identifier = null;
+            this.identifier = null;
             this.firstname = null;
             this.surname = null;
             this.login = null;

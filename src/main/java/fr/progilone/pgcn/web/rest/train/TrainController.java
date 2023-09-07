@@ -7,6 +7,21 @@ import static fr.progilone.pgcn.web.rest.train.security.AuthorizationConstants.T
 import static fr.progilone.pgcn.web.rest.train.security.AuthorizationConstants.TRA_HAB2;
 import static fr.progilone.pgcn.web.rest.train.security.AuthorizationConstants.TRA_HAB3;
 
+import com.codahale.metrics.annotation.Timed;
+import fr.progilone.pgcn.domain.AbstractDomainObject;
+import fr.progilone.pgcn.domain.dto.train.SimpleTrainDTO;
+import fr.progilone.pgcn.domain.dto.train.TrainDTO;
+import fr.progilone.pgcn.exception.PgcnException;
+import fr.progilone.pgcn.exception.PgcnTechnicalException;
+import fr.progilone.pgcn.service.es.EsTrainService;
+import fr.progilone.pgcn.service.train.TrainService;
+import fr.progilone.pgcn.service.train.ui.UITrainService;
+import fr.progilone.pgcn.web.rest.AbstractRestController;
+import fr.progilone.pgcn.web.util.AccessHelper;
+import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Collection;
@@ -14,11 +29,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,20 +44,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.codahale.metrics.annotation.Timed;
-
-import fr.progilone.pgcn.domain.AbstractDomainObject;
-import fr.progilone.pgcn.domain.dto.train.SimpleTrainDTO;
-import fr.progilone.pgcn.domain.dto.train.TrainDTO;
-import fr.progilone.pgcn.exception.PgcnException;
-import fr.progilone.pgcn.exception.PgcnTechnicalException;
-import fr.progilone.pgcn.service.es.EsTrainService;
-import fr.progilone.pgcn.service.train.TrainService;
-import fr.progilone.pgcn.service.train.ui.UITrainService;
-import fr.progilone.pgcn.web.rest.AbstractRestController;
-import fr.progilone.pgcn.web.util.AccessHelper;
-import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
 
 @RestController
 @RequestMapping(value = "/api/rest/train")
@@ -75,23 +71,19 @@ public class TrainController extends AbstractRestController {
                                                        @RequestParam(value = "projects", required = false) final List<String> projects,
                                                        @RequestParam(value = "active", required = false, defaultValue = "true") final boolean active,
                                                        @RequestParam(value = "statuses", required = false) final List<String> trainStatuses,
-                                                       @DateTimeFormat(pattern = "yyyy-MM-dd")
-                                                       @RequestParam(value = "providerSendingDateFrom", required = false)
-                                                       final LocalDate providerSendingDateFrom,
-                                                       @DateTimeFormat(pattern = "yyyy-MM-dd")
-                                                       @RequestParam(value = "providerSendingDateTo", required = false)
-                                                       final LocalDate providerSendingDateTo,
-                                                       @DateTimeFormat(pattern = "yyyy-MM-dd")
-                                                       @RequestParam(value = "returnDateFrom", required = false) final LocalDate returnDateFrom,
-                                                       @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "returnDateTo", required = false)
-                                                       final LocalDate returnDateTo,
+                                                       @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "providerSendingDateFrom",
+                                                                                                             required = false) final LocalDate providerSendingDateFrom,
+                                                       @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "providerSendingDateTo",
+                                                                                                             required = false) final LocalDate providerSendingDateTo,
+                                                       @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "returnDateFrom",
+                                                                                                             required = false) final LocalDate returnDateFrom,
+                                                       @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "returnDateTo", required = false) final LocalDate returnDateTo,
                                                        @RequestParam(value = "docNumber", required = false) final Integer docNumber,
                                                        @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
                                                        @RequestParam(value = "size", required = false, defaultValue = "10") final Integer size) {
         // Droits d'accès
         final List<String> filteredLibraries = libraryAccesssHelper.getLibraryFilter(request, libraries);
-        final List<String> filteredProjects =
-            accessHelper.filterProjects(projects).stream().map(AbstractDomainObject::getIdentifier).collect(Collectors.toList());
+        final List<String> filteredProjects = accessHelper.filterProjects(projects).stream().map(AbstractDomainObject::getIdentifier).collect(Collectors.toList());
         final Page<SimpleTrainDTO> results = trainService.search(search,
                                                                  filteredLibraries,
                                                                  filteredProjects,
@@ -122,7 +114,8 @@ public class TrainController extends AbstractRestController {
     @RequestMapping(method = RequestMethod.GET, params = {"filterByProjects"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed({LOT_HAB3})
-    public ResponseEntity<List<SimpleTrainDTO>> findAllIdentifiersForProjects(final HttpServletRequest request, @RequestParam(value = "projectsIds", required = false) final List<String> projectIds) {
+    public ResponseEntity<List<SimpleTrainDTO>> findAllIdentifiersForProjects(final HttpServletRequest request,
+                                                                              @RequestParam(value = "projectsIds", required = false) final List<String> projectIds) {
         final List<SimpleTrainDTO> trainIds = trainService.findAllByProjectIds(projectIds);
         return createResponseEntity(trainIds);
     }
@@ -173,8 +166,11 @@ public class TrainController extends AbstractRestController {
         final List<TrainDTO> filteredTrains = filterTrainDTOs(trains, TrainDTO::getIdentifier);
         return createResponseEntity(filteredTrains);
     }
-    
-    @RequestMapping(method = RequestMethod.GET, params = {"dto", "complete"}, produces = MediaType.APPLICATION_JSON_VALUE)
+
+    @RequestMapping(method = RequestMethod.GET,
+                    params = {"dto",
+                              "complete"},
+                    produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed({TRA_HAB3})
     public ResponseEntity<Collection<TrainDTO>> findAllDTO() {
@@ -182,7 +178,6 @@ public class TrainController extends AbstractRestController {
         final List<TrainDTO> filteredTrains = filterTrainDTOs(trains, TrainDTO::getIdentifier);
         return createResponseEntity(filteredTrains);
     }
-
 
     @RequestMapping(method = RequestMethod.GET, params = {"project"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
@@ -198,7 +193,10 @@ public class TrainController extends AbstractRestController {
         return createResponseEntity(filteredTrains);
     }
 
-    @RequestMapping(method = RequestMethod.GET, params = {"simpleByProject", "project"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.GET,
+                    params = {"simpleByProject",
+                              "project"},
+                    produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<List<SimpleTrainDTO>> findAllSimpleForProject(@RequestParam(value = "project") final String projectId) {
         // Droits d'accès au projet

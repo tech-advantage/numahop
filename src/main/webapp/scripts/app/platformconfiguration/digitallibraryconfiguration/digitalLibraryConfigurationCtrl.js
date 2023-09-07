@@ -1,12 +1,9 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('DigitalLibraryConfigurationCtrl', DigitalLibraryConfigurationCtrl);
+    angular.module('numaHopApp.controller').controller('DigitalLibraryConfigurationCtrl', DigitalLibraryConfigurationCtrl);
 
-    function DigitalLibraryConfigurationCtrl($location, $scope, $timeout, $q, DigitalLibraryConfigurationSrvc,
-                                        StringTools, NumahopStorageService, NumaHopInitializationSrvc) {
-
+    function DigitalLibraryConfigurationCtrl($location, $scope, $timeout, $q, DigitalLibraryConfigurationSrvc, StringTools, NumahopStorageService, NumaHopInitializationSrvc) {
         $scope.applyFilter = applyFilter;
         $scope.clearSelection = clearSelection;
         $scope.create = create;
@@ -16,26 +13,25 @@
         $scope.nextPage = nextPage;
         $scope.updateConfiguration = updateConfiguration;
 
-        $scope.configurationInclude = "scripts/app/platformconfiguration/digitallibraryconfiguration/digitalLibraryConfigurationEdit.html";
+        $scope.configurationInclude = 'scripts/app/platformconfiguration/digitallibraryconfiguration/digitalLibraryConfigurationEdit.html';
         $scope.configuration = null;
 
-        var FILTER_STORAGE_SERVICE_KEY = "digital_library_configurations";
+        var FILTER_STORAGE_SERVICE_KEY = 'digital_library_configurations';
 
-        $scope.filters = {
-        };
+        $scope.filters = {};
 
         /**
          * Liste des options pour les listes déroulantes
          */
         $scope.options = {
-            libraries: []
+            libraries: [],
         };
         $scope.pagination = {
             items: [],
             totalItems: 0,
             busy: false,
             last: false,
-            page: 0
+            page: 0,
         };
 
         init();
@@ -46,15 +42,13 @@
             loadFilters();
             doFilter();
 
-            $scope.$on("$routeUpdate",
-                function ($currentRoute, $previousRoute) {
-                    $timeout(function () {
-                        $scope.configurationInclude = null;
-                        $scope.$apply();
-                        $scope.configurationInclude = "scripts/app/platformconfiguration/digitallibraryconfiguration/digitalLibraryConfigurationEdit.html";
-                    });
-                }
-            );
+            $scope.$on('$routeUpdate', function ($currentRoute, $previousRoute) {
+                $timeout(function () {
+                    $scope.configurationInclude = null;
+                    $scope.$apply();
+                    $scope.configurationInclude = 'scripts/app/platformconfiguration/digitallibraryconfiguration/digitalLibraryConfigurationEdit.html';
+                });
+            });
         }
 
         // CRUD
@@ -63,7 +57,7 @@
                 $scope.configuration._selected = false;
                 $scope.configuration = null;
             }
-            $location.path("/platformconfiguration/digitallibraryconfiguration").search({ id: null, new: true });
+            $location.path('/platformconfiguration/digitallibraryconfiguration').search({ id: null, new: true });
         }
         function edit(configuration) {
             clearSelection();
@@ -75,7 +69,7 @@
                 configuration._selected = true;
                 search = { id: configuration.identifier };
             }
-            $location.path("/platformconfiguration/digitallibraryconfiguration").search(search);
+            $location.path('/platformconfiguration/digitallibraryconfiguration').search(search);
         }
 
         function search() {
@@ -83,19 +77,19 @@
 
             var searchParams = {
                 page: $scope.pagination.page,
-                search: $scope.filterWith || ""
+                search: $scope.filterWith || '',
             };
 
             if ($scope.filters.libraries) {
-                var librariesIds = _.pluck($scope.filters.libraries, "identifier");
-                searchParams["libraries"] = librariesIds;
+                var librariesIds = _.pluck($scope.filters.libraries, 'identifier');
+                searchParams['libraries'] = librariesIds;
             }
 
             return DigitalLibraryConfigurationSrvc.search(searchParams).$promise;
         }
 
         function applyFilter(filterWith, event) {
-            if (event.type === "keypress" && event.keyCode === 13) {
+            if (event.type === 'keypress' && event.keyCode === 13) {
                 doFilter();
             }
         }
@@ -104,25 +98,24 @@
             $scope.pagination.last = false;
             $scope.pagination.busy = true;
 
-            search()
-                .then(function (value, responseHeaders) {
-                    $scope.pagination.page = value.number + 1;
-                    $scope.pagination.totalItems = value.totalElements;
-                    $scope.pagination.items = value.content;
-                    $scope.pagination.last = value.last;
-                    $scope.pagination.busy = false;
+            search().then(function (value, responseHeaders) {
+                $scope.pagination.page = value.number + 1;
+                $scope.pagination.totalItems = value.totalElements;
+                $scope.pagination.items = value.content;
+                $scope.pagination.last = value.last;
+                $scope.pagination.busy = false;
 
-                    if (afterUpdate) {
-                        return;
-                    }
+                if (afterUpdate) {
+                    return;
+                }
 
-                    if ($scope.pagination.items.length === 1) {
-                        edit($scope.pagination.items[0]);
-                    } else {
-                        // réinitialisation de la fiche de droite
-                        edit();
-                    }
-                });
+                if ($scope.pagination.items.length === 1) {
+                    edit($scope.pagination.items[0]);
+                } else {
+                    // réinitialisation de la fiche de droite
+                    edit();
+                }
+            });
         }
         function loadFilters() {
             var filters = NumahopStorageService.getFilter(FILTER_STORAGE_SERVICE_KEY);
@@ -133,10 +126,9 @@
                 }
             }
 
-            $q.all([NumaHopInitializationSrvc.loadLibraries()])
-                .then(function (data) {
-                    $scope.options.libraries = data[0];
-                });
+            $q.all([NumaHopInitializationSrvc.loadLibraries()]).then(function (data) {
+                $scope.options.libraries = data[0];
+            });
 
             return !!filters;
         }
@@ -148,15 +140,16 @@
         }
 
         function reinitFilters(reload) {
-            $scope.filters = {
-            };
+            $scope.filters = {};
             if (reload) {
                 doFilter();
             }
         }
         // liste
         function nextPage() {
-            if ($scope.pagination.busy || $scope.pagination.last) { return; }
+            if ($scope.pagination.busy || $scope.pagination.last) {
+                return;
+            }
             $scope.pagination.busy = true;
 
             search().then(function (value, responseHeaders) {
@@ -180,10 +173,9 @@
             }
         }
         function clearSelection() {
-            $scope.pagination.items
-                .forEach(function (elt, i) {
-                    elt._selected = false;
-                });
+            $scope.pagination.items.forEach(function (elt, i) {
+                elt._selected = false;
+            });
         }
     }
 })();

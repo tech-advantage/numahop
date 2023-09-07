@@ -1,7 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <!-- Changeset du module Document -->
     <changeSet id="pgcn-document-22" author="progilone">
@@ -18,16 +20,16 @@
                 <constraints nullable="false" />
             </column>
             <column name="created_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>
 
@@ -52,23 +54,20 @@
                 <constraints nullable="false" />
             </column>
             <column name="created_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>
 
-		<addForeignKeyConstraint baseColumnNames="delivery" baseTableName="del_slip" constraintName="fk_del_slip_delivery"
-            referencedColumnNames="identifier" referencedTableName="del_delivery" />
-        <addForeignKeyConstraint baseColumnNames="slip" baseTableName="del_slip_line"
-                                 constraintName="fk_del_slip_line"
-                                 referencedColumnNames="identifier" referencedTableName="del_slip" />
+		<addForeignKeyConstraint baseColumnNames="delivery" baseTableName="del_slip" constraintName="fk_del_slip_delivery" referencedColumnNames="identifier" referencedTableName="del_delivery" />
+        <addForeignKeyConstraint baseColumnNames="slip" baseTableName="del_slip_line" constraintName="fk_del_slip_line" referencedColumnNames="identifier" referencedTableName="del_slip" />
     </changeSet>
 </databaseChangeLog>

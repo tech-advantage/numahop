@@ -2,14 +2,14 @@ package fr.progilone.pgcn.domain.dto.document;
 
 /**
  * Structure simple pour echanges de donnees de la table des matieres.
- * 
+ *
  */
 public class StoredFileTocDTO {
-    
+
     private String typeToc;
-    
+
     private String orderToc;
-    
+
     private String titreToc;
 
     /**
@@ -20,7 +20,8 @@ public class StoredFileTocDTO {
     }
 
     /**
-     * @param typeToc the typeToc to set
+     * @param typeToc
+     *            the typeToc to set
      */
     public void setTypeToc(String typeToc) {
         this.typeToc = typeToc;
@@ -34,7 +35,8 @@ public class StoredFileTocDTO {
     }
 
     /**
-     * @param orderToc the orderToc to set
+     * @param orderToc
+     *            the orderToc to set
      */
     public void setOrderToc(String orderToc) {
         this.orderToc = orderToc;
@@ -48,12 +50,11 @@ public class StoredFileTocDTO {
     }
 
     /**
-     * @param titreToc the titreToc to set
+     * @param titreToc
+     *            the titreToc to set
      */
     public void setTitreToc(String titreToc) {
         this.titreToc = titreToc;
     }
-    
-    
 
 }

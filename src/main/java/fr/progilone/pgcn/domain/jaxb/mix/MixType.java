@@ -5,22 +5,22 @@
 // Généré le : 2017.08.25 à 03:15:17 PM CEST
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.mix;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSeeAlso;
-import javax.xml.bind.annotation.XmlType;
-
 
 /**
- * <p>Classe Java pour mixType complex type.
+ * <p>
+ * Classe Java pour mixType complex type.
  *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="mixType">
@@ -42,17 +42,14 @@ import javax.xml.bind.annotation.XmlType;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "mixType", propOrder = {
-    "basicDigitalObjectInformation",
-    "basicImageInformation",
-    "imageCaptureMetadata",
-    "imageAssessmentMetadata",
-    "changeHistory",
-    "extension"
-})
-@XmlSeeAlso({
-    Mix.class
-})
+@XmlType(name = "mixType",
+         propOrder = {"basicDigitalObjectInformation",
+                      "basicImageInformation",
+                      "imageCaptureMetadata",
+                      "imageAssessmentMetadata",
+                      "changeHistory",
+                      "extension"})
+@XmlSeeAlso({Mix.class})
 public class MixType {
 
     @XmlElement(name = "BasicDigitalObjectInformation")
@@ -72,8 +69,8 @@ public class MixType {
      * Obtient la valeur de la propriété basicDigitalObjectInformation.
      *
      * @return
-     *     possible object is
-     *     {@link BasicDigitalObjectInformationType }
+     *         possible object is
+     *         {@link BasicDigitalObjectInformationType }
      *
      */
     public BasicDigitalObjectInformationType getBasicDigitalObjectInformation() {
@@ -84,8 +81,8 @@ public class MixType {
      * Définit la valeur de la propriété basicDigitalObjectInformation.
      *
      * @param value
-     *     allowed object is
-     *     {@link BasicDigitalObjectInformationType }
+     *            allowed object is
+     *            {@link BasicDigitalObjectInformationType }
      *
      */
     public void setBasicDigitalObjectInformation(BasicDigitalObjectInformationType value) {
@@ -96,8 +93,8 @@ public class MixType {
      * Obtient la valeur de la propriété basicImageInformation.
      *
      * @return
-     *     possible object is
-     *     {@link BasicImageInformationType }
+     *         possible object is
+     *         {@link BasicImageInformationType }
      *
      */
     public BasicImageInformationType getBasicImageInformation() {
@@ -108,8 +105,8 @@ public class MixType {
      * Définit la valeur de la propriété basicImageInformation.
      *
      * @param value
-     *     allowed object is
-     *     {@link BasicImageInformationType }
+     *            allowed object is
+     *            {@link BasicImageInformationType }
      *
      */
     public void setBasicImageInformation(BasicImageInformationType value) {
@@ -120,8 +117,8 @@ public class MixType {
      * Obtient la valeur de la propriété imageCaptureMetadata.
      *
      * @return
-     *     possible object is
-     *     {@link ImageCaptureMetadataType }
+     *         possible object is
+     *         {@link ImageCaptureMetadataType }
      *
      */
     public ImageCaptureMetadataType getImageCaptureMetadata() {
@@ -132,8 +129,8 @@ public class MixType {
      * Définit la valeur de la propriété imageCaptureMetadata.
      *
      * @param value
-     *     allowed object is
-     *     {@link ImageCaptureMetadataType }
+     *            allowed object is
+     *            {@link ImageCaptureMetadataType }
      *
      */
     public void setImageCaptureMetadata(ImageCaptureMetadataType value) {
@@ -144,8 +141,8 @@ public class MixType {
      * Obtient la valeur de la propriété imageAssessmentMetadata.
      *
      * @return
-     *     possible object is
-     *     {@link ImageAssessmentMetadataType }
+     *         possible object is
+     *         {@link ImageAssessmentMetadataType }
      *
      */
     public ImageAssessmentMetadataType getImageAssessmentMetadata() {
@@ -156,8 +153,8 @@ public class MixType {
      * Définit la valeur de la propriété imageAssessmentMetadata.
      *
      * @param value
-     *     allowed object is
-     *     {@link ImageAssessmentMetadataType }
+     *            allowed object is
+     *            {@link ImageAssessmentMetadataType }
      *
      */
     public void setImageAssessmentMetadata(ImageAssessmentMetadataType value) {
@@ -168,8 +165,8 @@ public class MixType {
      * Obtient la valeur de la propriété changeHistory.
      *
      * @return
-     *     possible object is
-     *     {@link ChangeHistoryType }
+     *         possible object is
+     *         {@link ChangeHistoryType }
      *
      */
     public ChangeHistoryType getChangeHistory() {
@@ -180,8 +177,8 @@ public class MixType {
      * Définit la valeur de la propriété changeHistory.
      *
      * @param value
-     *     allowed object is
-     *     {@link ChangeHistoryType }
+     *            allowed object is
+     *            {@link ChangeHistoryType }
      *
      */
     public void setChangeHistory(ChangeHistoryType value) {
@@ -199,8 +196,9 @@ public class MixType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getExtension().add(newItem);
+     * getExtension().add(newItem);
      * </pre>
      *
      *

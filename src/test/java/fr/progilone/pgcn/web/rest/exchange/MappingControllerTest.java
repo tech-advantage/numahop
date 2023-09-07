@@ -1,5 +1,12 @@
 package fr.progilone.pgcn.web.rest.exchange;
 
+import static fr.progilone.pgcn.util.SecurityRequestPostProcessors.roles;
+import static fr.progilone.pgcn.web.rest.exchange.security.AuthorizationConstants.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 import fr.progilone.pgcn.domain.dto.exchange.MappingDTO;
 import fr.progilone.pgcn.domain.dto.library.SimpleLibraryDTO;
 import fr.progilone.pgcn.domain.exchange.Mapping;
@@ -9,37 +16,27 @@ import fr.progilone.pgcn.service.exchange.MappingService;
 import fr.progilone.pgcn.util.TestConverterFactory;
 import fr.progilone.pgcn.util.TestUtil;
 import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import jakarta.servlet.http.HttpServletRequest;
+import java.util.HashSet;
+import java.util.Set;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.internal.stubbing.answers.ReturnsArgumentAt;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.format.support.DefaultFormattingConversionService;
 import org.springframework.format.support.FormattingConversionService;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.HashSet;
-import java.util.Set;
-
-import static fr.progilone.pgcn.util.SecurityRequestPostProcessors.*;
-import static fr.progilone.pgcn.web.rest.exchange.security.AuthorizationConstants.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyCollectionOf;
-import static org.mockito.Matchers.anyVararg;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 /**
  * Created by Sebastien on 23/11/2016.
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class MappingControllerTest {
 
     @Mock
@@ -53,32 +50,24 @@ public class MappingControllerTest {
 
     private final RequestPostProcessor allPermissions = roles(MAP_HAB0, MAP_HAB1, MAP_HAB2);
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         final MappingController controller = new MappingController(exchangeMappingService, mappingService, libraryAccesssHelper);
 
         final FormattingConversionService convService = new DefaultFormattingConversionService();
         convService.addConverter(String.class, Library.class, TestConverterFactory.getConverter(Library.class));
         this.restMockMvc = MockMvcBuilders.standaloneSetup(controller).setConversionService(convService).build();
-
-        when(libraryAccesssHelper.checkLibrary(any(HttpServletRequest.class), any(), any(), anyVararg())).thenReturn(true);
-        when(libraryAccesssHelper.checkLibrary(any(HttpServletRequest.class), any(Library.class), anyString())).thenReturn(true);
-        when(libraryAccesssHelper.filterObjectsByLibrary(any(HttpServletRequest.class),
-                                                         anyCollectionOf(MappingDTO.class),
-                                                         any(),
-                                                         anyVararg())).thenAnswer(new ReturnsArgumentAt(1));
     }
 
     @Test
     public void testCreate() throws Exception {
         final Mapping mapping = getMapping("ABCD-1234");
         when(mappingService.save(any(Mapping.class))).thenReturn(mapping);
+        when(libraryAccesssHelper.checkLibrary(any(HttpServletRequest.class), any(), any(), any())).thenReturn(true);
 
-        this.restMockMvc.perform(post("/api/rest/mapping").contentType(TestUtil.APPLICATION_JSON_UTF8)
-                                                          .content(TestUtil.convertObjectToJsonBytes(mapping))
-                                                          .with(allPermissions))
+        this.restMockMvc.perform(post("/api/rest/mapping").contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(mapping)).with(allPermissions))
                         .andExpect(status().isCreated())
-                        .andExpect(content().contentType(TestUtil.APPLICATION_JSON_UTF8))
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andExpect(jsonPath("identifier").value(mapping.getIdentifier()))
                         .andExpect(jsonPath("label").value(mapping.getLabel()))
                         .andExpect(jsonPath("library.identifier").value(mapping.getLibrary().getIdentifier()))
@@ -91,10 +80,10 @@ public class MappingControllerTest {
         final String identifier = mapping.getIdentifier();
 
         when(mappingService.findOne(mapping.getIdentifier())).thenReturn(mapping);
+        when(libraryAccesssHelper.checkLibrary(any(HttpServletRequest.class), any(), any(), any())).thenReturn(true);
 
         // test delete
-        this.restMockMvc.perform(delete("/api/rest/mapping/{id}", identifier).contentType(TestUtil.APPLICATION_JSON_UTF8).with(allPermissions))
-                        .andExpect(status().isOk());
+        this.restMockMvc.perform(delete("/api/rest/mapping/{id}", identifier).contentType(MediaType.APPLICATION_JSON).with(allPermissions)).andExpect(status().isOk());
 
         verify(mappingService).delete(identifier);
     }
@@ -104,32 +93,32 @@ public class MappingControllerTest {
         final Set<MappingDTO> mappings = new HashSet<>();
         mappings.add(getSimpleMappingDto("ABCD-1236"));
 
+        when(libraryAccesssHelper.filterObjectsByLibrary(any(HttpServletRequest.class), any(), any(), any())).thenAnswer(new ReturnsArgumentAt(1));
+
         when(mappingService.findByType(Mapping.Type.MARC)).thenReturn(mappings);
 
         // test findAllActive
-        this.restMockMvc.perform(get("/api/rest/mapping").accept(TestUtil.APPLICATION_JSON_UTF8).param("type", "MARC").with(allPermissions))
+        this.restMockMvc.perform(get("/api/rest/mapping").accept(MediaType.APPLICATION_JSON).param("type", "MARC").with(allPermissions))
                         .andExpect(status().isOk())
-                        .andExpect(content().contentType(TestUtil.APPLICATION_JSON_UTF8))
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andExpect(jsonPath("$[0].identifier").value(mappings.iterator().next().getIdentifier()));
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void testFindByLibrary() throws Exception {
         final Set<MappingDTO> stats = new HashSet<>();
         final MappingDTO mapping = getSimpleMappingDto("ABCD-1237");
         stats.add(mapping);
-        Library library = new Library();
+        final Library library = new Library();
         library.setIdentifier(mapping.getLibrary().getIdentifier());
 
         when(mappingService.findByLibrary(library)).thenReturn(stats);
 
         // test findAllActive
-        this.restMockMvc.perform(get("/api/rest/mapping").param("library", mapping.getLibrary().getIdentifier())
-                                                         .accept(TestUtil.APPLICATION_JSON_UTF8)
-                                                         .with(allPermissions))
+        this.restMockMvc.perform(get("/api/rest/mapping").param("library", mapping.getLibrary().getIdentifier()).accept(MediaType.APPLICATION_JSON).with(allPermissions))
                         .andExpect(status().isOk())
-                        .andExpect(content().contentType(TestUtil.APPLICATION_JSON_UTF8))
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andExpect(jsonPath("$[0].identifier").value(mapping.getIdentifier()));
     }
 
@@ -137,11 +126,12 @@ public class MappingControllerTest {
     public void getById() throws Exception {
         final Mapping mapping = getMapping("ABCD-1238");
         when(mappingService.findOne(mapping.getIdentifier())).thenReturn(mapping);
+        when(libraryAccesssHelper.checkLibrary(any(HttpServletRequest.class), any(), any(), any())).thenReturn(true);
 
         // test findAllActive
-        this.restMockMvc.perform(get("/api/rest/mapping/{id}", mapping.getIdentifier()).accept(TestUtil.APPLICATION_JSON_UTF8).with(allPermissions))
+        this.restMockMvc.perform(get("/api/rest/mapping/{id}", mapping.getIdentifier()).accept(MediaType.APPLICATION_JSON).with(allPermissions))
                         .andExpect(status().isOk())
-                        .andExpect(content().contentType(TestUtil.APPLICATION_JSON_UTF8))
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andExpect(jsonPath("identifier").value(mapping.getIdentifier()));
     }
 
@@ -150,8 +140,7 @@ public class MappingControllerTest {
         final String identifier = "AAA";
         when(mappingService.findOne(identifier)).thenReturn(null);
 
-        this.restMockMvc.perform(get("/api/rest/mapping/{identifier}", identifier).accept(TestUtil.APPLICATION_JSON_UTF8).with(allPermissions))
-                        .andExpect(status().isNotFound());
+        this.restMockMvc.perform(get("/api/rest/mapping/{identifier}", identifier).accept(MediaType.APPLICATION_JSON).with(allPermissions)).andExpect(status().isNotFound());
     }
 
     @Test
@@ -165,13 +154,14 @@ public class MappingControllerTest {
 
         when(mappingService.findOne(mapping.getIdentifier())).thenReturn(mapping);
         when(mappingService.save(mapping)).thenReturn(savedStat);
+        when(libraryAccesssHelper.checkLibrary(any(HttpServletRequest.class), any(), any(), any())).thenReturn(true);
 
         // test update
-        this.restMockMvc.perform(post("/api/rest/mapping/" + identifier).contentType(TestUtil.APPLICATION_JSON_UTF8)
+        this.restMockMvc.perform(post("/api/rest/mapping/" + identifier).contentType(MediaType.APPLICATION_JSON)
                                                                         .content(TestUtil.convertObjectToJsonBytes(mapping))
                                                                         .with(allPermissions))
                         .andExpect(status().isOk())
-                        .andExpect(content().contentType(TestUtil.APPLICATION_JSON_UTF8))
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andExpect(jsonPath("identifier").value(savedStat.getIdentifier()))
                         .andExpect(jsonPath("label").value(savedStat.getLabel()))
                         .andExpect(jsonPath("library.identifier").value(savedStat.getLibrary().getIdentifier()))

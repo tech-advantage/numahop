@@ -1,10 +1,8 @@
 package fr.progilone.pgcn.repository.document.common;
 
-import java.util.List;
-
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import fr.progilone.pgcn.domain.document.common.LanguageCode;
+import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface LanguageCodeRepository extends JpaRepository<LanguageCode, String> {
 

@@ -5,36 +5,36 @@
 // Généré le : 2017.12.08 à 03:23:15 PM CET
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.ppdi;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
-
 
 /**
  *
  *
  * <pre>
- * &lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;description xmlns="http://www.cines.fr/pac/ppdi" xmlns:ISO-639-3="urn:un:unece:uncefact:codelist:draft:DAF:languageCode:2011-10-07" xmlns:RA="urn:un:unece:uncefact:codelist:draft:DAF:accessRestrictionCode:2009-08-18" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;Pr�sentation du producteur du fonds&lt;/description&gt;
+ * &lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;description xmlns="http://www.cines.fr/pac/ppdi" xmlns:ISO-639-3="urn:un:unece:uncefact:codelist:draft:DAF:languageCode:2011-10-07" xmlns:RA="urn:un:unece:uncefact:codelist:draft:DAF:accessRestrictionCode:2009-08-18" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;Présentation du producteur du fonds&lt;/description&gt;
  * </pre>
  *
  *
  * <pre>
  * &lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;commentaires xmlns="http://www.cines.fr/pac/ppdi" xmlns:ISO-639-3="urn:un:unece:uncefact:codelist:draft:DAF:languageCode:2011-10-07" xmlns:RA="urn:un:unece:uncefact:codelist:draft:DAF:accessRestrictionCode:2009-08-18" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
- * Le producteur est l'entit� (organisme(s), personne ou groupe de personnes) responsable de la cr�ation du fonds. Dans le cas de documents num�ris�s, il faut comprendre par producteur, le producteur du fonds original et non le responsable de la num�risation. Dans tous les cas, si le producteur est le service versant, ne pas remplir cette partie. S'il existe une multitude de producteurs qui ne sont pas clairement identifiables, ne pas remplir cette partie et renseigner dans le d�tail, le circuit de production et de collecte.
+ * Le producteur est l'entité (organisme(s), personne ou groupe de personnes) responsable de la création du fonds. Dans le cas de documents numérisés, il faut comprendre par producteur, le producteur du fonds original et non le responsable de la numérisation. Dans tous les cas, si le producteur est le service versant, ne pas remplir cette partie. S'il existe une multitude de producteurs qui ne sont pas clairement identifiables, ne pas remplir cette partie et renseigner dans le détail, le circuit de production et de collecte.
  * &lt;/commentaires&gt;
  * </pre>
  *
  *
  *
- * <p>Classe Java pour ProducteurType complex type.
+ * <p>
+ * Classe Java pour ProducteurType complex type.
  *
- * <p>Le fragment de sch�ma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="ProducteurType">
@@ -54,12 +54,11 @@ import javax.xml.bind.annotation.XmlType;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ProducteurType", propOrder = {
-    "nomProd",
-    "datesProd",
-    "historiqueProd",
-    "notesProd"
-})
+@XmlType(name = "ProducteurType",
+         propOrder = {"nomProd",
+                      "datesProd",
+                      "historiqueProd",
+                      "notesProd"})
 public class ProducteurType {
 
     @XmlElement(required = true)
@@ -71,11 +70,11 @@ public class ProducteurType {
     protected List<String> notesProd;
 
     /**
-     * Obtient la valeur de la propri�t� nomProd.
+     * Obtient la valeur de la propriété nomProd.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getNomProd() {
@@ -83,11 +82,11 @@ public class ProducteurType {
     }
 
     /**
-     * D�finit la valeur de la propri�t� nomProd.
+     * Définit la valeur de la propriété nomProd.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setNomProd(String value) {
@@ -95,11 +94,11 @@ public class ProducteurType {
     }
 
     /**
-     * Obtient la valeur de la propri�t� datesProd.
+     * Obtient la valeur de la propriété datesProd.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getDatesProd() {
@@ -107,11 +106,11 @@ public class ProducteurType {
     }
 
     /**
-     * D�finit la valeur de la propri�t� datesProd.
+     * Définit la valeur de la propriété datesProd.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setDatesProd(String value) {
@@ -129,8 +128,9 @@ public class ProducteurType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getHistoriqueProd().add(newItem);
+     * getHistoriqueProd().add(newItem);
      * </pre>
      *
      *
@@ -158,8 +158,9 @@ public class ProducteurType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getNotesProd().add(newItem);
+     * getNotesProd().add(newItem);
      * </pre>
      *
      *

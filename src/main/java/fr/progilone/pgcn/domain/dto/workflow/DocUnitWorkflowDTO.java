@@ -1,9 +1,8 @@
 package fr.progilone.pgcn.domain.dto.workflow;
 
+import fr.progilone.pgcn.domain.dto.AbstractVersionedDTO;
 import java.time.LocalDateTime;
 import java.util.List;
-
-import fr.progilone.pgcn.domain.dto.AbstractVersionedDTO;
 
 public class DocUnitWorkflowDTO extends AbstractVersionedDTO {
 

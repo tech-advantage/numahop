@@ -8,18 +8,17 @@ import fr.progilone.pgcn.repository.user.AuthorizationRepository;
 import fr.progilone.pgcn.repository.user.UserRepository;
 import fr.progilone.pgcn.service.user.UserService;
 import fr.progilone.pgcn.web.rest.administration.security.AuthorizationConstants;
+import java.util.Collection;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.inject.Inject;
-import java.util.Collection;
-import java.util.stream.Collectors;
 
 /**
  * Authenticate a user from the database.
@@ -30,9 +29,9 @@ public class UserDetailsService implements org.springframework.security.core.use
     private static final Logger LOG = LoggerFactory.getLogger(UserDetailsService.class);
     private static final String ROLE_PREFIX = "ROLE_";
 
-    @Inject
+    @Autowired
     private UserRepository userRepository;
-    @Inject
+    @Autowired
     private AuthorizationRepository authorizationRepository;
 
     @Value("${admin.login}")
@@ -67,7 +66,8 @@ public class UserDetailsService implements org.springframework.security.core.use
                 password = adminPassword;
                 userId = UserService.SUPER_ADMIN_ID;
             } else {
-                throw new UsernameNotFoundException("User " + lowercaseLogin + " was not found in the database");
+                throw new UsernameNotFoundException("User " + lowercaseLogin
+                                                    + " was not found in the database");
             }
         } else {
             if (userFromDatabase.isSuperuser()) {
@@ -77,10 +77,11 @@ public class UserDetailsService implements org.springframework.security.core.use
             if (role != null) {
                 grantedAuthorities = role.getAuthorizations()
                                          .stream()
-                                         .map(authorization -> new SimpleGrantedAuthority("ROLE_" + authorization.getCode()))
+                                         .map(authorization -> new SimpleGrantedAuthority(ROLE_PREFIX + authorization.getCode()))
                                          .collect(Collectors.toList());
             } else {
-                throw new UserWithoutRoleException("User " + lowercaseLogin + " has no role in the database");
+                throw new UserWithoutRoleException("User " + lowercaseLogin
+                                                   + " has no role in the database");
             }
             if (userFromDatabase.getLang() != null) {
                 lang = userFromDatabase.getLang();

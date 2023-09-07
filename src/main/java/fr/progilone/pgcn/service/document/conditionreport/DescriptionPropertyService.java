@@ -8,12 +8,11 @@ import fr.progilone.pgcn.exception.message.PgcnList;
 import fr.progilone.pgcn.repository.document.conditionreport.DescriptionPropertyRepository;
 import fr.progilone.pgcn.repository.document.conditionreport.DescriptionRepository;
 import fr.progilone.pgcn.repository.document.conditionreport.DescriptionValueRepository;
+import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 public class DescriptionPropertyService {
@@ -41,14 +40,20 @@ public class DescriptionPropertyService {
         return descriptionPropertyRepository.findAllByOrderByOrderAsc();
     }
 
+    @Transactional(readOnly = true)
+    public DescriptionProperty findByIdentifier(final String identifier) {
+        return descriptionPropertyRepository.findById(identifier).orElseThrow();
+    }
+
     @Transactional
-    public void delete(final String identifier) throws PgcnValidationException {
-        final DescriptionProperty property = descriptionPropertyRepository.findOne(identifier);
-        // Validation de la suppression
-        validateDeletion(property);
-        // Suppression
-        descriptionValueRepository.deleteByPropertyIdentifier(identifier);
-        descriptionPropertyRepository.delete(identifier);
+    public void delete(final String identifier) {
+        descriptionPropertyRepository.findById(identifier).ifPresent(property -> {
+            // Validation de la suppression
+            validateDeletion(property);
+            // Suppression
+            descriptionValueRepository.deleteByPropertyIdentifier(identifier);
+            descriptionPropertyRepository.deleteById(identifier);
+        });
     }
 
     private void validateDeletion(final DescriptionProperty property) throws PgcnValidationException {
@@ -90,5 +95,16 @@ public class DescriptionPropertyService {
             property.setErrors(errors);
             throw new PgcnValidationException(property, errors);
         }
+    }
+
+    public enum FakeDescriptionProperty {
+        INSURANCE,
+        NB_VIEW_BODY,
+        NB_VIEW_BINDING,
+        NB_VIEW_ADDITIONNAL,
+        ADDITIONNAL_DESC,
+        BODY_DESC,
+        BINDING_DESC,
+        DIMENSION
     }
 }

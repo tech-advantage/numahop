@@ -5,35 +5,38 @@
 // Généré le : 2016.12.29 à 11:54:46 AM CET
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.mets;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAnyAttribute;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlID;
+import jakarta.xml.bind.annotation.XmlIDREF;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAnyAttribute;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlID;
-import javax.xml.bind.annotation.XmlIDREF;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
-
 
 /**
  * areaType: Complex Type for Area Linking
- * 				The area element provides for more sophisticated linking between a div element and content files representing that div, be they text, image, audio, or video files.  An area element can link a div to a point within a file, to a one-dimension segment of a file (e.g., text segment, image line, audio/video clip), or a two-dimensional section of a file 	(e.g, subsection of an image, or a subsection of the  video display of a video file.  The area element has no content; all information is recorded within its various attributes.
+ * The area element provides for more sophisticated linking between a div element and content files representing that div, be they text, image, audio,
+ * or video files. An area element can link a div to a point within a file, to a one-dimension segment of a file (e.g., text segment, image line,
+ * audio/video clip), or a two-dimensional section of a file (e.g, subsection of an image, or a subsection of the video display of a video file. The
+ * area element has no content; all information is recorded within its various attributes.
  *
  *
- * <p>Classe Java pour areaType complex type.
+ * <p>
+ * Classe Java pour areaType complex type.
  *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="areaType"&gt;
@@ -147,8 +150,8 @@ public class AreaType {
      * Obtient la valeur de la propriété id.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getID() {
@@ -159,8 +162,8 @@ public class AreaType {
      * Définit la valeur de la propriété id.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setID(String value) {
@@ -171,8 +174,8 @@ public class AreaType {
      * Obtient la valeur de la propriété fileid.
      *
      * @return
-     *     possible object is
-     *     {@link Object }
+     *         possible object is
+     *         {@link Object }
      *
      */
     public Object getFILEID() {
@@ -183,8 +186,8 @@ public class AreaType {
      * Définit la valeur de la propriété fileid.
      *
      * @param value
-     *     allowed object is
-     *     {@link Object }
+     *            allowed object is
+     *            {@link Object }
      *
      */
     public void setFILEID(Object value) {
@@ -195,8 +198,8 @@ public class AreaType {
      * Obtient la valeur de la propriété shape.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getSHAPE() {
@@ -207,8 +210,8 @@ public class AreaType {
      * Définit la valeur de la propriété shape.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setSHAPE(String value) {
@@ -219,8 +222,8 @@ public class AreaType {
      * Obtient la valeur de la propriété coords.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getCOORDS() {
@@ -231,8 +234,8 @@ public class AreaType {
      * Définit la valeur de la propriété coords.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setCOORDS(String value) {
@@ -243,8 +246,8 @@ public class AreaType {
      * Obtient la valeur de la propriété begin.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getBEGIN() {
@@ -255,8 +258,8 @@ public class AreaType {
      * Définit la valeur de la propriété begin.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setBEGIN(String value) {
@@ -267,8 +270,8 @@ public class AreaType {
      * Obtient la valeur de la propriété end.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getEND() {
@@ -279,8 +282,8 @@ public class AreaType {
      * Définit la valeur de la propriété end.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setEND(String value) {
@@ -291,8 +294,8 @@ public class AreaType {
      * Obtient la valeur de la propriété betype.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getBETYPE() {
@@ -303,8 +306,8 @@ public class AreaType {
      * Définit la valeur de la propriété betype.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setBETYPE(String value) {
@@ -315,8 +318,8 @@ public class AreaType {
      * Obtient la valeur de la propriété extent.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getEXTENT() {
@@ -327,8 +330,8 @@ public class AreaType {
      * Définit la valeur de la propriété extent.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setEXTENT(String value) {
@@ -339,8 +342,8 @@ public class AreaType {
      * Obtient la valeur de la propriété exttype.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getEXTTYPE() {
@@ -351,8 +354,8 @@ public class AreaType {
      * Définit la valeur de la propriété exttype.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setEXTTYPE(String value) {
@@ -370,8 +373,9 @@ public class AreaType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getADMID().add(newItem);
+     * getADMID().add(newItem);
      * </pre>
      *
      *
@@ -399,8 +403,9 @@ public class AreaType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getCONTENTIDS().add(newItem);
+     * getCONTENTIDS().add(newItem);
      * </pre>
      *
      *
@@ -421,8 +426,8 @@ public class AreaType {
      * Obtient la valeur de la propriété order.
      *
      * @return
-     *     possible object is
-     *     {@link BigInteger }
+     *         possible object is
+     *         {@link BigInteger }
      *
      */
     public BigInteger getORDER() {
@@ -433,8 +438,8 @@ public class AreaType {
      * Définit la valeur de la propriété order.
      *
      * @param value
-     *     allowed object is
-     *     {@link BigInteger }
+     *            allowed object is
+     *            {@link BigInteger }
      *
      */
     public void setORDER(BigInteger value) {
@@ -445,8 +450,8 @@ public class AreaType {
      * Obtient la valeur de la propriété orderlabel.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getORDERLABEL() {
@@ -457,8 +462,8 @@ public class AreaType {
      * Définit la valeur de la propriété orderlabel.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setORDERLABEL(String value) {
@@ -469,8 +474,8 @@ public class AreaType {
      * Obtient la valeur de la propriété label.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getLABEL() {
@@ -481,8 +486,8 @@ public class AreaType {
      * Définit la valeur de la propriété label.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setLABEL(String value) {
@@ -501,7 +506,7 @@ public class AreaType {
      *
      *
      * @return
-     *     always non-null
+     *         always non-null
      */
     public Map<QName, String> getOtherAttributes() {
         return otherAttributes;

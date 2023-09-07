@@ -13,8 +13,7 @@ public interface AutomaticCheckTypeMapper {
 
     AutomaticCheckTypeMapper INSTANCE = Mappers.getMapper(AutomaticCheckTypeMapper.class);
 
-
     AutomaticCheckTypeDTO objToDto(AutomaticCheckType type);
-    
+
     AutomaticCheckType dtoToObj(AutomaticCheckTypeDTO dto);
 }

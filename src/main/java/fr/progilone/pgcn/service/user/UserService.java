@@ -1,37 +1,5 @@
 package fr.progilone.pgcn.service.user;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-
-import org.apache.commons.collections4.IterableUtils;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
-import org.springframework.web.multipart.MultipartFile;
-
 import fr.progilone.pgcn.domain.administration.viewsformat.ViewsFormatConfiguration;
 import fr.progilone.pgcn.domain.exchange.template.Name;
 import fr.progilone.pgcn.domain.project.Project;
@@ -57,6 +25,30 @@ import fr.progilone.pgcn.service.MailService;
 import fr.progilone.pgcn.service.exchange.template.VelocityEngineService;
 import fr.progilone.pgcn.service.storage.FileStorageManager;
 import fr.progilone.pgcn.service.util.RandomUtil;
+import jakarta.annotation.PostConstruct;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.*;
+import java.util.stream.Collectors;
+import org.apache.commons.collections4.IterableUtils;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class UserService {
@@ -84,7 +76,6 @@ public class UserService {
     @Value("${uploadPath.user}")
     private String userDir;
 
-    @Inject
     public UserService(final DashboardRepository dashboardRepository,
                        final FileStorageManager fm,
                        final LotRepository lotRepository,
@@ -116,21 +107,35 @@ public class UserService {
 
     @Transactional
     public void changeCurrentUserPassword(final String password) {
-        final User currentUser = userRepository.findOne(SecurityUtils.getCurrentUserId());
+        final User currentUser = userRepository.findById(SecurityUtils.getCurrentUserId()).orElseThrow();
         final String encryptedPassword = passwordEncoder.encode(password);
         currentUser.setPassword(encryptedPassword);
     }
 
     @Transactional
     public String changeUserPassword(final String identifier) {
-        final String newPassword = RandomUtil.generatePassword();
-        changeUserPassword(identifier, newPassword);
-        return newPassword;
+        String upperCaseLetters = RandomStringUtils.random(2, 65, 90, true, true);
+        String lowerCaseLetters = RandomStringUtils.random(2, 97, 122, true, true);
+        String numbers = RandomStringUtils.randomNumeric(2);
+        String specialChar = RandomStringUtils.random(2, 33, 47, false, false);
+        String totalChars = RandomStringUtils.randomAlphanumeric(4);
+
+        String combinedChars = upperCaseLetters.concat(lowerCaseLetters).concat(numbers).concat(specialChar).concat(totalChars);
+
+        List<Character> pwdChars = combinedChars.chars().mapToObj(c -> (char) c).collect(Collectors.toList());
+
+        Collections.shuffle(pwdChars);
+
+        String password = pwdChars.stream().collect(StringBuilder::new, StringBuilder::append, StringBuilder::append).toString();
+
+        changeUserPassword(identifier, password);
+
+        return password;
     }
 
     @Transactional
     public void changeUserPassword(final String identifier, final String password) {
-        final User userFromDb = userRepository.findOne(identifier);
+        final User userFromDb = userRepository.findById(identifier).orElseThrow();
         final String encryptedPassword = passwordEncoder.encode(password);
         userFromDb.setPassword(encryptedPassword);
         userRepository.save(userFromDb);
@@ -148,7 +153,7 @@ public class UserService {
     @Transactional
     public boolean resetPassword(final String username) {
         final User user = userRepository.findByLogin(username);
-        
+
         if (user != null && StringUtils.isNotBlank(user.getEmail())) {
             try {
                 // Génération du mot de passe
@@ -162,7 +167,7 @@ public class UserService {
                     user.setPassword(passwordEncoder.encode(password));
                 }
                 return true;
-                
+
             } catch (final IOException e) {
                 LOG.error(e.getMessage(), e);
             }
@@ -174,9 +179,9 @@ public class UserService {
      * Suppression d'un usager depuis son identifiant
      *
      * @param identifier
-     *         l'identifiant de l'usager
+     *            l'identifiant de l'usager
      * @throws PgcnBusinessException
-     *         si la suppression de l'usager échoue
+     *             si la suppression de l'usager échoue
      */
     @Transactional
     public void delete(final String identifier) throws PgcnValidationException {
@@ -196,7 +201,7 @@ public class UserService {
         // Suppr. signature
         deleteUserSignature(user);
         // Suppression
-        userRepository.delete(identifier);
+        userRepository.deleteById(identifier);
     }
 
     private void validateDelete(final User user) throws PgcnValidationException {
@@ -259,7 +264,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public User findByIdentifier(final String id) {
-        return userRepository.findOne(id);
+        return userRepository.findById(id).orElse(null);
     }
 
     @Transactional(readOnly = true)
@@ -269,9 +274,6 @@ public class UserService {
 
     /**
      * Ramène un utilisateur et ses groupes
-     *
-     * @param identifier
-     * @return
      */
     @Transactional(readOnly = true)
     public User getOneWithGroups(final String identifier) {
@@ -281,10 +283,6 @@ public class UserService {
     /**
      * Création d'un usager
      * La vérification des champs requis se font en amont dans les DTO
-     *
-     * @param user
-     * @return
-     * @throws PgcnValidationException
      */
     @Transactional
     public User create(final User user) throws PgcnValidationException {
@@ -321,10 +319,6 @@ public class UserService {
     /**
      * Sauvegarde un usager
      * La vérification des champs requis se font en amont dans les DTO
-     *
-     * @param user
-     * @return
-     * @throws PgcnValidationException
      */
     @Transactional
     public User update(final User user) throws PgcnValidationException {
@@ -348,14 +342,14 @@ public class UserService {
                              final List<String> roles,
                              final Integer page,
                              final Integer size) {
-        final Pageable pageRequest = new PageRequest(page, size);
+        final Pageable pageRequest = PageRequest.of(page, size);
         return userRepository.search(search, initiale, active, filterProviders, libraries, categories, roles, pageRequest);
     }
 
     @Transactional
     public void updateDashboard(final String currentUserId, final String dashboard) {
         if (SUPER_ADMIN_ID.equals(currentUserId)) {
-            Dashboard d = dashboardRepository.findOne(SUPER_ADMIN_ID);
+            Dashboard d = dashboardRepository.findById(SUPER_ADMIN_ID).orElse(null);
             if (d == null) {
                 d = new Dashboard();
                 d.setIdentifier(SUPER_ADMIN_ID);
@@ -380,8 +374,7 @@ public class UserService {
     public void removeOldPersistentTokens() {
         LOG.info("Exécution de la tâche planifiée removeOldTokens");
         final LocalDate now = LocalDate.now();
-        final List<PersistentToken> tokens =
-            persistentTokenRepository.findByTokenDateBefore(Date.from(now.minusMonths(1).atStartOfDay(ZoneId.systemDefault()).toInstant()));
+        final List<PersistentToken> tokens = persistentTokenRepository.findByTokenDateBefore(Date.from(now.minusMonths(1).atStartOfDay(ZoneId.systemDefault()).toInstant()));
         for (final PersistentToken token : tokens) {
             final User user = token.getUser();
             if (user != null) {
@@ -406,9 +399,6 @@ public class UserService {
 
     /**
      * Retourne tous les prestataires associés à la bibliothèque
-     *
-     * @param id
-     * @return
      */
     @Transactional(readOnly = true)
     public Collection<User> findProvidersForLibrary(final String id) {
@@ -417,9 +407,6 @@ public class UserService {
 
     /**
      * Retourne tous les utilisateurs associés à la bibliothèque
-     *
-     * @param id
-     * @return
      */
     @Transactional(readOnly = true)
     public Collection<User> findUsersForLibrary(final String id) {
@@ -474,7 +461,7 @@ public class UserService {
 
     /**
      * Envoi d'un email à l'utilisateur, généré à partir d'un template Velocity.
-     * 
+     *
      * @param user
      * @param templateName
      * @param parameters
@@ -508,8 +495,6 @@ public class UserService {
 
     /**
      * Suppression de la signature de l'utilisateur
-     *
-     * @param user
      */
     public void deleteUserSignature(final User user) {
         final File userFile = getUserSignature(user);
@@ -525,16 +510,23 @@ public class UserService {
     /**
      * Signature de l'utilisateur
      *
-     * @param user
      * @return null si aucun fichier n'est trouvé
      */
     @Transactional(readOnly = true)
     public File getUserSignature(final User user) {
         final File logoFile;
         if (user.getLibrary() != null) {
-            logoFile = fm.getUploadFile(userDir, user.getLibrary().getIdentifier(), null, ViewsFormatConfiguration.FileFormat.MASTER.label() + "." + user.getIdentifier());
+            logoFile = fm.getUploadFile(userDir,
+                                        user.getLibrary().getIdentifier(),
+                                        null,
+                                        ViewsFormatConfiguration.FileFormat.MASTER.label() + "."
+                                              + user.getIdentifier());
         } else {
-            logoFile = fm.getUploadFile(userDir, null, null, ViewsFormatConfiguration.FileFormat.MASTER.label() + "." + user.getIdentifier());
+            logoFile = fm.getUploadFile(userDir,
+                                        null,
+                                        null,
+                                        ViewsFormatConfiguration.FileFormat.MASTER.label() + "."
+                                              + user.getIdentifier());
         }
         return fm.retrieveFile(logoFile);
     }
@@ -542,25 +534,29 @@ public class UserService {
     /**
      * Signature de l'utilisateur (aperçu)
      *
-     * @param user
      * @return null si aucun fichier n'est trouvé
      */
     @Transactional(readOnly = true)
     public File getUserThumbnail(final User user) {
         final File thumbnailFile;
         if (user.getLibrary() != null) {
-            thumbnailFile = fm.getUploadFile(userDir, user.getLibrary().getIdentifier(), null, ViewsFormatConfiguration.FileFormat.THUMB.label() + "." + user.getIdentifier());
+            thumbnailFile = fm.getUploadFile(userDir,
+                                             user.getLibrary().getIdentifier(),
+                                             null,
+                                             ViewsFormatConfiguration.FileFormat.THUMB.label() + "."
+                                                   + user.getIdentifier());
         } else {
-            thumbnailFile = fm.getUploadFile(userDir, null, null, ViewsFormatConfiguration.FileFormat.THUMB.label() + "." + user.getIdentifier());
+            thumbnailFile = fm.getUploadFile(userDir,
+                                             null,
+                                             null,
+                                             ViewsFormatConfiguration.FileFormat.THUMB.label() + "."
+                                                   + user.getIdentifier());
         }
         return fm.retrieveFile(thumbnailFile);
     }
 
     /**
      * Téléversement de la signature de l'utilisateur
-     *
-     * @param user
-     * @param file
      */
     @Transactional
     public void uploadSignature(final User user, final MultipartFile file) {
@@ -573,12 +569,14 @@ public class UserService {
 
     private void uploadImage(final User user, final MultipartFile file, final ViewsFormatConfiguration.FileFormat format) {
         try (InputStream in = file.getInputStream()) {
-            fm.createThumbnail(in, file.getContentType(), format, userDir, null, format.label() + "." + user.getIdentifier());
-            LOG.debug("Le logo de l'utilisateur {} ({}) a été importé: {} (format {})",
-                      user.getLogin(),
-                      user.getIdentifier(),
-                      file.getOriginalFilename(),
-                      format);
+            fm.createThumbnail(in,
+                               file.getContentType(),
+                               format,
+                               userDir,
+                               null,
+                               format.label() + "."
+                                     + user.getIdentifier());
+            LOG.debug("Le logo de l'utilisateur {} ({}) a été importé: {} (format {})", user.getLogin(), user.getIdentifier(), file.getOriginalFilename(), format);
 
         } catch (final IOException e) {
             LOG.error(e.getMessage(), e);

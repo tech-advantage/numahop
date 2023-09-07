@@ -1,17 +1,16 @@
 package fr.progilone.pgcn.web.util;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
-import org.springframework.core.type.filter.AnnotationTypeFilter;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.*;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
+import org.springframework.core.type.filter.AnnotationTypeFilter;
 
 /**
  * Classes gérant les relations de dépendance entre autorisations
@@ -72,10 +71,7 @@ public class AuthorizationManager {
      * @return la liste des autorisations dépendant de <i>authorization</i>
      */
     public static List<String> getDependencies(String authorization) {
-        return AuthorizationManager.requirements.entrySet().stream()
-                                                .filter(e -> e.getValue().contains(authorization))
-                                                .map(Map.Entry::getKey)
-                                                .collect(Collectors.toList());
+        return AuthorizationManager.requirements.entrySet().stream().filter(e -> e.getValue().contains(authorization)).map(Map.Entry::getKey).collect(Collectors.toList());
     }
 
     /**

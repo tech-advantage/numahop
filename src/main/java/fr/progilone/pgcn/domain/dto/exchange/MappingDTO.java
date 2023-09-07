@@ -1,7 +1,6 @@
 package fr.progilone.pgcn.domain.dto.exchange;
 
 import fr.progilone.pgcn.domain.dto.library.SimpleLibraryDTO;
-
 import java.util.Objects;
 
 /**

@@ -1,7 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <!-- Changeset du module Document -->
     <changeSet id="pgcn-document-37" author="progilone">
@@ -9,119 +11,113 @@
         <!-- Contributor -->
         <createTable tableName="doc_archive_contributor">
             <column name="identifier" type="varchar(191)">
-                <constraints primaryKey="true" nullable="false"/>
+                <constraints primaryKey="true" nullable="false" />
             </column>
             <!-- Données -->
-            <column name="value" type="text"/>
+            <column name="value" type="text" />
             <!-- Lien technique -->
             <column name="item" type="varchar(191)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <!-- Données techniques auto -->
             <column name="version" type="BIGINT">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>
 
-        <addForeignKeyConstraint baseColumnNames="item" baseTableName="doc_archive_contributor"
-                                 constraintName="fk_doc_archive_contributor"
-                                 referencedColumnNames="identifier" referencedTableName="doc_archive_item"/>
+        <addForeignKeyConstraint baseColumnNames="item" baseTableName="doc_archive_contributor" constraintName="fk_doc_archive_contributor" referencedColumnNames="identifier" referencedTableName="doc_archive_item" />
 
         <sql>INSERT INTO `doc_archive_contributor`(`identifier`, `value`, `item`, `version`, `created_by`, `last_modified_by`, `created_date`, `last_modified_date`)
             SELECT uuid(), `contributor`, `identifier`, `version`, `created_by`, `last_modified_by`, `created_date`, `last_modified_date` FROM doc_archive_item
         </sql>
 
-        <dropColumn tableName="doc_archive_item" columnName="contributor"/>
+        <dropColumn tableName="doc_archive_item" columnName="contributor" />
 
 
         <!-- creator -->
         <createTable tableName="doc_archive_creator">
             <column name="identifier" type="varchar(191)">
-                <constraints primaryKey="true" nullable="false"/>
+                <constraints primaryKey="true" nullable="false" />
             </column>
             <!-- Données -->
-            <column name="value" type="text"/>
+            <column name="value" type="text" />
             <!-- Lien technique -->
             <column name="item" type="varchar(191)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <!-- Données techniques auto -->
             <column name="version" type="BIGINT">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>
 
-        <addForeignKeyConstraint baseColumnNames="item" baseTableName="doc_archive_creator"
-                                 constraintName="fk_doc_archive_creator"
-                                 referencedColumnNames="identifier" referencedTableName="doc_archive_item"/>
+        <addForeignKeyConstraint baseColumnNames="item" baseTableName="doc_archive_creator" constraintName="fk_doc_archive_creator" referencedColumnNames="identifier" referencedTableName="doc_archive_item" />
 
         <sql>INSERT INTO `doc_archive_creator`(`identifier`, `value`, `item`, `version`, `created_by`, `last_modified_by`, `created_date`, `last_modified_date`)
             SELECT uuid(), `creator`, `identifier`, `version`, `created_by`, `last_modified_by`, `created_date`, `last_modified_date` FROM doc_archive_item
         </sql>
 
-        <dropColumn tableName="doc_archive_item" columnName="creator"/>
+        <dropColumn tableName="doc_archive_item" columnName="creator" />
 
         <!-- language -->
         <createTable tableName="doc_archive_language">
             <column name="identifier" type="varchar(191)">
-                <constraints primaryKey="true" nullable="false"/>
+                <constraints primaryKey="true" nullable="false" />
             </column>
             <!-- Données -->
-            <column name="value" type="text"/>
+            <column name="value" type="text" />
             <!-- Lien technique -->
             <column name="item" type="varchar(191)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <!-- Données techniques auto -->
             <column name="version" type="BIGINT">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>
 
-        <addForeignKeyConstraint baseColumnNames="item" baseTableName="doc_archive_language"
-                                 constraintName="fk_doc_archive_language"
-                                 referencedColumnNames="identifier" referencedTableName="doc_archive_item"/>
+        <addForeignKeyConstraint baseColumnNames="item" baseTableName="doc_archive_language" constraintName="fk_doc_archive_language" referencedColumnNames="identifier" referencedTableName="doc_archive_item" />
 
         <sql>INSERT INTO `doc_archive_language`(`identifier`, `value`, `item`, `version`, `created_by`, `last_modified_by`, `created_date`, `last_modified_date`)
             SELECT uuid(), `language`, `identifier`, `version`, `created_by`, `last_modified_by`, `created_date`, `last_modified_date` FROM doc_archive_item
         </sql>
 
-        <dropColumn tableName="doc_archive_item" columnName="language"/>
+        <dropColumn tableName="doc_archive_item" columnName="language" />
     </changeSet>
 </databaseChangeLog>

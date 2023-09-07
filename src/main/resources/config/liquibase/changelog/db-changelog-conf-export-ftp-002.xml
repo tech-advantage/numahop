@@ -1,13 +1,15 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
     
     <!-- ajout colonnes manquantes  -->
     <changeSet id="pgcn-conf-export-ftp-002" author="progilone">
                 
         <addColumn tableName="conf_export_ftp">
-            <column name="active" type="BOOLEAN" defaultValueBoolean="true"/>
+            <column name="active" type="BOOLEAN" defaultValueBoolean="true" />
             <column name="storage_server" type="varchar(255)" />
             <column name="port" type="varchar(255)" />
         </addColumn>

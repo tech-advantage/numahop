@@ -58,7 +58,7 @@ public final class FileUtils {
 
             final byte[] mdbytes = md.digest();
 
-            //convert the byte to hex format
+            // convert the byte to hex format
             for (int i = 0; i < mdbytes.length; i++) {
                 sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
             }
@@ -68,8 +68,10 @@ public final class FileUtils {
     }
 
     public enum CheckSumType {
+
         MD5("MD5"),
         SHA1("SHA-1");
+
         private final String value;
 
         private CheckSumType(final String v) {

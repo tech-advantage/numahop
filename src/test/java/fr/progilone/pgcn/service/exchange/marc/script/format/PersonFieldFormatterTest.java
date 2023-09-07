@@ -1,18 +1,16 @@
 package fr.progilone.pgcn.service.exchange.marc.script.format;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import fr.progilone.pgcn.service.exchange.marc.MarcMappingEvaluationService;
 import fr.progilone.pgcn.service.exchange.marc.script.AbstractScriptTest;
-import org.junit.Assert;
-import org.junit.Test;
+import java.util.HashMap;
+import java.util.Map;
+import javax.script.ScriptException;
+import org.junit.jupiter.api.Test;
 import org.marc4j.marc.DataField;
 import org.marc4j.marc.MarcFactory;
 import org.marc4j.marc.Record;
-
-import javax.script.ScriptException;
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by Sebastien on 22/11/2016.
@@ -30,64 +28,64 @@ public class PersonFieldFormatterTest extends AbstractScriptTest {
 
     @Test
     public void testMapping() {
-        PersonFieldFormatter formatter = new PersonFieldFormatter("test", null);
+        final PersonFieldFormatter formatter = new PersonFieldFormatter("test", null);
         formatter.setTransliterate((type, code) -> "Auteur");
 
         Record record = buildRecord("Benson", "Rowland S.", null, null, null, null, null);
         String actual = formatter.format((DataField) record.getVariableField("702"));
-        Assert.assertEquals("Benson, Rowland S.", actual);
+        assertEquals("Benson, Rowland S.", actual);
 
         record = buildRecord("Parker", "Theodore", "Spirit", null, null, null, null);
         actual = formatter.format((DataField) record.getVariableField("702"));
-        Assert.assertEquals("Parker, Theodore (Spirit)", actual);
+        assertEquals("Parker, Theodore (Spirit)", actual);
 
         record = buildRecord("Arundel", "Philip Howard", "Earl of", null, null, null, null);
         ((DataField) record.getVariableField("702")).addSubfield(MARC_FACTORY.newSubfield('c', "Saint"));
         actual = formatter.format((DataField) record.getVariableField("702"));
-        Assert.assertEquals("Arundel, Philip Howard (Earl of; Saint)", actual);
+        assertEquals("Arundel, Philip Howard (Earl of; Saint)", actual);
 
         record = buildRecord("Vittorio Emmanuele", null, "Re d’Italia", null, "II", null, null);
         actual = formatter.format((DataField) record.getVariableField("702"));
-        Assert.assertEquals("Vittorio Emmanuele II (Re d’Italia)", actual);
+        assertEquals("Vittorio Emmanuele II (Re d’Italia)", actual);
 
         record = buildRecord("François", null, "roi de France", "1494-1547", null, "1er", null);
         actual = formatter.format((DataField) record.getVariableField("702"));
-        Assert.assertEquals("François 1er (roi de France; 1494-1547)", actual);
+        assertEquals("François 1er (roi de France; 1494-1547)", actual);
 
         record = buildRecord("Pan Painter", null, null, null, null, null, null);
         ((DataField) record.getVariableField("702")).addSubfield(MARC_FACTORY.newSubfield('a', "Jackie"));
         actual = formatter.format((DataField) record.getVariableField("702"));
-        Assert.assertEquals("Pan Painter Jackie", actual);
+        assertEquals("Pan Painter Jackie", actual);
 
         record = buildRecord("Callas", "Maria", null, null, null, null, "721");
         ((DataField) record.getVariableField("702")).addSubfield(MARC_FACTORY.newSubfield('4', "vso"));
         actual = formatter.format((DataField) record.getVariableField("702"));
-        Assert.assertEquals("Callas, Maria. Auteur. Auteur", actual);
+        assertEquals("Callas, Maria. Auteur. Auteur", actual);
 
         record = buildRecord("Prévost", "François", null, "19..-....", null, null, null);
         ((DataField) record.getVariableField("702")).addSubfield(MARC_FACTORY.newSubfield('c', "archéologue"));
         actual = formatter.format((DataField) record.getVariableField("702"));
-        Assert.assertEquals("Prévost, François (19..-....; archéologue)", actual);
+        assertEquals("Prévost, François (19..-....; archéologue)", actual);
 
         record = buildRecord("Barbey d'Aurevilly", "Jules", null, "1808-1889", null, null, null);
         actual = formatter.format((DataField) record.getVariableField("702"));
-        Assert.assertEquals("Barbey d'Aurevilly, Jules (1808-1889)", actual);
+        assertEquals("Barbey d'Aurevilly, Jules (1808-1889)", actual);
 
         record = buildRecord("Jeanne de Chantal", null, "sainte", "1572-1641", null, null, null);
         actual = formatter.format((DataField) record.getVariableField("702"));
-        Assert.assertEquals("Jeanne de Chantal (sainte; 1572-1641)", actual);
+        assertEquals("Jeanne de Chantal (sainte; 1572-1641)", actual);
 
         record = buildRecord("Jeanne de Chantal", null, "sainte", "1572-1641", null, null, null);
         actual = formatter.format((DataField) record.getVariableField("702"));
-        Assert.assertEquals("Jeanne de Chantal (sainte; 1572-1641)", actual);
+        assertEquals("Jeanne de Chantal (sainte; 1572-1641)", actual);
 
         record = buildRecord("Antioche", "Adhémar", null, "1849-1918", null, null, "430");
         ((DataField) record.getVariableField("702")).addSubfield(MARC_FACTORY.newSubfield('c', "comte d'"));
         actual = formatter.format((DataField) record.getVariableField("702"));
-        Assert.assertEquals("Antioche, Adhémar (1849-1918; comte d'). Auteur", actual);
+        assertEquals("Antioche, Adhémar (1849-1918; comte d'). Auteur", actual);
     }
 
-    private Record buildRecord(String data_a, String data_b, String data_c, String data_f, String data_d, String data_D, String data_4) {
+    private Record buildRecord(final String data_a, final String data_b, final String data_c, final String data_f, final String data_d, final String data_D, final String data_4) {
         final Record record = MARC_FACTORY.newRecord();
         final DataField fld702 = MARC_FACTORY.newDataField("702", ' ', ' ');
         record.addVariableField(fld702);
@@ -156,6 +154,7 @@ public class PersonFieldFormatterTest extends AbstractScriptTest {
         final Map<String, Object> bindings = new HashMap<>();
         bindings.put("marc_702", fld702);
         bindings.put(MarcMappingEvaluationService.BINDING_FN_TRANSLITERATE, new Object() {
+
             public String getValue(final String type, final String code) {
                 return "Auteur";
             }

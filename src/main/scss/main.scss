@@ -1,17 +1,16 @@
-$icon-font-path: "/assets/fonts/";
-$sid-font-path: "/assets/fonts/";
+$icon-font-path: '/assets/fonts/';
+$sid-font-path: '/assets/fonts/';
 
 /* $sid-main-color: #ec7404; */
 
-
 /* $sid-sec-color:  #FB9C5A; */
 
-$sid-main-color: #5C2E42;
-$sid-sec-color: #722E42;
-$sid-third-color: #9D6D7B;
-$sid-fourth-color: #C7ABB3;
-$sid-green-color: #8DC63F;
-$sid-red-color: #DB0000;
+$sid-main-color: #5c2e42;
+$sid-sec-color: #722e42;
+$sid-third-color: #9d6d7b;
+$sid-fourth-color: #c7abb3;
+$sid-green-color: #8dc63f;
+$sid-red-color: #db0000;
 $sid-selection: #ebe8e3;
 $sid-text: #58585a;
 $sid-text-light: white;
@@ -35,7 +34,7 @@ $brand-primary: $sid-main-color !default;
 @import 'calendar';
 @import 'carousel';
 @import 'cataloging';
-@import "circleStatus";
+@import 'circleStatus';
 @import 'communication-rules';
 @import 'directive';
 @import 'fonts';
@@ -57,7 +56,6 @@ $brand-primary: $sid-main-color !default;
 @import 'table';
 @import 'timeline';
 @import 'tree';
-@import 'tree-controls';
 @import 'xeditable';
 @import 'widgets';
 @import 'utils';
@@ -66,10 +64,13 @@ $brand-primary: $sid-main-color !default;
 @import 'numahop';
 
 /* make sure browsers use the pointer cursor for anchors, even with no href */
-.nav, .pagination, .carousel, .panel-title a, a {
+.nav,
+.pagination,
+.carousel,
+.panel-title a,
+a {
     cursor: pointer;
 }
-
 
 /* start Password strength bar style */
 
@@ -82,12 +83,12 @@ ul#strength {
     vertical-align: 2px;
 }
 
-.point:last {
+.point:last-of-type {
     margin: 0 !important;
 }
 
 .point {
-    background: #DDD;
+    background: #ddd;
     border-radius: 2px;
     display: inline-block;
     height: 5px;
@@ -103,7 +104,6 @@ ul#strength {
     }
 }
 
-
 /* end Password strength bar style */
 
 .w30px {
@@ -114,13 +114,11 @@ ul#strength {
     display: inline-block;
 }
 
-
 /* float right */
 
 .float-r {
     float: right;
 }
-
 
 /* margin bottom */
 
@@ -132,7 +130,6 @@ ul#strength {
     text-indent: 5px;
 }
 
-
 /* Add ng-cloak manually to avoid element blinking */
 
 [ng\:cloak],
@@ -142,12 +139,12 @@ ul#strength {
 }
 
 .preserve-line-breaks {
-	word-break: break-word;
+    word-break: break-word;
 }
 
- height-40 {
+height-40 {
     height: 40px;
- }
+}
 .height-100 {
-	height: 100%;
+    height: 100%;
 }

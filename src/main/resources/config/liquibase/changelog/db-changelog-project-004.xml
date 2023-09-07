@@ -1,14 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <changeSet id="pgcn-project-4" author="progilone">
         <addColumn tableName="lot_lot">
-            <column name="required_format" type="varchar(191)"></column>
+            <column name="required_format" type="varchar(191)" />
         </addColumn>
         <addColumn tableName="del_delivery">
-            <column name="sequential_numbers" type="BOOLEAN"></column>
+            <column name="sequential_numbers" type="BOOLEAN" />
         </addColumn>
     </changeSet>
 

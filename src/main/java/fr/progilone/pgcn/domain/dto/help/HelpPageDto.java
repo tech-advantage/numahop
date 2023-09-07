@@ -1,8 +1,7 @@
 package fr.progilone.pgcn.domain.dto.help;
 
-import com.mysema.query.annotations.QueryProjection;
+import com.querydsl.core.annotations.QueryProjection;
 import fr.progilone.pgcn.domain.help.HelpPageType;
-
 import java.util.ArrayList;
 import java.util.List;
 

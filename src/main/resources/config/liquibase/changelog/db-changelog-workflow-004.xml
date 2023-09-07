@@ -1,22 +1,22 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <!-- Changeset du module Workflow (liens modèles / projet & lot) -->
     <changeSet id="pgcn-create-workflow-4" author="progilone">
 
         <!-- Ajout du type détape -->
         <addColumn tableName="proj_project">
-            <column name="workflow_model" type="varchar(191)"/>
+            <column name="workflow_model" type="varchar(191)" />
         </addColumn>
-        <addForeignKeyConstraint baseTableName="proj_project" baseColumnNames="workflow_model" constraintName="fk_project_workflow_model"
-                                 referencedTableName="workflow_model" referencedColumnNames="identifier"/>
+        <addForeignKeyConstraint baseTableName="proj_project" baseColumnNames="workflow_model" constraintName="fk_project_workflow_model" referencedTableName="workflow_model" referencedColumnNames="identifier" />
         
         <addColumn tableName="lot_lot">
-            <column name="workflow_model" type="varchar(191)"/>
+            <column name="workflow_model" type="varchar(191)" />
         </addColumn>
-        <addForeignKeyConstraint baseTableName="lot_lot" baseColumnNames="workflow_model" constraintName="fk_lot_workflow_model"
-                                 referencedTableName="workflow_model" referencedColumnNames="identifier"/>
+        <addForeignKeyConstraint baseTableName="lot_lot" baseColumnNames="workflow_model" constraintName="fk_lot_workflow_model" referencedTableName="workflow_model" referencedColumnNames="identifier" />
     </changeSet>
 </databaseChangeLog>

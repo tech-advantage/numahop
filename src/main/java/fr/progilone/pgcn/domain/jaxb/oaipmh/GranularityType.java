@@ -5,19 +5,20 @@
 // Généré le : 2018.08.13 à 01:08:19 PM CEST
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.oaipmh;
 
-import javax.xml.bind.annotation.XmlEnum;
-import javax.xml.bind.annotation.XmlEnumValue;
-import javax.xml.bind.annotation.XmlType;
-
+import jakarta.xml.bind.annotation.XmlEnum;
+import jakarta.xml.bind.annotation.XmlEnumValue;
+import jakarta.xml.bind.annotation.XmlType;
 
 /**
- * <p>Classe Java pour granularityType.
- *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  * <p>
+ * Classe Java pour granularityType.
+ *
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ *
  * <pre>
  * &lt;simpleType name="granularityType">
  *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
@@ -36,6 +37,7 @@ public enum GranularityType {
     YYYY_MM_DD("YYYY-MM-DD"),
     @XmlEnumValue("YYYY-MM-DDThh:mm:ssZ")
     YYYY_MM_DD_THH_MM_SS_Z("YYYY-MM-DDThh:mm:ssZ");
+
     private final String value;
 
     GranularityType(String v) {
@@ -47,7 +49,7 @@ public enum GranularityType {
     }
 
     public static GranularityType fromValue(String v) {
-        for (GranularityType c: GranularityType.values()) {
+        for (GranularityType c : GranularityType.values()) {
             if (c.value.equals(v)) {
                 return c;
             }

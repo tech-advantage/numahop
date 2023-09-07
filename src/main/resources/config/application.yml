@@ -1,20 +1,23 @@
-# Disable the spring security default configuration from spring-boot-actuator
-management.security.enabled: false
-security.basic.enabled: false
-management.context-path: /actuator
-management.health.mail.enabled: false
+debug: false
+management:
+    endpoints:
+        web.exposure.include: '*'
+        web.path-mapping.metrics: sb-metrics
+    endpoint:
+        health:
+            show-details: always
+            mail.enabled: false
+        logfile.external-file: ${logging.file.name}.log
+    info.env.enabled: true
+    server:
+        add-application-context-header: true # Add the "X-Application-Context" HTTP header in each response.
 
 server:
     port: 8080
-    session.timeout: 10800  # 3 heures
+    servlet.session.timeout: 10800 # 3 heures
+    shutdown: graceful
     compression:
         enabled: true
-
-# Disable Jolokia - An http/json bridge for remote JMX access
-endpoints:
-    dump.id: threaddump #Pour Monilone
-    jolokia.enabled: false
-    logfile.external-file: ${logging.file}.log
 
 # security configuration (this key should be unique for your application, and kept secret)
 jhipster.security.rememberme.key: $$$$_!!change_me!!_$$$$
@@ -25,44 +28,42 @@ instance:
 
 info:
     app:
-        name: "@project.name@"
-        description: "@project.description@"
-        version: "@project.version@"
+        name: '@project.name@'
+        description: '@project.description@'
+        version: '@git.commit.id.describe@'
     build:
-        artifact: "@project.artifactId@"
-        name: "@project.name@"
-        description: "@project.description@"
-        version: "@project.version@"
+        artifact: '@project.artifactId@'
+        name: '@project.name@'
+        description: '@project.description@'
+        version: '@project.version@'
 
 async:
     corePoolSize: 2
     maxPoolSize: 10
     queueCapacity: 10000
 
-liquibase.change-log: classpath:/config/liquibase/master.xml
-
 spring:
-
     datasource:
-        url: jdbc:mariadb://localhost:3306/pgcn?cachePrepStmts=true&prepStmtCacheSize=250&prepStmtCacheSqlLimit=2048&useServerPrepStmts=true&characterEncoding=utf8&useUnicode=true
+        type: com.zaxxer.hikari.HikariDataSource
+        url: jdbc:mariadb://localhost:3306/scpo_prod?cachePrepStmts=true&prepStmtCacheSize=250&prepStmtCacheSqlLimit=2048&useServerPrepStmts=true&characterEncoding=utf8&useUnicode=true
         username:
         password:
         hikari:
             auto-commit: false
             minimum-idle: 5
-            maximum-pool-size: 20
+            maximum-pool-size: 50
             leak-detection-threshold: 600000
 
+    liquibase.change-log: classpath:/config/liquibase/master.xml
+
     jpa:
-        database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
         database: MYSQL
-        open-in-view: false
         show-sql: false
-        generate-ddl: false
+        open-in-view: false
         hibernate:
-            ddl-auto: validate
+            ddl-auto: none
             naming:
-                physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+                physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
                 implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
         properties:
             hibernate:
@@ -71,25 +72,16 @@ spring:
                 default_batch_fetch_size: 64
                 order_inserts: false
                 order_updates: false
+                query:
+                    in_clause_parameter_padding: true
                 jdbc:
                     batch_size: 64
                     fetch_size: 384
                     batch_versioned_data: true
-                temp:
-                    use_jdbc_metadata_defaults: false
+                    batch_fetch_style: dynamic
                 cache:
                     use_second_level_cache: true
                     use_query_cache: false
-                    region.factory_class: org.hibernate.cache.jcache.JCacheRegionFactory
-    data:
-        elasticsearch:
-            cluster-nodes: localhost:9300
-            cluster-name: pgcn
-            properties:
-                node:
-                    name: Transport Client
-            repositories:
-                enabled: true
 
     mail:
         host: localhost
@@ -102,24 +94,31 @@ spring:
         activated: false
         from: contact-numahop@progilone.fr
 
-    messageSource:
-        cacheSeconds: 1
-
     jackson:
         serialization:
-            # use_equality_for_object_id: true
-            USE_EQUALITY_FOR_OBJECT_ID: true
-            # write_dates_as_timestamps: false
-            WRITE_DATES_AS_TIMESTAMPS: false
-            # write_empty_json_arrays: true
-            WRITE_EMPTY_JSON_ARRAYS: true
+            use-equality-for-object-id: true
+            write-dates-as-timestamps: false
+            write-empty-json-arrays: true
 
     # Gestion des upload (taille max)
-    http:
+    servlet:
         multipart:
             file-size-threshold: 10MB
             maxFileSize: 100MB
             maxRequestSize: 200MB
+
+    output.ansi.enabled: always
+
+    elasticsearch:
+        uris:
+            - http://localhost:9200
+        connection-timeout: 120s
+        socket-timeout: 120s
+
+elasticsearch:
+    bulk_size: 500
+    index:
+        name: pgcn
 
 cache: # Cache configuration
     ehcache: # Ehcache configuration
@@ -136,15 +135,14 @@ export:
         default_uri: http://numahop.fr/
     ssh:
         knownHosts:
-        strictHostKeyChecking: yes
+        strictHostKeyChecking: 'no'
     sftp:
         privateKey: /opt/pgcn/config/id_rsa
 
-metrics:
-    jmx.enabled: true
-
 logging:
     file:
+        name: /opt/pgcn/logs/numahop
+    pattern.file: '%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(%5p) %clr(${PID}){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n%wEx'
     warnDuration: 1500
 
 sshForwarding:
@@ -167,17 +165,12 @@ sshForwarding:
 images:
     format:
         default:
-           thumbHeight: 150
-           thumbWidth:  150
-           viewHeight:  1417
-           viewWidth:   982
-           printHeight: 2835
-           printWidth:  1964
-
-elasticsearch:
-    bulk_size: 500
-    index:
-        name: pgcn
+            thumbHeight: 150
+            thumbWidth: 150
+            viewHeight: 1417
+            viewWidth: 982
+            printHeight: 2835
+            printWidth: 1964
 
 report:
     imagePath: images

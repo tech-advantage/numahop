@@ -1,16 +1,14 @@
 package fr.progilone.pgcn.service.user;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import fr.progilone.pgcn.domain.dto.user.AuthorizationDTO;
 import fr.progilone.pgcn.domain.user.Authorization;
 import fr.progilone.pgcn.repository.user.AuthorizationRepository;
 import fr.progilone.pgcn.web.util.AuthorizationManager;
-
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AuthorizationService {

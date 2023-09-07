@@ -1,20 +1,17 @@
 package fr.progilone.pgcn.domain.administration.omeka;
 
-import java.util.List;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-
 import com.google.common.base.MoreObjects;
-
 import fr.progilone.pgcn.domain.AbstractDomainObject;
 import fr.progilone.pgcn.domain.library.Library;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import java.util.List;
 
 /**
  * Configuration des connexions Omeka.
@@ -106,7 +103,6 @@ public class OmekaConfiguration extends AbstractDomainObject {
     private boolean exportThumb;
     @Column(name = "export_pdf")
     private boolean exportPdf;
-
 
     @OneToMany(mappedBy = "confOmeka", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OmekaList> omekaLists;
@@ -261,12 +257,12 @@ public class OmekaConfiguration extends AbstractDomainObject {
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                .omitNullValues()
-                .add("label", label)
-                .add("active", active)
-                .add("server omeka", storageServer)
-                .add("port", port)
-                .add("server depot FTP", address)
-                .toString();
+                          .omitNullValues()
+                          .add("label", label)
+                          .add("active", active)
+                          .add("server omeka", storageServer)
+                          .add("port", port)
+                          .add("server depot FTP", address)
+                          .toString();
     }
 }

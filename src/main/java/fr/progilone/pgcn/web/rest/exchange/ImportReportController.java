@@ -3,16 +3,21 @@ package fr.progilone.pgcn.web.rest.exchange;
 import static fr.progilone.pgcn.web.rest.exchange.security.AuthorizationConstants.EXC_HAB0;
 import static fr.progilone.pgcn.web.rest.exchange.security.AuthorizationConstants.EXC_HAB1;
 
+import com.codahale.metrics.annotation.Timed;
+import fr.progilone.pgcn.domain.exchange.ImportReport;
+import fr.progilone.pgcn.domain.library.Library;
+import fr.progilone.pgcn.exception.PgcnTechnicalException;
+import fr.progilone.pgcn.service.exchange.ImportReportService;
+import fr.progilone.pgcn.web.rest.AbstractRestController;
+import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -23,15 +28,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.codahale.metrics.annotation.Timed;
-
-import fr.progilone.pgcn.domain.exchange.ImportReport;
-import fr.progilone.pgcn.domain.library.Library;
-import fr.progilone.pgcn.exception.PgcnTechnicalException;
-import fr.progilone.pgcn.service.exchange.ImportReportService;
-import fr.progilone.pgcn.web.rest.AbstractRestController;
-import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
 
 /**
  * Contrôleur gérant les rapports d'exécution d'imports d'unités documentaires
@@ -71,7 +67,8 @@ public class ImportReportController extends AbstractRestController {
                                                       @RequestParam(value = "page", defaultValue = "0") final int page,
                                                       @RequestParam(value = "size", defaultValue = "10") final int size,
                                                       @RequestParam(value = "library", required = false) final Library library) {
-        final List<String> libIds = library != null ? Collections.singletonList(library.getIdentifier()) : null;
+        final List<String> libIds = library != null ? Collections.singletonList(library.getIdentifier())
+                                                    : null;
         final List<String> filteredLibraries = libraryAccesssHelper.getLibraryFilter(request, libIds);
 
         // Chargement de la page de résultat
@@ -151,14 +148,14 @@ public class ImportReportController extends AbstractRestController {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         // Réponse
-        final Map<String, Boolean> result = importReport.getFiles().stream()
+        final Map<String, Boolean> result = importReport.getFiles()
+                                                        .stream()
                                                         // Regroupement par originalFilename
                                                         .collect(Collectors.toMap(ImportReport.ImportedFile::getOriginalFilename,
                                                                                   // Test d'existence du fichier
                                                                                   f -> {
-                                                                                      final File importFile = importReportService.getImportFile(
-                                                                                          importReport,
-                                                                                          f.getOriginalFilename());
+                                                                                      final File importFile = importReportService.getImportFile(importReport,
+                                                                                                                                                f.getOriginalFilename());
                                                                                       return importFile != null && importFile.exists();
                                                                                   }));
         return new ResponseEntity<>(result, HttpStatus.OK);

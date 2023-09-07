@@ -12,7 +12,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,7 +57,8 @@ public class JobRunner<T> {
      */
     public JobRunner<T> autoSetMaxThreads() {
         final int nbProc = Runtime.getRuntime().availableProcessors();
-        this.maxThreads = nbProc > 2 ? nbProc - 2 : 1;
+        this.maxThreads = nbProc > 2 ? nbProc - 2
+                                     : 1;
         return this;
     }
 

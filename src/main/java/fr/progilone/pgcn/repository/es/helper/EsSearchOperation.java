@@ -1,12 +1,11 @@
 package fr.progilone.pgcn.repository.es.helper;
 
+import static fr.progilone.pgcn.repository.es.helper.EsBoolOperator.*;
+
 import com.google.common.base.MoreObjects;
+import java.util.Arrays;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-
-import java.util.Arrays;
-
-import static fr.progilone.pgcn.repository.es.helper.EsBoolOperator.*;
 
 /**
  * Classe représentant un élément de recherche
@@ -21,11 +20,11 @@ public class EsSearchOperation {
         if (ArrayUtils.isEmpty(rawSearches)) {
             return new EsSearchOperation[0];
         } else {
-            final EsSearchOperation[] searchOp =
-                Arrays.stream(rawSearches).filter(StringUtils::isNotBlank).map(EsSearchOperation::fromRawSearch).toArray(EsSearchOperation[]::new);
+            final EsSearchOperation[] searchOp = Arrays.stream(rawSearches).filter(StringUtils::isNotBlank).map(EsSearchOperation::fromRawSearch).toArray(EsSearchOperation[]::new);
 
             // recopie du 2nd opérateur dans la 1e recherche
-            if (searchOp.length > 1 && (searchOp[1].operator == MUST || searchOp[1].operator == SHOULD || searchOp[1].operator == FILTER)) {
+            if (searchOp.length > 1 && (searchOp[1].operator == MUST || searchOp[1].operator == SHOULD
+                                        || searchOp[1].operator == FILTER)) {
                 searchOp[0].operator = searchOp[1].operator;
             } else {
                 searchOp[0].operator = SHOULD;

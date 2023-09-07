@@ -1,25 +1,23 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('LotAllOperationsCtrl', LotAllOperationsCtrl);
+    angular.module('numaHopApp.controller').controller('LotAllOperationsCtrl', LotAllOperationsCtrl);
 
     function LotAllOperationsCtrl($location, $routeParams, $scope, LotSrvc) {
-
         $scope.changeTab = changeTab;
         $scope.getBack = getBack;
-        
+
         /**
-        * Liste des onglets
-        */
+         * Liste des onglets
+         */
         $scope.tabs = {
-            DOC: "doc",
-            DELIVERY: "delivery"
+            DOC: 'doc',
+            DELIVERY: 'delivery',
         };
 
         $scope.taburl = {
             doc: null,
-            delivery: null
+            delivery: null,
         };
 
         init();
@@ -34,7 +32,7 @@
         function loadLotDocs() {
             if (angular.isDefined($scope.lotId)) {
                 $scope.lot = LotSrvc.get({ id: $scope.lotId });
-                $scope.lot.$promise.then(function(entity){
+                $scope.lot.$promise.then(function (entity) {
                     $scope.loaded = true;
                 });
             }
@@ -58,7 +56,7 @@
 
         function getBack() {
             var search = { id: $scope.lotId };
-            $location.path("/lot/lot/").search(search);
+            $location.path('/lot/lot/').search(search);
         }
     }
 })();

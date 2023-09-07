@@ -5,25 +5,25 @@
 // Généré le : 2017.05.16 à 10:56:55 AM CEST
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.ead;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlID;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlID;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
- * <p>Classe Java pour eadheader complex type.
+ * <p>
+ * Classe Java pour eadheader complex type.
  *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="eadheader">
@@ -52,12 +52,11 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "eadheader", propOrder = {
-    "eadid",
-    "filedesc",
-    "profiledesc",
-    "revisiondesc"
-})
+@XmlType(name = "eadheader",
+         propOrder = {"eadid",
+                      "filedesc",
+                      "profiledesc",
+                      "revisiondesc"})
 @XmlRootElement(name = "eadheader")
 public class Eadheader {
 
@@ -113,8 +112,8 @@ public class Eadheader {
      * Obtient la valeur de la propriété eadid.
      *
      * @return
-     *     possible object is
-     *     {@link Eadid }
+     *         possible object is
+     *         {@link Eadid }
      *
      */
     public Eadid getEadid() {
@@ -125,8 +124,8 @@ public class Eadheader {
      * Définit la valeur de la propriété eadid.
      *
      * @param value
-     *     allowed object is
-     *     {@link Eadid }
+     *            allowed object is
+     *            {@link Eadid }
      *
      */
     public void setEadid(Eadid value) {
@@ -137,8 +136,8 @@ public class Eadheader {
      * Obtient la valeur de la propriété filedesc.
      *
      * @return
-     *     possible object is
-     *     {@link Filedesc }
+     *         possible object is
+     *         {@link Filedesc }
      *
      */
     public Filedesc getFiledesc() {
@@ -149,8 +148,8 @@ public class Eadheader {
      * Définit la valeur de la propriété filedesc.
      *
      * @param value
-     *     allowed object is
-     *     {@link Filedesc }
+     *            allowed object is
+     *            {@link Filedesc }
      *
      */
     public void setFiledesc(Filedesc value) {
@@ -161,8 +160,8 @@ public class Eadheader {
      * Obtient la valeur de la propriété profiledesc.
      *
      * @return
-     *     possible object is
-     *     {@link Profiledesc }
+     *         possible object is
+     *         {@link Profiledesc }
      *
      */
     public Profiledesc getProfiledesc() {
@@ -173,8 +172,8 @@ public class Eadheader {
      * Définit la valeur de la propriété profiledesc.
      *
      * @param value
-     *     allowed object is
-     *     {@link Profiledesc }
+     *            allowed object is
+     *            {@link Profiledesc }
      *
      */
     public void setProfiledesc(Profiledesc value) {
@@ -185,8 +184,8 @@ public class Eadheader {
      * Obtient la valeur de la propriété revisiondesc.
      *
      * @return
-     *     possible object is
-     *     {@link Revisiondesc }
+     *         possible object is
+     *         {@link Revisiondesc }
      *
      */
     public Revisiondesc getRevisiondesc() {
@@ -197,8 +196,8 @@ public class Eadheader {
      * Définit la valeur de la propriété revisiondesc.
      *
      * @param value
-     *     allowed object is
-     *     {@link Revisiondesc }
+     *            allowed object is
+     *            {@link Revisiondesc }
      *
      */
     public void setRevisiondesc(Revisiondesc value) {
@@ -209,8 +208,8 @@ public class Eadheader {
      * Obtient la valeur de la propriété langencoding.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getLangencoding() {
@@ -225,8 +224,8 @@ public class Eadheader {
      * Définit la valeur de la propriété langencoding.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setLangencoding(String value) {
@@ -237,8 +236,8 @@ public class Eadheader {
      * Obtient la valeur de la propriété scriptencoding.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getScriptencoding() {
@@ -253,8 +252,8 @@ public class Eadheader {
      * Définit la valeur de la propriété scriptencoding.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setScriptencoding(String value) {
@@ -265,8 +264,8 @@ public class Eadheader {
      * Obtient la valeur de la propriété dateencoding.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getDateencoding() {
@@ -281,8 +280,8 @@ public class Eadheader {
      * Définit la valeur de la propriété dateencoding.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setDateencoding(String value) {
@@ -293,8 +292,8 @@ public class Eadheader {
      * Obtient la valeur de la propriété countryencoding.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getCountryencoding() {
@@ -309,8 +308,8 @@ public class Eadheader {
      * Définit la valeur de la propriété countryencoding.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setCountryencoding(String value) {
@@ -321,8 +320,8 @@ public class Eadheader {
      * Obtient la valeur de la propriété repositoryencoding.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getRepositoryencoding() {
@@ -337,8 +336,8 @@ public class Eadheader {
      * Définit la valeur de la propriété repositoryencoding.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setRepositoryencoding(String value) {
@@ -349,8 +348,8 @@ public class Eadheader {
      * Obtient la valeur de la propriété relatedencoding.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getRelatedencoding() {
@@ -361,8 +360,8 @@ public class Eadheader {
      * Définit la valeur de la propriété relatedencoding.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setRelatedencoding(String value) {
@@ -373,8 +372,8 @@ public class Eadheader {
      * Obtient la valeur de la propriété findaidstatus.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getFindaidstatus() {
@@ -385,8 +384,8 @@ public class Eadheader {
      * Définit la valeur de la propriété findaidstatus.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setFindaidstatus(String value) {
@@ -397,8 +396,8 @@ public class Eadheader {
      * Obtient la valeur de la propriété encodinganalog.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getEncodinganalog() {
@@ -409,8 +408,8 @@ public class Eadheader {
      * Définit la valeur de la propriété encodinganalog.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setEncodinganalog(String value) {
@@ -421,8 +420,8 @@ public class Eadheader {
      * Obtient la valeur de la propriété id.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getId() {
@@ -433,8 +432,8 @@ public class Eadheader {
      * Définit la valeur de la propriété id.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setId(String value) {
@@ -445,8 +444,8 @@ public class Eadheader {
      * Obtient la valeur de la propriété altrender.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getAltrender() {
@@ -457,8 +456,8 @@ public class Eadheader {
      * Définit la valeur de la propriété altrender.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setAltrender(String value) {
@@ -469,8 +468,8 @@ public class Eadheader {
      * Obtient la valeur de la propriété audience.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getAudience() {
@@ -481,8 +480,8 @@ public class Eadheader {
      * Définit la valeur de la propriété audience.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setAudience(String value) {

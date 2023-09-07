@@ -1,13 +1,11 @@
 package fr.progilone.pgcn.exception;
 
+import fr.progilone.pgcn.exception.message.PgcnError;
+import fr.progilone.pgcn.exception.message.PgcnList;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import org.apache.commons.lang3.StringUtils;
-
-import fr.progilone.pgcn.exception.message.PgcnError;
-import fr.progilone.pgcn.exception.message.PgcnList;
 
 /**
  * Classe mère des exceptions métier.

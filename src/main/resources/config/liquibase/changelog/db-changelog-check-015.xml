@@ -1,17 +1,18 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <changeSet id="pgcn-check-015" author="progilone">
         <!-- Ajout controle / radical -->
-        <sql dbms="mysql">
+        <sql>
             INSERT INTO check_automatic_type
             (identifier, label, type, active, version, configurable, check_automatic_type.order)
-            VALUES
-            ('automatic_file_gener_without_ocr',
-            'Génération du pdf sans OCR',
-            'GENER_PDF_WITHOUT_OCR', 0, 0, 1, 44)
+            VALUES ('automatic_file_gener_without_ocr',
+                    'Génération du pdf sans OCR',
+                    'GENER_PDF_WITHOUT_OCR', 0, 0, 1, 44)
         </sql>
 
     </changeSet>

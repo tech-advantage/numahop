@@ -1,12 +1,11 @@
 package fr.progilone.pgcn.domain.dto.document;
 
+import fr.progilone.pgcn.domain.dto.AbstractDTO;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.progilone.pgcn.domain.dto.AbstractDTO;
-
 /**
- * 
+ *
  */
 public class PreDeliveryLockedDocsDTO extends AbstractDTO {
 
@@ -17,9 +16,9 @@ public class PreDeliveryLockedDocsDTO extends AbstractDTO {
         this.deliveryLabel = deliveryLabel;
         this.lockedDocsIdentifiers = lockedDocsIdentifiers;
     }
-    
+
     public PreDeliveryLockedDocsDTO() {
-        
+
     }
 
     public String getDeliveryLabel() {
@@ -31,12 +30,12 @@ public class PreDeliveryLockedDocsDTO extends AbstractDTO {
     }
 
     public List<String> getLockedDocsIdentifiers() {
-        return lockedDocsIdentifiers != null ? lockedDocsIdentifiers : new ArrayList<>();
+        return lockedDocsIdentifiers != null ? lockedDocsIdentifiers
+                                             : new ArrayList<>();
     }
 
     public void setLockedDocsIdentifiers(final List<String> lockedDocsIdentifiers) {
         this.lockedDocsIdentifiers = lockedDocsIdentifiers;
     }
 
-    
 }

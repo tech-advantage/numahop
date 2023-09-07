@@ -4,29 +4,7 @@ import static com.opencsv.CSVWriter.DEFAULT_ESCAPE_CHARACTER;
 import static com.opencsv.CSVWriter.DEFAULT_QUOTE_CHARACTER;
 import static com.opencsv.CSVWriter.RFC4180_LINE_END;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.opencsv.CSVWriter;
-
 import fr.progilone.pgcn.domain.check.AutomaticCheckResult;
 import fr.progilone.pgcn.domain.delivery.DeliveredDocument;
 import fr.progilone.pgcn.domain.delivery.Delivery;
@@ -47,11 +25,31 @@ import fr.progilone.pgcn.service.JasperReportsService;
 import fr.progilone.pgcn.service.delivery.DeliveryService;
 import fr.progilone.pgcn.service.library.LibraryService;
 import fr.progilone.pgcn.service.util.DateUtils;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Séparation de la gestion des bordereau
+ *
  * @author jbrunet
- * Créé le 8 févr. 2018
+ *         Créé le 8 févr. 2018
  */
 @Service
 public class SlipService {
@@ -66,10 +64,10 @@ public class SlipService {
 
     @Autowired
     public SlipService(final DeliveryService deliveryService,
-                        final LibraryService libraryService,
-                        final CheckSlipConfigurationService checkSlipConfigurationService,
-                        final JasperReportsService jasperReportService,
-                        final CheckSlipRepository checkSlipRepository) {
+                       final LibraryService libraryService,
+                       final CheckSlipConfigurationService checkSlipConfigurationService,
+                       final JasperReportsService jasperReportService,
+                       final CheckSlipRepository checkSlipRepository) {
         this.deliveryService = deliveryService;
         this.libraryService = libraryService;
         this.checkSlipConfigurationService = checkSlipConfigurationService;
@@ -84,10 +82,10 @@ public class SlipService {
      * @return
      */
     private boolean isDeliveryChecksUncompleted(final Delivery delivery) {
-        return delivery.getDocuments().stream()
-                       .anyMatch(delivDoc -> DigitalDocumentStatus.REJECTED != delivDoc.getStatus()
-                                && DigitalDocumentStatus.PRE_REJECTED != delivDoc.getStatus()
-                                && DigitalDocumentStatus.VALIDATED != delivDoc.getStatus());
+        return delivery.getDocuments()
+                       .stream()
+                       .anyMatch(delivDoc -> DigitalDocumentStatus.REJECTED != delivDoc.getStatus() && DigitalDocumentStatus.PRE_REJECTED != delivDoc.getStatus()
+                                             && DigitalDocumentStatus.VALIDATED != delivDoc.getStatus());
     }
 
     /**
@@ -98,8 +96,7 @@ public class SlipService {
      */
     private boolean isCheckSlipAbsent(final Delivery delivery) {
 
-        return delivery.getDocuments().stream()
-                       .anyMatch(delivDoc -> delivDoc.getCheckSlip() == null);
+        return delivery.getDocuments().stream().anyMatch(delivDoc -> delivDoc.getCheckSlip() == null);
     }
 
     /**
@@ -113,8 +110,7 @@ public class SlipService {
 
             final Library library = delivery.getLot().getProject().getLibrary();
             // Recup config bordereau de controle
-            final Optional<CheckSlipConfiguration> config =
-                    checkSlipConfigurationService.getOneByLibrary(library.getIdentifier());
+            final Optional<CheckSlipConfiguration> config = checkSlipConfigurationService.getOneByLibrary(library.getIdentifier());
             // Si 1ere fois ou si livraison pas completement controlee, on construit le bordereau.
             if (isCheckSlipAbsent(delivery) || isDeliveryChecksUncompleted(delivery)) {
                 createCheckSlip(deliveryId);
@@ -127,15 +123,15 @@ public class SlipService {
         }
     }
 
-    public void writeCsv(final OutputStream out, final Map<String, Object> params, final String encoding,
-                          final char separator, final Optional<CheckSlipConfiguration> slipConfig) throws IOException {
+    public void writeCsv(final OutputStream out, final Map<String, Object> params, final String encoding, final char separator, final Optional<CheckSlipConfiguration> slipConfig)
+                                                                                                                                                                                   throws IOException {
 
         // Alimentation du CSV
         try (final Writer writer = new OutputStreamWriter(out, encoding);
              final CSVWriter csvWriter = new CSVWriter(writer, separator, DEFAULT_QUOTE_CHARACTER, DEFAULT_ESCAPE_CHARACTER, RFC4180_LINE_END)) {
             // Entête
             writeHeader(csvWriter, slipConfig);
-            final List<Map<String, String>> lines = (List<Map<String, String>>)params.get("slipLines");
+            final List<Map<String, String>> lines = (List<Map<String, String>>) params.get("slipLines");
             lines.forEach(line -> {
                 writeBody(csvWriter, line, slipConfig);
             });
@@ -175,9 +171,7 @@ public class SlipService {
         csvWriter.writeNext(types);
     }
 
-    private void writeBody(final CSVWriter csvWriter,
-                            final Map<String,String> slipLine,
-                            final Optional<CheckSlipConfiguration> slipConfig) {
+    private void writeBody(final CSVWriter csvWriter, final Map<String, String> slipLine, final Optional<CheckSlipConfiguration> slipConfig) {
         final List<String> line = new ArrayList<>();
         if (!slipConfig.isPresent() || slipConfig.get().isPgcnId()) {
             line.add(slipLine.get("pgcnId"));
@@ -218,8 +212,7 @@ public class SlipService {
             LOG.warn("Aucune bibliothèque rattachée à cette livraison: le bordereau ne peut pas être généré");
             return;
         }
-        final Optional<CheckSlipConfiguration> config =
-                checkSlipConfigurationService.getOneByLibrary(library.getIdentifier());
+        final Optional<CheckSlipConfiguration> config = checkSlipConfigurationService.getOneByLibrary(library.getIdentifier());
         // Construction
         final CheckSlip bordereau = createCheckSlipLines(delivery, config);
         // et on persiste..
@@ -234,11 +227,10 @@ public class SlipService {
      */
     private CheckSlip createCheckSlipLines(final Delivery delivery, final Optional<CheckSlipConfiguration> config) {
 
-
-        final Optional<DeliveredDocument> deliveredDoc = delivery.getDocuments().stream()
-                .filter(delivDoc -> delivDoc.getCheckSlip()!= null
-                                                && delivDoc.getCheckSlip().getIdentifier()!=null)
-                .findAny();
+        final Optional<DeliveredDocument> deliveredDoc = delivery.getDocuments()
+                                                                 .stream()
+                                                                 .filter(delivDoc -> delivDoc.getCheckSlip() != null && delivDoc.getCheckSlip().getIdentifier() != null)
+                                                                 .findAny();
         final CheckSlip bordereau;
         if (deliveredDoc.isPresent()) {
             bordereau = checkSlipRepository.findOneWithDep(deliveredDoc.get().getCheckSlip().getIdentifier());
@@ -275,20 +267,18 @@ public class SlipService {
             if (!config.isPresent() || config.get().isErrs()) {
                 // on evite ainsi de recuperer les erreurs d'un précédent controle.
                 slipLine.setDocErrors(null);
-                if (DigitalDocumentStatus.REJECTED == doc.getStatus()
-                        || DigitalDocumentStatus.PRE_REJECTED == doc.getStatus()) {
-                    slipLine.setDocErrors( writeErrors(doc));
+                if (DigitalDocumentStatus.REJECTED == doc.getStatus() || DigitalDocumentStatus.PRE_REJECTED == doc.getStatus()) {
+                    slipLine.setDocErrors(writeErrors(doc));
                 }
             }
             if (!config.isPresent() || config.get().isNbPages()) {
                 slipLine.setNbPages(delivDoc.getNbPages());
             }
             if (!config.isPresent() || config.get().isNbPagesToBill()) {
-                if (DigitalDocumentStatus.REJECTED == doc.getStatus()
-                        || DigitalDocumentStatus.PRE_REJECTED == doc.getStatus()) {
-                        slipLine.setNbPagesToBill(0);
+                if (DigitalDocumentStatus.REJECTED == doc.getStatus() || DigitalDocumentStatus.PRE_REJECTED == doc.getStatus()) {
+                    slipLine.setNbPagesToBill(0);
                 } else if (DigitalDocumentStatus.VALIDATED == doc.getStatus()) {
-                        slipLine.setNbPagesToBill(delivDoc.getNbPages());
+                    slipLine.setNbPagesToBill(delivDoc.getNbPages());
                 }
             }
 
@@ -348,23 +338,17 @@ public class SlipService {
             return;
         }
         final File logo = libraryService.getLibraryLogo(library);
-        final Optional<CheckSlipConfiguration> config =
-                checkSlipConfigurationService.getOneByLibrary(library.getIdentifier());
+        final Optional<CheckSlipConfiguration> config = checkSlipConfigurationService.getOneByLibrary(library.getIdentifier());
 
         // S1 1ere fois ou si livraison pas completement controlee, on remet à jour le bordereau.
         if (isCheckSlipAbsent(delivery) || isDeliveryChecksUncompleted(delivery)) {
             createCheckSlip(deliveryId);
         }
         final Map<String, Object> params = getSlipParams(delivery, config, true, logo);
-        final List<Map<String, String>> lines = (List<Map<String, String>>)params.remove("slipLines");
+        final List<Map<String, String>> lines = (List<Map<String, String>>) params.remove("slipLines");
 
         try {
-          jasperReportService.exportReportToStream(JasperReportsService.REPORT_CHECK_SLIP,
-                                                  JasperReportsService.ExportType.PDF,
-                                                  params,
-                                                  lines,
-                                                  out,
-                                                  library.getIdentifier());
+            jasperReportService.exportReportToStream(JasperReportsService.REPORT_CHECK_SLIP, JasperReportsService.ExportType.PDF, params, lines, out, library.getIdentifier());
         } catch (final PgcnException e) {
             LOG.error("Erreur a la generation du bordereau de livraison: {}", e.getLocalizedMessage());
             throw new PgcnTechnicalException(e);
@@ -380,16 +364,11 @@ public class SlipService {
      * @param logo
      * @return
      */
-    private Map<String, Object> getSlipParams(final Delivery delivery,
-                                              final Optional<CheckSlipConfiguration> config,
-                                              final boolean isPdf, final File logo) {
+    private Map<String, Object> getSlipParams(final Delivery delivery, final Optional<CheckSlipConfiguration> config, final boolean isPdf, final File logo) {
 
         final Map<String, Object> params = new HashMap<>();
         final List<Map<String, String>> slipLines = new ArrayList<>();
-        final Optional<DeliveredDocument> delivDoc = delivery.getDocuments()
-                                                .stream()
-                                                .filter(doc-> doc.getCheckSlip()!=null)
-                                                .findAny();
+        final Optional<DeliveredDocument> delivDoc = delivery.getDocuments().stream().filter(doc -> doc.getCheckSlip() != null).findAny();
         delivDoc.ifPresent(doc -> {
             final CheckSlip bordereau = checkSlipRepository.findOneWithDep(doc.getCheckSlip().getIdentifier());
             if (isPdf) {
@@ -400,38 +379,48 @@ public class SlipService {
                     params.put("logoPath", logo.getName());
                 }
                 // Entetes
-                params.put("isPgcnIdPresent", config.isPresent()? config.get().isPgcnId() : true);
-                params.put("isTitlePresent", config.isPresent()? config.get().isTitle() : true);
-                params.put("isStatusPresent", config.isPresent()? config.get().isState() : true);
-                params.put("isErrorsPresent", config.isPresent()? config.get().isErrs() : true);
-                params.put("isPagesPresent", config.isPresent()? config.get().isNbPages() : true);
-                params.put("isPagesToBillPresent", config.isPresent()? config.get().isNbPagesToBill() : true);
+                params.put("isPgcnIdPresent",
+                           config.isPresent() ? config.get().isPgcnId()
+                                              : true);
+                params.put("isTitlePresent",
+                           config.isPresent() ? config.get().isTitle()
+                                              : true);
+                params.put("isStatusPresent",
+                           config.isPresent() ? config.get().isState()
+                                              : true);
+                params.put("isErrorsPresent",
+                           config.isPresent() ? config.get().isErrs()
+                                              : true);
+                params.put("isPagesPresent",
+                           config.isPresent() ? config.get().isNbPages()
+                                              : true);
+                params.put("isPagesToBillPresent",
+                           config.isPresent() ? config.get().isNbPagesToBill()
+                                              : true);
             }
-            bordereau.getSlipLines()
-                        .stream()
-                        .forEach(sLine -> {
+            bordereau.getSlipLines().stream().forEach(sLine -> {
 
-                            final Map<String, String> line = new HashMap<>();
-                            if (!config.isPresent() || config.get().isPgcnId()) {
-                                line.put("pgcnId", sLine.getPgcnId());
-                            }
-                            if (!config.isPresent() || config.get().isTitle()) {
-                                line.put("title", sLine.getTitle());
-                            }
-                            if (!config.isPresent() || config.get().isState()) {
-                                line.put("status", sLine.getStatus());
-                            }
-                            if (!config.isPresent() || config.get().isErrs()) {
-                                line.put("errors", sLine.getDocErrors());
-                            }
-                            if (!config.isPresent() || config.get().isNbPages()) {
-                                line.put("pageCount", String.valueOf(sLine.getNbPages()));
-                            }
-                            if (!config.isPresent() || config.get().isNbPagesToBill()) {
-                                line.put("pagesToBill", String.valueOf(sLine.getNbPagesToBill()));
-                            }
-                            slipLines.add(line);
-                        });
+                final Map<String, String> line = new HashMap<>();
+                if (!config.isPresent() || config.get().isPgcnId()) {
+                    line.put("pgcnId", sLine.getPgcnId());
+                }
+                if (!config.isPresent() || config.get().isTitle()) {
+                    line.put("title", sLine.getTitle());
+                }
+                if (!config.isPresent() || config.get().isState()) {
+                    line.put("status", sLine.getStatus());
+                }
+                if (!config.isPresent() || config.get().isErrs()) {
+                    line.put("errors", sLine.getDocErrors());
+                }
+                if (!config.isPresent() || config.get().isNbPages()) {
+                    line.put("pageCount", String.valueOf(sLine.getNbPages()));
+                }
+                if (!config.isPresent() || config.get().isNbPagesToBill()) {
+                    line.put("pagesToBill", String.valueOf(sLine.getNbPagesToBill()));
+                }
+                slipLines.add(line);
+            });
             params.put("slipLines", slipLines);
         });
 
@@ -459,8 +448,7 @@ public class SlipService {
             }
         }
         if (StringUtils.isNotBlank(doc.getCheckNotes())) {
-            summary.append(" Note de contrôle globale : ")
-                    .append(doc.getCheckNotes()).append(CRLF);
+            summary.append(" Note de contrôle globale : ").append(doc.getCheckNotes()).append(CRLF);
         }
         for (final AutomaticCheckResult result : doc.getAutomaticCheckResults()) {
             if (AutomaticCheckResult.AutoCheckResult.KO == result.getResult()) {
@@ -468,25 +456,16 @@ public class SlipService {
             }
         }
         // Page errors
-        doc.getOrderedPages()
-            .stream()
-            .forEach(page -> {
+        doc.getOrderedPages().stream().forEach(page -> {
 
-                page.getChecks()
-                    .stream()
-                    .filter(check-> !globalErrorLabels.contains(check.getErrorLabel()))
-                    .forEach(check -> {
+            page.getChecks().stream().filter(check -> !globalErrorLabels.contains(check.getErrorLabel())).forEach(check -> {
 
-                        summary.append("Page ").append(page.getNumber())
-                            .append(": ")
-                            .append(check.getErrorLabel().getLabel()).append(CRLF);
-                    });
+                summary.append("Page ").append(page.getNumber()).append(": ").append(check.getErrorLabel().getLabel()).append(CRLF);
+            });
 
-                if (StringUtils.isNotBlank(page.getCheckNotes())) {
-                    summary.append("Note p.").append(page.getNumber())
-                            .append(": ")
-                            .append(page.getCheckNotes()).append(CRLF);
-                }
+            if (StringUtils.isNotBlank(page.getCheckNotes())) {
+                summary.append("Note p.").append(page.getNumber()).append(": ").append(page.getCheckNotes()).append(CRLF);
+            }
         });
         return summary.toString();
     }
@@ -494,12 +473,11 @@ public class SlipService {
     @Transactional(readOnly = true)
     public void writeSlipForLot(final OutputStream outputStream, final String id, final String encoding, final char separator) throws IOException {
         final Delivery delivery = deliveryService.findByLot(id)
-                                           .stream()
-                                           .filter(d -> DeliveryStatus.SAVED != d.getStatus())
-                                           .reduce((delivery1, delivery2) -> delivery1.getCreatedDate().isAfter(delivery2.getCreatedDate()) ?
-                                                                             delivery1 :
-                                                                             delivery2)
-                                           .get();
+                                                 .stream()
+                                                 .filter(d -> DeliveryStatus.SAVED != d.getStatus())
+                                                 .reduce((delivery1, delivery2) -> delivery1.getCreatedDate().isAfter(delivery2.getCreatedDate()) ? delivery1
+                                                                                                                                                  : delivery2)
+                                                 .get();
         if (delivery != null) {
             writeSlip(outputStream, delivery.getIdentifier(), encoding, separator);
         }
@@ -508,17 +486,15 @@ public class SlipService {
     @Transactional(readOnly = true)
     public void writeSlipForLotPDF(final OutputStream outputStream, final String id) throws PgcnTechnicalException {
         final Delivery delivery = deliveryService.findByLot(id)
-                                           .stream()
-                                           .filter(d -> DeliveryStatus.SAVED != d.getStatus())
-                                           .reduce((delivery1, delivery2) -> delivery1.getCreatedDate().isAfter(delivery2.getCreatedDate()) ?
-                                                                             delivery1 :
-                                                                             delivery2)
-                                           .get();
+                                                 .stream()
+                                                 .filter(d -> DeliveryStatus.SAVED != d.getStatus())
+                                                 .reduce((delivery1, delivery2) -> delivery1.getCreatedDate().isAfter(delivery2.getCreatedDate()) ? delivery1
+                                                                                                                                                  : delivery2)
+                                                 .get();
         if (delivery != null) {
             writePdfCheckSlip(outputStream, delivery.getIdentifier());
         }
     }
-
 
     /**
      * Renvoie les données de controle d'un document en particulier.
@@ -533,26 +509,28 @@ public class SlipService {
         final DeliveredDocument delivDoc = deliveryService.getOneWithSlip(deliveryId, documentId);
         final Map<String, Object> line = new HashMap<>();
 
-        if (delivDoc != null && delivDoc.getCheckSlip()!=null) {
+        if (delivDoc != null && delivDoc.getCheckSlip() != null) {
 
-            delivDoc.getCheckSlip().getSlipLines().stream()
-                            .filter(sLine -> StringUtils.equals(delivDoc.getDigitalDocument().getDocUnit().getPgcnId(), sLine.getPgcnId()))
-                            .forEach(sLine -> {
+            delivDoc.getCheckSlip()
+                    .getSlipLines()
+                    .stream()
+                    .filter(sLine -> StringUtils.equals(delivDoc.getDigitalDocument().getDocUnit().getPgcnId(), sLine.getPgcnId()))
+                    .forEach(sLine -> {
 
-                line.put("pgcnId", sLine.getPgcnId());
-                line.put("title", sLine.getTitle());
-                if (StringUtils.isBlank(sLine.getStatus())) {
-                    line.put("status", getStatusForReport(delivDoc.getStatus()));
-                } else {
-                    line.put("status", sLine.getStatus());
-                }
-                String[] allErrors = {"Aucune erreur trouvée"};
-                if (StringUtils.isNotBlank(sLine.getDocErrors())) {
-                    allErrors = sLine.getDocErrors().split(CRLF);
-                }
-                line.put("errors", Arrays.asList(allErrors));
-                line.put("pageCount", String.valueOf(sLine.getNbPages()));
-            });
+                        line.put("pgcnId", sLine.getPgcnId());
+                        line.put("title", sLine.getTitle());
+                        if (StringUtils.isBlank(sLine.getStatus())) {
+                            line.put("status", getStatusForReport(delivDoc.getStatus()));
+                        } else {
+                            line.put("status", sLine.getStatus());
+                        }
+                        String[] allErrors = {"Aucune erreur trouvée"};
+                        if (StringUtils.isNotBlank(sLine.getDocErrors())) {
+                            allErrors = sLine.getDocErrors().split(CRLF);
+                        }
+                        line.put("errors", Arrays.asList(allErrors));
+                        line.put("pageCount", String.valueOf(sLine.getNbPages()));
+                    });
         }
         return line;
     }

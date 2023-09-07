@@ -1,41 +1,40 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('NumaAlertAuditEntityCtrl', NumaAlertAuditEntityCtrl);
+    angular.module('numaHopApp.controller').controller('NumaAlertAuditEntityCtrl', NumaAlertAuditEntityCtrl);
 
     function NumaAlertAuditEntityCtrl(codeSrvc, AuditSrvc) {
-
         var ctrl = this;
         ctrl.getStatusLabel = getStatusLabel;
         ctrl.showState = true;
-        
-        init();
 
+        init();
 
         function init() {
             var params = {
-                type: ctrl.type
+                type: ctrl.type,
             };
             _.chain(ctrl.filter)
                 .mapObject(function (value, key) {
                     switch (key) {
-                        case "from":
-                            return moment().add(-(value || 0), "day").format("YYYY-MM-DD");
-                        case "library":
-                        case "lot":
-                        case "project": 
-                            return angular.isArray(value) ? _.pluck(value, "identifier") : [];
-                        case "state":
-                        case "status":
+                        case 'from':
+                            return moment()
+                                .add(-(value || 0), 'day')
+                                .format('YYYY-MM-DD');
+                        case 'library':
+                        case 'lot':
+                        case 'project':
+                            return angular.isArray(value) ? _.pluck(value, 'identifier') : [];
+                        case 'state':
+                        case 'status':
                             if (angular.isArray(value)) {
-                                ctrl.showState = value.length !==1;
-                                return _.pluck(value, "identifier");
+                                ctrl.showState = value.length !== 1;
+                                return _.pluck(value, 'identifier');
                             } else {
                                 return [];
                             }
-                        case "__jsogObjectId":
-                        case "alreadyCheckedForErrors":
+                        case '__jsogObjectId':
+                        case 'alreadyCheckedForErrors':
                             return;
                         default:
                             return value;
@@ -59,7 +58,7 @@
         }
 
         function getStatusLabel(status) {
-            return codeSrvc[ctrl.prefix + "." + status] || status;
+            return codeSrvc[ctrl.prefix + '.' + status] || status;
         }
     }
 })();

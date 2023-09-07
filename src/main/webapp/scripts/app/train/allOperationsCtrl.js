@@ -1,25 +1,22 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('TrainAllOperationsCtrl', TrainAllOperationsCtrl);
+    angular.module('numaHopApp.controller').controller('TrainAllOperationsCtrl', TrainAllOperationsCtrl);
 
     function TrainAllOperationsCtrl($location, $routeParams, $scope, TrainSrvc) {
-
         $scope.changeTab = changeTab;
         $scope.getBack = getBack;
 
         /**
-        * Liste des onglets
-        */
+         * Liste des onglets
+         */
         $scope.tabs = {
-            DOC: "doc"
+            DOC: 'doc',
         };
 
         $scope.taburl = {
-            doc: null
+            doc: null,
         };
-
 
         init();
 
@@ -55,7 +52,7 @@
         }
 
         function getBack() {
-            $location.path("/train/train/").search({ id: $scope.train.identifier });
+            $location.path('/train/train/').search({ id: $scope.train.identifier });
         }
     }
 })();

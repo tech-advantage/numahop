@@ -1,14 +1,5 @@
 package fr.progilone.pgcn.service.workflow.ui;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import fr.progilone.pgcn.domain.dto.workflow.SimpleWorkflowModelDTO;
 import fr.progilone.pgcn.domain.dto.workflow.WorkflowModelDTO;
 import fr.progilone.pgcn.domain.workflow.WorkflowModel;
@@ -21,12 +12,19 @@ import fr.progilone.pgcn.service.workflow.WorkflowModelService;
 import fr.progilone.pgcn.service.workflow.mapper.SimpleWorkflowMapper;
 import fr.progilone.pgcn.service.workflow.mapper.UIWorkflowModelMapper;
 import fr.progilone.pgcn.service.workflow.mapper.WorkflowMapper;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Service de gestion des vues de modèle de workflow
  *
  * @author jbrunet
- * Créé le 19 juil. 2017
+ *         Créé le 19 juil. 2017
  */
 @Service
 public class UIWorkflowModelService {
@@ -35,8 +33,7 @@ public class UIWorkflowModelService {
     private final UIWorkflowModelMapper mapper;
 
     @Autowired
-    public UIWorkflowModelService(final WorkflowModelService service,
-                        final UIWorkflowModelMapper mapper) {
+    public UIWorkflowModelService(final WorkflowModelService service, final UIWorkflowModelMapper mapper) {
         this.service = service;
         this.mapper = mapper;
     }
@@ -56,7 +53,8 @@ public class UIWorkflowModelService {
     /**
      * Mise à jour d'un lot
      *
-     * @param dto un objet contenant les informations necessaires à l'enregistrement d'un lot
+     * @param dto
+     *            un objet contenant les informations necessaires à l'enregistrement d'un lot
      * @return le lot nouvellement créée ou mise à jour
      * @throws PgcnValidationException
      */
@@ -80,8 +78,7 @@ public class UIWorkflowModelService {
         final PgcnError.Builder builder = new PgcnError.Builder();
         switch (pgcnErrorCode) {
             case WORKFLOW_GROUP_DUPLICATE_NAME:
-                builder.setCode(pgcnErrorCode)
-                       .setField("name");
+                builder.setCode(pgcnErrorCode).setField("name");
                 break;
             default:
                 break;
@@ -102,9 +99,6 @@ public class UIWorkflowModelService {
 
     @Transactional(readOnly = true)
     public Collection<SimpleWorkflowModelDTO> findAllForLibrary(String identifier) {
-        return service.findAllForLibrary(identifier)
-                .stream()
-                .map(SimpleWorkflowMapper.INSTANCE::modelToSimpleModelDTO)
-                .collect(Collectors.toList());
+        return service.findAllForLibrary(identifier).stream().map(SimpleWorkflowMapper.INSTANCE::modelToSimpleModelDTO).collect(Collectors.toList());
     }
 }

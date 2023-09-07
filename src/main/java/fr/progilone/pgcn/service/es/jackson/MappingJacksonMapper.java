@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import fr.progilone.pgcn.domain.exchange.Mapping;
 import fr.progilone.pgcn.domain.exchange.MappingRule;
-
 import java.io.IOException;
 
 /**

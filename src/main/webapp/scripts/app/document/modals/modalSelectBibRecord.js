@@ -1,11 +1,9 @@
 (function () {
     'use strict';
 
-    angular.module("numaHopApp.controller")
-        .controller("ModalSelectBibRecordCtrl", ModalSelectBibRecordCtrl);
+    angular.module('numaHopApp.controller').controller('ModalSelectBibRecordCtrl', ModalSelectBibRecordCtrl);
 
     function ModalSelectBibRecordCtrl($uibModalInstance, RecordSrvc, options) {
-
         var mainCtrl = this;
         mainCtrl.close = close;
         mainCtrl.getPage = getPage;
@@ -25,7 +23,7 @@
             totalItems: 0,
             busy: true,
             page: PAGE_START,
-            size: PAGE_SIZE
+            size: PAGE_SIZE,
         };
 
         mainCtrl.selection = [];
@@ -34,7 +32,7 @@
 
         /**
          * Initialisation du contrôleur
-         * 
+         *
          */
         function init() {
             mainCtrl.multiple = !!options.multiple;
@@ -75,8 +73,7 @@
                     if (found) {
                         found._selected = true;
                         return found;
-                    }
-                    else {
+                    } else {
                         return sel;
                     }
                 });
@@ -87,7 +84,7 @@
          * Recherche d'entité
          */
         function search(event) {
-            if (angular.isDefined(event) && event.type === "keypress" && event.keyCode !== 13) {
+            if (angular.isDefined(event) && event.type === 'keypress' && event.keyCode !== 13) {
                 return;
             }
 
@@ -105,17 +102,17 @@
          */
         function getSearchParams() {
             var params = {};
-            params["page"] = mainCtrl.pagination.page - 1;
-            params["size"] = PAGE_SIZE;
-            params["search"] = mainCtrl.searchRequest || "";
+            params['page'] = mainCtrl.pagination.page - 1;
+            params['size'] = PAGE_SIZE;
+            params['search'] = mainCtrl.searchRequest || '';
 
             // Bibliothèque
             if (mainCtrl.library) {
-                params["libraries"] = mainCtrl.library;
+                params['libraries'] = mainCtrl.library;
             }
             // Notices orphelines
             if (angular.isDefined(mainCtrl.orphan)) {
-                params["orphan"] = mainCtrl.orphan;
+                params['orphan'] = mainCtrl.orphan;
             }
             return params;
         }
@@ -129,8 +126,7 @@
                 if (idx >= 0) {
                     mainCtrl.selection.splice(idx, 1);
                 }
-            }
-            else {
+            } else {
                 bibRecord._selected = true;
                 mainCtrl.selection.push(bibRecord);
             }
@@ -141,8 +137,7 @@
                         if (sel.identifier !== bibRecord.identifier) {
                             delete sel._selected;
                             return;
-                        }
-                        else {
+                        } else {
                             return sel;
                         }
                     })
@@ -155,7 +150,7 @@
          * Fermeture / Annulation
          */
         function close() {
-            $uibModalInstance.dismiss("cancel");
+            $uibModalInstance.dismiss('cancel');
         }
 
         /**

@@ -12,10 +12,10 @@ public final class AuthorizationConstants {
 
     /**
      * Autorisation ajoutée automatiquement au super administrateur : ne correspond pas à une authorisation en BD
-     *  => donne acces aux management protected endPoints 
+     * => donne acces aux management protected endPoints
      */
     public static final String ACTUATOR = "ACTUATOR";
-    
+
     /**
      * Accès aux données des autres bibliothèques, en lecture seule
      */
@@ -25,17 +25,17 @@ public final class AuthorizationConstants {
      * Habilitation configuration gestion fichiers apres archivage
      */
     public static final String FILES_GEST_HAB0 = "FILES-GEST-HAB0";
-    
+
     /**
      * Habilitation configuration gestion des formats des vues : visualisation
      */
     public static final String IMG_FORMAT_HAB0 = "IMG-FORMAT-HAB0";
-    
+
     /**
      * Habilitation configuration gestion des formats des vues: création/modification
      */
     public static final String IMG_FORMAT_HAB1 = "IMG-FORMAT-HAB1";
-    
+
     /**
      * Habilitation configuration email: lecture
      */
@@ -137,7 +137,7 @@ public final class AuthorizationConstants {
      * Habilitation configuration bibliothèque numérique: supprimer
      */
     public static final String CONF_DIFFUSION_DIGITAL_LIBRARY_HAB2 = "CONF-DIFFUSION-DIGITAL-LIBRARY-HAB2";
-    
+
     /**
      * Habilitation serveurs Z39.50: lecture
      */

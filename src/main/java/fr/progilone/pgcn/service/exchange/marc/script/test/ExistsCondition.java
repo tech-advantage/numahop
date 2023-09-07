@@ -30,10 +30,9 @@ public class ExistsCondition extends CustomScript {
     public boolean test(Record record, String tag, Character code) {
         final VariableField field = record.getVariableField(tag);
         // Le champ existe
-        return field != null
-               && (code == null
-                   // Le sous-champ existe
-                   || (field instanceof DataField && ((DataField) field).getSubfield(code) != null));
+        return field != null && (code == null
+                                 // Le sous-champ existe
+                                 || (field instanceof DataField && ((DataField) field).getSubfield(code) != null));
     }
 
     /**
@@ -48,9 +47,12 @@ public class ExistsCondition extends CustomScript {
 
     @Override
     public String getInitScript() {
-        return "def " + SCRIPT_NAME + " = {\n"
+        return "def " + SCRIPT_NAME
+               + " = {\n"
                + "      Record record, String tag, String code = null -> \n"
-               + "          return script." + getCode() + ".test(record, tag, (Character)code)\n"
+               + "          return script."
+               + getCode()
+               + ".test(record, tag, (Character)code)\n"
                + "}\n";
     }
 }

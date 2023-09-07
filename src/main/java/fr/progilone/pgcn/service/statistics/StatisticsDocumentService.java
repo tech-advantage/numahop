@@ -2,16 +2,6 @@ package fr.progilone.pgcn.service.statistics;
 
 import static fr.progilone.pgcn.domain.workflow.WorkflowStateKey.*;
 
-import java.time.LocalDate;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import fr.progilone.pgcn.domain.administration.InternetArchiveCollection;
 import fr.progilone.pgcn.domain.administration.omeka.OmekaList;
 import fr.progilone.pgcn.domain.delivery.DeliveredDocument;
@@ -31,17 +21,27 @@ import fr.progilone.pgcn.repository.lot.helper.LotSearchBuilder;
 import fr.progilone.pgcn.repository.workflow.DocUnitStateRepository;
 import fr.progilone.pgcn.repository.workflow.helper.DocUnitWorkflowSearchBuilder;
 import fr.progilone.pgcn.service.exchange.internetarchive.InternetArchiveReportService;
+import java.time.LocalDate;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class StatisticsDocumentService {
-    
+
     public static final String ARCHIVE_BASE_URL = "https://archive.org/details/";
 
     private final DocUnitStateRepository docUnitStateRepository;
     private final LotRepository lotRepository;
-    private final InternetArchiveReportService internetArchiveReportService; 
+    private final InternetArchiveReportService internetArchiveReportService;
 
-    public StatisticsDocumentService(final DocUnitStateRepository docUnitStateRepository, final LotRepository lotRepository, final InternetArchiveReportService internetArchiveReportService) {
+    public StatisticsDocumentService(final DocUnitStateRepository docUnitStateRepository,
+                                     final LotRepository lotRepository,
+                                     final InternetArchiveReportService internetArchiveReportService) {
         this.docUnitStateRepository = docUnitStateRepository;
         this.lotRepository = lotRepository;
         this.internetArchiveReportService = internetArchiveReportService;
@@ -57,30 +57,31 @@ public class StatisticsDocumentService {
                                                                final List<String> collections,
                                                                final Integer page,
                                                                final Integer size) {
-        
+
         final Page<StatisticsDocPublishedDTO> results = docUnitStateRepository.findDocUnitStates(new DocUnitWorkflowSearchBuilder().setLibraries(libraries)
-                                                                                             .setProjects(projects)
-                                                                                             .setLots(lots)
-                                                                                             .setFromDate(fromDate)
-                                                                                             .setToDate(toDate)
-                                                                                             .setTypes(types)
-                                                                                             .setCollections(collections)
-                                                                                             // Documents publiés
-                                                                                             .addState(DIFFUSION_DOCUMENT)
-                                                                                             .addState(DIFFUSION_DOCUMENT_LOCALE)
-                                                                                                                                 .addState(DIFFUSION_DOCUMENT_OMEKA)
-                                                                                                                                 .addState(DIFFUSION_DOCUMENT_DIGITAL_LIBRARY),
-                                                                                             new PageRequest(page, size)).map(this::initDto);
+                                                                                                                                   .setProjects(projects)
+                                                                                                                                   .setLots(lots)
+                                                                                                                                   .setFromDate(fromDate)
+                                                                                                                                   .setToDate(toDate)
+                                                                                                                                   .setTypes(types)
+                                                                                                                                   .setCollections(collections)
+                                                                                                                                   // Documents
+                                                                                                                                   // publiés
+                                                                                                                                   .addState(DIFFUSION_DOCUMENT)
+                                                                                                                                   .addState(DIFFUSION_DOCUMENT_LOCALE)
+                                                                                                                                   .addState(DIFFUSION_DOCUMENT_OMEKA)
+                                                                                                                                   .addState(DIFFUSION_DOCUMENT_DIGITAL_LIBRARY),
+                                                                                                 PageRequest.of(page, size)).map(this::initDto);
         // Infos IA report => ia url
         results.forEach(res -> {
             if (res.getWorkflowState() == DIFFUSION_DOCUMENT) {
                 final InternetArchiveReport iaReport = internetArchiveReportService.findLastReportByDocUnit(res.getDocUnitIdentifier());
-                if (iaReport != null && iaReport.getInternetArchiveIdentifier()!=null) {
+                if (iaReport != null && iaReport.getInternetArchiveIdentifier() != null) {
                     res.setLinkIA(ARCHIVE_BASE_URL + iaReport.getInternetArchiveIdentifier());
                 }
-            }    
+            }
         });
-        return results; 
+        return results;
     }
 
     private StatisticsDocPublishedDTO initDto(final DocUnitState docUnitState) {
@@ -168,11 +169,8 @@ public class StatisticsDocumentService {
                                                               final Integer page,
                                                               final Integer size) {
 
-        return lotRepository.search(new LotSearchBuilder().setLibraries(libraries)
-                                                          .setProjects(projects)
-                                                          .setProviders(providers)
-                                                          .setLastDlvFrom(fromDate)
-                                                          .setLastDlvTo(toDate), new PageRequest(page, size)).map(this::initDto);
+        return lotRepository.search(new LotSearchBuilder().setLibraries(libraries).setProjects(projects).setProviders(providers).setLastDlvFrom(fromDate).setLastDlvTo(toDate),
+                                    PageRequest.of(page, size)).map(this::initDto);
     }
 
     private StatisticsDocRejectedDTO initDto(final Lot lot) {
@@ -218,7 +216,7 @@ public class StatisticsDocumentService {
             .distinct()
             .filter(delivered -> delivered.getDeliveryDate() != null)
             .min(Comparator.nullsLast(Comparator.comparing(DeliveredDocument::getDeliveryDate)))
-            .ifPresent(lastestDelivery -> dto.setImportDate(lastestDelivery.getDeliveryDate()) );
+            .ifPresent(lastestDelivery -> dto.setImportDate(lastestDelivery.getDeliveryDate()));
 
         return dto;
     }

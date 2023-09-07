@@ -1,17 +1,16 @@
 <!-- Format de représentation -->
-<sem-field sem-type="select" sem-label="{{::'Format' | translate}}"
-           sem-model="config.format" sem-label-class="col-xs-3" sem-field-class="col-xs-9"
-           sem-select-options="t as t.label for t in optionData track by t.identifier"
-           sem-option-data="mainCtrl.config.dataFormats"></sem-field>
+<sem-field
+    sem-type="select"
+    sem-label="{{::'Format' | translate}}"
+    sem-model="config.format"
+    sem-label-class="col-xs-3"
+    sem-field-class="col-xs-9"
+    sem-select-options="t as t.label for t in optionData track by t.identifier"
+    sem-option-data="mainCtrl.config.dataFormats"
+></sem-field>
 <!-- Projet -->
-<sem-field sem-type="uiselect" sem-label="{{::'Projet' | translate}}" 
-            sem-label-class="col-xs-3" sem-field-class="col-xs-9"
-            sem-model="config.project" sem-option-data="mainCtrl.config.projects"></sem-field>
+<sem-field sem-type="uiselect" sem-label="{{::'Projet' | translate}}" sem-label-class="col-xs-3" sem-field-class="col-xs-9" sem-model="config.project" sem-option-data="mainCtrl.config.projects"></sem-field>
 <!-- Lot -->
-<sem-field sem-type="uiselect" sem-label="{{::'Lot' | translate}}" 
-            sem-label-class="col-xs-3" sem-field-class="col-xs-9"
-            sem-model="config.lot" sem-option-data="mainCtrl.config.lots"></sem-field>
+<sem-field sem-type="uiselect" sem-label="{{::'Lot' | translate}}" sem-label-class="col-xs-3" sem-field-class="col-xs-9" sem-model="config.lot" sem-option-data="mainCtrl.config.lots"></sem-field>
 <!-- État -->
-<sem-field sem-type="uiselect" sem-label="{{::'Statut' | translate}}" 
-           sem-label-class="col-xs-3" sem-field-class="col-xs-9"
-           sem-model="config.state" sem-option-data="mainCtrl.config.states"></sem-field>
+<sem-field sem-type="uiselect" sem-label="{{::'Statut' | translate}}" sem-label-class="col-xs-3" sem-field-class="col-xs-9" sem-model="config.state" sem-option-data="mainCtrl.config.states"></sem-field>

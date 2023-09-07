@@ -1,12 +1,10 @@
 package fr.progilone.pgcn.repository.document;
 
+import fr.progilone.pgcn.domain.document.BibliographicRecord;
 import java.time.LocalDate;
 import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import fr.progilone.pgcn.domain.document.BibliographicRecord;
 
 /**
  * @author jbrunet

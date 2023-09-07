@@ -5,26 +5,26 @@
 // Généré le : 2017.05.16 à 10:56:55 AM CEST
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.ead;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlID;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlID;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 
 /**
- * <p>Classe Java pour thead complex type.
+ * <p>
+ * Classe Java pour thead complex type.
  *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="thead">
@@ -51,9 +51,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "thead", propOrder = {
-    "row"
-})
+@XmlType(name = "thead", propOrder = {"row"})
 public class Thead {
 
     @XmlElement(required = true)
@@ -84,8 +82,9 @@ public class Thead {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getRow().add(newItem);
+     * getRow().add(newItem);
      * </pre>
      *
      *
@@ -106,8 +105,8 @@ public class Thead {
      * Obtient la valeur de la propriété valign.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getValign() {
@@ -118,8 +117,8 @@ public class Thead {
      * Définit la valeur de la propriété valign.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setValign(String value) {
@@ -130,8 +129,8 @@ public class Thead {
      * Obtient la valeur de la propriété id.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getId() {
@@ -142,8 +141,8 @@ public class Thead {
      * Définit la valeur de la propriété id.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setId(String value) {
@@ -154,8 +153,8 @@ public class Thead {
      * Obtient la valeur de la propriété altrender.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getAltrender() {
@@ -166,8 +165,8 @@ public class Thead {
      * Définit la valeur de la propriété altrender.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setAltrender(String value) {
@@ -178,8 +177,8 @@ public class Thead {
      * Obtient la valeur de la propriété audience.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getAudience() {
@@ -190,8 +189,8 @@ public class Thead {
      * Définit la valeur de la propriété audience.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setAudience(String value) {

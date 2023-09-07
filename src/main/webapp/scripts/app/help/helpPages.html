@@ -9,8 +9,7 @@
                 <div class="filter-block">
                     <div class="filter-title" translate>Types</div>
                     <div class="filter-element" ng-repeat="type in filtersAvailable.helpPageTypes">
-                        <span ng-click="filterOn('types', type.code)" ng-show="filter.types.indexOf(type.code) > -1"
-                              class="glyphicon syrtis-icon-champ-delete" style="margin-left: -17px"></span>
+                        <span ng-click="filterOn('types', type.code)" ng-show="filter.types.indexOf(type.code) > -1" class="glyphicon syrtis-icon-champ-delete" style="margin-left: -17px"></span>
                         <a ng-click="filterOn('types', type.code)">{{type.label}}</a>
                     </div>
                 </div>
@@ -18,8 +17,7 @@
                 <div class="filter-block">
                     <div class="filter-title" translate>Modules</div>
                     <div class="filter-element" ng-repeat="module in filtersAvailable.modules | orderBy: module">
-                        <span ng-click="filterOn('modules', module)" ng-show="filter.modules.indexOf(module) > -1"
-                              class="glyphicon syrtis-icon-champ-delete" style="margin-left: -17px"></span>
+                        <span ng-click="filterOn('modules', module)" ng-show="filter.modules.indexOf(module) > -1" class="glyphicon syrtis-icon-champ-delete" style="margin-left: -17px"></span>
                         <a ng-click="filterOn('modules', module)">{{module}}</a>
                     </div>
                 </div>
@@ -30,15 +28,14 @@
         <div class="panel panel-column-2">
             <div class="panel-heading">
                 <div class="btn-group pull-right" sem-roles-allowed="SUPER_ADMIN">
-                    <button type="button" class="btn btn-sem2 btn-xs" uib-tooltip="{{::'Créer une page d\'aide' | translate}}" ng-click="create()">
+                    <button type="button" class="btn btn-sem2 btn-xs" uib-tooltip="{{::'Créer une page d\'aide' | translate}}" tooltip-append-to-body="true" ng-click="create()">
                         <span class="glyphicon-halflings glyphicon-plus"></span>
                     </button>
                 </div>
                 <div class="input-group padding-r20">
-                    <input class="form-control sem-input-xs" type="text" id="nameSearchInput" ng-model="filter.search"
-                           ng-keypress="applyFilter(filterWith, $event)" />
+                    <input class="form-control sem-input-xs" type="text" id="nameSearchInput" ng-model="filter.search" ng-keypress="applyFilter(filterWith, $event)" />
                     <span class="input-group-btn">
-                        <button type="button" class="btn btn-sem2 btn-xs" ng-click="doFilter()" uib-tooltip="{{::'Rechercher' | translate}}">
+                        <button type="button" class="btn btn-sem2 btn-xs" ng-click="doFilter()" uib-tooltip="{{::'Rechercher' | translate}}" tooltip-append-to-body="true">
                             <span class="glyphicon syrtis-icon-loupe"></span>
                         </button>
                     </span>
@@ -53,8 +50,8 @@
                     <div ng-switch-default ng-repeat="module in modules">
                         <div ng-if="$index === 0 || module.type !== modules[$index-1].type" class="pagination-break">{{getHelpPageTypeLabel(module.type)}}</div>
                         <div class="pagination-break">{{module.name}}</div>
-                        <div ui-tree data-drag-enabled="false" style="margin-left: -30px;">
-                            <ol ng-if="module.pages" style="list-style-type:none;" ui-tree-nodes="" ng-model="tree" id="tree-root">
+                        <div ui-tree data-drag-enabled="false" style="margin-left: -30px">
+                            <ol ng-if="module.pages" style="list-style-type: none" ui-tree-nodes="" ng-model="tree" id="tree-root">
                                 <li ng-repeat="page in module.pages | orderBy:'title'" ui-tree-node ng-include="'tree.html'"></li>
                             </ol>
                         </div>

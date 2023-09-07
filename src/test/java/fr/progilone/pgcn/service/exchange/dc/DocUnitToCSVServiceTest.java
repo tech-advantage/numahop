@@ -1,23 +1,7 @@
 package fr.progilone.pgcn.service.exchange.dc;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
-
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import fr.progilone.pgcn.domain.document.BibliographicRecord;
 import fr.progilone.pgcn.domain.document.BibliographicRecord.PropertyOrder;
@@ -28,11 +12,25 @@ import fr.progilone.pgcn.domain.document.PhysicalDocument;
 import fr.progilone.pgcn.service.document.DocPropertyTypeService;
 import fr.progilone.pgcn.service.document.DocUnitService;
 import fr.progilone.pgcn.service.lot.LotService;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Created by Sébastien on 27/12/2016.
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class DocUnitToCSVServiceTest {
 
     private static final char CSV_REPEATED_FIELD_SEPARATOR = ',';
@@ -47,7 +45,7 @@ public class DocUnitToCSVServiceTest {
 
     private DocUnitToCSVService service;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         service = new DocUnitToCSVService(docPropertyTypeService, docUnitService, lotService);
     }
@@ -69,11 +67,10 @@ public class DocUnitToCSVServiceTest {
             actual = out.toString();
         }
 
-        //        System.out.println(actual);
+        // System.out.println(actual);
         actual = actual.replaceAll("\\s+", " ").replaceAll("[\\r\\n]", "").trim();
 
-        String expected = "\"dc:title\""
-                          + CSV_SEPARATOR
+        String expected = "\"dc:title\"" + CSV_SEPARATOR
                           + "\"dc:creator\""
                           + CSV_SEPARATOR
                           + "\"pgcnId\""

@@ -1,12 +1,9 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('DigitalDocumentCtrl', DigitalDocumentCtrl);
+    angular.module('numaHopApp.controller').controller('DigitalDocumentCtrl', DigitalDocumentCtrl);
 
-    function DigitalDocumentCtrl($routeParams, $location, $scope,
-        DigitalDocumentSrvc, NumahopUrlService, MessageSrvc, PageCheckSrvc, gettextCatalog, codeSrvc) {
-
+    function DigitalDocumentCtrl($routeParams, $location, $scope, DigitalDocumentSrvc, NumahopUrlService, MessageSrvc, PageCheckSrvc, gettextCatalog, codeSrvc) {
         $scope.url_viewer = undefined;
         $scope.getThumbnailForDocument = getThumbnailForDocument;
         $scope.getThumbnail = getThumbnail;
@@ -29,22 +26,21 @@
         init();
 
         function init() {
-
             if (angular.isDefined($routeParams.validation)) {
-                $scope.data.validation = $routeParams.validation === "true";
+                $scope.data.validation = $routeParams.validation === 'true';
             }
             var params = {
                 id: $routeParams.id,
-                validation: $scope.data.validation
+                validation: $scope.data.validation,
             };
 
             DigitalDocumentSrvc.get(params, function (value) {
                 $scope.digitalDocument = value;
-                if (value.status === "REJECTED") {
-                    MessageSrvc.addFailure(gettextCatalog.getString("Statut du document : {{status}}", { status: codeSrvc['digitalDocument.' + value.status] }), {}, true);
+                if (value.status === 'REJECTED') {
+                    MessageSrvc.addFailure(gettextCatalog.getString('Statut du document : {{status}}', { status: codeSrvc['digitalDocument.' + value.status] }), {}, true);
                     $scope.rejected = true;
                 } else {
-                    MessageSrvc.addInfo(gettextCatalog.getString("Statut du document : {{status}}", { status: codeSrvc['digitalDocument.' + value.status] }), {}, true);
+                    MessageSrvc.addInfo(gettextCatalog.getString('Statut du document : {{status}}', { status: codeSrvc['digitalDocument.' + value.status] }), {}, true);
                 }
 
                 DigitalDocumentSrvc.getFilesWithErrors(params, function (value) {
@@ -61,7 +57,7 @@
                     return _.contains(errors, error.key);
                 });
             });
-            $scope.checksLink = NumahopUrlService.getUrlForTypeAndParameters("checks", params);
+            $scope.checksLink = NumahopUrlService.getUrlForTypeAndParameters('checks', params);
 
             /* parametres visionneuse */
             var typeView = 'ThumbnailsView';
@@ -72,7 +68,7 @@
             if (angular.isDefined($routeParams.typeView)) {
                 typeView = $routeParams.typeView;
             }
-            $scope.url_viewer = "scripts/app/viewer/mirador.html?idDocument=" + params.id + '&typeView=' + typeView + '&page=' + _page;
+            $scope.url_viewer = 'scripts/app/viewer/mirador.html?idDocument=' + params.id + '&typeView=' + typeView + '&page=' + _page;
         }
 
         function goToPageCheck(page) {
@@ -83,16 +79,16 @@
                 params = {
                     id: $routeParams.id,
                     typeView: 'BookView',
-                    page: page
+                    page: page,
                 };
             } else {
                 params = {
                     id: $routeParams.id,
                     typeView: 'BookView',
-                    page: 0
+                    page: 0,
                 };
             }
-            $location.path("/document/checks").search(params);
+            $location.path('/document/checks').search(params);
         }
         $scope.goToPageCheck = goToPageCheck;
 
@@ -118,42 +114,42 @@
 
         function getClassesForPage(index) {
             if (_.contains($scope.data.filesWithErrors, index + 1)) {
-                return "error-thumbnail";
+                return 'error-thumbnail';
             }
         }
         $scope.getClassesForPage = getClassesForPage;
 
         function reject() {
             var params = {
-                id: $routeParams.id
+                id: $routeParams.id,
             };
-            DigitalDocumentSrvc.reject(params, _.pluck($scope.select.selectedErrors, "key"), function () {
-                $location.path("/dashboard");
-                $location.search("");
-                MessageSrvc.addSuccess(gettext("Document numérique rejeté"));
+            DigitalDocumentSrvc.reject(params, _.pluck($scope.select.selectedErrors, 'key'), function () {
+                $location.path('/dashboard');
+                $location.search('');
+                MessageSrvc.addSuccess(gettext('Document numérique rejeté'));
             });
         }
         $scope.reject = reject;
 
         function accept() {
             var params = {
-                id: $routeParams.id
+                id: $routeParams.id,
             };
             DigitalDocumentSrvc.accept(params, {}, function () {
-                $location.path("/dashboard");
-                $location.search("");
-                MessageSrvc.addSuccess(gettextCatalog.getString("Document numérique validé"));
+                $location.path('/dashboard');
+                $location.search('');
+                MessageSrvc.addSuccess(gettextCatalog.getString('Document numérique validé'));
             });
         }
         $scope.accept = accept;
 
         function saveErrors() {
             var params = {
-                id: $routeParams.id
+                id: $routeParams.id,
             };
             var body = {
-                failedChecks: _.pluck($scope.select.selectedErrors, "key"),
-                checkNotes: $scope.data.checkNotes
+                failedChecks: _.pluck($scope.select.selectedErrors, 'key'),
+                checkNotes: $scope.data.checkNotes,
             };
             PageCheckSrvc.setErrors(params, body, function (value) {
                 if (value.minorErrorRateExceeded) {

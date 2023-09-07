@@ -1,14 +1,40 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('DocAllOperationsCtrl', DocAllOperationsCtrl);
+    angular.module('numaHopApp.controller').controller('DocAllOperationsCtrl', DocAllOperationsCtrl);
 
-    function DocAllOperationsCtrl($http, $httpParamSerializer, $location, $q, $routeParams, $scope, $timeout, Principal, codeSrvc,
-        CondreportSrvc, DeliverySrvc, DocUnitBaseService, DocUnitSrvc, ErreurSrvc, ExportSrvc, FileSaver, gettext, gettextCatalog,
-        HistorySrvc, MessageSrvc, ModalSrvc, NumaHopInitializationSrvc, NumahopEditService, USER_ROLES, ValidationSrvc,
-        NumahopAutoCheckService, WorkflowHandleSrvc, WorkflowSrvc, ExportHandlerSrvc, VIEW_MODES) {
-
+    function DocAllOperationsCtrl(
+        $http,
+        $httpParamSerializer,
+        $location,
+        $q,
+        $routeParams,
+        $scope,
+        $timeout,
+        Principal,
+        codeSrvc,
+        CondreportSrvc,
+        DeliverySrvc,
+        DocUnitBaseService,
+        DocUnitSrvc,
+        ErreurSrvc,
+        ExportSrvc,
+        FileSaver,
+        gettext,
+        gettextCatalog,
+        HistorySrvc,
+        MessageSrvc,
+        ModalSrvc,
+        NumaHopInitializationSrvc,
+        NumahopEditService,
+        USER_ROLES,
+        ValidationSrvc,
+        NumahopAutoCheckService,
+        WorkflowHandleSrvc,
+        WorkflowSrvc,
+        ExportHandlerSrvc,
+        VIEW_MODES
+    ) {
         $scope.validation = ValidationSrvc;
 
         var mainCtrl = this;
@@ -35,48 +61,53 @@
 
         mainCtrl.tabs = {
             DOCUNIT: {
-                code: "DOCUNIT",
-                label: gettextCatalog.getString("Unité documentaire"),
-                url: 'scripts/app/document/allOperations/docUnit.html'
+                code: 'DOCUNIT',
+                label: gettextCatalog.getString('Unité documentaire'),
+                url: 'scripts/app/document/allOperations/docUnit.html',
             },
             RECORD: {
-                code: "RECORD",
-                label: gettextCatalog.getString("Notice"),
-                url: 'scripts/app/document/allOperations/record.html'
+                code: 'RECORD',
+                label: gettextCatalog.getString('Notice'),
+                url: 'scripts/app/document/allOperations/record.html',
+            },
+            METADATA: {
+                code: 'METADATA',
+                label: gettextCatalog.getString('Métadonnées'),
+                url: 'scripts/app/document/allOperations/metadata.html',
             },
             CHECK: {
-                code: "CHECK",
-                label: gettextCatalog.getString("Document numérique"),
-                url: 'scripts/app/document/allOperations/check.html'
+                code: 'CHECK',
+                label: gettextCatalog.getString('Document numérique'),
+                url: 'scripts/app/document/allOperations/check.html',
             },
             EXPORT: {
-                code: "EXPORT",
-                label: gettextCatalog.getString("Diffusion"),
+                code: 'EXPORT',
+                label: gettextCatalog.getString('Diffusion'),
                 url: 'scripts/app/document/allOperations/export.html',
-                role: USER_ROLES.EXPORT_INTERNET_ARCHIVE_HAB0
+                role: USER_ROLES.EXPORT_INTERNET_ARCHIVE_HAB0,
             },
             ARCHIVE: {
-                code: "ARCHIVE",
-                label: gettextCatalog.getString("Archivage"),
+                code: 'ARCHIVE',
+                label: gettextCatalog.getString('Archivage'),
                 url: 'scripts/app/document/allOperations/archive.html',
-                role: USER_ROLES.DOC_UNIT_HAB4
+                role: USER_ROLES.DOC_UNIT_HAB4,
             },
             RELATIONS: {
-                code: "RELATIONS",
-                label: gettextCatalog.getString("Relations"),
-                url: 'scripts/app/document/allOperations/relations.html'
+                code: 'RELATIONS',
+                label: gettextCatalog.getString('Relations'),
+                url: 'scripts/app/document/allOperations/relations.html',
             },
             CONDREPORT: {
-                code: "CONDREPORT",
+                code: 'CONDREPORT',
                 label: gettextCatalog.getString("Constat d'état"),
                 url: 'scripts/app/document/allOperations/condreport.html',
-                role: USER_ROLES.COND_REPORT_HAB0
+                role: USER_ROLES.COND_REPORT_HAB0,
             },
             WORKFLOW: {
-                code: "WORKFLOW",
-                label: gettextCatalog.getString("Workflow"),
-                url: 'scripts/app/document/allOperations/workflow.html'
-            }
+                code: 'WORKFLOW',
+                label: gettextCatalog.getString('Workflow'),
+                url: 'scripts/app/document/allOperations/workflow.html',
+            },
         };
         mainCtrl.taburl = {
             docUnit: null,
@@ -84,7 +115,7 @@
             check: null,
             export: null,
             relations: null,
-            workflow: null
+            workflow: null,
         };
         // Définition des listes déroulantes
         mainCtrl.options = DocUnitBaseService.options;
@@ -96,7 +127,7 @@
         mainCtrl.binding = {};
         mainCtrl.binding.override = false;
         mainCtrl.binding.loaded = false;
-        mainCtrl.filterWith = "";
+        mainCtrl.filterWith = '';
 
         mainCtrl.getHeader = getHeader;
 
@@ -104,10 +135,9 @@
 
         // Initialisation du contrôleur
         function init() {
-
             Principal.identity().then(function (usr) {
                 mainCtrl.user = usr;
-                mainCtrl.isUserPresta = usr.category === "PROVIDER";
+                mainCtrl.isUserPresta = usr.category === 'PROVIDER';
             });
 
             loadOptions();
@@ -120,31 +150,28 @@
             mainCtrl.docUnit = DocUnitSrvc.get({ id: mainCtrl.docUnitId });
             mainCtrl.delivery = DeliverySrvc.get({ docUnit: mainCtrl.docUnitId, latest: true });
 
-            mainCtrl.docUnit.$promise
-                .then(function (entity) {
-                    onSuccess(entity);
-                    var currentTab = $routeParams.tab;
+            mainCtrl.docUnit.$promise.then(function (entity) {
+                onSuccess(entity);
+                var currentTab = $routeParams.tab;
 
-                    if (angular.isUndefined(currentTab)) {
-                        // Onglet unité doc par défaut
-                        setTab(mainCtrl.tabs.DOCUNIT);
-                    } else {
-                        setTab(mainCtrl.tabs[currentTab]);
-                    }
-                });
+                if (angular.isUndefined(currentTab)) {
+                    // Onglet unité doc par défaut
+                    setTab(mainCtrl.tabs.DOCUNIT);
+                } else {
+                    setTab(mainCtrl.tabs[currentTab]);
+                }
+            });
         }
 
         function loadOptions() {
-            $q.all([NumaHopInitializationSrvc.loadLibraries(),
-            NumaHopInitializationSrvc.loadProjects()])
-                .then(function (data) {
-                    mainCtrl.sel2Libraries = data[0];
-                    mainCtrl.sel2Projects = data[1];
+            $q.all([NumaHopInitializationSrvc.loadLibraries(), NumaHopInitializationSrvc.loadProjects()]).then(function (data) {
+                mainCtrl.sel2Libraries = data[0];
+                mainCtrl.sel2Projects = data[1];
 
-                    // Add default case
-                    mainCtrl.sel2Projects.unshift({ name: "" });
-                    loadEntity();
-                });
+                // Add default case
+                mainCtrl.sel2Projects.unshift({ name: '' });
+                loadEntity();
+            });
         }
 
         /** Charge l'onglet tab */
@@ -161,7 +188,7 @@
 
         function onSuccess(entity) {
             mainCtrl.binding.loaded = true;
-            HistorySrvc.add(gettextCatalog.getString("{{pgcnId}} {{label}}", entity));
+            HistorySrvc.add(gettextCatalog.getString('{{pgcnId}} {{label}}', entity));
             canRecordBeValidated(entity);
             canCondReportBeValidated(entity);
             displayMessages(entity);
@@ -171,22 +198,27 @@
         function checkFacile() {
             //mainCtrl.autoCheck('facile', mainCtrl.docUnit.identifier);
             NumahopAutoCheckService.autoCheck('facile', mainCtrl.docUnit.identifier);
-            loadFacileResults( mainCtrl.docUnit)
-
+            loadFacileResults(mainCtrl.docUnit);
         }
 
         /**
          * Affichage du resultat de la validation FACILE.
          */
         function loadFacileResults(docUnit) {
-            if (!docUnit || !docUnit.automaticCheckResults || docUnit.automaticCheckResults.length === 0
-                || !docUnit.digitalDocuments || docUnit.digitalDocuments.length === 0
-                || !docUnit.digitalDocuments[0].deliveries || docUnit.digitalDocuments[0].deliveries.length === 0) {
+            if (
+                !docUnit ||
+                !docUnit.automaticCheckResults ||
+                docUnit.automaticCheckResults.length === 0 ||
+                !docUnit.digitalDocuments ||
+                docUnit.digitalDocuments.length === 0 ||
+                !docUnit.digitalDocuments[0].deliveries ||
+                docUnit.digitalDocuments[0].deliveries.length === 0
+            ) {
                 return;
             }
             if (docUnit.automaticCheckResults.length < docUnit.digitalDocuments[0].deliveries[0].nbPages) {
                 NumahopAutoCheckService.autoCheck('facile', docUnit.identifier);
-                mainCtrl.facileResults = "Vérifications en cours";
+                mainCtrl.facileResults = 'Vérifications en cours';
                 return;
             }
             mainCtrl.dateFacileResults = undefined;
@@ -198,10 +230,10 @@
             });
             if (!resKo) {
                 MessageSrvc.addSuccess(gettext("La validation FACILE s'est terminée sans erreur."), {}, true);
-                mainCtrl.facileResults = "Succès";
+                mainCtrl.facileResults = 'Succès';
             } else {
                 MessageSrvc.addError(gettext("La validation facile s'est terminée en erreur."));
-                mainCtrl.facileResults = "Echec";
+                mainCtrl.facileResults = 'Echec';
             }
         }
 
@@ -242,16 +274,16 @@
             if (angular.isDefined(entity.cinesReports) && entity.cinesReports.length > 0) {
                 var reportCinesValue = _.find(entity.cinesReports, function (report) {
                     if (report.certificate !== null) {
-                        MessageSrvc.addSuccess(gettext("Archivé au Cines"), {}, true);
+                        MessageSrvc.addSuccess(gettext('Archivé au Cines'), {}, true);
                         mainCtrl.cinesArchived = true;
                         return true;
                     }
                     return false;
                 });
                 if (angular.isUndefined(reportCinesValue)) {
-                    MessageSrvc.addInfo(gettext("Dernier export CINES : {{status}} "), { status: mainCtrl.code[entity.cinesReports[0].status] }, true);
+                    MessageSrvc.addInfo(gettext('Dernier export CINES : {{status}} '), { status: mainCtrl.code[entity.cinesReports[0].status] }, true);
                     if (entity.cinesReports[0].status === 'SENDING') {
-                        MessageSrvc.addSuccess(gettext("Export Cines en cours"), {}, true);
+                        MessageSrvc.addSuccess(gettext('Export Cines en cours'), {}, true);
                     } else {
                         mainCtrl.canExportToCines = true;
                     }
@@ -264,7 +296,7 @@
             if (angular.isDefined(entity.iaReports) && entity.iaReports.length > 0) {
                 var reportIAValue = _.find(entity.iaReports, function (report) {
                     if (report.dateArchived !== null) {
-                        MessageSrvc.addSuccess(gettext("Diffusé sur Internet Archive"), {}, true);
+                        MessageSrvc.addSuccess(gettext('Diffusé sur Internet Archive'), {}, true);
                         mainCtrl.iaArchived = true;
                         return true;
                     }
@@ -272,12 +304,12 @@
                 });
                 if (angular.isUndefined(reportIAValue)) {
                     if (entity.iaReports[0].status === 'FAILED') {
-                        MessageSrvc.addFailure(gettext("Dernier export Internet Archive : {{status}}"), { status: mainCtrl.code[entity.iaReports[0].status] }, true);
+                        MessageSrvc.addFailure(gettext('Dernier export Internet Archive : {{status}}'), { status: mainCtrl.code[entity.iaReports[0].status] }, true);
                         mainCtrl.canExportToInternetArchive = true;
                     } else if (entity.iaReports[0].status === 'SENDING') {
-                        MessageSrvc.addSuccess(gettext("Export Internet Archive en cours"), {}, true);
+                        MessageSrvc.addSuccess(gettext('Export Internet Archive en cours'), {}, true);
                     } else {
-                        MessageSrvc.addInfo(gettext("Dernier export Internet Archive : {{status}}"), { status: mainCtrl.code[entity.iaReports[0].status] }, true);
+                        MessageSrvc.addInfo(gettext('Dernier export Internet Archive : {{status}}'), { status: mainCtrl.code[entity.iaReports[0].status] }, true);
                         mainCtrl.canExportToInternetArchive = true;
                     }
                 } else {
@@ -298,13 +330,9 @@
             if (mainCtrl.docUnit) {
                 var header = mainCtrl.docUnit.label;
 
-                if (mainCtrl.docUnit.physicalDocuments
-                    && mainCtrl.docUnit.physicalDocuments[0]
-                    && mainCtrl.docUnit.physicalDocuments[0].train) {
-                    header = mainCtrl.docUnit.physicalDocuments[0].train.label + " > " + header;
+                if (mainCtrl.docUnit.physicalDocuments && mainCtrl.docUnit.physicalDocuments[0] && mainCtrl.docUnit.physicalDocuments[0].train) {
+                    header = mainCtrl.docUnit.physicalDocuments[0].train.label + ' > ' + header;
                 }
-
-
 
                 return header;
             }
@@ -314,74 +342,69 @@
          * Suppression de l'UD
          */
         function deleteDoc(docUnit) {
-            ModalSrvc.confirmDeletion(docUnit.pgcnId)
-                .then(function () {
-                    DocUnitSrvc.delete({ id: docUnit.identifier }, {}).$promise
-                        .then(function (value) {
-                            // pb de suppression
-                            if (value.errors && value.errors.length) {
-                                ModalSrvc.modalDeleteDocUnitResults([value], 'xl');
-                            }
-                            else {
-                                MessageSrvc.addSuccess(gettext("L'unité documentaire {{id}} a été supprimée"), { id: value.pgcnId });
-                                $location.path("/document/docunit").search({});
-                            }
-                        });
+            ModalSrvc.confirmDeletion(docUnit.pgcnId).then(function () {
+                DocUnitSrvc.delete({ id: docUnit.identifier }, {}).$promise.then(function (value) {
+                    // pb de suppression
+                    if (value.errors && value.errors.length) {
+                        ModalSrvc.modalDeleteDocUnitResults([value], 'xl');
+                    } else {
+                        MessageSrvc.addSuccess(gettext("L'unité documentaire {{id}} a été supprimée"), { id: value.pgcnId });
+                        $location.path('/document/docunit').search({});
+                    }
                 });
+            });
         }
 
         /** Export de l'unité documentaire */
         function exportDocUnit(svc, docUnit) {
             switch (svc) {
-                case "cines":
-                    ModalSrvc.exportCines(docUnit.cinesVersion, docUnit.identifier, docUnit.eadExport, docUnit.planClassementPAC, "xl")
-                        .then(function (result) {
-                            var params = {
-                                docUnit: docUnit.identifier,
-                                reversion: docUnit.cinesVersion ? result.reversion : true
-                            };
-                            if (result.dc) {
-                                params.dc = true;
-                            }
-                            else if (result.ead) {
-                                params.ead = true;
-                            }
-                            ExportSrvc.toCines(params, result.dc || {}).$promise
-                                .then(function () {
-                                    MessageSrvc.addSuccess(gettext("L'export est en cours"));
-                                })
-                                .catch(function (error) {
-                                    MessageSrvc.addFailure(ErreurSrvc.getMessage(error.data.status));
-                                    MessageSrvc.addError(gettext(error.data.message));
-                                });
-                        });
+                case 'cines':
+                    ModalSrvc.exportCines(docUnit.cinesVersion, docUnit.identifier, docUnit.eadExport, docUnit.planClassementPAC, 'xl').then(function (result) {
+                        var params = {
+                            docUnit: docUnit.identifier,
+                            reversion: docUnit.cinesVersion ? result.reversion : true,
+                        };
+                        if (result.dc) {
+                            params.dc = true;
+                        } else if (result.ead) {
+                            params.ead = true;
+                        }
+                        ExportSrvc.toCines(params, result.dc || {})
+                            .$promise.then(function () {
+                                MessageSrvc.addSuccess(gettext("L'export est en cours"));
+                            })
+                            .catch(function (error) {
+                                MessageSrvc.addFailure(ErreurSrvc.getMessage(error.data.status));
+                                MessageSrvc.addError(gettext(error.data.message));
+                            });
+                    });
                     break;
-                case "internetarchive":
+                case 'internetarchive':
                     ModalSrvc.createItemInternetArchive(docUnit.identifier, 'xl');
                     break;
-                case "omeka":
+                case 'omeka':
                     var params = {
-                                  docUnit: docUnit.identifier
-                              };
-                    ExportSrvc.toOmeka(params, {}, null, null).$promise
-                        .then(function () {
+                        docUnit: docUnit.identifier,
+                    };
+                    ExportSrvc.toOmeka(params, {}, null, null)
+                        .$promise.then(function () {
                             MessageSrvc.addSuccess(gettext("L'export Omeka est en cours"));
-                    })
-                    .catch(function (error) {
-                        MessageSrvc.addFailure(ErreurSrvc.getMessage(error.data.status));
-                        MessageSrvc.addError(gettext(error.data.message));
-                    });
+                        })
+                        .catch(function (error) {
+                            MessageSrvc.addFailure(ErreurSrvc.getMessage(error.data.status));
+                            MessageSrvc.addError(gettext(error.data.message));
+                        });
                     break;
-                case "digitallibrary":
-                    var params = {docUnit: docUnit.identifier};
-                    ExportSrvc.toDigitalLibrary(params, {}, null, null).$promise
-                        .then(function () {
+                case 'digitallibrary':
+                    var params = { docUnit: docUnit.identifier };
+                    ExportSrvc.toDigitalLibrary(params, {}, null, null)
+                        .$promise.then(function () {
                             MessageSrvc.addSuccess(gettext("L'export vers la bibliothèque numérique est en cours"));
-                    })
-                    .catch(function (error) {
-                        MessageSrvc.addFailure(ErreurSrvc.getMessage(error.data.status));
-                        MessageSrvc.addError(gettext(error.data.message));
-                    });
+                        })
+                        .catch(function (error) {
+                            MessageSrvc.addFailure(ErreurSrvc.getMessage(error.data.status));
+                            MessageSrvc.addError(gettext(error.data.message));
+                        });
                     break;
             }
         }
@@ -390,31 +413,26 @@
          * Téléchargement d'une archive pour l'export local / SFTP d'une UD.
          */
         function exportLocal() {
-            ModalSrvc.selectExportTypes()
-                .then(function (types) {
-                    ExportHandlerSrvc.massExport(mainCtrl.docUnit.identifier,
-                        {
-                            types: types,
-                            pgcnId: mainCtrl.docUnit.pgcnId
-                        }
-                    );
+            ModalSrvc.selectExportTypes().then(function (types) {
+                ExportHandlerSrvc.massExport(mainCtrl.docUnit.identifier, {
+                    types: types,
+                    pgcnId: mainCtrl.docUnit.pgcnId,
                 });
+            });
         }
 
         function exportCSV() {
-            ModalSrvc.configureCsvExport()
-                .then(function (params) {
-                    params.docUnit = mainCtrl.docUnit.identifier;
-                    var url = 'api/rest/export/csv?' + $httpParamSerializer(params);
+            ModalSrvc.configureCsvExport().then(function (params) {
+                params.docUnit = mainCtrl.docUnit.identifier;
+                var url = 'api/rest/export/csv?' + $httpParamSerializer(params);
 
-                    // on met la réponse dans un arraybuffer pour conserver l'encodage original dans le fichier sauvegardé
-                    $http.get(url, { responseType: 'arraybuffer' })
-                        .then(function (response) {
-                            var filename = "docunit-" + mainCtrl.docUnit.pgcnId.replace(/\W+/g, "_") + ".csv";
-                            var blob = new Blob([response.data], { type: response.headers("content-type") });
-                            FileSaver.saveAs(blob, filename);
-                        });
+                // on met la réponse dans un arraybuffer pour conserver l'encodage original dans le fichier sauvegardé
+                $http.get(url, { responseType: 'arraybuffer' }).then(function (response) {
+                    var filename = 'docunit-' + mainCtrl.docUnit.pgcnId.replace(/\W+/g, '_') + '.csv';
+                    var blob = new Blob([response.data], { type: response.headers('content-type') });
+                    FileSaver.saveAs(blob, filename);
                 });
+            });
         }
 
         /**
@@ -439,11 +457,10 @@
          */
         function validateRecord() {
             if (angular.isDefined(mainCtrl.docUnit)) {
-                WorkflowSrvc.process({ docUnitId: mainCtrl.docUnit.identifier, key: 'VALIDATION_NOTICES' }).$promise
-                    .then(function () {
-                        MessageSrvc.addSuccess(gettextCatalog.getString("L'étape {{name}} a été validée"), { name: mainCtrl.code['workflow.VALIDATION_NOTICES'] });
-                        mainCtrl.canValidateRecord = false;
-                    });
+                WorkflowSrvc.process({ docUnitId: mainCtrl.docUnit.identifier, key: 'VALIDATION_NOTICES' }).$promise.then(function () {
+                    MessageSrvc.addSuccess(gettextCatalog.getString("L'étape {{name}} a été validée"), { name: mainCtrl.code['workflow.VALIDATION_NOTICES'] });
+                    mainCtrl.canValidateRecord = false;
+                });
             }
         }
 
@@ -452,11 +469,10 @@
          */
         function validateCondReport(stateKey) {
             if (angular.isDefined(mainCtrl.docUnit)) {
-                WorkflowSrvc.process({ docUnitId: mainCtrl.docUnit.identifier, key: stateKey }).$promise
-                    .then(function () {
-                        MessageSrvc.addSuccess(gettextCatalog.getString("L'étape {{name}} a été validée"), { name: mainCtrl.code['workflow.'+stateKey] });
-                        mainCtrl.canValidateCondReport = false;
-                    });
+                WorkflowSrvc.process({ docUnitId: mainCtrl.docUnit.identifier, key: stateKey }).$promise.then(function () {
+                    MessageSrvc.addSuccess(gettextCatalog.getString("L'étape {{name}} a été validée"), { name: mainCtrl.code['workflow.' + stateKey] });
+                    mainCtrl.canValidateCondReport = false;
+                });
             }
         }
 
@@ -466,18 +482,16 @@
          * @param {any} reportId
          */
         function deleteCondreport(reportId) {
-            ModalSrvc.confirmDeletion(gettextCatalog.getString("le constat d'état de l'unité documentaire {{pgcnId}} {{label}}", mainCtrl.docUnit))
-                .then(function () {
-                    CondreportSrvc.delete({ id: reportId }, {}).$promise
-                        .then(function () {
-                            MessageSrvc.addSuccess(gettext("le constat d'état de l'unité documentaire {{pgcnId}} {{label}}"), mainCtrl.docUnit);
-                            // Rechargement de l'onglet
-                            setTab();
-                            $timeout(function () {
-                                setTab(mainCtrl.tabs.CONDREPORT);
-                            });
-                        });
+            ModalSrvc.confirmDeletion(gettextCatalog.getString("le constat d'état de l'unité documentaire {{pgcnId}} {{label}}", mainCtrl.docUnit)).then(function () {
+                CondreportSrvc.delete({ id: reportId }, {}).$promise.then(function () {
+                    MessageSrvc.addSuccess(gettext("le constat d'état de l'unité documentaire {{pgcnId}} {{label}}"), mainCtrl.docUnit);
+                    // Rechargement de l'onglet
+                    setTab();
+                    $timeout(function () {
+                        setTab(mainCtrl.tabs.CONDREPORT);
+                    });
                 });
+            });
         }
 
         function isConstatNotLocked() {

@@ -5,80 +5,64 @@
             <numa-filter data-class="pull-left btn-filter">
                 <!-- Bibliothèques -->
                 <numa-filter-field data-title="{{ ::'Bibliothèque' | translate }}">
-                    <sem-field sem-type="uiselect" sem-model="statCtrl.filters.library" sem-option-data="statCtrl.config.libraries"
-                               sem-onchange="statCtrl.search()"></sem-field>
+                    <sem-field sem-type="uiselect" sem-model="statCtrl.filters.library" sem-option-data="statCtrl.config.libraries" sem-onchange="statCtrl.search()"></sem-field>
                 </numa-filter-field>
                 <!-- Prestataires -->
                 <numa-filter-field data-title="{{ ::'Prestataire' | translate }}">
-                    <sem-field sem-type="uiselect" sem-model="statCtrl.filters.provider" sem-option-data="statCtrl.config.providers" 
-                               sem-onchange="statCtrl.search()"></sem-field>
+                    <sem-field sem-type="uiselect" sem-model="statCtrl.filters.provider" sem-option-data="statCtrl.config.providers" sem-onchange="statCtrl.search()"></sem-field>
                 </numa-filter-field>
                 <!-- Date de livraison -->
                 <numa-filter-field data-title="{{ ::'Date de livraison' | translate }}">
                     <div class="form-inline text-right margin-b10">
                         <label translate>entre le</label>
-                        <sem-datepicker ng-model="statCtrl.filters.deliveredFrom" sem-model-options="{ debounce: 300 }"
-                                        ng-change="statCtrl.searchValue('deliveredFrom', $data)"></sem-datepicker>
+                        <sem-datepicker ng-model="statCtrl.filters.deliveredFrom" sem-model-options="{ debounce: 300 }" ng-change="statCtrl.searchValue('deliveredFrom', $data)"></sem-datepicker>
                     </div>
                     <div class="form-inline text-right">
                         <label translate>et le</label>
-                        <sem-datepicker ng-model="statCtrl.filters.deliveredTo" sem-model-options="{ debounce: 300 }"
-                                        ng-change="statCtrl.searchValue('deliveredTo', $data)"></sem-datepicker>
+                        <sem-datepicker ng-model="statCtrl.filters.deliveredTo" sem-model-options="{ debounce: 300 }" ng-change="statCtrl.searchValue('deliveredTo', $data)"></sem-datepicker>
                     </div>
                 </numa-filter-field>
             </numa-filter>
             <!-- Entête -->
             <div class="panel-heading">
                 <div class="pull-right">
-                    <button type="button" class="btn btn-sem2 btn-xs" 
-                            ng-click="statCtrl.reinitFilters()" uib-tooltip="{{::'Réinitialiser les filtres de la recherche' | translate}}">
+                    <button type="button" class="btn btn-sem2 btn-xs" ng-click="statCtrl.reinitFilters()" uib-tooltip="{{::'Réinitialiser les filtres de la recherche' | translate}}" tooltip-append-to-body="true">
                         <span class="glyphicon-halflings glyphicon-refresh"></span>
                     </button>
-                    <a class="btn btn-sem2 btn-xs" 
-                            ng-href="{{statCtrl.getExportUrl()}}" uib-tooltip="{{::'Export CSV' | translate}}">
+                    <a class="btn btn-sem2 btn-xs" ng-href="{{statCtrl.getExportUrl()}}" uib-tooltip="{{::'Export CSV' | translate}}" tooltip-append-to-body="true">
                         <span class="fa fa-download"></span>
                     </a>
                 </div>
             </div>
             <div class="panel-body">
                 <div ng-if="statCtrl.loaded">
-                    <div class="well" ng-show="statCtrl.items.length == 0" translate>
-                        Aucun utilisateur trouvé
-                    </div>
-                    <div ng-show="statCtrl.items.length > 0" class="well well-sm" translate
-                        translate-n="statCtrl.items.length"
-                        translate-plural="{{$count}} utilisateurs trouvés">
-                        1 utilisateur trouvé
-                    </div>
+                    <div class="well" ng-show="statCtrl.items.length == 0" translate>Aucun utilisateur trouvé</div>
+                    <div ng-show="statCtrl.items.length > 0" class="well well-sm" translate translate-n="statCtrl.items.length" translate-plural="{{$count}} utilisateurs trouvés">1 utilisateur trouvé</div>
                 </div>
                 <!-- Liste des entités  -->
                 <div class="table-responsive" ng-show="statCtrl.items.length > 0">
                     <table class="table table-hover sem-list">
                         <thead>
-                        <tr>
-                            <th class="text-center h6 bold" translate>Bibliothèque</th>
-                            <th class="text-center h6 bold" translate>Prestataire</th>
-                            <th class="text-center h6 bold" translate>Nb lots livrés</th>
-                            <th class="text-center h6 bold" translate>Nb livraisons</th>
-                        </tr>
+                            <tr>
+                                <th class="text-center h6 bold" translate>Bibliothèque</th>
+                                <th class="text-center h6 bold" translate>Prestataire</th>
+                                <th class="text-center h6 bold" translate>Nb lots livrés</th>
+                                <th class="text-center h6 bold" translate>Nb livraisons</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="item in statCtrl.items | orderBy:['libraryName', 'providerFullName']">
-                            <td class="text-right nowrap">
-                                {{ ::item.libraryName }} 
-                                <numa-custom-link numa-link-type="library"
-                                                  numa-link-parameters="{id: item.libraryIdentifier}"
-                                                  ng-if="item.libraryIdentifier"></numa-custom-link>
-                            </td>
-                            <td class="text-right nowrap">
-                                {{ ::item.providerFullName || item.providerLogin || ('Non renseigné' | translate) }} 
-                                <numa-custom-link numa-link-type="user"
-                                                  numa-link-parameters="{id: item.providerIdentifier}"
-                                                  ng-if="item.providerIdentifier"></numa-custom-link>
-                            </td>
-                            <td class="text-center">{{ ::item.nbLot | number }}</td>
-                            <td class="text-center">{{ ::item.nbDelivery | number }}</td>
-                        </tr>
+                            <tr ng-repeat="item in statCtrl.items | orderBy:['libraryName', 'providerFullName']">
+                                <td class="text-right nowrap">
+                                    {{ ::item.libraryName }}
+                                    <numa-custom-link numa-link-type="library" numa-link-parameters="{id: item.libraryIdentifier}" ng-if="item.libraryIdentifier"></numa-custom-link>
+                                </td>
+                                <td class="text-right nowrap">
+                                    {{ ::item.providerFullName || item.providerLogin || ('Non renseigné' | translate) }}
+                                    <numa-custom-link numa-link-type="user" numa-link-parameters="{id: item.providerIdentifier}" ng-if="item.providerIdentifier"></numa-custom-link>
+                                </td>
+                                <td class="text-center">{{ ::item.nbLot | number }}</td>
+                                <td class="text-center">{{ ::item.nbDelivery | number }}</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>

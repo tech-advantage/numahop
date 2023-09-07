@@ -3,6 +3,13 @@ package fr.progilone.pgcn.repository.audit;
 import fr.progilone.pgcn.domain.audit.AuditRevision;
 import fr.progilone.pgcn.domain.exchange.Mapping;
 import fr.progilone.pgcn.domain.exchange.MappingRule;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.PersistenceContext;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.hibernate.Hibernate;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
@@ -13,14 +20,6 @@ import org.hibernate.envers.query.internal.property.RevisionPropertyPropertyName
 import org.hibernate.envers.query.order.internal.PropertyAuditOrder;
 import org.hibernate.envers.query.projection.internal.PropertyAuditProjection;
 import org.springframework.stereotype.Repository;
-
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Dépôt des table d'audit de mapping
@@ -75,10 +74,7 @@ public class AuditMappingRepository {
         mapping.setIdentifier(id);
         final List<AuditRevision> ruleResult = getRevisions(em, MappingRule.class, AuditEntity.property("mapping").eq(mapping));
 
-        return Stream.concat(mappingResult.stream(), ruleResult.stream())
-                     .sorted(Comparator.comparing(AuditRevision::getTimestamp))
-                     .distinct()
-                     .collect(Collectors.toList());
+        return Stream.concat(mappingResult.stream(), ruleResult.stream()).sorted(Comparator.comparing(AuditRevision::getTimestamp)).distinct().collect(Collectors.toList());
     }
 
     /**
@@ -112,7 +108,8 @@ public class AuditMappingRepository {
      */
     private long getLatestRevision(final EntityManager em, final Class<?> clazz) {
         try {
-            return (long) AuditReaderFactory.get(em).createQuery()
+            return (long) AuditReaderFactory.get(em)
+                                            .createQuery()
                                             // Révision des entités Mapping
                                             .forRevisionsOfEntity(clazz, false, false)
                                             // Champ timestamp de la révision
@@ -120,7 +117,8 @@ public class AuditMappingRepository {
                                             // Tri par n° de révision desc
                                             .addOrder(new PropertyAuditOrder(null, new RevisionNumberPropertyName(), false))
                                             // On ne conserve que le 1er résultat
-                                            .setMaxResults(1).getSingleResult();
+                                            .setMaxResults(1)
+                                            .getSingleResult();
         } catch (NoResultException e) {
             return 0L;
         }

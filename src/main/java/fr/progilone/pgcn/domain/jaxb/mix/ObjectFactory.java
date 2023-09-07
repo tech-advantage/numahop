@@ -1,44 +1,42 @@
 //
-// Ce fichier a été généré par l'implémentation de référence JavaTM Architecture for XML Binding (JAXB), v2.2.8-b130911.1802 
-// Voir <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
-// Toute modification apportée à ce fichier sera perdue lors de la recompilation du schéma source. 
-// Généré le : 2017.08.25 à 03:15:17 PM CEST 
+// Ce fichier a été généré par l'implémentation de référence JavaTM Architecture for XML Binding (JAXB), v2.2.8-b130911.1802
+// Voir <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a>
+// Toute modification apportée à ce fichier sera perdue lors de la recompilation du schéma source.
+// Généré le : 2017.08.25 à 03:15:17 PM CEST
 //
-
 
 package fr.progilone.pgcn.domain.jaxb.mix;
 
-import javax.xml.bind.annotation.XmlRegistry;
-
+import jakarta.xml.bind.annotation.XmlRegistry;
 
 /**
- * This object contains factory methods for each 
- * Java content interface and Java element interface 
- * generated in the fr.progilone.pgcn.domain.jaxb.mix package. 
- * <p>An ObjectFactory allows you to programatically 
- * construct new instances of the Java representation 
- * for XML content. The Java representation of XML 
- * content can consist of schema derived interfaces 
- * and classes representing the binding of schema 
- * type definitions, element declarations and model 
- * groups.  Factory methods for each of these are 
+ * This object contains factory methods for each
+ * Java content interface and Java element interface
+ * generated in the fr.progilone.pgcn.domain.jaxb.mix package.
+ * <p>
+ * An ObjectFactory allows you to programatically
+ * construct new instances of the Java representation
+ * for XML content. The Java representation of XML
+ * content can consist of schema derived interfaces
+ * and classes representing the binding of schema
+ * type definitions, element declarations and model
+ * groups. Factory methods for each of these are
  * provided in this class.
- * 
+ *
  */
 @XmlRegistry
 public class ObjectFactory {
 
-
     /**
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: fr.progilone.pgcn.domain.jaxb.mix
-     * 
+     *
      */
     public ObjectFactory() {
     }
 
     /**
      * Create an instance of {@link ChangeHistoryType }
-     * 
+     *
      */
     public ChangeHistoryType createChangeHistoryType() {
         return new ChangeHistoryType();
@@ -46,7 +44,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ChangeHistoryType.ImageProcessing }
-     * 
+     *
      */
     public ChangeHistoryType.ImageProcessing createChangeHistoryTypeImageProcessing() {
         return new ChangeHistoryType.ImageProcessing();
@@ -54,7 +52,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ImageAssessmentMetadataType }
-     * 
+     *
      */
     public ImageAssessmentMetadataType createImageAssessmentMetadataType() {
         return new ImageAssessmentMetadataType();
@@ -62,7 +60,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ImageAssessmentMetadataType.TargetData }
-     * 
+     *
      */
     public ImageAssessmentMetadataType.TargetData createImageAssessmentMetadataTypeTargetData() {
         return new ImageAssessmentMetadataType.TargetData();
@@ -70,7 +68,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ImageAssessmentMetadataType.ImageColorEncoding }
-     * 
+     *
      */
     public ImageAssessmentMetadataType.ImageColorEncoding createImageAssessmentMetadataTypeImageColorEncoding() {
         return new ImageAssessmentMetadataType.ImageColorEncoding();
@@ -78,7 +76,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ImageCaptureMetadataType }
-     * 
+     *
      */
     public ImageCaptureMetadataType createImageCaptureMetadataType() {
         return new ImageCaptureMetadataType();
@@ -86,7 +84,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ImageCaptureMetadataType.DigitalCameraCapture }
-     * 
+     *
      */
     public ImageCaptureMetadataType.DigitalCameraCapture createImageCaptureMetadataTypeDigitalCameraCapture() {
         return new ImageCaptureMetadataType.DigitalCameraCapture();
@@ -94,7 +92,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings }
-     * 
+     *
      */
     public ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings createImageCaptureMetadataTypeDigitalCameraCaptureCameraCaptureSettings() {
         return new ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings();
@@ -102,7 +100,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.GPSData }
-     * 
+     *
      */
     public ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.GPSData createImageCaptureMetadataTypeDigitalCameraCaptureCameraCaptureSettingsGPSData() {
         return new ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.GPSData();
@@ -110,7 +108,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.ImageData }
-     * 
+     *
      */
     public ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.ImageData createImageCaptureMetadataTypeDigitalCameraCaptureCameraCaptureSettingsImageData() {
         return new ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.ImageData();
@@ -118,15 +116,16 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.ImageData.SubjectDistance }
-     * 
+     *
      */
-    public ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.ImageData.SubjectDistance createImageCaptureMetadataTypeDigitalCameraCaptureCameraCaptureSettingsImageDataSubjectDistance() {
+    public ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.ImageData.SubjectDistance
+           createImageCaptureMetadataTypeDigitalCameraCaptureCameraCaptureSettingsImageDataSubjectDistance() {
         return new ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.ImageData.SubjectDistance();
     }
 
     /**
      * Create an instance of {@link ImageCaptureMetadataType.ScannerCapture }
-     * 
+     *
      */
     public ImageCaptureMetadataType.ScannerCapture createImageCaptureMetadataTypeScannerCapture() {
         return new ImageCaptureMetadataType.ScannerCapture();
@@ -134,7 +133,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ImageCaptureMetadataType.SourceInformation }
-     * 
+     *
      */
     public ImageCaptureMetadataType.SourceInformation createImageCaptureMetadataTypeSourceInformation() {
         return new ImageCaptureMetadataType.SourceInformation();
@@ -142,7 +141,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ImageCaptureMetadataType.SourceInformation.SourceSize }
-     * 
+     *
      */
     public ImageCaptureMetadataType.SourceInformation.SourceSize createImageCaptureMetadataTypeSourceInformationSourceSize() {
         return new ImageCaptureMetadataType.SourceInformation.SourceSize();
@@ -150,7 +149,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link BasicImageInformationType }
-     * 
+     *
      */
     public BasicImageInformationType createBasicImageInformationType() {
         return new BasicImageInformationType();
@@ -158,7 +157,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link BasicImageInformationType.SpecialFormatCharacteristics }
-     * 
+     *
      */
     public BasicImageInformationType.SpecialFormatCharacteristics createBasicImageInformationTypeSpecialFormatCharacteristics() {
         return new BasicImageInformationType.SpecialFormatCharacteristics();
@@ -166,7 +165,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000 }
-     * 
+     *
      */
     public BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000 createBasicImageInformationTypeSpecialFormatCharacteristicsJPEG2000() {
         return new BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000();
@@ -174,15 +173,15 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000 .EncodingOptions }
-     * 
+     *
      */
-    public BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000 .EncodingOptions createBasicImageInformationTypeSpecialFormatCharacteristicsJPEG2000EncodingOptions() {
-        return new BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000 .EncodingOptions();
+    public BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000.EncodingOptions createBasicImageInformationTypeSpecialFormatCharacteristicsJPEG2000EncodingOptions() {
+        return new BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000.EncodingOptions();
     }
 
     /**
      * Create an instance of {@link BasicImageInformationType.BasicImageCharacteristics }
-     * 
+     *
      */
     public BasicImageInformationType.BasicImageCharacteristics createBasicImageInformationTypeBasicImageCharacteristics() {
         return new BasicImageInformationType.BasicImageCharacteristics();
@@ -190,7 +189,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation }
-     * 
+     *
      */
     public BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation createBasicImageInformationTypeBasicImageCharacteristicsPhotometricInterpretation() {
         return new BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation();
@@ -198,31 +197,34 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.ReferenceBlackWhite }
-     * 
+     *
      */
-    public BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.ReferenceBlackWhite createBasicImageInformationTypeBasicImageCharacteristicsPhotometricInterpretationReferenceBlackWhite() {
+    public BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.ReferenceBlackWhite
+           createBasicImageInformationTypeBasicImageCharacteristicsPhotometricInterpretationReferenceBlackWhite() {
         return new BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.ReferenceBlackWhite();
     }
 
     /**
      * Create an instance of {@link BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.YCbCr }
-     * 
+     *
      */
-    public BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.YCbCr createBasicImageInformationTypeBasicImageCharacteristicsPhotometricInterpretationYCbCr() {
+    public BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.YCbCr
+           createBasicImageInformationTypeBasicImageCharacteristicsPhotometricInterpretationYCbCr() {
         return new BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.YCbCr();
     }
 
     /**
      * Create an instance of {@link BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.ColorProfile }
-     * 
+     *
      */
-    public BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.ColorProfile createBasicImageInformationTypeBasicImageCharacteristicsPhotometricInterpretationColorProfile() {
+    public BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.ColorProfile
+           createBasicImageInformationTypeBasicImageCharacteristicsPhotometricInterpretationColorProfile() {
         return new BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.ColorProfile();
     }
 
     /**
      * Create an instance of {@link BasicDigitalObjectInformationType }
-     * 
+     *
      */
     public BasicDigitalObjectInformationType createBasicDigitalObjectInformationType() {
         return new BasicDigitalObjectInformationType();
@@ -230,7 +232,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link Mix }
-     * 
+     *
      */
     public Mix createMix() {
         return new Mix();
@@ -238,7 +240,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link MixType }
-     * 
+     *
      */
     public MixType createMixType() {
         return new MixType();
@@ -246,7 +248,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ExtensionType }
-     * 
+     *
      */
     public ExtensionType createExtensionType() {
         return new ExtensionType();
@@ -254,7 +256,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link IntegerType }
-     * 
+     *
      */
     public IntegerType createIntegerType() {
         return new IntegerType();
@@ -262,7 +264,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TypeOfFlashType }
-     * 
+     *
      */
     public TypeOfFlashType createTypeOfFlashType() {
         return new TypeOfFlashType();
@@ -270,7 +272,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link PositiveIntegerType }
-     * 
+     *
      */
     public PositiveIntegerType createPositiveIntegerType() {
         return new PositiveIntegerType();
@@ -278,7 +280,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TypeOfExtraSamplesType }
-     * 
+     *
      */
     public TypeOfExtraSamplesType createTypeOfExtraSamplesType() {
         return new TypeOfExtraSamplesType();
@@ -286,7 +288,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TypeOfMeteringModeType }
-     * 
+     *
      */
     public TypeOfMeteringModeType createTypeOfMeteringModeType() {
         return new TypeOfMeteringModeType();
@@ -294,7 +296,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TypeOfEnumType }
-     * 
+     *
      */
     public TypeOfEnumType createTypeOfEnumType() {
         return new TypeOfEnumType();
@@ -302,7 +304,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TypeOfgpsSpeedRefType }
-     * 
+     *
      */
     public TypeOfgpsSpeedRefType createTypeOfgpsSpeedRefType() {
         return new TypeOfgpsSpeedRefType();
@@ -310,7 +312,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TypeOfGrayResponseUnitType }
-     * 
+     *
      */
     public TypeOfGrayResponseUnitType createTypeOfGrayResponseUnitType() {
         return new TypeOfGrayResponseUnitType();
@@ -318,7 +320,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TypeOfgpsMeasureModeType }
-     * 
+     *
      */
     public TypeOfgpsMeasureModeType createTypeOfgpsMeasureModeType() {
         return new TypeOfgpsMeasureModeType();
@@ -326,7 +328,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link Base64BinaryType }
-     * 
+     *
      */
     public Base64BinaryType createBase64BinaryType() {
         return new Base64BinaryType();
@@ -334,7 +336,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TypeOfLightSourceType }
-     * 
+     *
      */
     public TypeOfLightSourceType createTypeOfLightSourceType() {
         return new TypeOfLightSourceType();
@@ -342,7 +344,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TypeOfCaptureDeviceType }
-     * 
+     *
      */
     public TypeOfCaptureDeviceType createTypeOfCaptureDeviceType() {
         return new TypeOfCaptureDeviceType();
@@ -350,7 +352,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TypeOfScannerSensorType }
-     * 
+     *
      */
     public TypeOfScannerSensorType createTypeOfScannerSensorType() {
         return new TypeOfScannerSensorType();
@@ -358,7 +360,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TypeOfOpticalResolutionUnitType }
-     * 
+     *
      */
     public TypeOfOpticalResolutionUnitType createTypeOfOpticalResolutionUnitType() {
         return new TypeOfOpticalResolutionUnitType();
@@ -366,7 +368,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link URIType }
-     * 
+     *
      */
     public URIType createURIType() {
         return new URIType();
@@ -374,7 +376,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TypeOfYCbCrSubsampleVertType }
-     * 
+     *
      */
     public TypeOfYCbCrSubsampleVertType createTypeOfYCbCrSubsampleVertType() {
         return new TypeOfYCbCrSubsampleVertType();
@@ -382,7 +384,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TypeOfgpsDestBearingRefType }
-     * 
+     *
      */
     public TypeOfgpsDestBearingRefType createTypeOfgpsDestBearingRefType() {
         return new TypeOfgpsDestBearingRefType();
@@ -390,7 +392,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TypeOfSamplingFrequencyPlaneType }
-     * 
+     *
      */
     public TypeOfSamplingFrequencyPlaneType createTypeOfSamplingFrequencyPlaneType() {
         return new TypeOfSamplingFrequencyPlaneType();
@@ -398,7 +400,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TypeOfCameraSensorType }
-     * 
+     *
      */
     public TypeOfCameraSensorType createTypeOfCameraSensorType() {
         return new TypeOfCameraSensorType();
@@ -406,7 +408,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link RealType }
-     * 
+     *
      */
     public RealType createRealType() {
         return new RealType();
@@ -414,7 +416,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TypeOfExposureProgramType }
-     * 
+     *
      */
     public TypeOfExposureProgramType createTypeOfExposureProgramType() {
         return new TypeOfExposureProgramType();
@@ -422,7 +424,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TypeOfNonNegativeRealType }
-     * 
+     *
      */
     public TypeOfNonNegativeRealType createTypeOfNonNegativeRealType() {
         return new TypeOfNonNegativeRealType();
@@ -430,7 +432,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TypeOfgpsAltitudeRefType }
-     * 
+     *
      */
     public TypeOfgpsAltitudeRefType createTypeOfgpsAltitudeRefType() {
         return new TypeOfgpsAltitudeRefType();
@@ -438,7 +440,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TypeOfgpsLongitudeRefType }
-     * 
+     *
      */
     public TypeOfgpsLongitudeRefType createTypeOfgpsLongitudeRefType() {
         return new TypeOfgpsLongitudeRefType();
@@ -446,7 +448,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TypeOfgpsDestLatitudeRefType }
-     * 
+     *
      */
     public TypeOfgpsDestLatitudeRefType createTypeOfgpsDestLatitudeRefType() {
         return new TypeOfgpsDestLatitudeRefType();
@@ -454,7 +456,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TypeOfDjvuFormatType }
-     * 
+     *
      */
     public TypeOfDjvuFormatType createTypeOfDjvuFormatType() {
         return new TypeOfDjvuFormatType();
@@ -462,7 +464,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link NonNegativeIntegerType }
-     * 
+     *
      */
     public NonNegativeIntegerType createNonNegativeIntegerType() {
         return new NonNegativeIntegerType();
@@ -470,7 +472,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TypeOfTargetTypeType }
-     * 
+     *
      */
     public TypeOfTargetTypeType createTypeOfTargetTypeType() {
         return new TypeOfTargetTypeType();
@@ -478,7 +480,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TypeOfsourceDimensionUnitType }
-     * 
+     *
      */
     public TypeOfsourceDimensionUnitType createTypeOfsourceDimensionUnitType() {
         return new TypeOfsourceDimensionUnitType();
@@ -486,7 +488,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TypeOfgpsStatusType }
-     * 
+     *
      */
     public TypeOfgpsStatusType createTypeOfgpsStatusType() {
         return new TypeOfgpsStatusType();
@@ -494,7 +496,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TypeOfgpsImgDirectionRefType }
-     * 
+     *
      */
     public TypeOfgpsImgDirectionRefType createTypeOfgpsImgDirectionRefType() {
         return new TypeOfgpsImgDirectionRefType();
@@ -502,7 +504,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TypeOfOrientationType }
-     * 
+     *
      */
     public TypeOfOrientationType createTypeOfOrientationType() {
         return new TypeOfOrientationType();
@@ -510,7 +512,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TypeOfYCbCrPositioningType }
-     * 
+     *
      */
     public TypeOfYCbCrPositioningType createTypeOfYCbCrPositioningType() {
         return new TypeOfYCbCrPositioningType();
@@ -518,7 +520,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TypeOfYCbCrSubsampleHorizType }
-     * 
+     *
      */
     public TypeOfYCbCrSubsampleHorizType createTypeOfYCbCrSubsampleHorizType() {
         return new TypeOfYCbCrSubsampleHorizType();
@@ -526,7 +528,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TypeOfPreviousImageMetadataType }
-     * 
+     *
      */
     public TypeOfPreviousImageMetadataType createTypeOfPreviousImageMetadataType() {
         return new TypeOfPreviousImageMetadataType();
@@ -534,7 +536,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TypeOfNonNegativeDecimalType }
-     * 
+     *
      */
     public TypeOfNonNegativeDecimalType createTypeOfNonNegativeDecimalType() {
         return new TypeOfNonNegativeDecimalType();
@@ -542,7 +544,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TypeOfSamplingFrequencyUnitType }
-     * 
+     *
      */
     public TypeOfSamplingFrequencyUnitType createTypeOfSamplingFrequencyUnitType() {
         return new TypeOfSamplingFrequencyUnitType();
@@ -550,7 +552,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TypeOfPositiveRealType }
-     * 
+     *
      */
     public TypeOfPositiveRealType createTypeOfPositiveRealType() {
         return new TypeOfPositiveRealType();
@@ -558,7 +560,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TypeOfgpsDestDistanceRefType }
-     * 
+     *
      */
     public TypeOfgpsDestDistanceRefType createTypeOfgpsDestDistanceRefType() {
         return new TypeOfgpsDestDistanceRefType();
@@ -566,7 +568,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TypeOfExifVersionType }
-     * 
+     *
      */
     public TypeOfExifVersionType createTypeOfExifVersionType() {
         return new TypeOfExifVersionType();
@@ -574,7 +576,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TypeOfAutoFocusType }
-     * 
+     *
      */
     public TypeOfAutoFocusType createTypeOfAutoFocusType() {
         return new TypeOfAutoFocusType();
@@ -582,7 +584,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TypeOfgpsTrackRefType }
-     * 
+     *
      */
     public TypeOfgpsTrackRefType createTypeOfgpsTrackRefType() {
         return new TypeOfgpsTrackRefType();
@@ -590,7 +592,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TypeOfgpsLatitudeRefType }
-     * 
+     *
      */
     public TypeOfgpsLatitudeRefType createTypeOfgpsLatitudeRefType() {
         return new TypeOfgpsLatitudeRefType();
@@ -598,7 +600,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TypeOfGrayResponseCurveType }
-     * 
+     *
      */
     public TypeOfGrayResponseCurveType createTypeOfGrayResponseCurveType() {
         return new TypeOfGrayResponseCurveType();
@@ -606,7 +608,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TypeOfBackLightType }
-     * 
+     *
      */
     public TypeOfBackLightType createTypeOfBackLightType() {
         return new TypeOfBackLightType();
@@ -614,7 +616,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TypeOfComponentUseType }
-     * 
+     *
      */
     public TypeOfComponentUseType createTypeOfComponentUseType() {
         return new TypeOfComponentUseType();
@@ -622,7 +624,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TypeOfByteOrderType }
-     * 
+     *
      */
     public TypeOfByteOrderType createTypeOfByteOrderType() {
         return new TypeOfByteOrderType();
@@ -630,7 +632,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link RationalType }
-     * 
+     *
      */
     public RationalType createRationalType() {
         return new RationalType();
@@ -638,7 +640,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TypeOfComponentPhotometricInterpretationType }
-     * 
+     *
      */
     public TypeOfComponentPhotometricInterpretationType createTypeOfComponentPhotometricInterpretationType() {
         return new TypeOfComponentPhotometricInterpretationType();
@@ -646,7 +648,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TypeOfMessageDigestAlgorithmType }
-     * 
+     *
      */
     public TypeOfMessageDigestAlgorithmType createTypeOfMessageDigestAlgorithmType() {
         return new TypeOfMessageDigestAlgorithmType();
@@ -654,7 +656,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link DateType }
-     * 
+     *
      */
     public DateType createDateType() {
         return new DateType();
@@ -662,7 +664,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TypeOfSensingMethodType }
-     * 
+     *
      */
     public TypeOfSensingMethodType createTypeOfSensingMethodType() {
         return new TypeOfSensingMethodType();
@@ -670,7 +672,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link StringType }
-     * 
+     *
      */
     public StringType createStringType() {
         return new StringType();
@@ -678,7 +680,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TypeOfDateType }
-     * 
+     *
      */
     public TypeOfDateType createTypeOfDateType() {
         return new TypeOfDateType();
@@ -686,7 +688,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TypeOfBitsPerSampleUnitType }
-     * 
+     *
      */
     public TypeOfBitsPerSampleUnitType createTypeOfBitsPerSampleUnitType() {
         return new TypeOfBitsPerSampleUnitType();
@@ -694,7 +696,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link DecimalType }
-     * 
+     *
      */
     public DecimalType createDecimalType() {
         return new DecimalType();
@@ -702,7 +704,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TypeOfComponentUnitType }
-     * 
+     *
      */
     public TypeOfComponentUnitType createTypeOfComponentUnitType() {
         return new TypeOfComponentUnitType();
@@ -710,7 +712,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TypeOfgpsDifferentialType }
-     * 
+     *
      */
     public TypeOfgpsDifferentialType createTypeOfgpsDifferentialType() {
         return new TypeOfgpsDifferentialType();
@@ -718,7 +720,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TypeOfgpsDestLongitudeRefType }
-     * 
+     *
      */
     public TypeOfgpsDestLongitudeRefType createTypeOfgpsDestLongitudeRefType() {
         return new TypeOfgpsDestLongitudeRefType();
@@ -726,7 +728,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ChangeHistoryType.ImageProcessing.ProcessingSoftware }
-     * 
+     *
      */
     public ChangeHistoryType.ImageProcessing.ProcessingSoftware createChangeHistoryTypeImageProcessingProcessingSoftware() {
         return new ChangeHistoryType.ImageProcessing.ProcessingSoftware();
@@ -734,7 +736,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ImageAssessmentMetadataType.SpatialMetrics }
-     * 
+     *
      */
     public ImageAssessmentMetadataType.SpatialMetrics createImageAssessmentMetadataTypeSpatialMetrics() {
         return new ImageAssessmentMetadataType.SpatialMetrics();
@@ -742,7 +744,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ImageAssessmentMetadataType.TargetData.TargetID }
-     * 
+     *
      */
     public ImageAssessmentMetadataType.TargetData.TargetID createImageAssessmentMetadataTypeTargetDataTargetID() {
         return new ImageAssessmentMetadataType.TargetData.TargetID();
@@ -750,7 +752,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ImageAssessmentMetadataType.ImageColorEncoding.BitsPerSample }
-     * 
+     *
      */
     public ImageAssessmentMetadataType.ImageColorEncoding.BitsPerSample createImageAssessmentMetadataTypeImageColorEncodingBitsPerSample() {
         return new ImageAssessmentMetadataType.ImageColorEncoding.BitsPerSample();
@@ -758,7 +760,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ImageAssessmentMetadataType.ImageColorEncoding.Colormap }
-     * 
+     *
      */
     public ImageAssessmentMetadataType.ImageColorEncoding.Colormap createImageAssessmentMetadataTypeImageColorEncodingColormap() {
         return new ImageAssessmentMetadataType.ImageColorEncoding.Colormap();
@@ -766,7 +768,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ImageAssessmentMetadataType.ImageColorEncoding.GrayResponse }
-     * 
+     *
      */
     public ImageAssessmentMetadataType.ImageColorEncoding.GrayResponse createImageAssessmentMetadataTypeImageColorEncodingGrayResponse() {
         return new ImageAssessmentMetadataType.ImageColorEncoding.GrayResponse();
@@ -774,7 +776,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ImageAssessmentMetadataType.ImageColorEncoding.WhitePoint }
-     * 
+     *
      */
     public ImageAssessmentMetadataType.ImageColorEncoding.WhitePoint createImageAssessmentMetadataTypeImageColorEncodingWhitePoint() {
         return new ImageAssessmentMetadataType.ImageColorEncoding.WhitePoint();
@@ -782,7 +784,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ImageAssessmentMetadataType.ImageColorEncoding.PrimaryChromaticities }
-     * 
+     *
      */
     public ImageAssessmentMetadataType.ImageColorEncoding.PrimaryChromaticities createImageAssessmentMetadataTypeImageColorEncodingPrimaryChromaticities() {
         return new ImageAssessmentMetadataType.ImageColorEncoding.PrimaryChromaticities();
@@ -790,7 +792,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ImageCaptureMetadataType.GeneralCaptureInformation }
-     * 
+     *
      */
     public ImageCaptureMetadataType.GeneralCaptureInformation createImageCaptureMetadataTypeGeneralCaptureInformation() {
         return new ImageCaptureMetadataType.GeneralCaptureInformation();
@@ -798,7 +800,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ImageCaptureMetadataType.DigitalCameraCapture.DigitalCameraModel }
-     * 
+     *
      */
     public ImageCaptureMetadataType.DigitalCameraCapture.DigitalCameraModel createImageCaptureMetadataTypeDigitalCameraCaptureDigitalCameraModel() {
         return new ImageCaptureMetadataType.DigitalCameraCapture.DigitalCameraModel();
@@ -806,55 +808,61 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.GPSData.GPSLatitude }
-     * 
+     *
      */
-    public ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.GPSData.GPSLatitude createImageCaptureMetadataTypeDigitalCameraCaptureCameraCaptureSettingsGPSDataGPSLatitude() {
+    public ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.GPSData.GPSLatitude
+           createImageCaptureMetadataTypeDigitalCameraCaptureCameraCaptureSettingsGPSDataGPSLatitude() {
         return new ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.GPSData.GPSLatitude();
     }
 
     /**
      * Create an instance of {@link ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.GPSData.GPSLongitude }
-     * 
+     *
      */
-    public ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.GPSData.GPSLongitude createImageCaptureMetadataTypeDigitalCameraCaptureCameraCaptureSettingsGPSDataGPSLongitude() {
+    public ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.GPSData.GPSLongitude
+           createImageCaptureMetadataTypeDigitalCameraCaptureCameraCaptureSettingsGPSDataGPSLongitude() {
         return new ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.GPSData.GPSLongitude();
     }
 
     /**
      * Create an instance of {@link ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.GPSData.GPSDestLatitude }
-     * 
+     *
      */
-    public ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.GPSData.GPSDestLatitude createImageCaptureMetadataTypeDigitalCameraCaptureCameraCaptureSettingsGPSDataGPSDestLatitude() {
+    public ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.GPSData.GPSDestLatitude
+           createImageCaptureMetadataTypeDigitalCameraCaptureCameraCaptureSettingsGPSDataGPSDestLatitude() {
         return new ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.GPSData.GPSDestLatitude();
     }
 
     /**
      * Create an instance of {@link ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.GPSData.GPSDestLongitude }
-     * 
+     *
      */
-    public ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.GPSData.GPSDestLongitude createImageCaptureMetadataTypeDigitalCameraCaptureCameraCaptureSettingsGPSDataGPSDestLongitude() {
+    public ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.GPSData.GPSDestLongitude
+           createImageCaptureMetadataTypeDigitalCameraCaptureCameraCaptureSettingsGPSDataGPSDestLongitude() {
         return new ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.GPSData.GPSDestLongitude();
     }
 
     /**
      * Create an instance of {@link ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.ImageData.PrintAspectRatio }
-     * 
+     *
      */
-    public ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.ImageData.PrintAspectRatio createImageCaptureMetadataTypeDigitalCameraCaptureCameraCaptureSettingsImageDataPrintAspectRatio() {
+    public ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.ImageData.PrintAspectRatio
+           createImageCaptureMetadataTypeDigitalCameraCaptureCameraCaptureSettingsImageDataPrintAspectRatio() {
         return new ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.ImageData.PrintAspectRatio();
     }
 
     /**
      * Create an instance of {@link ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.ImageData.SubjectDistance.MinMaxDistance }
-     * 
+     *
      */
-    public ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.ImageData.SubjectDistance.MinMaxDistance createImageCaptureMetadataTypeDigitalCameraCaptureCameraCaptureSettingsImageDataSubjectDistanceMinMaxDistance() {
+    public ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.ImageData.SubjectDistance.MinMaxDistance
+           createImageCaptureMetadataTypeDigitalCameraCaptureCameraCaptureSettingsImageDataSubjectDistanceMinMaxDistance() {
         return new ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.ImageData.SubjectDistance.MinMaxDistance();
     }
 
     /**
      * Create an instance of {@link ImageCaptureMetadataType.ScannerCapture.ScannerModel }
-     * 
+     *
      */
     public ImageCaptureMetadataType.ScannerCapture.ScannerModel createImageCaptureMetadataTypeScannerCaptureScannerModel() {
         return new ImageCaptureMetadataType.ScannerCapture.ScannerModel();
@@ -862,7 +870,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ImageCaptureMetadataType.ScannerCapture.MaximumOpticalResolution }
-     * 
+     *
      */
     public ImageCaptureMetadataType.ScannerCapture.MaximumOpticalResolution createImageCaptureMetadataTypeScannerCaptureMaximumOpticalResolution() {
         return new ImageCaptureMetadataType.ScannerCapture.MaximumOpticalResolution();
@@ -870,7 +878,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ImageCaptureMetadataType.ScannerCapture.ScanningSystemSoftware }
-     * 
+     *
      */
     public ImageCaptureMetadataType.ScannerCapture.ScanningSystemSoftware createImageCaptureMetadataTypeScannerCaptureScanningSystemSoftware() {
         return new ImageCaptureMetadataType.ScannerCapture.ScanningSystemSoftware();
@@ -878,7 +886,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ImageCaptureMetadataType.SourceInformation.SourceID }
-     * 
+     *
      */
     public ImageCaptureMetadataType.SourceInformation.SourceID createImageCaptureMetadataTypeSourceInformationSourceID() {
         return new ImageCaptureMetadataType.SourceInformation.SourceID();
@@ -886,7 +894,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ImageCaptureMetadataType.SourceInformation.SourceSize.SourceXDimension }
-     * 
+     *
      */
     public ImageCaptureMetadataType.SourceInformation.SourceSize.SourceXDimension createImageCaptureMetadataTypeSourceInformationSourceSizeSourceXDimension() {
         return new ImageCaptureMetadataType.SourceInformation.SourceSize.SourceXDimension();
@@ -894,7 +902,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ImageCaptureMetadataType.SourceInformation.SourceSize.SourceYDimension }
-     * 
+     *
      */
     public ImageCaptureMetadataType.SourceInformation.SourceSize.SourceYDimension createImageCaptureMetadataTypeSourceInformationSourceSizeSourceYDimension() {
         return new ImageCaptureMetadataType.SourceInformation.SourceSize.SourceYDimension();
@@ -902,7 +910,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ImageCaptureMetadataType.SourceInformation.SourceSize.SourceZDimension }
-     * 
+     *
      */
     public ImageCaptureMetadataType.SourceInformation.SourceSize.SourceZDimension createImageCaptureMetadataTypeSourceInformationSourceSizeSourceZDimension() {
         return new ImageCaptureMetadataType.SourceInformation.SourceSize.SourceZDimension();
@@ -910,7 +918,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link BasicImageInformationType.SpecialFormatCharacteristics.MrSID }
-     * 
+     *
      */
     public BasicImageInformationType.SpecialFormatCharacteristics.MrSID createBasicImageInformationTypeSpecialFormatCharacteristicsMrSID() {
         return new BasicImageInformationType.SpecialFormatCharacteristics.MrSID();
@@ -918,7 +926,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link BasicImageInformationType.SpecialFormatCharacteristics.Djvu }
-     * 
+     *
      */
     public BasicImageInformationType.SpecialFormatCharacteristics.Djvu createBasicImageInformationTypeSpecialFormatCharacteristicsDjvu() {
         return new BasicImageInformationType.SpecialFormatCharacteristics.Djvu();
@@ -926,63 +934,69 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000 .CodecCompliance }
-     * 
+     *
      */
-    public BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000 .CodecCompliance createBasicImageInformationTypeSpecialFormatCharacteristicsJPEG2000CodecCompliance() {
-        return new BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000 .CodecCompliance();
+    public BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000.CodecCompliance createBasicImageInformationTypeSpecialFormatCharacteristicsJPEG2000CodecCompliance() {
+        return new BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000.CodecCompliance();
     }
 
     /**
      * Create an instance of {@link BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000 .EncodingOptions.Tiles }
-     * 
+     *
      */
-    public BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000 .EncodingOptions.Tiles createBasicImageInformationTypeSpecialFormatCharacteristicsJPEG2000EncodingOptionsTiles() {
-        return new BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000 .EncodingOptions.Tiles();
+    public BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000.EncodingOptions.Tiles
+           createBasicImageInformationTypeSpecialFormatCharacteristicsJPEG2000EncodingOptionsTiles() {
+        return new BasicImageInformationType.SpecialFormatCharacteristics.JPEG2000.EncodingOptions.Tiles();
     }
 
     /**
      * Create an instance of {@link BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.ReferenceBlackWhite.Component }
-     * 
+     *
      */
-    public BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.ReferenceBlackWhite.Component createBasicImageInformationTypeBasicImageCharacteristicsPhotometricInterpretationReferenceBlackWhiteComponent() {
+    public BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.ReferenceBlackWhite.Component
+           createBasicImageInformationTypeBasicImageCharacteristicsPhotometricInterpretationReferenceBlackWhiteComponent() {
         return new BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.ReferenceBlackWhite.Component();
     }
 
     /**
      * Create an instance of {@link BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.YCbCr.YCbCrSubSampling }
-     * 
+     *
      */
-    public BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.YCbCr.YCbCrSubSampling createBasicImageInformationTypeBasicImageCharacteristicsPhotometricInterpretationYCbCrYCbCrSubSampling() {
+    public BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.YCbCr.YCbCrSubSampling
+           createBasicImageInformationTypeBasicImageCharacteristicsPhotometricInterpretationYCbCrYCbCrSubSampling() {
         return new BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.YCbCr.YCbCrSubSampling();
     }
 
     /**
      * Create an instance of {@link BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.YCbCr.YCbCrCoefficients }
-     * 
+     *
      */
-    public BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.YCbCr.YCbCrCoefficients createBasicImageInformationTypeBasicImageCharacteristicsPhotometricInterpretationYCbCrYCbCrCoefficients() {
+    public BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.YCbCr.YCbCrCoefficients
+           createBasicImageInformationTypeBasicImageCharacteristicsPhotometricInterpretationYCbCrYCbCrCoefficients() {
         return new BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.YCbCr.YCbCrCoefficients();
     }
 
     /**
      * Create an instance of {@link BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.ColorProfile.IccProfile }
-     * 
+     *
      */
-    public BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.ColorProfile.IccProfile createBasicImageInformationTypeBasicImageCharacteristicsPhotometricInterpretationColorProfileIccProfile() {
+    public BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.ColorProfile.IccProfile
+           createBasicImageInformationTypeBasicImageCharacteristicsPhotometricInterpretationColorProfileIccProfile() {
         return new BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.ColorProfile.IccProfile();
     }
 
     /**
      * Create an instance of {@link BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.ColorProfile.LocalProfile }
-     * 
+     *
      */
-    public BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.ColorProfile.LocalProfile createBasicImageInformationTypeBasicImageCharacteristicsPhotometricInterpretationColorProfileLocalProfile() {
+    public BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.ColorProfile.LocalProfile
+           createBasicImageInformationTypeBasicImageCharacteristicsPhotometricInterpretationColorProfileLocalProfile() {
         return new BasicImageInformationType.BasicImageCharacteristics.PhotometricInterpretation.ColorProfile.LocalProfile();
     }
 
     /**
      * Create an instance of {@link BasicDigitalObjectInformationType.ObjectIdentifier }
-     * 
+     *
      */
     public BasicDigitalObjectInformationType.ObjectIdentifier createBasicDigitalObjectInformationTypeObjectIdentifier() {
         return new BasicDigitalObjectInformationType.ObjectIdentifier();
@@ -990,7 +1004,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link BasicDigitalObjectInformationType.FormatDesignation }
-     * 
+     *
      */
     public BasicDigitalObjectInformationType.FormatDesignation createBasicDigitalObjectInformationTypeFormatDesignation() {
         return new BasicDigitalObjectInformationType.FormatDesignation();
@@ -998,7 +1012,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link BasicDigitalObjectInformationType.FormatRegistry }
-     * 
+     *
      */
     public BasicDigitalObjectInformationType.FormatRegistry createBasicDigitalObjectInformationTypeFormatRegistry() {
         return new BasicDigitalObjectInformationType.FormatRegistry();
@@ -1006,7 +1020,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link BasicDigitalObjectInformationType.Compression }
-     * 
+     *
      */
     public BasicDigitalObjectInformationType.Compression createBasicDigitalObjectInformationTypeCompression() {
         return new BasicDigitalObjectInformationType.Compression();
@@ -1014,7 +1028,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link BasicDigitalObjectInformationType.Fixity }
-     * 
+     *
      */
     public BasicDigitalObjectInformationType.Fixity createBasicDigitalObjectInformationTypeFixity() {
         return new BasicDigitalObjectInformationType.Fixity();

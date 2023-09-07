@@ -1,5 +1,6 @@
 package fr.progilone.pgcn.domain.dto.lot;
 
+import com.querydsl.core.annotations.QueryProjection;
 import fr.progilone.pgcn.domain.dto.ocrlangconfiguration.OcrLanguageDTO;
 import fr.progilone.pgcn.domain.dto.project.SimpleProjectDTO;
 import fr.progilone.pgcn.domain.lot.Lot;
@@ -23,6 +24,13 @@ public class SimpleLotDTO {
     private OcrLanguageDTO activeOcrLanguage;
 
     public SimpleLotDTO() {
+    }
+
+    @QueryProjection
+    public SimpleLotDTO(final String identifier, final String label) {
+        super();
+        this.identifier = identifier;
+        this.label = label;
     }
 
     public SimpleLotDTO(final String identifier,
@@ -117,7 +125,7 @@ public class SimpleLotDTO {
     public void setProject(final SimpleProjectDTO project) {
         this.project = project;
     }
-    
+
     public OcrLanguageDTO getActiveOcrLanguage() {
         return activeOcrLanguage;
     }
@@ -175,6 +183,7 @@ public class SimpleLotDTO {
             this.status = status;
             return this;
         }
+
         public Builder setFilesArchived(final boolean archived) {
             this.filesArchived = archived;
             return this;
@@ -189,22 +198,20 @@ public class SimpleLotDTO {
             this.type = type;
             return this;
         }
-        
+
         public Builder setProject(final SimpleProjectDTO project) {
             this.project = project;
             return this;
         }
-        
+
         public Builder setActiveOcrLanguage(final OcrLanguageDTO activeOcrLanguage) {
             this.activeOcrLanguage = activeOcrLanguage;
             return this;
         }
-        
 
         public SimpleLotDTO build() {
             return new SimpleLotDTO(identifier, code, label, requiredFormat, project, status, type, filesArchived, activeOcrLanguage);
         }
 
-        
     }
 }

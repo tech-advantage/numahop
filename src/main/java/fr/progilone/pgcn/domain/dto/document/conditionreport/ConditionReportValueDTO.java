@@ -11,7 +11,6 @@ public class ConditionReportValueDTO {
     private int propertyOrder;
     private String value;
     private String comment;
-    
 
     public String getPropertyId() {
         return propertyId;

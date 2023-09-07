@@ -18,26 +18,25 @@ public class DocUnitDeletedReportDTO extends AbstractDTO {
      */
     private String label;
 
-    public DocUnitDeletedReportDTO(final String identifier,
-                                final String label) {
+    public DocUnitDeletedReportDTO(final String identifier, final String label) {
         this.identifier = identifier;
         this.label = label;
     }
 
-	public final String getIdentifier() {
-		return identifier;
-	}
+    public final String getIdentifier() {
+        return identifier;
+    }
 
-	public void setIdentifier(String identifier) {
-		this.identifier = identifier;
-	}
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
+    }
 
-	public final String getLabel() {
-		return label;
-	}
+    public final String getLabel() {
+        return label;
+    }
 
-	public void setLabel(String label) {
-		this.label = label;
-	}
+    public void setLabel(String label) {
+        this.label = label;
+    }
 
 }

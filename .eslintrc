@@ -1,26 +1,28 @@
 env:
   browser: true
-extends: 
+extends:
   - angular
   - eslint:recommended
 globals:
-  $: true
-  _: true
-  JSOG: true
-  moment: true
-  naturalSort: true
-  ObjectTools: true
-  saveAs: true,
-  SockJS: true,
-  Stomp: true,
-  Uint8Array: true
+    $: "readonly"
+    _: "readonly"
+    Big: "readonly"
+    JSOG: "readonly"
+    moment: "readonly"
+    naturalSort: "readonly"
+    ObjectTools: "readonly"
+    saveAs: "readonly"
+    SockJS: "readonly"
+    Stomp: "readonly"
+    Uint8Array: "readonly"
 rules:
-  curly: 1
-  eqeqeq: 2
-  no-alert: 2
-  no-eq-null: 1
-  no-use-before-define: 0
-  semi: 1
-  strict: 1
-  angular/controller-as-vm: "off"
-  angular/controller-name: "off"
+    curly: 1
+    eqeqeq: 2
+    no-alert: 2
+    no-eq-null: 1
+    no-use-before-define: 0
+    semi: 1
+    strict: 1
+    angular/controller-as-vm: "off"
+    angular/controller-name: "off"
+    angular/controller-as: "off"

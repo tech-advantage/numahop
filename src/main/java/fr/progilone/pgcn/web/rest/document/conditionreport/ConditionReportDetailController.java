@@ -1,28 +1,8 @@
 package fr.progilone.pgcn.web.rest.document.conditionreport;
 
-import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.COND_REPORT_HAB0;
-import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.COND_REPORT_HAB1;
-import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.COND_REPORT_HAB2;
-import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.COND_REPORT_HAB3;
-
-import java.util.List;
-
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.*;
 
 import com.codahale.metrics.annotation.Timed;
-
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.document.conditionreport.ConditionReport;
 import fr.progilone.pgcn.domain.document.conditionreport.ConditionReportDetail;
@@ -33,6 +13,19 @@ import fr.progilone.pgcn.service.es.EsConditionReportService;
 import fr.progilone.pgcn.web.rest.AbstractRestController;
 import fr.progilone.pgcn.web.util.AccessHelper;
 import fr.progilone.pgcn.web.util.WorkflowAccessHelper;
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.servlet.http.HttpServletResponse;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/api/rest/condreport_detail")
@@ -57,7 +50,10 @@ public class ConditionReportDetailController extends AbstractRestController {
         this.esConditionReportService = esConditionReportService;
     }
 
-    @RequestMapping(method = RequestMethod.POST, params = {"type", "detail"})
+    @RequestMapping(method = RequestMethod.POST,
+                    params = {"type",
+                              "detail"},
+                    produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(COND_REPORT_HAB1)
     public ResponseEntity<ConditionReportDetail> create(@RequestParam(name = "type") final ConditionReportDetail.Type type,
@@ -80,7 +76,7 @@ public class ConditionReportDetailController extends AbstractRestController {
         }
     }
 
-    @RequestMapping(value = "/{identifier}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/{identifier}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(COND_REPORT_HAB3)
     public void delete(final HttpServletResponse response, @PathVariable final String identifier) {
@@ -129,7 +125,7 @@ public class ConditionReportDetailController extends AbstractRestController {
         return createResponseEntity(conditionReportDetailService.findByConditionReport(reportId));
     }
 
-    @RequestMapping(value = "/{identifier}", method = RequestMethod.POST)
+    @RequestMapping(value = "/{identifier}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(COND_REPORT_HAB2)
     public ResponseEntity<ConditionReportDetail> update(@RequestBody final ConditionReportDetail value) throws PgcnException {
@@ -151,8 +147,8 @@ public class ConditionReportDetailController extends AbstractRestController {
 
         return new ResponseEntity<>(savedDetail, HttpStatus.OK);
     }
-    
-    @RequestMapping(value = "/{identifier}", params = {"confirmvalid"}, method = RequestMethod.POST)
+
+    @RequestMapping(value = "/{identifier}", params = {"confirmvalid"}, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(COND_REPORT_HAB2)
     public ResponseEntity<ConditionReportDetail> confirmInitialValid(@RequestBody final ConditionReportDetail value) throws PgcnException {
@@ -161,7 +157,7 @@ public class ConditionReportDetailController extends AbstractRestController {
         if (!accessHelper.checkDocUnit(docUnit.getIdentifier())) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
-        
+
         // Mise à jour
         final ConditionReportDetail savedDetail = conditionReportDetailService.updateProvWriter(value);
         // Indexation
@@ -170,6 +166,5 @@ public class ConditionReportDetailController extends AbstractRestController {
 
         return new ResponseEntity<>(savedDetail, HttpStatus.OK);
     }
-    
-    
+
 }

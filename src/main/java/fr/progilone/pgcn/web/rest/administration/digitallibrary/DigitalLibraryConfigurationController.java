@@ -2,12 +2,17 @@ package fr.progilone.pgcn.web.rest.administration.digitallibrary;
 
 import static fr.progilone.pgcn.web.rest.administration.security.AuthorizationConstants.*;
 
+import com.codahale.metrics.annotation.Timed;
+import fr.progilone.pgcn.domain.administration.digitallibrary.DigitalLibraryConfiguration;
+import fr.progilone.pgcn.domain.dto.administration.digitallibrary.DigitalLibraryConfigurationDTO;
+import fr.progilone.pgcn.domain.library.Library;
+import fr.progilone.pgcn.exception.PgcnTechnicalException;
+import fr.progilone.pgcn.service.administration.digitallibrary.DigitalLibraryConfigurationService;
+import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Set;
-
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,15 +24,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.codahale.metrics.annotation.Timed;
-
-import fr.progilone.pgcn.domain.administration.digitallibrary.DigitalLibraryConfiguration;
-import fr.progilone.pgcn.domain.dto.administration.digitallibrary.DigitalLibraryConfigurationDTO;
-import fr.progilone.pgcn.domain.library.Library;
-import fr.progilone.pgcn.exception.PgcnTechnicalException;
-import fr.progilone.pgcn.service.administration.digitallibrary.DigitalLibraryConfigurationService;
-import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
-
 @RestController
 @RequestMapping(value = "/api/rest/conf_digital_library")
 public class DigitalLibraryConfigurationController {
@@ -35,8 +31,7 @@ public class DigitalLibraryConfigurationController {
     private final DigitalLibraryConfigurationService digitalLibraryConfigurationService;
     private final LibraryAccesssHelper libraryAccesssHelper;
 
-    public DigitalLibraryConfigurationController(final DigitalLibraryConfigurationService digitalLibraryConfigurationService,
-                                                 final LibraryAccesssHelper libraryAccesssHelper) {
+    public DigitalLibraryConfigurationController(final DigitalLibraryConfigurationService digitalLibraryConfigurationService, final LibraryAccesssHelper libraryAccesssHelper) {
         this.digitalLibraryConfigurationService = digitalLibraryConfigurationService;
         this.libraryAccesssHelper = libraryAccesssHelper;
     }
@@ -44,8 +39,8 @@ public class DigitalLibraryConfigurationController {
     @RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed({CONF_DIFFUSION_DIGITAL_LIBRARY_HAB1})
-    public ResponseEntity<DigitalLibraryConfiguration>
-           create(final HttpServletRequest request, @RequestBody final DigitalLibraryConfiguration configuration) throws PgcnTechnicalException {
+    public ResponseEntity<DigitalLibraryConfiguration> create(final HttpServletRequest request, @RequestBody final DigitalLibraryConfiguration configuration)
+                                                                                                                                                              throws PgcnTechnicalException {
         // Vérification des droits d'accès par rapport à la bibliothèque de l'utilisateur, pour le conf à importer
         if (!libraryAccesssHelper.checkLibrary(request, configuration.getLibrary().getIdentifier())) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
@@ -73,7 +68,10 @@ public class DigitalLibraryConfigurationController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.GET, params = {"configuration", "library"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.GET,
+                    params = {"configuration",
+                              "library"},
+                    produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed({CONF_DIFFUSION_DIGITAL_LIBRARY_HAB0})
     public ResponseEntity<Set<DigitalLibraryConfigurationDTO>> findByLibrary(final HttpServletRequest request,
@@ -123,17 +121,15 @@ public class DigitalLibraryConfigurationController {
     @RequestMapping(value = "/{id}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed({CONF_DIFFUSION_DIGITAL_LIBRARY_HAB1})
-    public ResponseEntity<DigitalLibraryConfiguration> udpate(final HttpServletRequest request,
-                                                              @RequestBody final DigitalLibraryConfiguration digitalLibraryConfiguration) throws PgcnTechnicalException {
+    public ResponseEntity<DigitalLibraryConfiguration> udpate(final HttpServletRequest request, @RequestBody final DigitalLibraryConfiguration digitalLibraryConfiguration)
+                                                                                                                                                                            throws PgcnTechnicalException {
 
         // Vérification des droits d'accès par rapport à la bibliothèque de l'utilisateur, pour le conf à importer
-        if (digitalLibraryConfiguration.getLibrary() == null
-            || !libraryAccesssHelper.checkLibrary(request, digitalLibraryConfiguration.getLibrary().getIdentifier())) {
+        if (digitalLibraryConfiguration.getLibrary() == null || !libraryAccesssHelper.checkLibrary(request, digitalLibraryConfiguration.getLibrary().getIdentifier())) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         // Chargement du conf existant
-        final DigitalLibraryConfiguration conf =
-                                               digitalLibraryConfigurationService.findOneWithDependencies(digitalLibraryConfiguration.getIdentifier());
+        final DigitalLibraryConfiguration conf = digitalLibraryConfigurationService.findOneWithDependencies(digitalLibraryConfiguration.getIdentifier());
         // Non trouvé
         if (conf == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

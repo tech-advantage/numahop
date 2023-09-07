@@ -1,69 +1,63 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('LotStateEditWidgetCtrl', LotStateEditWidgetCtrl);
+    angular.module('numaHopApp.controller').controller('LotStateEditWidgetCtrl', LotStateEditWidgetCtrl);
 
     function LotStateEditWidgetCtrl($q, config, gettextCatalog, LibrarySrvc, ProjectSrvc, LotSrvc) {
-
         var mainCtrl = this;
         mainCtrl.isConfigured = isConfigured;
 
         mainCtrl.options = {
             libraries: {
-                text: "name",
-                placeholder: gettextCatalog.getString("Bibliothèque"),
-                trackby: "identifier",
+                text: 'name',
+                placeholder: gettextCatalog.getString('Bibliothèque'),
+                trackby: 'identifier',
                 // Chargement avec mise en cache du résultat
                 refresh: function ($select) {
                     if (!mainCtrl.options.libraries.data) {
                         mainCtrl.options.libraries.data = LibrarySrvc.query({ dto: true });
-                        return mainCtrl.options.libraries.data.$promise
-                            .then(function (lib) {
-                                return _.map(lib, function (l) {
-                                    return _.pick(l, "identifier", "name");
-                                });
+                        return mainCtrl.options.libraries.data.$promise.then(function (lib) {
+                            return _.map(lib, function (l) {
+                                return _.pick(l, 'identifier', 'name');
                             });
-                    }
-                    else {
+                        });
+                    } else {
                         return $q.when(mainCtrl.options.libraries.data);
                     }
                 },
                 'refresh-delay': 0, // pas de refresh-delay, car on lit les données en cache après le 1er chargement
                 'allow-clear': true,
-                multiple: true
+                multiple: true,
             },
             projects: {
-                text: "name",
-                placeholder: gettextCatalog.getString("Projet"),
-                trackby: "identifier",
+                text: 'name',
+                placeholder: gettextCatalog.getString('Projet'),
+                trackby: 'identifier',
                 refresh: function ($select) {
                     var searchParams = {
                         page: 0,
                         search: $select.search,
-                        active: true
+                        active: true,
                     };
-                    return ProjectSrvc.search(searchParams).$promise
-                        .then(function (projects) {
-                            return _.map(projects.content, function (project) {
-                                return _.pick(project, "identifier", "name");
-                            });
+                    return ProjectSrvc.search(searchParams).$promise.then(function (projects) {
+                        return _.map(projects.content, function (project) {
+                            return _.pick(project, 'identifier', 'name');
                         });
+                    });
                 },
                 'refresh-delay': 300,
                 'allow-clear': true,
-                multiple: true
+                multiple: true,
             },
             status: {
-                text: "label",
-                placeholder: gettextCatalog.getString("Statut"),
-                trackby: "identifier",
+                text: 'label',
+                placeholder: gettextCatalog.getString('Statut'),
+                trackby: 'identifier',
                 data: LotSrvc.config.status,
                 multiple: true,
-                'allow-clear': true
-            }
+                'allow-clear': true,
+            },
         };
-
 
         init();
 

@@ -1,9 +1,8 @@
 package fr.progilone.pgcn.domain.dto.statistics;
 
-import javax.annotation.Nullable;
-
 import com.google.common.collect.Ordering;
 import com.opencsv.bean.CsvBindByName;
+import jakarta.annotation.Nullable;
 
 public class StatisticsDocUnitAverageDTO implements Comparable<StatisticsDocUnitAverageDTO> {
 
@@ -30,7 +29,7 @@ public class StatisticsDocUnitAverageDTO implements Comparable<StatisticsDocUnit
 
     @CsvBindByName(column = "3. Livraison")
     private String deliveryLabel;
-    
+
     /**
      * Nbre total de documents
      */
@@ -42,13 +41,13 @@ public class StatisticsDocUnitAverageDTO implements Comparable<StatisticsDocUnit
      */
     @CsvBindByName(column = "5. Nombre total de pages")
     private int avgTotalPages;
-    
+
     /**
      * Poids total des documents livrés
      */
     @CsvBindByName(column = "6. Poids total des documents")
     private long lengthDocs;
-    
+
     /**
      * Taux de rejet (% de docs qui ont été rejetés au moins une fois)
      */

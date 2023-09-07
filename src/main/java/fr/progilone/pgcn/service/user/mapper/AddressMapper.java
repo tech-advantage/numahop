@@ -1,10 +1,9 @@
 package fr.progilone.pgcn.service.user.mapper;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
-
 import fr.progilone.pgcn.domain.dto.user.AddressDTO;
 import fr.progilone.pgcn.domain.user.Address;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 
 @Mapper
 public interface AddressMapper {

@@ -1,11 +1,9 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('SFTPConfigurationCtrl', SFTPConfigurationCtrl);
+    angular.module('numaHopApp.controller').controller('SFTPConfigurationCtrl', SFTPConfigurationCtrl);
 
     function SFTPConfigurationCtrl($location, $scope, $timeout, $q, NumahopStorageService, NumaHopInitializationSrvc, SFTPConfigurationSrvc, StringTools, gettext) {
-
         $scope.applyFilter = applyFilter;
         $scope.clearSelection = clearSelection;
         $scope.create = create;
@@ -17,13 +15,12 @@
         $scope.nextPage = nextPage;
         $scope.unfilterInitial = unfilterInitial;
 
-        $scope.configurationInclude = "scripts/app/platformconfiguration/sftpconfigurationEdit.html";
+        $scope.configurationInclude = 'scripts/app/platformconfiguration/sftpconfigurationEdit.html';
         $scope.configuration = null;
 
-        var FILTER_STORAGE_SERVICE_KEY = "sftp_configurations";
+        var FILTER_STORAGE_SERVICE_KEY = 'sftp_configurations';
 
-        $scope.filters = {
-        };
+        $scope.filters = {};
 
         /**
          * Liste des options pour les listes déroulantes
@@ -32,16 +29,16 @@
             institutions: [],
             libraries: [],
             boolean: {
-                "true": gettext('Oui'),
-                "false": gettext('Non')
-            }
+                true: gettext('Oui'),
+                false: gettext('Non'),
+            },
         };
         $scope.pagination = {
             items: [],
             totalItems: 0,
             busy: false,
             last: false,
-            page: 0
+            page: 0,
         };
         $scope.newConfigurations = []; // liste des configurations récemment créées
 
@@ -53,15 +50,13 @@
             loadFilters();
             nextPage();
 
-            $scope.$on("$routeUpdate",
-                function ($currentRoute, $previousRoute) {
-                    $timeout(function () {
-                        $scope.configurationInclude = null;
-                        $scope.$apply();
-                        $scope.configurationInclude = "scripts/app/platformconfiguration/sftpconfigurationEdit.html";
-                    });
-                }
-            );
+            $scope.$on('$routeUpdate', function ($currentRoute, $previousRoute) {
+                $timeout(function () {
+                    $scope.configurationInclude = null;
+                    $scope.$apply();
+                    $scope.configurationInclude = 'scripts/app/platformconfiguration/sftpconfigurationEdit.html';
+                });
+            });
         }
 
         // CRUD
@@ -70,7 +65,7 @@
                 $scope.configuration._selected = false;
                 $scope.configuration = null;
             }
-            $location.path("/platformconfiguration/sftpconfiguration").search({ id: null, mode: "edit" });
+            $location.path('/platformconfiguration/sftpconfiguration').search({ id: null, mode: 'edit' });
         }
         function edit(configuration) {
             clearSelection();
@@ -82,7 +77,7 @@
                 configuration._selected = true;
                 search = { id: configuration.identifier };
             }
-            $location.path("/platformconfiguration/sftpconfiguration").search(search);
+            $location.path('/platformconfiguration/sftpconfiguration').search(search);
         }
 
         function filterConfigurations() {
@@ -90,12 +85,12 @@
 
             var searchParams = {
                 page: $scope.pagination.page,
-                search: $scope.filterWith || ""
+                search: $scope.filterWith || '',
             };
 
             if ($scope.filters.libraries) {
-                var librariesIds = _.pluck($scope.filters.libraries, "identifier");
-                searchParams["libraries"] = librariesIds;
+                var librariesIds = _.pluck($scope.filters.libraries, 'identifier');
+                searchParams['libraries'] = librariesIds;
             }
 
             return SFTPConfigurationSrvc.search(searchParams).$promise;
@@ -111,7 +106,7 @@
             doFilter();
         }
         function applyFilter(filterWith, event) {
-            if (event.type === "keypress" && event.keyCode === 13) {
+            if (event.type === 'keypress' && event.keyCode === 13) {
                 doFilter();
             }
         }
@@ -135,8 +130,7 @@
                         } else {
                             $scope.pagination.items.push(value.content[i]);
                         }
-                    }
-                    else {
+                    } else {
                         // On ne compte pas 2 fois les nouvelles configurations rechargées
                         $scope.pagination.totalItems--;
                     }
@@ -154,8 +148,6 @@
                     // réinitialisation de la fiche de droite
                     edit();
                 }
-
-
             });
         }
         function loadFilters() {
@@ -167,11 +159,10 @@
                 }
             }
 
-            $q.all([NumaHopInitializationSrvc.loadLibraries()])
-                .then(function (data) {
-                    $scope.options.libraries = data[0];
-                    nextPage();
-                });
+            $q.all([NumaHopInitializationSrvc.loadLibraries()]).then(function (data) {
+                $scope.options.libraries = data[0];
+                nextPage();
+            });
 
             return !!filters;
         }
@@ -183,15 +174,16 @@
         }
 
         function reinitFilters(reload) {
-            $scope.filters = {
-            };
+            $scope.filters = {};
             if (reload) {
                 doFilter();
             }
         }
         // liste
         function nextPage() {
-            if ($scope.pagination.busy || $scope.pagination.last) { return; }
+            if ($scope.pagination.busy || $scope.pagination.last) {
+                return;
+            }
             $scope.pagination.busy = true;
 
             filterConfigurations().then(function (value, responseHeaders) {
@@ -203,13 +195,12 @@
             });
         }
         function clearSelection() {
-            _.union($scope.pagination.items, $scope.newConfigurations)
-                .forEach(function (elt, i) {
-                    elt._selected = false;
-                });
+            _.union($scope.pagination.items, $scope.newConfigurations).forEach(function (elt, i) {
+                elt._selected = false;
+            });
         }
         function getFirstLetter(conf) {
-            return StringTools.getFirstLetter(conf.label, "OTHER");
+            return StringTools.getFirstLetter(conf.label, 'OTHER');
         }
     }
 })();

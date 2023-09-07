@@ -1,7 +1,6 @@
 package fr.progilone.pgcn.domain.dto.statistics;
 
 import fr.progilone.pgcn.domain.workflow.WorkflowStateKey;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -104,6 +103,7 @@ public class WorkflowDeliveryProgressDTO {
     }
 
     public static final class WorkflowState {
+
         private WorkflowStateKey key;
         private long count = 0L;
 

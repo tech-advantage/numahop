@@ -1,8 +1,12 @@
 package fr.progilone.pgcn.service.workflow;
 
+import fr.progilone.pgcn.domain.user.User;
+import fr.progilone.pgcn.domain.workflow.WorkflowGroup;
+import fr.progilone.pgcn.exception.PgcnValidationException;
+import fr.progilone.pgcn.repository.workflow.WorkflowGroupRepository;
+import fr.progilone.pgcn.service.util.SortUtils;
 import java.util.Collection;
 import java.util.List;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -11,17 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import fr.progilone.pgcn.domain.library.Library;
-import fr.progilone.pgcn.domain.user.User;
-import fr.progilone.pgcn.domain.workflow.WorkflowGroup;
-import fr.progilone.pgcn.exception.PgcnValidationException;
-import fr.progilone.pgcn.exception.message.PgcnError;
-import fr.progilone.pgcn.exception.message.PgcnErrorCode;
-import fr.progilone.pgcn.exception.message.PgcnList;
-import fr.progilone.pgcn.repository.workflow.WorkflowGroupRepository;
-import fr.progilone.pgcn.security.SecurityUtils;
-import fr.progilone.pgcn.service.util.SortUtils;
 
 @Service
 public class WorkflowGroupService {
@@ -96,7 +89,7 @@ public class WorkflowGroupService {
     public Page<WorkflowGroup> search(final String search, final String initiale, final List<String> libraries, final Integer page, final Integer size, final List<String> sorts) {
 
         final Sort sort = SortUtils.getSort(sorts);
-        final Pageable pageRequest = new PageRequest(page, size, sort);
+        final Pageable pageRequest = PageRequest.of(page, size, sort);
 
         return repository.search(search, initiale, libraries, pageRequest);
     }
@@ -108,7 +101,7 @@ public class WorkflowGroupService {
      */
     @Transactional
     public void delete(final String identifier) {
-        repository.delete(identifier);
+        repository.deleteById(identifier);
     }
 
     @Transactional(readOnly = true)

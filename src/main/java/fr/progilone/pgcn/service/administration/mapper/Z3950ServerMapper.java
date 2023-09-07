@@ -2,10 +2,9 @@ package fr.progilone.pgcn.service.administration.mapper;
 
 import fr.progilone.pgcn.domain.administration.exchange.z3950.Z3950Server;
 import fr.progilone.pgcn.domain.dto.administration.z3950.Z3950ServerDTO;
+import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
-
-import java.util.List;
 
 /**
  * Created by Sébastien on 21/12/2016.

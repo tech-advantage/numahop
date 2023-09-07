@@ -1,33 +1,41 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <changeSet id="pgcn-project-8" author="progilone">
         <addColumn tableName="conf_configuration_ftp">
-            <column name="library" type="varchar(191)"></column>
+            <column name="library" type="varchar(191)" />
         </addColumn>
 
         <addColumn tableName="lot_lot">
-            <column name="active_configuration_ftp" type="varchar(191)"></column>
+            <column name="active_configuration_ftp" type="varchar(191)" />
         </addColumn>
 
         <addColumn tableName="proj_project">
-            <column name="active_configuration_ftp" type="varchar(191)"></column>
+            <column name="active_configuration_ftp" type="varchar(191)" />
         </addColumn>
 
 
-        <addForeignKeyConstraint constraintName="fk_configuration_ftp_library"
-                                 baseTableName="conf_configuration_ftp" baseColumnNames="library"
-                                 referencedTableName="lib_library" referencedColumnNames="identifier"/>
+        <addForeignKeyConstraint constraintName="fk_configuration_ftp_library" baseTableName="conf_configuration_ftp" baseColumnNames="library" referencedTableName="lib_library" referencedColumnNames="identifier" />
 
-        <addForeignKeyConstraint constraintName="fk_project_configuration_ftp"
-                                 baseTableName="proj_project" baseColumnNames="active_configuration_ftp"
-                                 referencedTableName="conf_configuration_ftp" referencedColumnNames="identifier"/>
+        <addForeignKeyConstraint
+            constraintName="fk_project_configuration_ftp"
+            baseTableName="proj_project"
+            baseColumnNames="active_configuration_ftp"
+            referencedTableName="conf_configuration_ftp"
+            referencedColumnNames="identifier"
+        />
 
-        <addForeignKeyConstraint constraintName="fk_lot_configuration_ftp"
-                                 baseTableName="lot_lot" baseColumnNames="active_configuration_ftp"
-                                 referencedTableName="conf_configuration_ftp" referencedColumnNames="identifier"/>
+        <addForeignKeyConstraint
+            constraintName="fk_lot_configuration_ftp"
+            baseTableName="lot_lot"
+            baseColumnNames="active_configuration_ftp"
+            referencedTableName="conf_configuration_ftp"
+            referencedColumnNames="identifier"
+        />
 
     </changeSet>
 

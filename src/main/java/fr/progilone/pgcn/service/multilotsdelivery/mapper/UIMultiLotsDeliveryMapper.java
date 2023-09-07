@@ -1,9 +1,5 @@
 package fr.progilone.pgcn.service.multilotsdelivery.mapper;
 
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import fr.progilone.pgcn.domain.delivery.Delivery;
 import fr.progilone.pgcn.domain.dto.multilotsdelivery.MultiLotsDeliveryDTO;
 import fr.progilone.pgcn.domain.lot.Lot;
@@ -12,22 +8,24 @@ import fr.progilone.pgcn.domain.multilotsdelivery.MultiLotsDelivery.DeliveryMeth
 import fr.progilone.pgcn.domain.multilotsdelivery.MultiLotsDelivery.DeliveryPayment;
 import fr.progilone.pgcn.service.delivery.DeliveryService;
 import fr.progilone.pgcn.service.lot.LotService;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 public class UIMultiLotsDeliveryMapper {
 
-	private final LotService lotService;
-	private final DeliveryService deliveryService;
-	
-	@Autowired
-    public UIMultiLotsDeliveryMapper(final LotService lotService, final DeliveryService deliveryService) {
-	    this.lotService = lotService;
-	    this.deliveryService = deliveryService;
-	}
+    private final LotService lotService;
+    private final DeliveryService deliveryService;
 
+    @Autowired
+    public UIMultiLotsDeliveryMapper(final LotService lotService, final DeliveryService deliveryService) {
+        this.lotService = lotService;
+        this.deliveryService = deliveryService;
+    }
 
     public void mapInto(final MultiLotsDeliveryDTO dto, final MultiLotsDelivery multi) {
-        
+
         if (StringUtils.isNotBlank(dto.getIdentifier())) {
             multi.setIdentifier(dto.getIdentifier());
         }
@@ -44,38 +42,33 @@ public class UIMultiLotsDeliveryMapper {
         multi.setFolderPath(dto.getFolderPath());
         multi.setSelectedByTrain(dto.isSelectedByTrain());
         multi.setTrainId(dto.getTrainId());
-        
+
         multi.getDeliveries().stream().forEach(deliv -> {
             deliveryService.delete(deliv.getIdentifier());
         });
         multi.getDeliveries().clear();
-        
-        dto.getLots().stream()
-                    .filter(lo -> lo.getIdentifier() != null)
-                    .forEach(lo -> {
-                         
-                        final Lot lot = lotService.getOne(lo.getIdentifier());
-                        final Delivery delivery = buildNewDelivery(dto, lot);   
-                        delivery.setMultiLotsDelivery(multi);
-                        multi.getDeliveries().add(delivery);
-                    });
+
+        dto.getLots().stream().filter(lo -> lo.getIdentifier() != null).forEach(lo -> {
+
+            final Lot lot = lotService.getOne(lo.getIdentifier());
+            final Delivery delivery = buildNewDelivery(dto, lot);
+            delivery.setMultiLotsDelivery(multi);
+            multi.getDeliveries().add(delivery);
+        });
     }
 
-    
     /**
-     * 
+     *
      * @param dto
      * @param lot
      * @return
      */
     private Delivery buildNewDelivery(final MultiLotsDeliveryDTO dto, final Lot lot) {
-        
+
         final Delivery delivery = new Delivery();
         delivery.setLot(lot);
-        delivery.setLabel(dto.getLabel()
-                          .concat(" - ")
-                          .concat(lot.getLabel()));
-        
+        delivery.setLabel(dto.getLabel().concat(" - ").concat(lot.getLabel()));
+
         delivery.setDescription(dto.getDescription());
         delivery.setPayment(Delivery.DeliveryPayment.valueOf(dto.getPayment()));
         delivery.setMethod(Delivery.DeliveryMethod.valueOf(dto.getMethod()));
@@ -90,5 +83,5 @@ public class UIMultiLotsDeliveryMapper {
         delivery.setControlNotes(dto.getControlNotes());
         return delivery;
     }
-    
+
 }

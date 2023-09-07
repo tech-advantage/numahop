@@ -1,9 +1,8 @@
 package fr.progilone.pgcn.domain.dto.statistics;
 
-import javax.annotation.Nullable;
-
 import com.google.common.collect.Ordering;
 import com.opencsv.bean.CsvBindByName;
+import jakarta.annotation.Nullable;
 
 public class WorkflowUserProgressDTO implements Comparable<WorkflowUserProgressDTO> {
 
@@ -35,13 +34,12 @@ public class WorkflowUserProgressDTO implements Comparable<WorkflowUserProgressD
      */
     @CsvBindByName(column = "4. Nombre d'UD")
     private long nbDocUnit;
-    
+
     @CsvBindByName(column = "4.a UD validées")
     private long nbValidatedDocUnit;
-    
+
     @CsvBindByName(column = "4.b UD rejetées")
     private long nbRejectedDocUnit;
-    
 
     /**
      * Nombre moyen de pages
@@ -54,13 +52,10 @@ public class WorkflowUserProgressDTO implements Comparable<WorkflowUserProgressD
      */
     @CsvBindByName(column = "6. Délai moyen de contrôle")
     private long avgDuration;
-    
-    
+
     private long nbPreValidatedDocUnit;
-    
+
     private long nbPreRejectedDocUnit;
-    
-    
 
     public String getLibraryIdentifier() {
         return libraryIdentifier;

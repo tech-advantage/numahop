@@ -18,8 +18,8 @@ public class CatchAndReturnArgumentAt<T extends AbstractDomainObject> extends Re
      * Build the identity answer to return the argument at the given position in the argument array.
      *
      * @param wantedArgumentPosition
-     *         The position of the argument identity to return in the invocation.
-     *         Using <code>-1</code> indicates the last argument.
+     *            The position of the argument identity to return in the invocation.
+     *            Using <code>-1</code> indicates the last argument.
      * @param identifier
      */
     public CatchAndReturnArgumentAt(final int wantedArgumentPosition, final String identifier) {

@@ -1,32 +1,32 @@
 //
-// Ce fichier a été généré par l'implémentation de référence JavaTM Architecture for XML Binding (JAXB), v2.2.11 
-// Voir <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
-// Toute modification apportée à ce fichier sera perdue lors de la recompilation du schéma source. 
-// Généré le : 2016.12.29 à 11:53:40 AM CET 
+// Ce fichier a été généré par l'implémentation de référence JavaTM Architecture for XML Binding (JAXB), v2.2.11
+// Voir <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a>
+// Toute modification apportée à ce fichier sera perdue lors de la recompilation du schéma source.
+// Généré le : 2016.12.29 à 11:53:40 AM CET
 //
-
 
 package fr.progilone.pgcn.domain.jaxb.sip;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
-
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlType;
 
 /**
- * 
- * 				
+ *
+ *
  * <pre>
  * &lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;description xmlns="http://www.cines.fr/pac/sip" xmlns:ISO-639-3="urn:un:unece:uncefact:codelist:draft:DAF:languageCode:2011-10-07" xmlns:RA="urn:un:unece:uncefact:codelist:draft:DAF:accessRestrictionCode:2009-08-18" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;caractérise des relations entre les documents&lt;/description&gt;
  * </pre>
- * 
- * 			
- * 
- * <p>Classe Java pour docRelationType complex type.
- * 
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
- * 
+ *
+ *
+ *
+ * <p>
+ * Classe Java pour docRelationType complex type.
+ *
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ *
  * <pre>
  * &lt;complexType name="docRelationType"&gt;
  *   &lt;complexContent&gt;
@@ -40,15 +40,14 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
+ *
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "docRelationType", propOrder = {
-    "typeRelation",
-    "sourceRelation",
-    "identifiantSourceRelation"
-})
+@XmlType(name = "docRelationType",
+         propOrder = {"typeRelation",
+                      "sourceRelation",
+                      "identifiantSourceRelation"})
 public class DocRelationType {
 
     @XmlElement(required = true)
@@ -60,11 +59,11 @@ public class DocRelationType {
 
     /**
      * Obtient la valeur de la propriété typeRelation.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *         possible object is
+     *         {@link String }
+     *
      */
     public String getTypeRelation() {
         return typeRelation;
@@ -72,11 +71,11 @@ public class DocRelationType {
 
     /**
      * Définit la valeur de la propriété typeRelation.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is
+     *            {@link String }
+     *
      */
     public void setTypeRelation(String value) {
         this.typeRelation = value;
@@ -84,11 +83,11 @@ public class DocRelationType {
 
     /**
      * Obtient la valeur de la propriété sourceRelation.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *         possible object is
+     *         {@link String }
+     *
      */
     public String getSourceRelation() {
         return sourceRelation;
@@ -96,11 +95,11 @@ public class DocRelationType {
 
     /**
      * Définit la valeur de la propriété sourceRelation.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is
+     *            {@link String }
+     *
      */
     public void setSourceRelation(String value) {
         this.sourceRelation = value;
@@ -108,11 +107,11 @@ public class DocRelationType {
 
     /**
      * Obtient la valeur de la propriété identifiantSourceRelation.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *         possible object is
+     *         {@link String }
+     *
      */
     public String getIdentifiantSourceRelation() {
         return identifiantSourceRelation;
@@ -120,11 +119,11 @@ public class DocRelationType {
 
     /**
      * Définit la valeur de la propriété identifiantSourceRelation.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is
+     *            {@link String }
+     *
      */
     public void setIdentifiantSourceRelation(String value) {
         this.identifiantSourceRelation = value;

@@ -5,25 +5,25 @@
 // Généré le : 2017.12.08 à 03:23:15 PM CET
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.ppdi;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
-
 
 /**
  *
- * Pr�sentation du service versant responsable du versement ou du d�p�t du fonds dans le syst�me d'archivage �lectronique du CINES.
+ * Présentation du service versant responsable du versement ou du dépét du fonds dans le systéme d'archivage électronique du CINES.
  *
  *
- * <p>Classe Java pour ServiceVersantType complex type.
+ * <p>
+ * Classe Java pour ServiceVersantType complex type.
  *
- * <p>Le fragment de sch�ma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="ServiceVersantType">
@@ -44,13 +44,12 @@ import javax.xml.bind.annotation.XmlType;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ServiceVersantType", propOrder = {
-    "nomSV",
-    "datesSV",
-    "historiqueSV",
-    "relationSvProd",
-    "notesSV"
-})
+@XmlType(name = "ServiceVersantType",
+         propOrder = {"nomSV",
+                      "datesSV",
+                      "historiqueSV",
+                      "relationSvProd",
+                      "notesSV"})
 public class ServiceVersantType {
 
     @XmlElement(required = true)
@@ -64,11 +63,11 @@ public class ServiceVersantType {
     protected List<String> notesSV;
 
     /**
-     * Obtient la valeur de la propri�t� nomSV.
+     * Obtient la valeur de la propriété nomSV.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getNomSV() {
@@ -76,11 +75,11 @@ public class ServiceVersantType {
     }
 
     /**
-     * D�finit la valeur de la propri�t� nomSV.
+     * Définit la valeur de la propriété nomSV.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setNomSV(String value) {
@@ -88,11 +87,11 @@ public class ServiceVersantType {
     }
 
     /**
-     * Obtient la valeur de la propri�t� datesSV.
+     * Obtient la valeur de la propriété datesSV.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getDatesSV() {
@@ -100,11 +99,11 @@ public class ServiceVersantType {
     }
 
     /**
-     * D�finit la valeur de la propri�t� datesSV.
+     * Définit la valeur de la propriété datesSV.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setDatesSV(String value) {
@@ -122,8 +121,9 @@ public class ServiceVersantType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getHistoriqueSV().add(newItem);
+     * getHistoriqueSV().add(newItem);
      * </pre>
      *
      *
@@ -151,8 +151,9 @@ public class ServiceVersantType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getRelationSvProd().add(newItem);
+     * getRelationSvProd().add(newItem);
      * </pre>
      *
      *
@@ -180,8 +181,9 @@ public class ServiceVersantType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getNotesSV().add(newItem);
+     * getNotesSV().add(newItem);
      * </pre>
      *
      *

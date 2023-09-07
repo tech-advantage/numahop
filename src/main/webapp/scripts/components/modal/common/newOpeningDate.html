@@ -1,57 +1,51 @@
 <div class="modal-header">
-	<h3 class="modal-title"><span translate>Ajout d'une ouverture exceptionnelle</span></h3>
+    <h3 class="modal-title"><span translate>Ajout d'une ouverture exceptionnelle</span></h3>
 </div>
 <div class="modal-body">
-	<table class="table table-condensed table-hover">
-		<thead>
-		<tr>
-			<th translate>Libellé</th>
-			<th translate>Jour</th>
-			<th style="width: 200px;" translate>Horaires d'ouverture</th>
-		</tr>
-		</thead>
-		<tbody>
-			<tr class="layout-columns editable-controls">
-				<td>
-					<input type="text" ng-model="newOpeningDate.label"
-								e-form="newOpeningform" style="padding-left: 5px;"
-								class="form-control">
-				</td>
-				<td>
-					<sem-datepicker ng-model="newOpeningDate.startDate"></sem-datepicker>
-			 	</td>
-				<td>
-					<span ng-repeat="hour in newOpeningDate.hours">
-						<br ng-show = "$index!==0">
+    <table class="table table-condensed table-hover">
+        <thead>
+            <tr>
+                <th translate>Libellé</th>
+                <th translate>Jour</th>
+                <th style="width: 200px" translate>Horaires d'ouverture</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="layout-columns editable-controls">
+                <td>
+                    <input type="text" ng-model="newOpeningDate.label" e-form="newOpeningform" style="padding-left: 5px" class="form-control" />
+                </td>
+                <td>
+                    <sem-datepicker ng-model="newOpeningDate.startDate"></sem-datepicker>
+                </td>
+                <td>
+                    <span ng-repeat="hour in newOpeningDate.hours">
+                        <br ng-show="$index!==0" />
 
-						<span editable-timepicker="hour.startTime" e-form="newOpeningform">{{hour.startTime | moment:'HH:mm'}}</span>
-						<b>-</b>
-						<span editable-timepicker="hour.endTime" e-form="newOpeningform">{{hour.endTime | moment:'HH:mm'}}</span>
+                        <span editable-timepicker="hour.startTime" e-form="newOpeningform">{{hour.startTime | moment:'HH:mm'}}</span>
+                        <b>-</b>
+                        <span editable-timepicker="hour.endTime" e-form="newOpeningform">{{hour.endTime | moment:'HH:mm'}}</span>
 
-						<span class="btn-group-xs">
-							<button type="button" class="btn btn-sem2"
-									uib-tooltip="{{::'Supprimer la tranche' | translate}}"
-									ng-click="newOpeningDate.hours.splice($index, 1);">
-								<span class="glyphicon-halflings glyphicon-trash"></span>
-							</button>
-						</span>
-					</span>
+                        <span class="btn-group-xs">
+                            <button type="button" class="btn btn-sem2" uib-tooltip="{{::'Supprimer la tranche' | translate}}" ng-click="newOpeningDate.hours.splice($index, 1);">
+                                <span class="glyphicon-halflings glyphicon-trash"></span>
+                            </button>
+                        </span>
+                    </span>
 
-					<span class="btn-group-xs">
-						<button type="button" ng-disabled="newOpeningform.$waiting" class="btn btn-sem2"
-								ng-click="addNewOpeningDateHour()">
-							<span class="glyphicon-halflings glyphicon-plus"></span>
-						</button>
-					</span>
-
-				</td>
-			</tr>
-		</tbody>
-	</table>
+                    <span class="btn-group-xs">
+                        <button type="button" ng-disabled="newOpeningform.$waiting" class="btn btn-sem2" ng-click="addNewOpeningDateHour()">
+                            <span class="glyphicon-halflings glyphicon-plus"></span>
+                        </button>
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 </div>
 <div class="modal-footer">
-	<form editable-form name="newOpeningform" onaftersave="saveDay(newOpeningDate)">
-		<button type="button" class="btn btn-sem4" ng-click="cancel()" translate>Annuler</button>
-		<button type="button" class="btn btn-sem2" ng-click="saveOpenHours(newOpeningDate, newOpeningform)" ng-view translate>Créer</button>
-	</form>
+    <form editable-form name="newOpeningform" onaftersave="saveDay(newOpeningDate)">
+        <button type="button" class="btn btn-sem4" ng-click="cancel()" translate>Annuler</button>
+        <button type="button" class="btn btn-sem2" ng-click="saveOpenHours(newOpeningDate, newOpeningform)" ng-view translate>Créer</button>
+    </form>
 </div>

@@ -1,25 +1,23 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('ProjectDetailsEditWidgetCtrl', ProjectDetailsEditWidgetCtrl);
+    angular.module('numaHopApp.controller').controller('ProjectDetailsEditWidgetCtrl', ProjectDetailsEditWidgetCtrl);
 
     function ProjectDetailsEditWidgetCtrl(projects, config, ValidationSrvc) {
-
         var mainCtrl = this;
 
         mainCtrl.isConfigured = isConfigured;
 
         mainCtrl.validation = {
-            required: ValidationSrvc.required
+            required: ValidationSrvc.required,
         };
 
         mainCtrl.options = {
             projects: {
-                text: "name",
+                text: 'name',
                 multiple: false,
-                data: projects
-            }
+                data: projects,
+            },
         };
 
         /**

@@ -7,7 +7,6 @@ public class OmekaListDTO extends AbstractVersionedDTO {
     private String identifier;
     private String name;
     private String type;
-    
 
     public String getIdentifier() {
         return identifier;

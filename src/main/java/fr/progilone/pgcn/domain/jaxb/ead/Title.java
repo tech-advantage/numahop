@@ -5,31 +5,30 @@
 // Généré le : 2017.05.16 à 10:56:55 AM CEST
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.ead;
 
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElementRef;
+import jakarta.xml.bind.annotation.XmlElementRefs;
+import jakarta.xml.bind.annotation.XmlID;
+import jakarta.xml.bind.annotation.XmlMixed;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElementRef;
-import javax.xml.bind.annotation.XmlElementRefs;
-import javax.xml.bind.annotation.XmlID;
-import javax.xml.bind.annotation.XmlMixed;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-
 /**
- * <p>Classe Java pour title complex type.
+ * <p>
+ * Classe Java pour title complex type.
  *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="title">
@@ -55,19 +54,15 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "title", propOrder = {
-    "content"
-})
+@XmlType(name = "title", propOrder = {"content"})
 public class Title {
 
-    @XmlElementRefs({
-        @XmlElementRef(name = "date", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
-        @XmlElementRef(name = "emph", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
-        @XmlElementRef(name = "num", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
-        @XmlElementRef(name = "lb", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
-        @XmlElementRef(name = "ptr", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
-        @XmlElementRef(name = "extptr", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false)
-    })
+    @XmlElementRefs({@XmlElementRef(name = "date", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
+                     @XmlElementRef(name = "emph", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
+                     @XmlElementRef(name = "num", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
+                     @XmlElementRef(name = "lb", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
+                     @XmlElementRef(name = "ptr", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false),
+                     @XmlElementRef(name = "extptr", namespace = "urn:isbn:1-931666-22-9", type = JAXBElement.class, required = false)})
     @XmlMixed
     protected List<Serializable> content;
     @XmlAttribute(name = "render")
@@ -134,8 +129,9 @@ public class Title {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getContent().add(newItem);
+     * getContent().add(newItem);
      * </pre>
      *
      *
@@ -162,8 +158,8 @@ public class Title {
      * Obtient la valeur de la propriété render.
      *
      * @return
-     *     possible object is
-     *     {@link AvRender }
+     *         possible object is
+     *         {@link AvRender }
      *
      */
     public AvRender getRender() {
@@ -174,8 +170,8 @@ public class Title {
      * Définit la valeur de la propriété render.
      *
      * @param value
-     *     allowed object is
-     *     {@link AvRender }
+     *            allowed object is
+     *            {@link AvRender }
      *
      */
     public void setRender(final AvRender value) {
@@ -186,8 +182,8 @@ public class Title {
      * Obtient la valeur de la propriété entityref.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getEntityref() {
@@ -198,8 +194,8 @@ public class Title {
      * Définit la valeur de la propriété entityref.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setEntityref(final String value) {
@@ -210,8 +206,8 @@ public class Title {
      * Obtient la valeur de la propriété xpointer.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getXpointer() {
@@ -222,8 +218,8 @@ public class Title {
      * Définit la valeur de la propriété xpointer.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setXpointer(final String value) {
@@ -234,8 +230,8 @@ public class Title {
      * Obtient la valeur de la propriété encodinganalog.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getEncodinganalog() {
@@ -246,8 +242,8 @@ public class Title {
      * Définit la valeur de la propriété encodinganalog.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setEncodinganalog(final String value) {
@@ -258,8 +254,8 @@ public class Title {
      * Obtient la valeur de la propriété id.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getId() {
@@ -270,8 +266,8 @@ public class Title {
      * Définit la valeur de la propriété id.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setId(final String value) {
@@ -282,8 +278,8 @@ public class Title {
      * Obtient la valeur de la propriété altrender.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getAltrender() {
@@ -294,8 +290,8 @@ public class Title {
      * Définit la valeur de la propriété altrender.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setAltrender(final String value) {
@@ -306,8 +302,8 @@ public class Title {
      * Obtient la valeur de la propriété audience.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getAudience() {
@@ -318,8 +314,8 @@ public class Title {
      * Définit la valeur de la propriété audience.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setAudience(final String value) {
@@ -330,8 +326,8 @@ public class Title {
      * Obtient la valeur de la propriété source.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getSource() {
@@ -342,8 +338,8 @@ public class Title {
      * Définit la valeur de la propriété source.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setSource(final String value) {
@@ -354,8 +350,8 @@ public class Title {
      * Obtient la valeur de la propriété rules.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getRules() {
@@ -366,8 +362,8 @@ public class Title {
      * Définit la valeur de la propriété rules.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setRules(final String value) {
@@ -378,8 +374,8 @@ public class Title {
      * Obtient la valeur de la propriété authfilenumber.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getAuthfilenumber() {
@@ -390,8 +386,8 @@ public class Title {
      * Définit la valeur de la propriété authfilenumber.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setAuthfilenumber(final String value) {
@@ -402,8 +398,8 @@ public class Title {
      * Obtient la valeur de la propriété normal.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getNormal() {
@@ -414,8 +410,8 @@ public class Title {
      * Définit la valeur de la propriété normal.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setNormal(final String value) {
@@ -426,8 +422,8 @@ public class Title {
      * Obtient la valeur de la propriété type.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getType() {
@@ -442,8 +438,8 @@ public class Title {
      * Définit la valeur de la propriété type.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setType(final String value) {
@@ -454,8 +450,8 @@ public class Title {
      * Obtient la valeur de la propriété href.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getHref() {
@@ -466,8 +462,8 @@ public class Title {
      * Définit la valeur de la propriété href.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setHref(final String value) {
@@ -478,8 +474,8 @@ public class Title {
      * Obtient la valeur de la propriété role.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getRole() {
@@ -490,8 +486,8 @@ public class Title {
      * Définit la valeur de la propriété role.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setRole(final String value) {
@@ -502,8 +498,8 @@ public class Title {
      * Obtient la valeur de la propriété arcrole.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getArcrole() {
@@ -514,8 +510,8 @@ public class Title {
      * Définit la valeur de la propriété arcrole.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setArcrole(final String value) {
@@ -526,8 +522,8 @@ public class Title {
      * Obtient la valeur de la propriété title.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getTitle() {
@@ -538,8 +534,8 @@ public class Title {
      * Définit la valeur de la propriété title.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setTitle(final String value) {
@@ -550,8 +546,8 @@ public class Title {
      * Obtient la valeur de la propriété show.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getShow() {
@@ -562,8 +558,8 @@ public class Title {
      * Définit la valeur de la propriété show.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setShow(final String value) {
@@ -574,8 +570,8 @@ public class Title {
      * Obtient la valeur de la propriété actuate.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getActuate() {
@@ -586,8 +582,8 @@ public class Title {
      * Définit la valeur de la propriété actuate.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setActuate(final String value) {

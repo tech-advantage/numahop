@@ -1,15 +1,7 @@
 package fr.progilone.pgcn.service.lot.mapper;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import fr.progilone.pgcn.domain.administration.ExportFTPDeliveryFolder;
-import fr.progilone.pgcn.service.exportftpconfiguration.ExportFTPConfigurationService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import fr.progilone.pgcn.domain.administration.CinesPAC;
+import fr.progilone.pgcn.domain.administration.ExportFTPDeliveryFolder;
 import fr.progilone.pgcn.domain.administration.InternetArchiveCollection;
 import fr.progilone.pgcn.domain.administration.omeka.OmekaConfiguration;
 import fr.progilone.pgcn.domain.administration.omeka.OmekaList;
@@ -30,9 +22,16 @@ import fr.progilone.pgcn.service.administration.omeka.OmekaConfigurationService;
 import fr.progilone.pgcn.service.administration.omeka.OmekaListService;
 import fr.progilone.pgcn.service.administration.viewsformat.ViewsFormatConfigurationService;
 import fr.progilone.pgcn.service.checkconfiguration.CheckConfigurationService;
+import fr.progilone.pgcn.service.exportftpconfiguration.ExportFTPConfigurationService;
 import fr.progilone.pgcn.service.ftpconfiguration.FTPConfigurationService;
 import fr.progilone.pgcn.service.user.UserService;
 import fr.progilone.pgcn.service.workflow.WorkflowModelService;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 @Component
 public class UILotMapper {
@@ -88,7 +87,11 @@ public class UILotMapper {
 
         final Set<SimpleDocUnitDTO> docUnits = lotDTO.getDocUnits();
         if (docUnits != null) {
-            lot.setDocUnits(docUnits.stream().map(docUnit -> docUnitRepository.findOne(docUnit.getIdentifier())).collect(Collectors.toSet()));
+            lot.setDocUnits(docUnits.stream()
+                                    .map(docUnit -> docUnitRepository.findById(docUnit.getIdentifier()))
+                                    .filter(Optional::isPresent)
+                                    .map(Optional::get)
+                                    .collect(Collectors.toSet()));
         } else {
             lot.setDocUnits(new HashSet<>());
         }
@@ -100,9 +103,9 @@ public class UILotMapper {
         }
         if (lotDTO.getActiveExportFTPConfiguration() != null) {
             lot.setActiveExportFTPConfiguration(exportFTPConfigurationService.getOne(lotDTO.getActiveExportFTPConfiguration().getIdentifier()));
-            //delivery folders update
-            if(lot.getActiveExportFTPConfiguration() != null && lotDTO.getActiveExportFTPDeliveryFolder() != null) {
-                ExportFTPDeliveryFolder newFolder = new ExportFTPDeliveryFolder();
+            // delivery folders update
+            if (lot.getActiveExportFTPConfiguration() != null && lotDTO.getActiveExportFTPDeliveryFolder() != null) {
+                final ExportFTPDeliveryFolder newFolder = new ExportFTPDeliveryFolder();
                 newFolder.setIdentifier(lotDTO.getActiveExportFTPDeliveryFolder().getIdentifier());
                 newFolder.setName(lotDTO.getActiveExportFTPDeliveryFolder().getName());
                 lot.setActiveExportFTPDeliveryFolder(newFolder);
@@ -122,7 +125,6 @@ public class UILotMapper {
         if (lotDTO.getActiveOcrLanguage() != null) {
             lot.setActiveOcrLanguage(ocrLangRepository.getOne(lotDTO.getActiveOcrLanguage().getIdentifier()));
         }
-
 
         final InternetArchiveCollectionDTO iaCollection = lotDTO.getCollectionIA();
         if (iaCollection != null && iaCollection.getIdentifier() != null) {

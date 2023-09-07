@@ -1,12 +1,9 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('ProjectDocsCtrl', ProjectDocsCtrl);
+    angular.module('numaHopApp.controller').controller('ProjectDocsCtrl', ProjectDocsCtrl);
 
-    function ProjectDocsCtrl($location, DocUnitBaseService, DocUnitSrvc, gettextCatalog, MessageSrvc,
-        WorkflowLotHandleSrvc, ModalSrvc) {
-
+    function ProjectDocsCtrl($location, DocUnitBaseService, DocUnitSrvc, gettextCatalog, MessageSrvc, WorkflowLotHandleSrvc, ModalSrvc) {
         var docCtrl = this;
         docCtrl.addDocUnits = addDocUnits;
         docCtrl.canRemoveFromProject = DocUnitBaseService.canRemoveProject;
@@ -31,9 +28,8 @@
             totalItems: 0,
             busy: false,
             page: PAGE_START,
-            size: 50
+            size: 50,
         };
-
 
         function loadDocUnits(projectId) {
             docCtrl.projectId = projectId;
@@ -43,12 +39,12 @@
             });
         }
 
-        function getPage(){
-           docCtrl.pagination.busy = true;
-           var params = {};
-           params["page"] = docCtrl.pagination.page - 1;
-           params["project"] = docCtrl.projectId;
-           return DocUnitSrvc.searchAllForProject(params).$promise.then(handlePageOfItems);
+        function getPage() {
+            docCtrl.pagination.busy = true;
+            let params = {};
+            params['page'] = docCtrl.pagination.page - 1;
+            params['project'] = docCtrl.projectId;
+            return DocUnitSrvc.searchAllForProject(params).$promise.then(handlePageOfItems);
         }
 
         /**
@@ -62,23 +58,21 @@
             docCtrl.pagination.items = pageOfItems.content;
 
             _.each(docCtrl.pagination.items, function (item) {
-                // l'item est sélectionné
-                item.checked = angular.isDefined(docCtrl.selectedIds[item.identifier]);
-                // mise à jour de la sélection
-                if (item.checked) {
-                    docCtrl.selectedIds[item.identifier] = item;
-                }
+                let findedIndex = _.find(docCtrl.selectedIds, selectedId => {
+                    return item.identifier === selectedId;
+                });
+                item.checked = !!findedIndex;
             });
+
             docCtrl.pagination.busy = false;
         }
 
         function addDocUnits() {
-            $location.path("/document/docunit_list")
-                .search({
-                    callback: "/project/all_operations?id=" + docCtrl.projectId,
-                    action: "add_to_project",
-                    toProject: docCtrl.projectId
-                });
+            $location.path('/document/docunit_list').search({
+                callback: '/project/all_operations?id=' + docCtrl.projectId,
+                action: 'add_to_project',
+                toProject: docCtrl.projectId,
+            });
         }
 
         /**
@@ -92,20 +86,22 @@
 
         function removeAllItemFromArray(itemArray) {
             MessageSrvc.clearMessages();
-            ModalSrvc.confirmAction(gettextCatalog.getPlural(itemArray.length,
-                "retirer l'unité documentaire sélectionnée du projet", "retirer les {{n}} unités documentaires sélectionnées du projet",
-                { n: itemArray.length }))
-                .then(function () {
-                    _.each(itemArray, function (id) {
-                        var item = _.findWhere(docCtrl.pagination.items, { identifier: id });
+            ModalSrvc.confirmAction(
+                gettextCatalog.getPlural(itemArray.length, "retirer l'unité documentaire sélectionnée du projet", 'retirer les {{n}} unités documentaires sélectionnées du projet', { n: itemArray.length })
+            ).then(function () {
+                _.each(itemArray, function (id) {
+                    var item = _.findWhere(docCtrl.pagination.items, { identifier: id });
 
-                        DocUnitBaseService.removeProject(item, function () {
-                            MessageSrvc.addSuccess(gettextCatalog.getString("l'unité documentaire {{doc}} a été retirée du projet.", { doc: item.pgcnId }));
-                            docCtrl.pagination.items = _.without(docCtrl.pagination.items, _.findWhere(docCtrl.pagination.items, { identifier: id }));
-                        });
+                    DocUnitBaseService.removeProject(item, function () {
+                        MessageSrvc.addSuccess(gettextCatalog.getString("l'unité documentaire {{doc}} a été retirée du projet.", { doc: item.pgcnId }));
+                        docCtrl.pagination.items = _.without(docCtrl.pagination.items, _.findWhere(docCtrl.pagination.items, { identifier: id }));
+                        if (docCtrl.pagination.items.length === 0) {
+                            location.reload();
+                        }
                     });
-                    uncheckAll();
                 });
+                uncheckAll();
+            });
         }
 
         /**

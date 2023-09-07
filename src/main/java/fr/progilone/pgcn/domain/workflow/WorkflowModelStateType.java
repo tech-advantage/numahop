@@ -2,9 +2,9 @@ package fr.progilone.pgcn.domain.workflow;
 
 /**
  * Indique si l'étape devra être remplie ou passée
- * 
+ *
  * @author jbrunet
- * Créé le 12 oct. 2017
+ *         Créé le 12 oct. 2017
  */
 public enum WorkflowModelStateType {
     REQUIRED, // Etape à faire

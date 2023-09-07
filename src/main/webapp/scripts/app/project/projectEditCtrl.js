@@ -1,14 +1,32 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('ProjectEditCtrl', ProjectEditCtrl);
+    angular.module('numaHopApp.controller').controller('ProjectEditCtrl', ProjectEditCtrl);
 
-    function ProjectEditCtrl($location, $routeParams, $scope, $timeout, codeSrvc,
-        DtoService, DocUnitBaseService, gettext, gettextCatalog, HistorySrvc, LibrarySrvc, ListTools,
-        LotSrvc, MessageSrvc, ModalSrvc, NumaHopInitializationSrvc, Principal, ProjectSrvc, TrainSrvc,
-        UserSrvc, ValidationSrvc, DeliverySrvc) {
-
+    function ProjectEditCtrl(
+        $location,
+        $routeParams,
+        $scope,
+        $timeout,
+        codeSrvc,
+        DtoService,
+        DocUnitBaseService,
+        gettext,
+        gettextCatalog,
+        HistorySrvc,
+        LibrarySrvc,
+        ListTools,
+        LotSrvc,
+        MessageSrvc,
+        ModalSrvc,
+        NumaHopInitializationSrvc,
+        Principal,
+        ProjectSrvc,
+        TrainSrvc,
+        UserSrvc,
+        ValidationSrvc,
+        DeliverySrvc
+    ) {
         $scope.addLibrary = addLibrary;
         $scope.addUser = addUser;
         $scope.cancel = cancel;
@@ -35,61 +53,59 @@
         $scope.confExportFtpChanged = confExportFtpChanged;
         $scope.isDeliveryFolderDisplayed = isDeliveryFolderDisplayed;
 
-
         // Définition des listes déroulantes
         $scope.options = {
             boolean: [
-                { value: true, text: "Oui" },
-                { value: false, text: "Non" }
+                { value: true, text: 'Oui' },
+                { value: false, text: 'Non' },
             ],
             status: ProjectSrvc.config.status,
             sel2Libraries: {
-                disable: isLibraryDisabled
+                disable: isLibraryDisabled,
             },
             sel2AssociatedUsers: {
                 refresh: function (select) {
-                    var libs = _.pluck($scope.project.associatedLibraries, "identifier");
+                    var libs = _.pluck($scope.project.associatedLibraries, 'identifier');
                     if ($scope.project.library) {
                         libs.push($scope.project.library.identifier);
                     }
-                    return UserSrvc.search({ search: select.search, libraries: libs }).$promise
-                        .then(function (page) {
-                            $scope.options.sel2AssociatedUsers.data = page.content;
-                        });
+                    return UserSrvc.search({ search: select.search, libraries: libs }).$promise.then(function (page) {
+                        $scope.options.sel2AssociatedUsers.data = page.content;
+                    });
                 },
-                "refresh-delay": 300
+                'refresh-delay': 300,
             },
-            omekaCollections:[],
-            omekaItems:[]
+            omekaCollections: [],
+            omekaItems: [],
         };
 
         $scope.translate = {
             trainStatus: {
-                CREATED: codeSrvc["train.status.CREATED"],
-                IN_PREPARATION: codeSrvc["train.status.IN_PREPARATION"],
-                IN_DIGITIZATION: codeSrvc["train.status.IN_DIGITIZATION"],
-                RECEIVING_PHYSICAL_DOCUMENTS: codeSrvc["train.status.RECEIVING_PHYSICAL_DOCUMENTS"],
-                CLOSED: codeSrvc["train.status.CLOSED"],
-                CANCELED: codeSrvc["train.status.CANCELED"]
+                CREATED: codeSrvc['train.status.CREATED'],
+                IN_PREPARATION: codeSrvc['train.status.IN_PREPARATION'],
+                IN_DIGITIZATION: codeSrvc['train.status.IN_DIGITIZATION'],
+                RECEIVING_PHYSICAL_DOCUMENTS: codeSrvc['train.status.RECEIVING_PHYSICAL_DOCUMENTS'],
+                CLOSED: codeSrvc['train.status.CLOSED'],
+                CANCELED: codeSrvc['train.status.CANCELED'],
             },
             lotStatus: {
-                CREATED: codeSrvc["lot.status.CREATED"],
-                ONGOING: codeSrvc["lot.status.ONGOING"],
-                PENDING: codeSrvc["lot.status.PENDING"],
-                CANCELED: codeSrvc["lot.status.CANCELED"],
-                CLOSED: codeSrvc["lot.status.CLOSED"]
+                CREATED: codeSrvc['lot.status.CREATED'],
+                ONGOING: codeSrvc['lot.status.ONGOING'],
+                PENDING: codeSrvc['lot.status.PENDING'],
+                CANCELED: codeSrvc['lot.status.CANCELED'],
+                CLOSED: codeSrvc['lot.status.CLOSED'],
             },
             lotType: {
-                PHYSICAL: gettextCatalog.getString("Physique"),
-                DIGITAL: gettextCatalog.getString("Numérique")
+                PHYSICAL: gettextCatalog.getString('Physique'),
+                DIGITAL: gettextCatalog.getString('Numérique'),
             },
             boolean: {
-                true: gettextCatalog.getString("Oui"),
-                false: gettextCatalog.getString("Non")
-            }
+                true: gettextCatalog.getString('Oui'),
+                false: gettextCatalog.getString('Non'),
+            },
         };
 
-        $scope.binding = { resp: "" };
+        $scope.binding = { resp: '' };
         $scope.display = $location.search().display;
         $scope.loaded = false;
 
@@ -99,7 +115,7 @@
             project: true,
             train: false,
             users: false,
-            delivery: false
+            delivery: false,
         };
 
         // Filtrage des status
@@ -107,7 +123,6 @@
         $scope.canCancelProj = $scope.isAuthorized($scope.userRoles.PROJ_HAB6);
 
         init();
-
 
         /****************************************************************/
         /** Initialisation **********************************************/
@@ -124,7 +139,7 @@
                 $scope.saveCallback = function (projId) {
                     var params = {};
                     if (projId) {
-                        params["project"] = projId;
+                        params['project'] = projId;
                     }
                     $location.path($routeParams.callback).search(params);
                 };
@@ -135,29 +150,35 @@
         function loadProject() {
             // Duplication
             if ('duplicate' in $routeParams && angular.isDefined($routeParams.id)) {
-                $scope.project = ProjectSrvc.duplicate({
-                    id: $routeParams.id
-                }, function (project) {
-                    afterLoadingProject(project);
-                });
+                $scope.project = ProjectSrvc.duplicate(
+                    {
+                        id: $routeParams.id,
+                    },
+                    function (project) {
+                        afterLoadingProject(project);
+                    }
+                );
             }
             // Chargement project
             else if (angular.isDefined($routeParams.id)) {
-                $scope.project = ProjectSrvc.get({
-                    id: $routeParams.id
-                }, function (project) {
-                    afterLoadingProject(project);
-                });
+                $scope.project = ProjectSrvc.get(
+                    {
+                        id: $routeParams.id,
+                    },
+                    function (project) {
+                        afterLoadingProject(project);
+                    }
+                );
                 $scope.lots = loadLots($routeParams.id);
                 $scope.trains = loadTrains($routeParams.id);
                 $scope.deliveries = loadDeliveries($routeParams.id);
             }
             // Création d'un nouveau projet
             else if (angular.isDefined($routeParams.new)) {
-                HistorySrvc.add(gettext("Nouveau projet"));
+                HistorySrvc.add(gettext('Nouveau projet'));
                 $scope.project = new ProjectSrvc();
                 $scope.project.active = true;
-                $scope.project.status = "CREATED";
+                $scope.project.status = 'CREATED';
                 afterLoadingProject($scope.project);
                 openForm();
 
@@ -168,35 +189,33 @@
         }
 
         function afterLoadingProject(project) {
-            NumaHopInitializationSrvc.loadLibraries()
-                .then(function (data) {
-                    _.each(data, function (d) {
-                        delete d['@id'];
-                    });
-                    $scope.options.sel2Libraries.data = data;
-                    $scope.options.sel2AssociatedLibraries = data;
-
-                    if ($scope.options.sel2Libraries.data.length === 1 && !$scope.project.library) {
-                        $scope.project.library = $scope.options.sel2Libraries.data[0];
-                        loadResponsableLibrary($scope.project.library);
-                    }
-
-                    // Load other
-                    loadPACS($scope.project.library);
-                    loadExportFTPConf($scope.project.library);
-                    loadCollections($scope.project.library);
-                    loadOmekaConfigurations($scope.project.library);
-                    if($scope.project.omekaConfiguration){
-                        loadOmekaCollections($scope.project.omekaConfiguration);
-                        loadOmekaItems($scope.project.omekaConfiguration);
-                    }
-                    loadProviders($scope.project.library);
-                    loadWorkflowModels($scope.project.library);
-                    loadConfigurationSelect();
-                    loadAll(project);
-                    setSelectedDeleveryFolder();
+            NumaHopInitializationSrvc.loadLibraries().then(function (data) {
+                _.each(data, function (d) {
+                    delete d['@id'];
                 });
+                $scope.options.sel2Libraries.data = data;
+                $scope.options.sel2AssociatedLibraries = data;
 
+                if ($scope.options.sel2Libraries.data.length === 1 && !$scope.project.library) {
+                    $scope.project.library = $scope.options.sel2Libraries.data[0];
+                    loadResponsableLibrary($scope.project.library);
+                }
+
+                // Load other
+                loadPACS($scope.project.library);
+                loadExportFTPConf($scope.project.library);
+                loadCollections($scope.project.library);
+                loadOmekaConfigurations($scope.project.library);
+                if ($scope.project.omekaConfiguration) {
+                    loadOmekaCollections($scope.project.omekaConfiguration);
+                    loadOmekaItems($scope.project.omekaConfiguration);
+                }
+                loadProviders($scope.project.library);
+                loadWorkflowModels($scope.project.library);
+                loadConfigurationSelect();
+                loadAll(project);
+                setSelectedDeleveryFolder();
+            });
         }
 
         // Initialisation une fois qu'on a reçu toutes les données du serveur
@@ -215,13 +234,16 @@
                 $scope.options.format = [];
                 return;
             }
-            LibrarySrvc.get({
-                id: library.identifier
-            }, function (library) {
-                $scope.options.ftp = library.ftpConfigurations;
-                $scope.options.check = library.checkConfigurations;
-                $scope.options.format = library.viewsFormatConfigurations;
-            });
+            LibrarySrvc.get(
+                {
+                    id: library.identifier,
+                },
+                function (library) {
+                    $scope.options.ftp = library.ftpConfigurations;
+                    $scope.options.check = library.checkConfigurations;
+                    $scope.options.format = library.viewsFormatConfigurations;
+                }
+            );
         }
 
         function displayStatus(status) {
@@ -246,36 +268,33 @@
          * Chargement des livraisons
          */
         function loadDeliveries(projectId) {
-
-            if ($scope.canCancelProj &&
-                ($scope.project.status === 'CANCELED' || $scope.project.status === 'CLOSED')) {
+            if ($scope.canCancelProj && ($scope.project.status === 'CANCELED' || $scope.project.status === 'CLOSED')) {
                 $scope.canCancelProj = false;
                 $scope.canDisableProj = false;
             } else if ($scope.canDisableProj && $scope.project.status === 'PENDING') {
                 $scope.canDisableProj = false;
             }
 
-            var deliveries = DeliverySrvc.findByProjectIdsLotsIds({ filteredProjects: [projectId] },
-                function (delivs) {
-                    if ($scope.canCancelProj) {
-                        // Droits d'annulation : une livraison est commencée => niet !
-                        var startedDeliverie = _.find(delivs, function (deliv) {
-                            return deliv.status !== "SAVED";
-                        });
-                        if (angular.isDefined(startedDeliverie)) {
-                            $scope.canCancelProj = false;
-                        }
+            var deliveries = DeliverySrvc.findByProjectIdsLotsIds({ filteredProjects: [projectId] }, function (delivs) {
+                if ($scope.canCancelProj) {
+                    // Droits d'annulation : une livraison est commencée => niet !
+                    var startedDeliverie = _.find(delivs, function (deliv) {
+                        return deliv.status !== 'SAVED';
+                    });
+                    if (angular.isDefined(startedDeliverie)) {
+                        $scope.canCancelProj = false;
                     }
-                    if ($scope.canDisableProj) {
-                        // Droits mise en attente : une livraison en cours => niet !
-                        var onGoingDelivery = _.find(delivs, function (deliv) {
-                            return deliv.status === "DELIVERING";
-                        });
-                        if (angular.isDefined(onGoingDelivery)) {
-                            $scope.canDisableProj = false;
-                        }
+                }
+                if ($scope.canDisableProj) {
+                    // Droits mise en attente : une livraison en cours => niet !
+                    var onGoingDelivery = _.find(delivs, function (deliv) {
+                        return deliv.status === 'DELIVERING';
+                    });
+                    if (angular.isDefined(onGoingDelivery)) {
+                        $scope.canDisableProj = false;
                     }
-                });
+                }
+            });
             return deliveries;
         }
 
@@ -287,10 +306,9 @@
                 $scope.options.providers = [];
                 return;
             }
-            NumaHopInitializationSrvc.loadProvidersForLibrary(library.identifier)
-                .then(function (data) {
-                    $scope.options.providers = data;
-                });
+            NumaHopInitializationSrvc.loadProvidersForLibrary(library.identifier).then(function (data) {
+                $scope.options.providers = data;
+            });
         }
 
         function loadPACS(library) {
@@ -301,22 +319,20 @@
                 $scope.options.pacs = [];
                 return;
             }
-            NumaHopInitializationSrvc.loadPACS(library.identifier, $scope.project.identifier)
-                .then(function (data) {
-                    $scope.options.pacs = data;
-                });
+            NumaHopInitializationSrvc.loadPACS(library.identifier, $scope.project.identifier).then(function (data) {
+                $scope.options.pacs = data;
+            });
         }
 
         function loadExportFTPConf(library) {
-            if(!library) {
+            if (!library) {
                 $scope.options.exportftp = [];
                 return;
             }
 
-            NumaHopInitializationSrvc.loadExportFtpConf(library.identifier)
-                .then(function (data) {
-                    $scope.options.exportftp = data;
-                });
+            NumaHopInitializationSrvc.loadExportFtpConf(library.identifier).then(function (data) {
+                $scope.options.exportftp = data;
+            });
         }
 
         function loadCollections(library) {
@@ -327,10 +343,9 @@
                 $scope.options.collections = [];
                 return;
             }
-            NumaHopInitializationSrvc.loadCollections(library.identifier, $scope.project.identifier)
-                .then(function (data) {
-                    $scope.options.collections = data;
-                });
+            NumaHopInitializationSrvc.loadCollections(library.identifier, $scope.project.identifier).then(function (data) {
+                $scope.options.collections = data;
+            });
         }
 
         function loadOmekaConfigurations(library) {
@@ -341,10 +356,9 @@
                 $scope.options.collections = [];
                 return;
             }
-            NumaHopInitializationSrvc.loadOmekaConfigurations(library.identifier, $scope.project.identifier)
-                .then(function (data) {
-                    $scope.options.omekaConfigurations = data;
-                });
+            NumaHopInitializationSrvc.loadOmekaConfigurations(library.identifier, $scope.project.identifier).then(function (data) {
+                $scope.options.omekaConfigurations = data;
+            });
         }
 
         function loadOmekaCollections(omekaConf) {
@@ -355,12 +369,10 @@
                 $scope.options.omekaCollections = [];
                 return;
             }
-            NumaHopInitializationSrvc.loadOmekaCollections(omekaConf.identifier, $scope.project.identifier)
-                .then(function (data) {
-                    $scope.options.omekaCollections = data;
-                });
+            NumaHopInitializationSrvc.loadOmekaCollections(omekaConf.identifier, $scope.project.identifier).then(function (data) {
+                $scope.options.omekaCollections = data;
+            });
         }
-
 
         function loadOmekaItems(omekaConf) {
             if (!omekaConf) {
@@ -370,10 +382,9 @@
                 $scope.options.omekaItems = [];
                 return;
             }
-            NumaHopInitializationSrvc.loadOmekaItems(omekaConf.identifier, $scope.project.identifier)
-                .then(function (data) {
-                    $scope.options.omekaItems = data;
-                });
+            NumaHopInitializationSrvc.loadOmekaItems(omekaConf.identifier, $scope.project.identifier).then(function (data) {
+                $scope.options.omekaItems = data;
+            });
         }
 
         function loadWorkflowModels(library) {
@@ -384,16 +395,15 @@
                 $scope.options.workflowModels = [];
                 return;
             }
-            NumaHopInitializationSrvc.loadWorkflowModels(library.identifier, $scope.project.identifier)
-                .then(function (data) {
-                    $scope.options.workflowModels = data;
-                });
+            NumaHopInitializationSrvc.loadWorkflowModels(library.identifier, $scope.project.identifier).then(function (data) {
+                $scope.options.workflowModels = data;
+            });
         }
 
         /**
-        * Chargement du responsable bibliothèque
-        **/
-        function loadResponsableLibrary(library){
+         * Chargement du responsable bibliothèque
+         **/
+        function loadResponsableLibrary(library) {
             $scope.project.libRespName = library.libRespName;
             $scope.project.libRespPhone = library.libRespPhone;
             $scope.project.libRespEmail = library.libRespEmail;
@@ -471,15 +481,14 @@
                 $scope.project._selected = false;
                 var identifier = $scope.project.identifier;
                 $scope.project = null;
-                $location.path("/project/project").search({ id: identifier, duplicate: true });
+                $location.path('/project/project').search({ id: identifier, duplicate: true });
             }
         }
 
         function cancel() {
             if ($scope.saveCallback) {
                 $scope.saveCallback();
-            }
-            else {
+            } else {
                 $scope.projectForm.$cancel();
             }
         }
@@ -494,7 +503,8 @@
             $timeout(function () {
                 var creation = angular.isUndefined(project.identifier) || project.identifier === null;
 
-                project.$save({},
+                project.$save(
+                    {},
                     function (value) {
                         // Si un callback est défini, on l'appelle
                         if ($scope.saveCallback) {
@@ -502,7 +512,7 @@
                         }
                         // Sinon on rafraichit l'affichage
                         else {
-                            MessageSrvc.addSuccess(gettext("Le projet {{name}} a été sauvegardé"), { name: value.name });
+                            MessageSrvc.addSuccess(gettext('Le projet {{name}} a été sauvegardé'), { name: value.name });
                             onSuccess(value);
                             // si création, on ajoute à la liste, sinon, on essaye de MAJ les infos dans la colonne du milieu
                             if (creation) {
@@ -516,14 +526,15 @@
                     },
                     function (response) {
                         $scope.errors = _.chain(response.data.errors)
-                            .groupBy("field")
+                            .groupBy('field')
                             .mapObject(function (list) {
-                                return _.pluck(list, "code");
+                                return _.pluck(list, 'code');
                             })
                             .value();
 
                         openForm();
-                    });
+                    }
+                );
             });
         }
 
@@ -561,7 +572,7 @@
             var newProject = {
                 _selected: true,
                 identifier: project.identifier,
-                name: project.name
+                name: project.name,
             };
             var i = 0;
             for (i = 0; i < newProjects.length; i++) {
@@ -575,7 +586,7 @@
 
         // Gestion du project renvoyée par le serveur
         function onSuccess(value) {
-            HistorySrvc.add(gettextCatalog.getString("Projet {{name}}", $scope.project));
+            HistorySrvc.add(gettextCatalog.getString('Projet {{name}}', $scope.project));
             $scope.project = value;
             displayMessages($scope.project);
         }
@@ -585,21 +596,18 @@
          * @param {*} project
          */
         function deleteProject(project) {
-            ModalSrvc.confirmDeletion(gettextCatalog.getString("du projet {{name}}", project))
-                .then(function () {
+            ModalSrvc.confirmDeletion(gettextCatalog.getString('du projet {{name}}', project)).then(function () {
+                project.$delete().then(function () {
+                    MessageSrvc.addSuccess(gettext('Le projet {{name}} a été supprimé'), project);
+                    $location.search({});
+                    $scope.projectForm.$cancel();
 
-                    project.$delete()
-                        .then(function () {
-                            MessageSrvc.addSuccess(gettext("Le projet {{name}} a été supprimé"), project);
-                            $location.search({});
-                            $scope.projectForm.$cancel();
-
-                            var removed = ListTools.findAndRemoveItemFromList(project, $scope.pagination.items);
-                            if (!removed) {
-                                ListTools.findAndRemoveItemFromList(project, $scope.newProjects);
-                            }
-                        });
+                    var removed = ListTools.findAndRemoveItemFromList(project, $scope.pagination.items);
+                    if (!removed) {
+                        ListTools.findAndRemoveItemFromList(project, $scope.newProjects);
+                    }
                 });
+            });
         }
 
         /**
@@ -607,19 +615,15 @@
          * @param {*} project
          */
         function cancelProject(project) {
-
-            ModalSrvc.confirmCancelWithComment(gettextCatalog.getString("Projet {{name}}", project))
-                .then(function (comment) {
-
-                    project.cancelingComment = comment;
-                    project.status = 'CANCELED';
-                    ProjectSrvc.cancelProject(project).$promise
-                        .then(function (proj) {
-                            MessageSrvc.addSuccess(gettext("Le projet {{name}} a été annulé"), proj);
-                            $scope.project = proj;
-                            $location.search({ active: false, id: proj.identifier });
-                        });
+            ModalSrvc.confirmCancelWithComment(gettextCatalog.getString('Projet {{name}}', project)).then(function (comment) {
+                project.cancelingComment = comment;
+                project.status = 'CANCELED';
+                ProjectSrvc.cancelProject(project).$promise.then(function (proj) {
+                    MessageSrvc.addSuccess(gettext('Le projet {{name}} a été annulé'), proj);
+                    $scope.project = proj;
+                    $location.search({ active: false, id: proj.identifier });
                 });
+            });
         }
 
         /**
@@ -628,12 +632,11 @@
          */
         function suspendProject(project) {
             project.status = 'PENDING';
-            ProjectSrvc.suspendProject(project).$promise
-                .then(function (proj) {
-                    MessageSrvc.addSuccess(gettext("Le projet {{name}} a été suspendu"), proj);
-                    $scope.project = proj;
-                    $scope.lots = loadLots($routeParams.id);
-                });
+            ProjectSrvc.suspendProject(project).$promise.then(function (proj) {
+                MessageSrvc.addSuccess(gettext('Le projet {{name}} a été suspendu'), proj);
+                $scope.project = proj;
+                $scope.lots = loadLots($routeParams.id);
+            });
         }
 
         /**
@@ -641,12 +644,11 @@
          * @param {*} project
          */
         function reactivateProject(project) {
-            ProjectSrvc.reactivateProject(project).$promise
-                .then(function (proj) {
-                    MessageSrvc.addSuccess(gettext("Le projet {{name}} a été réactivé"), proj);
-                    $scope.project = proj;
-                    $scope.lots = loadLots($routeParams.id);
-                });
+            ProjectSrvc.reactivateProject(project).$promise.then(function (proj) {
+                MessageSrvc.addSuccess(gettext('Le projet {{name}} a été réactivé'), proj);
+                $scope.project = proj;
+                $scope.lots = loadLots($routeParams.id);
+            });
         }
 
         // Ouverture du formulaire et des sous formulaires
@@ -664,20 +666,17 @@
             // ... puis on affiche les infos de modification ...
             if (entity.active && angular.isDefined(entity.lastModifiedDate)) {
                 var dateModif = new Date(entity.lastModifiedDate);
-                MessageSrvc.addInfo(gettext("Dernière modification le {{date}} par {{author}}"),
-                    { date: dateModif.toLocaleString(), author: entity.lastModifiedBy }, true);
+                MessageSrvc.addInfo(gettext('Dernière modification le {{date}} par {{author}}'), { date: dateModif.toLocaleString(), author: entity.lastModifiedBy }, true);
             }
             // ... puis on affiche les infos de création ...
             if (angular.isDefined(entity.createdDate)) {
                 var dateCreated = new Date(entity.createdDate);
-                MessageSrvc.addInfo(gettext("Créé le {{date}}"),
-                    { date: dateCreated.toLocaleString() }, true);
+                MessageSrvc.addInfo(gettext('Créé le {{date}}'), { date: dateCreated.toLocaleString() }, true);
             }
             // ... et annulation éventuelle
             if (!entity.active && angular.isDefined(entity.realEndDate)) {
                 var dateCanceling = new Date(entity.realEndDate);
-                MessageSrvc.addInfo(gettext("Annulé le {{date}} : {{comment}}"),
-                    { date: dateCanceling.toLocaleDateString(), comment: entity.cancelingComment }, true);
+                MessageSrvc.addInfo(gettext('Annulé le {{date}} : {{comment}}'), { date: dateCanceling.toLocaleDateString(), comment: entity.cancelingComment }, true);
             }
             // Affichage pour un temps limité à l'ouverture
             MessageSrvc.initPanel();
@@ -689,9 +688,9 @@
 
         function listOtherProviders() {
             var names = _.map($scope.project.otherProviders, function (provider) {
-                return provider.firstname + " " + provider.surname;
+                return provider.firstname + ' ' + provider.surname;
             });
-            return names.join(", ");
+            return names.join(', ');
         }
 
         /**
@@ -713,11 +712,13 @@
          */
         function filterAssociatedLibraries(value) {
             // la bibliothèque n'est pas celle du projet
-            return (!$scope.project.library || $scope.project.library.identifier !== value.identifier)
+            return (
+                (!$scope.project.library || $scope.project.library.identifier !== value.identifier) &&
                 // elle n'est pas non plus sélectionnées
-                && _.every($scope.project.associatedLibraries, function (lib) {
+                _.every($scope.project.associatedLibraries, function (lib) {
                     return lib.identifier !== value.identifier;
-                });
+                })
+            );
         }
 
         /**
@@ -736,18 +737,18 @@
         }
 
         function createLot(projectId) {
-            $location.path("/lot/lot").search({ new: true, 'project' : projectId });
+            $location.path('/lot/lot').search({ new: true, project: projectId });
         }
 
         function confExportFtpChanged(value) {
-            if(value.label != null && value.label != "") {
+            if (value.label != null && value.label != '') {
                 $scope.displayDeliveriesFolder = true;
                 $scope.options.exportftp.forEach(function (conf) {
-                    if(conf.identifier === value.identifier) {
+                    if (conf.identifier === value.identifier) {
                         $scope.project.activeExportFTPConfiguration = conf;
                         $scope.project.activeExportFTPConfiguration.deliveryFolders = conf.deliveryFolders;
                     }
-                })
+                });
             } else {
                 $scope.displayDeliveriesFolder = false;
             }

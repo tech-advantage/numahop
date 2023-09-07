@@ -1,329 +1,356 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <!-- Création des constats d'état -->
     <changeSet id="pgcn-condition-report-001" author="progilone">
         <!-- ConditionReport -->
         <createTable tableName="doc_condreport">
             <column name="identifier" type="varchar(191)">
-                <constraints primaryKey="true" nullable="false"/>
+                <constraints primaryKey="true" nullable="false" />
             </column>
-            <column name="lib_resp_name" type="varchar(255)"/>
-            <column name="lib_resp_phone" type="varchar(255)"/>
-            <column name="lib_resp_email" type="varchar(255)"/>
-            <column name="leader_name" type="varchar(255)"/>
-            <column name="leader_phone" type="varchar(255)"/>
-            <column name="leader_email" type="varchar(255)"/>
-            <column name="provider_name" type="varchar(255)"/>
-            <column name="provider_phone" type="varchar(255)"/>
-            <column name="provider_email" type="varchar(255)"/>
-            <column name="prov_contact_name" type="varchar(255)"/>
-            <column name="prov_contact_phone" type="varchar(255)"/>
-            <column name="prov_contact_email" type="varchar(255)"/>
+            <column name="lib_resp_name" type="varchar(255)" />
+            <column name="lib_resp_phone" type="varchar(255)" />
+            <column name="lib_resp_email" type="varchar(255)" />
+            <column name="leader_name" type="varchar(255)" />
+            <column name="leader_phone" type="varchar(255)" />
+            <column name="leader_email" type="varchar(255)" />
+            <column name="provider_name" type="varchar(255)" />
+            <column name="provider_phone" type="varchar(255)" />
+            <column name="provider_email" type="varchar(255)" />
+            <column name="prov_contact_name" type="varchar(255)" />
+            <column name="prov_contact_phone" type="varchar(255)" />
+            <column name="prov_contact_email" type="varchar(255)" />
             <!-- Liens -->
             <column name="doc_unit" type="varchar(191)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="library" type="varchar(191)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <!-- Données techniques auto -->
             <column name="version" type="BIGINT">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>
-        <addForeignKeyConstraint baseTableName="doc_condreport" baseColumnNames="doc_unit" constraintName="fk_doc_condreport_docunit"
-                                 referencedTableName="doc_unit" referencedColumnNames="identifier"/>
-        <addForeignKeyConstraint baseTableName="doc_condreport" baseColumnNames="library" constraintName="fk_doc_condreport_library"
-                                 referencedTableName="lib_library" referencedColumnNames="identifier"/>
+        <addForeignKeyConstraint baseTableName="doc_condreport" baseColumnNames="doc_unit" constraintName="fk_doc_condreport_docunit" referencedTableName="doc_unit" referencedColumnNames="identifier" />
+        <addForeignKeyConstraint baseTableName="doc_condreport" baseColumnNames="library" constraintName="fk_doc_condreport_library" referencedTableName="lib_library" referencedColumnNames="identifier" />
         <createIndex tableName="doc_condreport" indexName="idx_doc_condreport_docunit">
-            <column name="doc_unit"/>
+            <column name="doc_unit" />
         </createIndex>
         <createIndex tableName="doc_condreport" indexName="idx_doc_condreport_library">
-            <column name="library"/>
+            <column name="library" />
         </createIndex>
 
         <!-- ConditionReportDetail -->
         <createTable tableName="doc_condreport_detail">
             <column name="identifier" type="varchar(191)">
-                <constraints primaryKey="true" nullable="false"/>
+                <constraints primaryKey="true" nullable="false" />
             </column>
             <column name="type" type="varchar(255)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
-            <column name="lib_writer_name" type="varchar(255)"/>
-            <column name="lib_writer_function" type="varchar(255)"/>
-            <column name="prov_writer_name" type="varchar(255)"/>
-            <column name="prov_writer_function" type="varchar(255)"/>
-            <column name="report_date" type="date"/>
-            <column name="nb_view_binding" type="int"/>
-            <column name="nb_view_body" type="int"/>
-            <column name="nb_view_additionnal" type="int"/>
-            <column name="dim1" type="int"/>
-            <column name="dim2" type="int"/>
-            <column name="dim3" type="int"/>
-            <column name="binding_desc" type="text"/>
-            <column name="body_desc" type="text"/>
-            <column name="additionnal_desc" type="text"/>
+            <column name="lib_writer_name" type="varchar(255)" />
+            <column name="lib_writer_function" type="varchar(255)" />
+            <column name="prov_writer_name" type="varchar(255)" />
+            <column name="prov_writer_function" type="varchar(255)" />
+            <column name="report_date" type="date" />
+            <column name="nb_view_binding" type="int" />
+            <column name="nb_view_body" type="int" />
+            <column name="nb_view_additionnal" type="int" />
+            <column name="dim1" type="int" />
+            <column name="dim2" type="int" />
+            <column name="dim3" type="int" />
+            <column name="binding_desc" type="text" />
+            <column name="body_desc" type="text" />
+            <column name="additionnal_desc" type="text" />
             <!-- Liens -->
             <column name="report" type="varchar(191)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <!-- Données techniques auto -->
             <column name="version" type="BIGINT">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>
-        <addForeignKeyConstraint baseTableName="doc_condreport_detail" baseColumnNames="report" constraintName="fk_doc_condreport_detail_report"
-                                 referencedTableName="doc_condreport" referencedColumnNames="identifier"/>
+        <addForeignKeyConstraint baseTableName="doc_condreport_detail" baseColumnNames="report" constraintName="fk_doc_condreport_detail_report" referencedTableName="doc_condreport" referencedColumnNames="identifier" />
         <createIndex tableName="doc_condreport_detail" indexName="idx_doc_condreport_detail_report">
-            <column name="report"/>
+            <column name="report" />
         </createIndex>
 
         <!-- DescriptionValue -->
         <createTable tableName="doc_condreport_desc_value">
             <column name="identifier" type="varchar(191)">
-                <constraints primaryKey="true" nullable="false"/>
+                <constraints primaryKey="true" nullable="false" />
             </column>
             <column name="label" type="varchar(255)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <!-- Liens -->
             <column name="property" type="varchar(191)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <!-- Données techniques auto -->
             <column name="version" type="BIGINT">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>
 
         <!-- Description -->
         <createTable tableName="doc_condreport_desc">
             <column name="identifier" type="varchar(191)">
-                <constraints primaryKey="true" nullable="false"/>
+                <constraints primaryKey="true" nullable="false" />
             </column>
             <column name="property" type="varchar(191)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
-            <column name="value" type="varchar(191)"/>
+            <column name="value" type="varchar(191)" />
             <!-- Liens -->
             <column name="detail" type="varchar(191)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <!-- Données techniques auto -->
             <column name="version" type="BIGINT">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>
-        <addForeignKeyConstraint baseTableName="doc_condreport_desc" baseColumnNames="value" constraintName="fk_doc_condreport_desc_value"
-                                 referencedTableName="doc_condreport_desc_value" referencedColumnNames="identifier"/>
+        <addForeignKeyConstraint
+            baseTableName="doc_condreport_desc"
+            baseColumnNames="value"
+            constraintName="fk_doc_condreport_desc_value"
+            referencedTableName="doc_condreport_desc_value"
+            referencedColumnNames="identifier"
+        />
         <createIndex tableName="doc_condreport_desc" indexName="idx_doc_condreport_desc_value">
-            <column name="value"/>
+            <column name="value" />
         </createIndex>
 
         <!-- DescBindingProperty -->
         <createTable tableName="doc_condreport_binding_property">
             <column name="identifier" type="varchar(191)">
-                <constraints primaryKey="true" nullable="false"/>
+                <constraints primaryKey="true" nullable="false" />
             </column>
             <column name="label" type="varchar(255)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="allow_comment" type="boolean" defaultValueBoolean="false">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <!-- Données techniques auto -->
             <column name="version" type="BIGINT">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>
 
         <!-- DescBindingValue -->
         <createTable tableName="doc_condreport_binding_value">
             <column name="identifier" type="varchar(191)">
-                <constraints primaryKey="true" nullable="false"/>
+                <constraints primaryKey="true" nullable="false" />
             </column>
             <column name="label" type="varchar(255)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <!-- Liens -->
             <column name="property" type="varchar(191)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <!-- Données techniques auto -->
             <column name="version" type="BIGINT">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>
-        <addForeignKeyConstraint baseTableName="doc_condreport_binding_value" baseColumnNames="property"
-                                 constraintName="fk_doc_condreport_binding_value_property"
-                                 referencedTableName="doc_condreport_binding_property" referencedColumnNames="identifier"/>
+        <addForeignKeyConstraint
+            baseTableName="doc_condreport_binding_value"
+            baseColumnNames="property"
+            constraintName="fk_doc_condreport_binding_value_property"
+            referencedTableName="doc_condreport_binding_property"
+            referencedColumnNames="identifier"
+        />
         <createIndex tableName="doc_condreport_binding_value" indexName="idx_doc_condreport_binding_value_property">
-            <column name="property"/>
+            <column name="property" />
         </createIndex>
 
         <!-- DescBinding -->
         <createTable tableName="doc_condreport_binding">
             <column name="identifier" type="varchar(191)">
-                <constraints primaryKey="true" nullable="false"/>
+                <constraints primaryKey="true" nullable="false" />
             </column>
             <column name="property" type="varchar(191)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
-            <column name="value" type="varchar(191)"/>
-            <column name="comment" type="text"/>
+            <column name="value" type="varchar(191)" />
+            <column name="comment" type="text" />
             <!-- Liens -->
             <column name="detail" type="varchar(191)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <!-- Données techniques auto -->
             <column name="version" type="BIGINT">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>
-        <addForeignKeyConstraint baseTableName="doc_condreport_binding" baseColumnNames="property" constraintName="fk_doc_condreport_binding_property"
-                                 referencedTableName="doc_condreport_binding_property" referencedColumnNames="identifier"/>
-        <addForeignKeyConstraint baseTableName="doc_condreport_binding" baseColumnNames="value" constraintName="fk_doc_condreport_binding_value"
-                                 referencedTableName="doc_condreport_binding_value" referencedColumnNames="identifier"/>
-        <addForeignKeyConstraint baseTableName="doc_condreport_binding" baseColumnNames="detail" constraintName="fk_doc_condreport_binding_detail"
-                                 referencedTableName="doc_condreport_detail" referencedColumnNames="identifier"/>
+        <addForeignKeyConstraint
+            baseTableName="doc_condreport_binding"
+            baseColumnNames="property"
+            constraintName="fk_doc_condreport_binding_property"
+            referencedTableName="doc_condreport_binding_property"
+            referencedColumnNames="identifier"
+        />
+        <addForeignKeyConstraint
+            baseTableName="doc_condreport_binding"
+            baseColumnNames="value"
+            constraintName="fk_doc_condreport_binding_value"
+            referencedTableName="doc_condreport_binding_value"
+            referencedColumnNames="identifier"
+        />
+        <addForeignKeyConstraint
+            baseTableName="doc_condreport_binding"
+            baseColumnNames="detail"
+            constraintName="fk_doc_condreport_binding_detail"
+            referencedTableName="doc_condreport_detail"
+            referencedColumnNames="identifier"
+        />
         <createIndex tableName="doc_condreport_binding" indexName="idx_doc_condreport_binding_property">
-            <column name="property"/>
+            <column name="property" />
         </createIndex>
         <createIndex tableName="doc_condreport_binding" indexName="idx_doc_condreport_binding_value">
-            <column name="value"/>
+            <column name="value" />
         </createIndex>
         <createIndex tableName="doc_condreport_binding" indexName="idx_doc_condreport_binding_detail">
-            <column name="detail"/>
+            <column name="detail" />
         </createIndex>
 
         <!-- ConditionReportAttachment -->
         <createTable tableName="doc_condreport_attachment">
             <column name="identifier" type="varchar(191)">
-                <constraints primaryKey="true" nullable="false"/>
+                <constraints primaryKey="true" nullable="false" />
             </column>
-            <column name="original_filename" type="varchar(1024)"/>
-            <column name="file_size" type="BIGINT"/>
+            <column name="original_filename" type="varchar(1024)" />
+            <column name="file_size" type="BIGINT" />
             <column name="report" type="varchar(191)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <!-- Données techniques auto -->
             <column name="version" type="BIGINT">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>
-        <addForeignKeyConstraint baseTableName="doc_condreport_attachment" baseColumnNames="report"
-                                 constraintName="fk_doc_condreport_attachment_report"
-                                 referencedTableName="doc_condreport" referencedColumnNames="identifier"/>
+        <addForeignKeyConstraint
+            baseTableName="doc_condreport_attachment"
+            baseColumnNames="report"
+            constraintName="fk_doc_condreport_attachment_report"
+            referencedTableName="doc_condreport"
+            referencedColumnNames="identifier"
+        />
         <createIndex tableName="doc_condreport_detail" indexName="idx_doc_condreport_attachment_report">
-            <column name="report"/>
+            <column name="report" />
         </createIndex>
 
         <!-- Données -->
         <loadData file="config/liquibase/numahop/document/doc_condreport_binding_property.csv" tableName="doc_condreport_binding_property">
-            <column name="allow_comment" type="BOOLEAN"/>
+            <column name="allow_comment" type="BOOLEAN" />
         </loadData>
-        <loadData file="config/liquibase/numahop/document/doc_condreport_binding_value.csv" tableName="doc_condreport_binding_value"/>
-        <loadData file="config/liquibase/numahop/document/doc_condreport_desc_value.csv" tableName="doc_condreport_desc_value"/>
-        <loadData file="config/liquibase/numahop/user/authorization-condreport.csv" tableName="user_authorization"/>
+        <loadData file="config/liquibase/numahop/document/doc_condreport_binding_value.csv" tableName="doc_condreport_binding_value" />
+        <loadData file="config/liquibase/numahop/document/doc_condreport_desc_value.csv" tableName="doc_condreport_desc_value" />
+        <loadData file="config/liquibase/numahop/user/authorization-condreport.csv" tableName="user_authorization" />
     </changeSet>
 </databaseChangeLog>

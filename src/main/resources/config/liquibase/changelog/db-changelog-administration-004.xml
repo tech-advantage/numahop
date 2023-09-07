@@ -1,108 +1,88 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <changeSet id="pgcn-create-administration-004" author="progilone">
         <createTable tableName="conf_collection_ia">
             <column name="identifier" type="varchar(191)">
-                <constraints primaryKey="true" nullable="false"/>
+                <constraints primaryKey="true" nullable="false" />
             </column>
             <column name="name" type="varchar(191)">
-                <constraints unique="true" nullable="false"/>
+                <constraints unique="true" nullable="false" />
             </column>
             <column name="conf_ia" type="varchar(191)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="version" type="BIGINT">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_by" type="varchar(255)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_by" type="varchar(255)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>
         <createTable tableName="conf_classement_pac">
             <column name="identifier" type="varchar(191)">
-                <constraints primaryKey="true" nullable="false"/>
+                <constraints primaryKey="true" nullable="false" />
             </column>
             <column name="name" type="varchar(191)">
-                <constraints unique="true" nullable="false"/>
+                <constraints unique="true" nullable="false" />
             </column>
             <column name="conf_pac" type="varchar(191)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="version" type="BIGINT">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_by" type="varchar(255)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_by" type="varchar(255)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>
-        <addForeignKeyConstraint baseTableName="conf_collection_ia" baseColumnNames="conf_ia" constraintName="fk_conf_collection_ia"
-                                 referencedTableName="conf_internet_archive"
-                                 referencedColumnNames="identifier"/>
-        <addForeignKeyConstraint baseTableName="conf_classement_pac" baseColumnNames="conf_pac" constraintName="fk_conf_classement_pac"
-                                 referencedTableName="conf_sftp"
-                                 referencedColumnNames="identifier"/>
-        <dropColumn tableName="proj_project" columnName="collection_ia"/>
-        <dropColumn tableName="lot_lot" columnName="collection_ia"/>
-        <dropColumn tableName="doc_unit" columnName="collection_ia"/>
-        <dropColumn tableName="proj_project" columnName="pac"/>
-        <dropColumn tableName="lot_lot" columnName="pac"/>
-        <dropColumn tableName="doc_unit" columnName="pac"/>
+        <addForeignKeyConstraint baseTableName="conf_collection_ia" baseColumnNames="conf_ia" constraintName="fk_conf_collection_ia" referencedTableName="conf_internet_archive" referencedColumnNames="identifier" />
+        <addForeignKeyConstraint baseTableName="conf_classement_pac" baseColumnNames="conf_pac" constraintName="fk_conf_classement_pac" referencedTableName="conf_sftp" referencedColumnNames="identifier" />
+        <dropColumn tableName="proj_project" columnName="collection_ia" />
+        <dropColumn tableName="lot_lot" columnName="collection_ia" />
+        <dropColumn tableName="doc_unit" columnName="collection_ia" />
+        <dropColumn tableName="proj_project" columnName="pac" />
+        <dropColumn tableName="lot_lot" columnName="pac" />
+        <dropColumn tableName="doc_unit" columnName="pac" />
         <addColumn tableName="proj_project">
-            <column name="collection_ia" type="varchar(191)"/>
-            <column name="classement_pac" type="varchar(191)"/>
+            <column name="collection_ia" type="varchar(191)" />
+            <column name="classement_pac" type="varchar(191)" />
         </addColumn>
         <addColumn tableName="lot_lot">
-            <column name="collection_ia" type="varchar(191)"/>
-            <column name="classement_pac" type="varchar(191)"/>
+            <column name="collection_ia" type="varchar(191)" />
+            <column name="classement_pac" type="varchar(191)" />
         </addColumn>
         <addColumn tableName="doc_unit">
-            <column name="collection_ia" type="varchar(191)"/>
-            <column name="classement_pac" type="varchar(191)"/>
+            <column name="collection_ia" type="varchar(191)" />
+            <column name="classement_pac" type="varchar(191)" />
         </addColumn>
-        <addForeignKeyConstraint baseTableName="proj_project" baseColumnNames="collection_ia"
-                                 constraintName="fk_proj_coll_ia"
-                                 referencedTableName="conf_collection_ia"
-                                 referencedColumnNames="identifier"/>
-        <addForeignKeyConstraint baseTableName="proj_project" baseColumnNames="classement_pac"
-                                 constraintName="fk_proj_pac"
-                                 referencedTableName="conf_classement_pac"
-                                 referencedColumnNames="identifier"/>
-        <addForeignKeyConstraint baseTableName="lot_lot" baseColumnNames="collection_ia"
-                                 constraintName="fk_lot_coll_ia"
-                                 referencedTableName="conf_collection_ia"
-                                 referencedColumnNames="identifier"/>
-        <addForeignKeyConstraint baseTableName="lot_lot" baseColumnNames="classement_pac"
-                                 constraintName="fk_lot_pac"
-                                 referencedTableName="conf_classement_pac"
-                                 referencedColumnNames="identifier"/>
-        <addForeignKeyConstraint baseTableName="doc_unit" baseColumnNames="collection_ia"
-                                 constraintName="fk_doc_unit_coll_ia"
-                                 referencedTableName="conf_collection_ia"
-                                 referencedColumnNames="identifier"/>
-        <addForeignKeyConstraint baseTableName="doc_unit" baseColumnNames="classement_pac"
-                                 constraintName="fk_doc_unit_pac"
-                                 referencedTableName="conf_classement_pac"
-                                 referencedColumnNames="identifier"/>
+        <addForeignKeyConstraint baseTableName="proj_project" baseColumnNames="collection_ia" constraintName="fk_proj_coll_ia" referencedTableName="conf_collection_ia" referencedColumnNames="identifier" />
+        <addForeignKeyConstraint baseTableName="proj_project" baseColumnNames="classement_pac" constraintName="fk_proj_pac" referencedTableName="conf_classement_pac" referencedColumnNames="identifier" />
+        <addForeignKeyConstraint baseTableName="lot_lot" baseColumnNames="collection_ia" constraintName="fk_lot_coll_ia" referencedTableName="conf_collection_ia" referencedColumnNames="identifier" />
+        <addForeignKeyConstraint baseTableName="lot_lot" baseColumnNames="classement_pac" constraintName="fk_lot_pac" referencedTableName="conf_classement_pac" referencedColumnNames="identifier" />
+        <addForeignKeyConstraint baseTableName="doc_unit" baseColumnNames="collection_ia" constraintName="fk_doc_unit_coll_ia" referencedTableName="conf_collection_ia" referencedColumnNames="identifier" />
+        <addForeignKeyConstraint baseTableName="doc_unit" baseColumnNames="classement_pac" constraintName="fk_doc_unit_pac" referencedTableName="conf_classement_pac" referencedColumnNames="identifier" />
     </changeSet>
 </databaseChangeLog>

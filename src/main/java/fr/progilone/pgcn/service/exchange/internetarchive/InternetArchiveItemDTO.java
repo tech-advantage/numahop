@@ -1,20 +1,17 @@
 package fr.progilone.pgcn.service.exchange.internetarchive;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import fr.progilone.pgcn.domain.dto.AbstractDTO;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
-
 import org.apache.commons.lang3.StringUtils;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import fr.progilone.pgcn.domain.dto.AbstractDTO;
 
 /**
  * Données associées à un item pour l'envoi sur Internet Archive
  *
  * @author jbrunet
- * Créé le 21 avr. 2017
+ *         Créé le 21 avr. 2017
  */
 public class InternetArchiveItemDTO extends AbstractDTO {
 
@@ -43,7 +40,8 @@ public class InternetArchiveItemDTO extends AbstractDTO {
     private String type;
     private String source;
 
-    public InternetArchiveItemDTO() {}
+    public InternetArchiveItemDTO() {
+    }
 
     public String getIdentifier() {
         return identifier;
@@ -203,13 +201,13 @@ public class InternetArchiveItemDTO extends AbstractDTO {
 
     public void setSubjects(final List<String> subjects) {
         this.subjects.clear();
-        if(subjects != null) {
+        if (subjects != null) {
             subjects.forEach(this::addSubject);
         }
     }
 
     public void addSubject(final String subject) {
-        if(subject != null) {
+        if (subject != null) {
             this.subjects.add(subject);
         }
     }
@@ -220,13 +218,13 @@ public class InternetArchiveItemDTO extends AbstractDTO {
 
     public void setCollections(final List<String> collections) {
         this.collections.clear();
-        if(collections != null) {
+        if (collections != null) {
             collections.forEach(this::addCollection);
         }
     }
 
     public void addCollection(final String collection) {
-        if(collection != null) {
+        if (collection != null) {
             this.collections.add(collection);
         }
     }
@@ -253,13 +251,14 @@ public class InternetArchiveItemDTO extends AbstractDTO {
 
     public void setCustomHeaders(final List<CustomHeader> customHeaders) {
         this.customHeaders.clear();
-        if(customHeaders != null) {
+        if (customHeaders != null) {
             customHeaders.forEach(this::addCustomHeader);
         }
     }
 
     public void addCustomHeader(final CustomHeader header) {
-        if(header != null && StringUtils.isNotBlank(header.getType()) && StringUtils.isNotBlank(header.getValue())) {
+        if (header != null && StringUtils.isNotBlank(header.getType())
+            && StringUtils.isNotBlank(header.getValue())) {
             this.customHeaders.add(header);
         }
     }
@@ -284,20 +283,25 @@ public class InternetArchiveItemDTO extends AbstractDTO {
     }
 
     public static class CustomHeader extends AbstractDTO {
+
         private String type;
         private String value;
 
-        public CustomHeader() {}
+        public CustomHeader() {
+        }
 
         public String getType() {
             return type;
         }
+
         public void setType(final String type) {
             this.type = type;
         }
+
         public String getValue() {
             return value;
         }
+
         public void setValue(final String value) {
             this.value = value;
         }

@@ -5,32 +5,34 @@
 // Généré le : 2016.12.29 à 11:54:46 AM CET
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.mets;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlID;
+import jakarta.xml.bind.annotation.XmlIDREF;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlID;
-import javax.xml.bind.annotation.XmlIDREF;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 
 /**
  * behaviorType: Complex Type for Behaviors
- * 			 A behavior can be used to associate executable behaviors with content in the METS object.  A behavior element has an interface definition element that represents an abstract definition  of the set  of behaviors represented by a particular behavior.  A behavior element also has an behavior  mechanism which is a module of executable code that implements and runs the behavior defined abstractly by the interface definition.
+ * A behavior can be used to associate executable behaviors with content in the METS object. A behavior element has an interface definition element
+ * that represents an abstract definition of the set of behaviors represented by a particular behavior. A behavior element also has an behavior
+ * mechanism which is a module of executable code that implements and runs the behavior defined abstractly by the interface definition.
  *
  *
- * <p>Classe Java pour behaviorType complex type.
+ * <p>
+ * Classe Java pour behaviorType complex type.
  *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="behaviorType"&gt;
@@ -55,10 +57,9 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "behaviorType", propOrder = {
-    "interfaceDef",
-    "mechanism"
-})
+@XmlType(name = "behaviorType",
+         propOrder = {"interfaceDef",
+                      "mechanism"})
 public class BehaviorType {
 
     protected ObjectType interfaceDef;
@@ -91,8 +92,8 @@ public class BehaviorType {
      * Obtient la valeur de la propriété interfaceDef.
      *
      * @return
-     *     possible object is
-     *     {@link ObjectType }
+     *         possible object is
+     *         {@link ObjectType }
      *
      */
     public ObjectType getInterfaceDef() {
@@ -103,8 +104,8 @@ public class BehaviorType {
      * Définit la valeur de la propriété interfaceDef.
      *
      * @param value
-     *     allowed object is
-     *     {@link ObjectType }
+     *            allowed object is
+     *            {@link ObjectType }
      *
      */
     public void setInterfaceDef(ObjectType value) {
@@ -115,8 +116,8 @@ public class BehaviorType {
      * Obtient la valeur de la propriété mechanism.
      *
      * @return
-     *     possible object is
-     *     {@link ObjectType }
+     *         possible object is
+     *         {@link ObjectType }
      *
      */
     public ObjectType getMechanism() {
@@ -127,8 +128,8 @@ public class BehaviorType {
      * Définit la valeur de la propriété mechanism.
      *
      * @param value
-     *     allowed object is
-     *     {@link ObjectType }
+     *            allowed object is
+     *            {@link ObjectType }
      *
      */
     public void setMechanism(ObjectType value) {
@@ -139,8 +140,8 @@ public class BehaviorType {
      * Obtient la valeur de la propriété id.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getID() {
@@ -151,8 +152,8 @@ public class BehaviorType {
      * Définit la valeur de la propriété id.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setID(String value) {
@@ -170,8 +171,9 @@ public class BehaviorType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getSTRUCTID().add(newItem);
+     * getSTRUCTID().add(newItem);
      * </pre>
      *
      *
@@ -192,8 +194,8 @@ public class BehaviorType {
      * Obtient la valeur de la propriété btype.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getBTYPE() {
@@ -204,8 +206,8 @@ public class BehaviorType {
      * Définit la valeur de la propriété btype.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setBTYPE(String value) {
@@ -216,8 +218,8 @@ public class BehaviorType {
      * Obtient la valeur de la propriété created.
      *
      * @return
-     *     possible object is
-     *     {@link LocalDateTime }
+     *         possible object is
+     *         {@link LocalDateTime }
      *
      */
     public LocalDateTime getCREATED() {
@@ -228,8 +230,8 @@ public class BehaviorType {
      * Définit la valeur de la propriété created.
      *
      * @param value
-     *     allowed object is
-     *     {@link LocalDateTime }
+     *            allowed object is
+     *            {@link LocalDateTime }
      *
      */
     public void setCREATED(LocalDateTime value) {
@@ -240,8 +242,8 @@ public class BehaviorType {
      * Obtient la valeur de la propriété label.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getLABEL() {
@@ -252,8 +254,8 @@ public class BehaviorType {
      * Définit la valeur de la propriété label.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setLABEL(String value) {
@@ -264,8 +266,8 @@ public class BehaviorType {
      * Obtient la valeur de la propriété groupid.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getGROUPID() {
@@ -276,8 +278,8 @@ public class BehaviorType {
      * Définit la valeur de la propriété groupid.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setGROUPID(String value) {
@@ -295,8 +297,9 @@ public class BehaviorType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getADMID().add(newItem);
+     * getADMID().add(newItem);
      * </pre>
      *
      *

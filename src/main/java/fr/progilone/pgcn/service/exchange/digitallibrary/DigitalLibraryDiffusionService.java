@@ -1,35 +1,7 @@
 package fr.progilone.pgcn.service.exchange.digitallibrary;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.io.Writer;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import fr.progilone.pgcn.domain.administration.viewsformat.ViewsFormatConfiguration;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.net.ftp.FTP;
-import org.apache.commons.net.ftp.FTPClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import fr.progilone.pgcn.domain.administration.digitallibrary.DigitalLibraryConfiguration;
+import fr.progilone.pgcn.domain.administration.viewsformat.ViewsFormatConfiguration;
 import fr.progilone.pgcn.domain.document.DocPropertyType;
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.dto.document.BibliographicRecordDcDTO;
@@ -53,7 +25,33 @@ import fr.progilone.pgcn.service.storage.BinaryStorageManager;
 import fr.progilone.pgcn.service.util.CryptoService;
 import fr.progilone.pgcn.service.util.DateUtils;
 import fr.progilone.pgcn.service.workflow.WorkflowService;
-import javax.persistence.EntityNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.net.ftp.FTP;
+import org.apache.commons.net.ftp.FTPClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class DigitalLibraryDiffusionService {
@@ -118,15 +116,14 @@ public class DigitalLibraryDiffusionService {
     public List<DocUnit> findDocUnitsReadyForDigitalLibraryExportByLibrary() {
         final List<DocUnit> docsToExport = new ArrayList<>();
         final List<Library> libraries = libraryService.findAllByActive(true);
-        libraries.stream()
-                 .filter(lib -> CollectionUtils.isNotEmpty(digitalLibraryConfigurationService.findByLibraryAndActive(lib.getIdentifier(), true)))
-                 .forEach(lib -> {
-                     docsToExport.addAll(workflowService.findDocUnitWorkflowsForDigitalLibraryExport(lib.getIdentifier())
-                                                        .stream()
-                                                        .map(DocUnitWorkflow::getDocUnit)
-                                                        .collect(Collectors.toList()));
-                 });
-        LOG.debug("DigitalLibraryExport :  " + docsToExport.size() + " Docs recuperes pour l'export");
+        libraries.stream().filter(lib -> CollectionUtils.isNotEmpty(digitalLibraryConfigurationService.findByLibraryAndActive(lib.getIdentifier(), true))).forEach(lib -> {
+            docsToExport.addAll(workflowService.findDocUnitWorkflowsForDigitalLibraryExport(lib.getIdentifier())
+                                               .stream()
+                                               .map(DocUnitWorkflow::getDocUnit)
+                                               .collect(Collectors.toList()));
+        });
+        LOG.debug("DigitalLibraryExport :  " + docsToExport.size()
+                  + " Docs recuperes pour l'export");
         return docsToExport;
     }
 
@@ -157,22 +154,16 @@ public class DigitalLibraryDiffusionService {
                 mediasDir = Files.createDirectory(Paths.get(workingDir, library, MEDIA_DIR));
             }
 
-
             // Digital Library config.
-            final DigitalLibraryConfiguration conf = digitalLibraryConfigurationService.findByLibraryAndActive(library, true)
-                                                                                       .stream()
-                                                                                       .findFirst()
-                                                                                       .orElse(null);
+            final DigitalLibraryConfiguration conf = digitalLibraryConfigurationService.findByLibraryAndActive(library, true).stream().findFirst().orElse(null);
             if (conf == null) {
-                LOG.trace("Conf.de la diffusion sur Bibliothèque numérique introuvable => Library[{}] - diffusion sur Bibliothèque numérique impossible.",
-                          library);
+                LOG.trace("Conf.de la diffusion sur Bibliothèque numérique introuvable => Library[{}] - diffusion sur Bibliothèque numérique impossible.", library);
                 return exported;
             }
 
             final BibliographicRecordDcDTO metaDC = uiBibliographicRecordService.getBibliographicRecordDcDTOFromDocUnit(doc);
             if (metaDC == null) {
-                LOG.trace("Diffusion sur Bibliothèque numérique - Notice introuvable => DocUnit[{}] - Diffusion sur Bibliothèque numérique impossible.",
-                          doc.getIdentifier());
+                LOG.trace("Diffusion sur Bibliothèque numérique - Notice introuvable => DocUnit[{}] - Diffusion sur Bibliothèque numérique impossible.", doc.getIdentifier());
                 return exported;
             }
 
@@ -235,8 +226,7 @@ public class DigitalLibraryDiffusionService {
                               final Path mediaDir,
                               final DigitalLibraryConfiguration conf,
                               final boolean multiple,
-                              final boolean firstDoc) throws IOException,
-                                                      PgcnTechnicalException {
+                              final boolean firstDoc) throws IOException, PgcnTechnicalException {
 
         final Path root = mediaDir.resolve(docUnit.getPgcnId());
         // Suppression du répertoire s'il existe
@@ -324,79 +314,49 @@ public class DigitalLibraryDiffusionService {
             for (final String enteteDC : entetesDC) {
                 switch (enteteDC) {
                     case "Title":
-                        writer.append("\"")
-                              .append(exportCSVService.getFormatedValues(metaDc.getTitle(), emptyValue, CSV_REPEATED_FIELD_SEP))
-                              .append("\"");
+                        writer.append("\"").append(exportCSVService.getFormatedValues(metaDc.getTitle(), emptyValue, CSV_REPEATED_FIELD_SEP)).append("\"");
                         break;
                     case "Creator":
-                        writer.append("\"")
-                              .append(exportCSVService.getFormatedValues(metaDc.getCreator(), emptyValue, CSV_REPEATED_FIELD_SEP))
-                              .append("\"");
+                        writer.append("\"").append(exportCSVService.getFormatedValues(metaDc.getCreator(), emptyValue, CSV_REPEATED_FIELD_SEP)).append("\"");
                         break;
                     case "Subject":
-                        writer.append("\"")
-                              .append(exportCSVService.getFormatedValues(metaDc.getSubject(), emptyValue, CSV_REPEATED_FIELD_SEP))
-                              .append("\"");
+                        writer.append("\"").append(exportCSVService.getFormatedValues(metaDc.getSubject(), emptyValue, CSV_REPEATED_FIELD_SEP)).append("\"");
                         break;
                     case "Description":
-                        writer.append("\"")
-                              .append(exportCSVService.getFormatedValues(metaDc.getDescription(), emptyValue, CSV_REPEATED_FIELD_SEP))
-                              .append("\"");
+                        writer.append("\"").append(exportCSVService.getFormatedValues(metaDc.getDescription(), emptyValue, CSV_REPEATED_FIELD_SEP)).append("\"");
                         break;
                     case "Publisher":
-                        writer.append("\"")
-                              .append(exportCSVService.getFormatedValues(metaDc.getPublisher(), emptyValue, CSV_REPEATED_FIELD_SEP))
-                              .append("\"");
+                        writer.append("\"").append(exportCSVService.getFormatedValues(metaDc.getPublisher(), emptyValue, CSV_REPEATED_FIELD_SEP)).append("\"");
                         break;
                     case "Contributor":
-                        writer.append("\"")
-                              .append(exportCSVService.getFormatedValues(metaDc.getContributor(), emptyValue, CSV_REPEATED_FIELD_SEP))
-                              .append("\"");
+                        writer.append("\"").append(exportCSVService.getFormatedValues(metaDc.getContributor(), emptyValue, CSV_REPEATED_FIELD_SEP)).append("\"");
                         break;
                     case "Date":
-                        writer.append("\"")
-                              .append(exportCSVService.getFormatedValues(metaDc.getDate(), emptyValue, CSV_REPEATED_FIELD_SEP))
-                              .append("\"");
+                        writer.append("\"").append(exportCSVService.getFormatedValues(metaDc.getDate(), emptyValue, CSV_REPEATED_FIELD_SEP)).append("\"");
                         break;
                     case "Type":
-                        writer.append("\"")
-                              .append(exportCSVService.getFormatedValues(metaDc.getType(), emptyValue, CSV_REPEATED_FIELD_SEP))
-                              .append("\"");
+                        writer.append("\"").append(exportCSVService.getFormatedValues(metaDc.getType(), emptyValue, CSV_REPEATED_FIELD_SEP)).append("\"");
                         break;
                     case "Format":
-                        writer.append("\"")
-                              .append(exportCSVService.getFormatedValues(metaDc.getFormat(), emptyValue, CSV_REPEATED_FIELD_SEP))
-                              .append("\"");
+                        writer.append("\"").append(exportCSVService.getFormatedValues(metaDc.getFormat(), emptyValue, CSV_REPEATED_FIELD_SEP)).append("\"");
                         break;
                     case "Identifier":
-                        writer.append("\"")
-                              .append(exportCSVService.getFormatedValues(metaDc.getIdentifier(), emptyValue, CSV_REPEATED_FIELD_SEP))
-                              .append("\"");
+                        writer.append("\"").append(exportCSVService.getFormatedValues(metaDc.getIdentifier(), emptyValue, CSV_REPEATED_FIELD_SEP)).append("\"");
                         break;
                     case "Source":
-                        writer.append("\"")
-                              .append(exportCSVService.getFormatedValues(metaDc.getSource(), emptyValue, CSV_REPEATED_FIELD_SEP))
-                              .append("\"");
+                        writer.append("\"").append(exportCSVService.getFormatedValues(metaDc.getSource(), emptyValue, CSV_REPEATED_FIELD_SEP)).append("\"");
                         break;
                     case "Language":
-                        writer.append("\"")
-                              .append(exportCSVService.getFormatedValues(metaDc.getLanguage(), emptyValue, CSV_REPEATED_FIELD_SEP))
-                              .append("\"");
+                        writer.append("\"").append(exportCSVService.getFormatedValues(metaDc.getLanguage(), emptyValue, CSV_REPEATED_FIELD_SEP)).append("\"");
                         break;
                     case "Relation":
-                        writer.append("\"")
-                              .append(exportCSVService.getFormatedValues(metaDc.getRelation(), emptyValue, CSV_REPEATED_FIELD_SEP))
-                              .append("\"");
+                        writer.append("\"").append(exportCSVService.getFormatedValues(metaDc.getRelation(), emptyValue, CSV_REPEATED_FIELD_SEP)).append("\"");
                         break;
                     case "Coverage":
-                        writer.append("\"")
-                              .append(exportCSVService.getFormatedValues(metaDc.getCoverage(), emptyValue, CSV_REPEATED_FIELD_SEP))
-                              .append("\"");
+                        writer.append("\"").append(exportCSVService.getFormatedValues(metaDc.getCoverage(), emptyValue, CSV_REPEATED_FIELD_SEP)).append("\"");
                         break;
                     case "Rights":
-                        writer.append("\"")
-                              .append(exportCSVService.getFormatedValues(metaDc.getRights(), emptyValue, CSV_REPEATED_FIELD_SEP))
-                              .append("\"");
+                        writer.append("\"").append(exportCSVService.getFormatedValues(metaDc.getRights(), emptyValue, CSV_REPEATED_FIELD_SEP)).append("\"");
                         break;
                 }
                 i++;
@@ -480,9 +440,7 @@ public class DigitalLibraryDiffusionService {
         }
     }
 
-    private Path createDirectories(final Path root,
-                                   final String pgcnId,
-                                   final DigitalLibraryConfiguration conf) throws IOException {
+    private Path createDirectories(final Path root, final String pgcnId, final DigitalLibraryConfiguration conf) throws IOException {
         final Path depotPath = Files.createDirectory(root);
         LOG.debug("Répertoire {} créé", depotPath.toString());
         if (this.hasMultipleExports(conf)) {
@@ -503,15 +461,20 @@ public class DigitalLibraryDiffusionService {
     /**
      * Vérifie si le nombre de types d'exports sélectionnés (Print, Pdf, Alto) est supérieur à 1
      *
-     * @param conf la configuration de librairie numérique
+     * @param conf
+     *            la configuration de librairie numérique
      * @return true si plus d'un type d'export sélectionné dans la configuration
      */
     private boolean hasMultipleExports(final DigitalLibraryConfiguration conf) {
-        int exportPrint = conf.isExportPrint() ? 1 : 0;
-        int exportPdf = conf.isExportPdf() ? 1 : 0;
-        int exportAlto = conf.isExportAlto() ? 1 : 0;
+        int exportPrint = conf.isExportPrint() ? 1
+                                               : 0;
+        int exportPdf = conf.isExportPdf() ? 1
+                                           : 0;
+        int exportAlto = conf.isExportAlto() ? 1
+                                             : 0;
 
-        return exportPrint + exportPdf + exportAlto > 1;
+        return exportPrint + exportPdf
+               + exportAlto > 1;
     }
 
     /**
@@ -520,13 +483,17 @@ public class DigitalLibraryDiffusionService {
      * Insère le répertoire spécifique d'export exportPath si plusieurs types d'exports sont présents,
      * sinon renvoie le chemin racine.
      *
-     * @param depotPath le chemin du dépôt de l'export
-     * @param exportPath le nom du répertoire associé au type d'export
-     * @param conf la configuration de librairie numérique
+     * @param depotPath
+     *            le chemin du dépôt de l'export
+     * @param exportPath
+     *            le nom du répertoire associé au type d'export
+     * @param conf
+     *            la configuration de librairie numérique
      * @return le chemin pour le dépôt de l'export généré
      */
     private Path resolveExportDepotPath(final Path depotPath, String exportPath, final DigitalLibraryConfiguration conf) {
-        return hasMultipleExports(conf) ? depotPath.resolve(exportPath) : depotPath;
+        return hasMultipleExports(conf) ? depotPath.resolve(exportPath)
+                                        : depotPath;
     }
 
     /**
@@ -535,17 +502,18 @@ public class DigitalLibraryDiffusionService {
      *
      * si plus d'un type d'exports est présent, insère le répertoire spécifique d'export
      *
-     * @param conf la configuration de librairie numérique
-     * @param pgcnId l'identifiant PGCN - en préfixe du type d'export
-     * @param exportName le nom du type d'export
+     * @param conf
+     *            la configuration de librairie numérique
+     * @param pgcnId
+     *            l'identifiant PGCN - en préfixe du type d'export
+     * @param exportName
+     *            le nom du type d'export
      * @return la chaine de caractères du chemin relatif
      */
     private String buildExportRelativePath(String pgcnId, String exportName, final DigitalLibraryConfiguration conf) {
         StringBuilder stringBuilder = new StringBuilder(MEDIA_DIR).append("/").append(pgcnId);
         if (hasMultipleExports(conf)) {
-            stringBuilder.append("/")
-                .append(pgcnId)
-                .append(exportName);
+            stringBuilder.append("/").append(pgcnId).append(exportName);
         }
         stringBuilder.append(CSV_COL_SEP);
         return stringBuilder.toString();
@@ -556,8 +524,7 @@ public class DigitalLibraryDiffusionService {
      *
      * @return la liste de checksum permettant d'éviter un recalcul
      */
-    private List<CheckSummedStoredFile>
-            addDepotFiles(final DocUnit docUnit, final Path depotPath, final DigitalLibraryConfiguration conf) {
+    private List<CheckSummedStoredFile> addDepotFiles(final DocUnit docUnit, final Path depotPath, final DigitalLibraryConfiguration conf) {
         final List<CheckSummedStoredFile> checkSums = new ArrayList<>();
         final String libraryId = docUnit.getLibrary().getIdentifier();
         final String pgcnId = docUnit.getPgcnId();
@@ -566,63 +533,57 @@ public class DigitalLibraryDiffusionService {
         final Path depotPrint = resolveExportDepotPath(depotPath, pgcnId.concat(JPG_DIR), conf);
         final Path depotPdf = resolveExportDepotPath(depotPath, pgcnId.concat(PDF_DIR), conf);
 
-        docUnit.getDigitalDocuments()
-            .forEach(digitalDoc -> digitalDoc.getOrderedPages()
-                .forEach(page -> {
-                    // Si page standard (non pdfs)
-                    if (page.getNumber() != null && page.getNumber() != 0) {
-                        // Par défaut, export du format PRINT
-                        final Optional<StoredFile> print = page.getDerivedForFormat(ViewsFormatConfiguration.FileFormat.PRINT);
+        docUnit.getDigitalDocuments().forEach(digitalDoc -> digitalDoc.getOrderedPages().forEach(page -> {
+            // Si page standard (non pdfs)
+            if (page.getNumber() != null && page.getNumber() != 0) {
+                // Par défaut, export du format PRINT
+                final Optional<StoredFile> print = page.getDerivedForFormat(ViewsFormatConfiguration.FileFormat.PRINT);
 
-                        if (print.isPresent()) {
-                            final StoredFile printStoredFile = print.get();
-                            final File sourceFile = bm.getFileForStoredFile(printStoredFile, libraryId);
-                            final Path sourcePath = Paths.get(sourceFile.getAbsolutePath());
+                if (print.isPresent()) {
+                    final StoredFile printStoredFile = print.get();
+                    final File sourceFile = bm.getFileForStoredFile(printStoredFile, libraryId);
+                    final Path sourcePath = Paths.get(sourceFile.getAbsolutePath());
 
-                            if (conf.isExportPrint() && page.getNumber() != null) {
-                                try {
-                                    final Path destPath =
-                                        Files.createFile(depotPrint.resolve(printStoredFile.getFilename()));
-                                    Files.copy(sourcePath, destPath, StandardCopyOption.REPLACE_EXISTING);
-                                    // On remplit la map pour optimiser le traitement ultérieur des métadonnées
-                                    checkSums.add(exportMetsService.getCheckSummedStoredFile(printStoredFile,
-                                        sourceFile));
-                                } catch (final IOException e) {
-                                    throw new UncheckedIOException(e);
-                                }
-                            }
-                        }
-                    } else if (conf.isExportPdf()) {
-                        // Page dont le number est null (pdf)
+                    if (conf.isExportPrint() && page.getNumber() != null) {
                         try {
-                            // On récupère le pdf, dans le format master
-                            final Optional<StoredFile> pdf = page.getMaster();
-
-                            if (pdf.isPresent() && MediaType.APPLICATION_PDF.toString().equals(pdf.get().getMimetype())) {
-                                final StoredFile pdfStoredFile = pdf.get();
-                                final File pdfSourceFile = bm.getFileForStoredFile(pdfStoredFile, libraryId);
-                                final Path pdfSourcePath = Paths.get(pdfSourceFile.getAbsolutePath());
-                                final Path destPath = Files.createFile(depotPdf.resolve(pdfStoredFile.getFilename()));
-                                Files.copy(pdfSourcePath, destPath, StandardCopyOption.REPLACE_EXISTING);
-                                // On remplit la map pour optimiser le traitement ultérieur des métadonnées
-                                checkSums.add(exportMetsService.getCheckSummedStoredFile(pdfStoredFile,
-                                    pdfSourceFile));
-                            }
+                            final Path destPath = Files.createFile(depotPrint.resolve(printStoredFile.getFilename()));
+                            Files.copy(sourcePath, destPath, StandardCopyOption.REPLACE_EXISTING);
+                            // On remplit la map pour optimiser le traitement ultérieur des métadonnées
+                            checkSums.add(exportMetsService.getCheckSummedStoredFile(printStoredFile, sourceFile));
                         } catch (final IOException e) {
                             throw new UncheckedIOException(e);
-                        } catch (final EntityNotFoundException nFE) {
-                            LOG.error("File not found", nFE);
                         }
                     }
-                }));
+                }
+            } else if (conf.isExportPdf()) {
+                // Page dont le number est null (pdf)
+                try {
+                    // On récupère le pdf, dans le format master
+                    final Optional<StoredFile> pdf = page.getMaster();
+
+                    if (pdf.isPresent() && MediaType.APPLICATION_PDF.toString().equals(pdf.get().getMimetype())) {
+                        final StoredFile pdfStoredFile = pdf.get();
+                        final File pdfSourceFile = bm.getFileForStoredFile(pdfStoredFile, libraryId);
+                        final Path pdfSourcePath = Paths.get(pdfSourceFile.getAbsolutePath());
+                        final Path destPath = Files.createFile(depotPdf.resolve(pdfStoredFile.getFilename()));
+                        Files.copy(pdfSourcePath, destPath, StandardCopyOption.REPLACE_EXISTING);
+                        // On remplit la map pour optimiser le traitement ultérieur des métadonnées
+                        checkSums.add(exportMetsService.getCheckSummedStoredFile(pdfStoredFile, pdfSourceFile));
+                    }
+                } catch (final IOException e) {
+                    throw new UncheckedIOException(e);
+                } catch (final EntityNotFoundException nFE) {
+                    LOG.error("File not found", nFE);
+                }
+            }
+        }));
         if (conf.isExportAlto()) {
             final Path depotAlto = resolveExportDepotPath(depotPath, pgcnId.concat(ALTO_DIR), conf);
             try {
                 final List<File> altoFiles = altoService.retrieveAlto(digitalId, libraryId, true, false);
                 if (!altoFiles.isEmpty()) {
                     final File altoFile = altoFiles.stream().findFirst().get();
-                    final Path destPath =
-                                        Files.createFile(depotAlto.resolve(altoFile.getName()));
+                    final Path destPath = Files.createFile(depotAlto.resolve(altoFile.getName()));
                     Files.copy(altoFile.toPath(), destPath, StandardCopyOption.REPLACE_EXISTING);
                 }
             } catch (final IOException e) {
@@ -640,14 +601,7 @@ public class DigitalLibraryDiffusionService {
 
         LOG.info("Envoi du cvs par email");
         final String[] to = {configuration.getMail()};
-        if (mailService.sendEmailWithAttachment(null,
-                                                to,
-                                                "Fichier CSV Import " + configuration.getLabel(),
-                                                "Cf. ci-joint",
-                                                csvFile,
-                                                "text/plain",
-                                                true,
-                                                false)) {
+        if (mailService.sendEmailWithAttachment(null, to, "Fichier CSV Import " + configuration.getLabel(), "Cf. ci-joint", csvFile, "text/plain", true, false)) {
             // OK on peut supprimer le csv
             FileUtils.deleteQuietly(csvFile);
         }
@@ -692,10 +646,7 @@ public class DigitalLibraryDiffusionService {
                 ftpclient.storeFile(targetName, in);
 
             } catch (final IOException e) {
-                LOG.error("Une erreur s'est produite lors de la copie du fichier {} vers {}: {}",
-                          localSource.getAbsolutePath(),
-                          targetName,
-                          e.getMessage());
+                LOG.error("Une erreur s'est produite lors de la copie du fichier {} vers {}: {}", localSource.getAbsolutePath(), targetName, e.getMessage());
                 LOG.error(e.getMessage(), e);
             }
         }

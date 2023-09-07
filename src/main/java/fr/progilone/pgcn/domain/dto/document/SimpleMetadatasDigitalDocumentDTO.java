@@ -4,11 +4,11 @@ import fr.progilone.pgcn.domain.document.DigitalDocument;
 import fr.progilone.pgcn.domain.dto.AbstractDTO;
 import fr.progilone.pgcn.domain.dto.lot.SimpleLotDTO;
 import fr.progilone.pgcn.domain.dto.project.SimpleProjectDTO;
-
 import java.time.LocalDate;
 
 /**
  * Dto simplifie de digitalDocument pour le controle de metadonnees.
+ *
  * @author ert
  *
  */

@@ -3,7 +3,6 @@ package fr.progilone.pgcn.repository.document.conditionreport;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -96,7 +95,8 @@ public interface ConditionReportRepositoryCustom {
         }
 
         public boolean isEmpty() {
-            return dim1 == 0 && dim2 == 0 && dim3 == 0;
+            return dim1 == 0 && dim2 == 0
+                   && dim3 == 0;
         }
     }
 }

@@ -1,15 +1,13 @@
 package fr.progilone.pgcn.domain.check;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Table;
-
+import fr.progilone.pgcn.domain.AbstractDomainObject;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Table;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-import fr.progilone.pgcn.domain.AbstractDomainObject;
 
 /**
  * Classe représentant un type de contrôle automatique
@@ -96,12 +94,14 @@ public class AutomaticCheckType extends AbstractDomainObject {
         FILE_TYPE_COMPR, /* Contrôle du type de compression */
         FILE_TAUX_COMPR, /* Contrôle du taux de compression */
         FILE_RESOLUTION, /* Contrôle de la résolution */
+        FILE_DEFINITION, /* Contrôle de la définition */
         FILE_COLORSPACE, /* Contrôle du profil colorimétrique */
         FILE_BIB_PREFIX, /* Contrôle nom de fichier préfixé par le préfixe de bibliothèque */
         FILE_CASE_SENSITIVE, /* Contrôle de la casse du nom de fichier */
-        METADATA_FILE, /* Controles validité des fichiers de metadonnées  */
+        FILE_IMAGE_METADATA,
+        METADATA_FILE, /* Controles validité des fichiers de metadonnées */
         FILE_PDF_MULTI, /* Controles presence et validite fichier pdf multicouches */
-        GENER_PDF_OCR,   /* Génération d'un pdf OCRisé */
+        GENER_PDF_OCR, /* Génération d'un pdf OCRisé */
         GENER_PDF_WITHOUT_OCR /* Génération d'un pdf sans OCR */
     }
 }

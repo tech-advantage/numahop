@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
+
+    <!-- Changeset du module Library : default values for export CINES -->
+    <changeSet id="pgcn-update-parameter-cines-values" author="progilone">
+
+        <validCheckSum>7:71e3d623cfa8e700732e1ab9cf8531g6</validCheckSum>
+
+        <sql>
+            INSERT INTO lib_parameter(identifier, type, library, version)
+            select concat('lib_parameter_', ll.identifier), 'CINES_EXPORT', ll.identifier, 0
+            from lib_library ll
+                     left join lib_parameter lp on ll.identifier = lp.library and lp.type = 'CINES_EXPORT'
+            where lp.identifier is null;
+
+            INSERT INTO lib_parameter_value_cines(identifier, type, parameter, version)
+            select concat('TITLE_DEFAULT_VALUE_', lp.identifier), 'TITLE_DEFAULT_VALUE', lp.identifier, 0
+            from lib_parameter lp
+                     left join lib_parameter_value_cines lpvc
+                               on lp.identifier = lpvc.parameter and lpvc.type = 'TITLE_DEFAULT_VALUE'
+            where lpvc.identifier is null;
+
+            INSERT INTO lib_parameter_value_cines(identifier, type, parameter, version)
+            select concat('CREATOR_DEFAULT_VALUE', lp.identifier), 'CREATOR_DEFAULT_VALUE', lp.identifier, 0
+            from lib_parameter lp
+                     left join lib_parameter_value_cines lpvc
+                               on lp.identifier = lpvc.parameter and lpvc.type = 'CREATOR_DEFAULT_VALUE'
+            where lpvc.identifier is null;
+
+            INSERT INTO lib_parameter_value_cines(identifier, type, parameter, version)
+            select concat('SUBJECT_DEFAULT_VALUE', lp.identifier), 'SUBJECT_DEFAULT_VALUE', lp.identifier, 0
+            from lib_parameter lp
+                     left join lib_parameter_value_cines lpvc
+                               on lp.identifier = lpvc.parameter and lpvc.type = 'SUBJECT_DEFAULT_VALUE'
+            where lpvc.identifier is null;
+
+            INSERT INTO lib_parameter_value_cines(identifier, type, parameter, version)
+            select concat('PUBLISHER_DEFAULT_VALUE', lp.identifier), 'PUBLISHER_DEFAULT_VALUE', lp.identifier, 0
+            from lib_parameter lp
+                     left join lib_parameter_value_cines lpvc
+                               on lp.identifier = lpvc.parameter and lpvc.type = 'PUBLISHER_DEFAULT_VALUE'
+            where lpvc.identifier is null;
+
+            INSERT INTO lib_parameter_value_cines(identifier, type, parameter, version)
+            select concat('DESCRIPTION_DEFAULT_VALUE', lp.identifier), 'DESCRIPTION_DEFAULT_VALUE', lp.identifier, 0
+            from lib_parameter lp
+                     left join lib_parameter_value_cines lpvc
+                               on lp.identifier = lpvc.parameter and lpvc.type = 'DESCRIPTION_DEFAULT_VALUE'
+            where lpvc.identifier is null;
+
+            INSERT INTO lib_parameter_value_cines(identifier, type, parameter, version)
+            select concat('TYPE_DEFAULT_VALUE', lp.identifier), 'TYPE_DEFAULT_VALUE', lp.identifier, 0
+            from lib_parameter lp
+                     left join lib_parameter_value_cines lpvc
+                               on lp.identifier = lpvc.parameter and lpvc.type = 'TYPE_DEFAULT_VALUE'
+            where lpvc.identifier is null;
+
+            INSERT INTO lib_parameter_value_cines(identifier, type, parameter, version)
+            select concat('FORMAT_DEFAULT_VALUE', lp.identifier), 'FORMAT_DEFAULT_VALUE', lp.identifier, 0
+            from lib_parameter lp
+                     left join lib_parameter_value_cines lpvc
+                               on lp.identifier = lpvc.parameter and lpvc.type = 'FORMAT_DEFAULT_VALUE'
+            where lpvc.identifier is null;
+
+            INSERT INTO lib_parameter_value_cines(identifier, type, parameter, version)
+            select concat('LANGUAGE_DEFAULT_VALUE', lp.identifier), 'LANGUAGE_DEFAULT_VALUE', lp.identifier, 0
+            from lib_parameter lp
+                     left join lib_parameter_value_cines lpvc
+                               on lp.identifier = lpvc.parameter and lpvc.type = 'LANGUAGE_DEFAULT_VALUE'
+            where lpvc.identifier is null;
+
+            INSERT INTO lib_parameter_value_cines(identifier, type, parameter, version)
+            select concat('RIGHTS_DEFAULT_VALUE', lp.identifier), 'RIGHTS_DEFAULT_VALUE', lp.identifier, 0
+            from lib_parameter lp
+                     left join lib_parameter_value_cines lpvc
+                               on lp.identifier = lpvc.parameter and lpvc.type = 'RIGHTS_DEFAULT_VALUE'
+            where lpvc.identifier is null;
+        </sql>
+
+    </changeSet>
+</databaseChangeLog>

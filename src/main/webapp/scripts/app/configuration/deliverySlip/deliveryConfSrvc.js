@@ -7,5 +7,4 @@
         var service = $resource(CONFIGURATION.numahop.url + 'api/rest/delivery_configuration/:id', { id: '@identifier' }, {});
         return service;
     }
-
 })();

@@ -3,7 +3,7 @@ package fr.progilone.pgcn.domain.dto.exportftpconfiguration;
 import fr.progilone.pgcn.domain.dto.AbstractDTO;
 
 public class SimpleExportFTPConfDTO extends AbstractDTO {
-    
+
     private String identifier;
     private String label;
 
@@ -31,6 +31,4 @@ public class SimpleExportFTPConfDTO extends AbstractDTO {
         this.label = label;
     }
 
-    
-    
 }

@@ -3,12 +3,17 @@ package fr.progilone.pgcn.service.document.conditionreport;
 import static fr.progilone.pgcn.service.document.conditionreport.ConditionReportExportService.WorkbookFormat.*;
 import static org.apache.poi.ss.usermodel.DataValidationConstraint.OperatorType.*;
 
+import fr.progilone.pgcn.domain.document.DocUnit;
+import fr.progilone.pgcn.domain.document.conditionreport.DescriptionProperty;
+import fr.progilone.pgcn.domain.document.conditionreport.DescriptionValue;
+import fr.progilone.pgcn.domain.document.conditionreport.PropertyConfiguration;
+import fr.progilone.pgcn.service.document.DocUnitService;
+import fr.progilone.pgcn.service.exchange.template.MessageService;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFDataValidationHelper;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -36,13 +41,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import fr.progilone.pgcn.domain.document.DocUnit;
-import fr.progilone.pgcn.domain.document.conditionreport.DescriptionProperty;
-import fr.progilone.pgcn.domain.document.conditionreport.DescriptionValue;
-import fr.progilone.pgcn.domain.document.conditionreport.PropertyConfiguration;
-import fr.progilone.pgcn.service.document.DocUnitService;
-import fr.progilone.pgcn.service.exchange.template.MessageService;
 
 @Service
 public class ConditionReportExportService {
@@ -98,8 +96,7 @@ public class ConditionReportExportService {
         templateBuilder.initWorkbook();
 
         // Unités documentaires
-        final List<DocUnit> docUnits = docUnitService.findAllById(docUnitIds).stream()
-                                            .sorted((f1, f2) -> f1.getPgcnId().compareTo(f2.getPgcnId())).collect(Collectors.toList());
+        final List<DocUnit> docUnits = docUnitService.findAllById(docUnitIds).stream().sorted((f1, f2) -> f1.getPgcnId().compareTo(f2.getPgcnId())).collect(Collectors.toList());
 
         for (final DocUnit docUnit : docUnits) {
             final List<PropertyConfiguration> configurations = propertyConfigurationService.findByLibrary(docUnit.getLibrary());
@@ -124,14 +121,16 @@ public class ConditionReportExportService {
 
         private TemplateBuilder(final WorkbookFormat format) {
             this.format = format;
-            this.validationHelper = format == XLS ? new HSSFDataValidationHelper(null) : new XSSFDataValidationHelper(null);
+            this.validationHelper = format == XLS ? new HSSFDataValidationHelper(null)
+                                                  : new XSSFDataValidationHelper(null);
         }
 
         /**
          * Initialisation du classeur
          */
         public void initWorkbook() {
-            this.wb = format == XLS ? new HSSFWorkbook() : new XSSFWorkbook();
+            this.wb = format == XLS ? new HSSFWorkbook()
+                                    : new XSSFWorkbook();
             initStyles();
             buildConfSheet();
         }
@@ -162,11 +161,8 @@ public class ConditionReportExportService {
                 rowNb++;
 
                 // Validation des listes déroulante
-                final DataValidationConstraint constraint = format == XLS ?
-                                                            ((HSSFDataValidationHelper) validationHelper).createFormulaListConstraint(getNameName(
-                                                                property)) :
-                                                            ((XSSFDataValidationHelper) validationHelper).createFormulaListConstraint(getNameName(
-                                                                property));
+                final DataValidationConstraint constraint = format == XLS ? ((HSSFDataValidationHelper) validationHelper).createFormulaListConstraint(getNameName(property))
+                                                                          : ((XSSFDataValidationHelper) validationHelper).createFormulaListConstraint(getNameName(property));
                 descriptionsConstraints.put(property.getIdentifier(), constraint);
             }
         }
@@ -203,12 +199,7 @@ public class ConditionReportExportService {
             buildInsuranceBlock(sheet, rowNb);
             rowNb += 2;
             // Type de document
-            rowNb = buildDetailBlock(sheet,
-                                     ++rowNb,
-                                     messageService.getMessage("condreport", "title.type"),
-                                     DescriptionProperty.Type.TYPE,
-                                     descProperties,
-                                     configurations);
+            rowNb = buildDetailBlock(sheet, ++rowNb, messageService.getMessage("condreport", "title.type"), DescriptionProperty.Type.TYPE, descProperties, configurations);
             // Descriptions
             rowNb = buildDetailBlock(sheet,
                                      ++rowNb,
@@ -217,21 +208,11 @@ public class ConditionReportExportService {
                                      descProperties,
                                      configurations);
             // Etat du document
-            rowNb = buildDetailBlock(sheet,
-                                     ++rowNb,
-                                     messageService.getMessage("condreport", "title.state"),
-                                     DescriptionProperty.Type.STATE,
-                                     descProperties,
-                                     configurations);
+            rowNb = buildDetailBlock(sheet, ++rowNb, messageService.getMessage("condreport", "title.state"), DescriptionProperty.Type.STATE, descProperties, configurations);
             // Dimensions du document
             rowNb = buildDimensionBlock(sheet, rowNb, PropertyConfiguration.InternalProperty.DIMENSION, configurations);
             // État de la reliure
-            rowNb = buildDetailBlock(sheet,
-                                     ++rowNb,
-                                     messageService.getMessage("condreport", "title.binding"),
-                                     DescriptionProperty.Type.BINDING,
-                                     descProperties,
-                                     configurations);
+            rowNb = buildDetailBlock(sheet, ++rowNb, messageService.getMessage("condreport", "title.binding"), DescriptionProperty.Type.BINDING, descProperties, configurations);
             rowNb = buildInfoBlock(sheet, rowNb, PropertyConfiguration.InternalProperty.BINDING_DESC, configurations);
             // Numérotation
             rowNb = buildDetailBlock(sheet,
@@ -328,9 +309,8 @@ public class ConditionReportExportService {
 
                 // cellules de saisie
                 final Optional<PropertyConfiguration> confOpt = configurations.stream()
-                                                                              .filter(c -> c.getDescProperty() != null
-                                                                                           && StringUtils.equals(c.getDescProperty().getIdentifier(),
-                                                                                                                 property.getIdentifier()))
+                                                                              .filter(c -> c.getDescProperty() != null && StringUtils.equals(c.getDescProperty().getIdentifier(),
+                                                                                                                                             property.getIdentifier()))
                                                                               .findAny();
                 final boolean isRequired, allowComment;
                 if (confOpt.isPresent()) {
@@ -391,10 +371,7 @@ public class ConditionReportExportService {
          * @param configurations
          * @return
          */
-        private short buildDimensionBlock(final Sheet sheet,
-                                          short rowNb,
-                                          final PropertyConfiguration.InternalProperty property,
-                                          final List<PropertyConfiguration> configurations) {
+        private short buildDimensionBlock(final Sheet sheet, short rowNb, final PropertyConfiguration.InternalProperty property, final List<PropertyConfiguration> configurations) {
             final Row row = sheet.createRow(rowNb);
             row.createCell(0).setCellValue(TYPE_DETAIL);
             row.createCell(1).setCellValue(property.name());
@@ -447,10 +424,7 @@ public class ConditionReportExportService {
          * @param field
          * @return
          */
-        private short buildInfoBlock(final Sheet sheet,
-                                     short rowNb,
-                                     final PropertyConfiguration.InternalProperty field,
-                                     final List<PropertyConfiguration> configurations) {
+        private short buildInfoBlock(final Sheet sheet, short rowNb, final PropertyConfiguration.InternalProperty field, final List<PropertyConfiguration> configurations) {
             final Row row = sheet.createRow(rowNb);
             row.createCell(0).setCellValue(TYPE_DETAIL);
             row.createCell(1).setCellValue(field.name());
@@ -485,9 +459,7 @@ public class ConditionReportExportService {
             sheet.addMergedRegion(new CellRangeAddress(rowNb, rowNb, 2, 3));
             rowNb++;
 
-            addIntegerValidationConstraint(sheet,
-                                           new CellRangeAddressList(rowNb, rowNb + 2, 3, 3),
-                                           messageService.getMessage("condreport", "title.nbview"));
+            addIntegerValidationConstraint(sheet, new CellRangeAddressList(rowNb, rowNb + 2, 3, 3), messageService.getMessage("condreport", "title.nbview"));
 
             // Estimation du nombre de vues de la reliure
             row = sheet.createRow(rowNb);
@@ -592,11 +564,7 @@ public class ConditionReportExportService {
             createBorderedCell(sheet, rowNb, colNb, borderStyle, borderColor);
         }
 
-        private void createBorderedCell(final Sheet sheet,
-                                        final short rowNb,
-                                        final int colNb,
-                                        final BorderStyle borderStyle,
-                                        final short borderColor) {
+        private void createBorderedCell(final Sheet sheet, final short rowNb, final int colNb, final BorderStyle borderStyle, final short borderColor) {
             final CellRangeAddress region = new CellRangeAddress(rowNb, rowNb, colNb, colNb);
 
             RegionUtil.setBorderBottom(borderStyle, region, sheet);
@@ -612,12 +580,10 @@ public class ConditionReportExportService {
         private void addBooleanValidationConstraint(final Sheet sheet, final CellRangeAddressList addressList) {
             final String[] constraintValues = {messageService.getMessage("condreport", "validation.boolean.true"),
                                                messageService.getMessage("condreport", "validation.boolean.false")};
-            final DataValidationConstraint dvConstraint = format == XLS ?
-                                                          ((HSSFDataValidationHelper) validationHelper).createExplicitListConstraint(constraintValues) :
-                                                          ((XSSFDataValidationHelper) validationHelper).createExplicitListConstraint(constraintValues);
-            final DataValidation dataValidation = this.format == XLS ?
-                                                  ((HSSFDataValidationHelper) validationHelper).createValidation(dvConstraint, addressList) :
-                                                  ((XSSFDataValidationHelper) validationHelper).createValidation(dvConstraint, addressList);
+            final DataValidationConstraint dvConstraint = format == XLS ? ((HSSFDataValidationHelper) validationHelper).createExplicitListConstraint(constraintValues)
+                                                                        : ((XSSFDataValidationHelper) validationHelper).createExplicitListConstraint(constraintValues);
+            final DataValidation dataValidation = this.format == XLS ? ((HSSFDataValidationHelper) validationHelper).createValidation(dvConstraint, addressList)
+                                                                     : ((XSSFDataValidationHelper) validationHelper).createValidation(dvConstraint, addressList);
             dataValidation.setShowErrorBox(true);
 
             try {
@@ -639,16 +605,10 @@ public class ConditionReportExportService {
          * @param field
          */
         private void addIntegerValidationConstraint(final Sheet sheet, final CellRangeAddressList addressList, final String field) {
-            final DataValidationConstraint dvConstraint = this.format == XLS ?
-                                                          ((HSSFDataValidationHelper) validationHelper).createIntegerConstraint(GREATER_OR_EQUAL,
-                                                                                                                                "0",
-                                                                                                                                null) :
-                                                          ((XSSFDataValidationHelper) validationHelper).createIntegerConstraint(GREATER_OR_EQUAL,
-                                                                                                                                "0",
-                                                                                                                                null);
-            final DataValidation dataValidation = this.format == XLS ?
-                                                  ((HSSFDataValidationHelper) validationHelper).createValidation(dvConstraint, addressList) :
-                                                  ((XSSFDataValidationHelper) validationHelper).createValidation(dvConstraint, addressList);
+            final DataValidationConstraint dvConstraint = this.format == XLS ? ((HSSFDataValidationHelper) validationHelper).createIntegerConstraint(GREATER_OR_EQUAL, "0", null)
+                                                                             : ((XSSFDataValidationHelper) validationHelper).createIntegerConstraint(GREATER_OR_EQUAL, "0", null);
+            final DataValidation dataValidation = this.format == XLS ? ((HSSFDataValidationHelper) validationHelper).createValidation(dvConstraint, addressList)
+                                                                     : ((XSSFDataValidationHelper) validationHelper).createValidation(dvConstraint, addressList);
             dataValidation.setShowErrorBox(true);
             dataValidation.setShowPromptBox(true);
             dataValidation.createPromptBox(field, messageService.getMessage("condreport", "validation.integer.promptText"));
@@ -676,9 +636,8 @@ public class ConditionReportExportService {
             if (descriptionsConstraints.containsKey(property)) {
                 final CellRangeAddressList addressList = new CellRangeAddressList(rowNb, rowNb, 3, 3);
                 final DataValidationConstraint dvConstraint = descriptionsConstraints.get(property);
-                final DataValidation dataValidation = this.format == XLS ?
-                                                      ((HSSFDataValidationHelper) validationHelper).createValidation(dvConstraint, addressList) :
-                                                      ((XSSFDataValidationHelper) validationHelper).createValidation(dvConstraint, addressList);
+                final DataValidation dataValidation = this.format == XLS ? ((HSSFDataValidationHelper) validationHelper).createValidation(dvConstraint, addressList)
+                                                                         : ((XSSFDataValidationHelper) validationHelper).createValidation(dvConstraint, addressList);
                 dataValidation.setShowErrorBox(true);
 
                 try {
@@ -686,9 +645,7 @@ public class ConditionReportExportService {
                 }
                 // pb de longueur de formule avec le format xls; si bloquant, baser la formule sur des plages excel
                 catch (final IllegalArgumentException e) {
-                    LOG.error("Une erreur s'est produite lors de l'ajout de la liste de validation pour la propriété {}: {}",
-                              property,
-                              e.getMessage());
+                    LOG.error("Une erreur s'est produite lors de l'ajout de la liste de validation pour la propriété {}: {}", property, e.getMessage());
                 }
             }
         }

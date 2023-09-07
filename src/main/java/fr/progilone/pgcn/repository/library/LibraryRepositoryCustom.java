@@ -1,10 +1,9 @@
 package fr.progilone.pgcn.repository.library;
 
 import fr.progilone.pgcn.domain.library.Library;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import java.util.List;
 
 public interface LibraryRepositoryCustom {
 
@@ -18,10 +17,5 @@ public interface LibraryRepositoryCustom {
      * @param pageable
      * @return
      */
-    Page<Library> search(String search,
-                         List<String> libraries,
-                         String initiale,
-                         List<String> institutions,
-                         boolean isActive,
-                         Pageable pageable);
+    Page<Library> search(String search, List<String> libraries, String initiale, List<String> institutions, boolean isActive, Pageable pageable);
 }

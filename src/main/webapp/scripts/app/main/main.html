@@ -8,9 +8,7 @@
             <p class="lead">This is your homepage</p>
 
             <div ng-switch="isAuthenticated()">
-                <div class="alert alert-success" ng-switch-when="true">
-                    You are logged in as user "{{account.login}}".
-                </div>
+                <div class="alert alert-success" ng-switch-when="true">You are logged in as user "{{account.login}}".</div>
             </div>
         </div>
     </div>

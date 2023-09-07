@@ -1,8 +1,5 @@
 package fr.progilone.pgcn.service.lot.mapper;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
-
 import fr.progilone.pgcn.domain.dto.lot.LotWithConfigRulesDTO;
 import fr.progilone.pgcn.domain.lot.Lot;
 import fr.progilone.pgcn.service.administration.mapper.CinesPACMapper;
@@ -18,6 +15,8 @@ import fr.progilone.pgcn.service.project.mapper.SimpleProjectMapper;
 import fr.progilone.pgcn.service.user.mapper.AddressMapper;
 import fr.progilone.pgcn.service.user.mapper.UserMapper;
 import fr.progilone.pgcn.service.workflow.mapper.SimpleWorkflowMapper;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 
 @Mapper(uses = {AddressMapper.class,
                 SimpleDocUnitMapper.class,

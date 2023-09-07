@@ -1,43 +1,30 @@
 package fr.progilone.pgcn.domain.exchange.internetarchive;
 
-import static fr.progilone.pgcn.service.es.EsConstant.ANALYZER_KEYWORD;
-
-import java.time.LocalDateTime;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
-import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldIndex;
-import org.springframework.data.elasticsearch.annotations.FieldType;
-import org.springframework.data.elasticsearch.annotations.Parent;
-
 import fr.progilone.pgcn.domain.AbstractDomainObject;
 import fr.progilone.pgcn.domain.document.DocUnit;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
+import java.time.LocalDateTime;
 
 /**
  * Rapports de diffusion Internet Archive
  *
  * @author jbrunet
- * Créé le 28 avr. 2017
+ *         Créé le 28 avr. 2017
  */
 // Hibernate
 @Entity
 @Table(name = InternetArchiveReport.TABLE_NAME)
-// Elasticsearch
-@Document(indexName = "#{elasticsearchIndexName}", type = InternetArchiveReport.ES_TYPE, createIndex = false)
 public class InternetArchiveReport extends AbstractDomainObject {
 
     public static final String TABLE_NAME = "exc_internet_archive_report";
-    public static final String ES_TYPE = "doc_exportia";
 
     /**
      * Unité documentaire à diffuser
@@ -45,14 +32,6 @@ public class InternetArchiveReport extends AbstractDomainObject {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "doc_unit", nullable = false)
     private DocUnit docUnit;
-
-    /**
-     * Le champ "Unité documentaire" est répété pour la config elasticsearch @Parent, qui doit être de type String
-     */
-    @Column(name = "doc_unit", insertable = false, updatable = false)
-    @Parent(type = DocUnit.ES_TYPE)
-    @Field(type = FieldType.String, index = FieldIndex.not_analyzed)
-    private String docUnitId;
 
     /**
      * Identifiant au sein d'Internet Archive
@@ -75,14 +54,12 @@ public class InternetArchiveReport extends AbstractDomainObject {
      */
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
-    @Field(type = FieldType.String, analyzer = ANALYZER_KEYWORD)
     private Status status;
 
     /**
      * Date d'envoi des documents à archiver
      */
     @Column(name = "date_sent")
-    @Field(type = FieldType.Date)
     private LocalDateTime dateSent;
 
     /**
@@ -90,21 +67,19 @@ public class InternetArchiveReport extends AbstractDomainObject {
      */
     @Column(name = "message", columnDefinition = "text")
     private String message;
-    
+
     /**
      * Date de réception du certificat d'archivage
      */
     @Column(name = "date_archived")
     private LocalDateTime dateArchived;
-    
+
     /**
-     *  Simple passe-plat pour recuperer l'url ark
-     *  non persisté!
+     * Simple passe-plat pour recuperer l'url ark
+     * non persisté!
      */
     @Transient
     private String arkUrl;
-    
-    
 
     public DocUnit getDocUnit() {
         return docUnit;
@@ -112,14 +87,6 @@ public class InternetArchiveReport extends AbstractDomainObject {
 
     public void setDocUnit(final DocUnit docUnit) {
         this.docUnit = docUnit;
-    }
-
-    public String getDocUnitId() {
-        return docUnitId;
-    }
-
-    public void setDocUnitId(final String docUnitId) {
-        this.docUnitId = docUnitId;
     }
 
     public String getInternetArchiveIdentifier() {

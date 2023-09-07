@@ -1,14 +1,13 @@
 package fr.progilone.pgcn.domain.dto.administration;
 
 import fr.progilone.pgcn.domain.dto.library.SimpleLibraryDTO;
-
 import java.util.List;
 import java.util.Objects;
 
 /**
  *
  * @author jbrunet
- * Créé le 19 avr. 2017
+ *         Créé le 19 avr. 2017
  */
 public class InternetArchiveConfigurationDTO {
 

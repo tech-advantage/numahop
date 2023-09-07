@@ -2,28 +2,37 @@
     <div class="panel panel-column-3">
         <div class="panel-heading">
             <div class="pull-right">
-                <button type="button" class="btn btn-sem2 btn-xs"
-                        ng-click="userForm.$show()" ng-disabled="!user || !user.identifier"
-                        uib-tooltip="{{::'Modifier' | translate}}"
-                        ng-show="!userForm.$visible && loaded"
-                        ng-if="!formRO">
+                <button
+                    type="button"
+                    class="btn btn-sem2 btn-xs"
+                    ng-click="userForm.$show()"
+                    ng-disabled="!user || !user.identifier"
+                    uib-tooltip="{{::'Modifier' | translate}}"
+                    tooltip-append-to-body="true"
+                    ng-show="!userForm.$visible && loaded"
+                    ng-if="!formRO"
+                >
                     <span class="glyphicon-regular edit"></span>
                 </button>
-                <div class="btn-group" sem-roles-allowed="USER_HAB1,USER_HAB2,USER_HAB5"
-                     ng-show="!userForm.$visible && loaded" uib-dropdown dropdown-append-to-body>
-                    <button type="button" class="btn btn-sem2 btn-xs dropdown-toggle pull-right"
-                            ng-disabled="!user || !user.identifier"
-                            uib-tooltip="{{::'Autres actions' | translate}}" uib-dropdown-toggle>
+                <div class="btn-group" sem-roles-allowed="USER_HAB1,USER_HAB2,USER_HAB5" ng-show="!userForm.$visible && loaded" uib-dropdown dropdown-append-to-body>
+                    <button
+                        type="button"
+                        class="btn btn-sem2 btn-xs dropdown-toggle pull-right"
+                        ng-disabled="!user || !user.identifier"
+                        uib-tooltip="{{::'Autres actions' | translate}}"
+                        tooltip-append-to-body="true"
+                        uib-dropdown-toggle
+                    >
                         <span class="glyphicon-halflings glyphicon-align-justify"></span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-right" role="menu" uib-dropdown-menu>
                         <li ng-class="{ 'disabled': !loaded || !user || !user.identifier }" sem-roles-allowed="USER_HAB3">
-                            <a ng-click="!(!loaded || !user || !user.identifier) && delete(user)">
-                                <span class="glyphicon-halflings glyphicon-trash"></span> {{ ::'Supprimer' | translate }}
-                            </a>
+                            <a ng-click="!(!loaded || !user || !user.identifier) && delete(user)"> <span class="glyphicon-halflings glyphicon-trash"></span> {{ ::'Supprimer' | translate }} </a>
                         </li>
                         <li role="separator" class="divider" sem-roles-allowed="USER_HAB3"></li>
-                        <li ng-click="duplicate()" sem-roles-allowed="USER_HAB1"><a translate><span class="glyphicon-halflings glyphicon-duplicate"></span> Dupliquer</a></li>
+                        <li ng-click="duplicate()" sem-roles-allowed="USER_HAB1">
+                            <a translate><span class="glyphicon-halflings glyphicon-duplicate"></span> Dupliquer</a>
+                        </li>
                         <li ng-click="changePassword(user)" sem-roles-allowed="USER_HAB2"><a translate>Nouveau mot de passe</a></li>
                     </ul>
                 </div>
@@ -40,56 +49,140 @@
                         <div>{{ user.library.name }}</div>
                     </div>
                 </div>
-                <numa-editable-field title="{{::'Login' | translate}}" placeholder="{{::'Login' | translate}}" form="userForm" 
-                                    model="user.login" errors="{{ errors.login }}" mandatory="true"
-                                    onbeforesave="validation.required($data)" numa-readonly="formRO"></numa-editable-field>
-                <numa-editable-field title="{{::'Nom' | translate}}" placeholder="{{::'Nom' | translate}}" form="userForm" 
-                                    model="user.surname" errors="{{ errors.surname }}" mandatory="true"
-                                    onbeforesave="validation.required($data)" numa-readonly="formRO"></numa-editable-field>
-                <numa-editable-field title="{{::'Prénom' | translate}}" placeholder="{{::'Prénom' | translate}}" form="userForm" 
-                                    model="user.firstname" errors="{{ errors.firstname }}" mandatory="true"
-                                    onbeforesave="validation.required($data)" numa-readonly="formRO"></numa-editable-field>
-                <numa-editable-field title="{{::'Mot de passe' | translate}}" placeholder="{{::'Mot de passe' | translate}}" form="userForm" 
-                                    model="user.password" errors="{{ errors.password }}" ng-if="!user.identifier" mandatory="true"
-                                    onbeforesave="validation.required($data)" numa-readonly="formRO"></numa-editable-field>
-                <numa-editable-field title="{{::'Actif' | translate}}" type="radiolist" form="userForm" 
-                                    model="user.active" numa-readonly="formRO" 
-                                    config="{ data: options.boolean, displayFn: displayBoolean, 
-                                            query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }"></numa-editable-field>
-                <numa-editable-field title="{{::'Fonction' | translate}}" placeholder="{{::'Fonction' | translate}}" form="userForm" 
-                                    model="user.function" errors="{{ errors.function }}" numa-readonly="formRO"></numa-editable-field>
-                <numa-editable-field title="{{::'Téléphone' | translate}}" placeholder="{{::'Téléphone' | translate}}" form="userForm" 
-                                    model="user.phoneNumber" errors="{{ errors.phoneNumber }}" numa-readonly="formRO"></numa-editable-field>
-                <numa-editable-field title="{{::'Courriel' | translate}}" placeholder="{{::'Courriel' | translate}}" form="userForm" 
-                                    model="user.email" errors="{{ errors.email }}" numa-readonly="formRO" mandatory="true"
-                                    onbeforesave="validation.required($data)"></numa-editable-field>
-                <numa-editable-field title="{{::'Catégorie' | translate}}" type="select" placeholder="{{::'Catégorie' | translate}}" form="userForm" 
-                                    model="user.category" errors="{{ errors.category }}" numa-onchange="onCategoryChanged($data)" 
-                                    onbeforesave="validation.required($data)" numa-readonly="formRO"
-                                    config="{ data: options.categories, 
-                                            displayFn: getCategoryLabel, 
-                                            query: 'o.code as o.label for o in $ctrl.config.data' }"></numa-editable-field>
-                <numa-editable-field title="{{::'Bibliothèque' | translate}}" type="select" placeholder="{{::'Bibliothèque' | translate}}" form="userForm" 
-                                    model="user.library" errors="{{ errors.library }}" mandatory="true"
-                                    onbeforesave="validation.required($data)" numa-readonly="formRO"
-                                    config="{ data: options.libraries, 
-                                            display: 'name', 
+                <numa-editable-field
+                    title="{{::'Login' | translate}}"
+                    placeholder="{{::'Login' | translate}}"
+                    form="userForm"
+                    model="user.login"
+                    errors="{{ errors.login }}"
+                    mandatory="true"
+                    onbeforesave="validation.required($data)"
+                    numa-readonly="formRO"
+                ></numa-editable-field>
+                <numa-editable-field
+                    title="{{::'Nom' | translate}}"
+                    placeholder="{{::'Nom' | translate}}"
+                    form="userForm"
+                    model="user.surname"
+                    errors="{{ errors.surname }}"
+                    mandatory="true"
+                    onbeforesave="validation.required($data)"
+                    numa-readonly="formRO"
+                ></numa-editable-field>
+                <numa-editable-field
+                    title="{{::'Prénom' | translate}}"
+                    placeholder="{{::'Prénom' | translate}}"
+                    form="userForm"
+                    model="user.firstname"
+                    errors="{{ errors.firstname }}"
+                    mandatory="true"
+                    onbeforesave="validation.required($data)"
+                    numa-readonly="formRO"
+                ></numa-editable-field>
+                <numa-editable-field
+                    title="{{::'Mot de passe' | translate}}"
+                    placeholder="{{::'Mot de passe' | translate}}"
+                    form="userForm"
+                    model="user.password"
+                    errors="{{ errors.password }}"
+                    ng-if="!user.identifier"
+                    mandatory="true"
+                    onbeforesave="validation.passwordCompliante($data)"
+                    numa-readonly="formRO"
+                    password-type="true"
+                ></numa-editable-field>
+                <numa-editable-field
+                    title="{{::'Actif' | translate}}"
+                    type="radiolist"
+                    form="userForm"
+                    model="user.active"
+                    numa-readonly="formRO"
+                    config="{ data: options.boolean, displayFn: displayBoolean,
+                                            query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }"
+                ></numa-editable-field>
+                <numa-editable-field
+                    title="{{::'Fonction' | translate}}"
+                    placeholder="{{::'Fonction' | translate}}"
+                    form="userForm"
+                    model="user.function"
+                    errors="{{ errors.function }}"
+                    numa-readonly="formRO"
+                ></numa-editable-field>
+                <numa-editable-field
+                    title="{{::'Téléphone' | translate}}"
+                    placeholder="{{::'Téléphone' | translate}}"
+                    form="userForm"
+                    model="user.phoneNumber"
+                    errors="{{ errors.phoneNumber }}"
+                    numa-readonly="formRO"
+                ></numa-editable-field>
+                <numa-editable-field
+                    title="{{::'Courriel' | translate}}"
+                    placeholder="{{::'Courriel' | translate}}"
+                    form="userForm"
+                    model="user.email"
+                    errors="{{ errors.email }}"
+                    numa-readonly="formRO"
+                    mandatory="true"
+                    onbeforesave="validation.required($data)"
+                ></numa-editable-field>
+                <numa-editable-field
+                    title="{{::'Catégorie' | translate}}"
+                    type="select"
+                    placeholder="{{::'Catégorie' | translate}}"
+                    form="userForm"
+                    model="user.category"
+                    errors="{{ errors.category }}"
+                    numa-onchange="onCategoryChanged($data)"
+                    onbeforesave="validation.required($data)"
+                    numa-readonly="formRO"
+                    config="{ data: options.categories,
+                                            displayFn: getCategoryLabel,
+                                            query: 'o.code as o.label for o in $ctrl.config.data' }"
+                ></numa-editable-field>
+                <numa-editable-field
+                    title="{{::'Bibliothèque' | translate}}"
+                    type="select"
+                    placeholder="{{::'Bibliothèque' | translate}}"
+                    form="userForm"
+                    model="user.library"
+                    errors="{{ errors.library }}"
+                    mandatory="true"
+                    onbeforesave="validation.required($data)"
+                    numa-readonly="formRO"
+                    config="{ data: options.libraries,
+                                            display: 'name',
                                             query: 'o.name for o in $ctrl.config.data track by o.identifier' }"
-                                    link="{ type: 'library', parameters: {'id': user.library.identifier} }"></numa-editable-field>
-                <numa-editable-field title="{{::'Profil' | translate}}" type="select" placeholder="{{::'Profil' | translate}}" form="userForm" 
-                                    model="user.role" errors="{{ errors.role }}" mandatory="true"
-                                    onbeforesave="validation.required($data)" numa-readonly="!isAuthorized(userRoles.USER_HAB2)" 
-                                    config="{ data: options.roles, 
-                                            display: 'label', 
+                    link="{ type: 'library', parameters: {'id': user.library.identifier} }"
+                ></numa-editable-field>
+                <numa-editable-field
+                    title="{{::'Profil' | translate}}"
+                    type="select"
+                    placeholder="{{::'Profil' | translate}}"
+                    form="userForm"
+                    model="user.role"
+                    errors="{{ errors.role }}"
+                    mandatory="true"
+                    onbeforesave="validation.required($data)"
+                    numa-readonly="!isAuthorized(userRoles.USER_HAB2)"
+                    config="{ data: options.roles,
+                                            display: 'label',
                                             query: 'o.label for o in $ctrl.config.data track by o.identifier' }"
-                                    link="{ type: 'role', parameters: {'id': user.role.identifier} }"></numa-editable-field>
+                    link="{ type: 'role', parameters: {'id': user.role.identifier} }"
+                ></numa-editable-field>
 
                 <!-- Prestataire -->
-                <numa-editable-field title="{{::'Société' | translate}}" placeholder="{{::'Société' | translate}}" form="userForm" 
-                                        model="user.companyName" errors="{{ errors.companyName }}" 
-                                        onbeforesave="validation.required($data)" numa-readonly="formRO"
-                                        ng-if="_user_category == 'PROVIDER'"></numa-editable-field>
-                
+                <numa-editable-field
+                    title="{{::'Société' | translate}}"
+                    placeholder="{{::'Société' | translate}}"
+                    form="userForm"
+                    model="user.companyName"
+                    errors="{{ errors.companyName }}"
+                    onbeforesave="validation.required($data)"
+                    numa-readonly="formRO"
+                    ng-if="_user_category == 'PROVIDER'"
+                ></numa-editable-field>
+
                 <!-- Adresses -->
                 <div class="formBlock" ng-if="_user_category === 'PROVIDER'">
                     <div class="formBlockTitle">
@@ -98,27 +191,43 @@
                     <div class="formBlockContent">
                         <div class="row">
                             <div class="col-sm-12">
-                                <numa-editable-field title="{{::'Appartement, escalier, étage' | translate}}" 
-                                                     placeholder="{{::'Appartement, escalier, étage' | translate}}" form="userForm" 
-                                                     model="user.address.address2" numa-readonly="formRO"></numa-editable-field>
-                                <numa-editable-field title="{{::'Bâtiment, résidence' | translate}}" 
-                                                     placeholder="{{::'Bâtiment, résidence' | translate}}" form="userForm" 
-                                                     model="user.address.address3" numa-readonly="formRO"></numa-editable-field>
-                                <numa-editable-field title="{{::'Numéro et nom de la voie' | translate}}" 
-                                                     placeholder="{{::'Numéro et nom de la voie' | translate}}" form="userForm" 
-                                                     model="user.address.address1" numa-readonly="formRO"></numa-editable-field>
-                                <numa-editable-field title="{{::'Complément d\'adresse' | translate}}" 
-                                                     placeholder="{{::'Complément d\'adresse' | translate}}" form="userForm" 
-                                                     model="user.address.complement" numa-readonly="formRO"></numa-editable-field>
-                                <numa-editable-field title="{{::'Code postal' | translate}}" 
-                                                     placeholder="{{::'Code postal' | translate}}" form="userForm" 
-                                                     model="user.address.postcode" numa-readonly="formRO"></numa-editable-field>
-                                <numa-editable-field title="{{::'Ville' | translate}}" 
-                                                     placeholder="{{::'Ville' | translate}}" form="userForm" 
-                                                     model="user.address.city" numa-readonly="formRO"></numa-editable-field>
-                                <numa-editable-field title="{{::'Pays' | translate}}" 
-                                                     placeholder="{{::'Pays' | translate}}" form="userForm" 
-                                                     model="user.address.country" numa-readonly="formRO"></numa-editable-field>
+                                <numa-editable-field
+                                    title="{{::'Appartement, escalier, étage' | translate}}"
+                                    placeholder="{{::'Appartement, escalier, étage' | translate}}"
+                                    form="userForm"
+                                    model="user.address.address2"
+                                    numa-readonly="formRO"
+                                ></numa-editable-field>
+                                <numa-editable-field
+                                    title="{{::'Bâtiment, résidence' | translate}}"
+                                    placeholder="{{::'Bâtiment, résidence' | translate}}"
+                                    form="userForm"
+                                    model="user.address.address3"
+                                    numa-readonly="formRO"
+                                ></numa-editable-field>
+                                <numa-editable-field
+                                    title="{{::'Numéro et nom de la voie' | translate}}"
+                                    placeholder="{{::'Numéro et nom de la voie' | translate}}"
+                                    form="userForm"
+                                    model="user.address.address1"
+                                    numa-readonly="formRO"
+                                ></numa-editable-field>
+                                <numa-editable-field
+                                    title="{{::'Complément d\'adresse' | translate}}"
+                                    placeholder="{{::'Complément d\'adresse' | translate}}"
+                                    form="userForm"
+                                    model="user.address.complement"
+                                    numa-readonly="formRO"
+                                ></numa-editable-field>
+                                <numa-editable-field
+                                    title="{{::'Code postal' | translate}}"
+                                    placeholder="{{::'Code postal' | translate}}"
+                                    form="userForm"
+                                    model="user.address.postcode"
+                                    numa-readonly="formRO"
+                                ></numa-editable-field>
+                                <numa-editable-field title="{{::'Ville' | translate}}" placeholder="{{::'Ville' | translate}}" form="userForm" model="user.address.city" numa-readonly="formRO"></numa-editable-field>
+                                <numa-editable-field title="{{::'Pays' | translate}}" placeholder="{{::'Pays' | translate}}" form="userForm" model="user.address.country" numa-readonly="formRO"></numa-editable-field>
                             </div>
                         </div>
                     </div>
@@ -135,7 +244,7 @@
                                 <div class="thumbnail text-center">
                                     <div style="min-height: 138px">
                                         <a ng-href="/api/rest/user/{{::user.identifier}}?signature=true" download>
-                                            <img class="img-thumbnail" ng-src="{{_user_signature}}"/>
+                                            <img class="img-thumbnail" ng-src="{{_user_signature}}" />
                                         </a>
                                     </div>
                                     <button type="button" class="btn btn-sem3 btn-xs" ng-click="deleteSignature(user)" ng-if="!formRO">
@@ -150,8 +259,7 @@
                                     <label for="importFiles0"><i translate>Changer la signature: </i></label>
                                 </div>
                                 <div class="form-group">
-                                        <input type="file" id="importFiles0" accept="image/gif,image/jpeg,image/png" 
-                                               onchange="angular.element(this).scope().setSignature(this)" />
+                                    <input type="file" id="importFiles0" accept="image/gif,image/jpeg,image/png" onchange="angular.element(this).scope().setSignature(this)" />
                                 </div>
                             </div>
                         </div>
@@ -164,7 +272,8 @@
                             <div uib-accordion-group is-open="accordions.groups">
                                 <uib-accordion-heading>
                                     <span class="pull-left glyphicon-halflings" ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordions.groups]">&nbsp;</span>
-                                    <h4>{{ 'Groupes de workflow' | translate }}
+                                    <h4>
+                                        {{ 'Groupes de workflow' | translate }}
                                         <span class="badge btn-sem2">{{ user.groups.length }}</span>
                                     </h4>
                                 </uib-accordion-heading>
@@ -194,11 +303,10 @@
                         <!-- Création / Modification -->
                         <div class="btn-group">
                             <button type="button" class="btn btn-sem4" ng-disabled="userForm.$waiting" ng-click="cancel()">
-                                <span class="glyphicon-regular unshare"></span> {{::'Annuler' | translate}}
+                                <span class="glyphicon-regular unshare"></span>
+                                {{::'Annuler' | translate}}
                             </button>
-                            <button type="submit" class="btn btn-sem2" ng-if="!formRO">
-                                <span class="glyphicon-regular floppy-save"></span> {{::'Enregistrer' | translate}}
-                            </button>
+                            <button type="submit" class="btn btn-sem2" ng-if="!formRO"><span class="glyphicon-regular floppy-save"></span> {{::'Enregistrer' | translate}}</button>
                         </div>
                     </div>
                 </div>

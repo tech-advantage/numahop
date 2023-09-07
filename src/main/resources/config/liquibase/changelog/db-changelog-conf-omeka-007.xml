@@ -1,18 +1,20 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <!-- ajout colonne sftp pour envoi des fichiers en FTP ou SFTP  -->
     <!-- ajout colonne zip pour envoi des fichiers zippé ou non  -->
     <changeSet id="pgcn-conf-omeka-007" author="progilone">
 
         <addColumn tableName="conf_omeka">
-            <column name="sftp" type="boolean" defaultValueBoolean="true"/>
+            <column name="sftp" type="boolean" defaultValueBoolean="true" />
         </addColumn>
 
         <addColumn tableName="conf_omeka">
-            <column name="zip" type="boolean" defaultValueBoolean="true"/>
+            <column name="zip" type="boolean" defaultValueBoolean="true" />
         </addColumn>
     </changeSet>
 </databaseChangeLog>

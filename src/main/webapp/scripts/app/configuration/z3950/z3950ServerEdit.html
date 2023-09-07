@@ -2,12 +2,27 @@
     <div class="panel panel-column-3">
         <div class="panel-heading">
             <div class="pull-right">
-                <button type="button" class="btn btn-sem2 btn-xs" ng-click="z3950ServerForm.$show()" ng-disabled="!z3950Server || editMode === editModes.CREATE"
-                    uib-tooltip="{{::'Modifier' | translate}}" ng-show="!z3950ServerForm.$visible && loaded" sem-roles-allowed="Z3950_HAB1">
+                <button
+                    type="button"
+                    class="btn btn-sem2 btn-xs"
+                    ng-click="z3950ServerForm.$show()"
+                    ng-disabled="!z3950Server || editMode === editModes.CREATE"
+                    uib-tooltip="{{::'Modifier' | translate}}"
+                    tooltip-append-to-body="true"
+                    ng-show="!z3950ServerForm.$visible && loaded"
+                    sem-roles-allowed="Z3950_HAB1"
+                >
                     <span class="glyphicon-regular edit"></span>
                 </button>
-                <button type="button" class="btn btn-sem2 btn-xs" ng-disabled="!z3950Server || editMode === editModes.CREATE || !loaded"
-                    uib-tooltip="{{::'Supprimer' | translate}}" ng-click="delete(z3950Server)" sem-roles-allowed="Z3950_HAB2">
+                <button
+                    type="button"
+                    class="btn btn-sem2 btn-xs"
+                    ng-disabled="!z3950Server || editMode === editModes.CREATE || !loaded"
+                    uib-tooltip="{{::'Supprimer' | translate}}"
+                    tooltip-append-to-body="true"
+                    ng-click="delete(z3950Server)"
+                    sem-roles-allowed="Z3950_HAB2"
+                >
                     <span class="glyphicon-halflings glyphicon-trash"></span>
                 </button>
             </div>
@@ -15,61 +30,139 @@
         </div>
         <div class="panel-body" ng-show="loaded">
             <div>
-                <form editable-form name="z3950ServerForm" onaftersave="saveZ3950Server(z3950Server)" ng-init="formRO = !isAuthorized([userRoles.Z3950_HAB1])"
-                    ng-show="loaded">
-
-                    <numa-editable-field title="{{::'Nom' | translate}}" placeholder="{{::'Nom' | translate}}" onbeforesave="validation.required($data)"
-                        form="z3950ServerForm" model="z3950Server.name" numa-readonly="formRO" errors="{{ errors.name }}" mandatory="true"> </numa-editable-field>
-
-                    <numa-editable-field title="{{::'Adresse du serveur' | translate}}" placeholder="{{::'Adresse du serveur' | translate}}"
-                        onbeforesave="validation.required($data)" form="z3950ServerForm" model="z3950Server.host" numa-readonly="formRO"
-                        errors="{{ errors.host }}" mandatory="true"> </numa-editable-field>
-
-                    <numa-editable-field title="{{::'Port' | translate}}" placeholder="{{::'Port' | translate}}" type="number" onbeforesave="validation.required($data)"
-                        form="z3950ServerForm" model="z3950Server.port" numa-readonly="formRO" errors="{{ errors.port }}" mandatory="true"> </numa-editable-field>
-
-                    <numa-editable-field title="{{::'Base de données' | translate}}" placeholder="{{::'Base de données' | translate}}" onbeforesave="validation.required($data)"
-                        form="z3950ServerForm" model="z3950Server.database" numa-readonly="formRO" errors="{{ errors.database }}" mandatory="true">
+                <form editable-form name="z3950ServerForm" onaftersave="saveZ3950Server(z3950Server)" ng-init="formRO = !isAuthorized([userRoles.Z3950_HAB1])" ng-show="loaded">
+                    <numa-editable-field
+                        title="{{::'Nom' | translate}}"
+                        placeholder="{{::'Nom' | translate}}"
+                        onbeforesave="validation.required($data)"
+                        form="z3950ServerForm"
+                        model="z3950Server.name"
+                        numa-readonly="formRO"
+                        errors="{{ errors.name }}"
+                        mandatory="true"
+                    >
                     </numa-editable-field>
 
-                    <numa-editable-field title="{{::'Identifiant' | translate}}" placeholder="{{::'Identifiant' | translate}}" form="z3950ServerForm"
-                        model="z3950Server.userId" numa-readonly="formRO" errors="{{ errors.userId }}"> </numa-editable-field>
+                    <numa-editable-field
+                        title="{{::'Adresse du serveur' | translate}}"
+                        placeholder="{{::'Adresse du serveur' | translate}}"
+                        onbeforesave="validation.required($data)"
+                        form="z3950ServerForm"
+                        model="z3950Server.host"
+                        numa-readonly="formRO"
+                        errors="{{ errors.host }}"
+                        mandatory="true"
+                    >
+                    </numa-editable-field>
 
-                    <numa-editable-field title="{{::'Mot de passe' | translate}}" placeholder="{{::'Mot de passe' | translate}}" form="z3950ServerForm"
-                        model="z3950Server.password" numa-readonly="formRO" errors="{{ errors.password }}"> </numa-editable-field>
+                    <numa-editable-field
+                        title="{{::'Port' | translate}}"
+                        placeholder="{{::'Port' | translate}}"
+                        type="number"
+                        onbeforesave="validation.required($data)"
+                        form="z3950ServerForm"
+                        model="z3950Server.port"
+                        numa-readonly="formRO"
+                        errors="{{ errors.port }}"
+                        mandatory="true"
+                    >
+                    </numa-editable-field>
 
-                    <numa-editable-field title="{{::'Actif' | translate}}" type="radiolist" form="z3950ServerForm" model="z3950Server.active"
-                        numa-readonly="formRO" errors="{{ errors.active }}" config="{ data: options.boolean, displayFn: displayBoolean, 
-                    query: 'key as value for (key, value) in $ctrl.config.data' }"> </numa-editable-field>
+                    <numa-editable-field
+                        title="{{::'Base de données' | translate}}"
+                        placeholder="{{::'Base de données' | translate}}"
+                        onbeforesave="validation.required($data)"
+                        form="z3950ServerForm"
+                        model="z3950Server.database"
+                        numa-readonly="formRO"
+                        errors="{{ errors.database }}"
+                        mandatory="true"
+                    >
+                    </numa-editable-field>
 
-                    <numa-editable-field title="{{::'Format des données' | translate}}" type="select" form="z3950ServerForm" model="z3950Server.dataFormat"
-                        numa-readonly="formRO" errors="{{ errors.dataFormat }}" onbeforesave="validation.required($data)" mandatory="true" 
+                    <numa-editable-field
+                        title="{{::'Identifiant' | translate}}"
+                        placeholder="{{::'Identifiant' | translate}}"
+                        form="z3950ServerForm"
+                        model="z3950Server.userId"
+                        numa-readonly="formRO"
+                        errors="{{ errors.userId }}"
+                    >
+                    </numa-editable-field>
+
+                    <numa-editable-field
+                        title="{{::'Mot de passe' | translate}}"
+                        placeholder="{{::'Mot de passe' | translate}}"
+                        form="z3950ServerForm"
+                        model="z3950Server.password"
+                        numa-readonly="formRO"
+                        errors="{{ errors.password }}"
+                    >
+                    </numa-editable-field>
+
+                    <numa-editable-field
+                        title="{{::'Actif' | translate}}"
+                        type="radiolist"
+                        form="z3950ServerForm"
+                        model="z3950Server.active"
+                        numa-readonly="formRO"
+                        errors="{{ errors.active }}"
+                        config="{ data: options.boolean, displayFn: displayBoolean,
+                    query: 'key as value for (key, value) in $ctrl.config.data' }"
+                    >
+                    </numa-editable-field>
+
+                    <numa-editable-field
+                        title="{{::'Format des données' | translate}}"
+                        type="select"
+                        form="z3950ServerForm"
+                        model="z3950Server.dataFormat"
+                        numa-readonly="formRO"
+                        errors="{{ errors.dataFormat }}"
+                        onbeforesave="validation.required($data)"
+                        mandatory="true"
                         config="{ data: options.dataFormat,
                     displayFn: displayDataFormat,
-                    query: 'key as value for (key, value) in $ctrl.config.data'}"> </numa-editable-field>
+                    query: 'key as value for (key, value) in $ctrl.config.data'}"
+                    >
+                    </numa-editable-field>
 
-                    <numa-editable-field title="{{::'Encodage des données' | translate}}" type="select" form="z3950ServerForm" model="z3950Server.dataEncoding"
-                        numa-readonly="formRO" errors="{{ errors.dataEncoding }}" onbeforesave="validation.required($data)" mandatory="true" 
+                    <numa-editable-field
+                        title="{{::'Encodage des données' | translate}}"
+                        type="select"
+                        form="z3950ServerForm"
+                        model="z3950Server.dataEncoding"
+                        numa-readonly="formRO"
+                        errors="{{ errors.dataEncoding }}"
+                        onbeforesave="validation.required($data)"
+                        mandatory="true"
                         config="{ data: options.dataEncoding,
                     displayFn: displayDataEncoding,
-                    query: 'key as value for (key, value) in $ctrl.config.data'}"> </numa-editable-field>
+                    query: 'key as value for (key, value) in $ctrl.config.data'}"
+                    >
+                    </numa-editable-field>
 
-                    <numa-editable-field title="{{::'Type de notice' | translate}}" type="select" form="z3950ServerForm" model="z3950Server.recordType"
-                        numa-readonly="formRO" errors="{{ errors.recordType }}" onbeforesave="validation.required($data)" mandatory="true"
+                    <numa-editable-field
+                        title="{{::'Type de notice' | translate}}"
+                        type="select"
+                        form="z3950ServerForm"
+                        model="z3950Server.recordType"
+                        numa-readonly="formRO"
+                        errors="{{ errors.recordType }}"
+                        onbeforesave="validation.required($data)"
+                        mandatory="true"
                         config="{ data: options.recordType,
                     displayFn: displayRecordType,
-                    query: 'key as value for (key, value) in $ctrl.config.data'}"> </numa-editable-field>
+                    query: 'key as value for (key, value) in $ctrl.config.data'}"
+                    >
+                    </numa-editable-field>
 
                     <div class="text-center column-bottom column-5 margin-t10" ng-if="z3950ServerForm.$visible">
                         <div class="column-bottom-button">
                             <!-- Création / Modification complète -->
                             <div class="btn-group">
-                                <button type="button" class="btn btn-sem4" ng-click="cancel()">
-                                <span class="glyphicon-regular unshare"></span> {{::'Annuler' | translate}}
-                            </button>
-                                <button type="submit" class="btn btn-sem2" sem-roles-allowed="Z3950_HAB1">
-                                <span class="glyphicon-regular floppy-save"></span> {{::'Enregistrer' | translate}}
-                            </button>
+                                <button type="button" class="btn btn-sem4" ng-click="cancel()"><span class="glyphicon-regular unshare"></span> {{::'Annuler' | translate}}</button>
+                                <button type="submit" class="btn btn-sem2" sem-roles-allowed="Z3950_HAB1"><span class="glyphicon-regular floppy-save"></span> {{::'Enregistrer' | translate}}</button>
                             </div>
                         </div>
                     </div>

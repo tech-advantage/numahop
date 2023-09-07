@@ -1,22 +1,6 @@
 package fr.progilone.pgcn.service.util;
 
 import fr.progilone.pgcn.domain.administration.viewsformat.ViewsFormatConfiguration;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.tika.Tika;
-import org.imgscalr.Scalr;
-import org.imgscalr.Scalr.Method;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.imageio.IIOImage;
-import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.ImageWriteParam;
-import javax.imageio.ImageWriter;
-import javax.imageio.stream.FileImageInputStream;
-import javax.imageio.stream.ImageInputStream;
-import javax.imageio.stream.ImageOutputStream;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -27,6 +11,21 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.Optional;
+import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.FileImageInputStream;
+import javax.imageio.stream.ImageInputStream;
+import javax.imageio.stream.ImageOutputStream;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.tika.Tika;
+import org.imgscalr.Scalr;
+import org.imgscalr.Scalr.Method;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Classe fournissant des méthodes permettant de manipuler des images
@@ -78,7 +77,9 @@ public final class ImageUtils {
         try (final ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
             ImageIO.write(image, type, bos);
             final byte[] imageBytes = bos.toByteArray();
-            imageString = "data:image/" + type + ";base64," + Base64.encodeBase64String(imageBytes);
+            imageString = "data:image/" + type
+                          + ";base64,"
+                          + Base64.encodeBase64String(imageBytes);
         }
         return imageString;
     }
@@ -108,7 +109,9 @@ public final class ImageUtils {
      * @param height
      */
     public static boolean createThumbnail(final File sourceFile, final File destFile, final Integer width, final Integer height) {
-        if (sourceFile != null && destFile != null && width != null && height != null) {
+        if (sourceFile != null && destFile != null
+            && width != null
+            && height != null) {
             try {
                 BufferedImage bi = ImageIO.read(sourceFile);
                 bi = Scalr.resize(bi, Method.SPEED, width, height);
@@ -133,7 +136,9 @@ public final class ImageUtils {
      * @param height
      */
     public static boolean createThumbnail(final InputStream sourceStream, final File destFile, final Integer width, final Integer height) {
-        if (sourceStream != null && destFile != null && width != null && height != null) {
+        if (sourceStream != null && destFile != null
+            && width != null
+            && height != null) {
             try {
                 BufferedImage bi = ImageIO.read(sourceStream);
                 if (width > 0 && height > 0) {
@@ -182,7 +187,9 @@ public final class ImageUtils {
             }
         }
 
-        if (sourceFile == null || destFile == null || width == 0 || height == 0) {
+        if (sourceFile == null || destFile == null
+            || width == 0
+            || height == 0) {
             LOG.error("Création du fichier dérivé impossible: le fichier source ou le fichier destination n'existe pas.");
             return false;
         }

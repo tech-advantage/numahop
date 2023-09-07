@@ -1,14 +1,12 @@
 package fr.progilone.pgcn.service.document;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import fr.progilone.pgcn.domain.document.PhysicalDocument;
 import fr.progilone.pgcn.domain.document.PhysicalDocument.PhysicalDocumentStatus;
 import fr.progilone.pgcn.repository.document.PhysicalDocumentRepository;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PhysicalDocumentService {
@@ -35,7 +33,7 @@ public class PhysicalDocumentService {
     public List<PhysicalDocument> findByTrainIdentifier(final String identifier) {
         return physicalDocumentRepository.findByTrainIdentifier(identifier);
     }
-    
+
     @Transactional
     public List<PhysicalDocument> findByDocUnitIdentifiers(final List<String> identifiers) {
         return physicalDocumentRepository.findByDocUnitIdentifierIn(identifiers);
@@ -48,7 +46,7 @@ public class PhysicalDocumentService {
 
     @Transactional
     public void delete(final String identifier) {
-        physicalDocumentRepository.delete(identifier);
+        physicalDocumentRepository.deleteById(identifier);
     }
 
     private void setDefaultValues(final PhysicalDocument doc) {

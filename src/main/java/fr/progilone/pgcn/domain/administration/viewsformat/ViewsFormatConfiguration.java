@@ -1,16 +1,15 @@
 package fr.progilone.pgcn.domain.administration.viewsformat;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
 import fr.progilone.pgcn.domain.AbstractDomainObject;
 import fr.progilone.pgcn.domain.library.Library;
 import fr.progilone.pgcn.service.util.DefaultFileFormats;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = ViewsFormatConfiguration.TABLE_NAME)
@@ -20,7 +19,6 @@ public class ViewsFormatConfiguration extends AbstractDomainObject {
      * Nom de la table en base de données.
      */
     public static final String TABLE_NAME = "conf_views_format_configuration";
-
 
     /* Valeurs par défaut paramétrées - non persistées */
     @Transient
@@ -56,7 +54,6 @@ public class ViewsFormatConfiguration extends AbstractDomainObject {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "library")
     private Library library;
-
 
     public String getLabel() {
         return label;
@@ -122,7 +119,6 @@ public class ViewsFormatConfiguration extends AbstractDomainObject {
         this.library = library;
     }
 
-
     public DefaultFileFormats getDefaultFormats() {
         return defaultFormats;
     }
@@ -135,21 +131,21 @@ public class ViewsFormatConfiguration extends AbstractDomainObject {
         final long width;
         switch (format) {
             case THUMB:
-                if (getThumbWidth() > 0 ) {
+                if (getThumbWidth() > 0) {
                     width = getThumbWidth();
                 } else {
                     width = getDefaultFormats().getDefThumbWidth();
                 }
                 break;
             case VIEW:
-                if (getViewWidth() > 0 ) {
+                if (getViewWidth() > 0) {
                     width = getViewWidth();
                 } else {
                     width = getDefaultFormats().getDefViewWidth();
                 }
                 break;
             case PRINT:
-                if (getPrintWidth() > 0 ) {
+                if (getPrintWidth() > 0) {
                     width = getPrintWidth();
                 } else {
                     width = getDefaultFormats().getDefPrintWidth();
@@ -166,21 +162,21 @@ public class ViewsFormatConfiguration extends AbstractDomainObject {
         final long width;
         switch (format) {
             case THUMB:
-                if (getThumbHeight() > 0 ) {
+                if (getThumbHeight() > 0) {
                     width = getThumbHeight();
                 } else {
                     width = getDefaultFormats().getDefThumbHeight();
                 }
                 break;
             case VIEW:
-                if (getViewHeight() > 0 ) {
+                if (getViewHeight() > 0) {
                     width = getViewHeight();
                 } else {
                     width = getDefaultFormats().getDefViewHeight();
                 }
                 break;
             case PRINT:
-                if (getPrintHeight() > 0 ) {
+                if (getPrintHeight() > 0) {
                     width = getPrintHeight();
                 } else {
                     width = getDefaultFormats().getDefPrintHeight();
@@ -193,11 +189,11 @@ public class ViewsFormatConfiguration extends AbstractDomainObject {
         return width;
     }
 
-
     /**
      * format de fichiers images.
      */
     public enum FileFormat {
+
         /**
          * format master
          */
@@ -234,13 +230,11 @@ public class ViewsFormatConfiguration extends AbstractDomainObject {
         public String identifier() {
             return this.identifier;
         }
+
         public String label() {
             return this.label;
         }
 
     }
-
-
-
 
 }

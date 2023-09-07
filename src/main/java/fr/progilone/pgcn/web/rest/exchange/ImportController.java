@@ -1,5 +1,7 @@
 package fr.progilone.pgcn.web.rest.exchange;
 
+import static fr.progilone.pgcn.web.rest.exchange.security.AuthorizationConstants.*;
+
 import com.codahale.metrics.annotation.Timed;
 import fr.progilone.pgcn.domain.document.BibliographicRecord;
 import fr.progilone.pgcn.domain.exchange.DataEncoding;
@@ -12,6 +14,13 @@ import fr.progilone.pgcn.service.exchange.dc.ImportDcService;
 import fr.progilone.pgcn.service.exchange.ead.ImportEadService;
 import fr.progilone.pgcn.service.exchange.marc.ImportMarcService;
 import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,16 +33,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-
-import static fr.progilone.pgcn.web.rest.exchange.security.AuthorizationConstants.*;
 
 /**
  * Contrôleur gérant l'import d'unités documentaires
@@ -72,35 +71,35 @@ public class ImportController {
      * Import d'un fichier de notices
      *
      * @param request
-     *         injection de HttpServletRequest
+     *            injection de HttpServletRequest
      * @param type
-     *         type d'import
+     *            type d'import
      * @param files
-     *         fichiers issus du formulaire
+     *            fichiers issus du formulaire
      * @param fileFormat
-     *         format du fichier
+     *            format du fichier
      * @param dataEncoding
-     *         encodage du fichier
+     *            encodage du fichier
      * @param libraryId
-     *         identifiant de la bibliothèque pour laquelle s'effectue l'import
+     *            identifiant de la bibliothèque pour laquelle s'effectue l'import
      * @param mappingId
-     *         identifiant du mapping à utiliser pour importer le fichier, ou mapping DC (constante)
+     *            identifiant du mapping à utiliser pour importer le fichier, ou mapping DC (constante)
      * @param mappingChildrenId
-     *         optionnel, identifiant du mapping à utiliser pour importer les exemplaires des périodiques
+     *            optionnel, identifiant du mapping à utiliser pour importer les exemplaires des périodiques
      * @param projectId
-     *         identifiant du projet auquel rattacher les notices importées
+     *            identifiant du projet auquel rattacher les notices importées
      * @param lotId
-     *         identifiant du lot auquel rattacher les notices importées
+     *            identifiant du lot auquel rattacher les notices importées
      * @param join
-     *         critère identifiant la notice parente
+     *            critère identifiant la notice parente
      * @param stepValidation
-     *         étape de validation par l'utilisateur;
-     *         si false: les unités documentaires sont disponibles dès la fin de l'import,
-     *         et les actions de dédoublonnages sont appliquées automatiquement
+     *            étape de validation par l'utilisateur;
+     *            si false: les unités documentaires sont disponibles dès la fin de l'import,
+     *            et les actions de dédoublonnages sont appliquées automatiquement
      * @param stepDeduplication
-     *         étape de recherche de doublons
+     *            étape de recherche de doublons
      * @param defaultDedupProcess
-     *         action à effectuer en cas de dédoublonnage
+     *            action à effectuer en cas de dédoublonnage
      * @return
      */
     @RequestMapping(method = RequestMethod.POST, params = "mapping", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -110,8 +109,7 @@ public class ImportController {
                                                    @RequestParam(value = "file") final List<MultipartFile> files,
                                                    @RequestParam(value = "type", defaultValue = "SIMPLE") final ImportReport.Type type,
                                                    @RequestParam(value = "format") final FileFormat fileFormat,
-                                                   @RequestParam(value = "encoding", required = false, defaultValue = "UTF_8")
-                                                   final DataEncoding dataEncoding,
+                                                   @RequestParam(value = "encoding", required = false, defaultValue = "UTF_8") final DataEncoding dataEncoding,
                                                    @RequestParam(value = "mapping") final String mappingId,
                                                    @RequestParam(value = "mappingChildren", required = false) final String mappingChildrenId,
                                                    @RequestParam(value = "parent", required = false) final String parentReportId,
@@ -121,12 +119,12 @@ public class ImportController {
                                                    @RequestParam(value = "join", required = false) final String join,
                                                    @RequestParam(value = "validation", defaultValue = "false") final boolean stepValidation,
                                                    @RequestParam(value = "dedup", defaultValue = "false") final boolean stepDeduplication,
-                                                   @RequestParam(value = "dedupProcess", required = false)
-                                                   final ImportedDocUnit.Process defaultDedupProcess,
+                                                   @RequestParam(value = "dedupProcess", required = false) final ImportedDocUnit.Process defaultDedupProcess,
                                                    @RequestParam(value = "archivable", defaultValue = "false") final boolean archivable,
                                                    @RequestParam(value = "distributable", defaultValue = "false") final boolean distributable,
-                                                   @RequestParam(value = "prop_order", required = false, defaultValue = "BY_PROPERTY_TYPE")
-                                                   final BibliographicRecord.PropertyOrder propertyOrder) {
+                                                   @RequestParam(value = "prop_order",
+                                                                 required = false,
+                                                                 defaultValue = "BY_PROPERTY_TYPE") final BibliographicRecord.PropertyOrder propertyOrder) {
         // Vérification des droits d'accès par rapport à la bibliothèque demandée
         if (!libraryAccesssHelper.checkLibrary(request, libraryId)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
@@ -136,21 +134,11 @@ public class ImportController {
         final ImportReport importReport;
         switch (fileFormat) {
             case CSV:
-                importReport = importReportService.createCSVImportReport(files,
-                                                                         type,
-                                                                         fileFormat,
-                                                                         dataEncoding,
-                                                                         libraryId,
-                                                                         projectId,
-                                                                         lotId,
-                                                                         mappingId,
-                                                                         parentReportId,
-                                                                         join);
+                importReport = importReportService.createCSVImportReport(files, type, fileFormat, dataEncoding, libraryId, projectId, lotId, mappingId, parentReportId, join);
                 break;
             case DC:
             case DCQ:
-                importReport =
-                    importReportService.createDCImportReport(files, type, fileFormat, dataEncoding, libraryId, projectId, lotId, mappingId, join);
+                importReport = importReportService.createDCImportReport(files, type, fileFormat, dataEncoding, libraryId, projectId, lotId, mappingId, join);
                 break;
             default:
                 importReport = importReportService.createImportReport(files,
@@ -186,7 +174,8 @@ public class ImportController {
                     return new ResponseEntity<>(importReport, HttpStatus.INTERNAL_SERVER_ERROR);
                 }
                 // Multi-import limité au format MARC
-                if (fileFormat != FileFormat.MARC && fileFormat != FileFormat.MARCJSON && fileFormat != FileFormat.MARCXML) {
+                if (fileFormat != FileFormat.MARC && fileFormat != FileFormat.MARCJSON
+                    && fileFormat != FileFormat.MARCXML) {
                     break;
                 }
 
@@ -212,7 +201,8 @@ public class ImportController {
                                                   importReport,
                                                   stepValidation,
                                                   stepDeduplication,
-                                                  stepDeduplication ? defaultDedupProcess : null,
+                                                  stepDeduplication ? defaultDedupProcess
+                                                                    : null,
                                                   archivable,
                                                   distributable);
                     break;
@@ -224,7 +214,8 @@ public class ImportController {
                                                     importReport,
                                                     stepValidation,
                                                     stepDeduplication,
-                                                    stepDeduplication ? defaultDedupProcess : null,
+                                                    stepDeduplication ? defaultDedupProcess
+                                                                      : null,
                                                     propertyOrder,
                                                     archivable,
                                                     distributable);
@@ -242,7 +233,8 @@ public class ImportController {
                                                       importReport,
                                                       stepValidation,
                                                       stepDeduplication,
-                                                      stepDeduplication ? defaultDedupProcess : null,
+                                                      stepDeduplication ? defaultDedupProcess
+                                                                        : null,
                                                       archivable,
                                                       distributable);
                     break;
@@ -255,13 +247,16 @@ public class ImportController {
                                                     importReport,
                                                     stepValidation,
                                                     stepDeduplication,
-                                                    stepDeduplication ? defaultDedupProcess : null,
+                                                    stepDeduplication ? defaultDedupProcess
+                                                                      : null,
                                                     archivable,
                                                     distributable);
                     break;
                 default:
                     LOG.error("Le format de fichier {} n'est pas supporté", fileFormat);
-                    importReportService.failReport(importReport, "Le format de fichier " + fileFormat + " n'est pas supporté");
+                    importReportService.failReport(importReport,
+                                                   "Le format de fichier " + fileFormat
+                                                                 + " n'est pas supporté");
                     return new ResponseEntity<>(importReport, HttpStatus.BAD_REQUEST);
             }
         } catch (final Exception e) {
@@ -283,10 +278,8 @@ public class ImportController {
     @RolesAllowed({EXC_HAB2})
     public ResponseEntity<ImportReport> importPreimportedDocUnits(final HttpServletRequest request,
                                                                   @RequestBody final ImportReport report,
-                                                                  @RequestParam(name = "defaultProcess", defaultValue = "ADD")
-                                                                  final ImportedDocUnit.Process defaultProcess,
-                                                                  @RequestParam(name = "dedupProcess", defaultValue = "ADD")
-                                                                  final ImportedDocUnit.Process defaultDedupProcess) {
+                                                                  @RequestParam(name = "defaultProcess", defaultValue = "ADD") final ImportedDocUnit.Process defaultProcess,
+                                                                  @RequestParam(name = "dedupProcess", defaultValue = "ADD") final ImportedDocUnit.Process defaultDedupProcess) {
         final ImportReport dbReport = importReportService.findByIdentifier(report.getIdentifier());
         // Non trouvé
         if (dbReport == null) {

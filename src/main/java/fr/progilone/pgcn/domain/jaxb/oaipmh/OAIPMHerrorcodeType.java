@@ -5,19 +5,20 @@
 // Généré le : 2018.08.13 à 01:08:19 PM CEST
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.oaipmh;
 
-import javax.xml.bind.annotation.XmlEnum;
-import javax.xml.bind.annotation.XmlEnumValue;
-import javax.xml.bind.annotation.XmlType;
-
+import jakarta.xml.bind.annotation.XmlEnum;
+import jakarta.xml.bind.annotation.XmlEnumValue;
+import jakarta.xml.bind.annotation.XmlType;
 
 /**
- * <p>Classe Java pour OAI-PMHerrorcodeType.
- *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  * <p>
+ * Classe Java pour OAI-PMHerrorcodeType.
+ *
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ *
  * <pre>
  * &lt;simpleType name="OAI-PMHerrorcodeType">
  *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
@@ -54,6 +55,7 @@ public enum OAIPMHerrorcodeType {
     BAD_RESUMPTION_TOKEN("badResumptionToken"),
     @XmlEnumValue("noSetHierarchy")
     NO_SET_HIERARCHY("noSetHierarchy");
+
     private final String value;
 
     OAIPMHerrorcodeType(String v) {
@@ -65,7 +67,7 @@ public enum OAIPMHerrorcodeType {
     }
 
     public static OAIPMHerrorcodeType fromValue(String v) {
-        for (OAIPMHerrorcodeType c: OAIPMHerrorcodeType.values()) {
+        for (OAIPMHerrorcodeType c : OAIPMHerrorcodeType.values()) {
             if (c.value.equals(v)) {
                 return c;
             }

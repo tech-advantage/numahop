@@ -5,12 +5,12 @@
 // Généré le : 2017.01.03 à 11:16:18 AM CET
 //
 
-@javax.xml.bind.annotation.XmlSchema(namespace = "http://www.cines.fr/pac/avis", elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
+@jakarta.xml.bind.annotation.XmlSchema(namespace = "http://www.cines.fr/pac/avis",
+                                       elementFormDefault = jakarta.xml.bind.annotation.XmlNsForm.QUALIFIED,
+                                       xmlns = {@jakarta.xml.bind.annotation.XmlNs(namespaceURI = "http://www.cines.fr/pac/avis", prefix = "")})
 @XmlJavaTypeAdapter(value = LocalDateTimeXmlAdapter.class, type = LocalDateTime.class)
 package fr.progilone.pgcn.domain.jaxb.avis;
 
-import java.time.LocalDateTime;
-
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 import fr.progilone.pgcn.domain.jaxb.adapters.LocalDateTimeXmlAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.time.LocalDateTime;

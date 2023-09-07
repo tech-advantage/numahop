@@ -15,7 +15,6 @@ public class SimpleLotForDeliveryDTO {
     private Lot.LotStatus status;
     private Lot.Type type;
     private String requiredFormat;
-    
 
     public SimpleLotForDeliveryDTO() {
     }

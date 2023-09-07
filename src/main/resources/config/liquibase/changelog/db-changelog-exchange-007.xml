@@ -1,26 +1,26 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <changeSet id="pgcn-create-exchange-007" author="progilone">
 
         <!-- Gestion d'un mapping spécifique à l'import des exemplaires de périodiques -->
         <addColumn tableName="exc_import_report">
-            <column name="project" type="varchar(191)" beforeColumn="mapping"/>
-            <column name="lot" type="varchar(191)" beforeColumn="mapping"/>
+            <column name="project" type="varchar(191)" beforeColumn="mapping" />
+            <column name="lot" type="varchar(191)" beforeColumn="mapping" />
         </addColumn>
 
-        <addForeignKeyConstraint baseTableName="exc_import_report" baseColumnNames="project" constraintName="fk_exc_import_report_project"
-                                 referencedTableName="proj_project" referencedColumnNames="identifier"/>
-        <addForeignKeyConstraint baseTableName="exc_import_report" baseColumnNames="lot" constraintName="fk_exc_import_report_lot"
-                                 referencedTableName="lot_lot" referencedColumnNames="identifier"/>
+        <addForeignKeyConstraint baseTableName="exc_import_report" baseColumnNames="project" constraintName="fk_exc_import_report_project" referencedTableName="proj_project" referencedColumnNames="identifier" />
+        <addForeignKeyConstraint baseTableName="exc_import_report" baseColumnNames="lot" constraintName="fk_exc_import_report_lot" referencedTableName="lot_lot" referencedColumnNames="identifier" />
 
         <createIndex tableName="exc_import_report" indexName="idx_exc_import_report_project">
-            <column name="project"/>
+            <column name="project" />
         </createIndex>
         <createIndex tableName="exc_import_report" indexName="idx_exc_import_report_lot">
-            <column name="lot"/>
+            <column name="lot" />
         </createIndex>
 
     </changeSet>

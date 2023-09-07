@@ -1,13 +1,15 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <!-- Profils par défaut-->
     <changeSet author="progilone" id="pgcn-create-user-3-1">
 
         <preConditions onFail="MARK_RAN">
-            <dbms type="mysql"/>
+            <dbms type="mysql" />
             <sqlCheck expectedResult="0">SELECT COUNT(*) FROM user_role WHERE identifier != 'SUPERROLE'</sqlCheck>
         </preConditions>
 
@@ -25,7 +27,7 @@
 
     <changeSet author="progilone" id="pgcn-create-user-3-2">
         <preConditions onFail="MARK_RAN">
-            <dbms type="mysql"/>
+            <dbms type="mysql" />
             <sqlCheck expectedResult="7">
                 SELECT COUNT(*)
                 FROM user_role

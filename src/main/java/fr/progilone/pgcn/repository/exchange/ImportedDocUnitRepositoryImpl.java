@@ -1,30 +1,31 @@
 package fr.progilone.pgcn.repository.exchange;
 
-import com.mysema.query.Tuple;
-import com.mysema.query.jpa.impl.JPAQuery;
-import com.mysema.query.types.expr.BooleanExpression;
+import com.querydsl.core.Tuple;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.document.QDocUnit;
 import fr.progilone.pgcn.domain.exchange.ImportReport;
 import fr.progilone.pgcn.domain.exchange.QImportedDocUnit;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by Sébastien on 28/06/2017.
  */
 public class ImportedDocUnitRepositoryImpl implements ImportedDocUnitRepositoryCustom {
 
-    @PersistenceContext
-    private EntityManager em;
+    private final JPAQueryFactory queryFactory;
+
+    public ImportedDocUnitRepositoryImpl(final JPAQueryFactory queryFactory) {
+        this.queryFactory = queryFactory;
+    }
 
     @Override
     public Page<String> findIdentifiersByImportReport(final ImportReport report,
@@ -36,8 +37,8 @@ public class ImportedDocUnitRepositoryImpl implements ImportedDocUnitRepositoryC
         final QDocUnit qDocUnit = QDocUnit.docUnit;
 
         // Requête de comptage
-        JPAQuery query = getQueryIdentifiersByImportReport(report, states, withErrors, withDuplicates, qImportedDocUnit, qDocUnit);
-        final long count = query.distinct().count();
+        JPAQuery<?> query = getQueryIdentifiersByImportReport(report, states, withErrors, withDuplicates, qImportedDocUnit, qDocUnit);
+        final long count = query.select(qImportedDocUnit.countDistinct()).fetchOne();
 
         // Recherche
         query = getQueryIdentifiersByImportReport(report, states, withErrors, withDuplicates, qImportedDocUnit, qDocUnit);
@@ -49,7 +50,7 @@ public class ImportedDocUnitRepositoryImpl implements ImportedDocUnitRepositoryC
         // Page
         query.offset(pageable.getOffset()).limit(pageable.getPageSize());
         // Call
-        final List<Tuple> results = query.distinct().fetchAll().list(qImportedDocUnit.identifier, qDocUnit.label);
+        final List<Tuple> results = query.select(qImportedDocUnit.identifier, qDocUnit.label).distinct().fetch();
         final List<String> identifiers = results.stream().map(tuple -> tuple.get(qImportedDocUnit.identifier)).collect(Collectors.toList());
         // Result
         return new PageImpl<>(identifiers, pageable, count);
@@ -66,21 +67,20 @@ public class ImportedDocUnitRepositoryImpl implements ImportedDocUnitRepositoryC
      * @param qDocUnit
      * @return
      */
-    private JPAQuery getQueryIdentifiersByImportReport(final ImportReport report,
-                                                       final List<DocUnit.State> states,
-                                                       final boolean withErrors,
-                                                       final boolean withDuplicates,
-                                                       final QImportedDocUnit qImportedDocUnit,
-                                                       final QDocUnit qDocUnit) {
-        final JPAQuery query =
-            new JPAQuery(em).from(qImportedDocUnit).leftJoin(qImportedDocUnit.docUnit, qDocUnit).where(qImportedDocUnit.report.eq(report));
+    private JPAQuery<?> getQueryIdentifiersByImportReport(final ImportReport report,
+                                                          final List<DocUnit.State> states,
+                                                          final boolean withErrors,
+                                                          final boolean withDuplicates,
+                                                          final QImportedDocUnit qImportedDocUnit,
+                                                          final QDocUnit qDocUnit) {
+        final JPAQuery<?> query = queryFactory.from(qImportedDocUnit).leftJoin(qImportedDocUnit.docUnit, qDocUnit).where(qImportedDocUnit.report.eq(report));
 
         // Filtrage par statut des entités importées
         if (CollectionUtils.isNotEmpty(states)) {
             final boolean filterDeletedUnits = states.contains(DocUnit.State.DELETED);
             final List<DocUnit.State> stateFilters = states.stream().filter(st -> st != DocUnit.State.DELETED).collect(Collectors.toList());
 
-            List<BooleanExpression> expressions = new ArrayList<>();
+            final List<BooleanExpression> expressions = new ArrayList<>();
             if (!stateFilters.isEmpty()) {
                 expressions.add(qDocUnit.state.in(stateFilters));
             }

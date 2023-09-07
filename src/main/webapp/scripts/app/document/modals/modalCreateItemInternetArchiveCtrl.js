@@ -1,12 +1,9 @@
 (function () {
     'use strict';
 
-    angular.module("numaHopApp.controller")
-        .controller("ModalCreateItemInternetArchiveCtrl", ModalCreateItemInternetArchiveCtrl);
+    angular.module('numaHopApp.controller').controller('ModalCreateItemInternetArchiveCtrl', ModalCreateItemInternetArchiveCtrl);
 
-    function ModalCreateItemInternetArchiveCtrl($scope, $uibModalInstance, options, gettextCatalog, $location, $timeout,
-        MessageSrvc, DocUnitBaseService, NumahopEditService, ExportInternetArchiveSrvc) {
-
+    function ModalCreateItemInternetArchiveCtrl($scope, $uibModalInstance, options, gettextCatalog, $location, $timeout, MessageSrvc, DocUnitBaseService, NumahopEditService, ExportInternetArchiveSrvc) {
         var mainCtrl = this;
         mainCtrl.preventDefault = NumahopEditService.preventDefault;
         mainCtrl.docUnit = options.docUnit;
@@ -29,7 +26,12 @@
         mainCtrl.removeLanguage = removeLanguage;
 
         mainCtrl.options = DocUnitBaseService.options;
-        mainCtrl.options.mediatypes = [{ id: 1, name: "texts" }, { id: 2, name: "image" }, { id: 3, name: "collection" }, { id: 4, name: "autre" }];
+        mainCtrl.options.mediatypes = [
+            { id: 1, name: 'texts' },
+            { id: 2, name: 'image' },
+            { id: 3, name: 'collection' },
+            { id: 4, name: 'autre' },
+        ];
 
         init();
 
@@ -38,18 +40,23 @@
          */
         function init() {
             /** Préparation **/
-            mainCtrl.item = ExportInternetArchiveSrvc.prepare({
-                id: mainCtrl.docUnit
-            }, function (item) {
-                afterLoadingEntity(item);
-            });
+            mainCtrl.item = ExportInternetArchiveSrvc.prepare(
+                {
+                    id: mainCtrl.docUnit,
+                },
+                function (item) {
+                    afterLoadingEntity(item);
+                }
+            );
         }
         function afterLoadingEntity(value) {
             mainCtrl.item = value;
             if (angular.isUndefined(mainCtrl.item.mediatype)) {
-                mainCtrl.item.mediatype = "texts";
+                mainCtrl.item.mediatype = 'texts';
             }
-            mainCtrl.item._mediatype = _.find(mainCtrl.options.mediatypes, function (m) { return m.name === mainCtrl.item.mediatype; });
+            mainCtrl.item._mediatype = _.find(mainCtrl.options.mediatypes, function (m) {
+                return m.name === mainCtrl.item.mediatype;
+            });
             if (!mainCtrl.item.subjects) {
                 mainCtrl.item.subjects = [];
             }
@@ -67,7 +74,7 @@
             if (angular.isDefined(subject)) {
                 if (mainCtrl.item.subjects.indexOf(subject) === -1) {
                     mainCtrl.item.subjects.push(subject);
-                    mainCtrl.item.newSubject = "";
+                    mainCtrl.item.newSubject = '';
                 }
             }
         }
@@ -87,7 +94,7 @@
             if (angular.isDefined(mainCtrl.item.newCollection)) {
                 if (mainCtrl.item.collections.indexOf(mainCtrl.item.newCollection) === -1) {
                     mainCtrl.item.collections.push(mainCtrl.item.newCollection);
-                    mainCtrl.item.newCollection = "";
+                    mainCtrl.item.newCollection = '';
                 }
             }
         }
@@ -110,15 +117,15 @@
                 });
                 if (angular.isDefined(itemFound)) {
                     itemFound.value = mainCtrl.item.newHeaderValue;
-                    mainCtrl.item.newHeaderType = "";
-                    mainCtrl.item.newHeaderValue = "";
+                    mainCtrl.item.newHeaderType = '';
+                    mainCtrl.item.newHeaderValue = '';
                 } else {
                     var item = {};
                     item.type = mainCtrl.item.newHeaderType;
                     item.value = mainCtrl.item.newHeaderValue;
                     mainCtrl.item.customHeaders.push(item);
-                    mainCtrl.item.newHeaderType = "";
-                    mainCtrl.item.newHeaderValue = "";
+                    mainCtrl.item.newHeaderType = '';
+                    mainCtrl.item.newHeaderValue = '';
                 }
             }
         }
@@ -131,7 +138,6 @@
             }
         }
 
-
         /**
          * Gestion des coverages
          */
@@ -139,7 +145,7 @@
             if (angular.isDefined(coverage)) {
                 if (mainCtrl.item.coverages.indexOf(coverage) === -1) {
                     mainCtrl.item.coverages.push(coverage);
-                    mainCtrl.item.newCoverage = "";
+                    mainCtrl.item.newCoverage = '';
                 }
             }
         }
@@ -159,7 +165,7 @@
             if (angular.isDefined(contributor)) {
                 if (mainCtrl.item.contributors.indexOf(contributor) === -1) {
                     mainCtrl.item.contributors.push(contributor);
-                    mainCtrl.item.newContributor = "";
+                    mainCtrl.item.newContributor = '';
                 }
             }
         }
@@ -179,7 +185,7 @@
             if (angular.isDefined(creator)) {
                 if (mainCtrl.item.creators.indexOf(creator) === -1) {
                     mainCtrl.item.creators.push(creator);
-                    mainCtrl.item.newCreator = "";
+                    mainCtrl.item.newCreator = '';
                 }
             }
         }
@@ -199,7 +205,7 @@
             if (angular.isDefined(langauge)) {
                 if (mainCtrl.item.languages.indexOf(langauge) === -1) {
                     mainCtrl.item.languages.push(langauge);
-                    mainCtrl.item.newLangauge = "";
+                    mainCtrl.item.newLangauge = '';
                 }
             }
         }
@@ -220,7 +226,7 @@
          * Fermeture de la fenêtre
          */
         function close() {
-            $uibModalInstance.dismiss("cancel");
+            $uibModalInstance.dismiss('cancel');
         }
 
         /**
@@ -230,13 +236,15 @@
             close();
 
             setMediaTypeOfItemBeforeSaving(mainCtrl.item);
-            ExportInternetArchiveSrvc.create({
-                id: mainCtrl.docUnit
-            }, mainCtrl.item, function () {
-                MessageSrvc.addSuccess(
-                    gettextCatalog.getString("L'unité documentaire {{label}} va être envoyée vers Internet Archive"),
-                    { label: mainCtrl.item.identifier });
-            });
+            ExportInternetArchiveSrvc.create(
+                {
+                    id: mainCtrl.docUnit,
+                },
+                mainCtrl.item,
+                function () {
+                    MessageSrvc.addSuccess(gettextCatalog.getString("L'unité documentaire {{label}} va être envoyée vers Internet Archive"), { label: mainCtrl.item.identifier });
+                }
+            );
         }
 
         /**
@@ -246,15 +254,15 @@
             close();
 
             setMediaTypeOfItemBeforeSaving(mainCtrl.item);
-            ExportInternetArchiveSrvc.save({
-                id: mainCtrl.docUnit
-            }, mainCtrl.item, function () {
-                MessageSrvc.addSuccess(
-                    gettextCatalog.getString("Les données d'export IA pour l'unité documentaire {{label}} ont été sauvegardées"),
-                    { label: mainCtrl.item.archiveIdentifier });
-            });
+            ExportInternetArchiveSrvc.save(
+                {
+                    id: mainCtrl.docUnit,
+                },
+                mainCtrl.item,
+                function () {
+                    MessageSrvc.addSuccess(gettextCatalog.getString("Les données d'export IA pour l'unité documentaire {{label}} ont été sauvegardées"), { label: mainCtrl.item.archiveIdentifier });
+                }
+            );
         }
-
     }
-
 })();

@@ -1,11 +1,9 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('TemplateCtrl', TemplateCtrl);
+    angular.module('numaHopApp.controller').controller('TemplateCtrl', TemplateCtrl);
 
     function TemplateCtrl($q, $routeParams, $scope, $timeout, NumaHopInitializationSrvc, TemplateSrvc) {
-
         var mainCtrl = this;
         mainCtrl.create = create;
         mainCtrl.displayTemplateName = TemplateSrvc.displayTemplateName;
@@ -20,20 +18,19 @@
         function init() {
             mainCtrl.loaded = false;
 
-            $q.all([loadTemplates(), loadLibraries()])
-                .then(function () {
-                    mainCtrl.loaded = true;
+            $q.all([loadTemplates(), loadLibraries()]).then(function () {
+                mainCtrl.loaded = true;
 
-                    if (angular.isDefined($routeParams.id)) {
-                        select($routeParams.id);
-                    }
-                    refreshTemplate();
-                });
+                if (angular.isDefined($routeParams.id)) {
+                    select($routeParams.id);
+                }
+                refreshTemplate();
+            });
         }
 
         /**
          * Chargement de la liste des templates
-         * 
+         *
          */
         function loadTemplates() {
             mainCtrl.templates = TemplateSrvc.query();
@@ -42,21 +39,20 @@
 
         /**
          * Chargement de la liste des bibliothèques
-         * 
-         * @returns 
+         *
+         * @returns
          */
         function loadLibraries() {
-            return NumaHopInitializationSrvc.loadLibraries()
-                .then(function (libs) {
-                    mainCtrl.libraries = _.sortBy(libs, sortLibrary);
-                });
+            return NumaHopInitializationSrvc.loadLibraries().then(function (libs) {
+                mainCtrl.libraries = _.sortBy(libs, sortLibrary);
+            });
         }
 
         /**
          * Critère de tri des bibliothèques
-         * 
-         * @param {any} library 
-         * @returns 
+         *
+         * @param {any} library
+         * @returns
          */
         function sortLibrary(library) {
             return library.name.toLowerCase();
@@ -64,7 +60,7 @@
 
         /**
          * Création d'un nouveau template
-         * 
+         *
          */
         function create() {
             mainCtrl.editedTemplate = {};
@@ -74,8 +70,8 @@
 
         /**
          * Édition d'une configuration existante
-         * 
-         * @param {any} template 
+         *
+         * @param {any} template
          */
         function edit(template) {
             mainCtrl.editedTemplate = template;
@@ -88,14 +84,14 @@
             return $timeout(function () {
                 mainCtrl.configurationInclude = null;
                 $scope.$apply();
-                mainCtrl.configurationInclude = "scripts/app/configuration/template/templateEdit.html";
+                mainCtrl.configurationInclude = 'scripts/app/configuration/template/templateEdit.html';
             });
         }
 
         /**
          * Sélection d'un template à partir de son identifiant
-         * 
-         * @param {any} id 
+         *
+         * @param {any} id
          */
         function select(id) {
             if (id) {
@@ -104,23 +100,23 @@
                 });
                 if (angular.isDefined(found)) {
                     edit(found);
-                }
-                else {
+                } else {
                     edit({ identifier: id });
                 }
-            }
-            else {
+            } else {
                 setSelection();
             }
         }
 
         /**
          * Mise à jour des flags _selected
-         * 
-         * @param {any} selTemplate 
+         *
+         * @param {any} selTemplate
          */
         function setSelection(selTemplate) {
-            _.each(mainCtrl.templates, function (template) { delete template._selected; });
+            _.each(mainCtrl.templates, function (template) {
+                delete template._selected;
+            });
             if (selTemplate) {
                 selTemplate._selected = true;
             }

@@ -1,31 +1,5 @@
 package fr.progilone.pgcn.service.document;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.apache.commons.collections4.IterableUtils;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import fr.progilone.pgcn.domain.AbstractDomainObject;
 import fr.progilone.pgcn.domain.administration.viewsformat.ViewsFormatConfiguration;
 import fr.progilone.pgcn.domain.administration.viewsformat.ViewsFormatConfiguration.FileFormat;
@@ -48,6 +22,30 @@ import fr.progilone.pgcn.service.MailService;
 import fr.progilone.pgcn.service.checkconfiguration.mapper.CheckConfigurationMapper;
 import fr.progilone.pgcn.service.storage.BinaryStorageManager;
 import fr.progilone.pgcn.service.workflow.WorkflowService;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import org.apache.commons.collections4.IterableUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class DigitalDocumentService {
@@ -64,20 +62,19 @@ public class DigitalDocumentService {
     private final DocUnitService docUnitService;
     private final DeliveryRepository deliveryRepository;
 
-
     @Value("${spring.mail.from}")
     private String mailFrom;
 
     @Autowired
     public DigitalDocumentService(final DigitalDocumentRepository digitalDocumentRepository,
-                                         final DocPageRepository docPageRepository,
-                                         final BinaryRepository binaryRepository,
-                                         final BinaryStorageManager bm,
-                                         final WorkflowService workflowService,
-                                         final SlipService slipService,
-                                         final MailService mailService,
-                                         final DocUnitService docUnitService,
-                                         final DeliveryRepository deliveryRepository) {
+                                  final DocPageRepository docPageRepository,
+                                  final BinaryRepository binaryRepository,
+                                  final BinaryStorageManager bm,
+                                  final WorkflowService workflowService,
+                                  final SlipService slipService,
+                                  final MailService mailService,
+                                  final DocUnitService docUnitService,
+                                  final DeliveryRepository deliveryRepository) {
         this.digitalDocumentRepository = digitalDocumentRepository;
         this.docPageRepository = docPageRepository;
         this.binaryRepository = binaryRepository;
@@ -96,7 +93,7 @@ public class DigitalDocumentService {
 
     @Transactional
     public void delete(final Set<DigitalDocument> dds) {
-        digitalDocumentRepository.delete(dds);
+        digitalDocumentRepository.deleteAll(dds);
     }
 
     @Transactional
@@ -107,15 +104,17 @@ public class DigitalDocumentService {
     /**
      * Récupération au format StoredFileFormat.LABEL_THUMBNAIL
      *
-     * @param identifier DocPage
-     * @param page page
+     * @param identifier
+     *            DocPage
+     * @param page
+     *            page
      * @return File
      */
     @Transactional(readOnly = true)
     public File getThumbnail(final String identifier, final int page) {
         final DocPage dp = getPage(identifier, page);
         final StoredFile sf = binaryRepository.getOneByPageIdentifierAndFileFormat(dp.getIdentifier(), ViewsFormatConfiguration.FileFormat.THUMB);
-        return bm.getFileForStoredFile(sf,dp.getDigitalDocument().getDocUnit().getLibrary().getIdentifier());
+        return bm.getFileForStoredFile(sf, dp.getDigitalDocument().getDocUnit().getLibrary().getIdentifier());
     }
 
     /**
@@ -129,7 +128,7 @@ public class DigitalDocumentService {
     public File getView(final String identifier, final int page) {
         final DocPage dp = getPage(identifier, page);
         final StoredFile sf = binaryRepository.getOneByPageIdentifierAndFileFormat(dp.getIdentifier(), ViewsFormatConfiguration.FileFormat.VIEW);
-        return bm.getFileForStoredFile(sf,dp.getDigitalDocument().getDocUnit().getLibrary().getIdentifier());
+        return bm.getFileForStoredFile(sf, dp.getDigitalDocument().getDocUnit().getLibrary().getIdentifier());
     }
 
     /**
@@ -143,7 +142,7 @@ public class DigitalDocumentService {
     public File getPrint(final String identifier, final int page) {
         final DocPage dp = getPage(identifier, page);
         final StoredFile sf = binaryRepository.getOneByPageIdentifierAndFileFormat(dp.getIdentifier(), ViewsFormatConfiguration.FileFormat.PRINT);
-        return bm.getFileForStoredFile(sf,dp.getDigitalDocument().getDocUnit().getLibrary().getIdentifier());
+        return bm.getFileForStoredFile(sf, dp.getDigitalDocument().getDocUnit().getLibrary().getIdentifier());
     }
 
     /**
@@ -157,7 +156,7 @@ public class DigitalDocumentService {
     public File getMaster(final String identifier, final int page) {
         final DocPage dp = getPage(identifier, page);
         final StoredFile sf = binaryRepository.getOneByPageIdentifierAndFileFormat(dp.getIdentifier(), ViewsFormatConfiguration.FileFormat.MASTER);
-        return bm.getFileForStoredFile(sf,dp.getDigitalDocument().getDocUnit().getLibrary().getIdentifier());
+        return bm.getFileForStoredFile(sf, dp.getDigitalDocument().getDocUnit().getLibrary().getIdentifier());
     }
 
     /**
@@ -170,9 +169,8 @@ public class DigitalDocumentService {
     public File getPdfMaster(final String identifier) {
         final DocPage dp = getPdfPage(identifier);
         final StoredFile sf = binaryRepository.getOneByPageIdentifierAndFileFormat(dp.getIdentifier(), ViewsFormatConfiguration.FileFormat.MASTER);
-        return bm.getFileForStoredFile(sf,dp.getDigitalDocument().getDocUnit().getLibrary().getIdentifier());
+        return bm.getFileForStoredFile(sf, dp.getDigitalDocument().getDocUnit().getLibrary().getIdentifier());
     }
-
 
     /**
      * Simple recuperation du format ZOOM.
@@ -185,7 +183,7 @@ public class DigitalDocumentService {
     public File getZoom(final String identifier, final int page) {
         final DocPage dp = getPage(identifier, page);
         final StoredFile sf = binaryRepository.getOneByPageIdentifierAndFileFormat(dp.getIdentifier(), ViewsFormatConfiguration.FileFormat.ZOOM);
-        return bm.getFileForStoredFile(sf,dp.getDigitalDocument().getDocUnit().getLibrary().getIdentifier());
+        return bm.getFileForStoredFile(sf, dp.getDigitalDocument().getDocUnit().getLibrary().getIdentifier());
     }
 
     /**
@@ -203,8 +201,7 @@ public class DigitalDocumentService {
 
         if (dp.getMaster().isPresent()) {
             final StoredFile master = dp.getMaster().get();
-            if (ArrayUtils.contains(args.split(","), String.valueOf(master.getWidth()))
-                                || ArrayUtils.contains(args.split(","), String.valueOf(master.getHeight()))) {
+            if (ArrayUtils.contains(args.split(","), String.valueOf(master.getWidth())) || ArrayUtils.contains(args.split(","), String.valueOf(master.getHeight()))) {
                 // XtraZoom demandé
                 sf = binaryRepository.getOneByPageIdentifierAndFileFormat(dp.getIdentifier(), ViewsFormatConfiguration.FileFormat.XTRAZOOM);
             }
@@ -214,7 +211,6 @@ public class DigitalDocumentService {
         }
         return bm.getFileForStoredFile(sf, sf.getPage().getDigitalDocument().getDocUnit().getLibrary().getIdentifier());
     }
-
 
     /**
      * Recupere la checkConfig active du doc.
@@ -227,7 +223,7 @@ public class DigitalDocumentService {
 
         final DigitalDocument dd = digitalDocumentRepository.getOneWithCheckConfiguration(identifier);
         final CheckConfiguration cc = dd.getDocUnit().getLot().getActiveCheckConfiguration();
-        return  CheckConfigurationMapper.INSTANCE.checkConfigurationToCheckConfigurationDTO(cc);
+        return CheckConfigurationMapper.INSTANCE.checkConfigurationToCheckConfigurationDTO(cc);
     }
 
     @Transactional(readOnly = true)
@@ -235,7 +231,8 @@ public class DigitalDocumentService {
         final DigitalDocument doc = findOne(identifier);
         final DeliveredDocument deliv = Collections.max(doc.getDeliveries(), Comparator.comparing(AbstractDomainObject::getLastModifiedDate));
 
-        return deliv!=null?deliv.getDelivery().getDigitizingNotes():null;
+        return deliv != null ? deliv.getDelivery().getDigitizingNotes()
+                             : null;
     }
 
     @Transactional(readOnly = true)
@@ -245,7 +242,6 @@ public class DigitalDocumentService {
         return sf.getFilename();
     }
 
-
     @Transactional(readOnly = true)
     public String[] getMasterPdfName(final String identifier) {
         final String[] res = new String[2];
@@ -253,8 +249,8 @@ public class DigitalDocumentService {
         if (master != null) {
             final StoredFile sf = binaryRepository.getOneByPageIdentifierAndFileFormat(master.getIdentifier(), FileFormat.MASTER);
             if (sf != null) {
-            	res[0] = sf.getFilename();
-            	res[1] = String.valueOf(sf.getLength());
+                res[0] = sf.getFilename();
+                res[1] = String.valueOf(sf.getLength());
             }
         }
 
@@ -304,8 +300,6 @@ public class DigitalDocumentService {
         return digitalDocumentRepository.getAllByDigitalIdAndLotIdentifier(prefix, identifier);
     }
 
-
-
     /**
      * Génération du bordereau de contrôles et envoi au prestataire si la livraison est integralement traitée.
      *
@@ -317,9 +311,9 @@ public class DigitalDocumentService {
     public void generateAndSendCheckSlip(final String docUnitId, final Optional<DeliveredDocument> lastDeliveredDoc) {
 
         // Génération du bordereau de contrôles et envoi au prestataire si la livraison est traitée.
-        if(workflowService.isStateRunning(docUnitId, WorkflowStateKey.RAPPORT_CONTROLES)) {
+        if (workflowService.isStateRunning(docUnitId, WorkflowStateKey.RAPPORT_CONTROLES)) {
             // Récupération du rapport
-            if(lastDeliveredDoc.isPresent()) {
+            if (lastDeliveredDoc.isPresent()) {
                 final Delivery delivery = lastDeliveredDoc.get().getDelivery();
                 // creation bordereau
                 boolean created = true;
@@ -332,7 +326,6 @@ public class DigitalDocumentService {
                     LOG.warn("Erreur lors de la création du bordereau de controle - Livraison {}", delivery.getIdentifier(), e);
                     created = false;
                 }
-
 
                 // Envoi du bordereau au prestataire si tous les docs sont traités.
                 final Set<DeliveredDocument> documents = deliveryRepository.findSimpleDeliveredDocumentsByDeliveryIdentifier(delivery.getIdentifier());
@@ -348,39 +341,40 @@ public class DigitalDocumentService {
                     mailTo.toArray(to);
 
                     final String dtDelivery = DateTimeFormatter.ofPattern("dd/MM/yyyy").format(lastDeliveredDoc.get().getDeliveryDate());
-                    final String contentText = "Rapport de contrôles (Livraison ".concat(delivery.getLabel())
-                                                                                    .concat(" - ")
-                                                                                    .concat(dtDelivery)
-                                                                                    .concat(")");
+                    final String contentText = "Rapport de contrôles (Livraison ".concat(delivery.getLabel()).concat(" - ").concat(dtDelivery).concat(")");
 
-                    final boolean sent = created && mailService.sendEmailWithStreamAttachment(mailFrom, to,
-                                                                                   docUnitService.getResponsibleMail(docUnitId),
-                                                                                   contentText,
-                                                                                   contentText,
-                                                                                   "RapportControles-livraison ".concat(dtDelivery).concat(".pdf"),
-                                                                                   new ByteArrayInputStream(report.toByteArray()),
-                                                                                   "application/pdf", true, true);
-                    if (! sent) {
-                        LOG.trace(created ?"L'envoi du bordereau de controle échoué":"La génération du bordereau de controle a échoué");
+                    final boolean sent = created && mailService.sendEmailWithStreamAttachment(mailFrom,
+                                                                                              to,
+                                                                                              docUnitService.getResponsibleMail(docUnitId),
+                                                                                              contentText,
+                                                                                              contentText,
+                                                                                              "RapportControles-livraison ".concat(dtDelivery).concat(".pdf"),
+                                                                                              new ByteArrayInputStream(report.toByteArray()),
+                                                                                              "application/pdf",
+                                                                                              true,
+                                                                                              true);
+                    if (!sent) {
+                        LOG.trace(created ? "L'envoi du bordereau de controle échoué"
+                                          : "La génération du bordereau de controle a échoué");
                         if (mailTo.isEmpty()) {
                             LOG.trace("Echec envoi mail : mail prestataire non trouvé!");
                         }
                     }
 
                     documents.stream()
-                            .map(doc -> doc.getDigitalDocument().getIdentifier())
-                            .filter(ddId -> ddId != null)
-                            .map(ddId -> findDocUnitByIdentifier(ddId))
-                            .forEach(dUnit -> {
+                             .map(doc -> doc.getDigitalDocument().getIdentifier())
+                             .filter(ddId -> ddId != null)
+                             .map(ddId -> findDocUnitByIdentifier(ddId))
+                             .forEach(dUnit -> {
 
-//                        final DocUnit du = findDocUnitByIdentifier(doc.getIdentifier());
+                                 // final DocUnit du = findDocUnitByIdentifier(doc.getIdentifier());
 
-                        if(sent) {
-                            workflowService.processAutomaticState(dUnit.getIdentifier(), WorkflowStateKey.RAPPORT_CONTROLES);
-                        } else {
-                            workflowService.rejectAutomaticState(dUnit.getIdentifier(), WorkflowStateKey.RAPPORT_CONTROLES);
-                        }
-                    });
+                                 if (sent) {
+                                     workflowService.processAutomaticState(dUnit.getIdentifier(), WorkflowStateKey.RAPPORT_CONTROLES);
+                                 } else {
+                                     workflowService.rejectAutomaticState(dUnit.getIdentifier(), WorkflowStateKey.RAPPORT_CONTROLES);
+                                 }
+                             });
                 }
             }
         }
@@ -395,11 +389,11 @@ public class DigitalDocumentService {
      */
     public boolean allDeliveryDocsChecked(final Set<DeliveredDocument> documents, final DeliveredDocument current) {
         final Optional<DeliveredDocument> deliv = documents.stream()
-                                        .filter(doc-> !StringUtils.equals(current.getIdentifier(), doc.getIdentifier())
-                                                && DigitalDocumentStatus.VALIDATED != doc.getStatus()
-                                                && DigitalDocumentStatus.REJECTED != doc.getStatus() )
-                                        .findFirst();
-        return ! deliv.isPresent();
+                                                           .filter(doc -> !StringUtils.equals(current.getIdentifier(), doc.getIdentifier()) && DigitalDocumentStatus.VALIDATED
+                                                                                                                                               != doc.getStatus()
+                                                                          && DigitalDocumentStatus.REJECTED != doc.getStatus())
+                                                           .findFirst();
+        return !deliv.isPresent();
     }
 
     /**
@@ -421,13 +415,11 @@ public class DigitalDocumentService {
      * @param pageNumber
      * @return
      */
-    @Transactional  //(readOnly = true)
+    @Transactional  // (readOnly = true)
     public DocPage getPage(final String identifier, final int pageNumber) {
 
         final DigitalDocument doc = digitalDocumentRepository.getOne(identifier);
-        final Optional<DocPage> page = doc.getOrderedPages().stream()
-                                        .filter(p -> p.getNumber() != null && pageNumber == p.getNumber())
-                                        .findFirst();
+        final Optional<DocPage> page = doc.getOrderedPages().stream().filter(p -> p.getNumber() != null && pageNumber == p.getNumber()).findFirst();
         return page.orElse(null);
     }
 
@@ -441,9 +433,7 @@ public class DigitalDocumentService {
     public DocPage getPdfPage(final String identifier) {
 
         final DigitalDocument doc = digitalDocumentRepository.getOne(identifier);
-        final Optional<DocPage> page = doc.getOrderedPages().stream()
-                                        .filter(p -> p.getNumber() == null)
-                                        .findFirst();
+        final Optional<DocPage> page = doc.getOrderedPages().stream().filter(p -> p.getNumber() == null).findFirst();
         return page.orElse(null);
     }
 
@@ -461,18 +451,17 @@ public class DigitalDocumentService {
         pages.sort(new DigitalDocument.ComparableComparator<>());
         final int firstIndex = pages.get(0).getNumber();
         // rattrape decalage si l'ordre debute à 1
-        int index = orderNumber-firstIndex;
-        if (index < 0 ) {
+        int index = orderNumber - firstIndex;
+        if (index < 0) {
             index = 0;
         }
         // fixe le pb d'index qd Mirador s'emballe ...
-        index = index > pages.size()-1 ? pages.size()-1 : index;
+        index = index > pages.size() - 1 ? pages.size() - 1
+                                         : index;
         final DocPage pg = pages.get(index);
 
         return pg;
     }
-
-
 
     /**
      * Récupère une page par son numéro et son identifiant de sample.
@@ -532,8 +521,8 @@ public class DigitalDocumentService {
                                         final List<String> searchMaxAngles,
                                         final Integer searchPageFrom,
                                         final Integer searchPageTo,
-                                        final Integer searchPageCheckFrom,
-                                        final Integer searchPageCheckTo,
+                                        final Long searchPageCheckFrom,
+                                        final Long searchPageCheckTo,
                                         final Double searchMinSize,
                                         final Double searchMaxSize,
                                         final boolean validated,
@@ -574,7 +563,7 @@ public class DigitalDocumentService {
 
     @Transactional(readOnly = true)
     public DigitalDocument findOne(final String identifier) {
-        return digitalDocumentRepository.findOne(identifier);
+        return digitalDocumentRepository.findById(identifier).orElse(null);
     }
 
     @Transactional(readOnly = true)
@@ -587,7 +576,7 @@ public class DigitalDocumentService {
         if (IterableUtils.isEmpty(identifiers)) {
             return Collections.emptyList();
         }
-        return digitalDocumentRepository.findAll(identifiers);
+        return digitalDocumentRepository.findAllById(identifiers);
     }
 
     /**
@@ -600,17 +589,17 @@ public class DigitalDocumentService {
     @Transactional(readOnly = true)
     public DeliveredDocument getDeliveredDocument(final DigitalDocument digitalDocument, final Delivery delivery) {
         return getDeliveredDocumentIfExists(digitalDocument, delivery)
-            // ou Création d'un nouveau DeliveredDocument
-            .orElseGet(() -> {
-                final DeliveredDocument deliveredDocument = new DeliveredDocument();
-                deliveredDocument.setDelivery(delivery);
-                deliveredDocument.setDeliveryDate(digitalDocument.getDeliveryDate());
-                deliveredDocument.setNbPages(digitalDocument.getNbPages());
-                deliveredDocument.setStatus(digitalDocument.getStatus());
-                deliveredDocument.setTotalLength(digitalDocument.getTotalLength());
-                digitalDocument.addDelivery(deliveredDocument);
-                return deliveredDocument;
-            });
+                                                                      // ou Création d'un nouveau DeliveredDocument
+                                                                      .orElseGet(() -> {
+                                                                          final DeliveredDocument deliveredDocument = new DeliveredDocument();
+                                                                          deliveredDocument.setDelivery(delivery);
+                                                                          deliveredDocument.setDeliveryDate(digitalDocument.getDeliveryDate());
+                                                                          deliveredDocument.setNbPages(digitalDocument.getNbPages());
+                                                                          deliveredDocument.setStatus(digitalDocument.getStatus());
+                                                                          deliveredDocument.setTotalLength(digitalDocument.getTotalLength());
+                                                                          digitalDocument.addDelivery(deliveredDocument);
+                                                                          return deliveredDocument;
+                                                                      });
     }
 
     /**
@@ -622,10 +611,7 @@ public class DigitalDocumentService {
      */
     @Transactional(readOnly = true)
     public Optional<DeliveredDocument> getDeliveredDocumentIfExists(final DigitalDocument digitalDocument, final Delivery delivery) {
-        return digitalDocument.getDeliveries()
-                              .stream()
-                              .filter(doc -> StringUtils.equals(doc.getDelivery().getIdentifier(), delivery.getIdentifier()))
-                              .findAny();
+        return digitalDocument.getDeliveries().stream().filter(doc -> StringUtils.equals(doc.getDelivery().getIdentifier(), delivery.getIdentifier())).findAny();
     }
 
     @Transactional(readOnly = true)

@@ -1,18 +1,12 @@
 package fr.progilone.pgcn.domain.exportftpconfiguration;
 
-import javax.persistence.*;
-
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.google.common.base.MoreObjects;
-
 import fr.progilone.pgcn.domain.AbstractDomainObject;
 import fr.progilone.pgcn.domain.administration.ExportFTPDeliveryFolder;
-import fr.progilone.pgcn.domain.administration.InternetArchiveCollection;
 import fr.progilone.pgcn.domain.library.Library;
-import fr.progilone.pgcn.domain.lot.Lot;
-
+import jakarta.persistence.*;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -97,7 +91,7 @@ public class ExportFTPConfiguration extends AbstractDomainObject {
     private boolean exportAlto;
 
     @OneToMany(mappedBy = "confExportFtp", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Set<ExportFTPDeliveryFolder> deliveryFolders  = new HashSet<>();
+    private Set<ExportFTPDeliveryFolder> deliveryFolders = new HashSet<>();
 
     public String getLabel() {
         return label;
@@ -211,11 +205,17 @@ public class ExportFTPConfiguration extends AbstractDomainObject {
         this.exportAipSip = exportAipSip;
     }
 
-    public boolean isExportAlto() { return exportAlto; }
+    public boolean isExportAlto() {
+        return exportAlto;
+    }
 
-    public void setExportAlto(boolean exportAlto) { this.exportAlto = exportAlto; }
+    public void setExportAlto(boolean exportAlto) {
+        this.exportAlto = exportAlto;
+    }
 
-    public Set<ExportFTPDeliveryFolder> getDeliveryFolders() { return deliveryFolders; }
+    public Set<ExportFTPDeliveryFolder> getDeliveryFolders() {
+        return deliveryFolders;
+    }
 
     public void setDeliveryFolders(final Set<ExportFTPDeliveryFolder> deliveryFolders) {
         this.deliveryFolders.clear();

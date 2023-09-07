@@ -1,7 +1,7 @@
 /** SCSS spécifique aux impressions */
 @media print {
     a[href]:after {
-        content: "" !important; /** override bootstrap */
+        content: '' !important; /** override bootstrap */
     }
     .layout-columns .panel-column-1 {
         padding-left: 0px;
@@ -9,7 +9,8 @@
     .no-print {
         display: none;
     }
-    #sem-menu, .btn {
+    #sem-menu,
+    .btn {
         @extend .no-print;
     }
 }

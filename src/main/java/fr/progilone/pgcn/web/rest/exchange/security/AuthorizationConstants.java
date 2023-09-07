@@ -52,7 +52,7 @@ public final class AuthorizationConstants {
      * Habilitation export Internet Archive
      */
     public static final String EXPORT_INTERNET_ARCHIVE_HAB0 = "EXPORT-INTERNET-ARCHIVE-HAB0";
-    
+
     /**
      * Habilitation export Omeka
      */

@@ -1,13 +1,31 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('CheckCtrl', CheckCtrl);
+    angular.module('numaHopApp.controller').controller('CheckCtrl', CheckCtrl);
 
-    function CheckCtrl($q, $location, $routeParams, codeSrvc, DeliverySrvc, DigitalDocumentSrvc, DocUnitSrvc, DtoService,
-        gettext, gettextCatalog, HistorySrvc, LotSrvc, MessageSrvc, NumahopUrlService, NumahopStorageService,
-        NumaHopInitializationSrvc, SelectionSrvc, TrainSrvc, WorkflowSrvc, WorkflowHandleSrvc, CondreportDescValueSrvc) {
-
+    function CheckCtrl(
+        $q,
+        $location,
+        $routeParams,
+        codeSrvc,
+        DeliverySrvc,
+        DigitalDocumentSrvc,
+        DocUnitSrvc,
+        DtoService,
+        gettext,
+        gettextCatalog,
+        HistorySrvc,
+        LotSrvc,
+        MessageSrvc,
+        NumahopUrlService,
+        NumahopStorageService,
+        NumaHopInitializationSrvc,
+        SelectionSrvc,
+        TrainSrvc,
+        WorkflowSrvc,
+        WorkflowHandleSrvc,
+        CondreportDescValueSrvc
+    ) {
         var mainCtrl = this;
 
         mainCtrl.getPage = getPage;
@@ -42,7 +60,7 @@
         mainCtrl.accSearchPages = false;
 
         var PAGE_START = 1;
-        var FILTER_STORAGE_SERVICE_KEY = "doc_unit_list";
+        var FILTER_STORAGE_SERVICE_KEY = 'doc_unit_list';
         mainCtrl.pageSize = null;
 
         /**
@@ -59,14 +77,14 @@
             totalItems: 0,
             busy: false,
             page: PAGE_START,
-            size: mainCtrl.pageSize
+            size: mainCtrl.pageSize,
         };
         mainCtrl.sizeOptions = [
-            { value: 10, label: "10" },
-            { value: 20, label: "20" },
-            { value: 50, label: "50" },
-            { value: 100, label: "100" },
-            { value: null, label: "Tout" }
+            { value: 10, label: '10' },
+            { value: 20, label: '20' },
+            { value: 50, label: '50' },
+            { value: 100, label: '100' },
+            { value: null, label: 'Tout' },
         ];
         /**
          * Filtres
@@ -94,7 +112,7 @@
             searchPageCheckFrom: '',
             searchPageCheckTo: '',
             searchMinSize: '',
-            searchMaxSize: ''
+            searchMaxSize: '',
         };
 
         mainCtrl.selection = {};
@@ -103,7 +121,7 @@
          * Modèle pour le tri
          * @type {Object}
          */
-        mainCtrl.sortModel = ["pgcnId"];
+        mainCtrl.sortModel = ['pgcnId'];
 
         /**
          * Liste des options pour les listes déroulantes
@@ -115,10 +133,10 @@
             trains: [],
             livraisons: [],
             formatDocuments: [],
-            maxAngles: []
+            maxAngles: [],
         };
 
-        mainCtrl.options.statuses = ["TO_CHECK", "CHECKING", "PRE_VALIDATED", "PRE_REJECTED", "VALIDATED", "REJECTED", "DELIVERING_ERROR", "RELIVRAISON_DOCUMENT_EN_COURS"];
+        mainCtrl.options.statuses = ['TO_CHECK', 'CHECKING', 'PRE_VALIDATED', 'PRE_REJECTED', 'VALIDATED', 'REJECTED', 'DELIVERING_ERROR', 'RELIVRAISON_DOCUMENT_EN_COURS'];
 
         init();
 
@@ -127,39 +145,37 @@
          * @return {[type]} [description]
          */
         function init() {
-            HistorySrvc.add(gettextCatalog.getString("Catalogue toutes opérations"));
+            HistorySrvc.add(gettextCatalog.getString('Catalogue toutes opérations'));
             loadPageSize();
 
-            $q.all([NumaHopInitializationSrvc.loadLibraries(), NumaHopInitializationSrvc.loadProjects(), 
-                    CondreportDescValueSrvc.query({ property: 'MAX_ANGLE' })])
-                .then(function (data) {
-                    mainCtrl.options.libraries = data[0];
-                    mainCtrl.options.projects = data[1];
-                    // charge la liste des ouvertures maximales.
-                    data[2].$promise.then(function(prom) {
-                        mainCtrl.options.maxAngles = prom;
-                    });
-                    // types de fichiers
-                    mainCtrl.options.formatDocuments = LotSrvc.config.fileFormat;
-                    
-                    loadFilters();
-                    reloadDependencies(false);
-                    if ($routeParams["reinitStatusFilter"]) {
-                        mainCtrl.filters.statuses = [];
-                    }
-                    if($routeParams["reinitFilters"]){
-                        reinitFilters(false);
-                    }
-                    if ($routeParams["radical"]) {
-                        mainCtrl.filters.searchRadical = $routeParams["radical"];
-                    }
-                    getPage();
+            $q.all([NumaHopInitializationSrvc.loadLibraries(), NumaHopInitializationSrvc.loadProjects(), CondreportDescValueSrvc.query({ property: 'MAX_ANGLE' })]).then(function (data) {
+                mainCtrl.options.libraries = data[0];
+                mainCtrl.options.projects = data[1];
+                // charge la liste des ouvertures maximales.
+                data[2].$promise.then(function (prom) {
+                    mainCtrl.options.maxAngles = prom;
                 });
+                // types de fichiers
+                mainCtrl.options.formatDocuments = LotSrvc.config.fileFormat;
+
+                loadFilters();
+                reloadDependencies(false);
+                if ($routeParams['reinitStatusFilter']) {
+                    mainCtrl.filters.statuses = [];
+                }
+                if ($routeParams['reinitFilters']) {
+                    reinitFilters(false);
+                }
+                if ($routeParams['radical']) {
+                    mainCtrl.filters.searchRadical = $routeParams['radical'];
+                }
+                getPage();
+            });
 
             // callback création lot
-            if ($routeParams["project"]) {
-                addSelectionToNewLotCallback($routeParams["project"], $routeParams["lot"], $routeParams["train"]);  // train est optionnel
-                $location.search({});   // suppression du paramètre
+            if ($routeParams['project']) {
+                addSelectionToNewLotCallback($routeParams['project'], $routeParams['lot'], $routeParams['train']); // train est optionnel
+                $location.search({}); // suppression du paramètre
             }
         }
 
@@ -181,14 +197,14 @@
          * Restriction de la liste des lots aux projets sélectionnés.
          */
         function restrictLotsByProjects(projectsIds) {
-            return LotSrvc.query({ filterByProjects: "", projectIds: projectsIds }).$promise;
+            return LotSrvc.query({ filterByProjects: '', projectIds: projectsIds }).$promise;
         }
 
         /**
          * Restriction de la liste des trains aux projets sélectionnés.
          */
         function restrictTrainsByProjects(projectsIds) {
-            return TrainSrvc.query({ filterByProjects: "", projectIds: projectsIds }).$promise;
+            return TrainSrvc.query({ filterByProjects: '', projectIds: projectsIds }).$promise;
         }
 
         /**
@@ -197,7 +213,7 @@
         function reloadDependencies(reload) {
             var filteredProjects = undefined;
             if (mainCtrl.filters.projects) {
-                filteredProjects = _.pluck(mainCtrl.filters.projects, "identifier");
+                filteredProjects = _.pluck(mainCtrl.filters.projects, 'identifier');
             }
             if (filteredProjects && filteredProjects.length > 0) {
                 // Filtre sur les projets selectionnes.
@@ -208,16 +224,12 @@
                     mainCtrl.options.trains = res;
                 });
             } else {
-                NumaHopInitializationSrvc
-                    .loadLots()
-                    .then(function (res) {
-                        mainCtrl.options.lots = res;
-                    });
-                NumaHopInitializationSrvc
-                    .loadTrains()
-                    .then(function (res) {
-                        mainCtrl.options.trains = res;
-                    });
+                NumaHopInitializationSrvc.loadLots().then(function (res) {
+                    mainCtrl.options.lots = res;
+                });
+                NumaHopInitializationSrvc.loadTrains().then(function (res) {
+                    mainCtrl.options.trains = res;
+                });
             }
             reloadLivraisons(reload);
         }
@@ -229,28 +241,24 @@
             var filteredProjects = undefined;
             var filteredLots = undefined;
             if (mainCtrl.filters.projects) {
-                filteredProjects = _.pluck(mainCtrl.filters.projects, "identifier");
+                filteredProjects = _.pluck(mainCtrl.filters.projects, 'identifier');
             }
             if (mainCtrl.filters.lots) {
-                filteredLots = _.pluck(mainCtrl.filters.lots, "identifier");
+                filteredLots = _.pluck(mainCtrl.filters.lots, 'identifier');
             }
 
-            if ((!filteredProjects || filteredProjects.length === 0)
-                && (!filteredLots || filteredLots.length === 0)) {
-                DeliverySrvc.query({ dto: "" }).$promise
-                    .then(function (res) {
-                        mainCtrl.options.livraisons = res;
-                    });
+            if ((!filteredProjects || filteredProjects.length === 0) && (!filteredLots || filteredLots.length === 0)) {
+                DeliverySrvc.query({ dto: '' }).$promise.then(function (res) {
+                    mainCtrl.options.livraisons = res;
+                });
             } else {
                 DeliverySrvc.query({
-                    filterByProjectsLots: "",
+                    filterByProjectsLots: '',
                     filteredProjects: filteredProjects,
-                    filteredLots: filteredLots
-                })
-                    .$promise
-                    .then(function (res) {
-                        mainCtrl.options.livraisons = res;
-                    });
+                    filteredLots: filteredLots,
+                }).$promise.then(function (res) {
+                    mainCtrl.options.livraisons = res;
+                });
             }
             if (reload) {
                 search();
@@ -281,7 +289,7 @@
             mainCtrl.filters.searchTitre = '';
             mainCtrl.filters.searchRadical = '';
             mainCtrl.filters.searchFormatDocument = [];
-            mainCtrl.filters.searchMaxAngle =  [];
+            mainCtrl.filters.searchMaxAngle = [];
             mainCtrl.filters.searchPageFrom = '';
             mainCtrl.filters.searchPageTo = '';
             mainCtrl.filters.searchPageCheckFrom = '';
@@ -290,7 +298,7 @@
             mainCtrl.filters.searchMaxSize = '';
             mainCtrl.filters.statuses = [];
 
-            if(search){
+            if (search) {
                 search();
             }
         }
@@ -326,7 +334,7 @@
 
             _.each(mainCtrl.pagination.items, function (item) {
                 item.checked = angular.isDefined(mainCtrl.selection[item.identifier]);
-                
+
                 // Récupération de la présence de workflow => controle en cours?
                 item.isCheckStarted = WorkflowHandleSrvc.isCheckStarted(item.docUnit.identifier);
                 // en attente de relivraison ?
@@ -336,7 +344,6 @@
                     item.waitForRedelivering = {};
                     item.waitForRedelivering.done = false;
                 }
-                 
             });
             mainCtrl.pagination.busy = false;
         }
@@ -372,75 +379,75 @@
          */
         function getSearchParams() {
             var params = {};
-            params["page"] = mainCtrl.pagination.page - 1;
-            params["size"] = mainCtrl.pagination.size;
-            params["validated"] = mainCtrl.filters.validated;
+            params['page'] = mainCtrl.pagination.page - 1;
+            params['size'] = mainCtrl.pagination.size;
+            params['validated'] = mainCtrl.filters.validated;
 
             if (mainCtrl.filters.statuses) {
-                params["status"] = mainCtrl.filters.statuses;
+                params['status'] = mainCtrl.filters.statuses;
             }
             // Bibliothèque
             if (mainCtrl.filters.libraries) {
-                var librariesIds = _.pluck(mainCtrl.filters.libraries, "identifier");
-                params["libraries"] = librariesIds;
+                var librariesIds = _.pluck(mainCtrl.filters.libraries, 'identifier');
+                params['libraries'] = librariesIds;
             }
             // Projet
             if (mainCtrl.filters.projects) {
-                var projectsIds = _.pluck(mainCtrl.filters.projects, "identifier");
-                params["projects"] = projectsIds;
+                var projectsIds = _.pluck(mainCtrl.filters.projects, 'identifier');
+                params['projects'] = projectsIds;
             }
             if (mainCtrl.filters.lots) {
-                var lotsIds = _.pluck(mainCtrl.filters.lots, "identifier");
-                params["lots"] = lotsIds;
+                var lotsIds = _.pluck(mainCtrl.filters.lots, 'identifier');
+                params['lots'] = lotsIds;
             }
             if (mainCtrl.filters.trains) {
-                var trainsIds = _.pluck(mainCtrl.filters.trains, "identifier");
-                params["trains"] = trainsIds;
+                var trainsIds = _.pluck(mainCtrl.filters.trains, 'identifier');
+                params['trains'] = trainsIds;
             }
             if (mainCtrl.filters.livraisons) {
-                var livraisonsIds = _.pluck(mainCtrl.filters.livraisons, "identifier");
-                params["deliveries"] = livraisonsIds;
+                var livraisonsIds = _.pluck(mainCtrl.filters.livraisons, 'identifier');
+                params['deliveries'] = livraisonsIds;
             }
             // Dates de livraison
             if (mainCtrl.filters.dateFrom) {
-                params["dateFrom"] = mainCtrl.filters.dateFrom;
+                params['dateFrom'] = mainCtrl.filters.dateFrom;
             }
             if (mainCtrl.filters.dateTo) {
-                params["dateTo"] = mainCtrl.filters.dateTo;
+                params['dateTo'] = mainCtrl.filters.dateTo;
             }
             // Dates limites de controle
             if (mainCtrl.filters.dateLimitFrom) {
-                params["dateLimitFrom"] = mainCtrl.filters.dateLimitFrom;
+                params['dateLimitFrom'] = mainCtrl.filters.dateLimitFrom;
             }
             if (mainCtrl.filters.dateLimitTo) {
-                params["dateLimitTo"] = mainCtrl.filters.dateLimitTo;
+                params['dateLimitTo'] = mainCtrl.filters.dateLimitTo;
             }
 
             // Recherche bandeau haut : A voir sur quoi on doit brancher ? ...
-            params["search"] = mainCtrl.searchRequest || "";
+            params['search'] = mainCtrl.searchRequest || '';
             // Recherche textuelle
-            params["searchPgcnId"] = mainCtrl.filters.searchPgcnId || "";
-            params["searchTitre"] = mainCtrl.filters.searchTitre || "";
-            params["searchRadical"] = mainCtrl.filters.searchRadical || "";
-            
+            params['searchPgcnId'] = mainCtrl.filters.searchPgcnId || '';
+            params['searchTitre'] = mainCtrl.filters.searchTitre || '';
+            params['searchRadical'] = mainCtrl.filters.searchRadical || '';
+
             if (mainCtrl.filters.searchFormatDocument) {
-                var formatIds = _.pluck(mainCtrl.filters.searchFormatDocument, "identifier");
-                params["fileFormats"] = formatIds;
+                var formatIds = _.pluck(mainCtrl.filters.searchFormatDocument, 'identifier');
+                params['fileFormats'] = formatIds;
             }
             if (mainCtrl.filters.searchMaxAngle) {
-                var angleIds = _.pluck(mainCtrl.filters.searchMaxAngle, "identifier");
-                params["maxAngles"] = angleIds;
+                var angleIds = _.pluck(mainCtrl.filters.searchMaxAngle, 'identifier');
+                params['maxAngles'] = angleIds;
             }
-            
-            // Recherche pages
-            params["searchPageFrom"] = mainCtrl.filters.searchPageFrom || 0;
-            params["searchPageTo"] = mainCtrl.filters.searchPageTo || 0;
-            params["searchPageCheckFrom"] = mainCtrl.filters.searchPageCheckFrom || 0;
-            params["searchPageCheckTo"] = mainCtrl.filters.searchPageCheckTo || 0;
-            params["searchMinSize"] = mainCtrl.filters.searchMinSize || 0;
-            params["searchMaxSize"] = mainCtrl.filters.searchMaxSize || 0;
 
-            params["sorts"] = mainCtrl.sortModel;
+            // Recherche pages
+            params['searchPageFrom'] = mainCtrl.filters.searchPageFrom || 0;
+            params['searchPageTo'] = mainCtrl.filters.searchPageTo || 0;
+            params['searchPageCheckFrom'] = mainCtrl.filters.searchPageCheckFrom || 0;
+            params['searchPageCheckTo'] = mainCtrl.filters.searchPageCheckTo || 0;
+            params['searchMinSize'] = mainCtrl.filters.searchMinSize || 0;
+            params['searchMaxSize'] = mainCtrl.filters.searchMaxSize || 0;
+
+            params['sorts'] = mainCtrl.sortModel;
 
             return params;
         }
@@ -455,7 +462,7 @@
             if (filters) {
                 // filtre initial sur docs a controler.
                 if (!filters.filters.statuses || !filters.filters.statuses.length) {
-                    filters.filters.statuses = ["TO_CHECK","CHECKING"];
+                    filters.filters.statuses = ['TO_CHECK', 'CHECKING'];
                 }
                 mainCtrl.filters = filters.filters;
                 if (filters.sortModel) {
@@ -476,15 +483,13 @@
         }
 
         function goToCheck(digitalDocument) {
-            var delivId = digitalDocument.deliveries.length > 0 ? 
-                                                digitalDocument.deliveries[0].deliveryId
-                                                : ''; 
+            var delivId = digitalDocument.deliveries.length > 0 ? digitalDocument.deliveries[0].deliveryId : '';
             var params = {
-                   "id": digitalDocument.identifier,
-                   "pdfExtracted": digitalDocument.lot.requiredFormat === 'PDF',
-                   "deliveryId": delivId
+                id: digitalDocument.identifier,
+                pdfExtracted: digitalDocument.lot.requiredFormat === 'PDF',
+                deliveryId: delivId,
             };
-            
+
             $location.path('/viewer/viewer').search(params);
         }
 
@@ -523,7 +528,7 @@
          */
         function getRejectedSelection() {
             var filteredSel = _.filter(mainCtrl.selection, function (sel) {
-                return sel.status === "REJECTED" || sel.status === "DELIVERING_ERROR";
+                return sel.status === 'REJECTED' || sel.status === 'DELIVERING_ERROR';
             });
             if (filteredSel.length === 0) {
                 MessageSrvc.addWarn(gettext("Aucune des unités documentaires sélectionnées n'est rejetée"), {}, false);
@@ -531,27 +536,24 @@
             }
             return filteredSel;
         }
-        
+
         /**
          * Pour chaque doc rejeté, la derniere livraison doit etre traitée, rejetee automatiquemnt ou en erreur.
          * Si non, on bloque...
          */
         function checkStatusDeliveries(filteredSel) {
-            
             var notTreated = _.find(filteredSel, function (sel) {
                 // on trie pour avoir la derniere livraison en tete...
                 var sortedDeliveries = _.sortBy(sel.deliveries, function (deliv) {
-                                            return -[new Date(deliv.deliveryDate).getTime()];
-                                        });
-        
-                return !sortedDeliveries[0] 
-                        || (sortedDeliveries[0].deliveryStatus !== 'TREATED' 
-                            && sortedDeliveries[0].deliveryStatus !== 'AUTOMATICALLY_REJECTED'
-                            && sortedDeliveries[0].deliveryStatus !== 'DELIVERING_ERROR');
+                    return -[new Date(deliv.deliveryDate).getTime()];
+                });
+
+                return (
+                    !sortedDeliveries[0] ||
+                    (sortedDeliveries[0].deliveryStatus !== 'TREATED' && sortedDeliveries[0].deliveryStatus !== 'AUTOMATICALLY_REJECTED' && sortedDeliveries[0].deliveryStatus !== 'DELIVERING_ERROR')
+                );
             });
-            return angular.isUndefined(notTreated) 
-                    || notTreated.status === 'DELIVERING_ERROR' 
-                        || notTreated.status === 'AUTOMATICALLY_REJECTED';
+            return angular.isUndefined(notTreated) || notTreated.status === 'DELIVERING_ERROR' || notTreated.status === 'AUTOMATICALLY_REJECTED';
         }
 
         /**
@@ -563,14 +565,14 @@
             if (!filteredSel) {
                 return;
             }
-            
+
             // un doc dans une livraison non traitée, on bloque la creation du lot de renum.
             var authorized = checkStatusDeliveries(filteredSel);
-            if (! authorized) {
-                MessageSrvc.addWarn(gettext("Tous les documents sélectionnés doivent appartenir à une livraison traitée."), {}, false);
+            if (!authorized) {
+                MessageSrvc.addWarn(gettext('Tous les documents sélectionnés doivent appartenir à une livraison traitée.'), {}, false);
                 return;
             }
-            
+
             // Contrôle des lots des UD sélectionnées  // #2029 NON, plusieurs lots possibles maintenant
             var lotIds = _.chain(filteredSel)
                 .values()
@@ -583,139 +585,133 @@
                 .uniq()
                 .value();
 
-            checkLots(lotIds)
-                .then(function (params) {
-                    // Ok: traitement
-                    var docs = _.chain(filteredSel)
-                        .values()
-                        .map(function (item) {
-                            return _.pick(item.docUnit, "identifier", "label");
-                        })
-                        .value();
-                    SelectionSrvc.set(SelectionSrvc.keys.CHECK_LIST, docs);
+            checkLots(lotIds).then(function (params) {
+                // Ok: traitement
+                var docs = _.chain(filteredSel)
+                    .values()
+                    .map(function (item) {
+                        return _.pick(item.docUnit, 'identifier', 'label');
+                    })
+                    .value();
+                SelectionSrvc.set(SelectionSrvc.keys.CHECK_LIST, docs);
 
-                    params.new = true;
-                    params.callback = "/checks/checks";
-                    $location.path("/lot/lot").search(params);
-                });
+                params.new = true;
+                params.callback = '/checks/checks';
+                $location.path('/lot/lot').search(params);
+            });
         }
 
         function checkLots(lotIds) {
-            return LotSrvc.query({ dto: true, lot: lotIds }).$promise
-                .then(function (lots) {
-                    var valid = true;
+            return LotSrvc.query({ dto: true, lot: lotIds }).$promise.then(function (lots) {
+                var valid = true;
 
-                    // Contrôle des projets
-                    var projects = _.chain(lots)
-                        .values()
-                        .filter(function (item) {
-                            return item.project;
-                        })
-                        .map(function (item) {
-                            return item.project.identifier;
-                        })
-                        .uniq()
+                // Contrôle des projets
+                var projects = _.chain(lots)
+                    .values()
+                    .filter(function (item) {
+                        return item.project;
+                    })
+                    .map(function (item) {
+                        return item.project.identifier;
+                    })
+                    .uniq()
+                    .value();
+                if (projects.length > 1) {
+                    MessageSrvc.addWarn(gettext('Les unités documentaires sélectionnées ne font pas partie du même projet'), {}, false);
+                    valid = false;
+                }
+
+                // Contrôle des formats
+                var formats = _.chain(lots)
+                    .values()
+                    .filter(function (item) {
+                        return item.identifier; // item = Resource
+                    })
+                    .map(function (item) {
+                        return item.requiredFormat;
+                    })
+                    .uniq()
+                    .sortBy()
+                    .value();
+                if (formats.length > 1) {
+                    MessageSrvc.addWarn(gettext('Les unités documentaires sélectionnées ont des formats différents: {{formats}}'), { formats: formats.join(', ') }, false);
+                    valid = false;
+                }
+
+                // Contrôle des configs de controle
+                var checks = _.chain(lots)
+                    .values()
+                    .filter(function (item) {
+                        return item.activeCheckConfiguration;
+                    })
+                    .map(function (item) {
+                        return item.activeCheckConfiguration.identifier;
+                    })
+                    .uniq()
+                    .value();
+                if (checks.length > 1) {
+                    MessageSrvc.addWarn(gettext('Les unités documentaires sélectionnées ont des configurations de contrôle différentes'), {}, false);
+                    valid = false;
+                }
+
+                // Contrôle des configs FTP
+                var ftps = _.chain(lots)
+                    .values()
+                    .filter(function (item) {
+                        return item.activeFTPConfiguration;
+                    })
+                    .map(function (item) {
+                        return item.activeFTPConfiguration.identifier;
+                    })
+                    .uniq()
+                    .value();
+                if (ftps.length > 1) {
+                    MessageSrvc.addWarn(gettext('Les unités documentaires sélectionnées ont des configurations FTP différentes'), {}, false);
+                    valid = false;
+                }
+
+                if (valid) {
+                    var result = {};
+                    if (projects.length) {
+                        result.project = projects[0];
+                    }
+                    if (formats.length) {
+                        result.requiredFormat = formats[0];
+                    }
+                    if (checks.length) {
+                        result.activeCheckConfiguration = checks[0];
+                    }
+                    if (ftps.length) {
+                        result.activeFTPConfiguration = ftps[0];
+                    }
+                    result.requiredColorspace = _.chain(lots)
+                        .pluck('requiredColorspace')
+                        .find() // 1e valeur définie
                         .value();
-                    if (projects.length > 1) {
-                        MessageSrvc.addWarn(gettext("Les unités documentaires sélectionnées ne font pas partie du même projet"), {}, false);
-                        valid = false;
-                    }
 
-                    // Contrôle des formats
-                    var formats = _.chain(lots)
-                        .values()
-                        .filter(function (item) {
-                            return item.identifier; // item = Resource
+                    var requiredResolutions = _.chain(lots)
+                        .pluck('requiredResolution')
+                        .map(Number)
+                        .filter(function (tx) {
+                            return tx && _.isNumber(tx);
                         })
-                        .map(function (item) {
-                            return item.requiredFormat;
-                        })
-                        .uniq()
-                        .sortBy()
                         .value();
-                    if (formats.length > 1) {
-                        MessageSrvc.addWarn(gettext("Les unités documentaires sélectionnées ont des formats différents: {{formats}}"), { formats: formats.join(", ") }, false);
-                        valid = false;
+                    if (requiredResolutions.length) {
+                        result.requiredResolution = _.max(requiredResolutions);
                     }
 
-                    // Contrôle des configs de controle
-                    var checks = _.chain(lots)
-                        .values()
-                        .filter(function (item) {
-                            return item.activeCheckConfiguration;
-                        })
-                        .map(function (item) {
-                            return item.activeCheckConfiguration.identifier;
-                        })
-                        .uniq()
-                        .value();
-                    if (checks.length > 1) {
-                        MessageSrvc.addWarn(gettext("Les unités documentaires sélectionnées ont des configurations de contrôle différentes"), {}, false);
-                        valid = false;
+                    var requiredTauxCompressions = _.chain(lots).pluck('requiredTauxCompression').filter().value();
+                    if (requiredTauxCompressions.length) {
+                        result.requiredTauxCompression = _.max(requiredTauxCompressions);
                     }
-
-                    // Contrôle des configs FTP
-                    var ftps = _.chain(lots)
-                        .values()
-                        .filter(function (item) {
-                            return item.activeFTPConfiguration;
-                        })
-                        .map(function (item) {
-                            return item.activeFTPConfiguration.identifier;
-                        })
-                        .uniq()
-                        .value();
-                    if (ftps.length > 1) {
-                        MessageSrvc.addWarn(gettext("Les unités documentaires sélectionnées ont des configurations FTP différentes"), {}, false);
-                        valid = false;
-                    }
-
-                    if (valid) {
-                        var result = {};
-                        if (projects.length) {
-                            result.project = projects[0];
-                        }
-                        if (formats.length) {
-                            result.requiredFormat = formats[0];
-                        }
-                        if (checks.length) {
-                            result.activeCheckConfiguration = checks[0];
-                        }
-                        if (ftps.length) {
-                            result.activeFTPConfiguration = ftps[0];
-                        }
-                        result.requiredColorspace = _.chain(lots)
-                            .pluck("requiredColorspace")
-                            .find() // 1e valeur définie
-                            .value();
-
-                        var requiredResolutions = _.chain(lots)
-                            .pluck("requiredResolution")
-                            .map(Number)
-                            .filter(function (tx) { return tx && _.isNumber(tx); })
-                            .value();
-                        if (requiredResolutions.length) {
-                            result.requiredResolution = _.max(requiredResolutions);
-                        }
-
-                        var requiredTauxCompressions = _.chain(lots)
-                            .pluck("requiredTauxCompression")
-                            .filter()
-                            .value();
-                        if (requiredTauxCompressions.length) {
-                            result.requiredTauxCompression = _.max(requiredTauxCompressions);
-                        }
-                        return $q.when(result);
-                    }
-                    else {
-                        return $q.reject();
-                    }
-                });
+                    return $q.when(result);
+                } else {
+                    return $q.reject();
+                }
+            });
         }
-        
-        
+
         function getProjectIds(rejectedDocs) {
-            
             var projectIds = _.chain(rejectedDocs)
                 .values()
                 .filter(function (item) {
@@ -725,11 +721,10 @@
                     return item.project.identifier;
                 })
                 .uniq()
-                .value();  
-            
-          return projectIds; 
+                .value();
+
+            return projectIds;
         }
-        
 
         /**
          * Création d'un train à partir de la sélection
@@ -740,33 +735,33 @@
             if (!filteredSel) {
                 return;
             }
-            
+
             // #2029 : plusieurs lots possibles, mais appartenant au mm projet.
             var projects = getProjectIds(filteredSel);
             if (projects.length > 1) {
-                MessageSrvc.addWarn(gettext("Les unités documentaires sélectionnées ne font pas partie du même projet"), {}, false);
+                MessageSrvc.addWarn(gettext('Les unités documentaires sélectionnées ne font pas partie du même projet'), {}, false);
                 return;
             }
-            
+
             // Ok: traitement
-            var docUnitIds =  _.chain(filteredSel)
-                        .values()
-                        .filter(function (item) {
-                            return item.docUnit != null && item.lot != null;
-                        })
-                        .map(function (item) {
-                            return item.docUnit.identifier;
-                        })
-                        .value();
+            var docUnitIds = _.chain(filteredSel)
+                .values()
+                .filter(function (item) {
+                    return item.docUnit != null && item.lot != null;
+                })
+                .map(function (item) {
+                    return item.docUnit.identifier;
+                })
+                .value();
             // On remonte ds les etapes de workflow => ATTENTE RELIVRAISON
             var params_wkf = {
-                          resetNumWaiting: true
-                      };
+                resetNumWaiting: true,
+            };
             WorkflowSrvc.resetToNumWaiting(params_wkf, docUnitIds);
 
             var params = {
                 new: true,
-                fromReject: true
+                fromReject: true,
             };
             if (projects.length) {
                 params.project = projects[0];
@@ -774,34 +769,33 @@
             if (docUnitIds.length) {
                 params.docs = docUnitIds;
             }
-            $location.path("/train/train").search(params);
+            $location.path('/train/train').search(params);
         }
 
         /**
          * Ajout de la sélection à un nouveau lot
          * Une fois le lot créé, on revient ici pour y lier la sélection
-         * 
-         * @param {any} projectId 
-         * @param {any} lotId 
-         * @returns 
+         *
+         * @param {any} projectId
+         * @param {any} lotId
+         * @returns
          */
         function addSelectionToNewLotCallback(projectId, lotId, trainId) {
             var selection = SelectionSrvc.get(SelectionSrvc.keys.CHECK_LIST);
 
-            addDocUnitsToLot(selection, projectId, lotId, trainId)
-                .then(function () {
-                    SelectionSrvc.clear(SelectionSrvc.keys.CHECK_LIST);  // vidage de la sélection
-                    search();   // rafraichissement de la liste
-                });
+            addDocUnitsToLot(selection, projectId, lotId, trainId).then(function () {
+                SelectionSrvc.clear(SelectionSrvc.keys.CHECK_LIST); // vidage de la sélection
+                search(); // rafraichissement de la liste
+            });
         }
 
         /**
          * Ajout de la sélection à un projet / lot
-         * 
-         * @param {any} docUnits 
-         * @param {any} projectId 
-         * @param {any} lotId 
-         * @returns 
+         *
+         * @param {any} docUnits
+         * @param {any} projectId
+         * @param {any} lotId
+         * @returns
          */
         function addDocUnitsToLot(docUnits, projectId, lotId, trainId) {
             if (docUnits.length === 0) {
@@ -810,47 +804,54 @@
             }
             var params = {
                 project: projectId,
-                lot: lotId
+                lot: lotId,
             };
             if (trainId) {
                 params.train = trainId;
             }
-            var body = _.pluck(docUnits, "identifier");
+            var body = _.pluck(docUnits, 'identifier');
 
             var defer = $q.defer();
-            DocUnitSrvc.addToProjectAndLot(params, body,
-                function () { defer.resolve(); },
-                function () { defer.reject(); });
+            DocUnitSrvc.addToProjectAndLot(
+                params,
+                body,
+                function () {
+                    defer.resolve();
+                },
+                function () {
+                    defer.reject();
+                }
+            );
             return defer.promise;
         }
-        
+
         /**
          * Somme le nbre de pages.
          */
         function getSelectionPages() {
             return _.chain(mainCtrl.selection)
-            .pluck("reportDetail")
-            .map(function (det) {
-                if (det && det.nbViewTotal ) {
-                    return Number(det.nbViewTotal) || 0;
-                }
-            })
-            .filter(function (i) {
-                return !!i;
-            })
-            .reduce(function (a, b) {
-                return a + b;
-            }, 0)
-            .value();
+                .pluck('reportDetail')
+                .map(function (det) {
+                    if (det && det.nbViewTotal) {
+                        return Number(det.nbViewTotal) || 0;
+                    }
+                })
+                .filter(function (i) {
+                    return !!i;
+                })
+                .reduce(function (a, b) {
+                    return a + b;
+                }, 0)
+                .value();
         }
-        
+
         /**
          * Calcule les dimensions maximales de la sélection
          */
         function getSelectionDimensions() {
-            return _.chain(["dim1", "dim2", "dim3"])
+            return _.chain(['dim1', 'dim2', 'dim3'])
                 .map(function (dim) {
-                    var retValue =  _.chain(mainCtrl.selection).pluck("reportDetail").pluck(dim).max().value() || 0;
+                    var retValue = _.chain(mainCtrl.selection).pluck('reportDetail').pluck(dim).max().value() || 0;
                     if (isFinite(retValue)) {
                         return retValue;
                     } else {
@@ -858,20 +859,20 @@
                     }
                 })
                 .reduce(function (a, b) {
-                    return angular.isDefined(a) ? a + " x " + b : b;
+                    return angular.isDefined(a) ? a + ' x ' + b : b;
                 }, undefined)
                 .value();
         }
-        
+
         /**
          * Somme des valeurs d'assurance de la sélection
          */
         function getSelectionInsurance() {
             return _.chain(mainCtrl.selection)
-                .pluck("reportDetail")
+                .pluck('reportDetail')
                 .map(function (det) {
                     if (det && det.insurance) {
-                        return Number(det.insurance.replace(/,/, ".").replace(/[^0-9.]/g, ""));
+                        return Number(det.insurance.replace(/,/, '.').replace(/[^0-9.]/g, ''));
                     }
                 })
                 .filter(function (i) {

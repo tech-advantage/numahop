@@ -16,12 +16,11 @@ public class PgcnBusinessException extends PgcnException {
         super(errors, level);
     }
 
-
     public PgcnBusinessException(final PgcnError error) {
         super(error);
     }
 
-    public PgcnBusinessException(final PgcnError error,  PgcnExceptionLevel level) {
+    public PgcnBusinessException(final PgcnError error, PgcnExceptionLevel level) {
         super(error, level);
     }
 

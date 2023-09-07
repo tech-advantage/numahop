@@ -1,24 +1,23 @@
 package fr.progilone.pgcn.web.util;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
+
 import fr.progilone.pgcn.domain.user.Lang;
 import fr.progilone.pgcn.domain.user.User;
 import fr.progilone.pgcn.domain.util.CustomUserDetails;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import jakarta.servlet.http.HttpServletRequest;
+import java.util.Collections;
+import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.Collections;
-import java.util.Optional;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class LibraryAccesssHelperTest {
 
     public static final CustomUserDetails USER_TOTO = new CustomUserDetails("199c0268-1b1b-453d-9725-6d9747588477",
@@ -45,7 +44,7 @@ public class LibraryAccesssHelperTest {
 
     private LibraryAccesssHelper accesssHelper;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         accesssHelper = new LibraryAccesssHelper(accessHelper);
         SecurityContextHolder.getContext().setAuthentication(null);

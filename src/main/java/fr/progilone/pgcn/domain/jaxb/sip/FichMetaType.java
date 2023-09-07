@@ -5,23 +5,23 @@
 // Généré le : 2016.12.29 à 11:53:40 AM CET
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.sip;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
-
 
 /**
  * Métadonnées des fichiers composant le document
  *
- * <p>Classe Java pour FichMetaType complex type.
+ * <p>
+ * Classe Java pour FichMetaType complex type.
  *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="FichMetaType"&gt;
@@ -44,15 +44,14 @@ import javax.xml.bind.annotation.XmlType;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "FichMetaType", propOrder = {
-    "compression",
-    "encodage",
-    "formatFichier",
-    "nomFichier",
-    "empreinteOri",
-    "noteFichier",
-    "structureFichier"
-})
+@XmlType(name = "FichMetaType",
+         propOrder = {"compression",
+                      "encodage",
+                      "formatFichier",
+                      "nomFichier",
+                      "empreinteOri",
+                      "noteFichier",
+                      "structureFichier"})
 public class FichMetaType {
 
     protected String compression;
@@ -70,8 +69,8 @@ public class FichMetaType {
      * Obtient la valeur de la propriété compression.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getCompression() {
@@ -82,8 +81,8 @@ public class FichMetaType {
      * Définit la valeur de la propriété compression.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setCompression(String value) {
@@ -94,8 +93,8 @@ public class FichMetaType {
      * Obtient la valeur de la propriété encodage.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getEncodage() {
@@ -106,8 +105,8 @@ public class FichMetaType {
      * Définit la valeur de la propriété encodage.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setEncodage(String value) {
@@ -118,8 +117,8 @@ public class FichMetaType {
      * Obtient la valeur de la propriété formatFichier.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getFormatFichier() {
@@ -130,8 +129,8 @@ public class FichMetaType {
      * Définit la valeur de la propriété formatFichier.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setFormatFichier(String value) {
@@ -142,8 +141,8 @@ public class FichMetaType {
      * Obtient la valeur de la propriété nomFichier.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getNomFichier() {
@@ -154,8 +153,8 @@ public class FichMetaType {
      * Définit la valeur de la propriété nomFichier.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setNomFichier(String value) {
@@ -166,8 +165,8 @@ public class FichMetaType {
      * Obtient la valeur de la propriété empreinteOri.
      *
      * @return
-     *     possible object is
-     *     {@link EmpreinteOri }
+     *         possible object is
+     *         {@link EmpreinteOri }
      *
      */
     public EmpreinteOri getEmpreinteOri() {
@@ -178,8 +177,8 @@ public class FichMetaType {
      * Définit la valeur de la propriété empreinteOri.
      *
      * @param value
-     *     allowed object is
-     *     {@link EmpreinteOri }
+     *            allowed object is
+     *            {@link EmpreinteOri }
      *
      */
     public void setEmpreinteOri(EmpreinteOri value) {
@@ -190,8 +189,8 @@ public class FichMetaType {
      * Obtient la valeur de la propriété noteFichier.
      *
      * @return
-     *     possible object is
-     *     {@link StringNotNULLtext }
+     *         possible object is
+     *         {@link StringNotNULLtext }
      *
      */
     public StringNotNULLtext getNoteFichier() {
@@ -202,8 +201,8 @@ public class FichMetaType {
      * Définit la valeur de la propriété noteFichier.
      *
      * @param value
-     *     allowed object is
-     *     {@link StringNotNULLtext }
+     *            allowed object is
+     *            {@link StringNotNULLtext }
      *
      */
     public void setNoteFichier(StringNotNULLtext value) {
@@ -221,8 +220,9 @@ public class FichMetaType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getStructureFichier().add(newItem);
+     * getStructureFichier().add(newItem);
      * </pre>
      *
      *

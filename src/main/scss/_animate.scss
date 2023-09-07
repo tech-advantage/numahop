@@ -1,5 +1,6 @@
-.animate.ng-enter, .animate.ng-leave {
-    transition: 300ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+.animate.ng-enter,
+.animate.ng-leave {
+    transition: 300ms cubic-bezier(0.25, 0.25, 0.75, 0.75) all;
 }
 
 .animate.ng-enter {
@@ -20,26 +21,32 @@
 
 /** Animation apparition sur les colonnes de liste **/
 .col-infinite-scroll {
-    
 }
 
-.col-infinite-scroll.ng-move, .col-infinite-scroll.ng-enter, .col-infinite-scroll.ng-leave {
+.col-infinite-scroll.ng-move,
+.col-infinite-scroll.ng-enter,
+.col-infinite-scroll.ng-leave {
     transition: all linear 0.5s;
 }
 
-.col-infinite-scroll.ng-leave.ng-leave-active, .col-infinite-scroll.ng-move, .col-infinite-scroll.ng-enter {
+.col-infinite-scroll.ng-leave.ng-leave-active,
+.col-infinite-scroll.ng-move,
+.col-infinite-scroll.ng-enter {
     opacity: 0;
     max-height: 0;
 }
 
-.col-infinite-scroll.ng-leave, .col-infinite-scroll.ng-move.ng-move-active, .col-infinite-scroll.ng-enter.ng-enter-active {
+.col-infinite-scroll.ng-leave,
+.col-infinite-scroll.ng-move.ng-move-active,
+.col-infinite-scroll.ng-enter.ng-enter-active {
     opacity: 1;
     max-height: 40px;
 }
 
 /** Animation ng-if slidding bottom **/
-.animate-if.ng-enter, .animate-if.ng-leave {
-    transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+.animate-if.ng-enter,
+.animate-if.ng-leave {
+    transition: all cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.5s;
 }
 
 .animate-if.ng-enter {
@@ -50,33 +57,32 @@
     top: -100%;
 }
 
-.animate-if.ng-leave, .animate-if.ng-enter.ng-enter-active {
+.animate-if.ng-leave,
+.animate-if.ng-enter.ng-enter-active {
     top: 0;
 }
 
 /** Animation pour ng-include **/
 .animate-include.ng-enter {
-	transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+    transition: all cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.5s;
 }
 
 .animate-include.ng-leave {
-	transition: none;
+    transition: none;
 }
 
 .animate-include.ng-enter {
-	max-height: 0px;
-	overflow: hidden;
+    max-height: 0px;
+    overflow: hidden;
 }
 
 .animate-include.ng-enter.ng-enter-active {
-	max-height: 100%;
-	overflow: hidden;
+    max-height: 100%;
+    overflow: hidden;
 }
 
 .animate-include.ng-leave {
-	
 }
 
 .animate-include.ng-leave.ng-leave-active {
-	
 }

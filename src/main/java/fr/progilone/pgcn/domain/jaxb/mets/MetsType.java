@@ -5,38 +5,40 @@
 // Généré le : 2016.12.29 à 11:54:46 AM CET
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.mets;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAnyAttribute;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlID;
+import jakarta.xml.bind.annotation.XmlIDREF;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlValue;
+import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAnyAttribute;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlID;
-import javax.xml.bind.annotation.XmlIDREF;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlSeeAlso;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.XmlValue;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
-
 
 /**
  * metsType: Complex Type for METS Sections
- * 			A METS document consists of seven possible subsidiary sections: metsHdr (METS document header), dmdSec (descriptive metadata section), amdSec (administrative metadata section), fileGrp (file inventory group), structLink (structural map linking), structMap (structural map) and behaviorSec (behaviors section).
+ * A METS document consists of seven possible subsidiary sections: metsHdr (METS document header), dmdSec (descriptive metadata section), amdSec
+ * (administrative metadata section), fileGrp (file inventory group), structLink (structural map linking), structMap (structural map) and behaviorSec
+ * (behaviors section).
  *
  *
- * <p>Classe Java pour metsType complex type.
+ * <p>
+ * Classe Java pour metsType complex type.
  *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="metsType"&gt;
@@ -166,18 +168,15 @@ import javax.xml.namespace.QName;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "metsType", propOrder = {
-    "metsHdr",
-    "dmdSec",
-    "amdSec",
-    "fileSec",
-    "structMap",
-    "structLink",
-    "behaviorSec"
-})
-@XmlSeeAlso({
-    Mets.class
-})
+@XmlType(name = "metsType",
+         propOrder = {"metsHdr",
+                      "dmdSec",
+                      "amdSec",
+                      "fileSec",
+                      "structMap",
+                      "structLink",
+                      "behaviorSec"})
+@XmlSeeAlso({Mets.class})
 public class MetsType {
 
     protected MetsHdr metsHdr;
@@ -208,8 +207,8 @@ public class MetsType {
      * Obtient la valeur de la propriété metsHdr.
      *
      * @return
-     *     possible object is
-     *     {@link MetsHdr }
+     *         possible object is
+     *         {@link MetsHdr }
      *
      */
     public MetsHdr getMetsHdr() {
@@ -220,8 +219,8 @@ public class MetsType {
      * Définit la valeur de la propriété metsHdr.
      *
      * @param value
-     *     allowed object is
-     *     {@link MetsHdr }
+     *            allowed object is
+     *            {@link MetsHdr }
      *
      */
     public void setMetsHdr(MetsHdr value) {
@@ -239,8 +238,9 @@ public class MetsType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getDmdSec().add(newItem);
+     * getDmdSec().add(newItem);
      * </pre>
      *
      *
@@ -268,8 +268,9 @@ public class MetsType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getAmdSec().add(newItem);
+     * getAmdSec().add(newItem);
      * </pre>
      *
      *
@@ -290,8 +291,8 @@ public class MetsType {
      * Obtient la valeur de la propriété fileSec.
      *
      * @return
-     *     possible object is
-     *     {@link FileSec }
+     *         possible object is
+     *         {@link FileSec }
      *
      */
     public FileSec getFileSec() {
@@ -302,8 +303,8 @@ public class MetsType {
      * Définit la valeur de la propriété fileSec.
      *
      * @param value
-     *     allowed object is
-     *     {@link FileSec }
+     *            allowed object is
+     *            {@link FileSec }
      *
      */
     public void setFileSec(FileSec value) {
@@ -321,8 +322,9 @@ public class MetsType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getStructMap().add(newItem);
+     * getStructMap().add(newItem);
      * </pre>
      *
      *
@@ -343,8 +345,8 @@ public class MetsType {
      * Obtient la valeur de la propriété structLink.
      *
      * @return
-     *     possible object is
-     *     {@link StructLink }
+     *         possible object is
+     *         {@link StructLink }
      *
      */
     public StructLink getStructLink() {
@@ -355,8 +357,8 @@ public class MetsType {
      * Définit la valeur de la propriété structLink.
      *
      * @param value
-     *     allowed object is
-     *     {@link StructLink }
+     *            allowed object is
+     *            {@link StructLink }
      *
      */
     public void setStructLink(StructLink value) {
@@ -374,8 +376,9 @@ public class MetsType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getBehaviorSec().add(newItem);
+     * getBehaviorSec().add(newItem);
      * </pre>
      *
      *
@@ -396,8 +399,8 @@ public class MetsType {
      * Obtient la valeur de la propriété id.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getID() {
@@ -408,8 +411,8 @@ public class MetsType {
      * Définit la valeur de la propriété id.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setID(String value) {
@@ -420,8 +423,8 @@ public class MetsType {
      * Obtient la valeur de la propriété objid.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getOBJID() {
@@ -432,8 +435,8 @@ public class MetsType {
      * Définit la valeur de la propriété objid.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setOBJID(String value) {
@@ -444,8 +447,8 @@ public class MetsType {
      * Obtient la valeur de la propriété label.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getLABEL() {
@@ -456,8 +459,8 @@ public class MetsType {
      * Définit la valeur de la propriété label.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setLABEL(String value) {
@@ -468,8 +471,8 @@ public class MetsType {
      * Obtient la valeur de la propriété type.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getTYPE() {
@@ -480,8 +483,8 @@ public class MetsType {
      * Définit la valeur de la propriété type.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setTYPE(String value) {
@@ -492,8 +495,8 @@ public class MetsType {
      * Obtient la valeur de la propriété profile.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getPROFILE() {
@@ -504,8 +507,8 @@ public class MetsType {
      * Définit la valeur de la propriété profile.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setPROFILE(String value) {
@@ -524,17 +527,18 @@ public class MetsType {
      *
      *
      * @return
-     *     always non-null
+     *         always non-null
      */
     public Map<QName, String> getOtherAttributes() {
         return otherAttributes;
     }
 
-
     /**
-     * <p>Classe Java pour anonymous complex type.
+     * <p>
+     * Classe Java pour anonymous complex type.
      *
-     * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+     * <p>
+     * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
      *
      * <pre>
      * &lt;complexType&gt;
@@ -561,9 +565,7 @@ public class MetsType {
      *
      */
     @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "fileGrp"
-    })
+    @XmlType(name = "", propOrder = {"fileGrp"})
     public static class FileSec {
 
         @XmlElement(required = true)
@@ -587,8 +589,9 @@ public class MetsType {
          *
          * <p>
          * For example, to add a new item, do as follows:
+         *
          * <pre>
-         *    getFileGrp().add(newItem);
+         * getFileGrp().add(newItem);
          * </pre>
          *
          *
@@ -609,8 +612,8 @@ public class MetsType {
          * Obtient la valeur de la propriété id.
          *
          * @return
-         *     possible object is
-         *     {@link String }
+         *         possible object is
+         *         {@link String }
          *
          */
         public String getID() {
@@ -621,8 +624,8 @@ public class MetsType {
          * Définit la valeur de la propriété id.
          *
          * @param value
-         *     allowed object is
-         *     {@link String }
+         *            allowed object is
+         *            {@link String }
          *
          */
         public void setID(String value) {
@@ -641,17 +644,18 @@ public class MetsType {
          *
          *
          * @return
-         *     always non-null
+         *         always non-null
          */
         public Map<QName, String> getOtherAttributes() {
             return otherAttributes;
         }
 
-
         /**
-         * <p>Classe Java pour anonymous complex type.
+         * <p>
+         * Classe Java pour anonymous complex type.
          *
-         * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+         * <p>
+         * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
          *
          * <pre>
          * &lt;complexType&gt;
@@ -667,20 +671,18 @@ public class MetsType {
          */
         @XmlAccessorType(XmlAccessType.FIELD)
         @XmlType(name = "")
-        public static class FileGrp
-            extends FileGrpType
-        {
-
+        public static class FileGrp extends FileGrpType {
 
         }
 
     }
 
-
     /**
-     * <p>Classe Java pour anonymous complex type.
+     * <p>
+     * Classe Java pour anonymous complex type.
      *
-     * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+     * <p>
+     * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
      *
      * <pre>
      * &lt;complexType&gt;
@@ -760,11 +762,10 @@ public class MetsType {
      *
      */
     @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "agent",
-        "altRecordID",
-        "metsDocumentID"
-    })
+    @XmlType(name = "",
+             propOrder = {"agent",
+                          "altRecordID",
+                          "metsDocumentID"})
     public static class MetsHdr {
 
         protected List<Agent> agent;
@@ -801,8 +802,9 @@ public class MetsType {
          *
          * <p>
          * For example, to add a new item, do as follows:
+         *
          * <pre>
-         *    getAgent().add(newItem);
+         * getAgent().add(newItem);
          * </pre>
          *
          *
@@ -830,8 +832,9 @@ public class MetsType {
          *
          * <p>
          * For example, to add a new item, do as follows:
+         *
          * <pre>
-         *    getAltRecordID().add(newItem);
+         * getAltRecordID().add(newItem);
          * </pre>
          *
          *
@@ -852,8 +855,8 @@ public class MetsType {
          * Obtient la valeur de la propriété metsDocumentID.
          *
          * @return
-         *     possible object is
-         *     {@link MetsDocumentID }
+         *         possible object is
+         *         {@link MetsDocumentID }
          *
          */
         public MetsDocumentID getMetsDocumentID() {
@@ -864,8 +867,8 @@ public class MetsType {
          * Définit la valeur de la propriété metsDocumentID.
          *
          * @param value
-         *     allowed object is
-         *     {@link MetsDocumentID }
+         *            allowed object is
+         *            {@link MetsDocumentID }
          *
          */
         public void setMetsDocumentID(MetsDocumentID value) {
@@ -876,8 +879,8 @@ public class MetsType {
          * Obtient la valeur de la propriété id.
          *
          * @return
-         *     possible object is
-         *     {@link String }
+         *         possible object is
+         *         {@link String }
          *
          */
         public String getID() {
@@ -888,8 +891,8 @@ public class MetsType {
          * Définit la valeur de la propriété id.
          *
          * @param value
-         *     allowed object is
-         *     {@link String }
+         *            allowed object is
+         *            {@link String }
          *
          */
         public void setID(String value) {
@@ -907,8 +910,9 @@ public class MetsType {
          *
          * <p>
          * For example, to add a new item, do as follows:
+         *
          * <pre>
-         *    getADMID().add(newItem);
+         * getADMID().add(newItem);
          * </pre>
          *
          *
@@ -929,8 +933,8 @@ public class MetsType {
          * Obtient la valeur de la propriété createdate.
          *
          * @return
-         *     possible object is
-         *     {@link LocalDateTime }
+         *         possible object is
+         *         {@link LocalDateTime }
          *
          */
         public LocalDateTime getCREATEDATE() {
@@ -941,8 +945,8 @@ public class MetsType {
          * Définit la valeur de la propriété createdate.
          *
          * @param value
-         *     allowed object is
-         *     {@link LocalDateTime }
+         *            allowed object is
+         *            {@link LocalDateTime }
          *
          */
         public void setCREATEDATE(LocalDateTime value) {
@@ -953,8 +957,8 @@ public class MetsType {
          * Obtient la valeur de la propriété lastmoddate.
          *
          * @return
-         *     possible object is
-         *     {@link LocalDateTime }
+         *         possible object is
+         *         {@link LocalDateTime }
          *
          */
         public LocalDateTime getLASTMODDATE() {
@@ -965,8 +969,8 @@ public class MetsType {
          * Définit la valeur de la propriété lastmoddate.
          *
          * @param value
-         *     allowed object is
-         *     {@link LocalDateTime }
+         *            allowed object is
+         *            {@link LocalDateTime }
          *
          */
         public void setLASTMODDATE(LocalDateTime value) {
@@ -977,8 +981,8 @@ public class MetsType {
          * Obtient la valeur de la propriété recordstatus.
          *
          * @return
-         *     possible object is
-         *     {@link String }
+         *         possible object is
+         *         {@link String }
          *
          */
         public String getRECORDSTATUS() {
@@ -989,8 +993,8 @@ public class MetsType {
          * Définit la valeur de la propriété recordstatus.
          *
          * @param value
-         *     allowed object is
-         *     {@link String }
+         *            allowed object is
+         *            {@link String }
          *
          */
         public void setRECORDSTATUS(String value) {
@@ -1009,17 +1013,18 @@ public class MetsType {
          *
          *
          * @return
-         *     always non-null
+         *         always non-null
          */
         public Map<QName, String> getOtherAttributes() {
             return otherAttributes;
         }
 
-
         /**
-         * <p>Classe Java pour anonymous complex type.
+         * <p>
+         * Classe Java pour anonymous complex type.
          *
-         * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+         * <p>
+         * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
          *
          * <pre>
          * &lt;complexType&gt;
@@ -1063,10 +1068,9 @@ public class MetsType {
          *
          */
         @XmlAccessorType(XmlAccessType.FIELD)
-        @XmlType(name = "", propOrder = {
-            "name",
-            "note"
-        })
+        @XmlType(name = "",
+                 propOrder = {"name",
+                              "note"})
         public static class Agent {
 
             @XmlElement(required = true)
@@ -1090,8 +1094,8 @@ public class MetsType {
              * Obtient la valeur de la propriété name.
              *
              * @return
-             *     possible object is
-             *     {@link String }
+             *         possible object is
+             *         {@link String }
              *
              */
             public String getName() {
@@ -1102,8 +1106,8 @@ public class MetsType {
              * Définit la valeur de la propriété name.
              *
              * @param value
-             *     allowed object is
-             *     {@link String }
+             *            allowed object is
+             *            {@link String }
              *
              */
             public void setName(String value) {
@@ -1121,8 +1125,9 @@ public class MetsType {
              *
              * <p>
              * For example, to add a new item, do as follows:
+             *
              * <pre>
-             *    getNote().add(newItem);
+             * getNote().add(newItem);
              * </pre>
              *
              *
@@ -1143,8 +1148,8 @@ public class MetsType {
              * Obtient la valeur de la propriété id.
              *
              * @return
-             *     possible object is
-             *     {@link String }
+             *         possible object is
+             *         {@link String }
              *
              */
             public String getID() {
@@ -1155,8 +1160,8 @@ public class MetsType {
              * Définit la valeur de la propriété id.
              *
              * @param value
-             *     allowed object is
-             *     {@link String }
+             *            allowed object is
+             *            {@link String }
              *
              */
             public void setID(String value) {
@@ -1167,8 +1172,8 @@ public class MetsType {
              * Obtient la valeur de la propriété role.
              *
              * @return
-             *     possible object is
-             *     {@link String }
+             *         possible object is
+             *         {@link String }
              *
              */
             public String getROLE() {
@@ -1179,8 +1184,8 @@ public class MetsType {
              * Définit la valeur de la propriété role.
              *
              * @param value
-             *     allowed object is
-             *     {@link String }
+             *            allowed object is
+             *            {@link String }
              *
              */
             public void setROLE(String value) {
@@ -1191,8 +1196,8 @@ public class MetsType {
              * Obtient la valeur de la propriété otherrole.
              *
              * @return
-             *     possible object is
-             *     {@link String }
+             *         possible object is
+             *         {@link String }
              *
              */
             public String getOTHERROLE() {
@@ -1203,8 +1208,8 @@ public class MetsType {
              * Définit la valeur de la propriété otherrole.
              *
              * @param value
-             *     allowed object is
-             *     {@link String }
+             *            allowed object is
+             *            {@link String }
              *
              */
             public void setOTHERROLE(String value) {
@@ -1215,8 +1220,8 @@ public class MetsType {
              * Obtient la valeur de la propriété type.
              *
              * @return
-             *     possible object is
-             *     {@link String }
+             *         possible object is
+             *         {@link String }
              *
              */
             public String getTYPE() {
@@ -1227,8 +1232,8 @@ public class MetsType {
              * Définit la valeur de la propriété type.
              *
              * @param value
-             *     allowed object is
-             *     {@link String }
+             *            allowed object is
+             *            {@link String }
              *
              */
             public void setTYPE(String value) {
@@ -1239,8 +1244,8 @@ public class MetsType {
              * Obtient la valeur de la propriété othertype.
              *
              * @return
-             *     possible object is
-             *     {@link String }
+             *         possible object is
+             *         {@link String }
              *
              */
             public String getOTHERTYPE() {
@@ -1251,8 +1256,8 @@ public class MetsType {
              * Définit la valeur de la propriété othertype.
              *
              * @param value
-             *     allowed object is
-             *     {@link String }
+             *            allowed object is
+             *            {@link String }
              *
              */
             public void setOTHERTYPE(String value) {
@@ -1261,11 +1266,12 @@ public class MetsType {
 
         }
 
-
         /**
-         * <p>Classe Java pour anonymous complex type.
+         * <p>
+         * Classe Java pour anonymous complex type.
          *
-         * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+         * <p>
+         * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
          *
          * <pre>
          * &lt;complexType&gt;
@@ -1281,9 +1287,7 @@ public class MetsType {
          *
          */
         @XmlAccessorType(XmlAccessType.FIELD)
-        @XmlType(name = "", propOrder = {
-            "value"
-        })
+        @XmlType(name = "", propOrder = {"value"})
         public static class AltRecordID {
 
             @XmlValue
@@ -1300,8 +1304,8 @@ public class MetsType {
              * Obtient la valeur de la propriété value.
              *
              * @return
-             *     possible object is
-             *     {@link String }
+             *         possible object is
+             *         {@link String }
              *
              */
             public String getValue() {
@@ -1312,8 +1316,8 @@ public class MetsType {
              * Définit la valeur de la propriété value.
              *
              * @param value
-             *     allowed object is
-             *     {@link String }
+             *            allowed object is
+             *            {@link String }
              *
              */
             public void setValue(String value) {
@@ -1324,8 +1328,8 @@ public class MetsType {
              * Obtient la valeur de la propriété id.
              *
              * @return
-             *     possible object is
-             *     {@link String }
+             *         possible object is
+             *         {@link String }
              *
              */
             public String getID() {
@@ -1336,8 +1340,8 @@ public class MetsType {
              * Définit la valeur de la propriété id.
              *
              * @param value
-             *     allowed object is
-             *     {@link String }
+             *            allowed object is
+             *            {@link String }
              *
              */
             public void setID(String value) {
@@ -1348,8 +1352,8 @@ public class MetsType {
              * Obtient la valeur de la propriété type.
              *
              * @return
-             *     possible object is
-             *     {@link String }
+             *         possible object is
+             *         {@link String }
              *
              */
             public String getTYPE() {
@@ -1360,8 +1364,8 @@ public class MetsType {
              * Définit la valeur de la propriété type.
              *
              * @param value
-             *     allowed object is
-             *     {@link String }
+             *            allowed object is
+             *            {@link String }
              *
              */
             public void setTYPE(String value) {
@@ -1370,11 +1374,12 @@ public class MetsType {
 
         }
 
-
         /**
-         * <p>Classe Java pour anonymous complex type.
+         * <p>
+         * Classe Java pour anonymous complex type.
          *
-         * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+         * <p>
+         * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
          *
          * <pre>
          * &lt;complexType&gt;
@@ -1390,9 +1395,7 @@ public class MetsType {
          *
          */
         @XmlAccessorType(XmlAccessType.FIELD)
-        @XmlType(name = "", propOrder = {
-            "value"
-        })
+        @XmlType(name = "", propOrder = {"value"})
         public static class MetsDocumentID {
 
             @XmlValue
@@ -1409,8 +1412,8 @@ public class MetsType {
              * Obtient la valeur de la propriété value.
              *
              * @return
-             *     possible object is
-             *     {@link String }
+             *         possible object is
+             *         {@link String }
              *
              */
             public String getValue() {
@@ -1421,8 +1424,8 @@ public class MetsType {
              * Définit la valeur de la propriété value.
              *
              * @param value
-             *     allowed object is
-             *     {@link String }
+             *            allowed object is
+             *            {@link String }
              *
              */
             public void setValue(String value) {
@@ -1433,8 +1436,8 @@ public class MetsType {
              * Obtient la valeur de la propriété id.
              *
              * @return
-             *     possible object is
-             *     {@link String }
+             *         possible object is
+             *         {@link String }
              *
              */
             public String getID() {
@@ -1445,8 +1448,8 @@ public class MetsType {
              * Définit la valeur de la propriété id.
              *
              * @param value
-             *     allowed object is
-             *     {@link String }
+             *            allowed object is
+             *            {@link String }
              *
              */
             public void setID(String value) {
@@ -1457,8 +1460,8 @@ public class MetsType {
              * Obtient la valeur de la propriété type.
              *
              * @return
-             *     possible object is
-             *     {@link String }
+             *         possible object is
+             *         {@link String }
              *
              */
             public String getTYPE() {
@@ -1469,8 +1472,8 @@ public class MetsType {
              * Définit la valeur de la propriété type.
              *
              * @param value
-             *     allowed object is
-             *     {@link String }
+             *            allowed object is
+             *            {@link String }
              *
              */
             public void setTYPE(String value) {
@@ -1481,11 +1484,12 @@ public class MetsType {
 
     }
 
-
     /**
-     * <p>Classe Java pour anonymous complex type.
+     * <p>
+     * Classe Java pour anonymous complex type.
      *
-     * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+     * <p>
+     * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
      *
      * <pre>
      * &lt;complexType&gt;
@@ -1501,10 +1505,7 @@ public class MetsType {
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "")
-    public static class StructLink
-        extends StructLinkType
-    {
-
+    public static class StructLink extends StructLinkType {
 
     }
 

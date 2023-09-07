@@ -1,18 +1,16 @@
 package fr.progilone.pgcn.domain.dto;
 
-import java.util.Collection;
-import java.util.Objects;
-
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.voodoodyne.jackson.jsog.JSOGGenerator;
-
 import fr.progilone.pgcn.domain.ObjectWithErrors;
 import fr.progilone.pgcn.domain.user.Authorization;
 import fr.progilone.pgcn.exception.message.PgcnError;
 import fr.progilone.pgcn.exception.message.PgcnList;
+import java.util.Collection;
+import java.util.Objects;
 
 /**
  * DTO gérant une collection d'erreurs
@@ -30,7 +28,8 @@ public class AbstractDTO implements ObjectWithErrors {
     @JsonProperty("errors")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public Collection<PgcnError> getErrorsAsList() {
-        return errors != null ? errors.get() : null;
+        return errors != null ? errors.get()
+                              : null;
     }
 
     @Override
@@ -58,12 +57,12 @@ public class AbstractDTO implements ObjectWithErrors {
     public void setErrors(final PgcnList<PgcnError> errors) {
         this.errors = errors;
     }
-    
+
     @JsonIgnore
     protected Object getUniqueIdentifier() {
         return null;
     }
- 
+
     @Override
     public int hashCode() {
         if (getUniqueIdentifier() != null) {
@@ -72,7 +71,7 @@ public class AbstractDTO implements ObjectWithErrors {
             return super.hashCode();
         }
     }
- 
+
     @Override
     public boolean equals(final Object obj) {
         if (getUniqueIdentifier() == null) {

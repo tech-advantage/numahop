@@ -1,11 +1,9 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('TrainDocsCtrl', TrainDocsCtrl);
+    angular.module('numaHopApp.controller').controller('TrainDocsCtrl', TrainDocsCtrl);
 
     function TrainDocsCtrl($location, DocUnitBaseService, gettextCatalog, MessageSrvc, ModalSrvc, PhysicalDocumentSrvc) {
-
         var docCtrl = this;
         docCtrl.addDocUnits = addDocUnits;
         docCtrl.canRemoveFromTrain = DocUnitBaseService.canRemoveTrain;
@@ -20,14 +18,14 @@
         docCtrl.selectedIds = [];
 
         var docStatus = {
-            CREATED: gettextCatalog.getString("Créé"),
-            SELECTED: gettextCatalog.getString("Sélectionné"),
-            GATHERED: gettextCatalog.getString("Prélevé"),
+            CREATED: gettextCatalog.getString('Créé'),
+            SELECTED: gettextCatalog.getString('Sélectionné'),
+            GATHERED: gettextCatalog.getString('Prélevé'),
             STATE_CHECK_REALISED: gettextCatalog.getString("Constat d'état réalisé"),
-            IN_DIGITIZATION: gettextCatalog.getString("En cours de numérisation"),
-            TO_CHECK: gettextCatalog.getString("A contrôler"),
-            TO_SHELVE: gettextCatalog.getString("A ranger"),
-            REINTEGRATED: gettextCatalog.getString("Réintégré")
+            IN_DIGITIZATION: gettextCatalog.getString('En cours de numérisation'),
+            TO_CHECK: gettextCatalog.getString('A contrôler'),
+            TO_SHELVE: gettextCatalog.getString('A ranger'),
+            REINTEGRATED: gettextCatalog.getString('Réintégré'),
         };
 
         function init(trainId, train) {
@@ -42,7 +40,7 @@
 
         function loadDigitalDocuments(trainId) {
             var params = {
-                train: trainId
+                train: trainId,
             };
             PhysicalDocumentSrvc.query(params, function (value) {
                 docCtrl.physDocs = value;
@@ -51,14 +49,14 @@
 
         function addDocUnits() {
             var params = {
-                callback: "/train/all_operations?id=" + docCtrl.trainId,
-                action: "add_to_train",
-                toTrain: docCtrl.trainId
+                callback: '/train/all_operations?id=' + docCtrl.trainId,
+                action: 'add_to_train',
+                toTrain: docCtrl.trainId,
             };
             if (docCtrl.train.project) {
                 params.toProject = docCtrl.train.project.identifier;
             }
-            $location.path("/document/docunit_list").search(params);
+            $location.path('/document/docunit_list').search(params);
         }
 
         /**
@@ -72,25 +70,24 @@
 
         function removeAllItemFromArray(itemArray) {
             MessageSrvc.clearMessages();
-            ModalSrvc.confirmAction(gettextCatalog.getPlural(itemArray.length,
-                "retirer l'unité documentaire sélectionnée du train", "retirer les {{n}} unités documentaires sélectionnées du train",
-                { n: itemArray.length }))
-                .then(function () {
-                    var docUnits = _.pluck(docCtrl.physDocs, "docUnit");
+            ModalSrvc.confirmAction(
+                gettextCatalog.getPlural(itemArray.length, "retirer l'unité documentaire sélectionnée du train", 'retirer les {{n}} unités documentaires sélectionnées du train', { n: itemArray.length })
+            ).then(function () {
+                var docUnits = _.pluck(docCtrl.physDocs, 'docUnit');
 
-                    _.each(itemArray, function (id) {
-                        var item = _.findWhere(docUnits, { identifier: id });
+                _.each(itemArray, function (id) {
+                    var item = _.findWhere(docUnits, { identifier: id });
 
-                        DocUnitBaseService.removeTrain(item, function () {
-                            MessageSrvc.addSuccess(gettextCatalog.getString("l'unité documentaire {{doc}} a été retirée du train.", { doc: item.pgcnId }));
-                            docCtrl.physDocs = _.filter(docCtrl.physDocs, function (doc) {
-                                return doc.docUnit.identifier !== id;
-                            });
+                    DocUnitBaseService.removeTrain(item, function () {
+                        MessageSrvc.addSuccess(gettextCatalog.getString("l'unité documentaire {{doc}} a été retirée du train.", { doc: item.pgcnId }));
+                        docCtrl.physDocs = _.filter(docCtrl.physDocs, function (doc) {
+                            return doc.docUnit.identifier !== id;
                         });
                     });
-
-                    uncheckAll();
                 });
+
+                uncheckAll();
+            });
         }
 
         /**

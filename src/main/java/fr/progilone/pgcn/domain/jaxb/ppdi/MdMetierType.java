@@ -5,25 +5,26 @@
 // Généré le : 2017.12.08 à 03:23:15 PM CET
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.ppdi;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
-
 
 /**
  *
- * Description g�n�rale des fichiers de m�tadonn�es accompagnant les objets archiv�s ou du contenu de � OtherMetadata � dans le cadre de l�archivage au format SEDA.
+ * Description générale des fichiers de métadonnées accompagnant les objets archivés ou du contenu de é OtherMetadata é dans le cadre de léarchivage
+ * au format SEDA.
  *
  *
- * <p>Classe Java pour mdMetierType complex type.
+ * <p>
+ * Classe Java pour mdMetierType complex type.
  *
- * <p>Le fragment de sch�ma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="mdMetierType">
@@ -41,10 +42,9 @@ import javax.xml.bind.annotation.XmlType;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "mdMetierType", propOrder = {
-    "mdDesc",
-    "mdFichier"
-})
+@XmlType(name = "mdMetierType",
+         propOrder = {"mdDesc",
+                      "mdFichier"})
 public class MdMetierType {
 
     @XmlElement(required = true)
@@ -53,11 +53,11 @@ public class MdMetierType {
     protected List<String> mdFichier;
 
     /**
-     * Obtient la valeur de la propri�t� mdDesc.
+     * Obtient la valeur de la propriété mdDesc.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getMdDesc() {
@@ -65,11 +65,11 @@ public class MdMetierType {
     }
 
     /**
-     * D�finit la valeur de la propri�t� mdDesc.
+     * Définit la valeur de la propriété mdDesc.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setMdDesc(String value) {
@@ -87,8 +87,9 @@ public class MdMetierType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getMdFichier().add(newItem);
+     * getMdFichier().add(newItem);
      * </pre>
      *
      *

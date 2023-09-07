@@ -1,13 +1,5 @@
 package fr.progilone.pgcn.service.ftpconfiguration;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import fr.progilone.pgcn.domain.ftpconfiguration.FTPConfiguration;
 import fr.progilone.pgcn.exception.PgcnTechnicalException;
 import fr.progilone.pgcn.exception.PgcnValidationException;
@@ -18,6 +10,12 @@ import fr.progilone.pgcn.repository.ftpconfiguration.FTPConfigurationRepository;
 import fr.progilone.pgcn.repository.library.LibraryRepository;
 import fr.progilone.pgcn.repository.lot.LotRepository;
 import fr.progilone.pgcn.repository.project.ProjectRepository;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by lebouchp on 03/02/2017.
@@ -48,7 +46,7 @@ public class FTPConfigurationService {
         validateDelete(conf);
 
         // Suppression
-        ftpConfigurationRepository.delete(id);
+        ftpConfigurationRepository.deleteById(id);
     }
 
     private void validateDelete(final FTPConfiguration conf) throws PgcnValidationException {

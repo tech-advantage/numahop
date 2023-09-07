@@ -1,11 +1,11 @@
 package fr.progilone.pgcn.service.administration.mapper;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import fr.progilone.pgcn.domain.administration.exchange.z3950.Z3950Server;
 import fr.progilone.pgcn.domain.dto.administration.z3950.Z3950ServerDTO;
-import org.junit.Before;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Created by Sebastien on 07/12/2016.
@@ -14,7 +14,7 @@ public class Z3950ServerMapperTest {
 
     private Z3950ServerMapper mapper;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         mapper = Z3950ServerMapper.INSTANCE;
     }

@@ -1,5 +1,7 @@
 package fr.progilone.pgcn.service.exchange;
 
+import static fr.progilone.pgcn.exception.message.PgcnErrorCode.*;
+
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.exchange.ImportReport;
 import fr.progilone.pgcn.domain.exchange.ImportedDocUnit;
@@ -9,6 +11,9 @@ import fr.progilone.pgcn.exception.message.PgcnError;
 import fr.progilone.pgcn.repository.exchange.ImportedDocUnitRepository;
 import fr.progilone.pgcn.service.document.DocUnitService;
 import fr.progilone.pgcn.service.document.DocUnitValidationService;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,12 +26,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.JpaSort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
-import static fr.progilone.pgcn.exception.message.PgcnErrorCode.*;
 
 /**
  * Created by Sebastien on 08/12/2016.
@@ -101,7 +100,8 @@ public class ImportDocUnitService {
             final List<PgcnError> errors = e.getErrors();
 
             // Si Ko + doublon sur PGCN ID / Statut => on supprime le doublon et on sauvegarde de nouveau
-            if (errors.size() == 1 && errors.get(0).getCode() == DOC_UNIT_DUPLICATE_PGCN_ID && docUnit != null) {
+            if (errors.size() == 1 && errors.get(0).getCode() == DOC_UNIT_DUPLICATE_PGCN_ID
+                && docUnit != null) {
                 LOG.debug("L'UD {} au statut \"non disponible\" existe déjà", docUnit.getPgcnId());
                 docUnitService.deleteByPgcnIdAndState(docUnit.getPgcnId(), DocUnit.State.NOT_AVAILABLE); // nouvelle transaction
                 return save(importDocUnit);
@@ -130,7 +130,11 @@ public class ImportDocUnitService {
         for (PgcnError pgcnError : e.getErrors()) {
             ImportedDocUnit.Message msg = new ImportedDocUnit.Message();
             msg.setCode(pgcnError.getCode().name());
-            pgcnError.getComplements().stream().reduce((a, b) -> a + ", " + b).ifPresent(msg::setComplement);
+            pgcnError.getComplements()
+                     .stream()
+                     .reduce((a, b) -> a + ", "
+                                       + b)
+                     .ifPresent(msg::setComplement);
             imp.addMessages(msg);
         }
         return importedDocUnitRepository.save(imp);
@@ -183,14 +187,13 @@ public class ImportDocUnitService {
                                                     boolean withErrors,
                                                     boolean withDuplicates) {
         // récupération de la plage de résultats
-        final Pageable pageable = new PageRequest(page, size);
+        final Pageable pageable = PageRequest.of(page, size);
         final Page<String> pageOfIds = importedDocUnitRepository.findIdentifiersByImportReport(report, states, withErrors, withDuplicates, pageable);
 
         // Chargement des résultats et de leurs relations
         List<ImportedDocUnit> reports;
         if (pageOfIds.getNumberOfElements() > 0) {
-            final Sort sort =
-                JpaSort.unsafe("coalesce(i.groupCode, i.parentDocUnitPgcnId, i.docUnitPgcnId)", "groupCode", "parentDocUnitPgcnId", "docUnitPgcnId");
+            final Sort sort = JpaSort.unsafe("coalesce(i.groupCode, i.parentDocUnitPgcnId, i.docUnitPgcnId)", "groupCode", "parentDocUnitPgcnId", "docUnitPgcnId");
             reports = importedDocUnitRepository.findByIdentifiersIn(pageOfIds.getContent(), sort);
         } else {
             reports = Collections.emptyList();
@@ -208,9 +211,8 @@ public class ImportDocUnitService {
      */
     @Transactional(readOnly = true)
     public List<ImportedDocUnit> findByReportIdentifierAndParentKeyIn(final String reportId, final Collection<String> parentKeys) {
-        return CollectionUtils.isNotEmpty(parentKeys) ?
-               importedDocUnitRepository.findByReportIdentifierAndParentKeyIn(reportId, parentKeys) :
-               Collections.emptyList();
+        return CollectionUtils.isNotEmpty(parentKeys) ? importedDocUnitRepository.findByReportIdentifierAndParentKeyIn(reportId, parentKeys)
+                                                      : Collections.emptyList();
     }
 
     /**

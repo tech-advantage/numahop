@@ -1,30 +1,9 @@
 package fr.progilone.pgcn.service.document.conditionreport;
 
 import static fr.progilone.pgcn.exception.message.PgcnErrorCode.CONDREPORT_DETAIL_DESC_EMPTY;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyListOf;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.internal.stubbing.answers.ReturnsArgumentAt;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.security.authentication.TestingAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.document.conditionreport.ConditionReport;
@@ -42,8 +21,20 @@ import fr.progilone.pgcn.repository.document.conditionreport.ConditionReportDeta
 import fr.progilone.pgcn.service.user.UserService;
 import fr.progilone.pgcn.util.CatchAndReturnArgumentAt;
 import fr.progilone.pgcn.util.TestUtil;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.internal.stubbing.answers.ReturnsArgumentAt;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ConditionReportDetailServiceTest {
 
     private static final String USER_ID = "90cdcf40-ff39-4d8d-aad5-249c29a94b3a";
@@ -57,13 +48,12 @@ public class ConditionReportDetailServiceTest {
 
     private ConditionReportDetailService service;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         service = new ConditionReportDetailService(conditionReportDetailRepository, propertyConfigurationService, userService);
 
         final CustomUserDetails customUserDetails = new CustomUserDetails(USER_ID, null, null, null, null, null, false, User.Category.OTHER);
-        final TestingAuthenticationToken authenticationToken =
-            new TestingAuthenticationToken(customUserDetails, "3b03c8c5-c552-450e-a91d-7bb850fd8186");
+        final TestingAuthenticationToken authenticationToken = new TestingAuthenticationToken(customUserDetails, "3b03c8c5-c552-450e-a91d-7bb850fd8186");
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
     }
 
@@ -118,15 +108,15 @@ public class ConditionReportDetailServiceTest {
 
         final CatchAndReturnArgumentAt<ConditionReportDetail> saveAnswer = new CatchAndReturnArgumentAt<>(0, detailId);
 
+        // detail null
+        ConditionReportDetail actual = service.create(ConditionReportDetail.Type.DIGITALIZATION, "unknown_id");
+        assertNull(actual);
+
         when(conditionReportDetailRepository.save(any(ConditionReportDetail.class))).then(saveAnswer);
         when(conditionReportDetailRepository.findByIdentifier(fromDetailId)).thenReturn(fromDetail);
         when(conditionReportDetailRepository.findByIdentifier(detailId)).then(invocation -> saveAnswer.getDomainObject());
         when(conditionReportDetailRepository.getMaxPositionByConditionReportIdentifier(report.getIdentifier())).thenReturn(3);
         when(userService.findByIdentifier(USER_ID)).thenReturn(ahopkins);
-
-        // detail null
-        ConditionReportDetail actual = service.create(ConditionReportDetail.Type.DIGITALIZATION, "unknown_id");
-        assertNull(actual);
 
         // detail ok
         actual = service.create(ConditionReportDetail.Type.DIGITALIZATION, fromDetail.getIdentifier());
@@ -149,7 +139,7 @@ public class ConditionReportDetailServiceTest {
         assertEquals(fromDetail.getNbViewBody(), actual.getNbViewBody());
         // TYPE == OTHER => provWriter.. n'est plus modifié
         assertNull(actual.getProvWriterFunction());
-        assertNull(actual.getProvWriterName()); 
+        assertNull(actual.getProvWriterName());
 
         assertEquals(1, actual.getDescriptions().size());
         final Description actualBinding = actual.getDescriptions().iterator().next();
@@ -193,9 +183,8 @@ public class ConditionReportDetailServiceTest {
         otherDetail.setPosition(14);
 
         final ConditionReportDetail detail = getConditionReportDetail();
-        when(conditionReportDetailRepository.findOne(detail.getIdentifier())).thenReturn(detail);
-        when(conditionReportDetailRepository.findByConditionReportIdentifier(detail.getReport()
-                                                                                   .getIdentifier())).thenReturn(Collections.singletonList(otherDetail));
+        when(conditionReportDetailRepository.findById(detail.getIdentifier())).thenReturn(Optional.of(detail));
+        when(conditionReportDetailRepository.findByConditionReportIdentifier(detail.getReport().getIdentifier())).thenReturn(Collections.singletonList(otherDetail));
 
         // CONDREPORT_DETAIL_MANDATORY
         try {
@@ -204,7 +193,7 @@ public class ConditionReportDetailServiceTest {
             fail("testDelete should have failed");
         } catch (final PgcnValidationException e) {
             TestUtil.checkPgcnException(e, PgcnErrorCode.CONDREPORT_DETAIL_MANDATORY);
-            verify(conditionReportDetailRepository, never()).save(anyListOf(ConditionReportDetail.class));
+            verify(conditionReportDetailRepository, never()).saveAll(anyList());
         }
 
         // Ok
@@ -213,7 +202,7 @@ public class ConditionReportDetailServiceTest {
             service.delete(detail.getIdentifier());
 
             verify(conditionReportDetailRepository).delete(detail);
-            verify(conditionReportDetailRepository).save(anyListOf(ConditionReportDetail.class));
+            verify(conditionReportDetailRepository).saveAll(anyList());
             assertEquals(0, otherDetail.getPosition());
 
         } catch (final PgcnValidationException e) {

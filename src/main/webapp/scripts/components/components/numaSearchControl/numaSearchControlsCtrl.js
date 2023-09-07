@@ -1,13 +1,24 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('NumaSearchControlsCtrl', NumaSearchControlsCtrl);
+    angular.module('numaHopApp.controller').controller('NumaSearchControlsCtrl', NumaSearchControlsCtrl);
 
-    function NumaSearchControlsCtrl($q, CondreportDescPropertySrvc, CondreportDescValueSrvc, DocUnitBaseService,
-        DeliverySrvc, DocPropertyTypeSrvc, ExportCinesSrvc, ExportInternetArchiveSrvc, gettextCatalog, LotSrvc,
-        NumaHopInitializationSrvc, ProjectSrvc, TrainSrvc, WorkflowSrvc) {
-
+    function NumaSearchControlsCtrl(
+        $q,
+        CondreportDescPropertySrvc,
+        CondreportDescValueSrvc,
+        DocUnitBaseService,
+        DeliverySrvc,
+        DocPropertyTypeSrvc,
+        ExportCinesSrvc,
+        ExportInternetArchiveSrvc,
+        gettextCatalog,
+        LotSrvc,
+        NumaHopInitializationSrvc,
+        ProjectSrvc,
+        TrainSrvc,
+        WorkflowSrvc
+    ) {
         var ctrl = this;
         ctrl.reportValueConfig = reportValueConfig;
 
@@ -36,42 +47,42 @@
                  * refresh est défini dans reportValueConfig
                  */
                 reportValue: {
-                    text: "label",
-                    placeholder: gettextCatalog.getString("Valeur"),
-                    trackby: "identifier",
+                    text: 'label',
+                    placeholder: gettextCatalog.getString('Valeur'),
+                    trackby: 'identifier',
                     'refresh-delay': 300,
-                    'allow-clear': true
+                    'allow-clear': true,
                 },
                 projects: {
-                    text: "name",
-                    placeholder: gettextCatalog.getString("Projet"),
-                    trackby: "identifier",
+                    text: 'name',
+                    placeholder: gettextCatalog.getString('Projet'),
+                    trackby: 'identifier',
                     refresh: function ($select) {
                         var searchParams = {
                             page: 0,
                             search: $select.search,
-                            active: false
+                            active: false,
                         };
                         return ProjectSrvc.search(searchParams);
                     },
                     'refresh-delay': 300,
-                    'allow-clear': true
+                    'allow-clear': true,
                 },
                 lots: {
-                    text: "label",
-                    placeholder: gettextCatalog.getString("Lot"),
-                    trackby: "identifier",
+                    text: 'label',
+                    placeholder: gettextCatalog.getString('Lot'),
+                    trackby: 'identifier',
                     refresh: function ($select) {
                         var searchParams = {
                             page: 0,
                             search: $select.search,
-                            active: false
+                            active: false,
                         };
                         return LotSrvc.search(searchParams);
                     },
                     'refresh-delay': 300,
-                    'allow-clear': true
-                }
+                    'allow-clear': true,
+                },
             };
             // config asynchrones
             loadLists().then(function (lists) {
@@ -84,54 +95,55 @@
          * Pré-chargement des valeurs des listes déroulantes
          */
         function loadLists() {
-            return $q.all([
-                CondreportDescPropertySrvc.query(),
-                DocPropertyTypeSrvc.query(),
-                NumaHopInitializationSrvc.loadCollections(),
-                NumaHopInitializationSrvc.loadLibraries(),
-                NumaHopInitializationSrvc.loadPACS(),
-                NumaHopInitializationSrvc.loadProviders()
+            return $q
+                .all([
+                    CondreportDescPropertySrvc.query(),
+                    DocPropertyTypeSrvc.query(),
+                    NumaHopInitializationSrvc.loadCollections(),
+                    NumaHopInitializationSrvc.loadLibraries(),
+                    NumaHopInitializationSrvc.loadPACS(),
+                    NumaHopInitializationSrvc.loadProviders(),
+                ])
+                .then(function (data) {
+                    var lists = {};
+                    // Constats d'état: propriétés
+                    lists.reportProperties = data[0];
+                    // Types de propriété
+                    lists.properties = data[1];
+                    // IA
+                    lists.collectionIA = _.chain(data[2])
+                        .map(function (ia) {
+                            _.each(ia.collections, function (coll) {
+                                coll.name = ia.label + ' / ' + coll.name;
+                            });
+                            return ia.collections;
+                        })
+                        .flatten()
+                        .sortBy('name')
+                        .value();
+                    // Biblothèques
+                    lists.libraries = data[3];
+                    // PAC
+                    lists.planClassementPAC = _.chain(data[4])
+                        .map(function (pac) {
+                            _.each(pac.pacs, function (p) {
+                                p.name = pac.label + ' / ' + p.name;
+                            });
+                            return pac.pacs;
+                        })
+                        .flatten()
+                        .sortBy('name')
+                        .value();
+                    // Providers
+                    lists.provider = _.sortBy(data[5], 'fullName');
 
-            ]).then(function (data) {
-                var lists = {};
-                // Constats d'état: propriétés
-                lists.reportProperties = data[0];
-                // Types de propriété
-                lists.properties = data[1];
-                // IA
-                lists.collectionIA = _.chain(data[2])
-                    .map(function (ia) {
-                        _.each(ia.collections, function (coll) {
-                            coll.name = ia.label + " / " + coll.name;
-                        });
-                        return ia.collections;
-                    })
-                    .flatten()
-                    .sortBy("name")
-                    .value();
-                // Biblothèques
-                lists.libraries = data[3];
-                // PAC
-                lists.planClassementPAC = _.chain(data[4])
-                    .map(function (pac) {
-                        _.each(pac.pacs, function (p) {
-                            p.name = pac.label + " / " + p.name;
-                        });
-                        return pac.pacs;
-                    })
-                    .flatten()
-                    .sortBy("name")
-                    .value();
-                // Providers
-                lists.provider = _.sortBy(data[5], "fullName");
-
-                return lists;
-            });
+                    return lists;
+                });
         }
 
         /**
-         * Configuration des listes déroulantes de valeur de descriptions, avec mise en cache des valeurs 
-         * 
+         * Configuration des listes déroulantes de valeur de descriptions, avec mise en cache des valeurs
+         *
          * @param {any} getterIndex fonction renvoyant l'index actuellement sélectionné; permet de rafraichir dynamiquement la liste de valeurs associées
          * @param {any} consumerValues callback appelé une fois la liste de valeurs chargées
          */

@@ -1,5 +1,7 @@
 package fr.progilone.pgcn.service.user.ui;
 
+import static fr.progilone.pgcn.service.user.UserService.*;
+
 import fr.progilone.pgcn.domain.dto.user.SimpleUserAccountDTO;
 import fr.progilone.pgcn.domain.dto.user.SimpleUserDTO;
 import fr.progilone.pgcn.domain.dto.user.UserCreationDTO;
@@ -15,18 +17,15 @@ import fr.progilone.pgcn.service.user.UserService;
 import fr.progilone.pgcn.service.user.mapper.UIUserMapper;
 import fr.progilone.pgcn.service.user.mapper.UserMapper;
 import fr.progilone.pgcn.service.util.transaction.VersionValidationService;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static fr.progilone.pgcn.service.user.UserService.*;
 
 /**
  * Service dédié à les gestion des vues des utilisateurs
@@ -63,7 +62,7 @@ public class UIUserService {
      * Mise à jour d'un utilisateur
      *
      * @param request
-     *         un objet contenant les informations necessaires à l'enregistrement d'un utilisateur
+     *            un objet contenant les informations necessaires à l'enregistrement d'un utilisateur
      * @return l'utilisateur nouvellement créée ou mise à jour
      * @throws PgcnValidationException
      */
@@ -95,24 +94,25 @@ public class UIUserService {
     public SimpleUserAccountDTO getCurrentUserWithAuthoritiesAndDashboard() {
         final User user = userService.getOne(SecurityUtils.getCurrentUserId());
         if (user == null && SecurityUtils.getCurrentLogin().equals(adminLogin)) {
-            final Dashboard dashboard = dashboardRepository.findOne(SUPER_ADMIN_ID);
+            final Dashboard dashboard = dashboardRepository.findById(SUPER_ADMIN_ID).orElse(null);
             final SimpleUserAccountDTO.Builder builder = new SimpleUserAccountDTO.Builder().reinit()
                                                                                            .setFirstname("Admin")
                                                                                            .setIdentifier(SUPER_ADMIN_ID)
                                                                                            .setLogin(adminLogin)
                                                                                            .setSurname("Progilone")
-                                                                                           .setDashboard(dashboard != null ?
-                                                                                                         dashboard.getDashboard() :
-                                                                                                         null);
+                                                                                           .setDashboard(dashboard != null ? dashboard.getDashboard()
+                                                                                                                           : null);
 
             final CustomUserDetails currentUser = SecurityUtils.getCurrentUser();
             if (currentUser != null) {
-                builder.setCategory(currentUser.getCategory() != null ? currentUser.getCategory().name() : null);
+                builder.setCategory(currentUser.getCategory() != null ? currentUser.getCategory().name()
+                                                                      : null);
                 builder.setRoles(currentUser.getAuthorities().stream().map(a -> a.getAuthority().substring(5)).collect(Collectors.toList()));
             }
             return builder.build();
         }
-        return user != null ? uiUserMapper.userToSimpleUserAccountDTO(user) : null;
+        return user != null ? uiUserMapper.userToSimpleUserAccountDTO(user)
+                            : null;
     }
 
     @Transactional(readOnly = true)
@@ -136,10 +136,7 @@ public class UIUserService {
     @Transactional(readOnly = true)
     public Collection<SimpleUserDTO> findAllProvidersDTO() {
         final List<User> users = userService.findAllByActiveAndCategory(true, User.Category.PROVIDER);
-        return users.stream()
-                    .map(UserMapper.INSTANCE::userToSimpleUserDTO)
-                    .sorted(Comparator.comparing(SimpleUserDTO::getFullName))
-                    .collect(Collectors.toList());
+        return users.stream().map(UserMapper.INSTANCE::userToSimpleUserDTO).sorted(Comparator.comparing(SimpleUserDTO::getFullName)).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)

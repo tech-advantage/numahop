@@ -3,6 +3,7 @@ package fr.progilone.pgcn.domain.dto.statistics;
 import java.util.List;
 
 public class WorkflowDocUnitProgressDTOPending {
+
     private String projectIdentifier;
     private String projectName;
     private String docIdentifier;
@@ -63,7 +64,9 @@ public class WorkflowDocUnitProgressDTOPending {
         this.docStatus = docStatus;
     }
 
-    public Integer getTotalPage() { return totalPage;}
+    public Integer getTotalPage() {
+        return totalPage;
+    }
 
     public void setTotalPage(Integer totalPage) {
         this.totalPage = totalPage;
@@ -77,15 +80,27 @@ public class WorkflowDocUnitProgressDTOPending {
         this.workflowStateKeys = workflowStateKeys;
     }
 
-    public WorkflowDocUnitInfoDTO getInfos() { return infos;}
+    public WorkflowDocUnitInfoDTO getInfos() {
+        return infos;
+    }
 
-    public void setInfos(WorkflowDocUnitInfoDTO infos) { this.infos = infos; }
+    public void setInfos(WorkflowDocUnitInfoDTO infos) {
+        this.infos = infos;
+    }
 
-    public String getLotIdentifier() { return lotIdentifier; }
+    public String getLotIdentifier() {
+        return lotIdentifier;
+    }
 
-    public void setLotIdentifier(String lotIdentifier) { this.lotIdentifier = lotIdentifier; }
+    public void setLotIdentifier(String lotIdentifier) {
+        this.lotIdentifier = lotIdentifier;
+    }
 
-    public String getLotLabel() { return lotLabel; }
+    public String getLotLabel() {
+        return lotLabel;
+    }
 
-    public void setLotLabel(String lotLabel) { this.lotLabel = lotLabel; }
+    public void setLotLabel(String lotLabel) {
+        this.lotLabel = lotLabel;
+    }
 }

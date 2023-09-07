@@ -1,12 +1,12 @@
 package fr.progilone.pgcn.domain.dto.help;
 
 import fr.progilone.pgcn.domain.help.HelpPageType;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class ModuleDto {
+
     private final String name;
     private final HelpPageType type;
     private final List<HelpPageDto> pages = new ArrayList<>();

@@ -1,0 +1,23 @@
+version: '3.8'
+services:
+    elasticsearch8-1:
+        image: elasticsearch:8.6.1
+        environment:
+            - node.name=elasticsearch8-1
+            - cluster.name=numahop
+            - discovery.type=single-node
+            - xpack.security.enabled=false
+            - ingest.geoip.downloader.enabled=false
+            - 'ES_JAVA_OPTS=-Xms1024m -Xmx1024m'
+            - TZ=Europe/Paris
+        ulimits:
+            memlock:
+                soft: -1
+                hard: -1
+        volumes:
+            - elasticsearch8-1-data:/usr/share/elasticsearch/data
+        ports:
+            - 127.0.0.1:9200:9200
+
+volumes:
+    elasticsearch8-1-data:

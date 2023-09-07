@@ -13,9 +13,10 @@ public final class AutomaticCheckResultConvertUtil {
     }
 
     public static AutomaticCheckResult convert(ValidatorType response) {
-        if(response == null) return null;
+        if (response == null)
+            return null;
         AutomaticCheckResult result = new AutomaticCheckResult();
-        if(response.isValid()) {
+        if (response.isValid()) {
             result.setResult(AutoCheckResult.OK);
         } else {
             result.setResult(AutoCheckResult.KO);

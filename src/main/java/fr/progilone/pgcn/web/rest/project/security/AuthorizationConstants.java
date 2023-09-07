@@ -9,6 +9,7 @@ import fr.progilone.pgcn.web.util.AuthorizationManager;
  */
 @AuthorizationManager.Init
 public final class AuthorizationConstants {
+
     /**
      * Habilitation à la gestion des projets: créer
      */

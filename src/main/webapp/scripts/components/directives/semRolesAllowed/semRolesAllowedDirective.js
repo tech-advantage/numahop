@@ -1,5 +1,5 @@
 (function () {
-    "use strict";
+    'use strict';
 
     /**
      * @ngdoc directive
@@ -27,9 +27,9 @@
                 rolesAllowed = _.chain(rolesAllowed)
                     .map(function (role) {
                         if (_.has(USER_ROLES, role)) {
-                            return "userRoles." + role;
+                            return 'userRoles.' + role;
                         }
-                        $log.error("Role \"" + role + "\" does not exists in USER_ROLES; it will be ignored");
+                        $log.error('Role "' + role + '" does not exists in USER_ROLES; it will be ignored');
                         return null;
                     })
                     .reject(function (element) {
@@ -37,15 +37,14 @@
                     })
                     .value();
 
-                tElement.attr("ng-if", "::isAuthorized([" + rolesAllowed.join(",") + "])")
-                    .removeAttr("sem-roles-allowed");
+                tElement.attr('ng-if', '::isAuthorized([' + rolesAllowed.join(',') + '])').removeAttr('sem-roles-allowed');
 
                 return {
                     post: function postLink(scope, iElement, iAttrs, controller) {
                         $compile(iElement)(scope);
-                    }
+                    },
                 };
-            }
+            },
         };
     });
 })();

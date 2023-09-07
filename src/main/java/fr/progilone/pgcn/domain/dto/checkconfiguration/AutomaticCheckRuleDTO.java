@@ -11,8 +11,7 @@ public class AutomaticCheckRuleDTO extends AbstractVersionedDTO {
     private Boolean blocking;
     private Boolean readOnly = false;
 
-    public AutomaticCheckRuleDTO(final String identifier, 
-                                 final AutomaticCheckTypeDTO automaticCheckType, final Boolean active, final Boolean blocking, final Boolean readOnly) {
+    public AutomaticCheckRuleDTO(final String identifier, final AutomaticCheckTypeDTO automaticCheckType, final Boolean active, final Boolean blocking, final Boolean readOnly) {
 
         this.identifier = identifier;
         this.automaticCheckType = automaticCheckType;
@@ -32,7 +31,6 @@ public class AutomaticCheckRuleDTO extends AbstractVersionedDTO {
     public void setIdentifier(String identifier) {
         this.identifier = identifier;
     }
-
 
     public AutomaticCheckTypeDTO getAutomaticCheckType() {
         return automaticCheckType;

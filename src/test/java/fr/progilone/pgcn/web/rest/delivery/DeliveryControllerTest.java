@@ -1,5 +1,12 @@
 package fr.progilone.pgcn.web.rest.delivery;
 
+import static fr.progilone.pgcn.util.SecurityRequestPostProcessors.roles;
+import static fr.progilone.pgcn.web.rest.delivery.security.AuthorizationConstants.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 import fr.progilone.pgcn.domain.delivery.Delivery;
 import fr.progilone.pgcn.domain.dto.delivery.DeliveryDTO;
 import fr.progilone.pgcn.domain.dto.delivery.ManualDeliveryDTO;
@@ -8,29 +15,25 @@ import fr.progilone.pgcn.domain.lot.Lot;
 import fr.progilone.pgcn.service.delivery.DeliveryReportingService;
 import fr.progilone.pgcn.service.delivery.DeliveryService;
 import fr.progilone.pgcn.service.delivery.ui.UIDeliveryService;
-import fr.progilone.pgcn.service.sample.SampleService;
 import fr.progilone.pgcn.service.es.EsDeliveryService;
+import fr.progilone.pgcn.service.sample.SampleService;
+import fr.progilone.pgcn.service.util.DeliveryProgressService;
 import fr.progilone.pgcn.util.TestUtil;
 import fr.progilone.pgcn.web.util.AccessHelper;
 import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static fr.progilone.pgcn.util.SecurityRequestPostProcessors.*;
-import static fr.progilone.pgcn.web.rest.delivery.security.AuthorizationConstants.*;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class DeliveryControllerTest {
 
     @Mock
@@ -38,15 +41,17 @@ public class DeliveryControllerTest {
     @Mock
     private DeliveryService deliveryService;
     @Mock
+    private DeliveryProgressService deliveryProgressService;
+    @Mock
     private EsDeliveryService esDeliveryService;
     @Mock
     private AccessHelper accessHelper;
     @Mock
     private LibraryAccesssHelper libraryAccesssHelper;
-    
+
     @Mock
     private DeliveryReportingService deliveryReportingService;
-    
+
     @Mock
     private SampleService sampleService;
 
@@ -55,14 +60,19 @@ public class DeliveryControllerTest {
     private final RequestPostProcessor admin = roles(DEL_HAB8);
     private final RequestPostProcessor presta = roles(DEL_HAB2);
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
-        final DeliveryController controller =
-            new DeliveryController(uiDeliveryService, deliveryService, deliveryReportingService, esDeliveryService, accessHelper, libraryAccesssHelper, sampleService);
+        final DeliveryController controller = new DeliveryController(uiDeliveryService,
+                                                                     deliveryService,
+                                                                     deliveryReportingService,
+                                                                     esDeliveryService,
+                                                                     accessHelper,
+                                                                     libraryAccesssHelper,
+                                                                     sampleService);
         this.restMockMvc = MockMvcBuilders.standaloneSetup(controller).build();
 
         when(uiDeliveryService.update(any(ManualDeliveryDTO.class))).then((Answer<DeliveryDTO>) invocation -> {
-            final ManualDeliveryDTO delivery = invocation.getArgumentAt(0, ManualDeliveryDTO.class);
+            final ManualDeliveryDTO delivery = invocation.getArgument(0, ManualDeliveryDTO.class);
             final DeliveryDTO dto1 = new DeliveryDTO();
             dto1.setIdentifier(delivery.getIdentifier());
             return dto1;
@@ -78,19 +88,15 @@ public class DeliveryControllerTest {
         when(accessHelper.checkDelivery(identifier)).thenReturn(false, true);
 
         // 403, admin
-        this.restMockMvc.perform(post("/api/rest/delivery/" + identifier).contentType(TestUtil.APPLICATION_JSON_UTF8)
-                                                                         .content(TestUtil.convertObjectToJsonBytes(dto))
-                                                                         .with(admin))
+        this.restMockMvc.perform(post("/api/rest/delivery/" + identifier).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(dto)).with(admin))
                         // check
                         .andExpect(status().isForbidden());
 
         // 200, admin
-        this.restMockMvc.perform(post("/api/rest/delivery/" + identifier).contentType(TestUtil.APPLICATION_JSON_UTF8)
-                                                                         .content(TestUtil.convertObjectToJsonBytes(dto))
-                                                                         .with(admin))
+        this.restMockMvc.perform(post("/api/rest/delivery/" + identifier).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(dto)).with(admin))
                         // check
                         .andExpect(status().isOk())
-                        .andExpect(content().contentType(TestUtil.APPLICATION_JSON_UTF8))
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andExpect(jsonPath("identifier").value(identifier));
     }
 
@@ -118,46 +124,38 @@ public class DeliveryControllerTest {
         when(deliveryService.getOne(identifier)).thenReturn(dbDelivery);
 
         // 403, presta, checkDelivery ko
-        final ResultActions perform = this.restMockMvc.perform(post("/api/rest/delivery/" + identifier).contentType(TestUtil.APPLICATION_JSON_UTF8)
+        final ResultActions perform = this.restMockMvc.perform(post("/api/rest/delivery/" + identifier).contentType(MediaType.APPLICATION_JSON)
                                                                                                        .content(TestUtil.convertObjectToJsonBytes(dto))
                                                                                                        .with(presta));
         perform
-            // check
-            .andExpect(status().isForbidden());
+               // check
+               .andExpect(status().isForbidden());
 
         // 403, presta, hasProtectedChanges payment ko
         dto.setPayment(Delivery.DeliveryPayment.PAID.name());
-        this.restMockMvc.perform(post("/api/rest/delivery/" + identifier).contentType(TestUtil.APPLICATION_JSON_UTF8)
-                                                                         .content(TestUtil.convertObjectToJsonBytes(dto))
-                                                                         .with(presta))
+        this.restMockMvc.perform(post("/api/rest/delivery/" + identifier).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(dto)).with(presta))
                         // check
                         .andExpect(status().isForbidden());
 
         // 403, presta, hasProtectedChanges method ko
         dto.setPayment(Delivery.DeliveryPayment.UNPAID.name());
         dto.setMethod(Delivery.DeliveryMethod.DISK.name());
-        this.restMockMvc.perform(post("/api/rest/delivery/" + identifier).contentType(TestUtil.APPLICATION_JSON_UTF8)
-                                                                         .content(TestUtil.convertObjectToJsonBytes(dto))
-                                                                         .with(presta))
+        this.restMockMvc.perform(post("/api/rest/delivery/" + identifier).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(dto)).with(presta))
                         // check
                         .andExpect(status().isForbidden());
 
         // 403, presta, hasProtectedChanges lot ko
         dto.setMethod(Delivery.DeliveryMethod.FTP.name());
         dto.getLot().setIdentifier(lotId2);
-        this.restMockMvc.perform(post("/api/rest/delivery/" + identifier).contentType(TestUtil.APPLICATION_JSON_UTF8)
-                                                                         .content(TestUtil.convertObjectToJsonBytes(dto))
-                                                                         .with(presta))
+        this.restMockMvc.perform(post("/api/rest/delivery/" + identifier).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(dto)).with(presta))
                         // check
                         .andExpect(status().isForbidden());
 
         // 200, presta
         dto.getLot().setIdentifier(lotId1);
-        this.restMockMvc.perform(post("/api/rest/delivery/" + identifier).contentType(TestUtil.APPLICATION_JSON_UTF8)
-                                                                         .content(TestUtil.convertObjectToJsonBytes(dto))
-                                                                         .with(presta))
+        this.restMockMvc.perform(post("/api/rest/delivery/" + identifier).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(dto)).with(presta))
                         .andExpect(status().isOk())
-                        .andExpect(content().contentType(TestUtil.APPLICATION_JSON_UTF8))
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andExpect(jsonPath("identifier").value(identifier));
     }
 }

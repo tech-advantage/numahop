@@ -9,6 +9,13 @@ import fr.progilone.pgcn.service.exchange.csv.ExportCSVService;
 import fr.progilone.pgcn.web.rest.AbstractRestController;
 import fr.progilone.pgcn.web.rest.statistics.StatisticsController;
 import fr.progilone.pgcn.web.util.AccessHelper;
+import jakarta.annotation.security.PermitAll;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,14 +28,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
-
-import javax.annotation.security.PermitAll;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 @Controller
 @RequestMapping(value = "/api/rest/statistics/csv")
@@ -43,9 +42,7 @@ public class StatisticsCsvController extends AbstractRestController {
     private final AccessHelper accessHelper;
 
     @Autowired
-    public StatisticsCsvController(final ExportCSVService statisticsCsvService,
-                                   final StatisticsController delegate,
-                                   final AccessHelper accessHelper) {
+    public StatisticsCsvController(final ExportCSVService statisticsCsvService, final StatisticsController delegate, final AccessHelper accessHelper) {
         this.statisticsCsvService = statisticsCsvService;
         this.delegate = delegate;
         this.accessHelper = accessHelper;
@@ -60,19 +57,16 @@ public class StatisticsCsvController extends AbstractRestController {
                                       @RequestParam(value = "project", required = false) final List<String> projects,
                                       @RequestParam(value = "train", required = false) final List<String> trains,
                                       @RequestParam(value = "status", required = false) final List<Train.TrainStatus> status,
-                                      @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "returnFrom", required = false)
-                                      final LocalDate returnFrom,
-                                      @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "returnTo", required = false)
-                                      final LocalDate returnTo,
-                                      @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "sendFrom", required = false)
-                                      final LocalDate sendFrom,
+                                      @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "returnFrom", required = false) final LocalDate returnFrom,
+                                      @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "returnTo", required = false) final LocalDate returnTo,
+                                      @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "sendFrom", required = false) final LocalDate sendFrom,
                                       @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "sendTo", required = false) final LocalDate sendTo,
                                       @RequestParam(name = "insuranceFrom", required = false) final Double insuranceFrom,
                                       @RequestParam(name = "insuranceTo", required = false) final Double insuranceTo,
                                       @RequestParam(value = "encoding", defaultValue = "ISO-8859-15") final String encoding,
                                       @RequestParam(value = "separator", defaultValue = ";") final char separator) throws PgcnTechnicalException {
 
-        if (accessHelper.checkUserIsPresta()) { //  no presta
+        if (accessHelper.checkUserIsPresta()) { // no presta
             return;
         }
         final ResponseEntity<List<StatisticsProviderTrainDTO>> result = delegate.getProviderTrainStats(request,
@@ -106,13 +100,11 @@ public class StatisticsCsvController extends AbstractRestController {
                                @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "to", required = false) final LocalDate toDate,
                                @RequestParam(value = "encoding", defaultValue = "ISO-8859-15") final String encoding,
                                @RequestParam(value = "separator", defaultValue = ";") final char separator) throws PgcnTechnicalException {
-        if (accessHelper.checkUserIsPresta()) { //  no presta
+        if (accessHelper.checkUserIsPresta()) { // no presta
             return;
         }
-        final ResponseEntity<Page<StatisticsProgressDTO>> pageOfLots =
-            delegate.getLotProgress(request, libraries, projects, fromDate, toDate, 0, Integer.MAX_VALUE);
-        final ResponseEntity<Page<StatisticsProgressDTO>> pageOfProjects =
-            delegate.getProjectProgress(request, libraries, projects, fromDate, toDate, 0, Integer.MAX_VALUE);
+        final ResponseEntity<Page<StatisticsProgressDTO>> pageOfLots = delegate.getLotProgress(request, libraries, projects, fromDate, toDate, 0, Integer.MAX_VALUE);
+        final ResponseEntity<Page<StatisticsProgressDTO>> pageOfProjects = delegate.getProjectProgress(request, libraries, projects, fromDate, toDate, 0, Integer.MAX_VALUE);
 
         final List<StatisticsProgressDTO> dtos = new ArrayList<>(pageOfLots.getBody().getContent());
         dtos.addAll(pageOfProjects.getBody().getContent());
@@ -137,11 +129,10 @@ public class StatisticsCsvController extends AbstractRestController {
                                    @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "to", required = false) final LocalDate toDate,
                                    @RequestParam(value = "encoding", defaultValue = "ISO-8859-15") final String encoding,
                                    @RequestParam(value = "separator", defaultValue = ";") final char separator) throws PgcnTechnicalException {
-        if (accessHelper.checkUserIsPresta()) { //  no presta
+        if (accessHelper.checkUserIsPresta()) { // no presta
             return;
         }
-        final ResponseEntity<Page<StatisticsProgressDTO>> result =
-            delegate.getProjectProgress(request, libraries, projects, fromDate, toDate, 0, Integer.MAX_VALUE);
+        final ResponseEntity<Page<StatisticsProgressDTO>> result = delegate.getProjectProgress(request, libraries, projects, fromDate, toDate, 0, Integer.MAX_VALUE);
         final List<StatisticsProgressDTO> dtos = new ArrayList<>(result.getBody().getContent());
 
         try {

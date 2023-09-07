@@ -1,9 +1,8 @@
 package fr.progilone.pgcn.domain.dto.administration.omeka;
 
+import fr.progilone.pgcn.domain.dto.library.SimpleLibraryDTO;
 import java.util.List;
 import java.util.Objects;
-
-import fr.progilone.pgcn.domain.dto.library.SimpleLibraryDTO;
 
 /**
  *
@@ -24,7 +23,7 @@ public class OmekaConfigurationDTO {
     private String password;
     private String accessUrl;
     private String mailCsv;
-    
+
     private boolean exportMets;
     private boolean exportMaster;
     private boolean exportView;
@@ -67,8 +66,6 @@ public class OmekaConfigurationDTO {
         this.active = active;
     }
 
-    
-
     public String getStorageServer() {
         return storageServer;
     }
@@ -108,7 +105,6 @@ public class OmekaConfigurationDTO {
     public void setPassword(final String password) {
         this.password = password;
     }
-
 
     public String getAccessUrl() {
         return accessUrl;

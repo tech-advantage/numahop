@@ -2,7 +2,6 @@ package fr.progilone.pgcn.exception.message;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,11 +20,7 @@ public final class PgcnError {
     private final Object additionnalComplements;
     private final String message;
 
-    private PgcnError(final PgcnErrorCode code,
-                             final String field,
-                             final String message,
-                             final List<String> complements,
-                             final Object additionnalComplements) {
+    private PgcnError(final PgcnErrorCode code, final String field, final String message, final List<String> complements, final Object additionnalComplements) {
         super();
         this.code = code;
         this.field = field;
@@ -74,7 +69,8 @@ public final class PgcnError {
         }
         if (this.getClass().isInstance(obj)) {
             final PgcnError other = (PgcnError) obj;
-            return Objects.equal(code, other.code) && Objects.equal(field, other.field) && Objects.equal(message, other.message);
+            return Objects.equal(code, other.code) && Objects.equal(field, other.field)
+                   && Objects.equal(message, other.message);
         }
         return false;
     }

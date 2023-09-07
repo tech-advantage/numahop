@@ -2,34 +2,7 @@ package fr.progilone.pgcn.web.rest.document.conditionreport;
 
 import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.*;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.time.LocalDate;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.codahale.metrics.annotation.Timed;
-
 import fr.progilone.pgcn.domain.AbstractDomainObject;
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.document.conditionreport.ConditionReport;
@@ -46,6 +19,24 @@ import fr.progilone.pgcn.web.rest.AbstractRestController;
 import fr.progilone.pgcn.web.util.AccessHelper;
 import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
 import fr.progilone.pgcn.web.util.WorkflowAccessHelper;
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
+import java.time.LocalDate;
+import java.util.*;
+import java.util.stream.Collectors;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping(value = "/api/rest/condreport")
@@ -78,7 +69,7 @@ public class ConditionReportController extends AbstractRestController {
         this.esConditionReportService = esConditionReportService;
     }
 
-    @RequestMapping(method = RequestMethod.POST, params = {"docUnit"})
+    @RequestMapping(method = RequestMethod.POST, params = {"docUnit"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(COND_REPORT_HAB1)
     public ResponseEntity<ConditionReport> create(@RequestParam(name = "docUnit") final String docUnitId) throws PgcnException {
@@ -91,7 +82,7 @@ public class ConditionReportController extends AbstractRestController {
         return new ResponseEntity<>(savedReport, HttpStatus.CREATED);
     }
 
-    @RequestMapping(value = "/{identifier}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/{identifier}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(COND_REPORT_HAB3)
     public void delete(final HttpServletResponse response, @PathVariable final String identifier) {
@@ -143,7 +134,10 @@ public class ConditionReportController extends AbstractRestController {
         return new ResponseEntity<>(report, HttpStatus.OK); // toujours 200
     }
 
-    @RequestMapping(method = RequestMethod.GET, params = {"summary", "docUnit"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.GET,
+                    params = {"summary",
+                              "docUnit"},
+                    produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(COND_REPORT_HAB0)
     public ResponseEntity<Set<String>> getSummaryByDocUnit(@RequestParam(name = "docUnit") final String docUnitId) {
@@ -155,7 +149,19 @@ public class ConditionReportController extends AbstractRestController {
         return new ResponseEntity<>(conditionReportService.getSummary(report), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{identifier}", method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.GET, params = {"sampleId"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    @RolesAllowed(COND_REPORT_HAB0)
+    public ResponseEntity<Set<String>> getSummaryBySample(@RequestParam(name = "sampleId") final String docUnitId) {
+        // droits d'accès à l'ud
+        if (!accessHelper.checkDocUnit(docUnitId)) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+        final ConditionReport report = conditionReportService.findByDocUnit(docUnitId);
+        return new ResponseEntity<>(conditionReportService.getSummary(report), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{identifier}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(COND_REPORT_HAB2)
     public ResponseEntity<ConditionReport> update(@RequestBody final ConditionReport report) throws PgcnException {
@@ -178,8 +184,7 @@ public class ConditionReportController extends AbstractRestController {
     public ResponseEntity<Page<SearchResult>> search(final HttpServletRequest request,
                                                      @RequestBody final SearchRequest requestParams,
                                                      @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
-                                                     @RequestParam(value = "size", required = false, defaultValue = "" + Integer.MAX_VALUE)
-                                                     final Integer size,
+                                                     @RequestParam(value = "size", required = false, defaultValue = "" + Integer.MAX_VALUE) final Integer size,
                                                      @RequestParam(value = "sorts", required = false) final List<String> sorts) {
 
         final List<String> filteredLibraries = libraryAccesssHelper.getLibraryFilter(request, requestParams.getLibraries());
@@ -207,13 +212,12 @@ public class ConditionReportController extends AbstractRestController {
      * @param identifier
      * @return
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET, params = {"exportto"})
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET, params = {"exportto"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(COND_REPORT_HAB4)
     public void exportReportOdt(final HttpServletResponse response,
                                 @PathVariable("id") final String identifier,
-                                @RequestParam(name = "exportto", defaultValue = "PDF") final ConditionReportService.ConvertType type) throws
-                                                                                                                                      PgcnTechnicalException {
+                                @RequestParam(name = "exportto", defaultValue = "PDF") final ConditionReportService.ConvertType type) throws PgcnTechnicalException {
         final ConditionReport report = conditionReportService.findByIdentifier(identifier);
         // non trouvé
         if (report == null) {
@@ -243,13 +247,12 @@ public class ConditionReportController extends AbstractRestController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.GET, params = {"import-template"})
+    @RequestMapping(method = RequestMethod.GET, params = {"import-template"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(COND_REPORT_HAB1)
     public void getReportImportTemplate(final HttpServletResponse response,
                                         @RequestParam(name = "import-template") final List<String> docUnitIds,
-                                        @RequestParam(name = "format", defaultValue = "XLSX")
-                                        final ConditionReportExportService.WorkbookFormat format,
+                                        @RequestParam(name = "format", defaultValue = "XLSX") final ConditionReportExportService.WorkbookFormat format,
                                         @RequestParam(name = "sortAttributes") final List<String> sortAttributes) throws PgcnTechnicalException {
         // droits d'accès à l'ud
         final Collection<DocUnit> filteredDocUnits = accessHelper.filterDocUnits(docUnitIds);
@@ -265,10 +268,7 @@ public class ConditionReportController extends AbstractRestController {
                     writeResponseHeaderForDownload(response, "application/vnd.ms-excel", null, "condition_report_import.xls");
                     break;
                 case XLSX:
-                    writeResponseHeaderForDownload(response,
-                                                   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                                                   null,
-                                                   "condition_report_import.xlsx");
+                    writeResponseHeaderForDownload(response, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", null, "condition_report_import.xlsx");
                     break;
             }
             // réponse
@@ -309,9 +309,8 @@ public class ConditionReportController extends AbstractRestController {
     @RequestMapping(method = RequestMethod.GET, value = "/pdf", produces = "application/pdf")
     @Timed
     @RolesAllowed(COND_REPORT_HAB0)
-    public void generateSlipPdf(final HttpServletRequest request,
-                                final HttpServletResponse response,
-                                @RequestParam(value = "reports") final List<String> reportIds) throws PgcnTechnicalException {
+    public void generateSlipPdf(final HttpServletRequest request, final HttpServletResponse response, @RequestParam(value = "reports") final List<String> reportIds)
+                                                                                                                                                                     throws PgcnTechnicalException {
 
         // droits d'accès à l'ud
         final List<ConditionReportDetail> reports = accessHelper.filterConditionReportDetails(reportIds);
@@ -330,11 +329,10 @@ public class ConditionReportController extends AbstractRestController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.POST, params = {"import-report"})
+    @RequestMapping(method = RequestMethod.POST, params = {"import-report"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(COND_REPORT_HAB1)
-    public ResponseEntity<List<ConditionReportImportService.ImportResult>> updateReport(
-        @RequestParam(value = "file") final List<MultipartFile> files) {
+    public ResponseEntity<List<ConditionReportImportService.ImportResult>> updateReport(@RequestParam(value = "file") final List<MultipartFile> files) {
 
         if (files.isEmpty()) {
             LOG.warn("Aucun fichier n'a été reçu pour l'import des constats d'état");
@@ -347,8 +345,8 @@ public class ConditionReportController extends AbstractRestController {
             } else {
                 LOG.info("Import du fichier {} (taille {})", file.getOriginalFilename(), file.getSize());
                 try (final InputStream in = file.getInputStream()) {
-                    final List<ConditionReportImportService.ImportResult> importResults =
-                        conditionReportImportService.importReport(in, docUnit -> accessHelper.checkDocUnit(docUnit.getIdentifier()));
+                    final List<ConditionReportImportService.ImportResult> importResults = conditionReportImportService.importReport(in,
+                                                                                                                                    docUnit -> accessHelper.checkDocUnit(docUnit.getIdentifier()));
                     // Indexation des constats importés
                     final List<String> reportIds = importResults.stream()
                                                                 .filter(res -> res.getReportId() != null)
@@ -375,13 +373,13 @@ public class ConditionReportController extends AbstractRestController {
      * @param detailId
      * @return
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.POST, params = {"propagate"})
+    @RequestMapping(value = "/{id}", method = RequestMethod.POST, params = {"propagate"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(COND_REPORT_HAB0)
     public ResponseEntity<?> propagateReport(final HttpServletRequest request,
-                                final HttpServletResponse response,
-                                @RequestParam(name = "docUnit") final String docUnitId,
-                                @PathVariable(name = "id") final String detailId) {
+                                             final HttpServletResponse response,
+                                             @RequestParam(name = "docUnit") final String docUnitId,
+                                             @PathVariable(name = "id") final String detailId) {
 
         // droits d'accès à l'ud
         if (!accessHelper.checkDocUnit(docUnitId)) {
@@ -394,8 +392,8 @@ public class ConditionReportController extends AbstractRestController {
         return new ResponseEntity<>(results.values(), HttpStatus.OK);
     }
 
-
     private static final class SearchRequest {
+
         private List<String> libraries;
         private List<String> projects;
         private List<String> lots;
@@ -417,13 +415,21 @@ public class ConditionReportController extends AbstractRestController {
             this.libraries = libraries;
         }
 
-        public List<String> getProjects() { return projects; }
+        public List<String> getProjects() {
+            return projects;
+        }
 
-        public void setProjects(final List<String> projects) { this.projects = projects; }
+        public void setProjects(final List<String> projects) {
+            this.projects = projects;
+        }
 
-        public List<String> getLots() { return lots; }
+        public List<String> getLots() {
+            return lots;
+        }
 
-        public void setLots(final List<String> lots) { this.lots = lots; }
+        public void setLots(final List<String> lots) {
+            this.lots = lots;
+        }
 
         public DimensionFilter.Operator getOp() {
             return op;
@@ -496,6 +502,7 @@ public class ConditionReportController extends AbstractRestController {
         public void setValidateOnly(final boolean validateOnly) {
             this.validateOnly = validateOnly;
         }
+
         public boolean isValidateOnly() {
             return validateOnly;
         }

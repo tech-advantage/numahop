@@ -1,13 +1,18 @@
 package fr.progilone.pgcn.web.rest.statistics.csv;
 
+import com.codahale.metrics.annotation.Timed;
+import fr.progilone.pgcn.domain.dto.statistics.StatisticsProviderDeliveryDTO;
+import fr.progilone.pgcn.exception.PgcnTechnicalException;
+import fr.progilone.pgcn.service.exchange.csv.ExportCSVService;
+import fr.progilone.pgcn.web.rest.AbstractRestController;
+import fr.progilone.pgcn.web.rest.statistics.StatisticsDeliveryController;
+import fr.progilone.pgcn.web.util.AccessHelper;
+import jakarta.annotation.security.PermitAll;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
-
-import javax.annotation.security.PermitAll;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -18,15 +23,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
-
-import com.codahale.metrics.annotation.Timed;
-
-import fr.progilone.pgcn.domain.dto.statistics.StatisticsProviderDeliveryDTO;
-import fr.progilone.pgcn.exception.PgcnTechnicalException;
-import fr.progilone.pgcn.service.exchange.csv.ExportCSVService;
-import fr.progilone.pgcn.web.rest.AbstractRestController;
-import fr.progilone.pgcn.web.rest.statistics.StatisticsDeliveryController;
-import fr.progilone.pgcn.web.util.AccessHelper;
 
 @Controller
 @RequestMapping(value = "/api/rest/statistics/delivery/csv")
@@ -40,9 +36,7 @@ public class StatisticsDeliveryCsvController extends AbstractRestController {
     private final StatisticsDeliveryController delegate;
     private final AccessHelper accessHelper;
 
-    public StatisticsDeliveryCsvController(final ExportCSVService statisticsCsvService,
-                                           final StatisticsDeliveryController delegate,
-                                           final AccessHelper accessHelper) {
+    public StatisticsDeliveryCsvController(final ExportCSVService statisticsCsvService, final StatisticsDeliveryController delegate, final AccessHelper accessHelper) {
         this.statisticsCsvService = statisticsCsvService;
         this.delegate = delegate;
         this.accessHelper = accessHelper;
@@ -55,17 +49,15 @@ public class StatisticsDeliveryCsvController extends AbstractRestController {
                                          final HttpServletResponse response,
                                          @RequestParam(value = "library", required = false) final List<String> libraries,
                                          @RequestParam(value = "provider", required = false) final List<String> providers,
-                                         @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "from", required = false)
-                                         final LocalDate fromDate,
+                                         @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "from", required = false) final LocalDate fromDate,
                                          @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "to", required = false) final LocalDate toDate,
                                          @RequestParam(value = "encoding", defaultValue = "ISO-8859-15") final String encoding,
                                          @RequestParam(value = "separator", defaultValue = ";") final char separator) throws PgcnTechnicalException {
 
-        if (accessHelper.checkUserIsPresta()) { //  no presta
+        if (accessHelper.checkUserIsPresta()) { // no presta
             return;
         }
-        final ResponseEntity<List<StatisticsProviderDeliveryDTO>> result =
-            delegate.getProviderDeliveryStats(request, libraries, providers, fromDate, toDate);
+        final ResponseEntity<List<StatisticsProviderDeliveryDTO>> result = delegate.getProviderDeliveryStats(request, libraries, providers, fromDate, toDate);
 
         try {
             writeResponseHeaderForDownload(response, "text/csv; charset=" + encoding, null, FILENAME);

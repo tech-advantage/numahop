@@ -1,8 +1,7 @@
 package fr.progilone.pgcn.util;
 
-import org.springframework.test.web.servlet.request.RequestPostProcessor;
-
 import java.util.stream.Stream;
+import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 public class SecurityRequestPostProcessors {
 

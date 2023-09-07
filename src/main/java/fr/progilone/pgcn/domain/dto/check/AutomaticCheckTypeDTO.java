@@ -6,9 +6,9 @@ import fr.progilone.pgcn.domain.dto.AbstractDTO;
 
 /**
  * Type de contrôles automatiques
- * 
+ *
  * @author jbrunet
- * Créé le 2 mars 2017
+ *         Créé le 2 mars 2017
  */
 public class AutomaticCheckTypeDTO extends AbstractDTO {
 
@@ -29,7 +29,7 @@ public class AutomaticCheckTypeDTO extends AbstractDTO {
     public void setType(final AutoCheckType type) {
         this.type = type;
     }
-    
+
     public void setIdentifier(final String identifier) {
         this.identifier = identifier;
     }
@@ -57,6 +57,5 @@ public class AutomaticCheckTypeDTO extends AbstractDTO {
     public void setActive(final boolean active) {
         this.active = active;
     }
-    
-    
+
 }

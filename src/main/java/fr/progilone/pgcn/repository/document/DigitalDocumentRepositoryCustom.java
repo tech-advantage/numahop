@@ -1,12 +1,10 @@
 package fr.progilone.pgcn.repository.document;
 
+import fr.progilone.pgcn.domain.document.DigitalDocument;
 import java.time.LocalDate;
 import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import fr.progilone.pgcn.domain.document.DigitalDocument;
 
 /**
  * Created by lebouchp on 10/03/2017.
@@ -32,8 +30,8 @@ public interface DigitalDocumentRepositoryCustom {
                                  List<String> searchMaxAngles,
                                  Integer searchPageFrom,
                                  Integer searchPageTo,
-                                 Integer searchPageCheckFrom,
-                                 Integer searchPageCheckTo,
+                                 Long searchPageCheckFrom,
+                                 Long searchPageCheckTo,
                                  Double searchMinSize,
                                  Double searchMaxSize,
                                  boolean validated,

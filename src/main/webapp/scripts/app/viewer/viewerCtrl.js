@@ -1,13 +1,27 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('ViewerCtrl', ViewerCtrl);
+    angular.module('numaHopApp.controller').controller('ViewerCtrl', ViewerCtrl);
 
-
-    function ViewerCtrl($routeParams, $location, $scope, $q, $http, FileSaver, DeliverySrvc, WorkflowHandleSrvc, $timeout,
-        DigitalDocumentSrvc, MessageSrvc, PageCheckSrvc, gettextCatalog, codeSrvc, SampleSrvc, ModalSrvc, CondreportSrvc) {
-
+    function ViewerCtrl(
+        $routeParams,
+        $location,
+        $scope,
+        $q,
+        $http,
+        FileSaver,
+        DeliverySrvc,
+        WorkflowHandleSrvc,
+        $timeout,
+        DigitalDocumentSrvc,
+        MessageSrvc,
+        PageCheckSrvc,
+        gettextCatalog,
+        codeSrvc,
+        SampleSrvc,
+        ModalSrvc,
+        CondreportSrvc
+    ) {
         $scope.url_viewer = undefined;
         $scope.digitalDocument = undefined;
         $scope.delivery = undefined;
@@ -43,16 +57,16 @@
         $scope.data = {};
         $scope.data.filesWithErrors = [];
         $scope.data.metadataFile = [];
-        $scope.data.metadataFile2 = [];  // pour 2eme page bookView
+        $scope.data.metadataFile2 = []; // pour 2eme page bookView
         $scope.pdfExtracted = false;
 
         // variables from pageCheckCtrl
         $scope.previousDelivs = [];
-        $scope.selPreviousDelivery = "";
-        $scope.deliveryNotes = "";
-        $scope.data.digitizingNotes = "";
-        $scope.data.checkNotes = "";
-        $scope.data.checkNotes2 = "";
+        $scope.selPreviousDelivery = '';
+        $scope.deliveryNotes = '';
+        $scope.data.digitizingNotes = '';
+        $scope.data.checkNotes = '';
+        $scope.data.checkNotes2 = '';
         $scope.data.pagesToControl = [];
         $scope.data.totalPages = 0;
         $scope.detailsConstat = [];
@@ -70,7 +84,6 @@
         init();
 
         function init() {
-
             if ($routeParams.sampling) {
                 $scope.sampling = $routeParams.sampling;
             } else {
@@ -82,12 +95,12 @@
 
             var params = {
                 id: $routeParams.id,
-                sampling: $scope.sampling
+                sampling: $scope.sampling,
             };
 
             if ($routeParams.deliveryId) {
                 var parms = {
-                    id: $routeParams.deliveryId
+                    id: $routeParams.deliveryId,
                 };
                 DeliverySrvc.getDeliveryForViewer(parms, function (delivery) {
                     $scope.delivery = delivery;
@@ -106,7 +119,6 @@
 
                 // chargement du sample avec ses pages (1->n docs possibles).
                 SampleSrvc.get(params, function (value) {
-
                     $scope.sample = value;
                     $scope.data.totalPages = $scope.sample.pages.length;
                     $scope.deliveryNotes = $scope.sample.delivery.digitizingNotes;
@@ -121,7 +133,7 @@
                     PageCheckSrvc.getSampleErrors({ id: $scope.sample.identifier }, function (value) {
                         $scope.nbMinErr = value.nbMinorErrors;
                         $scope.nbMajErr = value.nbMajorErrors;
-                        MessageSrvc.clearMessages("warning");
+                        MessageSrvc.clearMessages('warning');
                         if (value.minorErrorRateExceeded || value.majorErrorRateExceeded) {
                             if (value.minorErrorRateExceeded) {
                                 MessageSrvc.addWarn(gettextCatalog.getString("Taux d'erreur mineures dépassé par rapport à la taille de l'échantillon"), {}, true);
@@ -136,20 +148,17 @@
                         $scope.metadata = metadata;
                     });
                 });
-
-
             } else {
                 // MODE COMPLET
                 DigitalDocumentSrvc.get(params, function (value) {
-
                     $scope.digitalDocument = value;
                     $scope.data.totalPages = $scope.digitalDocument.nbPages;
 
-                    if (value.status === "REJECTED") {
-                        MessageSrvc.addFailure(gettextCatalog.getString("Statut du document : {{status}}", { status: codeSrvc['digitalDocument.' + value.status] }), {}, true);
+                    if (value.status === 'REJECTED') {
+                        MessageSrvc.addFailure(gettextCatalog.getString('Statut du document : {{status}}', { status: codeSrvc['digitalDocument.' + value.status] }), {}, true);
                         $scope.rejected = true;
                     } else {
-                        MessageSrvc.addInfo(gettextCatalog.getString("Statut du document : {{status}}", { status: codeSrvc['digitalDocument.' + value.status] }), {}, true);
+                        MessageSrvc.addInfo(gettextCatalog.getString('Statut du document : {{status}}', { status: codeSrvc['digitalDocument.' + value.status] }), {}, true);
                     }
 
                     // Synthese constat d'etat
@@ -159,11 +168,10 @@
 
                     // Affichage pour un temps limité à l'ouverture
                     MessageSrvc.initPanel();
-
                 });
 
                 PageCheckSrvc.getDocumentErrors(params, function (value) {
-                    MessageSrvc.clearMessages("warning");
+                    MessageSrvc.clearMessages('warning');
                     $scope.nbMinErr = value.nbMinorErrors;
                     $scope.nbMajErr = value.nbMajorErrors;
                     if (value.minorErrorRateExceeded || value.majorErrorRateExceeded) {
@@ -188,7 +196,7 @@
 
                 // Historique des resultats si relivraison
                 var pars = {
-                    digitalDocIdentifier: $routeParams.id
+                    digitalDocIdentifier: $routeParams.id,
                 };
                 DeliverySrvc.getPreviousCheckSlips(pars, function (val) {
                     $scope.previousDelivs = val;
@@ -196,7 +204,6 @@
                         $scope.selPreviousDelivery = val[0].identifier;
                     }
                 });
-
             }
 
             /* parametres visionneuse Mirador */
@@ -209,7 +216,7 @@
                 typeView = $routeParams.typeView;
             }
 
-            $scope.url_viewer = "scripts/app/viewer/mirador.html?";
+            $scope.url_viewer = 'scripts/app/viewer/mirador.html?';
             if ($scope.sampling) {
                 // Echantillon
                 $scope.url_viewer += 'idSample=' + params.id + '&typeView=' + typeView;
@@ -230,13 +237,13 @@
 
         /* -----------------------*/
         /* Events from Mirador*/
+
         /* -----------------------*/
         function canvasIdChanged(e) {
             synchronizePage(e.detail.currentId);
         }
 
         function typeViewChanged(e) {
-
             var prevTypeView = $scope.typeView;
             if ($scope.typeView === e.detail.currentTypeView) {
                 return;
@@ -260,12 +267,11 @@
         }
 
         // Il faut forcer le destroy des events (merci Seb!!)
-        $scope.$on("$destroy", function () {
-            document.removeEventListener("canvasIdChanged", canvasIdChanged);
-            document.removeEventListener("typeViewChanged", typeViewChanged);
-            document.removeEventListener("imgViewing", imgViewing);
+        $scope.$on('$destroy', function () {
+            document.removeEventListener('canvasIdChanged', canvasIdChanged);
+            document.removeEventListener('typeViewChanged', typeViewChanged);
+            document.removeEventListener('imgViewing', imgViewing);
         });
-
 
         /**
          * Click / btn Controle.
@@ -273,11 +279,10 @@
         function goToPageCheck() {
             if ($scope.sampling) {
                 // send event pour changement de vue ds le viewer   (Passage en mode ImageView - echantillon)
-                self.frames['viewer_iframe'].document.dispatchEvent(new CustomEvent("changeViewMirador", { "detail": { "typeView": "ImageView" } }));
-
+                self.frames['viewer_iframe'].document.dispatchEvent(new CustomEvent('changeViewMirador', { detail: { typeView: 'ImageView' } }));
             } else {
                 // send event pour changement de vue ds le viewer   (Passage en mode BookView - document)
-                self.frames['viewer_iframe'].document.dispatchEvent(new CustomEvent("changeViewMirador", { "detail": { "typeView": "BookView" } }));
+                self.frames['viewer_iframe'].document.dispatchEvent(new CustomEvent('changeViewMirador', { detail: { typeView: 'BookView' } }));
             }
         }
 
@@ -285,13 +290,11 @@
          * Passage en mode controle.
          */
         function initializeCheck() {
-
             saveErrors();
             if (!$scope.sampling) {
                 var digitNotes = $scope.digitalDocument.docUnit.digitizingNotes;
                 if (digitNotes !== null && digitNotes.size > 0) {
-                    MessageSrvc.addInfo(gettextCatalog.getString("Informations de contrôle: {{infos}}"),
-                        { infos: $scope.digitalDocument.docUnit.digitizingNotes }, true);
+                    MessageSrvc.addInfo(gettextCatalog.getString('Informations de contrôle: {{infos}}'), { infos: $scope.digitalDocument.docUnit.digitizingNotes }, true);
                 }
             } else {
                 if ($scope.data.totalPages === 1) {
@@ -299,8 +302,7 @@
                 }
             }
             if ($scope.deliveryNotes !== null && $scope.deliveryNotes.size > 0) {
-                MessageSrvc.addInfo(gettextCatalog.getString("Notes de livraison: {{notes}}"),
-                    { notes: $scope.deliveryNotes }, true);
+                MessageSrvc.addInfo(gettextCatalog.getString('Notes de livraison: {{notes}}'), { notes: $scope.deliveryNotes }, true);
             }
         }
 
@@ -309,13 +311,12 @@
          * (recharge les erreurs globales)
          */
         function exitFromCheck() {
-
             // recharger erreurs globales
             $scope.select.selectedErrors = [];
             $scope.select.selectedErrors2 = [];
 
             var params = {
-                id: $routeParams.id
+                id: $routeParams.id,
             };
             if ($scope.sampling) {
                 PageCheckSrvc.getErrorsForSample(params, function (errors) {
@@ -335,11 +336,10 @@
         }
 
         function groupErrorLabels(error) {
-            return error.isMajor ? "Erreurs majeures" : "Erreurs mineures";
+            return error.isMajor ? 'Erreurs majeures' : 'Erreurs mineures';
         }
 
         function loadPage(pageNumber, msgView) {
-
             var numPage = parseInt(pageNumber, 10);
             // En mode Book, on se repositionne sur la 1ere image affichée (page de gauche)
             // La seconde page sera toujours positionnée à n + 1, qque soit le déplacement (ascendant ou en descendant)
@@ -355,26 +355,47 @@
 
             if ($scope.sampling) {
                 /*Echantillon*/
-                var page = $scope.sample.pages[numPage - 1];
+                let page = $scope.sample.pages[numPage - 1];
+                $scope.detailsConstat = null;
                 if (page) {
                     $scope.data.checkNotes = page.checkNotes;
-                    var pageparams = {
+                    let pageparams = {
                         id: $routeParams.id,
-                        pageId: page.identifier
+                        pageId: page.identifier,
                     };
                     PageCheckSrvc.getErrorsForSampledPage(pageparams, function (errors) {
                         $scope.select.selectedErrors = _.filter($scope.options.errors, function (error) {
                             return _.contains(errors, error.key);
                         });
+
+                        let body = {
+                            failedChecks: _.pluck($scope.select.selectedErrors, 'key'),
+                            checkNotes: $scope.data.checkNotes,
+                            typeToc: $scope.data.metadataFile.typeTOC,
+                            orderToc: $scope.data.metadataFile.orderTOC,
+                            titleToc: $scope.data.metadataFile.nameTOC,
+                        };
+
+                        let params = {
+                            id: page.digitalDocument.identifier,
+                            pageNumber: 1,
+                            deliveryId: $routeParams.deliveryId,
+                        };
+
+                        setPageErrors(params, body, true);
+                    });
+
+                    //charge constat d etat
+                    PageCheckSrvc.getCondReportForSamplePage(pageparams, summary => {
+                        $scope.detailsConstat = summary;
                     });
                 }
-
             } else {
                 /* Document complet */
                 var params = {
-                              id: $routeParams.id,
-                              pageNumber: numPage
-                          };
+                    id: $routeParams.id,
+                    pageNumber: numPage,
+                };
                 DigitalDocumentSrvc.getPage(params, function (page) {
                     $scope.data.checkNotes = page.checkNotes;
                     PageCheckSrvc.getErrorsForPage(params, function (errors) {
@@ -387,7 +408,7 @@
                     if ($scope.bookView && !isLastPage() && numPage > 1 && $scope.imgDoublePaged) {
                         var params2 = {
                             id: $routeParams.id,
-                            pageNumber: numPage + 1
+                            pageNumber: numPage + 1,
                         };
                         DigitalDocumentSrvc.getPage(params2, function (page2) {
                             $scope.data.checkNotes2 = page2.checkNotes;
@@ -398,9 +419,7 @@
                             });
                         });
                     }
-
                 });
-
             }
             $scope.loaded = true;
             // Affichage pour un temps limité à l'ouverture
@@ -439,7 +458,6 @@
 
         /* Nav. vers l'avant */
         function nextPage(canvasId) {
-
             var pageToUpdate = $scope.currentPage;
             $scope.currentPage = parseInt(canvasId, 10);
             var params = {};
@@ -447,7 +465,8 @@
             var lastPage = isLastPage();
 
             // sauvegardes 1er bloc
-            if (lastPage || $scope.currentPage !== parseInt(pageToUpdate, 10)) { // pas de maj au 1er passage.
+            if (lastPage || $scope.currentPage !== parseInt(pageToUpdate, 10)) {
+                // pas de maj au 1er passage.
                 if ($scope.sampling) {
                     var page = $scope.sample.pages[pageToUpdate - 1];
                     if (page && page.digitalDocument) {
@@ -455,28 +474,28 @@
                             id: page.digitalDocument.identifier,
                             pageNumber: page.number,
                             pageOrder: pageToUpdate,
-                            deliveryId: $scope.delivery.identifier
+                            deliveryId: $scope.delivery.identifier,
                         };
                         body = {
-                            failedChecks: _.pluck($scope.select.selectedErrors, "key"),
-                            checkNotes: $scope.data.checkNotes
+                            failedChecks: _.pluck($scope.select.selectedErrors, 'key'),
+                            checkNotes: $scope.data.checkNotes,
                         };
                     }
                 } else {
                     params = {
                         id: $routeParams.id,
                         pageNumber: pageToUpdate,
-                        deliveryId: $scope.delivery.identifier
+                        deliveryId: $scope.delivery.identifier,
                     };
                     if (!$scope.data.metadataFile) {
                         $scope.data.metadataFile = $scope.metadata[pageToUpdate];
                     }
                     body = {
-                        failedChecks: _.pluck($scope.select.selectedErrors, "key"),
+                        failedChecks: _.pluck($scope.select.selectedErrors, 'key'),
                         checkNotes: $scope.data.checkNotes,
                         typeToc: $scope.data.metadataFile.typeTOC,
                         orderToc: $scope.data.metadataFile.orderTOC,
-                        titleToc: $scope.data.metadataFile.nameTOC
+                        titleToc: $scope.data.metadataFile.nameTOC,
                     };
                 }
                 setPageErrors(params, body, $scope.sampling);
@@ -486,7 +505,7 @@
                     var params2 = {
                         id: $routeParams.id,
                         pageNumber: pageToUpdate + 1,
-                        deliveryId: $scope.delivery.identifier
+                        deliveryId: $scope.delivery.identifier,
                     };
 
                     if (!$scope.data.metadataFile2 && $scope.ascending) {
@@ -494,11 +513,11 @@
                     }
                     if ($scope.data.metadataFile2) {
                         var body2 = {
-                            failedChecks: _.pluck($scope.select.selectedErrors2, "key"),
+                            failedChecks: _.pluck($scope.select.selectedErrors2, 'key'),
                             checkNotes: $scope.data.checkNotes2,
                             typeToc: $scope.data.metadataFile2.typeTOC,
                             orderToc: $scope.data.metadataFile2.orderTOC,
-                            titleToc: $scope.data.metadataFile2.nameTOC
+                            titleToc: $scope.data.metadataFile2.nameTOC,
                         };
                         setPageErrors(params2, body2, false);
                     }
@@ -510,10 +529,13 @@
             }
             loadPage($scope.currentPage, false);
         }
+
         $scope.nextPage = nextPage;
 
-
         function setPageErrors(params, body, sampling) {
+            $scope.nbMinErr = 0;
+            $scope.nbMajErr = 0;
+
             if (sampling) {
                 PageCheckSrvc.setErrorsForSampledPage(params, body, function (value) {
                     $scope.nbMinErr = value.nbMinorErrors;
@@ -526,7 +548,7 @@
                             MessageSrvc.addWarn(gettextCatalog.getString("Taux d'erreur majeures dépassé par rapport à la taille de l'échantillon"), {}, true);
                         }
                     } else {
-                        MessageSrvc.clearMessages("warning");
+                        MessageSrvc.clearMessages('warning');
                     }
                 });
             } else {
@@ -541,20 +563,25 @@
                             MessageSrvc.addWarn(gettextCatalog.getString("Taux d'erreur majeures dépassé"), {}, true);
                         }
                     } else {
-                        MessageSrvc.clearMessages("warning");
+                        MessageSrvc.clearMessages('warning');
                     }
                 });
             }
             // remonte un event => mirador pour badge checkedOK / KO
             var checkedOk = body.failedChecks.length === 0;
             var page = sampling ? params.pageOrder : params.pageNumber;
-            self.frames['viewer_iframe'].document.dispatchEvent(new CustomEvent("changeCheckingStatus", { "detail": { "checkedOK": checkedOk, "page": page } }));
+            self.frames['viewer_iframe'].document.dispatchEvent(
+                new CustomEvent('changeCheckingStatus', {
+                    detail: {
+                        checkedOK: checkedOk,
+                        page: page,
+                    },
+                })
+            );
         }
-
 
         /* Nav. => arriere */
         function previousPage(canvasId) {
-
             var pageToUpdate = $scope.currentPage;
             var lastPage = isLastPage();
             $scope.currentPage = parseInt(canvasId, 10);
@@ -567,25 +594,25 @@
                         id: page.digitalDocument.identifier,
                         pageNumber: page.number,
                         pageOrder: pageToUpdate,
-                        deliveryId: $scope.delivery.identifier
+                        deliveryId: $scope.delivery.identifier,
                     };
                     body = {
-                        failedChecks: _.pluck($scope.select.selectedErrors, "key"),
-                        checkNotes: $scope.data.checkNotes
+                        failedChecks: _.pluck($scope.select.selectedErrors, 'key'),
+                        checkNotes: $scope.data.checkNotes,
                     };
                 }
             } else {
                 params = {
                     id: $routeParams.id,
                     pageNumber: pageToUpdate,
-                    deliveryId: $scope.delivery.identifier
+                    deliveryId: $scope.delivery.identifier,
                 };
                 body = {
-                    failedChecks: _.pluck($scope.select.selectedErrors, "key"),
+                    failedChecks: _.pluck($scope.select.selectedErrors, 'key'),
                     checkNotes: $scope.data.checkNotes,
                     typeToc: $scope.data.metadataFile.typeTOC,
                     orderToc: $scope.data.metadataFile.orderTOC,
-                    titleToc: $scope.data.metadataFile.nameTOC
+                    titleToc: $scope.data.metadataFile.nameTOC,
                 };
             }
 
@@ -595,7 +622,7 @@
                 var params2 = {
                     id: $routeParams.id,
                     pageNumber: pageToUpdate + 1,
-                    deliveryId: $scope.delivery.identifier
+                    deliveryId: $scope.delivery.identifier,
                 };
 
                 if (!$scope.data.metadataFile2 && !$scope.ascending) {
@@ -603,11 +630,11 @@
                 }
                 if ($scope.data.metadataFile2) {
                     var body2 = {
-                        failedChecks: _.pluck($scope.select.selectedErrors2, "key"),
+                        failedChecks: _.pluck($scope.select.selectedErrors2, 'key'),
                         checkNotes: $scope.data.checkNotes2,
                         typeToc: $scope.data.metadataFile2.typeTOC,
                         orderToc: $scope.data.metadataFile2.orderTOC,
-                        titleToc: $scope.data.metadataFile2.nameTOC
+                        titleToc: $scope.data.metadataFile2.nameTOC,
                     };
                     setPageErrors(params2, body2, false);
                 }
@@ -615,11 +642,10 @@
 
             loadPage($scope.currentPage, false);
         }
+
         $scope.previousPage = previousPage;
 
-
         function isLastPage() {
-
             if ($scope.data.totalPages === 1) {
                 return true;
             }
@@ -632,8 +658,8 @@
             }
             return toTest > $scope.data.totalPages;
         }
-        $scope.isLastPage = isLastPage;
 
+        $scope.isLastPage = isLastPage;
 
         /**
          * (Pre)Rejet du document selon modele de workflow.
@@ -642,103 +668,65 @@
         function reject(noConfirm) {
             var params = {
                 id: $routeParams.id,
-                sampling: $scope.sampling
+                sampling: $scope.sampling,
             };
             saveErrors();
-            var deferred = $q.defer();
 
-            $timeout(function () {
-                var promise = WorkflowHandleSrvc.isRejectDefinitive(params.id);
-                promise.then(function (definitive) {
-                    deferred.resolve(definitive);
-                    if (definitive.done) {
-
-                        if (noConfirm) {
-                            DigitalDocumentSrvc.reject(params, {}, function () {
-                                $location.path("/checks/checks");
-                                $location.search("");
-                                MessageSrvc.addSuccess(gettextCatalog.getString("Document numérique rejeté"));
-                            });
-                        } else {
-                            var label1 = " cette opération est définitive.";
-                            var confirmLabel = "Êtes-vous sûr de vouloir rejeter l'échantillon ?";
-                            if(!$scope.sampling){
-                                confirmLabel = "Êtes-vous sûr de vouloir rejeter le document ["
-                                        + $scope.digitalDocument.docUnit.pgcnId + "] " + $scope.digitalDocument.docUnit.label + " ?";
-                            }
-
-                            ModalSrvc.confirmAcceptReject("Rejet Document", label1, confirmLabel, "Rejeter").then(function () {
-                                DigitalDocumentSrvc.reject(params, {}, function () {
-                                    $location.path("/checks/checks");
-                                    $location.search("");
-                                    MessageSrvc.addSuccess(gettextCatalog.getString("Document numérique rejeté"));
-                                });
-                            });
-                        }
-
-                    } else {
-                        if (noConfirm) {
-                            DigitalDocumentSrvc.reject(params, {}, function () {
-                                $location.path("/checks/checks");
-                                $location.search("");
-                                MessageSrvc.addSuccess(gettextCatalog.getString("Document numérique pré-rejeté"));
-                            });
-                        } else {
-                            var doc = $scope.sampling ? " l'échantillon " : " le document ";
-                            var confirmLabel = "Êtes-vous sûr de vouloir pré-rejeter" + doc +"?";
-
-                            ModalSrvc.confirmAcceptReject("Pré-rejet Document", undefined, confirmLabel, "Rejeter").then(function () {
-                                DigitalDocumentSrvc.reject(params, {}, function () {
-                                    $location.path("/checks/checks");
-                                    $location.search("");
-                                    MessageSrvc.addSuccess(gettextCatalog.getString("Document numérique pré-rejeté"));
-                                });
-                            });
-                        }
-
-                    }
-                }).catch(function (definitive) {
-                    deferred.reject(definitive);
-                    MessageSrvc.addError(gettextCatalog.getString("Erreur au rejet du document numérique"));
+            if (noConfirm) {
+                DigitalDocumentSrvc.reject(params, {}, function () {
+                    $location.path('/checks/checks');
+                    $location.search('');
+                    MessageSrvc.addSuccess(gettextCatalog.getString('Document numérique rejeté'));
                 });
-            });
-        }
-        $scope.reject = reject;
+            } else {
+                let label1 = ' cette opération est définitive.';
+                let confirmLabel = "Êtes-vous sûr de vouloir rejeter l'échantillon ?";
+                if (!$scope.sampling) {
+                    confirmLabel = 'Êtes-vous sûr de vouloir rejeter le document [' + $scope.digitalDocument.docUnit.pgcnId + '] ' + $scope.digitalDocument.docUnit.label + ' ?';
+                }
 
+                ModalSrvc.confirmAcceptReject('Rejet Document', label1, confirmLabel, 'Rejeter').then(function () {
+                    DigitalDocumentSrvc.reject(params, {}, function () {
+                        $location.path('/checks/checks');
+                        $location.search('');
+                        MessageSrvc.addSuccess(gettextCatalog.getString('Document numérique rejeté'));
+                    });
+                });
+            }
+        }
+
+        $scope.reject = reject;
 
         function accept(noConfirm) {
             var params = {
                 id: $routeParams.id,
-                sampling: $scope.sampling
+                sampling: $scope.sampling,
             };
             saveErrors();
 
             if (noConfirm) {
                 DigitalDocumentSrvc.accept(params, {}, function () {
-                    $location.path("/checks/checks");
-                    $location.search("");
-                    MessageSrvc.addSuccess(gettextCatalog.getString("Document numérique validé"));
+                    $location.path('/checks/checks');
+                    $location.search('');
+                    MessageSrvc.addSuccess(gettextCatalog.getString('Document numérique validé'));
                 });
-
             } else {
-                var label1 = " cette opération est définitive.";
+                var label1 = ' cette opération est définitive.';
                 var confirmLabel = "Êtes-vous sûr de vouloir valider l'échantillon ?";
-                if(!$scope.sampling){
-                    confirmLabel = "Êtes-vous sûr de vouloir valider le document ["
-                            + $scope.digitalDocument.docUnit.pgcnId + "] " + $scope.digitalDocument.docUnit.label + " ?";
+                if (!$scope.sampling) {
+                    confirmLabel = 'Êtes-vous sûr de vouloir valider le document [' + $scope.digitalDocument.docUnit.pgcnId + '] ' + $scope.digitalDocument.docUnit.label + ' ?';
                 }
 
-                ModalSrvc.confirmAcceptReject("Validation document", label1, confirmLabel, "Valider").then(function () {
+                ModalSrvc.confirmAcceptReject('Validation document', label1, confirmLabel, 'Valider').then(function () {
                     DigitalDocumentSrvc.accept(params, {}, function () {
-                        $location.path("/checks/checks");
-                        $location.search("");
-                        MessageSrvc.addSuccess(gettextCatalog.getString("Document numérique validé"));
+                        $location.path('/checks/checks');
+                        $location.search('');
+                        MessageSrvc.addSuccess(gettextCatalog.getString('Document numérique validé'));
                     });
                 });
             }
-
-
         }
+
         $scope.accept = accept;
 
         /* Enregistre les erreurs globales du doc/sample */
@@ -749,8 +737,8 @@
             if ($scope.sampling) {
                 params = { id: $scope.sample.identifier };
                 body = {
-                    failedChecks: _.pluck($scope.select.selectedErrors, "key"),
-                    checkNotes: $scope.sample.delivery.controlNotes
+                    failedChecks: _.pluck($scope.select.selectedErrors, 'key'),
+                    checkNotes: $scope.sample.delivery.controlNotes,
                 };
                 PageCheckSrvc.setErrorsForSample(params, body, function (value) {
                     if (value && value.minorErrorRateExceeded) {
@@ -760,12 +748,11 @@
                         MessageSrvc.addWarn(gettextCatalog.getString("Taux d'erreurs majeures dépassé par rapport à la taille de l'échantillon"), {}, true);
                     }
                 });
-
             } else {
                 params = { id: $routeParams.id };
                 body = {
-                    failedChecks: _.pluck($scope.select.selectedErrors, "key"),
-                    checkNotes: $scope.digitalDocument.checkNotes
+                    failedChecks: _.pluck($scope.select.selectedErrors, 'key'),
+                    checkNotes: $scope.digitalDocument.checkNotes,
                 };
                 PageCheckSrvc.setErrors(params, body, function (value) {
                     if (value && value.minorErrorRateExceeded) {
@@ -776,14 +763,12 @@
                     }
                 });
             }
-
         }
 
         /**
          * Retour accueil visionneuse (vue vignettes- sortie du controle)
          */
         function back() {
-
             // simule une navigation pour enregistrer une eventuelle erreur.
             if (isLastPage()) {
                 synchronizePage('' + ($scope.currentPage - 1));
@@ -791,17 +776,18 @@
                 synchronizePage('' + ($scope.currentPage + 1));
             }
             // send event => Mirador pour changement de vue.
-            self.frames['viewer_iframe'].document.dispatchEvent(new CustomEvent("changeViewMirador", { "detail": { "typeView": "ThumbnailsView" } }));
+            self.frames['viewer_iframe'].document.dispatchEvent(new CustomEvent('changeViewMirador', { detail: { typeView: 'ThumbnailsView' } }));
             // affichage vue à droite => retour vue initiale
             $scope.loaded = false;
+            init();
         }
+
         $scope.back = back;
 
         /**
          * Sortie controle (click/Btn "Terminer")
          */
         function done() {
-
             synchronizePage($scope.currentPage);
             var params = {};
             var promise;
@@ -832,25 +818,20 @@
             }
 
             promise.then(function (value) {
-                ModalSrvc.confirmCheckTerminated(value.nbMinorErrors,
-                    value.nbMajorErrors,
-                    value.minorErrorRateExceeded,
-                    value.majorErrorRateExceeded)
-                    .then(function () {
-                        if (value.majorErrorRateExceeded || value.minorErrorRateExceeded) {
-                            reject(true);
-                        } else {
-                            accept(true);
-                        }
-                    });
+                ModalSrvc.confirmCheckTerminated(value.nbMinorErrors, value.nbMajorErrors, value.minorErrorRateExceeded, value.majorErrorRateExceeded).then(function () {
+                    if (value.majorErrorRateExceeded || value.minorErrorRateExceeded) {
+                        reject(true);
+                    } else {
+                        accept(true);
+                    }
+                });
             });
-
 
             // affichage vue à droite => retour vue initiale
             $scope.loaded = false;
         }
-        $scope.done = done;
 
+        $scope.done = done;
 
         function changeSelectedDelivery(deliveryId) {
             $scope.selPreviousDelivery = deliveryId;
@@ -889,12 +870,11 @@
                 }
             }
             // arraybuffer pour conserver l'encodage original dans le fichier sauvegardé
-            $http.get(url, { responseType: 'arraybuffer' })
-                .then(function (response) {
-                    var blob = new Blob([response.data], { type: response.headers("content-type") });
-                    var fileName = $scope.pdfExtracted && $scope.pdfExtracted === 'true' ? 'master.pdf' : meta.fileName;
-                    FileSaver.saveAs(blob, fileName);
-                });
+            $http.get(url, { responseType: 'arraybuffer' }).then(function (response) {
+                var blob = new Blob([response.data], { type: response.headers('content-type') });
+                var fileName = $scope.pdfExtracted && $scope.pdfExtracted === 'true' ? 'master.pdf' : meta.fileName;
+                FileSaver.saveAs(blob, fileName);
+            });
         }
 
         /**
@@ -904,12 +884,11 @@
             if ($scope.selPreviousDelivery) {
                 var url = 'api/rest/check/pdf/' + $scope.selPreviousDelivery;
                 // on met la réponse dans un arraybuffer pour conserver l'encodage original dans le fichier sauvegardé
-                $http.get(url, { responseType: 'arraybuffer' })
-                    .then(function (response) {
-                        var filename = "bordereau.pdf";
-                        var blob = new Blob([response.data], { type: response.headers("content-type") });
-                        FileSaver.saveAs(blob, filename);
-                    });
+                $http.get(url, { responseType: 'arraybuffer' }).then(function (response) {
+                    var filename = 'bordereau.pdf';
+                    var blob = new Blob([response.data], { type: response.headers('content-type') });
+                    FileSaver.saveAs(blob, filename);
+                });
             }
         }
 
@@ -920,26 +899,24 @@
             if ($routeParams.deliveryId) {
                 var url = 'api/rest/viewer/document/' + $scope.digitalDocument.identifier + '/toc/';
                 // on met la réponse dans un arraybuffer pour conserver l'encodage original dans le fichier sauvegardé
-                $http.get(url, {responseType: 'arraybuffer'} )
-                    .then(function (response) {
-                        if (response.data.byteLength === 0) {
-                            MessageSrvc.addWarn(gettext("Aucune table des matières initiale"), null, false);
-                        } else {
-                            var filename = $scope.digitalDocument.docUnit.pgcnId;
-                            if(response.headers("content-type") != "application/xml"){
-                                filename = filename + ".xlsx"
-                            }
-                            var blob = new Blob([response.data], { type: response.headers("content-type") });
-                            FileSaver.saveAs(blob, filename);
+                $http.get(url, { responseType: 'arraybuffer' }).then(function (response) {
+                    if (response.data.byteLength === 0) {
+                        MessageSrvc.addWarn(gettext('Aucune table des matières initiale'), null, false);
+                    } else {
+                        var filename = $scope.digitalDocument.docUnit.pgcnId;
+                        if (response.headers('content-type') != 'application/xml') {
+                            filename = filename + '.xlsx';
                         }
-                    });
+                        var blob = new Blob([response.data], { type: response.headers('content-type') });
+                        FileSaver.saveAs(blob, filename);
+                    }
+                });
             }
         }
 
         function convertLineBreak(text) {
             var html = text.replace(/\r\n/g, '<br />').replace(/[\r\n]/g, '<br />');
-	        return html;
+            return html;
         }
     }
-
 })();

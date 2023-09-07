@@ -1,32 +1,31 @@
 package fr.progilone.pgcn.web.rest.document.conditionreport;
 
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.document.conditionreport.ConditionReport;
 import fr.progilone.pgcn.domain.document.conditionreport.ConditionReportDetail;
-import fr.progilone.pgcn.domain.document.conditionreport.ConditionReportDetail.Type;
 import fr.progilone.pgcn.service.document.conditionreport.ConditionReportDetailService;
 import fr.progilone.pgcn.service.document.conditionreport.ConditionReportService;
 import fr.progilone.pgcn.service.es.EsConditionReportService;
 import fr.progilone.pgcn.util.TestUtil;
 import fr.progilone.pgcn.web.util.AccessHelper;
 import fr.progilone.pgcn.web.util.WorkflowAccessHelper;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import java.util.Collections;
+import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.Collections;
-import java.util.List;
-
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ConditionReportDetailControllerTest {
 
     @Mock
@@ -42,9 +41,13 @@ public class ConditionReportDetailControllerTest {
 
     private MockMvc restMockMvc;
 
-    @Before
+    @BeforeEach
     public void setUp() {
-        final ConditionReportDetailController controller = new ConditionReportDetailController(accessHelper, workflowAccessHelper, conditionReportService, conditionReportDetailService, esConditionReportService);
+        final ConditionReportDetailController controller = new ConditionReportDetailController(accessHelper,
+                                                                                               workflowAccessHelper,
+                                                                                               conditionReportService,
+                                                                                               conditionReportDetailService,
+                                                                                               esConditionReportService);
         this.restMockMvc = MockMvcBuilders.standaloneSetup(controller).build();
     }
 
@@ -61,17 +64,14 @@ public class ConditionReportDetailControllerTest {
         when(conditionReportDetailService.findParentByIdentifier(detail.getIdentifier())).thenReturn(detail.getReport());
 
         // 403
-        this.restMockMvc.perform(post("/api/rest/condreport_detail").param("type", type.name())
-                                                                    .param("detail", detailId)
-                                                                    .contentType(TestUtil.APPLICATION_JSON_UTF8)).andExpect(status().isForbidden());
+        this.restMockMvc.perform(post("/api/rest/condreport_detail").param("type", type.name()).param("detail", detailId).contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isForbidden());
         verify(esConditionReportService, never()).indexAsync(anyString());
 
         // 201
-        this.restMockMvc.perform(post("/api/rest/condreport_detail").param("type", type.name())
-                                                                    .param("detail", detailId)
-                                                                    .contentType(TestUtil.APPLICATION_JSON_UTF8))
+        this.restMockMvc.perform(post("/api/rest/condreport_detail").param("type", type.name()).param("detail", detailId).contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isCreated())
-                        .andExpect(content().contentType(TestUtil.APPLICATION_JSON_UTF8))
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andExpect(jsonPath("identifier").value(detailId));
         verify(esConditionReportService).indexAsync(detail.getReport().getIdentifier());
     }
@@ -86,17 +86,15 @@ public class ConditionReportDetailControllerTest {
         when(accessHelper.checkDocUnit(eq(docUnit.getIdentifier()))).thenReturn(false, true);
         when(conditionReportDetailService.findParentByIdentifier(detail.getIdentifier())).thenReturn(detail.getReport());
         when(conditionReportDetailService.findByIdentifier(any(String.class))).thenReturn(detail);
-        when(workflowAccessHelper.canConstatDetailBeModified(any(String.class), any(Type.class))).thenReturn(true);
+        when(workflowAccessHelper.canConstatDetailBeModified(any(), isNull())).thenReturn(true);
 
         // 403
-        this.restMockMvc.perform(delete("/api/rest/condreport_detail/{id}", detailId).contentType(TestUtil.APPLICATION_JSON_UTF8))
-                        .andExpect(status().isForbidden());
+        this.restMockMvc.perform(delete("/api/rest/condreport_detail/{id}", detailId).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isForbidden());
         verify(conditionReportDetailService, never()).delete(detailId);
         verify(esConditionReportService, never()).indexAsync(anyString());
 
         // 200
-        this.restMockMvc.perform(delete("/api/rest/condreport_detail/{id}", detailId).contentType(TestUtil.APPLICATION_JSON_UTF8))
-                        .andExpect(status().isOk());
+        this.restMockMvc.perform(delete("/api/rest/condreport_detail/{id}", detailId).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
         verify(conditionReportDetailService).delete(detailId);
         verify(esConditionReportService).indexAsync(detail.getReport().getIdentifier());
     }
@@ -112,13 +110,12 @@ public class ConditionReportDetailControllerTest {
         when(conditionReportDetailService.findByIdentifier(detailId)).thenReturn(detail);
 
         // 403
-        this.restMockMvc.perform(get("/api/rest/condreport_detail/{identifier}", detailId).accept(TestUtil.APPLICATION_JSON_UTF8))
-                        .andExpect(status().isForbidden());
+        this.restMockMvc.perform(get("/api/rest/condreport_detail/{identifier}", detailId).accept(MediaType.APPLICATION_JSON)).andExpect(status().isForbidden());
 
         // 200
-        this.restMockMvc.perform(get("/api/rest/condreport_detail/{identifier}", detailId).accept(TestUtil.APPLICATION_JSON_UTF8))
+        this.restMockMvc.perform(get("/api/rest/condreport_detail/{identifier}", detailId).accept(MediaType.APPLICATION_JSON))
                         .andExpect(status().isOk())
-                        .andExpect(content().contentType(TestUtil.APPLICATION_JSON_UTF8))
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andExpect(jsonPath("identifier").value(detailId));
     }
 
@@ -135,13 +132,12 @@ public class ConditionReportDetailControllerTest {
         when(conditionReportDetailService.findByConditionReport(reportId)).thenReturn(details);
 
         // 403
-        this.restMockMvc.perform(get("/api/rest/condreport_detail").param("report", reportId).accept(TestUtil.APPLICATION_JSON_UTF8))
-                        .andExpect(status().isForbidden());
+        this.restMockMvc.perform(get("/api/rest/condreport_detail").param("report", reportId).accept(MediaType.APPLICATION_JSON)).andExpect(status().isForbidden());
 
         // 200
-        this.restMockMvc.perform(get("/api/rest/condreport_detail").param("report", reportId).accept(TestUtil.APPLICATION_JSON_UTF8))
+        this.restMockMvc.perform(get("/api/rest/condreport_detail").param("report", reportId).accept(MediaType.APPLICATION_JSON))
                         .andExpect(status().isOk())
-                        .andExpect(content().contentType(TestUtil.APPLICATION_JSON_UTF8))
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andExpect(jsonPath("$[0].identifier").value(detailId));
     }
 
@@ -156,19 +152,17 @@ public class ConditionReportDetailControllerTest {
         when(conditionReportDetailService.save(any(ConditionReportDetail.class))).thenReturn(detail);
         when(conditionReportDetailService.findParentByIdentifier(detail.getIdentifier())).thenReturn(detail.getReport());
         when(conditionReportDetailService.findByIdentifier(any(String.class))).thenReturn(detail);
-        when(workflowAccessHelper.canConstatDetailBeModified(any(String.class), any(Type.class))).thenReturn(true);
+        when(workflowAccessHelper.canConstatDetailBeModified(any(), isNull())).thenReturn(true);
 
         // 403
-        this.restMockMvc.perform(post("/api/rest/condreport_detail/{id}", detailId).contentType(TestUtil.APPLICATION_JSON_UTF8)
-                                                                                   .content(TestUtil.convertObjectToJsonBytes(detail)))
+        this.restMockMvc.perform(post("/api/rest/condreport_detail/{id}", detailId).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(detail)))
                         .andExpect(status().isForbidden());
         verify(esConditionReportService, never()).indexAsync(anyString());
 
         // 200
-        this.restMockMvc.perform(post("/api/rest/condreport_detail/{id}", detailId).contentType(TestUtil.APPLICATION_JSON_UTF8)
-                                                                                   .content(TestUtil.convertObjectToJsonBytes(detail)))
+        this.restMockMvc.perform(post("/api/rest/condreport_detail/{id}", detailId).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(detail)))
                         .andExpect(status().isOk())
-                        .andExpect(content().contentType(TestUtil.APPLICATION_JSON_UTF8))
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andExpect(jsonPath("identifier").value(detailId));
         verify(esConditionReportService).indexAsync(detail.getReport().getIdentifier());
     }

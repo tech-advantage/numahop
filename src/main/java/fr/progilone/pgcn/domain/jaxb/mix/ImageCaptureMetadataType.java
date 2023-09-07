@@ -5,21 +5,21 @@
 // Généré le : 2017.08.25 à 03:15:17 PM CEST
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.mix;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
-
 
 /**
- * <p>Classe Java pour ImageCaptureMetadataType complex type.
+ * <p>
+ * Classe Java pour ImageCaptureMetadataType complex type.
  *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="ImageCaptureMetadataType">
@@ -344,14 +344,13 @@ import javax.xml.bind.annotation.XmlType;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ImageCaptureMetadataType", propOrder = {
-    "sourceInformation",
-    "generalCaptureInformation",
-    "scannerCapture",
-    "digitalCameraCapture",
-    "orientation",
-    "methodology"
-})
+@XmlType(name = "ImageCaptureMetadataType",
+         propOrder = {"sourceInformation",
+                      "generalCaptureInformation",
+                      "scannerCapture",
+                      "digitalCameraCapture",
+                      "orientation",
+                      "methodology"})
 public class ImageCaptureMetadataType {
 
     @XmlElement(name = "SourceInformation")
@@ -369,8 +368,8 @@ public class ImageCaptureMetadataType {
      * Obtient la valeur de la propriété sourceInformation.
      *
      * @return
-     *     possible object is
-     *     {@link ImageCaptureMetadataType.SourceInformation }
+     *         possible object is
+     *         {@link ImageCaptureMetadataType.SourceInformation }
      *
      */
     public ImageCaptureMetadataType.SourceInformation getSourceInformation() {
@@ -381,8 +380,8 @@ public class ImageCaptureMetadataType {
      * Définit la valeur de la propriété sourceInformation.
      *
      * @param value
-     *     allowed object is
-     *     {@link ImageCaptureMetadataType.SourceInformation }
+     *            allowed object is
+     *            {@link ImageCaptureMetadataType.SourceInformation }
      *
      */
     public void setSourceInformation(ImageCaptureMetadataType.SourceInformation value) {
@@ -393,8 +392,8 @@ public class ImageCaptureMetadataType {
      * Obtient la valeur de la propriété generalCaptureInformation.
      *
      * @return
-     *     possible object is
-     *     {@link ImageCaptureMetadataType.GeneralCaptureInformation }
+     *         possible object is
+     *         {@link ImageCaptureMetadataType.GeneralCaptureInformation }
      *
      */
     public ImageCaptureMetadataType.GeneralCaptureInformation getGeneralCaptureInformation() {
@@ -405,8 +404,8 @@ public class ImageCaptureMetadataType {
      * Définit la valeur de la propriété generalCaptureInformation.
      *
      * @param value
-     *     allowed object is
-     *     {@link ImageCaptureMetadataType.GeneralCaptureInformation }
+     *            allowed object is
+     *            {@link ImageCaptureMetadataType.GeneralCaptureInformation }
      *
      */
     public void setGeneralCaptureInformation(ImageCaptureMetadataType.GeneralCaptureInformation value) {
@@ -417,8 +416,8 @@ public class ImageCaptureMetadataType {
      * Obtient la valeur de la propriété scannerCapture.
      *
      * @return
-     *     possible object is
-     *     {@link ImageCaptureMetadataType.ScannerCapture }
+     *         possible object is
+     *         {@link ImageCaptureMetadataType.ScannerCapture }
      *
      */
     public ImageCaptureMetadataType.ScannerCapture getScannerCapture() {
@@ -429,8 +428,8 @@ public class ImageCaptureMetadataType {
      * Définit la valeur de la propriété scannerCapture.
      *
      * @param value
-     *     allowed object is
-     *     {@link ImageCaptureMetadataType.ScannerCapture }
+     *            allowed object is
+     *            {@link ImageCaptureMetadataType.ScannerCapture }
      *
      */
     public void setScannerCapture(ImageCaptureMetadataType.ScannerCapture value) {
@@ -441,8 +440,8 @@ public class ImageCaptureMetadataType {
      * Obtient la valeur de la propriété digitalCameraCapture.
      *
      * @return
-     *     possible object is
-     *     {@link ImageCaptureMetadataType.DigitalCameraCapture }
+     *         possible object is
+     *         {@link ImageCaptureMetadataType.DigitalCameraCapture }
      *
      */
     public ImageCaptureMetadataType.DigitalCameraCapture getDigitalCameraCapture() {
@@ -453,8 +452,8 @@ public class ImageCaptureMetadataType {
      * Définit la valeur de la propriété digitalCameraCapture.
      *
      * @param value
-     *     allowed object is
-     *     {@link ImageCaptureMetadataType.DigitalCameraCapture }
+     *            allowed object is
+     *            {@link ImageCaptureMetadataType.DigitalCameraCapture }
      *
      */
     public void setDigitalCameraCapture(ImageCaptureMetadataType.DigitalCameraCapture value) {
@@ -465,8 +464,8 @@ public class ImageCaptureMetadataType {
      * Obtient la valeur de la propriété orientation.
      *
      * @return
-     *     possible object is
-     *     {@link TypeOfOrientationType }
+     *         possible object is
+     *         {@link TypeOfOrientationType }
      *
      */
     public TypeOfOrientationType getOrientation() {
@@ -477,8 +476,8 @@ public class ImageCaptureMetadataType {
      * Définit la valeur de la propriété orientation.
      *
      * @param value
-     *     allowed object is
-     *     {@link TypeOfOrientationType }
+     *            allowed object is
+     *            {@link TypeOfOrientationType }
      *
      */
     public void setOrientation(TypeOfOrientationType value) {
@@ -489,8 +488,8 @@ public class ImageCaptureMetadataType {
      * Obtient la valeur de la propriété methodology.
      *
      * @return
-     *     possible object is
-     *     {@link StringType }
+     *         possible object is
+     *         {@link StringType }
      *
      */
     public StringType getMethodology() {
@@ -501,19 +500,20 @@ public class ImageCaptureMetadataType {
      * Définit la valeur de la propriété methodology.
      *
      * @param value
-     *     allowed object is
-     *     {@link StringType }
+     *            allowed object is
+     *            {@link StringType }
      *
      */
     public void setMethodology(StringType value) {
         this.methodology = value;
     }
 
-
     /**
-     * <p>Classe Java pour anonymous complex type.
+     * <p>
+     * Classe Java pour anonymous complex type.
      *
-     * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+     * <p>
+     * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
      *
      * <pre>
      * &lt;complexType>
@@ -694,12 +694,11 @@ public class ImageCaptureMetadataType {
      *
      */
     @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "digitalCameraManufacturer",
-        "digitalCameraModel",
-        "cameraSensor",
-        "cameraCaptureSettings"
-    })
+    @XmlType(name = "",
+             propOrder = {"digitalCameraManufacturer",
+                          "digitalCameraModel",
+                          "cameraSensor",
+                          "cameraCaptureSettings"})
     public static class DigitalCameraCapture {
 
         protected StringType digitalCameraManufacturer;
@@ -713,8 +712,8 @@ public class ImageCaptureMetadataType {
          * Obtient la valeur de la propriété digitalCameraManufacturer.
          *
          * @return
-         *     possible object is
-         *     {@link StringType }
+         *         possible object is
+         *         {@link StringType }
          *
          */
         public StringType getDigitalCameraManufacturer() {
@@ -725,8 +724,8 @@ public class ImageCaptureMetadataType {
          * Définit la valeur de la propriété digitalCameraManufacturer.
          *
          * @param value
-         *     allowed object is
-         *     {@link StringType }
+         *            allowed object is
+         *            {@link StringType }
          *
          */
         public void setDigitalCameraManufacturer(StringType value) {
@@ -737,8 +736,8 @@ public class ImageCaptureMetadataType {
          * Obtient la valeur de la propriété digitalCameraModel.
          *
          * @return
-         *     possible object is
-         *     {@link ImageCaptureMetadataType.DigitalCameraCapture.DigitalCameraModel }
+         *         possible object is
+         *         {@link ImageCaptureMetadataType.DigitalCameraCapture.DigitalCameraModel }
          *
          */
         public ImageCaptureMetadataType.DigitalCameraCapture.DigitalCameraModel getDigitalCameraModel() {
@@ -749,8 +748,8 @@ public class ImageCaptureMetadataType {
          * Définit la valeur de la propriété digitalCameraModel.
          *
          * @param value
-         *     allowed object is
-         *     {@link ImageCaptureMetadataType.DigitalCameraCapture.DigitalCameraModel }
+         *            allowed object is
+         *            {@link ImageCaptureMetadataType.DigitalCameraCapture.DigitalCameraModel }
          *
          */
         public void setDigitalCameraModel(ImageCaptureMetadataType.DigitalCameraCapture.DigitalCameraModel value) {
@@ -761,8 +760,8 @@ public class ImageCaptureMetadataType {
          * Obtient la valeur de la propriété cameraSensor.
          *
          * @return
-         *     possible object is
-         *     {@link TypeOfCameraSensorType }
+         *         possible object is
+         *         {@link TypeOfCameraSensorType }
          *
          */
         public TypeOfCameraSensorType getCameraSensor() {
@@ -773,8 +772,8 @@ public class ImageCaptureMetadataType {
          * Définit la valeur de la propriété cameraSensor.
          *
          * @param value
-         *     allowed object is
-         *     {@link TypeOfCameraSensorType }
+         *            allowed object is
+         *            {@link TypeOfCameraSensorType }
          *
          */
         public void setCameraSensor(TypeOfCameraSensorType value) {
@@ -785,8 +784,8 @@ public class ImageCaptureMetadataType {
          * Obtient la valeur de la propriété cameraCaptureSettings.
          *
          * @return
-         *     possible object is
-         *     {@link ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings }
+         *         possible object is
+         *         {@link ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings }
          *
          */
         public ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings getCameraCaptureSettings() {
@@ -797,19 +796,20 @@ public class ImageCaptureMetadataType {
          * Définit la valeur de la propriété cameraCaptureSettings.
          *
          * @param value
-         *     allowed object is
-         *     {@link ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings }
+         *            allowed object is
+         *            {@link ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings }
          *
          */
         public void setCameraCaptureSettings(ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings value) {
             this.cameraCaptureSettings = value;
         }
 
-
         /**
-         * <p>Classe Java pour anonymous complex type.
+         * <p>
+         * Classe Java pour anonymous complex type.
          *
-         * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+         * <p>
+         * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
          *
          * <pre>
          * &lt;complexType>
@@ -965,10 +965,9 @@ public class ImageCaptureMetadataType {
          *
          */
         @XmlAccessorType(XmlAccessType.FIELD)
-        @XmlType(name = "", propOrder = {
-            "imageData",
-            "gpsData"
-        })
+        @XmlType(name = "",
+                 propOrder = {"imageData",
+                              "gpsData"})
         public static class CameraCaptureSettings {
 
             @XmlElement(name = "ImageData")
@@ -980,8 +979,8 @@ public class ImageCaptureMetadataType {
              * Obtient la valeur de la propriété imageData.
              *
              * @return
-             *     possible object is
-             *     {@link ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.ImageData }
+             *         possible object is
+             *         {@link ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.ImageData }
              *
              */
             public ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.ImageData getImageData() {
@@ -992,8 +991,8 @@ public class ImageCaptureMetadataType {
              * Définit la valeur de la propriété imageData.
              *
              * @param value
-             *     allowed object is
-             *     {@link ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.ImageData }
+             *            allowed object is
+             *            {@link ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.ImageData }
              *
              */
             public void setImageData(ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.ImageData value) {
@@ -1004,8 +1003,8 @@ public class ImageCaptureMetadataType {
              * Obtient la valeur de la propriété gpsData.
              *
              * @return
-             *     possible object is
-             *     {@link ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.GPSData }
+             *         possible object is
+             *         {@link ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.GPSData }
              *
              */
             public ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.GPSData getGPSData() {
@@ -1016,19 +1015,20 @@ public class ImageCaptureMetadataType {
              * Définit la valeur de la propriété gpsData.
              *
              * @param value
-             *     allowed object is
-             *     {@link ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.GPSData }
+             *            allowed object is
+             *            {@link ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.GPSData }
              *
              */
             public void setGPSData(ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.GPSData value) {
                 this.gpsData = value;
             }
 
-
             /**
-             * <p>Classe Java pour anonymous complex type.
+             * <p>
+             * Classe Java pour anonymous complex type.
              *
-             * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+             * <p>
+             * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
              *
              * <pre>
              * &lt;complexType>
@@ -1107,39 +1107,38 @@ public class ImageCaptureMetadataType {
              *
              */
             @XmlAccessorType(XmlAccessType.FIELD)
-            @XmlType(name = "", propOrder = {
-                "gpsVersionID",
-                "gpsLatitudeRef",
-                "gpsLatitude",
-                "gpsLongitudeRef",
-                "gpsLongitude",
-                "gpsAltitudeRef",
-                "gpsAltitude",
-                "gpsTimeStamp",
-                "gpsSatellites",
-                "gpsStatus",
-                "gpsMeasureMode",
-                "gpsDOP",
-                "gpsSpeedRef",
-                "gpsSpeed",
-                "gpsTrackRef",
-                "gpsTrack",
-                "gpsImgDirectionRef",
-                "gpsImgDirection",
-                "gpsMapDatum",
-                "gpsDestLatitudeRef",
-                "gpsDestLatitude",
-                "gpsDestLongitudeRef",
-                "gpsDestLongitude",
-                "gpsDestBearingRef",
-                "gpsDestBearing",
-                "gpsDestDistanceRef",
-                "gpsDestDistance",
-                "gpsProcessingMethod",
-                "gpsAreaInformation",
-                "gpsDateStamp",
-                "gpsDifferential"
-            })
+            @XmlType(name = "",
+                     propOrder = {"gpsVersionID",
+                                  "gpsLatitudeRef",
+                                  "gpsLatitude",
+                                  "gpsLongitudeRef",
+                                  "gpsLongitude",
+                                  "gpsAltitudeRef",
+                                  "gpsAltitude",
+                                  "gpsTimeStamp",
+                                  "gpsSatellites",
+                                  "gpsStatus",
+                                  "gpsMeasureMode",
+                                  "gpsDOP",
+                                  "gpsSpeedRef",
+                                  "gpsSpeed",
+                                  "gpsTrackRef",
+                                  "gpsTrack",
+                                  "gpsImgDirectionRef",
+                                  "gpsImgDirection",
+                                  "gpsMapDatum",
+                                  "gpsDestLatitudeRef",
+                                  "gpsDestLatitude",
+                                  "gpsDestLongitudeRef",
+                                  "gpsDestLongitude",
+                                  "gpsDestBearingRef",
+                                  "gpsDestBearing",
+                                  "gpsDestDistanceRef",
+                                  "gpsDestDistance",
+                                  "gpsProcessingMethod",
+                                  "gpsAreaInformation",
+                                  "gpsDateStamp",
+                                  "gpsDifferential"})
             public static class GPSData {
 
                 protected StringType gpsVersionID;
@@ -1182,8 +1181,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété gpsVersionID.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link StringType }
+                 *         possible object is
+                 *         {@link StringType }
                  *
                  */
                 public StringType getGpsVersionID() {
@@ -1194,8 +1193,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété gpsVersionID.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link StringType }
+                 *            allowed object is
+                 *            {@link StringType }
                  *
                  */
                 public void setGpsVersionID(StringType value) {
@@ -1206,8 +1205,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété gpsLatitudeRef.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link TypeOfgpsLatitudeRefType }
+                 *         possible object is
+                 *         {@link TypeOfgpsLatitudeRefType }
                  *
                  */
                 public TypeOfgpsLatitudeRefType getGpsLatitudeRef() {
@@ -1218,8 +1217,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété gpsLatitudeRef.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link TypeOfgpsLatitudeRefType }
+                 *            allowed object is
+                 *            {@link TypeOfgpsLatitudeRefType }
                  *
                  */
                 public void setGpsLatitudeRef(TypeOfgpsLatitudeRefType value) {
@@ -1230,8 +1229,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété gpsLatitude.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.GPSData.GPSLatitude }
+                 *         possible object is
+                 *         {@link ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.GPSData.GPSLatitude }
                  *
                  */
                 public ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.GPSData.GPSLatitude getGPSLatitude() {
@@ -1242,8 +1241,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété gpsLatitude.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.GPSData.GPSLatitude }
+                 *            allowed object is
+                 *            {@link ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.GPSData.GPSLatitude }
                  *
                  */
                 public void setGPSLatitude(ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.GPSData.GPSLatitude value) {
@@ -1254,8 +1253,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété gpsLongitudeRef.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link TypeOfgpsLongitudeRefType }
+                 *         possible object is
+                 *         {@link TypeOfgpsLongitudeRefType }
                  *
                  */
                 public TypeOfgpsLongitudeRefType getGpsLongitudeRef() {
@@ -1266,8 +1265,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété gpsLongitudeRef.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link TypeOfgpsLongitudeRefType }
+                 *            allowed object is
+                 *            {@link TypeOfgpsLongitudeRefType }
                  *
                  */
                 public void setGpsLongitudeRef(TypeOfgpsLongitudeRefType value) {
@@ -1278,8 +1277,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété gpsLongitude.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.GPSData.GPSLongitude }
+                 *         possible object is
+                 *         {@link ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.GPSData.GPSLongitude }
                  *
                  */
                 public ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.GPSData.GPSLongitude getGPSLongitude() {
@@ -1290,8 +1289,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété gpsLongitude.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.GPSData.GPSLongitude }
+                 *            allowed object is
+                 *            {@link ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.GPSData.GPSLongitude }
                  *
                  */
                 public void setGPSLongitude(ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.GPSData.GPSLongitude value) {
@@ -1302,8 +1301,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété gpsAltitudeRef.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link TypeOfgpsAltitudeRefType }
+                 *         possible object is
+                 *         {@link TypeOfgpsAltitudeRefType }
                  *
                  */
                 public TypeOfgpsAltitudeRefType getGpsAltitudeRef() {
@@ -1314,8 +1313,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété gpsAltitudeRef.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link TypeOfgpsAltitudeRefType }
+                 *            allowed object is
+                 *            {@link TypeOfgpsAltitudeRefType }
                  *
                  */
                 public void setGpsAltitudeRef(TypeOfgpsAltitudeRefType value) {
@@ -1326,8 +1325,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété gpsAltitude.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link RationalType }
+                 *         possible object is
+                 *         {@link RationalType }
                  *
                  */
                 public RationalType getGpsAltitude() {
@@ -1338,8 +1337,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété gpsAltitude.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link RationalType }
+                 *            allowed object is
+                 *            {@link RationalType }
                  *
                  */
                 public void setGpsAltitude(RationalType value) {
@@ -1350,8 +1349,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété gpsTimeStamp.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link StringType }
+                 *         possible object is
+                 *         {@link StringType }
                  *
                  */
                 public StringType getGpsTimeStamp() {
@@ -1362,8 +1361,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété gpsTimeStamp.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link StringType }
+                 *            allowed object is
+                 *            {@link StringType }
                  *
                  */
                 public void setGpsTimeStamp(StringType value) {
@@ -1374,8 +1373,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété gpsSatellites.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link StringType }
+                 *         possible object is
+                 *         {@link StringType }
                  *
                  */
                 public StringType getGpsSatellites() {
@@ -1386,8 +1385,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété gpsSatellites.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link StringType }
+                 *            allowed object is
+                 *            {@link StringType }
                  *
                  */
                 public void setGpsSatellites(StringType value) {
@@ -1398,8 +1397,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété gpsStatus.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link TypeOfgpsStatusType }
+                 *         possible object is
+                 *         {@link TypeOfgpsStatusType }
                  *
                  */
                 public TypeOfgpsStatusType getGpsStatus() {
@@ -1410,8 +1409,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété gpsStatus.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link TypeOfgpsStatusType }
+                 *            allowed object is
+                 *            {@link TypeOfgpsStatusType }
                  *
                  */
                 public void setGpsStatus(TypeOfgpsStatusType value) {
@@ -1422,8 +1421,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété gpsMeasureMode.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link TypeOfgpsMeasureModeType }
+                 *         possible object is
+                 *         {@link TypeOfgpsMeasureModeType }
                  *
                  */
                 public TypeOfgpsMeasureModeType getGpsMeasureMode() {
@@ -1434,8 +1433,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété gpsMeasureMode.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link TypeOfgpsMeasureModeType }
+                 *            allowed object is
+                 *            {@link TypeOfgpsMeasureModeType }
                  *
                  */
                 public void setGpsMeasureMode(TypeOfgpsMeasureModeType value) {
@@ -1446,8 +1445,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété gpsDOP.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link RationalType }
+                 *         possible object is
+                 *         {@link RationalType }
                  *
                  */
                 public RationalType getGpsDOP() {
@@ -1458,8 +1457,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété gpsDOP.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link RationalType }
+                 *            allowed object is
+                 *            {@link RationalType }
                  *
                  */
                 public void setGpsDOP(RationalType value) {
@@ -1470,8 +1469,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété gpsSpeedRef.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link TypeOfgpsSpeedRefType }
+                 *         possible object is
+                 *         {@link TypeOfgpsSpeedRefType }
                  *
                  */
                 public TypeOfgpsSpeedRefType getGpsSpeedRef() {
@@ -1482,8 +1481,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété gpsSpeedRef.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link TypeOfgpsSpeedRefType }
+                 *            allowed object is
+                 *            {@link TypeOfgpsSpeedRefType }
                  *
                  */
                 public void setGpsSpeedRef(TypeOfgpsSpeedRefType value) {
@@ -1494,8 +1493,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété gpsSpeed.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link RationalType }
+                 *         possible object is
+                 *         {@link RationalType }
                  *
                  */
                 public RationalType getGpsSpeed() {
@@ -1506,8 +1505,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété gpsSpeed.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link RationalType }
+                 *            allowed object is
+                 *            {@link RationalType }
                  *
                  */
                 public void setGpsSpeed(RationalType value) {
@@ -1518,8 +1517,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété gpsTrackRef.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link TypeOfgpsTrackRefType }
+                 *         possible object is
+                 *         {@link TypeOfgpsTrackRefType }
                  *
                  */
                 public TypeOfgpsTrackRefType getGpsTrackRef() {
@@ -1530,8 +1529,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété gpsTrackRef.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link TypeOfgpsTrackRefType }
+                 *            allowed object is
+                 *            {@link TypeOfgpsTrackRefType }
                  *
                  */
                 public void setGpsTrackRef(TypeOfgpsTrackRefType value) {
@@ -1542,8 +1541,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété gpsTrack.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link RationalType }
+                 *         possible object is
+                 *         {@link RationalType }
                  *
                  */
                 public RationalType getGpsTrack() {
@@ -1554,8 +1553,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété gpsTrack.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link RationalType }
+                 *            allowed object is
+                 *            {@link RationalType }
                  *
                  */
                 public void setGpsTrack(RationalType value) {
@@ -1566,8 +1565,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété gpsImgDirectionRef.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link TypeOfgpsImgDirectionRefType }
+                 *         possible object is
+                 *         {@link TypeOfgpsImgDirectionRefType }
                  *
                  */
                 public TypeOfgpsImgDirectionRefType getGpsImgDirectionRef() {
@@ -1578,8 +1577,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété gpsImgDirectionRef.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link TypeOfgpsImgDirectionRefType }
+                 *            allowed object is
+                 *            {@link TypeOfgpsImgDirectionRefType }
                  *
                  */
                 public void setGpsImgDirectionRef(TypeOfgpsImgDirectionRefType value) {
@@ -1590,8 +1589,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété gpsImgDirection.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link RationalType }
+                 *         possible object is
+                 *         {@link RationalType }
                  *
                  */
                 public RationalType getGpsImgDirection() {
@@ -1602,8 +1601,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété gpsImgDirection.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link RationalType }
+                 *            allowed object is
+                 *            {@link RationalType }
                  *
                  */
                 public void setGpsImgDirection(RationalType value) {
@@ -1614,8 +1613,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété gpsMapDatum.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link StringType }
+                 *         possible object is
+                 *         {@link StringType }
                  *
                  */
                 public StringType getGpsMapDatum() {
@@ -1626,8 +1625,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété gpsMapDatum.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link StringType }
+                 *            allowed object is
+                 *            {@link StringType }
                  *
                  */
                 public void setGpsMapDatum(StringType value) {
@@ -1638,8 +1637,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété gpsDestLatitudeRef.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link TypeOfgpsDestLatitudeRefType }
+                 *         possible object is
+                 *         {@link TypeOfgpsDestLatitudeRefType }
                  *
                  */
                 public TypeOfgpsDestLatitudeRefType getGpsDestLatitudeRef() {
@@ -1650,8 +1649,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété gpsDestLatitudeRef.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link TypeOfgpsDestLatitudeRefType }
+                 *            allowed object is
+                 *            {@link TypeOfgpsDestLatitudeRefType }
                  *
                  */
                 public void setGpsDestLatitudeRef(TypeOfgpsDestLatitudeRefType value) {
@@ -1662,8 +1661,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété gpsDestLatitude.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.GPSData.GPSDestLatitude }
+                 *         possible object is
+                 *         {@link ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.GPSData.GPSDestLatitude }
                  *
                  */
                 public ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.GPSData.GPSDestLatitude getGPSDestLatitude() {
@@ -1674,8 +1673,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété gpsDestLatitude.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.GPSData.GPSDestLatitude }
+                 *            allowed object is
+                 *            {@link ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.GPSData.GPSDestLatitude }
                  *
                  */
                 public void setGPSDestLatitude(ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.GPSData.GPSDestLatitude value) {
@@ -1686,8 +1685,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété gpsDestLongitudeRef.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link TypeOfgpsDestLongitudeRefType }
+                 *         possible object is
+                 *         {@link TypeOfgpsDestLongitudeRefType }
                  *
                  */
                 public TypeOfgpsDestLongitudeRefType getGpsDestLongitudeRef() {
@@ -1698,8 +1697,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété gpsDestLongitudeRef.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link TypeOfgpsDestLongitudeRefType }
+                 *            allowed object is
+                 *            {@link TypeOfgpsDestLongitudeRefType }
                  *
                  */
                 public void setGpsDestLongitudeRef(TypeOfgpsDestLongitudeRefType value) {
@@ -1710,8 +1709,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété gpsDestLongitude.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.GPSData.GPSDestLongitude }
+                 *         possible object is
+                 *         {@link ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.GPSData.GPSDestLongitude }
                  *
                  */
                 public ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.GPSData.GPSDestLongitude getGPSDestLongitude() {
@@ -1722,8 +1721,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété gpsDestLongitude.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.GPSData.GPSDestLongitude }
+                 *            allowed object is
+                 *            {@link ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.GPSData.GPSDestLongitude }
                  *
                  */
                 public void setGPSDestLongitude(ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.GPSData.GPSDestLongitude value) {
@@ -1734,8 +1733,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété gpsDestBearingRef.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link TypeOfgpsDestBearingRefType }
+                 *         possible object is
+                 *         {@link TypeOfgpsDestBearingRefType }
                  *
                  */
                 public TypeOfgpsDestBearingRefType getGpsDestBearingRef() {
@@ -1746,8 +1745,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété gpsDestBearingRef.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link TypeOfgpsDestBearingRefType }
+                 *            allowed object is
+                 *            {@link TypeOfgpsDestBearingRefType }
                  *
                  */
                 public void setGpsDestBearingRef(TypeOfgpsDestBearingRefType value) {
@@ -1758,8 +1757,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété gpsDestBearing.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link RationalType }
+                 *         possible object is
+                 *         {@link RationalType }
                  *
                  */
                 public RationalType getGpsDestBearing() {
@@ -1770,8 +1769,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété gpsDestBearing.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link RationalType }
+                 *            allowed object is
+                 *            {@link RationalType }
                  *
                  */
                 public void setGpsDestBearing(RationalType value) {
@@ -1782,8 +1781,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété gpsDestDistanceRef.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link TypeOfgpsDestDistanceRefType }
+                 *         possible object is
+                 *         {@link TypeOfgpsDestDistanceRefType }
                  *
                  */
                 public TypeOfgpsDestDistanceRefType getGpsDestDistanceRef() {
@@ -1794,8 +1793,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété gpsDestDistanceRef.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link TypeOfgpsDestDistanceRefType }
+                 *            allowed object is
+                 *            {@link TypeOfgpsDestDistanceRefType }
                  *
                  */
                 public void setGpsDestDistanceRef(TypeOfgpsDestDistanceRefType value) {
@@ -1806,8 +1805,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété gpsDestDistance.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link RationalType }
+                 *         possible object is
+                 *         {@link RationalType }
                  *
                  */
                 public RationalType getGpsDestDistance() {
@@ -1818,8 +1817,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété gpsDestDistance.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link RationalType }
+                 *            allowed object is
+                 *            {@link RationalType }
                  *
                  */
                 public void setGpsDestDistance(RationalType value) {
@@ -1830,8 +1829,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété gpsProcessingMethod.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link StringType }
+                 *         possible object is
+                 *         {@link StringType }
                  *
                  */
                 public StringType getGpsProcessingMethod() {
@@ -1842,8 +1841,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété gpsProcessingMethod.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link StringType }
+                 *            allowed object is
+                 *            {@link StringType }
                  *
                  */
                 public void setGpsProcessingMethod(StringType value) {
@@ -1854,8 +1853,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété gpsAreaInformation.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link StringType }
+                 *         possible object is
+                 *         {@link StringType }
                  *
                  */
                 public StringType getGpsAreaInformation() {
@@ -1866,8 +1865,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété gpsAreaInformation.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link StringType }
+                 *            allowed object is
+                 *            {@link StringType }
                  *
                  */
                 public void setGpsAreaInformation(StringType value) {
@@ -1878,8 +1877,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété gpsDateStamp.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link DateType }
+                 *         possible object is
+                 *         {@link DateType }
                  *
                  */
                 public DateType getGpsDateStamp() {
@@ -1890,8 +1889,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété gpsDateStamp.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link DateType }
+                 *            allowed object is
+                 *            {@link DateType }
                  *
                  */
                 public void setGpsDateStamp(DateType value) {
@@ -1902,8 +1901,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété gpsDifferential.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link TypeOfgpsDifferentialType }
+                 *         possible object is
+                 *         {@link TypeOfgpsDifferentialType }
                  *
                  */
                 public TypeOfgpsDifferentialType getGpsDifferential() {
@@ -1914,19 +1913,20 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété gpsDifferential.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link TypeOfgpsDifferentialType }
+                 *            allowed object is
+                 *            {@link TypeOfgpsDifferentialType }
                  *
                  */
                 public void setGpsDifferential(TypeOfgpsDifferentialType value) {
                     this.gpsDifferential = value;
                 }
 
-
                 /**
-                 * <p>Classe Java pour anonymous complex type.
+                 * <p>
+                 * Classe Java pour anonymous complex type.
                  *
-                 * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+                 * <p>
+                 * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
                  *
                  * <pre>
                  * &lt;complexType>
@@ -1941,11 +1941,10 @@ public class ImageCaptureMetadataType {
                  *
                  */
                 @XmlAccessorType(XmlAccessType.FIELD)
-                @XmlType(name = "", propOrder = {
-                    "degrees",
-                    "minutes",
-                    "seconds"
-                })
+                @XmlType(name = "",
+                         propOrder = {"degrees",
+                                      "minutes",
+                                      "seconds"})
                 public static class GPSDestLatitude {
 
                     protected RationalType degrees;
@@ -1956,8 +1955,8 @@ public class ImageCaptureMetadataType {
                      * Obtient la valeur de la propriété degrees.
                      *
                      * @return
-                     *     possible object is
-                     *     {@link RationalType }
+                     *         possible object is
+                     *         {@link RationalType }
                      *
                      */
                     public RationalType getDegrees() {
@@ -1968,8 +1967,8 @@ public class ImageCaptureMetadataType {
                      * Définit la valeur de la propriété degrees.
                      *
                      * @param value
-                     *     allowed object is
-                     *     {@link RationalType }
+                     *            allowed object is
+                     *            {@link RationalType }
                      *
                      */
                     public void setDegrees(RationalType value) {
@@ -1980,8 +1979,8 @@ public class ImageCaptureMetadataType {
                      * Obtient la valeur de la propriété minutes.
                      *
                      * @return
-                     *     possible object is
-                     *     {@link RationalType }
+                     *         possible object is
+                     *         {@link RationalType }
                      *
                      */
                     public RationalType getMinutes() {
@@ -1992,8 +1991,8 @@ public class ImageCaptureMetadataType {
                      * Définit la valeur de la propriété minutes.
                      *
                      * @param value
-                     *     allowed object is
-                     *     {@link RationalType }
+                     *            allowed object is
+                     *            {@link RationalType }
                      *
                      */
                     public void setMinutes(RationalType value) {
@@ -2004,8 +2003,8 @@ public class ImageCaptureMetadataType {
                      * Obtient la valeur de la propriété seconds.
                      *
                      * @return
-                     *     possible object is
-                     *     {@link RationalType }
+                     *         possible object is
+                     *         {@link RationalType }
                      *
                      */
                     public RationalType getSeconds() {
@@ -2016,8 +2015,8 @@ public class ImageCaptureMetadataType {
                      * Définit la valeur de la propriété seconds.
                      *
                      * @param value
-                     *     allowed object is
-                     *     {@link RationalType }
+                     *            allowed object is
+                     *            {@link RationalType }
                      *
                      */
                     public void setSeconds(RationalType value) {
@@ -2026,11 +2025,12 @@ public class ImageCaptureMetadataType {
 
                 }
 
-
                 /**
-                 * <p>Classe Java pour anonymous complex type.
+                 * <p>
+                 * Classe Java pour anonymous complex type.
                  *
-                 * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+                 * <p>
+                 * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
                  *
                  * <pre>
                  * &lt;complexType>
@@ -2045,11 +2045,10 @@ public class ImageCaptureMetadataType {
                  *
                  */
                 @XmlAccessorType(XmlAccessType.FIELD)
-                @XmlType(name = "", propOrder = {
-                    "degrees",
-                    "minutes",
-                    "seconds"
-                })
+                @XmlType(name = "",
+                         propOrder = {"degrees",
+                                      "minutes",
+                                      "seconds"})
                 public static class GPSDestLongitude {
 
                     protected RationalType degrees;
@@ -2060,8 +2059,8 @@ public class ImageCaptureMetadataType {
                      * Obtient la valeur de la propriété degrees.
                      *
                      * @return
-                     *     possible object is
-                     *     {@link RationalType }
+                     *         possible object is
+                     *         {@link RationalType }
                      *
                      */
                     public RationalType getDegrees() {
@@ -2072,8 +2071,8 @@ public class ImageCaptureMetadataType {
                      * Définit la valeur de la propriété degrees.
                      *
                      * @param value
-                     *     allowed object is
-                     *     {@link RationalType }
+                     *            allowed object is
+                     *            {@link RationalType }
                      *
                      */
                     public void setDegrees(RationalType value) {
@@ -2084,8 +2083,8 @@ public class ImageCaptureMetadataType {
                      * Obtient la valeur de la propriété minutes.
                      *
                      * @return
-                     *     possible object is
-                     *     {@link RationalType }
+                     *         possible object is
+                     *         {@link RationalType }
                      *
                      */
                     public RationalType getMinutes() {
@@ -2096,8 +2095,8 @@ public class ImageCaptureMetadataType {
                      * Définit la valeur de la propriété minutes.
                      *
                      * @param value
-                     *     allowed object is
-                     *     {@link RationalType }
+                     *            allowed object is
+                     *            {@link RationalType }
                      *
                      */
                     public void setMinutes(RationalType value) {
@@ -2108,8 +2107,8 @@ public class ImageCaptureMetadataType {
                      * Obtient la valeur de la propriété seconds.
                      *
                      * @return
-                     *     possible object is
-                     *     {@link RationalType }
+                     *         possible object is
+                     *         {@link RationalType }
                      *
                      */
                     public RationalType getSeconds() {
@@ -2120,8 +2119,8 @@ public class ImageCaptureMetadataType {
                      * Définit la valeur de la propriété seconds.
                      *
                      * @param value
-                     *     allowed object is
-                     *     {@link RationalType }
+                     *            allowed object is
+                     *            {@link RationalType }
                      *
                      */
                     public void setSeconds(RationalType value) {
@@ -2130,11 +2129,12 @@ public class ImageCaptureMetadataType {
 
                 }
 
-
                 /**
-                 * <p>Classe Java pour anonymous complex type.
+                 * <p>
+                 * Classe Java pour anonymous complex type.
                  *
-                 * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+                 * <p>
+                 * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
                  *
                  * <pre>
                  * &lt;complexType>
@@ -2149,11 +2149,10 @@ public class ImageCaptureMetadataType {
                  *
                  */
                 @XmlAccessorType(XmlAccessType.FIELD)
-                @XmlType(name = "", propOrder = {
-                    "degrees",
-                    "minutes",
-                    "seconds"
-                })
+                @XmlType(name = "",
+                         propOrder = {"degrees",
+                                      "minutes",
+                                      "seconds"})
                 public static class GPSLatitude {
 
                     protected RationalType degrees;
@@ -2164,8 +2163,8 @@ public class ImageCaptureMetadataType {
                      * Obtient la valeur de la propriété degrees.
                      *
                      * @return
-                     *     possible object is
-                     *     {@link RationalType }
+                     *         possible object is
+                     *         {@link RationalType }
                      *
                      */
                     public RationalType getDegrees() {
@@ -2176,8 +2175,8 @@ public class ImageCaptureMetadataType {
                      * Définit la valeur de la propriété degrees.
                      *
                      * @param value
-                     *     allowed object is
-                     *     {@link RationalType }
+                     *            allowed object is
+                     *            {@link RationalType }
                      *
                      */
                     public void setDegrees(RationalType value) {
@@ -2188,8 +2187,8 @@ public class ImageCaptureMetadataType {
                      * Obtient la valeur de la propriété minutes.
                      *
                      * @return
-                     *     possible object is
-                     *     {@link RationalType }
+                     *         possible object is
+                     *         {@link RationalType }
                      *
                      */
                     public RationalType getMinutes() {
@@ -2200,8 +2199,8 @@ public class ImageCaptureMetadataType {
                      * Définit la valeur de la propriété minutes.
                      *
                      * @param value
-                     *     allowed object is
-                     *     {@link RationalType }
+                     *            allowed object is
+                     *            {@link RationalType }
                      *
                      */
                     public void setMinutes(RationalType value) {
@@ -2212,8 +2211,8 @@ public class ImageCaptureMetadataType {
                      * Obtient la valeur de la propriété seconds.
                      *
                      * @return
-                     *     possible object is
-                     *     {@link RationalType }
+                     *         possible object is
+                     *         {@link RationalType }
                      *
                      */
                     public RationalType getSeconds() {
@@ -2224,8 +2223,8 @@ public class ImageCaptureMetadataType {
                      * Définit la valeur de la propriété seconds.
                      *
                      * @param value
-                     *     allowed object is
-                     *     {@link RationalType }
+                     *            allowed object is
+                     *            {@link RationalType }
                      *
                      */
                     public void setSeconds(RationalType value) {
@@ -2234,11 +2233,12 @@ public class ImageCaptureMetadataType {
 
                 }
 
-
                 /**
-                 * <p>Classe Java pour anonymous complex type.
+                 * <p>
+                 * Classe Java pour anonymous complex type.
                  *
-                 * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+                 * <p>
+                 * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
                  *
                  * <pre>
                  * &lt;complexType>
@@ -2253,11 +2253,10 @@ public class ImageCaptureMetadataType {
                  *
                  */
                 @XmlAccessorType(XmlAccessType.FIELD)
-                @XmlType(name = "", propOrder = {
-                    "degrees",
-                    "minutes",
-                    "seconds"
-                })
+                @XmlType(name = "",
+                         propOrder = {"degrees",
+                                      "minutes",
+                                      "seconds"})
                 public static class GPSLongitude {
 
                     protected RationalType degrees;
@@ -2268,8 +2267,8 @@ public class ImageCaptureMetadataType {
                      * Obtient la valeur de la propriété degrees.
                      *
                      * @return
-                     *     possible object is
-                     *     {@link RationalType }
+                     *         possible object is
+                     *         {@link RationalType }
                      *
                      */
                     public RationalType getDegrees() {
@@ -2280,8 +2279,8 @@ public class ImageCaptureMetadataType {
                      * Définit la valeur de la propriété degrees.
                      *
                      * @param value
-                     *     allowed object is
-                     *     {@link RationalType }
+                     *            allowed object is
+                     *            {@link RationalType }
                      *
                      */
                     public void setDegrees(RationalType value) {
@@ -2292,8 +2291,8 @@ public class ImageCaptureMetadataType {
                      * Obtient la valeur de la propriété minutes.
                      *
                      * @return
-                     *     possible object is
-                     *     {@link RationalType }
+                     *         possible object is
+                     *         {@link RationalType }
                      *
                      */
                     public RationalType getMinutes() {
@@ -2304,8 +2303,8 @@ public class ImageCaptureMetadataType {
                      * Définit la valeur de la propriété minutes.
                      *
                      * @param value
-                     *     allowed object is
-                     *     {@link RationalType }
+                     *            allowed object is
+                     *            {@link RationalType }
                      *
                      */
                     public void setMinutes(RationalType value) {
@@ -2316,8 +2315,8 @@ public class ImageCaptureMetadataType {
                      * Obtient la valeur de la propriété seconds.
                      *
                      * @return
-                     *     possible object is
-                     *     {@link RationalType }
+                     *         possible object is
+                     *         {@link RationalType }
                      *
                      */
                     public RationalType getSeconds() {
@@ -2328,8 +2327,8 @@ public class ImageCaptureMetadataType {
                      * Définit la valeur de la propriété seconds.
                      *
                      * @param value
-                     *     allowed object is
-                     *     {@link RationalType }
+                     *            allowed object is
+                     *            {@link RationalType }
                      *
                      */
                     public void setSeconds(RationalType value) {
@@ -2340,11 +2339,12 @@ public class ImageCaptureMetadataType {
 
             }
 
-
             /**
-             * <p>Classe Java pour anonymous complex type.
+             * <p>
+             * Classe Java pour anonymous complex type.
              *
-             * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+             * <p>
+             * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
              *
              * <pre>
              * &lt;complexType>
@@ -2417,32 +2417,31 @@ public class ImageCaptureMetadataType {
              *
              */
             @XmlAccessorType(XmlAccessType.FIELD)
-            @XmlType(name = "", propOrder = {
-                "fNumber",
-                "exposureTime",
-                "exposureProgram",
-                "spectralSensitivity",
-                "isoSpeedRatings",
-                "oecf",
-                "exifVersion",
-                "shutterSpeedValue",
-                "apertureValue",
-                "brightnessValue",
-                "exposureBiasValue",
-                "maxApertureValue",
-                "subjectDistance",
-                "meteringMode",
-                "lightSource",
-                "flash",
-                "focalLength",
-                "flashEnergy",
-                "backLight",
-                "exposureIndex",
-                "sensingMethod",
-                "cfaPattern",
-                "autoFocus",
-                "printAspectRatio"
-            })
+            @XmlType(name = "",
+                     propOrder = {"fNumber",
+                                  "exposureTime",
+                                  "exposureProgram",
+                                  "spectralSensitivity",
+                                  "isoSpeedRatings",
+                                  "oecf",
+                                  "exifVersion",
+                                  "shutterSpeedValue",
+                                  "apertureValue",
+                                  "brightnessValue",
+                                  "exposureBiasValue",
+                                  "maxApertureValue",
+                                  "subjectDistance",
+                                  "meteringMode",
+                                  "lightSource",
+                                  "flash",
+                                  "focalLength",
+                                  "flashEnergy",
+                                  "backLight",
+                                  "exposureIndex",
+                                  "sensingMethod",
+                                  "cfaPattern",
+                                  "autoFocus",
+                                  "printAspectRatio"})
             public static class ImageData {
 
                 protected TypeOfNonNegativeRealType fNumber;
@@ -2477,8 +2476,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété fNumber.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link TypeOfNonNegativeRealType }
+                 *         possible object is
+                 *         {@link TypeOfNonNegativeRealType }
                  *
                  */
                 public TypeOfNonNegativeRealType getFNumber() {
@@ -2489,8 +2488,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété fNumber.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link TypeOfNonNegativeRealType }
+                 *            allowed object is
+                 *            {@link TypeOfNonNegativeRealType }
                  *
                  */
                 public void setFNumber(TypeOfNonNegativeRealType value) {
@@ -2501,8 +2500,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété exposureTime.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link TypeOfNonNegativeRealType }
+                 *         possible object is
+                 *         {@link TypeOfNonNegativeRealType }
                  *
                  */
                 public TypeOfNonNegativeRealType getExposureTime() {
@@ -2513,8 +2512,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété exposureTime.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link TypeOfNonNegativeRealType }
+                 *            allowed object is
+                 *            {@link TypeOfNonNegativeRealType }
                  *
                  */
                 public void setExposureTime(TypeOfNonNegativeRealType value) {
@@ -2525,8 +2524,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété exposureProgram.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link TypeOfExposureProgramType }
+                 *         possible object is
+                 *         {@link TypeOfExposureProgramType }
                  *
                  */
                 public TypeOfExposureProgramType getExposureProgram() {
@@ -2537,8 +2536,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété exposureProgram.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link TypeOfExposureProgramType }
+                 *            allowed object is
+                 *            {@link TypeOfExposureProgramType }
                  *
                  */
                 public void setExposureProgram(TypeOfExposureProgramType value) {
@@ -2556,8 +2555,9 @@ public class ImageCaptureMetadataType {
                  *
                  * <p>
                  * For example, to add a new item, do as follows:
+                 *
                  * <pre>
-                 *    getSpectralSensitivity().add(newItem);
+                 * getSpectralSensitivity().add(newItem);
                  * </pre>
                  *
                  *
@@ -2578,8 +2578,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété isoSpeedRatings.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link PositiveIntegerType }
+                 *         possible object is
+                 *         {@link PositiveIntegerType }
                  *
                  */
                 public PositiveIntegerType getIsoSpeedRatings() {
@@ -2590,8 +2590,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété isoSpeedRatings.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link PositiveIntegerType }
+                 *            allowed object is
+                 *            {@link PositiveIntegerType }
                  *
                  */
                 public void setIsoSpeedRatings(PositiveIntegerType value) {
@@ -2602,8 +2602,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété oecf.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link RationalType }
+                 *         possible object is
+                 *         {@link RationalType }
                  *
                  */
                 public RationalType getOECF() {
@@ -2614,8 +2614,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété oecf.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link RationalType }
+                 *            allowed object is
+                 *            {@link RationalType }
                  *
                  */
                 public void setOECF(RationalType value) {
@@ -2626,8 +2626,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété exifVersion.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link TypeOfExifVersionType }
+                 *         possible object is
+                 *         {@link TypeOfExifVersionType }
                  *
                  */
                 public TypeOfExifVersionType getExifVersion() {
@@ -2638,8 +2638,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété exifVersion.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link TypeOfExifVersionType }
+                 *            allowed object is
+                 *            {@link TypeOfExifVersionType }
                  *
                  */
                 public void setExifVersion(TypeOfExifVersionType value) {
@@ -2650,8 +2650,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété shutterSpeedValue.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link RationalType }
+                 *         possible object is
+                 *         {@link RationalType }
                  *
                  */
                 public RationalType getShutterSpeedValue() {
@@ -2662,8 +2662,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété shutterSpeedValue.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link RationalType }
+                 *            allowed object is
+                 *            {@link RationalType }
                  *
                  */
                 public void setShutterSpeedValue(RationalType value) {
@@ -2674,8 +2674,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété apertureValue.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link RationalType }
+                 *         possible object is
+                 *         {@link RationalType }
                  *
                  */
                 public RationalType getApertureValue() {
@@ -2686,8 +2686,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété apertureValue.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link RationalType }
+                 *            allowed object is
+                 *            {@link RationalType }
                  *
                  */
                 public void setApertureValue(RationalType value) {
@@ -2698,8 +2698,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété brightnessValue.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link RationalType }
+                 *         possible object is
+                 *         {@link RationalType }
                  *
                  */
                 public RationalType getBrightnessValue() {
@@ -2710,8 +2710,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété brightnessValue.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link RationalType }
+                 *            allowed object is
+                 *            {@link RationalType }
                  *
                  */
                 public void setBrightnessValue(RationalType value) {
@@ -2722,8 +2722,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété exposureBiasValue.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link RationalType }
+                 *         possible object is
+                 *         {@link RationalType }
                  *
                  */
                 public RationalType getExposureBiasValue() {
@@ -2734,8 +2734,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété exposureBiasValue.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link RationalType }
+                 *            allowed object is
+                 *            {@link RationalType }
                  *
                  */
                 public void setExposureBiasValue(RationalType value) {
@@ -2746,8 +2746,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété maxApertureValue.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link RationalType }
+                 *         possible object is
+                 *         {@link RationalType }
                  *
                  */
                 public RationalType getMaxApertureValue() {
@@ -2758,8 +2758,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété maxApertureValue.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link RationalType }
+                 *            allowed object is
+                 *            {@link RationalType }
                  *
                  */
                 public void setMaxApertureValue(RationalType value) {
@@ -2770,8 +2770,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété subjectDistance.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.ImageData.SubjectDistance }
+                 *         possible object is
+                 *         {@link ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.ImageData.SubjectDistance }
                  *
                  */
                 public ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.ImageData.SubjectDistance getSubjectDistance() {
@@ -2782,8 +2782,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété subjectDistance.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.ImageData.SubjectDistance }
+                 *            allowed object is
+                 *            {@link ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.ImageData.SubjectDistance }
                  *
                  */
                 public void setSubjectDistance(ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.ImageData.SubjectDistance value) {
@@ -2794,8 +2794,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété meteringMode.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link TypeOfMeteringModeType }
+                 *         possible object is
+                 *         {@link TypeOfMeteringModeType }
                  *
                  */
                 public TypeOfMeteringModeType getMeteringMode() {
@@ -2806,8 +2806,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété meteringMode.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link TypeOfMeteringModeType }
+                 *            allowed object is
+                 *            {@link TypeOfMeteringModeType }
                  *
                  */
                 public void setMeteringMode(TypeOfMeteringModeType value) {
@@ -2818,8 +2818,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété lightSource.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link TypeOfLightSourceType }
+                 *         possible object is
+                 *         {@link TypeOfLightSourceType }
                  *
                  */
                 public TypeOfLightSourceType getLightSource() {
@@ -2830,8 +2830,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété lightSource.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link TypeOfLightSourceType }
+                 *            allowed object is
+                 *            {@link TypeOfLightSourceType }
                  *
                  */
                 public void setLightSource(TypeOfLightSourceType value) {
@@ -2842,8 +2842,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété flash.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link TypeOfFlashType }
+                 *         possible object is
+                 *         {@link TypeOfFlashType }
                  *
                  */
                 public TypeOfFlashType getFlash() {
@@ -2854,8 +2854,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété flash.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link TypeOfFlashType }
+                 *            allowed object is
+                 *            {@link TypeOfFlashType }
                  *
                  */
                 public void setFlash(TypeOfFlashType value) {
@@ -2866,8 +2866,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété focalLength.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link TypeOfNonNegativeDecimalType }
+                 *         possible object is
+                 *         {@link TypeOfNonNegativeDecimalType }
                  *
                  */
                 public TypeOfNonNegativeDecimalType getFocalLength() {
@@ -2878,8 +2878,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété focalLength.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link TypeOfNonNegativeDecimalType }
+                 *            allowed object is
+                 *            {@link TypeOfNonNegativeDecimalType }
                  *
                  */
                 public void setFocalLength(TypeOfNonNegativeDecimalType value) {
@@ -2890,8 +2890,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété flashEnergy.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link RationalType }
+                 *         possible object is
+                 *         {@link RationalType }
                  *
                  */
                 public RationalType getFlashEnergy() {
@@ -2902,8 +2902,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété flashEnergy.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link RationalType }
+                 *            allowed object is
+                 *            {@link RationalType }
                  *
                  */
                 public void setFlashEnergy(RationalType value) {
@@ -2914,8 +2914,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété backLight.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link TypeOfBackLightType }
+                 *         possible object is
+                 *         {@link TypeOfBackLightType }
                  *
                  */
                 public TypeOfBackLightType getBackLight() {
@@ -2926,8 +2926,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété backLight.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link TypeOfBackLightType }
+                 *            allowed object is
+                 *            {@link TypeOfBackLightType }
                  *
                  */
                 public void setBackLight(TypeOfBackLightType value) {
@@ -2938,8 +2938,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété exposureIndex.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link TypeOfPositiveRealType }
+                 *         possible object is
+                 *         {@link TypeOfPositiveRealType }
                  *
                  */
                 public TypeOfPositiveRealType getExposureIndex() {
@@ -2950,8 +2950,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété exposureIndex.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link TypeOfPositiveRealType }
+                 *            allowed object is
+                 *            {@link TypeOfPositiveRealType }
                  *
                  */
                 public void setExposureIndex(TypeOfPositiveRealType value) {
@@ -2962,8 +2962,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété sensingMethod.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link TypeOfSensingMethodType }
+                 *         possible object is
+                 *         {@link TypeOfSensingMethodType }
                  *
                  */
                 public TypeOfSensingMethodType getSensingMethod() {
@@ -2974,8 +2974,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété sensingMethod.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link TypeOfSensingMethodType }
+                 *            allowed object is
+                 *            {@link TypeOfSensingMethodType }
                  *
                  */
                 public void setSensingMethod(TypeOfSensingMethodType value) {
@@ -2986,8 +2986,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété cfaPattern.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link IntegerType }
+                 *         possible object is
+                 *         {@link IntegerType }
                  *
                  */
                 public IntegerType getCfaPattern() {
@@ -2998,8 +2998,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété cfaPattern.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link IntegerType }
+                 *            allowed object is
+                 *            {@link IntegerType }
                  *
                  */
                 public void setCfaPattern(IntegerType value) {
@@ -3010,8 +3010,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété autoFocus.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link TypeOfAutoFocusType }
+                 *         possible object is
+                 *         {@link TypeOfAutoFocusType }
                  *
                  */
                 public TypeOfAutoFocusType getAutoFocus() {
@@ -3022,8 +3022,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété autoFocus.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link TypeOfAutoFocusType }
+                 *            allowed object is
+                 *            {@link TypeOfAutoFocusType }
                  *
                  */
                 public void setAutoFocus(TypeOfAutoFocusType value) {
@@ -3034,8 +3034,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété printAspectRatio.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.ImageData.PrintAspectRatio }
+                 *         possible object is
+                 *         {@link ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.ImageData.PrintAspectRatio }
                  *
                  */
                 public ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.ImageData.PrintAspectRatio getPrintAspectRatio() {
@@ -3046,19 +3046,20 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété printAspectRatio.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.ImageData.PrintAspectRatio }
+                 *            allowed object is
+                 *            {@link ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.ImageData.PrintAspectRatio }
                  *
                  */
                 public void setPrintAspectRatio(ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.ImageData.PrintAspectRatio value) {
                     this.printAspectRatio = value;
                 }
 
-
                 /**
-                 * <p>Classe Java pour anonymous complex type.
+                 * <p>
+                 * Classe Java pour anonymous complex type.
                  *
-                 * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+                 * <p>
+                 * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
                  *
                  * <pre>
                  * &lt;complexType>
@@ -3076,10 +3077,9 @@ public class ImageCaptureMetadataType {
                  *
                  */
                 @XmlAccessorType(XmlAccessType.FIELD)
-                @XmlType(name = "", propOrder = {
-                    "xPrintAspectRatio",
-                    "yPrintAspectRatio"
-                })
+                @XmlType(name = "",
+                         propOrder = {"xPrintAspectRatio",
+                                      "yPrintAspectRatio"})
                 public static class PrintAspectRatio {
 
                     protected TypeOfNonNegativeRealType xPrintAspectRatio;
@@ -3089,8 +3089,8 @@ public class ImageCaptureMetadataType {
                      * Obtient la valeur de la propriété xPrintAspectRatio.
                      *
                      * @return
-                     *     possible object is
-                     *     {@link TypeOfNonNegativeRealType }
+                     *         possible object is
+                     *         {@link TypeOfNonNegativeRealType }
                      *
                      */
                     public TypeOfNonNegativeRealType getXPrintAspectRatio() {
@@ -3101,8 +3101,8 @@ public class ImageCaptureMetadataType {
                      * Définit la valeur de la propriété xPrintAspectRatio.
                      *
                      * @param value
-                     *     allowed object is
-                     *     {@link TypeOfNonNegativeRealType }
+                     *            allowed object is
+                     *            {@link TypeOfNonNegativeRealType }
                      *
                      */
                     public void setXPrintAspectRatio(TypeOfNonNegativeRealType value) {
@@ -3113,8 +3113,8 @@ public class ImageCaptureMetadataType {
                      * Obtient la valeur de la propriété yPrintAspectRatio.
                      *
                      * @return
-                     *     possible object is
-                     *     {@link TypeOfNonNegativeRealType }
+                     *         possible object is
+                     *         {@link TypeOfNonNegativeRealType }
                      *
                      */
                     public TypeOfNonNegativeRealType getYPrintAspectRatio() {
@@ -3125,8 +3125,8 @@ public class ImageCaptureMetadataType {
                      * Définit la valeur de la propriété yPrintAspectRatio.
                      *
                      * @param value
-                     *     allowed object is
-                     *     {@link TypeOfNonNegativeRealType }
+                     *            allowed object is
+                     *            {@link TypeOfNonNegativeRealType }
                      *
                      */
                     public void setYPrintAspectRatio(TypeOfNonNegativeRealType value) {
@@ -3135,11 +3135,12 @@ public class ImageCaptureMetadataType {
 
                 }
 
-
                 /**
-                 * <p>Classe Java pour anonymous complex type.
+                 * <p>
+                 * Classe Java pour anonymous complex type.
                  *
-                 * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+                 * <p>
+                 * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
                  *
                  * <pre>
                  * &lt;complexType>
@@ -3168,10 +3169,9 @@ public class ImageCaptureMetadataType {
                  *
                  */
                 @XmlAccessorType(XmlAccessType.FIELD)
-                @XmlType(name = "", propOrder = {
-                    "distance",
-                    "minMaxDistance"
-                })
+                @XmlType(name = "",
+                         propOrder = {"distance",
+                                      "minMaxDistance"})
                 public static class SubjectDistance {
 
                     protected TypeOfNonNegativeDecimalType distance;
@@ -3182,8 +3182,8 @@ public class ImageCaptureMetadataType {
                      * Obtient la valeur de la propriété distance.
                      *
                      * @return
-                     *     possible object is
-                     *     {@link TypeOfNonNegativeDecimalType }
+                     *         possible object is
+                     *         {@link TypeOfNonNegativeDecimalType }
                      *
                      */
                     public TypeOfNonNegativeDecimalType getDistance() {
@@ -3194,8 +3194,8 @@ public class ImageCaptureMetadataType {
                      * Définit la valeur de la propriété distance.
                      *
                      * @param value
-                     *     allowed object is
-                     *     {@link TypeOfNonNegativeDecimalType }
+                     *            allowed object is
+                     *            {@link TypeOfNonNegativeDecimalType }
                      *
                      */
                     public void setDistance(TypeOfNonNegativeDecimalType value) {
@@ -3206,8 +3206,8 @@ public class ImageCaptureMetadataType {
                      * Obtient la valeur de la propriété minMaxDistance.
                      *
                      * @return
-                     *     possible object is
-                     *     {@link ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.ImageData.SubjectDistance.MinMaxDistance }
+                     *         possible object is
+                     *         {@link ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.ImageData.SubjectDistance.MinMaxDistance }
                      *
                      */
                     public ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.ImageData.SubjectDistance.MinMaxDistance getMinMaxDistance() {
@@ -3218,19 +3218,20 @@ public class ImageCaptureMetadataType {
                      * Définit la valeur de la propriété minMaxDistance.
                      *
                      * @param value
-                     *     allowed object is
-                     *     {@link ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.ImageData.SubjectDistance.MinMaxDistance }
+                     *            allowed object is
+                     *            {@link ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.ImageData.SubjectDistance.MinMaxDistance }
                      *
                      */
                     public void setMinMaxDistance(ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.ImageData.SubjectDistance.MinMaxDistance value) {
                         this.minMaxDistance = value;
                     }
 
-
                     /**
-                     * <p>Classe Java pour anonymous complex type.
+                     * <p>
+                     * Classe Java pour anonymous complex type.
                      *
-                     * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+                     * <p>
+                     * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
                      *
                      * <pre>
                      * &lt;complexType>
@@ -3248,10 +3249,9 @@ public class ImageCaptureMetadataType {
                      *
                      */
                     @XmlAccessorType(XmlAccessType.FIELD)
-                    @XmlType(name = "", propOrder = {
-                        "minDistance",
-                        "maxDistance"
-                    })
+                    @XmlType(name = "",
+                             propOrder = {"minDistance",
+                                          "maxDistance"})
                     public static class MinMaxDistance {
 
                         protected TypeOfNonNegativeDecimalType minDistance;
@@ -3261,8 +3261,8 @@ public class ImageCaptureMetadataType {
                          * Obtient la valeur de la propriété minDistance.
                          *
                          * @return
-                         *     possible object is
-                         *     {@link TypeOfNonNegativeDecimalType }
+                         *         possible object is
+                         *         {@link TypeOfNonNegativeDecimalType }
                          *
                          */
                         public TypeOfNonNegativeDecimalType getMinDistance() {
@@ -3273,8 +3273,8 @@ public class ImageCaptureMetadataType {
                          * Définit la valeur de la propriété minDistance.
                          *
                          * @param value
-                         *     allowed object is
-                         *     {@link TypeOfNonNegativeDecimalType }
+                         *            allowed object is
+                         *            {@link TypeOfNonNegativeDecimalType }
                          *
                          */
                         public void setMinDistance(TypeOfNonNegativeDecimalType value) {
@@ -3285,8 +3285,8 @@ public class ImageCaptureMetadataType {
                          * Obtient la valeur de la propriété maxDistance.
                          *
                          * @return
-                         *     possible object is
-                         *     {@link TypeOfNonNegativeDecimalType }
+                         *         possible object is
+                         *         {@link TypeOfNonNegativeDecimalType }
                          *
                          */
                         public TypeOfNonNegativeDecimalType getMaxDistance() {
@@ -3297,8 +3297,8 @@ public class ImageCaptureMetadataType {
                          * Définit la valeur de la propriété maxDistance.
                          *
                          * @param value
-                         *     allowed object is
-                         *     {@link TypeOfNonNegativeDecimalType }
+                         *            allowed object is
+                         *            {@link TypeOfNonNegativeDecimalType }
                          *
                          */
                         public void setMaxDistance(TypeOfNonNegativeDecimalType value) {
@@ -3313,11 +3313,12 @@ public class ImageCaptureMetadataType {
 
         }
 
-
         /**
-         * <p>Classe Java pour anonymous complex type.
+         * <p>
+         * Classe Java pour anonymous complex type.
          *
-         * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+         * <p>
+         * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
          *
          * <pre>
          * &lt;complexType>
@@ -3336,11 +3337,10 @@ public class ImageCaptureMetadataType {
          *
          */
         @XmlAccessorType(XmlAccessType.FIELD)
-        @XmlType(name = "", propOrder = {
-            "digitalCameraModelName",
-            "digitalCameraModelNumber",
-            "digitalCameraModelSerialNo"
-        })
+        @XmlType(name = "",
+                 propOrder = {"digitalCameraModelName",
+                              "digitalCameraModelNumber",
+                              "digitalCameraModelSerialNo"})
         public static class DigitalCameraModel {
 
             protected StringType digitalCameraModelName;
@@ -3351,8 +3351,8 @@ public class ImageCaptureMetadataType {
              * Obtient la valeur de la propriété digitalCameraModelName.
              *
              * @return
-             *     possible object is
-             *     {@link StringType }
+             *         possible object is
+             *         {@link StringType }
              *
              */
             public StringType getDigitalCameraModelName() {
@@ -3363,8 +3363,8 @@ public class ImageCaptureMetadataType {
              * Définit la valeur de la propriété digitalCameraModelName.
              *
              * @param value
-             *     allowed object is
-             *     {@link StringType }
+             *            allowed object is
+             *            {@link StringType }
              *
              */
             public void setDigitalCameraModelName(StringType value) {
@@ -3375,8 +3375,8 @@ public class ImageCaptureMetadataType {
              * Obtient la valeur de la propriété digitalCameraModelNumber.
              *
              * @return
-             *     possible object is
-             *     {@link StringType }
+             *         possible object is
+             *         {@link StringType }
              *
              */
             public StringType getDigitalCameraModelNumber() {
@@ -3387,8 +3387,8 @@ public class ImageCaptureMetadataType {
              * Définit la valeur de la propriété digitalCameraModelNumber.
              *
              * @param value
-             *     allowed object is
-             *     {@link StringType }
+             *            allowed object is
+             *            {@link StringType }
              *
              */
             public void setDigitalCameraModelNumber(StringType value) {
@@ -3399,8 +3399,8 @@ public class ImageCaptureMetadataType {
              * Obtient la valeur de la propriété digitalCameraModelSerialNo.
              *
              * @return
-             *     possible object is
-             *     {@link StringType }
+             *         possible object is
+             *         {@link StringType }
              *
              */
             public StringType getDigitalCameraModelSerialNo() {
@@ -3411,8 +3411,8 @@ public class ImageCaptureMetadataType {
              * Définit la valeur de la propriété digitalCameraModelSerialNo.
              *
              * @param value
-             *     allowed object is
-             *     {@link StringType }
+             *            allowed object is
+             *            {@link StringType }
              *
              */
             public void setDigitalCameraModelSerialNo(StringType value) {
@@ -3423,11 +3423,12 @@ public class ImageCaptureMetadataType {
 
     }
 
-
     /**
-     * <p>Classe Java pour anonymous complex type.
+     * <p>
+     * Classe Java pour anonymous complex type.
      *
-     * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+     * <p>
+     * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
      *
      * <pre>
      * &lt;complexType>
@@ -3446,11 +3447,10 @@ public class ImageCaptureMetadataType {
      *
      */
     @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "dateTimeCreated",
-        "imageProducer",
-        "captureDevice"
-    })
+    @XmlType(name = "",
+             propOrder = {"dateTimeCreated",
+                          "imageProducer",
+                          "captureDevice"})
     public static class GeneralCaptureInformation {
 
         protected TypeOfDateType dateTimeCreated;
@@ -3461,8 +3461,8 @@ public class ImageCaptureMetadataType {
          * Obtient la valeur de la propriété dateTimeCreated.
          *
          * @return
-         *     possible object is
-         *     {@link TypeOfDateType }
+         *         possible object is
+         *         {@link TypeOfDateType }
          *
          */
         public TypeOfDateType getDateTimeCreated() {
@@ -3473,8 +3473,8 @@ public class ImageCaptureMetadataType {
          * Définit la valeur de la propriété dateTimeCreated.
          *
          * @param value
-         *     allowed object is
-         *     {@link TypeOfDateType }
+         *            allowed object is
+         *            {@link TypeOfDateType }
          *
          */
         public void setDateTimeCreated(TypeOfDateType value) {
@@ -3492,8 +3492,9 @@ public class ImageCaptureMetadataType {
          *
          * <p>
          * For example, to add a new item, do as follows:
+         *
          * <pre>
-         *    getImageProducer().add(newItem);
+         * getImageProducer().add(newItem);
          * </pre>
          *
          *
@@ -3514,8 +3515,8 @@ public class ImageCaptureMetadataType {
          * Obtient la valeur de la propriété captureDevice.
          *
          * @return
-         *     possible object is
-         *     {@link TypeOfCaptureDeviceType }
+         *         possible object is
+         *         {@link TypeOfCaptureDeviceType }
          *
          */
         public TypeOfCaptureDeviceType getCaptureDevice() {
@@ -3526,8 +3527,8 @@ public class ImageCaptureMetadataType {
          * Définit la valeur de la propriété captureDevice.
          *
          * @param value
-         *     allowed object is
-         *     {@link TypeOfCaptureDeviceType }
+         *            allowed object is
+         *            {@link TypeOfCaptureDeviceType }
          *
          */
         public void setCaptureDevice(TypeOfCaptureDeviceType value) {
@@ -3536,11 +3537,12 @@ public class ImageCaptureMetadataType {
 
     }
 
-
     /**
-     * <p>Classe Java pour anonymous complex type.
+     * <p>
+     * Classe Java pour anonymous complex type.
      *
-     * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+     * <p>
+     * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
      *
      * <pre>
      * &lt;complexType>
@@ -3596,13 +3598,12 @@ public class ImageCaptureMetadataType {
      *
      */
     @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "scannerManufacturer",
-        "scannerModel",
-        "maximumOpticalResolution",
-        "scannerSensor",
-        "scanningSystemSoftware"
-    })
+    @XmlType(name = "",
+             propOrder = {"scannerManufacturer",
+                          "scannerModel",
+                          "maximumOpticalResolution",
+                          "scannerSensor",
+                          "scanningSystemSoftware"})
     public static class ScannerCapture {
 
         protected StringType scannerManufacturer;
@@ -3618,8 +3619,8 @@ public class ImageCaptureMetadataType {
          * Obtient la valeur de la propriété scannerManufacturer.
          *
          * @return
-         *     possible object is
-         *     {@link StringType }
+         *         possible object is
+         *         {@link StringType }
          *
          */
         public StringType getScannerManufacturer() {
@@ -3630,8 +3631,8 @@ public class ImageCaptureMetadataType {
          * Définit la valeur de la propriété scannerManufacturer.
          *
          * @param value
-         *     allowed object is
-         *     {@link StringType }
+         *            allowed object is
+         *            {@link StringType }
          *
          */
         public void setScannerManufacturer(StringType value) {
@@ -3642,8 +3643,8 @@ public class ImageCaptureMetadataType {
          * Obtient la valeur de la propriété scannerModel.
          *
          * @return
-         *     possible object is
-         *     {@link ImageCaptureMetadataType.ScannerCapture.ScannerModel }
+         *         possible object is
+         *         {@link ImageCaptureMetadataType.ScannerCapture.ScannerModel }
          *
          */
         public ImageCaptureMetadataType.ScannerCapture.ScannerModel getScannerModel() {
@@ -3654,8 +3655,8 @@ public class ImageCaptureMetadataType {
          * Définit la valeur de la propriété scannerModel.
          *
          * @param value
-         *     allowed object is
-         *     {@link ImageCaptureMetadataType.ScannerCapture.ScannerModel }
+         *            allowed object is
+         *            {@link ImageCaptureMetadataType.ScannerCapture.ScannerModel }
          *
          */
         public void setScannerModel(ImageCaptureMetadataType.ScannerCapture.ScannerModel value) {
@@ -3666,8 +3667,8 @@ public class ImageCaptureMetadataType {
          * Obtient la valeur de la propriété maximumOpticalResolution.
          *
          * @return
-         *     possible object is
-         *     {@link ImageCaptureMetadataType.ScannerCapture.MaximumOpticalResolution }
+         *         possible object is
+         *         {@link ImageCaptureMetadataType.ScannerCapture.MaximumOpticalResolution }
          *
          */
         public ImageCaptureMetadataType.ScannerCapture.MaximumOpticalResolution getMaximumOpticalResolution() {
@@ -3678,8 +3679,8 @@ public class ImageCaptureMetadataType {
          * Définit la valeur de la propriété maximumOpticalResolution.
          *
          * @param value
-         *     allowed object is
-         *     {@link ImageCaptureMetadataType.ScannerCapture.MaximumOpticalResolution }
+         *            allowed object is
+         *            {@link ImageCaptureMetadataType.ScannerCapture.MaximumOpticalResolution }
          *
          */
         public void setMaximumOpticalResolution(ImageCaptureMetadataType.ScannerCapture.MaximumOpticalResolution value) {
@@ -3690,8 +3691,8 @@ public class ImageCaptureMetadataType {
          * Obtient la valeur de la propriété scannerSensor.
          *
          * @return
-         *     possible object is
-         *     {@link TypeOfScannerSensorType }
+         *         possible object is
+         *         {@link TypeOfScannerSensorType }
          *
          */
         public TypeOfScannerSensorType getScannerSensor() {
@@ -3702,8 +3703,8 @@ public class ImageCaptureMetadataType {
          * Définit la valeur de la propriété scannerSensor.
          *
          * @param value
-         *     allowed object is
-         *     {@link TypeOfScannerSensorType }
+         *            allowed object is
+         *            {@link TypeOfScannerSensorType }
          *
          */
         public void setScannerSensor(TypeOfScannerSensorType value) {
@@ -3714,8 +3715,8 @@ public class ImageCaptureMetadataType {
          * Obtient la valeur de la propriété scanningSystemSoftware.
          *
          * @return
-         *     possible object is
-         *     {@link ImageCaptureMetadataType.ScannerCapture.ScanningSystemSoftware }
+         *         possible object is
+         *         {@link ImageCaptureMetadataType.ScannerCapture.ScanningSystemSoftware }
          *
          */
         public ImageCaptureMetadataType.ScannerCapture.ScanningSystemSoftware getScanningSystemSoftware() {
@@ -3726,19 +3727,20 @@ public class ImageCaptureMetadataType {
          * Définit la valeur de la propriété scanningSystemSoftware.
          *
          * @param value
-         *     allowed object is
-         *     {@link ImageCaptureMetadataType.ScannerCapture.ScanningSystemSoftware }
+         *            allowed object is
+         *            {@link ImageCaptureMetadataType.ScannerCapture.ScanningSystemSoftware }
          *
          */
         public void setScanningSystemSoftware(ImageCaptureMetadataType.ScannerCapture.ScanningSystemSoftware value) {
             this.scanningSystemSoftware = value;
         }
 
-
         /**
-         * <p>Classe Java pour anonymous complex type.
+         * <p>
+         * Classe Java pour anonymous complex type.
          *
-         * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+         * <p>
+         * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
          *
          * <pre>
          * &lt;complexType>
@@ -3757,11 +3759,10 @@ public class ImageCaptureMetadataType {
          *
          */
         @XmlAccessorType(XmlAccessType.FIELD)
-        @XmlType(name = "", propOrder = {
-            "xOpticalResolution",
-            "yOpticalResolution",
-            "opticalResolutionUnit"
-        })
+        @XmlType(name = "",
+                 propOrder = {"xOpticalResolution",
+                              "yOpticalResolution",
+                              "opticalResolutionUnit"})
         public static class MaximumOpticalResolution {
 
             protected PositiveIntegerType xOpticalResolution;
@@ -3772,8 +3773,8 @@ public class ImageCaptureMetadataType {
              * Obtient la valeur de la propriété xOpticalResolution.
              *
              * @return
-             *     possible object is
-             *     {@link PositiveIntegerType }
+             *         possible object is
+             *         {@link PositiveIntegerType }
              *
              */
             public PositiveIntegerType getXOpticalResolution() {
@@ -3784,8 +3785,8 @@ public class ImageCaptureMetadataType {
              * Définit la valeur de la propriété xOpticalResolution.
              *
              * @param value
-             *     allowed object is
-             *     {@link PositiveIntegerType }
+             *            allowed object is
+             *            {@link PositiveIntegerType }
              *
              */
             public void setXOpticalResolution(PositiveIntegerType value) {
@@ -3796,8 +3797,8 @@ public class ImageCaptureMetadataType {
              * Obtient la valeur de la propriété yOpticalResolution.
              *
              * @return
-             *     possible object is
-             *     {@link PositiveIntegerType }
+             *         possible object is
+             *         {@link PositiveIntegerType }
              *
              */
             public PositiveIntegerType getYOpticalResolution() {
@@ -3808,8 +3809,8 @@ public class ImageCaptureMetadataType {
              * Définit la valeur de la propriété yOpticalResolution.
              *
              * @param value
-             *     allowed object is
-             *     {@link PositiveIntegerType }
+             *            allowed object is
+             *            {@link PositiveIntegerType }
              *
              */
             public void setYOpticalResolution(PositiveIntegerType value) {
@@ -3820,8 +3821,8 @@ public class ImageCaptureMetadataType {
              * Obtient la valeur de la propriété opticalResolutionUnit.
              *
              * @return
-             *     possible object is
-             *     {@link TypeOfOpticalResolutionUnitType }
+             *         possible object is
+             *         {@link TypeOfOpticalResolutionUnitType }
              *
              */
             public TypeOfOpticalResolutionUnitType getOpticalResolutionUnit() {
@@ -3832,8 +3833,8 @@ public class ImageCaptureMetadataType {
              * Définit la valeur de la propriété opticalResolutionUnit.
              *
              * @param value
-             *     allowed object is
-             *     {@link TypeOfOpticalResolutionUnitType }
+             *            allowed object is
+             *            {@link TypeOfOpticalResolutionUnitType }
              *
              */
             public void setOpticalResolutionUnit(TypeOfOpticalResolutionUnitType value) {
@@ -3842,11 +3843,12 @@ public class ImageCaptureMetadataType {
 
         }
 
-
         /**
-         * <p>Classe Java pour anonymous complex type.
+         * <p>
+         * Classe Java pour anonymous complex type.
          *
-         * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+         * <p>
+         * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
          *
          * <pre>
          * &lt;complexType>
@@ -3865,11 +3867,10 @@ public class ImageCaptureMetadataType {
          *
          */
         @XmlAccessorType(XmlAccessType.FIELD)
-        @XmlType(name = "", propOrder = {
-            "scannerModelName",
-            "scannerModelNumber",
-            "scannerModelSerialNo"
-        })
+        @XmlType(name = "",
+                 propOrder = {"scannerModelName",
+                              "scannerModelNumber",
+                              "scannerModelSerialNo"})
         public static class ScannerModel {
 
             protected StringType scannerModelName;
@@ -3880,8 +3881,8 @@ public class ImageCaptureMetadataType {
              * Obtient la valeur de la propriété scannerModelName.
              *
              * @return
-             *     possible object is
-             *     {@link StringType }
+             *         possible object is
+             *         {@link StringType }
              *
              */
             public StringType getScannerModelName() {
@@ -3892,8 +3893,8 @@ public class ImageCaptureMetadataType {
              * Définit la valeur de la propriété scannerModelName.
              *
              * @param value
-             *     allowed object is
-             *     {@link StringType }
+             *            allowed object is
+             *            {@link StringType }
              *
              */
             public void setScannerModelName(StringType value) {
@@ -3904,8 +3905,8 @@ public class ImageCaptureMetadataType {
              * Obtient la valeur de la propriété scannerModelNumber.
              *
              * @return
-             *     possible object is
-             *     {@link StringType }
+             *         possible object is
+             *         {@link StringType }
              *
              */
             public StringType getScannerModelNumber() {
@@ -3916,8 +3917,8 @@ public class ImageCaptureMetadataType {
              * Définit la valeur de la propriété scannerModelNumber.
              *
              * @param value
-             *     allowed object is
-             *     {@link StringType }
+             *            allowed object is
+             *            {@link StringType }
              *
              */
             public void setScannerModelNumber(StringType value) {
@@ -3928,8 +3929,8 @@ public class ImageCaptureMetadataType {
              * Obtient la valeur de la propriété scannerModelSerialNo.
              *
              * @return
-             *     possible object is
-             *     {@link StringType }
+             *         possible object is
+             *         {@link StringType }
              *
              */
             public StringType getScannerModelSerialNo() {
@@ -3940,8 +3941,8 @@ public class ImageCaptureMetadataType {
              * Définit la valeur de la propriété scannerModelSerialNo.
              *
              * @param value
-             *     allowed object is
-             *     {@link StringType }
+             *            allowed object is
+             *            {@link StringType }
              *
              */
             public void setScannerModelSerialNo(StringType value) {
@@ -3950,11 +3951,12 @@ public class ImageCaptureMetadataType {
 
         }
 
-
         /**
-         * <p>Classe Java pour anonymous complex type.
+         * <p>
+         * Classe Java pour anonymous complex type.
          *
-         * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+         * <p>
+         * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
          *
          * <pre>
          * &lt;complexType>
@@ -3972,10 +3974,9 @@ public class ImageCaptureMetadataType {
          *
          */
         @XmlAccessorType(XmlAccessType.FIELD)
-        @XmlType(name = "", propOrder = {
-            "scanningSoftwareName",
-            "scanningSoftwareVersionNo"
-        })
+        @XmlType(name = "",
+                 propOrder = {"scanningSoftwareName",
+                              "scanningSoftwareVersionNo"})
         public static class ScanningSystemSoftware {
 
             protected StringType scanningSoftwareName;
@@ -3985,8 +3986,8 @@ public class ImageCaptureMetadataType {
              * Obtient la valeur de la propriété scanningSoftwareName.
              *
              * @return
-             *     possible object is
-             *     {@link StringType }
+             *         possible object is
+             *         {@link StringType }
              *
              */
             public StringType getScanningSoftwareName() {
@@ -3997,8 +3998,8 @@ public class ImageCaptureMetadataType {
              * Définit la valeur de la propriété scanningSoftwareName.
              *
              * @param value
-             *     allowed object is
-             *     {@link StringType }
+             *            allowed object is
+             *            {@link StringType }
              *
              */
             public void setScanningSoftwareName(StringType value) {
@@ -4009,8 +4010,8 @@ public class ImageCaptureMetadataType {
              * Obtient la valeur de la propriété scanningSoftwareVersionNo.
              *
              * @return
-             *     possible object is
-             *     {@link StringType }
+             *         possible object is
+             *         {@link StringType }
              *
              */
             public StringType getScanningSoftwareVersionNo() {
@@ -4021,8 +4022,8 @@ public class ImageCaptureMetadataType {
              * Définit la valeur de la propriété scanningSoftwareVersionNo.
              *
              * @param value
-             *     allowed object is
-             *     {@link StringType }
+             *            allowed object is
+             *            {@link StringType }
              *
              */
             public void setScanningSoftwareVersionNo(StringType value) {
@@ -4033,11 +4034,12 @@ public class ImageCaptureMetadataType {
 
     }
 
-
     /**
-     * <p>Classe Java pour anonymous complex type.
+     * <p>
+     * Classe Java pour anonymous complex type.
      *
-     * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+     * <p>
+     * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
      *
      * <pre>
      * &lt;complexType>
@@ -4112,11 +4114,10 @@ public class ImageCaptureMetadataType {
      *
      */
     @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "sourceType",
-        "sourceID",
-        "sourceSize"
-    })
+    @XmlType(name = "",
+             propOrder = {"sourceType",
+                          "sourceID",
+                          "sourceSize"})
     public static class SourceInformation {
 
         protected StringType sourceType;
@@ -4129,8 +4130,8 @@ public class ImageCaptureMetadataType {
          * Obtient la valeur de la propriété sourceType.
          *
          * @return
-         *     possible object is
-         *     {@link StringType }
+         *         possible object is
+         *         {@link StringType }
          *
          */
         public StringType getSourceType() {
@@ -4141,8 +4142,8 @@ public class ImageCaptureMetadataType {
          * Définit la valeur de la propriété sourceType.
          *
          * @param value
-         *     allowed object is
-         *     {@link StringType }
+         *            allowed object is
+         *            {@link StringType }
          *
          */
         public void setSourceType(StringType value) {
@@ -4160,8 +4161,9 @@ public class ImageCaptureMetadataType {
          *
          * <p>
          * For example, to add a new item, do as follows:
+         *
          * <pre>
-         *    getSourceID().add(newItem);
+         * getSourceID().add(newItem);
          * </pre>
          *
          *
@@ -4182,8 +4184,8 @@ public class ImageCaptureMetadataType {
          * Obtient la valeur de la propriété sourceSize.
          *
          * @return
-         *     possible object is
-         *     {@link ImageCaptureMetadataType.SourceInformation.SourceSize }
+         *         possible object is
+         *         {@link ImageCaptureMetadataType.SourceInformation.SourceSize }
          *
          */
         public ImageCaptureMetadataType.SourceInformation.SourceSize getSourceSize() {
@@ -4194,19 +4196,20 @@ public class ImageCaptureMetadataType {
          * Définit la valeur de la propriété sourceSize.
          *
          * @param value
-         *     allowed object is
-         *     {@link ImageCaptureMetadataType.SourceInformation.SourceSize }
+         *            allowed object is
+         *            {@link ImageCaptureMetadataType.SourceInformation.SourceSize }
          *
          */
         public void setSourceSize(ImageCaptureMetadataType.SourceInformation.SourceSize value) {
             this.sourceSize = value;
         }
 
-
         /**
-         * <p>Classe Java pour anonymous complex type.
+         * <p>
+         * Classe Java pour anonymous complex type.
          *
-         * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+         * <p>
+         * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
          *
          * <pre>
          * &lt;complexType>
@@ -4224,10 +4227,9 @@ public class ImageCaptureMetadataType {
          *
          */
         @XmlAccessorType(XmlAccessType.FIELD)
-        @XmlType(name = "", propOrder = {
-            "sourceIDType",
-            "sourceIDValue"
-        })
+        @XmlType(name = "",
+                 propOrder = {"sourceIDType",
+                              "sourceIDValue"})
         public static class SourceID {
 
             protected StringType sourceIDType;
@@ -4237,8 +4239,8 @@ public class ImageCaptureMetadataType {
              * Obtient la valeur de la propriété sourceIDType.
              *
              * @return
-             *     possible object is
-             *     {@link StringType }
+             *         possible object is
+             *         {@link StringType }
              *
              */
             public StringType getSourceIDType() {
@@ -4249,8 +4251,8 @@ public class ImageCaptureMetadataType {
              * Définit la valeur de la propriété sourceIDType.
              *
              * @param value
-             *     allowed object is
-             *     {@link StringType }
+             *            allowed object is
+             *            {@link StringType }
              *
              */
             public void setSourceIDType(StringType value) {
@@ -4261,8 +4263,8 @@ public class ImageCaptureMetadataType {
              * Obtient la valeur de la propriété sourceIDValue.
              *
              * @return
-             *     possible object is
-             *     {@link StringType }
+             *         possible object is
+             *         {@link StringType }
              *
              */
             public StringType getSourceIDValue() {
@@ -4273,8 +4275,8 @@ public class ImageCaptureMetadataType {
              * Définit la valeur de la propriété sourceIDValue.
              *
              * @param value
-             *     allowed object is
-             *     {@link StringType }
+             *            allowed object is
+             *            {@link StringType }
              *
              */
             public void setSourceIDValue(StringType value) {
@@ -4283,11 +4285,12 @@ public class ImageCaptureMetadataType {
 
         }
 
-
         /**
-         * <p>Classe Java pour anonymous complex type.
+         * <p>
+         * Classe Java pour anonymous complex type.
          *
-         * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+         * <p>
+         * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
          *
          * <pre>
          * &lt;complexType>
@@ -4339,11 +4342,10 @@ public class ImageCaptureMetadataType {
          *
          */
         @XmlAccessorType(XmlAccessType.FIELD)
-        @XmlType(name = "", propOrder = {
-            "sourceXDimension",
-            "sourceYDimension",
-            "sourceZDimension"
-        })
+        @XmlType(name = "",
+                 propOrder = {"sourceXDimension",
+                              "sourceYDimension",
+                              "sourceZDimension"})
         public static class SourceSize {
 
             @XmlElement(name = "SourceXDimension")
@@ -4357,8 +4359,8 @@ public class ImageCaptureMetadataType {
              * Obtient la valeur de la propriété sourceXDimension.
              *
              * @return
-             *     possible object is
-             *     {@link ImageCaptureMetadataType.SourceInformation.SourceSize.SourceXDimension }
+             *         possible object is
+             *         {@link ImageCaptureMetadataType.SourceInformation.SourceSize.SourceXDimension }
              *
              */
             public ImageCaptureMetadataType.SourceInformation.SourceSize.SourceXDimension getSourceXDimension() {
@@ -4369,8 +4371,8 @@ public class ImageCaptureMetadataType {
              * Définit la valeur de la propriété sourceXDimension.
              *
              * @param value
-             *     allowed object is
-             *     {@link ImageCaptureMetadataType.SourceInformation.SourceSize.SourceXDimension }
+             *            allowed object is
+             *            {@link ImageCaptureMetadataType.SourceInformation.SourceSize.SourceXDimension }
              *
              */
             public void setSourceXDimension(ImageCaptureMetadataType.SourceInformation.SourceSize.SourceXDimension value) {
@@ -4381,8 +4383,8 @@ public class ImageCaptureMetadataType {
              * Obtient la valeur de la propriété sourceYDimension.
              *
              * @return
-             *     possible object is
-             *     {@link ImageCaptureMetadataType.SourceInformation.SourceSize.SourceYDimension }
+             *         possible object is
+             *         {@link ImageCaptureMetadataType.SourceInformation.SourceSize.SourceYDimension }
              *
              */
             public ImageCaptureMetadataType.SourceInformation.SourceSize.SourceYDimension getSourceYDimension() {
@@ -4393,8 +4395,8 @@ public class ImageCaptureMetadataType {
              * Définit la valeur de la propriété sourceYDimension.
              *
              * @param value
-             *     allowed object is
-             *     {@link ImageCaptureMetadataType.SourceInformation.SourceSize.SourceYDimension }
+             *            allowed object is
+             *            {@link ImageCaptureMetadataType.SourceInformation.SourceSize.SourceYDimension }
              *
              */
             public void setSourceYDimension(ImageCaptureMetadataType.SourceInformation.SourceSize.SourceYDimension value) {
@@ -4405,8 +4407,8 @@ public class ImageCaptureMetadataType {
              * Obtient la valeur de la propriété sourceZDimension.
              *
              * @return
-             *     possible object is
-             *     {@link ImageCaptureMetadataType.SourceInformation.SourceSize.SourceZDimension }
+             *         possible object is
+             *         {@link ImageCaptureMetadataType.SourceInformation.SourceSize.SourceZDimension }
              *
              */
             public ImageCaptureMetadataType.SourceInformation.SourceSize.SourceZDimension getSourceZDimension() {
@@ -4417,19 +4419,20 @@ public class ImageCaptureMetadataType {
              * Définit la valeur de la propriété sourceZDimension.
              *
              * @param value
-             *     allowed object is
-             *     {@link ImageCaptureMetadataType.SourceInformation.SourceSize.SourceZDimension }
+             *            allowed object is
+             *            {@link ImageCaptureMetadataType.SourceInformation.SourceSize.SourceZDimension }
              *
              */
             public void setSourceZDimension(ImageCaptureMetadataType.SourceInformation.SourceSize.SourceZDimension value) {
                 this.sourceZDimension = value;
             }
 
-
             /**
-             * <p>Classe Java pour anonymous complex type.
+             * <p>
+             * Classe Java pour anonymous complex type.
              *
-             * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+             * <p>
+             * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
              *
              * <pre>
              * &lt;complexType>
@@ -4447,10 +4450,9 @@ public class ImageCaptureMetadataType {
              *
              */
             @XmlAccessorType(XmlAccessType.FIELD)
-            @XmlType(name = "", propOrder = {
-                "sourceXDimensionValue",
-                "sourceXDimensionUnit"
-            })
+            @XmlType(name = "",
+                     propOrder = {"sourceXDimensionValue",
+                                  "sourceXDimensionUnit"})
             public static class SourceXDimension {
 
                 protected TypeOfNonNegativeRealType sourceXDimensionValue;
@@ -4460,8 +4462,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété sourceXDimensionValue.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link TypeOfNonNegativeRealType }
+                 *         possible object is
+                 *         {@link TypeOfNonNegativeRealType }
                  *
                  */
                 public TypeOfNonNegativeRealType getSourceXDimensionValue() {
@@ -4472,8 +4474,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété sourceXDimensionValue.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link TypeOfNonNegativeRealType }
+                 *            allowed object is
+                 *            {@link TypeOfNonNegativeRealType }
                  *
                  */
                 public void setSourceXDimensionValue(TypeOfNonNegativeRealType value) {
@@ -4484,8 +4486,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété sourceXDimensionUnit.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link TypeOfsourceDimensionUnitType }
+                 *         possible object is
+                 *         {@link TypeOfsourceDimensionUnitType }
                  *
                  */
                 public TypeOfsourceDimensionUnitType getSourceXDimensionUnit() {
@@ -4496,8 +4498,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété sourceXDimensionUnit.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link TypeOfsourceDimensionUnitType }
+                 *            allowed object is
+                 *            {@link TypeOfsourceDimensionUnitType }
                  *
                  */
                 public void setSourceXDimensionUnit(TypeOfsourceDimensionUnitType value) {
@@ -4506,11 +4508,12 @@ public class ImageCaptureMetadataType {
 
             }
 
-
             /**
-             * <p>Classe Java pour anonymous complex type.
+             * <p>
+             * Classe Java pour anonymous complex type.
              *
-             * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+             * <p>
+             * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
              *
              * <pre>
              * &lt;complexType>
@@ -4528,10 +4531,9 @@ public class ImageCaptureMetadataType {
              *
              */
             @XmlAccessorType(XmlAccessType.FIELD)
-            @XmlType(name = "", propOrder = {
-                "sourceYDimensionValue",
-                "sourceYDimensionUnit"
-            })
+            @XmlType(name = "",
+                     propOrder = {"sourceYDimensionValue",
+                                  "sourceYDimensionUnit"})
             public static class SourceYDimension {
 
                 protected TypeOfNonNegativeRealType sourceYDimensionValue;
@@ -4541,8 +4543,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété sourceYDimensionValue.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link TypeOfNonNegativeRealType }
+                 *         possible object is
+                 *         {@link TypeOfNonNegativeRealType }
                  *
                  */
                 public TypeOfNonNegativeRealType getSourceYDimensionValue() {
@@ -4553,8 +4555,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété sourceYDimensionValue.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link TypeOfNonNegativeRealType }
+                 *            allowed object is
+                 *            {@link TypeOfNonNegativeRealType }
                  *
                  */
                 public void setSourceYDimensionValue(TypeOfNonNegativeRealType value) {
@@ -4565,8 +4567,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété sourceYDimensionUnit.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link TypeOfsourceDimensionUnitType }
+                 *         possible object is
+                 *         {@link TypeOfsourceDimensionUnitType }
                  *
                  */
                 public TypeOfsourceDimensionUnitType getSourceYDimensionUnit() {
@@ -4577,8 +4579,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété sourceYDimensionUnit.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link TypeOfsourceDimensionUnitType }
+                 *            allowed object is
+                 *            {@link TypeOfsourceDimensionUnitType }
                  *
                  */
                 public void setSourceYDimensionUnit(TypeOfsourceDimensionUnitType value) {
@@ -4587,11 +4589,12 @@ public class ImageCaptureMetadataType {
 
             }
 
-
             /**
-             * <p>Classe Java pour anonymous complex type.
+             * <p>
+             * Classe Java pour anonymous complex type.
              *
-             * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+             * <p>
+             * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
              *
              * <pre>
              * &lt;complexType>
@@ -4609,10 +4612,9 @@ public class ImageCaptureMetadataType {
              *
              */
             @XmlAccessorType(XmlAccessType.FIELD)
-            @XmlType(name = "", propOrder = {
-                "sourceZDimensionValue",
-                "sourceZDimensionUnit"
-            })
+            @XmlType(name = "",
+                     propOrder = {"sourceZDimensionValue",
+                                  "sourceZDimensionUnit"})
             public static class SourceZDimension {
 
                 protected TypeOfNonNegativeRealType sourceZDimensionValue;
@@ -4622,8 +4624,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété sourceZDimensionValue.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link TypeOfNonNegativeRealType }
+                 *         possible object is
+                 *         {@link TypeOfNonNegativeRealType }
                  *
                  */
                 public TypeOfNonNegativeRealType getSourceZDimensionValue() {
@@ -4634,8 +4636,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété sourceZDimensionValue.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link TypeOfNonNegativeRealType }
+                 *            allowed object is
+                 *            {@link TypeOfNonNegativeRealType }
                  *
                  */
                 public void setSourceZDimensionValue(TypeOfNonNegativeRealType value) {
@@ -4646,8 +4648,8 @@ public class ImageCaptureMetadataType {
                  * Obtient la valeur de la propriété sourceZDimensionUnit.
                  *
                  * @return
-                 *     possible object is
-                 *     {@link TypeOfsourceDimensionUnitType }
+                 *         possible object is
+                 *         {@link TypeOfsourceDimensionUnitType }
                  *
                  */
                 public TypeOfsourceDimensionUnitType getSourceZDimensionUnit() {
@@ -4658,8 +4660,8 @@ public class ImageCaptureMetadataType {
                  * Définit la valeur de la propriété sourceZDimensionUnit.
                  *
                  * @param value
-                 *     allowed object is
-                 *     {@link TypeOfsourceDimensionUnitType }
+                 *            allowed object is
+                 *            {@link TypeOfsourceDimensionUnitType }
                  *
                  */
                 public void setSourceZDimensionUnit(TypeOfsourceDimensionUnitType value) {

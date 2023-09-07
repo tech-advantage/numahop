@@ -1,13 +1,9 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('ProjectCtrl', ProjectCtrl);
+    angular.module('numaHopApp.controller').controller('ProjectCtrl', ProjectCtrl);
 
-    function ProjectCtrl($location, $scope, $timeout, $q, $routeParams,
-        ProjectSrvc, gettext, gettextCatalog, HistorySrvc, StringTools,
-        NumahopStorageService, NumaHopInitializationSrvc, NumahopEditService) {
-
+    function ProjectCtrl($location, $scope, $timeout, $q, $routeParams, ProjectSrvc, gettext, gettextCatalog, HistorySrvc, StringTools, NumahopStorageService, NumaHopInitializationSrvc, NumahopEditService) {
         $scope.applyFilter = applyFilter;
         $scope.clearSelection = clearSelection;
         $scope.create = create;
@@ -27,10 +23,10 @@
         $scope.selectedIndex = null;
         $scope.selectedInNew = false;
 
-        $scope.projectInclude = "scripts/app/project/projectEdit.html";
+        $scope.projectInclude = 'scripts/app/project/projectEdit.html';
         $scope.project = null;
 
-        var FILTER_STORAGE_SERVICE_KEY = "projects";
+        var FILTER_STORAGE_SERVICE_KEY = 'projects';
 
         $scope.loaded = false;
 
@@ -39,52 +35,51 @@
          */
         $scope.options = {
             statuses: [
-                { identifier: "CREATED", label: gettext('Créé') },
-                { identifier: "ONGOING", label: gettext('En cours') },
-                { identifier: "PENDING", label: gettext('En attente') },
-                { identifier: "CANCELED", label: gettext('Annulé') },
-                { identifier: "CLOSED", label: gettext('Clôturé') }]
+                { identifier: 'CREATED', label: gettext('Créé') },
+                { identifier: 'ONGOING', label: gettext('En cours') },
+                { identifier: 'PENDING', label: gettext('En attente') },
+                { identifier: 'CANCELED', label: gettext('Annulé') },
+                { identifier: 'CLOSED', label: gettext('Clôturé') },
+            ],
         };
         $scope.pagination = {
             items: [],
             totalItems: 0,
             busy: false,
-            page: 0
+            page: 0,
         };
         $scope.newProjects = []; // liste des projets récemment créés
 
         $scope.filters = {
             libraries: [],
-            available: false
+            available: false,
         };
         $scope.listFilters = {
             inactive_filter: true,
             library_filter: true,
             initial_filter: true,
             provider_filter: true,
-            status_filter: true
+            status_filter: true,
         };
         $scope.filterLabels = {
-            inactive: "Voir les projets inactifs"
+            inactive: 'Voir les projets inactifs',
         };
 
         init();
 
         /** Initialisation */
         function init() {
-            HistorySrvc.add(gettextCatalog.getString("Projets"));
+            HistorySrvc.add(gettextCatalog.getString('Projets'));
             reinitFilters(false);
             loadOptionsAndFilters();
 
-            $scope.$on("$routeUpdate",
-                function ($currentRoute, $previousRoute) {
-                    $timeout(function () {
-                        $scope.projectInclude = null;
-                        $scope.$apply();
-                        $scope.projectInclude = "scripts/app/project/projectEdit.html";
-                    });
-                }
-            );
+            $scope.$on('$routeUpdate', function ($currentRoute, $previousRoute) {
+                $timeout(function () {
+                    $scope.projectInclude = null;
+                    $scope.$apply();
+                    $scope.projectInclude = 'scripts/app/project/projectEdit.html';
+                });
+            });
         }
 
         /****************************************************************/
@@ -102,8 +97,7 @@
         /** Options *****************************************************/
         /****************************************************************/
         function loadOptionsAndFilters() {
-            $q.all([NumaHopInitializationSrvc.loadLibraries(),
-            NumaHopInitializationSrvc.loadProviders()])
+            $q.all([NumaHopInitializationSrvc.loadLibraries(), NumaHopInitializationSrvc.loadProviders()])
                 .then(function (data) {
                     $scope.options.libraries = data[0];
                     $scope.options.providers = data[1];
@@ -122,11 +116,11 @@
                 $scope.project._selected = false;
                 $scope.project = null;
             }
-            $location.path("/project/project").search({ new: true });
+            $location.path('/project/project').search({ new: true });
         }
 
         function showDetailUnitDoc() {
-            $location.path("/project/all_operations");
+            $location.path('/project/all_operations');
         }
 
         function edit(project, index, selectedInNew) {
@@ -142,7 +136,7 @@
                 search = { id: project.identifier };
             }
 
-            $location.path("/project/project").search(search);
+            $location.path('/project/project').search(search);
         }
 
         function filterProjects() {
@@ -150,27 +144,27 @@
 
             var searchParams = {
                 page: $scope.pagination.page,
-                search: $scope.filterWith || "",
-                active: !$scope.filters.inactive
+                search: $scope.filterWith || '',
+                active: !$scope.filters.inactive,
             };
 
             if ($scope.filters.initiale) {
-                searchParams["initiale"] = $scope.filters.initiale;
+                searchParams['initiale'] = $scope.filters.initiale;
             }
 
             if ($scope.filters.statuses) {
-                var statusesIds = _.pluck($scope.filters.statuses, "identifier");
-                searchParams["status"] = statusesIds;
+                var statusesIds = _.pluck($scope.filters.statuses, 'identifier');
+                searchParams['status'] = statusesIds;
             }
 
             if ($scope.filters.providers) {
-                var providersIds = _.pluck($scope.filters.providers, "identifier");
-                searchParams["provider"] = providersIds;
+                var providersIds = _.pluck($scope.filters.providers, 'identifier');
+                searchParams['provider'] = providersIds;
             }
 
             if ($scope.filters.libraries) {
-                var librariesIds = _.pluck($scope.filters.libraries, "identifier");
-                searchParams["libraries"] = librariesIds;
+                var librariesIds = _.pluck($scope.filters.libraries, 'identifier');
+                searchParams['libraries'] = librariesIds;
             }
 
             return ProjectSrvc.search(searchParams).$promise;
@@ -186,7 +180,7 @@
             doFilter();
         }
         function applyFilter(filterWith, event) {
-            if (event.type === "keypress" && event.keyCode === 13) {
+            if (event.type === 'keypress' && event.keyCode === 13) {
                 doFilter();
             }
         }
@@ -211,8 +205,7 @@
                         } else {
                             $scope.pagination.items.push(value.content[i]);
                         }
-                    }
-                    else {
+                    } else {
                         // On ne compte pas 2 fois les nouveaux projets rechargés
                         $scope.pagination.totalItems--;
                     }
@@ -253,7 +246,7 @@
                 inactive: false,
                 libraries: [],
                 users: [],
-                statuses: []
+                statuses: [],
             };
             if (reload) {
                 doFilter();
@@ -261,7 +254,9 @@
         }
         // liste
         function nextPage() {
-            if ($scope.pagination.busy || $scope.pagination.last) { return; }
+            if ($scope.pagination.busy || $scope.pagination.last) {
+                return;
+            }
             $scope.pagination.busy = true;
 
             return filterProjects().then(function (value, responseHeaders) {
@@ -285,13 +280,12 @@
             }
         }
         function clearSelection() {
-            _.union($scope.pagination.items, $scope.newProjects)
-                .forEach(function (elt, i) {
-                    elt._selected = false;
-                });
+            _.union($scope.pagination.items, $scope.newProjects).forEach(function (elt, i) {
+                elt._selected = false;
+            });
         }
         function getFirstLetter(project) {
-            return StringTools.getFirstLetter(project.name, "OTHER");
+            return StringTools.getFirstLetter(project.name, 'OTHER');
         }
         function moveUp() {
             var index;

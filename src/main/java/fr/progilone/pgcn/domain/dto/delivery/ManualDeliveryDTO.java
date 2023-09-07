@@ -2,13 +2,13 @@ package fr.progilone.pgcn.domain.dto.delivery;
 
 import fr.progilone.pgcn.domain.dto.AbstractDTO;
 import fr.progilone.pgcn.domain.dto.lot.SimpleLotDTO;
-
 import java.time.LocalDate;
 
 /**
  * DTO pour les livraisons qui ne contient que les champs éditables par le prestataire.
  */
 public class ManualDeliveryDTO extends AbstractDTO {
+
     private String identifier;
     private SimpleLotDTO lot;
     private String label;
@@ -242,20 +242,7 @@ public class ManualDeliveryDTO extends AbstractDTO {
         }
 
         public ManualDeliveryDTO build() {
-            return new ManualDeliveryDTO(
-                    identifier,
-                    lot,
-                    label,
-                    description,
-                    payment,
-                    status,
-                    method,
-                    receptionDate,
-                    folderPath,
-                    imgFormat,
-                    digitizingNotes,
-                    controlNotes
-            );
+            return new ManualDeliveryDTO(identifier, lot, label, description, payment, status, method, receptionDate, folderPath, imgFormat, digitizingNotes, controlNotes);
         }
 
     }

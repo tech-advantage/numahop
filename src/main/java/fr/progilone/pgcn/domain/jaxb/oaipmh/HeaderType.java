@@ -5,29 +5,29 @@
 // Généré le : 2018.08.13 à 01:08:19 PM CEST
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.oaipmh;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-
 
 /**
  * A header has a unique identifier, a datestamp,
- *         and setSpec(s) in case the item from which
- *         the record is disseminated belongs to set(s).
- *         the header can carry a deleted status indicating
- *         that the record is deleted.
+ * and setSpec(s) in case the item from which
+ * the record is disseminated belongs to set(s).
+ * the header can carry a deleted status indicating
+ * that the record is deleted.
  *
- * <p>Classe Java pour headerType complex type.
+ * <p>
+ * Classe Java pour headerType complex type.
  *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="headerType">
@@ -47,11 +47,10 @@ import javax.xml.bind.annotation.XmlType;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "headerType", propOrder = {
-    "identifier",
-    "datestamp",
-    "setSpec"
-})
+@XmlType(name = "headerType",
+         propOrder = {"identifier",
+                      "datestamp",
+                      "setSpec"})
 public class HeaderType {
 
     @XmlElement(required = true)
@@ -67,8 +66,8 @@ public class HeaderType {
      * Obtient la valeur de la propriété identifier.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getIdentifier() {
@@ -79,8 +78,8 @@ public class HeaderType {
      * Définit la valeur de la propriété identifier.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setIdentifier(String value) {
@@ -91,8 +90,8 @@ public class HeaderType {
      * Obtient la valeur de la propriété datestamp.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getDatestamp() {
@@ -103,8 +102,8 @@ public class HeaderType {
      * Définit la valeur de la propriété datestamp.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setDatestamp(String value) {
@@ -122,8 +121,9 @@ public class HeaderType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getSetSpec().add(newItem);
+     * getSetSpec().add(newItem);
      * </pre>
      *
      *
@@ -144,8 +144,8 @@ public class HeaderType {
      * Obtient la valeur de la propriété status.
      *
      * @return
-     *     possible object is
-     *     {@link StatusType }
+     *         possible object is
+     *         {@link StatusType }
      *
      */
     public StatusType getStatus() {
@@ -156,8 +156,8 @@ public class HeaderType {
      * Définit la valeur de la propriété status.
      *
      * @param value
-     *     allowed object is
-     *     {@link StatusType }
+     *            allowed object is
+     *            {@link StatusType }
      *
      */
     public void setStatus(StatusType value) {

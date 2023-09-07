@@ -2,8 +2,7 @@ package fr.progilone.pgcn.domain.document;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import fr.progilone.pgcn.domain.AbstractDomainObject;
-
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 /**
  * Created by lebouchp on 10/02/2017.
@@ -14,7 +13,6 @@ import javax.persistence.*;
 public class GlobalCheck extends AbstractDomainObject {
 
     public static final String TABLE_NAME = "doc_global_check";
-
 
     @Column(name = "err_label")
     @Enumerated(EnumType.STRING)

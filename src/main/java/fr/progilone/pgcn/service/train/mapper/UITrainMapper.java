@@ -1,18 +1,15 @@
 package fr.progilone.pgcn.service.train.mapper;
 
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import fr.progilone.pgcn.domain.dto.train.TrainDTO;
 import fr.progilone.pgcn.domain.train.Train;
 import fr.progilone.pgcn.repository.document.PhysicalDocumentRepository;
 import fr.progilone.pgcn.repository.project.ProjectRepository;
+import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 public class UITrainMapper {
-
 
     @Autowired
     private ProjectRepository projectRepository;
@@ -33,9 +30,9 @@ public class UITrainMapper {
         }
         if (trainDTO.getPhysicalDocuments() != null) {
             train.setPhysicalDocuments(trainDTO.getPhysicalDocuments()
-                                           .stream()
-                                           .filter(documentDTO -> documentDTO.getIdentifier() != null)
-                                           .map(documentDTO -> physicalDocumentRepository.findByIdentifier(documentDTO.getIdentifier()))
+                                               .stream()
+                                               .filter(documentDTO -> documentDTO.getIdentifier() != null)
+                                               .map(documentDTO -> physicalDocumentRepository.findByIdentifier(documentDTO.getIdentifier()))
                                                .collect(Collectors.toSet()));
         }
         train.setProviderSendingDate(trainDTO.getProviderSendingDate());

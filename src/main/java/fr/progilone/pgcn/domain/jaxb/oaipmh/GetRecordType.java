@@ -5,19 +5,19 @@
 // Généré le : 2018.08.13 à 01:08:19 PM CEST
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.oaipmh;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
-
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlType;
 
 /**
- * <p>Classe Java pour GetRecordType complex type.
+ * <p>
+ * Classe Java pour GetRecordType complex type.
  *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="GetRecordType">
@@ -34,9 +34,7 @@ import javax.xml.bind.annotation.XmlType;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "GetRecordType", propOrder = {
-    "record"
-})
+@XmlType(name = "GetRecordType", propOrder = {"record"})
 public class GetRecordType {
 
     @XmlElement(required = true)
@@ -46,8 +44,8 @@ public class GetRecordType {
      * Obtient la valeur de la propriété record.
      *
      * @return
-     *     possible object is
-     *     {@link RecordType }
+     *         possible object is
+     *         {@link RecordType }
      *
      */
     public RecordType getRecord() {
@@ -58,8 +56,8 @@ public class GetRecordType {
      * Définit la valeur de la propriété record.
      *
      * @param value
-     *     allowed object is
-     *     {@link RecordType }
+     *            allowed object is
+     *            {@link RecordType }
      *
      */
     public void setRecord(RecordType value) {

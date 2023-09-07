@@ -5,21 +5,21 @@
 // Généré le : 2017.02.10 à 05:24:22 PM CET
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.facile;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
-
 
 /**
- * <p>Classe Java pour validatorType complex type.
+ * <p>
+ * Classe Java pour validatorType complex type.
  *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="validatorType"&gt;
@@ -47,20 +47,19 @@ import javax.xml.bind.annotation.XmlType;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "validatorType", propOrder = {
-    "fileName",
-    "fileSize",
-    "version",
-    "wellformed",
-    "valid",
-    "message",
-    "md5Sum",
-    "sha256Sum",
-    "note",
-    "archivable",
-    "format",
-    "encoding"
-})
+@XmlType(name = "validatorType",
+         propOrder = {"fileName",
+                      "fileSize",
+                      "version",
+                      "wellformed",
+                      "valid",
+                      "message",
+                      "md5Sum",
+                      "sha256Sum",
+                      "note",
+                      "archivable",
+                      "format",
+                      "encoding"})
 public class ValidatorType {
 
     @XmlElement(required = true)
@@ -87,8 +86,8 @@ public class ValidatorType {
      * Obtient la valeur de la propriété fileName.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getFileName() {
@@ -99,8 +98,8 @@ public class ValidatorType {
      * Définit la valeur de la propriété fileName.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setFileName(String value) {
@@ -127,8 +126,8 @@ public class ValidatorType {
      * Obtient la valeur de la propriété version.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getVersion() {
@@ -139,8 +138,8 @@ public class ValidatorType {
      * Définit la valeur de la propriété version.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setVersion(String value) {
@@ -183,8 +182,8 @@ public class ValidatorType {
      * Obtient la valeur de la propriété message.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getMessage() {
@@ -195,8 +194,8 @@ public class ValidatorType {
      * Définit la valeur de la propriété message.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setMessage(String value) {
@@ -207,8 +206,8 @@ public class ValidatorType {
      * Obtient la valeur de la propriété md5Sum.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getMd5Sum() {
@@ -219,8 +218,8 @@ public class ValidatorType {
      * Définit la valeur de la propriété md5Sum.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setMd5Sum(String value) {
@@ -231,8 +230,8 @@ public class ValidatorType {
      * Obtient la valeur de la propriété sha256Sum.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getSha256Sum() {
@@ -243,8 +242,8 @@ public class ValidatorType {
      * Définit la valeur de la propriété sha256Sum.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setSha256Sum(String value) {
@@ -262,8 +261,9 @@ public class ValidatorType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getNote().add(newItem);
+     * getNote().add(newItem);
      * </pre>
      *
      *
@@ -300,8 +300,8 @@ public class ValidatorType {
      * Obtient la valeur de la propriété format.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getFormat() {
@@ -312,8 +312,8 @@ public class ValidatorType {
      * Définit la valeur de la propriété format.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setFormat(String value) {
@@ -324,8 +324,8 @@ public class ValidatorType {
      * Obtient la valeur de la propriété encoding.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getEncoding() {
@@ -336,8 +336,8 @@ public class ValidatorType {
      * Définit la valeur de la propriété encoding.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setEncoding(String value) {

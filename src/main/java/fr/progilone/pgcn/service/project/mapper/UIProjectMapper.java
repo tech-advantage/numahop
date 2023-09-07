@@ -1,16 +1,7 @@
 package fr.progilone.pgcn.service.project.mapper;
 
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import fr.progilone.pgcn.domain.administration.ExportFTPDeliveryFolder;
-import fr.progilone.pgcn.domain.dto.exportftpconfiguration.ExportFTPConfigurationDeliveryFolderDTO;
-import fr.progilone.pgcn.service.exportftpconfiguration.ExportFTPConfigurationService;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import fr.progilone.pgcn.domain.administration.CinesPAC;
+import fr.progilone.pgcn.domain.administration.ExportFTPDeliveryFolder;
 import fr.progilone.pgcn.domain.administration.InternetArchiveCollection;
 import fr.progilone.pgcn.domain.administration.omeka.OmekaList;
 import fr.progilone.pgcn.domain.dto.administration.CinesPACDTO;
@@ -27,10 +18,15 @@ import fr.progilone.pgcn.service.administration.omeka.OmekaConfigurationService;
 import fr.progilone.pgcn.service.administration.omeka.OmekaListService;
 import fr.progilone.pgcn.service.administration.viewsformat.ViewsFormatConfigurationService;
 import fr.progilone.pgcn.service.checkconfiguration.CheckConfigurationService;
+import fr.progilone.pgcn.service.exportftpconfiguration.ExportFTPConfigurationService;
 import fr.progilone.pgcn.service.ftpconfiguration.FTPConfigurationService;
 import fr.progilone.pgcn.service.library.LibraryService;
 import fr.progilone.pgcn.service.user.UserService;
 import fr.progilone.pgcn.service.workflow.WorkflowModelService;
+import java.util.Set;
+import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 public class UIProjectMapper {
@@ -64,7 +60,7 @@ public class UIProjectMapper {
         final SimpleLibraryDTO libraryDTO = projectDTO.getLibrary();
 
         if (libraryDTO.getIdentifier() != null) {
-            //Récupère bibliotheque depuis repository
+            // Récupère bibliotheque depuis repository
             final Library library = libraryService.findOne(libraryDTO.getIdentifier());
             project.setLibrary(library);
         }
@@ -79,9 +75,7 @@ public class UIProjectMapper {
         // AssociatedLibraries
         final Set<SimpleLibraryDTO> libraryDTOs = projectDTO.getAssociatedLibraries();
         if (libraryDTOs != null) {
-            project.setAssociatedLibraries(libraryDTOs.stream()
-                                                      .map(library -> libraryService.findOne(library.getIdentifier()))
-                                                      .collect(Collectors.toSet()));
+            project.setAssociatedLibraries(libraryDTOs.stream().map(library -> libraryService.findOne(library.getIdentifier())).collect(Collectors.toSet()));
         }
         // AssociatedUsers
         final Set<SimpleUserDTO> userDTOs = projectDTO.getAssociatedUsers();
@@ -94,8 +88,8 @@ public class UIProjectMapper {
         }
         if (projectDTO.getActiveExportFTPConfiguration() != null) {
             project.setActiveExportFTPConfiguration(exportFTPConfigurationService.getOne(projectDTO.getActiveExportFTPConfiguration().getIdentifier()));
-            //delivery folders update
-            if(project.getActiveExportFTPConfiguration() != null && projectDTO.getActiveExportFTPDeliveryFolder() != null) {
+            // delivery folders update
+            if (project.getActiveExportFTPConfiguration() != null && projectDTO.getActiveExportFTPDeliveryFolder() != null) {
                 ExportFTPDeliveryFolder newFolder = new ExportFTPDeliveryFolder();
                 newFolder.setIdentifier(projectDTO.getActiveExportFTPDeliveryFolder().getIdentifier());
                 newFolder.setName(projectDTO.getActiveExportFTPDeliveryFolder().getName());
@@ -125,7 +119,7 @@ public class UIProjectMapper {
             project.setCollectionIA(null);
         }
 
-        if(projectDTO.getLicenseUrl() != null){
+        if (projectDTO.getLicenseUrl() != null) {
             project.setLicenseUrl(projectDTO.getLicenseUrl());
         }
 
@@ -160,13 +154,13 @@ public class UIProjectMapper {
             project.setProvider(null);
         }
 
-        if(projectDTO.getLibRespName() != null){
+        if (projectDTO.getLibRespName() != null) {
             project.setLibRespName(projectDTO.getLibRespName());
         }
-        if(projectDTO.getLibRespPhone() != null){
+        if (projectDTO.getLibRespPhone() != null) {
             project.setLibRespPhone(projectDTO.getLibRespPhone());
         }
-        if(projectDTO.getLibRespEmail() != null){
+        if (projectDTO.getLibRespEmail() != null) {
             project.setLibRespEmail(projectDTO.getLibRespEmail());
         }
     }

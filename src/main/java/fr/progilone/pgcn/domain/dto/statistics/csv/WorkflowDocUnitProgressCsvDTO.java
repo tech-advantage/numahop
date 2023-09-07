@@ -4,8 +4,7 @@ import com.google.common.collect.Ordering;
 import com.opencsv.bean.CsvBindByName;
 import fr.progilone.pgcn.domain.workflow.WorkflowStateKey;
 import fr.progilone.pgcn.domain.workflow.WorkflowStateStatus;
-
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 public class WorkflowDocUnitProgressCsvDTO implements Comparable<WorkflowDocUnitProgressCsvDTO> {
 

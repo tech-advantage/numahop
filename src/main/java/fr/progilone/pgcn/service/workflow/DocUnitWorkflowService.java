@@ -2,19 +2,6 @@ package fr.progilone.pgcn.service.workflow;
 
 import static fr.progilone.pgcn.domain.workflow.WorkflowStateStatus.*;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import fr.progilone.pgcn.domain.delivery.DeliveredDocument;
 import fr.progilone.pgcn.domain.document.DigitalDocument.DigitalDocumentStatus;
 import fr.progilone.pgcn.domain.document.DocUnit;
@@ -51,12 +38,23 @@ import fr.progilone.pgcn.exception.PgcnValidationException;
 import fr.progilone.pgcn.repository.workflow.DocUnitStateRepository;
 import fr.progilone.pgcn.repository.workflow.DocUnitWorkflowRepository;
 import fr.progilone.pgcn.repository.workflow.helper.DocUnitWorkflowSearchBuilder;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Service de gestion des instances de workflow (étapes & workflow)
  *
  * @author jbrunet
- * Créé le 10 oct. 2017
+ *         Créé le 10 oct. 2017
  */
 @Service
 public class DocUnitWorkflowService {
@@ -198,7 +196,7 @@ public class DocUnitWorkflowService {
 
         // reinitialise aussi un eventuel controle qualité en cours
         reinitializeState(instance, WorkflowStateKey.CONTROLE_QUALITE_EN_COURS, NOT_STARTED);
-        
+
         resetPostDeliveryStates(instance.getDocUnit());
         save(instance);
     }
@@ -209,9 +207,10 @@ public class DocUnitWorkflowService {
         if (docUnit.getWorkflow() != null) {
             final DocUnitWorkflow workflow = docUnit.getWorkflow();
             final WorkflowModel model = workflow.getModel();
-    
-            if (workflow.getCurrentStateByKey(WorkflowStateKey.RELIVRAISON_DOCUMENT_EN_COURS) == null
-                || !workflow.getCurrentStateByKey(WorkflowStateKey.RELIVRAISON_DOCUMENT_EN_COURS).isCurrentState()) {
+
+            if (workflow.getCurrentStateByKey(WorkflowStateKey.RELIVRAISON_DOCUMENT_EN_COURS) == null || !workflow.getCurrentStateByKey(
+                                                                                                                                        WorkflowStateKey.RELIVRAISON_DOCUMENT_EN_COURS)
+                                                                                                                  .isCurrentState()) {
                 final DocUnitState state = new ReLivraisonDocumentEnCoursState();
                 state.setModelState(model.getModelStateByKey(WorkflowStateKey.LIVRAISON_DOCUMENT_EN_COURS));
                 state.initializeState(null, null, PENDING);
@@ -224,7 +223,7 @@ public class DocUnitWorkflowService {
             reinitializeState(workflow, WorkflowStateKey.CONTROLE_QUALITE_EN_COURS, NOT_STARTED);
             // reinitialise aussi un eventuel rapport de contrôle en cours
             reinitializeState(workflow, WorkflowStateKey.RAPPORT_CONTROLES, TO_WAIT);
-    
+
             save(workflow);
         }
     }
@@ -244,22 +243,22 @@ public class DocUnitWorkflowService {
             save(workflow);
         }
     }
-    
+
     /**
      * Detricote le workflow pour revenir à l'état antérieur.
      * !! ADMIN ONLY
-     * 
+     *
      * @param workflow
      * @param key
      */
     @Transactional
     public void resetNextStateByAdmin(final DocUnit docUnit, final WorkflowStateKey key) {
-        
-        final DocUnitWorkflow workflow = docUnit.getWorkflow(); 
+
+        final DocUnitWorkflow workflow = docUnit.getWorkflow();
         if (workflow == null) {
             return;
         }
-        
+
         switch (key) {
             case VALIDATION_CONSTAT_ETAT:
                 reinitializeState(workflow, WorkflowStateKey.VALIDATION_BORDEREAU_CONSTAT_ETAT, TO_SKIP);
@@ -267,9 +266,9 @@ public class DocUnitWorkflowService {
                 reinitializeState(workflow, WorkflowStateKey.CONSTAT_ETAT_APRES_NUMERISATION, TO_SKIP);
                 reinitializeState(workflow, WorkflowStateKey.NUMERISATION_EN_ATTENTE, TO_WAIT);
                 reinitializeState(workflow, WorkflowStateKey.LIVRAISON_DOCUMENT_EN_COURS, NOT_STARTED);
-                break;   
+                break;
             case PREREJET_DOCUMENT:
-            case PREVALIDATION_DOCUMENT:    
+            case PREVALIDATION_DOCUMENT:
                 reinitializeState(workflow, WorkflowStateKey.CONTROLE_QUALITE_EN_COURS, PENDING);
                 reinitializeState(workflow, WorkflowStateKey.PREREJET_DOCUMENT, NOT_STARTED);
                 reinitializeState(workflow, WorkflowStateKey.PREVALIDATION_DOCUMENT, NOT_STARTED);
@@ -280,62 +279,55 @@ public class DocUnitWorkflowService {
             case VALIDATION_DOCUMENT:
                 reinitializeState(workflow, WorkflowStateKey.RAPPORT_CONTROLES, TO_WAIT);
                 // il faut revenir aux statuts des docs tels qu'ils devaient être..
-                final DocUnitState prState = workflow.getStates()
-                                            .stream()
-                                            .filter(st -> st.getKey() == WorkflowStateKey.PREREJET_DOCUMENT)
-                                            .findAny().orElse(null);
+                final DocUnitState prState = workflow.getStates().stream().filter(st -> st.getKey() == WorkflowStateKey.PREREJET_DOCUMENT).findAny().orElse(null);
                 if (prState != null && prState.isValidated()) {
                     resetStatuses(docUnit, DigitalDocumentStatus.PRE_REJECTED);
                 } else {
-                    final DocUnitState pvState = workflow.getStates()
-                                                    .stream()
-                                                    .filter(st -> st.getKey() == WorkflowStateKey.PREVALIDATION_DOCUMENT)
-                                                    .findAny().orElse(null);
+                    final DocUnitState pvState = workflow.getStates().stream().filter(st -> st.getKey() == WorkflowStateKey.PREVALIDATION_DOCUMENT).findAny().orElse(null);
                     if (pvState != null && pvState.isValidated()) {
                         resetStatuses(docUnit, DigitalDocumentStatus.PRE_VALIDATED);
                     } else {
                         resetStatuses(docUnit, DigitalDocumentStatus.CHECKING);
-                    } 
+                    }
                 }
-                
+
                 break;
             case VALIDATION_NOTICES:
             default:
                 // nothing..
-                break; 
+                break;
         }
-        
+
         workflow.setEndDate(null);
     }
 
     /**
      * Retour au statut précédent pour rester cohérent...
      * !! ADMIN ONLY
-     * 
+     *
      * @param docUnit
      * @param statut
      */
     private void resetStatuses(final DocUnit docUnit, final DigitalDocumentStatus statut) {
-           
-        docUnit.getDigitalDocuments().stream()
-                                    .findFirst()
-                                    .ifPresent(dig-> {
+
+        docUnit.getDigitalDocuments().stream().findFirst().ifPresent(dig -> {
 
             dig.setStatus(statut);
             final DeliveredDocument lastDeliv = dig.getDeliveries()
-                                    .stream()
-                                    .filter(deliv -> deliv.getDelivery() != null)
-                                    .sorted(Collections.reverseOrder(Comparator.nullsLast(Comparator.comparing(DeliveredDocument::getCreatedDate))))
-                                    .findFirst().orElse(null);
+                                                   .stream()
+                                                   .filter(deliv -> deliv.getDelivery() != null)
+                                                   .sorted(Collections.reverseOrder(Comparator.nullsLast(Comparator.comparing(DeliveredDocument::getCreatedDate))))
+                                                   .findFirst()
+                                                   .orElse(null);
             if (lastDeliv != null) {
                 lastDeliv.setStatus(statut);
             }
-        });  
+        });
     }
 
     /**
      * Repositionne l'étape en fonction du statut.
-     * 
+     *
      * @param workflow
      * @param key
      * @param status
@@ -352,12 +344,12 @@ public class DocUnitWorkflowService {
         if (state != null) {
             state.setStatus(status);
             state.setEndDate(null);
-            if(!status.equals(PENDING)){
+            if (!status.equals(PENDING)) {
                 state.setStartDate(null);
             }
         }
     }
-    
+
     /**
      * Termine une instance de workflow : annule toutes les étapes et passe à clotûré
      * L'instance doit être correctement configurée
@@ -387,7 +379,7 @@ public class DocUnitWorkflowService {
      */
     @Transactional
     public DocUnitWorkflow save(final DocUnitWorkflow workflow) throws PgcnValidationException {
-        //validate(workflow);
+        // validate(workflow);
         return docUnitWorkflowRepository.save(workflow);
     }
 
@@ -433,7 +425,7 @@ public class DocUnitWorkflowService {
      */
     @Transactional
     public void deleteWorkflow(final String identifier) {
-        docUnitWorkflowRepository.delete(identifier);
+        docUnitWorkflowRepository.deleteById(identifier);
     }
 
     /**
@@ -443,7 +435,7 @@ public class DocUnitWorkflowService {
      */
     @Transactional
     public void deleteState(final String identifier) {
-        docUnitStateRepository.delete(identifier);
+        docUnitStateRepository.deleteById(identifier);
     }
 
     /**
@@ -477,10 +469,7 @@ public class DocUnitWorkflowService {
     }
 
     @Transactional(readOnly = true)
-    public List<DocUnitWorkflow> findDocUnitWorkflowsInControl(final List<String> libraries,
-                                                               final List<String> projects,
-                                                               final List<String> lots,
-                                                               final List<String> deliveries) {
+    public List<DocUnitWorkflow> findDocUnitWorkflowsInControl(final List<String> libraries, final List<String> projects, final List<String> lots, final List<String> deliveries) {
         return docUnitWorkflowRepository.findDocUnitWorkflowsInControl(libraries, projects, lots, deliveries);
     }
 
@@ -498,8 +487,7 @@ public class DocUnitWorkflowService {
                                                                                                 .setFromDate(fromDate)
                                                                                                 .setToDate(toDate));
     }
-    
-    
+
     public List<DocUnitWorkflow> findDocUnitWorkflowsForArchiveExport(final String library) {
         return docUnitWorkflowRepository.findDocUnitWorkflowsForArchiveExport(library);
     }

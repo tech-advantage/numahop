@@ -2,7 +2,6 @@ package fr.progilone.pgcn.domain.dto.document;
 
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.dto.AbstractDTO;
-import fr.progilone.pgcn.domain.dto.library.LibraryDTO;
 
 /**
  * DTO représentant une unité documentaire est ses dépendences
@@ -18,10 +17,10 @@ public class SummaryDocUnitDTO extends AbstractDTO {
     private String type;
     private Boolean archivable;
     private Boolean distributable;
-    
+
     public SummaryDocUnitDTO() {
     }
-    
+
     public SummaryDocUnitDTO(String identifier, String pgcnId, String label, String type, Boolean archivable, Boolean distributable) {
         this.identifier = identifier;
         this.pgcnId = pgcnId;
@@ -30,7 +29,7 @@ public class SummaryDocUnitDTO extends AbstractDTO {
         this.archivable = archivable;
         this.distributable = distributable;
     }
-    
+
     public String getIdentifier() {
         return identifier;
     }

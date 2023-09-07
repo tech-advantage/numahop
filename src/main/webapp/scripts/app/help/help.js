@@ -5,11 +5,11 @@
         $routeProvider.when('/help', {
             templateUrl: 'scripts/app/help/helpPages.html',
             controller: 'HelpPageCtrl',
-            title: gettext("Aide"),
+            title: gettext('Aide'),
             reloadOnSearch: false,
             access: {
-                authorizedRoles: [USER_ROLES.all]
-            }
+                authorizedRoles: [USER_ROLES.all],
+            },
         });
     });
 })();

@@ -5,47 +5,81 @@
     <div class="row">
         <h4 class="col-xs-12" translate>Champs</h4>
     </div>
-    
-    <div class="row">
-        <div class="col-xs-12 col-md-4">
-            <sem-field sem-type="select" sem-label-class="col-xs-5" sem-field-class="col-xs-7"
-                       sem-label="{{::'personnalisé' | translate}}" sem-model="mainCtrl.rule.property"
-                       sem-select-options="option.label group by option.superType for option in optionData | orderBy:['superType', 'rank'] track by option.identifier"
-                       sem-option-data="mainCtrl.config.properties"
-                       sem-onchange="mainCtrl.populateRule(value)"></sem-field>
+
+    <div class="csvMappingModel__fields">
+        <div class="csvMappingModel__fields-column">
+            <sem-field
+                class="csvMappingModel__sem-field"
+                sem-type="select"
+                sem-label-class="csvMappingModel__sem-field--label"
+                sem-field-class="csvMappingModel__sem-field--select"
+                sem-label="{{::'Personnalisé' | translate}}"
+                sem-model="mainCtrl.rule.property"
+                sem-select-options="option.label group by option.superType for option in optionData | orderBy:['superType', 'rank'] track by option.identifier"
+                sem-option-data="mainCtrl.config.properties"
+                sem-onchange="mainCtrl.populateRule(value)"
+            ></sem-field>
+
+            <sem-field
+                class="csvMappingModel__sem-field"
+                sem-type="select"
+                sem-label-class="csvMappingModel__sem-field--label"
+                sem-field-class="csvMappingModel__sem-field--select"
+                sem-label="{{::'Unité doc.' | translate}}"
+                sem-model="mainCtrl.rule.docUnitField"
+                sem-select-options="option.code as option.label for option in optionData | orderBy:'rank'"
+                sem-option-data="mainCtrl.config.docUnitFields"
+            ></sem-field>
         </div>
-        <div class="col-xs-12 col-md-4">
-            <sem-field sem-type="select" sem-label-class="col-xs-5" sem-field-class="col-xs-7"
-                       sem-label="{{::'Unité doc.' | translate}}" sem-model="mainCtrl.rule.docUnitField"
-                       sem-select-options="option.code as option.label for option in optionData | orderBy:'rank'"
-                       sem-option-data="mainCtrl.config.docUnitFields"></sem-field>
-        </div>
-        <div class="col-xs-12 col-md-4">
-            <sem-field sem-type="select" sem-label-class="col-xs-5" sem-field-class="col-xs-7"
-                       sem-label="{{::'Notice bibl.' | translate}}" sem-model="mainCtrl.rule.bibRecordField"
-                       sem-select-options="option.code as option.label for option in optionData | orderBy:'rank'"
-                       sem-option-data="mainCtrl.config.bibRecordFields"></sem-field>
+        <div class="csvMappingModel__fields-column">
+            <sem-field
+                class="csvMappingModel__sem-field"
+                sem-type="select"
+                sem-label-class="csvMappingModel__sem-field--label"
+                sem-field-class="csvMappingModel__sem-field--select"
+                sem-label="{{::'Notice bibl.' | translate}}"
+                sem-model="mainCtrl.rule.bibRecordField"
+                sem-select-options="option.code as option.label for option in optionData | orderBy:'rank'"
+                sem-option-data="mainCtrl.config.bibRecordFields"
+            ></sem-field>
+
+            <sem-field
+                class="csvMappingModel__sem-field"
+                sem-type="select"
+                sem-label-class="csvMappingModel__sem-field--label"
+                sem-field-class="csvMappingModel__sem-field--select"
+                sem-label="{{::'Constat d\'état' | translate}}"
+                sem-model="mainCtrl.rule.condReportField"
+                sem-select-options="option.label group by option.category for option in optionData | orderBy:'rank' track by option.identifier"
+                sem-option-data="mainCtrl.config.condReportFields"
+            ></sem-field>
+
+            <sem-field
+                class="csvMappingModel__sem-field"
+                sem-type="select"
+                sem-label-class="csvMappingModel__sem-field--label"
+                sem-field-class="csvMappingModel__sem-field--select"
+                sem-label="{{::'Métadonnée' | translate}}"
+                sem-model="mainCtrl.rule.metadataField"
+                sem-select-options="option.label for option in optionData track by option.identifier"
+                sem-option-data="mainCtrl.config.metadataFields"
+            ></sem-field>
         </div>
     </div>
-    
+
     <div class="row">
-            <h4 class="col-xs-12">
-                {{ ::'Règle' | translate }}
-            </h4>
+        <h4 class="col-xs-12">{{ ::'Règle' | translate }}</h4>
     </div>
-        
+
     <div class="row">
-            <div class="col-xs-12">
-                <div class="row vertical-align">
-                    <div class="model-container col-xs-12 textarea100 code">
-                        <textarea class="form-control" placeholder="{{::'Règle de mapping' | translate}}"
-                                  ng-model="mainCtrl.rule.csvField" ng-trim="false">
-                        </textarea>
-                    </div>
+        <div class="col-xs-12">
+            <div class="row vertical-align">
+                <div class="model-container col-xs-12 textarea100 code">
+                    <textarea class="form-control" placeholder="{{::'Règle de mapping' | translate}}" ng-model="mainCtrl.rule.csvField" ng-trim="false"> </textarea>
                 </div>
             </div>
         </div>
-    
+    </div>
 </div>
 <div class="modal-footer">
     <button type="button" class="btn btn-sem4" ng-click="mainCtrl.cancel()" translate>Annuler</button>

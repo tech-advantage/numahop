@@ -2,36 +2,7 @@ package fr.progilone.pgcn.web.rest.document;
 
 import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.*;
 
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.codahale.metrics.annotation.Timed;
-
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.dto.document.DocUnitDTO;
 import fr.progilone.pgcn.domain.dto.document.DocUnitDeletedReportDTO;
@@ -55,6 +26,30 @@ import fr.progilone.pgcn.service.es.EsDocUnitService;
 import fr.progilone.pgcn.web.rest.AbstractRestController;
 import fr.progilone.pgcn.web.util.AccessHelper;
 import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/api/rest/docunit")
@@ -88,7 +83,6 @@ public class DocUnitController extends AbstractRestController {
         this.docCheckHistoryService = docCheckHistoryService;
     }
 
-
     /**
      * Reprise d'historique des controles.
      *
@@ -100,14 +94,11 @@ public class DocUnitController extends AbstractRestController {
     @RequestMapping(value = "/initHistory", method = RequestMethod.GET)
     @Timed
     @RolesAllowed(DOC_UNIT_HAB3)
-    public ResponseEntity<?> initDocCheckHistory(final HttpServletRequest request,
-                                                 @RequestParam(name = "library") final String libraryId) throws PgcnException {
-
+    public ResponseEntity<?> initDocCheckHistory(final HttpServletRequest request, @RequestParam(name = "library") final String libraryId) throws PgcnException {
 
         docCheckHistoryService.retrieveCheckHistory(libraryId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
 
     @RequestMapping(method = RequestMethod.POST)
     @Timed
@@ -219,43 +210,30 @@ public class DocUnitController extends AbstractRestController {
     @RolesAllowed({DOC_UNIT_HAB0})
     public ResponseEntity<Page<SimpleDocUnitDTO>> search(final HttpServletRequest request,
                                                          @RequestParam(value = "search", required = false) final String search,
-                                                         @RequestParam(value = "hasDigitalDocuments", defaultValue = "false", required = false)
-                                                         final boolean hasDigitalDocuments,
-                                                         @RequestParam(value = "active", defaultValue = "true", required = false)
-                                                         final boolean active,
-                                                         @RequestParam(value = "archived", defaultValue = "false", required = false)
-                                                         final boolean archived,
-                                                         @RequestParam(value = "nonArchived", defaultValue = "false", required = false)
-                                                         final boolean nonArchived,
-                                                         @RequestParam(value = "archivable", defaultValue = "false", required = false)
-                                                         final boolean archivable,
-                                                         @RequestParam(value = "nonArchivable", defaultValue = "false", required = false)
-                                                         final boolean nonArchivable,
-                                                         @RequestParam(value = "distributed", defaultValue = "false", required = false)
-                                                         final boolean distributed,
-                                                         @RequestParam(value = "nonDistributed", defaultValue = "false", required = false)
-                                                         final boolean nonDistributed,
-                                                         @RequestParam(value = "distributable", defaultValue = "false", required = false)
-                                                         final boolean distributable,
-                                                         @RequestParam(value = "nonDistributable", defaultValue = "false", required = false)
-                                                         final boolean nonDistributable,
+                                                         @RequestParam(value = "hasDigitalDocuments", defaultValue = "false", required = false) final boolean hasDigitalDocuments,
+                                                         @RequestParam(value = "active", defaultValue = "true", required = false) final boolean active,
+                                                         @RequestParam(value = "archived", defaultValue = "false", required = false) final boolean archived,
+                                                         @RequestParam(value = "nonArchived", defaultValue = "false", required = false) final boolean nonArchived,
+                                                         @RequestParam(value = "archivable", defaultValue = "false", required = false) final boolean archivable,
+                                                         @RequestParam(value = "nonArchivable", defaultValue = "false", required = false) final boolean nonArchivable,
+                                                         @RequestParam(value = "distributed", defaultValue = "false", required = false) final boolean distributed,
+                                                         @RequestParam(value = "nonDistributed", defaultValue = "false", required = false) final boolean nonDistributed,
+                                                         @RequestParam(value = "distributable", defaultValue = "false", required = false) final boolean distributable,
+                                                         @RequestParam(value = "nonDistributable", defaultValue = "false", required = false) final boolean nonDistributable,
                                                          @RequestParam(value = "libraries", required = false) final List<String> libraries,
                                                          @RequestParam(value = "projects", required = false) final List<String> projects,
                                                          @RequestParam(value = "lots", required = false) final List<String> lots,
                                                          @RequestParam(value = "statuses", required = false) final List<String> statuses,
-                                                         @DateTimeFormat(pattern = "yyyy-MM-dd")
-                                                         @RequestParam(value = "lastModifiedDateFrom", required = false)
-                                                         final LocalDate lastModifiedDateFrom,
-                                                         @DateTimeFormat(pattern = "yyyy-MM-dd")
-                                                         @RequestParam(value = "lastModifiedDateTo", required = false)
-                                                         final LocalDate lastModifiedDateTo,
-                                                         @DateTimeFormat(pattern = "yyyy-MM-dd")
-                                                         @RequestParam(value = "createdDateFrom", required = false) final LocalDate createdDateFrom,
-                                                         @DateTimeFormat(pattern = "yyyy-MM-dd")
-                                                         @RequestParam(value = "createdDateTo", required = false) final LocalDate createdDateTo,
+                                                         @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "lastModifiedDateFrom",
+                                                                                                               required = false) final LocalDate lastModifiedDateFrom,
+                                                         @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "lastModifiedDateTo",
+                                                                                                               required = false) final LocalDate lastModifiedDateTo,
+                                                         @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "createdDateFrom",
+                                                                                                               required = false) final LocalDate createdDateFrom,
+                                                         @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "createdDateTo",
+                                                                                                               required = false) final LocalDate createdDateTo,
                                                          @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
-                                                         @RequestParam(value = "size", required = false, defaultValue = "" + Integer.MAX_VALUE)
-                                                         final Integer size,
+                                                         @RequestParam(value = "size", required = false, defaultValue = "" + Integer.MAX_VALUE) final Integer size,
                                                          @RequestParam(value = "sorts", required = false) final List<String> sorts) {
         final List<String> filteredLibraries = libraryAccesssHelper.getLibraryFilter(request, libraries);
 
@@ -283,17 +261,19 @@ public class DocUnitController extends AbstractRestController {
                                                             sorts), HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.GET, params = {"searchAllForProject", "project"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.GET,
+                    params = {"searchAllForProject",
+                              "project"},
+                    produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed({DOC_UNIT_HAB0})
     public ResponseEntity<Page<SummaryDocUnitWithLotDTO>> searchAllForProject(final HttpServletRequest request,
-                                                         @RequestParam(value = "project", required = false) final String projectId,
-                                                         @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
-                                                         @RequestParam(value = "size", required = false, defaultValue = "" + Integer.MAX_VALUE)
-                                                         final Integer size) {
-        return new ResponseEntity<>(uiDocUnitService.searchAllForProject(projectId,
-                                                            page,
-                                                            size), HttpStatus.OK);
+                                                                              @RequestParam(value = "project", required = false) final String projectId,
+                                                                              @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
+                                                                              @RequestParam(value = "size",
+                                                                                            required = false,
+                                                                                            defaultValue = "" + Integer.MAX_VALUE) final Integer size) {
+        return new ResponseEntity<>(uiDocUnitService.searchAllForProject(projectId, page, size), HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST, params = {"searchAsList"}, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -301,11 +281,8 @@ public class DocUnitController extends AbstractRestController {
     @RolesAllowed({DOC_UNIT_HAB0})
     public ResponseEntity<Page<SimpleListDocUnitDTO>> searchAsList(final HttpServletRequest request,
                                                                    @RequestBody final SearchRequest requestParams,
-                                                                   @RequestParam(value = "page", required = false, defaultValue = "0")
-                                                                   final Integer page,
-                                                                   @RequestParam(value = "size",
-                                                                                 required = false,
-                                                                                 defaultValue = "" + Integer.MAX_VALUE) final Integer size,
+                                                                   @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
+                                                                   @RequestParam(value = "size", required = false, defaultValue = "" + Integer.MAX_VALUE) final Integer size,
                                                                    @RequestParam(value = "sorts", required = false) final List<String> sorts) {
         final List<String> filteredLibraries = libraryAccesssHelper.getLibraryFilter(request, requestParams.getLibraries());
         return new ResponseEntity<>(uiDocUnitService.searchAsList(requestParams.getSearch(),
@@ -334,12 +311,10 @@ public class DocUnitController extends AbstractRestController {
                                                                   sorts), HttpStatus.OK);
     }
 
-
     @RequestMapping(method = RequestMethod.POST, params = {"searchAsMinList"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed({DOC_UNIT_HAB0})
-    public ResponseEntity<List<MinimalListDocUnitDTO>> searchAsMinList(final HttpServletRequest request,
-                                                                   @RequestBody final SearchRequest requestParams) {
+    public ResponseEntity<List<MinimalListDocUnitDTO>> searchAsMinList(final HttpServletRequest request, @RequestBody final SearchRequest requestParams) {
 
         return new ResponseEntity<>(uiDocUnitService.searchAsMinList(requestParams.getSearch(),
                                                                      requestParams.getLibraries(),
@@ -401,13 +376,11 @@ public class DocUnitController extends AbstractRestController {
         uiDocUnitService.setProjectAndLot(docs, project, lot, train);
     }
 
-
     @RequestMapping(method = RequestMethod.POST, params = {"setTrain"})
     @ResponseStatus(HttpStatus.OK)
     @Timed
     @RolesAllowed(DOC_UNIT_HAB2)
-    public ResponseEntity<?> setTrain(@RequestBody final List<String> docs,
-                                      @RequestParam(name = "train") final String train) {
+    public ResponseEntity<?> setTrain(@RequestBody final List<String> docs, @RequestParam(name = "train") final String train) {
 
         // droits d'accès à l'ud
         final Collection<DocUnit> filteredDocUnits = accessHelper.filterDocUnits(docs);
@@ -417,7 +390,6 @@ public class DocUnitController extends AbstractRestController {
         uiDocUnitService.setTrain(docs, train);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
 
     /**
      * Retrait d'un {@link DocUnit} d'un {@link Project}
@@ -525,8 +497,7 @@ public class DocUnitController extends AbstractRestController {
     @RequestMapping(method = RequestMethod.POST, params = {"removechild"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(DOC_UNIT_HAB2)
-    public ResponseEntity<DocUnitDTO> removeChildren(@RequestParam(name = "parent") final String parentId,
-                                                     @RequestParam(name = "child") final String childId) {
+    public ResponseEntity<DocUnitDTO> removeChildren(@RequestParam(name = "parent") final String parentId, @RequestParam(name = "child") final String childId) {
         if (!accessHelper.checkDocUnit(parentId)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
@@ -576,8 +547,7 @@ public class DocUnitController extends AbstractRestController {
     @RequestMapping(method = RequestMethod.POST, params = {"removesibling"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(DOC_UNIT_HAB2)
-    public ResponseEntity<DocUnitDTO> removeSibling(@RequestParam(name = "siblingid") final String id,
-                                                    @RequestParam(name = "removesibling") final String removeId) {
+    public ResponseEntity<DocUnitDTO> removeSibling(@RequestParam(name = "siblingid") final String id, @RequestParam(name = "removesibling") final String removeId) {
         if (!accessHelper.checkDocUnit(id)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
@@ -624,8 +594,8 @@ public class DocUnitController extends AbstractRestController {
     @Timed
     @RolesAllowed(DOC_UNIT_HAB4)
     public ResponseEntity<?> massExportFtp(final HttpServletResponse response,
-                           @RequestParam(name = "docs") final List<String> docs,
-                           @RequestParam(name = "types", defaultValue = "METS,VIEW") final List<String> exportTypes) throws PgcnTechnicalException {
+                                           @RequestParam(name = "docs") final List<String> docs,
+                                           @RequestParam(name = "types", defaultValue = "METS,VIEW") final List<String> exportTypes) throws PgcnTechnicalException {
         // droits d'accès à l'ud
         final Collection<DocUnit> filteredDocUnits = accessHelper.filterDocUnits(docs);
         if (filteredDocUnits.isEmpty()) {
@@ -696,6 +666,7 @@ public class DocUnitController extends AbstractRestController {
     }
 
     private static final class SearchRequest {
+
         private String search;
         private boolean hasDigitalDocuments;
         private boolean active;

@@ -1,65 +1,52 @@
 package fr.progilone.pgcn.repository.lot;
 
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import fr.progilone.pgcn.domain.delivery.QDeliveredDocument;
+import fr.progilone.pgcn.domain.document.QDigitalDocument;
+import fr.progilone.pgcn.domain.document.QDocUnit;
+import fr.progilone.pgcn.domain.dto.lot.QSimpleLotDTO;
+import fr.progilone.pgcn.domain.dto.lot.SimpleLotDTO;
+import fr.progilone.pgcn.domain.library.QLibrary;
+import fr.progilone.pgcn.domain.lot.Lot;
+import fr.progilone.pgcn.domain.lot.QLot;
+import fr.progilone.pgcn.domain.project.QProject;
+import fr.progilone.pgcn.domain.user.QUser;
+import fr.progilone.pgcn.repository.lot.helper.LotSearchBuilder;
+import fr.progilone.pgcn.repository.util.QueryDSLBuilderUtils;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
-
-import fr.progilone.pgcn.domain.user.QUser;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import com.mysema.query.BooleanBuilder;
-import com.mysema.query.Tuple;
-import com.mysema.query.jpa.JPASubQuery;
-import com.mysema.query.jpa.JPQLQuery;
-import com.mysema.query.jpa.impl.JPAQuery;
-import com.mysema.query.types.Order;
-import com.mysema.query.types.OrderSpecifier;
-import com.mysema.query.types.expr.BooleanExpression;
-
-import fr.progilone.pgcn.domain.delivery.QDeliveredDocument;
-import fr.progilone.pgcn.domain.document.QDigitalDocument;
-import fr.progilone.pgcn.domain.document.QDocUnit;
-import fr.progilone.pgcn.domain.dto.lot.SimpleLotDTO;
-import fr.progilone.pgcn.domain.library.QLibrary;
-import fr.progilone.pgcn.domain.lot.Lot;
-import fr.progilone.pgcn.domain.lot.QLot;
-import fr.progilone.pgcn.domain.project.QProject;
-import fr.progilone.pgcn.repository.lot.helper.LotSearchBuilder;
-import fr.progilone.pgcn.repository.util.QueryDSLBuilderUtils;
-
 public class LotRepositoryImpl implements LotRepositoryCustom {
 
-    @PersistenceContext
-    private EntityManager em;
+    private final JPAQueryFactory queryFactory;
+
+    public LotRepositoryImpl(final JPAQueryFactory queryFactory) {
+        this.queryFactory = queryFactory;
+    }
 
     /**
      * récupère les lots attachés aux projets.
-     *
-     * @param projectIds
-     * @return
      */
     @Override
-    public List<SimpleLotDTO> findAllIdentifiersInProjectIds(final Iterable<String> projectIds) {
-
-        final String q = "select l.identifier, l.label from Lot l inner join l.project p where p.identifier in :projectIds ";
-        final TypedQuery<Object[]> query = em.createQuery(q, Object[].class); // NOSONAR : Non il n'y a pas de possiblité d'injection SQL...
-        query.setParameter("projectIds", projectIds);
-
-        final List<Object[]> queryResult = query.getResultList();
-        final SimpleLotDTO.Builder builder = new SimpleLotDTO.Builder();
-
-        return queryResult.stream()
-                          .map(result -> builder.reinit().setIdentifier((String) result[0]).setLabel((String) result[1]).build())
-                          .collect(Collectors.toList());
+    public List<SimpleLotDTO> findAllIdentifiersInProjectIds(final Collection<String> projectIds) {
+        final QLot lot = QLot.lot;
+        final QProject project = QProject.project;
+        return queryFactory.select(new QSimpleLotDTO(lot.identifier, lot.label)).from(lot).innerJoin(lot.project, project).where(project.identifier.in(projectIds)).fetch();
     }
 
     @Override
@@ -80,17 +67,17 @@ public class LotRepositoryImpl implements LotRepositoryCustom {
         }
 
         // query
-        return new JPAQuery(em).from(qLot)
-                               .leftJoin(qLot.project, qProject)
-                               .leftJoin(qProject.library)
-                               .leftJoin(qProject.associatedLibraries, qAssociatedLibrary)
-                               .leftJoin(qProject.associatedUsers, qAssociatedUser)
-                               .where(builder)
-                               .groupBy(qLot.status)
-                               .list(qLot.status, qLot.identifier.countDistinct())
-                               .stream()
-                               .map(Tuple::toArray)
-                               .collect(Collectors.toList());
+        return queryFactory.select(qLot.status, qLot.identifier.countDistinct())
+                           .from(qLot)
+                           .leftJoin(qLot.project, qProject)
+                           .leftJoin(qProject.library)
+                           .leftJoin(qProject.associatedLibraries, qAssociatedLibrary)
+                           .leftJoin(qProject.associatedUsers, qAssociatedUser)
+                           .where(builder)
+                           .groupBy(qLot.status)
+                           .stream()
+                           .map(Tuple::toArray)
+                           .collect(Collectors.toList());
     }
 
     @Override
@@ -150,49 +137,45 @@ public class LotRepositoryImpl implements LotRepositoryCustom {
             searchBuilder.getLastDlvFrom().ifPresent(fromDate -> subFilter.and(qDeliveredDocument.deliveryDate.goe(fromDate)));
             searchBuilder.getLastDlvTo().ifPresent(toDate -> subFilter.and(qDeliveredDocument.deliveryDate.loe(toDate)));
 
-            builder.and(new JPASubQuery().from(qDeliveredDocument)
-                                         .innerJoin(qDeliveredDocument.digitalDocument, qDigitalDocument)
-                                         .innerJoin(qDigitalDocument.docUnit, qDocUnit)
-                                         .where(subFilter)
-                                         .exists());
+            builder.and(JPAExpressions.select(qDeliveredDocument)
+                                      .from(qDeliveredDocument)
+                                      .innerJoin(qDeliveredDocument.digitalDocument, qDigitalDocument)
+                                      .innerJoin(qDigitalDocument.docUnit, qDocUnit)
+                                      .where(subFilter)
+                                      .exists());
         }
         // identifiers
         searchBuilder.getIdentifiers().ifPresent(identifiers -> {
             builder.and(qLot.identifier.in(identifiers));
         });
 
-        JPQLQuery baseQuery =
-            new JPAQuery(em).from(qLot)
-                            .leftJoin(qLot.project, qProject)
-                            .leftJoin(qProject.associatedLibraries, qAssociatedLibrary)
-                            .leftJoin(qProject.associatedUsers, qAssociatedUser)
-                            .leftJoin(qProject.library)
-                            .where(builder.getValue())
-                            .distinct();
+        JPAQuery<Lot> baseQuery = queryFactory.selectDistinct(qLot)
+                                              .from(qLot)
+                                              .leftJoin(qLot.project, qProject)
+                                              .leftJoin(qProject.associatedLibraries, qAssociatedLibrary)
+                                              .leftJoin(qProject.associatedUsers, qAssociatedUser)
+                                              .leftJoin(qProject.library)
+                                              .where(builder.getValue());
 
         if (pageable != null) {
-            final long total = baseQuery.count();
-            baseQuery = baseQuery.offset(pageable.getOffset())
-                                 .limit(pageable.getPageSize());
-            if(pageable.getSort() != null){
+            final long total = baseQuery.clone().select(qLot.countDistinct()).fetchOne();
+            baseQuery = baseQuery.offset(pageable.getOffset()).limit(pageable.getPageSize());
+            if (pageable.getSort() != null) {
                 applySorting(pageable.getSort(), baseQuery, qLot, qProject);
             } else {
                 baseQuery.orderBy(qLibrary.name.asc(), qProject.name.asc(), qLot.label.asc());
             }
 
-            return new PageImpl<>(baseQuery.list(qLot), pageable, total);
+            return new PageImpl<>(baseQuery.fetch(), pageable, total);
 
         } else {
             baseQuery.orderBy(qLibrary.name.asc(), qProject.name.asc(), qLot.label.asc());
-            return new PageImpl<>(baseQuery.list(qLot));
+            return new PageImpl<>(baseQuery.fetch());
         }
     }
 
     @Override
-    public List<Lot> findLotsForWidget(final LocalDate fromDate,
-                                       final List<String> libraries,
-                                       final List<String> projects,
-                                       final List<Lot.LotStatus> statuses) {
+    public List<Lot> findLotsForWidget(final LocalDate fromDate, final List<String> libraries, final List<String> projects, final List<Lot.LotStatus> statuses) {
 
         final QLot qLot = QLot.lot;
         final QProject qProject = QProject.project;
@@ -212,44 +195,47 @@ public class LotRepositoryImpl implements LotRepositoryCustom {
             builder.and(qLot.createdDate.after(fromDate.atStartOfDay()));
         }
 
-        // Requête
-        return new JPAQuery(em).from(qLot).leftJoin(qLot.project, qProject).leftJoin(qProject.library, qLibrary).where(builder.getValue()).list(qLot);
+        return queryFactory.select(qLot).from(qLot).leftJoin(qLot.project, qProject).leftJoin(qProject.library, qLibrary).where(builder).fetch();
     }
 
     /**
      * Gère le tri
      *
-     * @param sort Sort
-     * @param query JPQLQuery
-     * @param lot QLot
+     * @param sort
+     *            Sort
+     * @param query
+     *            JPQLQuery
+     * @param lot
+     *            QLot
      * @return JPQLQuery
      */
-    protected JPQLQuery applySorting(final Sort sort, final JPQLQuery query, final QLot lot, final QProject project) {
+    protected JPAQuery<Lot> applySorting(final Sort sort, final JPAQuery<Lot> query, final QLot lot, final QProject project) {
 
-        final List<OrderSpecifier> orders = new ArrayList<>();
+        final List<OrderSpecifier<?>> orders = new ArrayList<>();
         if (sort == null) {
             return query;
         }
 
         for (final Sort.Order order : sort) {
-            final Order qOrder = order.isAscending() ? Order.ASC : Order.DESC;
+            final Order qOrder = order.isAscending() ? Order.ASC
+                                                     : Order.DESC;
 
             switch (order.getProperty()) {
                 case "label":
-                    orders.add(new OrderSpecifier(qOrder, lot.label));
+                    orders.add(new OrderSpecifier<>(qOrder, lot.label));
                     break;
                 case "project.name":
-                    orders.add(new OrderSpecifier(qOrder, project.name));
+                    orders.add(new OrderSpecifier<>(qOrder, project.name));
                     break;
                 case "status":
-                    orders.add(new OrderSpecifier(qOrder, lot.status));
+                    orders.add(new OrderSpecifier<>(qOrder, lot.status));
                     break;
                 case "type":
-                    orders.add(new OrderSpecifier(qOrder, lot.type));
+                    orders.add(new OrderSpecifier<>(qOrder, lot.type));
                     break;
             }
         }
-        OrderSpecifier[] orderArray = new OrderSpecifier[orders.size()];
+        OrderSpecifier<?>[] orderArray = new OrderSpecifier[orders.size()];
         orderArray = orders.toArray(orderArray);
         return query.orderBy(orderArray);
     }

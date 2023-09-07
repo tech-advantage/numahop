@@ -1,9 +1,8 @@
 package fr.progilone.pgcn.domain.dto.document;
 
+import com.google.common.base.MoreObjects;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.common.base.MoreObjects;
 
 /**
  * DTO reprenant les données Dublin Core d'une notice bibliographique,
@@ -28,7 +27,7 @@ public class BibliographicRecordDcDTO {
     private final List<String> relation = new ArrayList<>();
     private final List<String> coverage = new ArrayList<>();
     private final List<String> rights = new ArrayList<>();
-    
+
     // custom properties
     private List<DocPropertyDTO> customProperties;
 
@@ -91,7 +90,6 @@ public class BibliographicRecordDcDTO {
     public List<String> getRights() {
         return rights;
     }
-    
 
     public List<DocPropertyDTO> getCustomProperties() {
         return customProperties;

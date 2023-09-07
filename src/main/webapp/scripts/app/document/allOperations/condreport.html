@@ -3,8 +3,7 @@
         <!-- Création d'un constat -->
         <div class="row" ng-if="repCtrl.loaded && !repCtrl.report.identifier">
             <div class="col-xs-12">
-                <button type="button" class="btn btn-sem2 btn-xs" ng-click="repCtrl.newReport()" sem-roles-allowed="COND_REPORT_HAB1"
-                        ng-disabled="repCtrl.isUserPresta" >
+                <button type="button" class="btn btn-sem2 btn-xs" ng-click="repCtrl.newReport()" sem-roles-allowed="COND_REPORT_HAB1" ng-disabled="repCtrl.isUserPresta">
                     <span class="glyphicon-halflings glyphicon-plus"></span> {{::'Créer le constat d\'état' | translate}}
                 </button>
             </div>
@@ -17,13 +16,18 @@
                     <div class="panel panel-cataloging-sec">
                         <div class="panel-heading">
                             <a class="pull-left" ng-click="repCtrl.reportAcc=!repCtrl.reportAcc" data-toggle="collapse" data-target="#report-collapse">
-                                <span class="glyphicon-halflings"
-                                      ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[repCtrl.reportAcc]">&nbsp;</span>
+                                <span class="glyphicon-halflings" ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[repCtrl.reportAcc]">&nbsp;</span>
                             </a>
                             <div class="pull-right">
-                                <button type="button" class="btn btn-sem3 btn-xs" uib-tooltip="{{::'Modifier' | translate}}"
-                                        ng-click="repCtrl.editReportForm()" ng-show="!reportForm.$visible"
-                                        sem-roles-allowed="COND_REPORT_HAB2">
+                                <button
+                                    type="button"
+                                    class="btn btn-sem3 btn-xs"
+                                    uib-tooltip="{{::'Modifier' | translate}}"
+                                    tooltip-append-to-body="true"
+                                    ng-click="repCtrl.editReportForm()"
+                                    ng-show="!reportForm.$visible"
+                                    sem-roles-allowed="COND_REPORT_HAB2"
+                                >
                                     <span class="glyphicon-regular edit"></span>
                                 </button>
                             </div>
@@ -38,12 +42,24 @@
                                                 <h5><b translate>Responsable bibliothèque</b></h5>
                                             </div>
                                         </div>
-                                        <numa-editable-field title="{{::'Nom' | translate}}" model="repCtrl.report.libRespName"
-                                                            numa-readonly="repCtrl.formRO || repCtrl.isUserPresta" form="reportForm"></numa-editable-field>
-                                        <numa-editable-field title="{{::'Tél' | translate}}" model="repCtrl.report.libRespPhone"
-                                                            numa-readonly="repCtrl.formRO || repCtrl.isUserPresta" form="reportForm"></numa-editable-field>
-                                        <numa-editable-field title="{{::'Email' | translate}}" model="repCtrl.report.libRespEmail"
-                                                            numa-readonly="repCtrl.formRO || repCtrl.isUserPresta" form="reportForm"></numa-editable-field>
+                                        <numa-editable-field
+                                            title="{{::'Nom' | translate}}"
+                                            model="repCtrl.report.libRespName"
+                                            numa-readonly="repCtrl.formRO || repCtrl.isUserPresta"
+                                            form="reportForm"
+                                        ></numa-editable-field>
+                                        <numa-editable-field
+                                            title="{{::'Tél' | translate}}"
+                                            model="repCtrl.report.libRespPhone"
+                                            numa-readonly="repCtrl.formRO || repCtrl.isUserPresta"
+                                            form="reportForm"
+                                        ></numa-editable-field>
+                                        <numa-editable-field
+                                            title="{{::'Email' | translate}}"
+                                            model="repCtrl.report.libRespEmail"
+                                            numa-readonly="repCtrl.formRO || repCtrl.isUserPresta"
+                                            form="reportForm"
+                                        ></numa-editable-field>
                                     </div>
                                     <div class="col-xs-12 col-sm-6 col-lg-3">
                                         <div class="row">
@@ -51,12 +67,24 @@
                                                 <h5><b translate>Chef d'équipe conservation</b></h5>
                                             </div>
                                         </div>
-                                        <numa-editable-field title="{{::'Nom' | translate}}" model="repCtrl.report.leaderName"
-                                                            numa-readonly="repCtrl.formRO || repCtrl.isUserPresta"  form="reportForm"></numa-editable-field>
-                                        <numa-editable-field title="{{::'Tél' | translate}}" model="repCtrl.report.leaderPhone"
-                                                            numa-readonly="repCtrl.formRO || repCtrl.isUserPresta"  form="reportForm"></numa-editable-field>
-                                        <numa-editable-field title="{{::'Email' | translate}}" model="repCtrl.report.leaderEmail"
-                                                            numa-readonly="repCtrl.formRO || repCtrl.isUserPresta"  form="reportForm"></numa-editable-field>
+                                        <numa-editable-field
+                                            title="{{::'Nom' | translate}}"
+                                            model="repCtrl.report.leaderName"
+                                            numa-readonly="repCtrl.formRO || repCtrl.isUserPresta"
+                                            form="reportForm"
+                                        ></numa-editable-field>
+                                        <numa-editable-field
+                                            title="{{::'Tél' | translate}}"
+                                            model="repCtrl.report.leaderPhone"
+                                            numa-readonly="repCtrl.formRO || repCtrl.isUserPresta"
+                                            form="reportForm"
+                                        ></numa-editable-field>
+                                        <numa-editable-field
+                                            title="{{::'Email' | translate}}"
+                                            model="repCtrl.report.leaderEmail"
+                                            numa-readonly="repCtrl.formRO || repCtrl.isUserPresta"
+                                            form="reportForm"
+                                        ></numa-editable-field>
                                     </div>
                                     <div class="col-xs-12 col-sm-6 col-lg-3">
                                         <div class="row">
@@ -64,12 +92,14 @@
                                                 <h5><b translate>Prestataire de numérisation</b></h5>
                                             </div>
                                         </div>
-                                        <numa-editable-field title="{{::'Nom' | translate}}" model="repCtrl.report.providerName"
-                                                            numa-readonly="repCtrl.formRO || repCtrl.isUserPresta"  form="reportForm"></numa-editable-field>
-                                        <numa-editable-field title="{{::'Tél' | translate}}" model="repCtrl.report.providerPhone"
-                                                            numa-readonly="repCtrl.formRO"  form="reportForm"></numa-editable-field>
-                                        <numa-editable-field title="{{::'Email' | translate}}" model="repCtrl.report.providerEmail"
-                                                            numa-readonly="repCtrl.formRO"  form="reportForm"></numa-editable-field>
+                                        <numa-editable-field
+                                            title="{{::'Nom' | translate}}"
+                                            model="repCtrl.report.providerName"
+                                            numa-readonly="repCtrl.formRO || repCtrl.isUserPresta"
+                                            form="reportForm"
+                                        ></numa-editable-field>
+                                        <numa-editable-field title="{{::'Tél' | translate}}" model="repCtrl.report.providerPhone" numa-readonly="repCtrl.formRO" form="reportForm"></numa-editable-field>
+                                        <numa-editable-field title="{{::'Email' | translate}}" model="repCtrl.report.providerEmail" numa-readonly="repCtrl.formRO" form="reportForm"></numa-editable-field>
                                     </div>
                                     <div class="col-xs-12 col-sm-6 col-lg-3">
                                         <div class="row">
@@ -77,12 +107,9 @@
                                                 <h5><b translate>Contact prestataire</b></h5>
                                             </div>
                                         </div>
-                                        <numa-editable-field title="{{::'Nom' | translate}}" model="repCtrl.report.providerContactName"
-                                                            numa-readonly="repCtrl.formRO"  form="reportForm"></numa-editable-field>
-                                        <numa-editable-field title="{{::'Tél' | translate}}" model="repCtrl.report.providerContactPhone"
-                                                            numa-readonly="repCtrl.formRO"  form="reportForm"></numa-editable-field>
-                                        <numa-editable-field title="{{::'Email' | translate}}" model="repCtrl.report.providerContactEmail"
-                                                            numa-readonly="repCtrl.formRO"  form="reportForm"></numa-editable-field>
+                                        <numa-editable-field title="{{::'Nom' | translate}}" model="repCtrl.report.providerContactName" numa-readonly="repCtrl.formRO" form="reportForm"></numa-editable-field>
+                                        <numa-editable-field title="{{::'Tél' | translate}}" model="repCtrl.report.providerContactPhone" numa-readonly="repCtrl.formRO" form="reportForm"></numa-editable-field>
+                                        <numa-editable-field title="{{::'Email' | translate}}" model="repCtrl.report.providerContactEmail" numa-readonly="repCtrl.formRO" form="reportForm"></numa-editable-field>
                                     </div>
                                 </div>
                             </div>
@@ -97,9 +124,7 @@
                             <button type="button" class="btn btn-sem4" ng-disabled="reportForm.$waiting" ng-click="reportForm.$cancel()">
                                 <span class="glyphicon-regular unshare"></span> {{::'Annuler' | translate}}
                             </button>
-                            <button type="submit" class="btn btn-sem2" ng-disabled="repCtrl.formRO">
-                                <span class="glyphicon-regular floppy-save"></span> {{::'Enregistrer' | translate}}
-                            </button>
+                            <button type="submit" class="btn btn-sem2" ng-disabled="repCtrl.formRO"><span class="glyphicon-regular floppy-save"></span> {{::'Enregistrer' | translate}}</button>
                         </div>
                     </div>
                 </div>
@@ -107,16 +132,14 @@
         </form>
 
         <!-- Constats d'état: détail des différents constats -->
-        <form editable-form name="detailForm" onaftersave="repCtrl.saveDetail()" ng-hide="reportForm.$visible" >
-            <div class="row" ng-if="repCtrl.loaded && repCtrl.report.identifier" >
-
+        <form editable-form name="detailForm" onaftersave="repCtrl.saveDetail()" ng-hide="reportForm.$visible">
+            <div class="row" ng-if="repCtrl.loaded && repCtrl.report.identifier">
                 <!-- Liste des états -->
                 <div class="col-xs-12 col-sm-6 col-lg-3 padding-b10" ng-init="accordion_list=false">
                     <div class="panel panel-cataloging-sec">
                         <div class="panel-heading">
                             <a class="pull-left" ng-click="accordion_list=!accordion_list" data-toggle="collapse" data-target="#detail-list-collapse">
-                                <span class="glyphicon-halflings"
-                                      ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordion_list]">&nbsp;</span>
+                                <span class="glyphicon-halflings" ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordion_list]">&nbsp;</span>
                             </a>
                             <span class="badge badge-info pull-right" style="padding: 3px 7px; min-width: 10px">{{ repCtrl.details.length }}</span>
                             <strong translate>Liste des états</strong>
@@ -125,14 +148,9 @@
                             <div class="table-responsive collapse" id="detail-list-collapse">
                                 <table class="table table-striped table-hover margin-b5">
                                     <tbody>
-                                        <tr ng-repeat="detail in repCtrl.details | orderBy:'position'" ng-click="repCtrl.selectDetail(detail)"
-                                            ng-class="{'sid-fourth': repCtrl.isDetailSelected(detail)}">
-                                            <td class="text-left nowrap">
-                                                {{ ::detail.position }}. {{ ::repCtrl.types[detail.type].label }}
-                                            </td>
-                                            <td class="text-left nowrap">
-                                                {{ ::detail.date | moment:"L"}}
-                                            </td>
+                                        <tr ng-repeat="detail in repCtrl.details | orderBy:'position'" ng-click="repCtrl.selectDetail(detail)" ng-class="{'sid-fourth': repCtrl.isDetailSelected(detail)}">
+                                            <td class="text-left nowrap">{{ ::detail.position }}. {{ ::repCtrl.types[detail.type].label }}</td>
+                                            <td class="text-left nowrap">{{ ::detail.date | moment:"L"}}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -142,25 +160,32 @@
                 </div>
 
                 <!-- État initial -->
-                <div class="col-xs-12 col-sm-6 col-lg-3 padding-b10"
-                     ng-init="detail = repCtrl.details[0]; accordion_init=false"
-                     ng-if="repCtrl.details.length > 0 && repCtrl.currentDetail.identifier !== repCtrl.details[0].identifier">
-
+                <div
+                    class="col-xs-12 col-sm-6 col-lg-3 padding-b10"
+                    ng-init="detail = repCtrl.details[0]; accordion_init=false"
+                    ng-if="repCtrl.details.length > 0 && repCtrl.currentDetail.identifier !== repCtrl.details[0].identifier"
+                >
                     <div class="panel" ng-class="{true: 'panel-loan', false: 'panel-cataloging-sec'}[repCtrl.isInitDetailSelected()]">
                         <div class="panel-heading">
                             <a class="pull-left" ng-click="accordion_init=!accordion_init" data-toggle="collapse" data-target="#detail-0-collapse">
-                                <span class="glyphicon-halflings"
-                                      ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordion_init]">&nbsp;</span>
+                                <span class="glyphicon-halflings" ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordion_init]">&nbsp;</span>
                             </a>
                             <div class="pull-right">
-                                <button type="button" class="btn btn-sem3 btn-xs" uib-tooltip="{{::'Modifier' | translate}}"
-                                        ng-click="detailForm.$show()" ng-show="!detailForm.$visible && repCtrl.isInitDetailSelected()
-                                        && !repCtrl.isStateValidated(detail.type)" sem-roles-allowed="COND_REPORT_HAB2">
+                                <button
+                                    type="button"
+                                    class="btn btn-sem3 btn-xs"
+                                    uib-tooltip="{{::'Modifier' | translate}}"
+                                    tooltip-append-to-body="true"
+                                    ng-click="detailForm.$show()"
+                                    ng-show="!detailForm.$visible && repCtrl.isInitDetailSelected()
+                                        && !repCtrl.isStateValidated(detail.type)"
+                                    sem-roles-allowed="COND_REPORT_HAB2"
+                                >
                                     <span class="glyphicon-regular edit"></span>
                                 </button>
                             </div>
-                            <div uib-tooltip="{{ ::repCtrl.types[detail.type].description }}" ng-click="repCtrl.selectDetail(detail)">
-                                 <strong>{{ ::repCtrl.types[detail.type].label }}</strong>:&nbsp;{{detail.date | moment:"L"}}  {{repCtrl.prestaUnauthorized}}
+                            <div uib-tooltip="{{ ::repCtrl.types[detail.type].description }}" tooltip-append-to-body="true" ng-click="repCtrl.selectDetail(detail)">
+                                <strong>{{ ::repCtrl.types[detail.type].label }}</strong>:&nbsp;{{detail.date | moment:"L"}} {{repCtrl.prestaUnauthorized}}
                             </div>
                         </div>
                         <div id="detail-0-collapse" class="collapse">
@@ -176,7 +201,7 @@
                                 <numa-editable-field type="readonly" value="{{ ::detail.provWriterFunction }}"></numa-editable-field>
 
                                 <div class="margin-t10" ng-if="detail.comment"><strong translate>Commentaire</strong></div>
-                                <numa-editable-field  ng-if="detail.comment" type="readonly" value="{{ ::detail.comment }}"></numa-editable-field>
+                                <numa-editable-field ng-if="detail.comment" type="readonly" value="{{ ::detail.comment }}"></numa-editable-field>
                             </div>
                         </div>
                     </div>
@@ -184,73 +209,107 @@
 
                 <!-- État sélectionné -->
                 <div class="col-xs-12 col-sm-6 col-lg-3 padding-b10" ng-init="accordion_current=false;">
-
                     <div class="panel panel-loan">
                         <div class="panel-heading">
                             <a class="pull-left" ng-click="accordion_current=!accordion_current" data-toggle="collapse" data-target="#detail-current-collapse">
-                                <span class="glyphicon-halflings"
-                                      ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordion_current]">&nbsp;</span>
+                                <span class="glyphicon-halflings" ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordion_current]">&nbsp;</span>
                             </a>
                             <div class="pull-right">
-                                <button type="button" class="btn btn-sem3 btn-xs" uib-tooltip="{{::'Modifier' | translate}}"
-                                        ng-click="detailForm.$show()"
-                                        ng-show="!detailForm.$visible && !repCtrl.isStateValidated(repCtrl.currentDetail.type)"
-                                        sem-roles-allowed="COND_REPORT_HAB2">
+                                <button
+                                    type="button"
+                                    class="btn btn-sem3 btn-xs"
+                                    uib-tooltip="{{::'Modifier' | translate}}"
+                                    tooltip-append-to-body="true"
+                                    ng-click="detailForm.$show()"
+                                    ng-show="!detailForm.$visible && !repCtrl.isStateValidated(repCtrl.currentDetail.type)"
+                                    sem-roles-allowed="COND_REPORT_HAB2"
+                                >
                                     <span class="glyphicon-regular edit"></span>
                                 </button>
-                                <button type="button" class="btn btn-sem3 btn-xs" uib-tooltip="{{::'Supprimer' | translate}}"
-                                        ng-click="repCtrl.deleteDetail(repCtrl.currentDetail)"
-                                        ng-show="!detailForm.$visible && !repCtrl.isInitDetailSelected() && !repCtrl.isStateValidated(repCtrl.currentDetail.type) && !(repCtrl.isUserUnauthorized() || repCtrl.isPrestaUnauthorized())"
-                                        sem-roles-allowed="COND_REPORT_HAB3">
+                                <button
+                                    type="button"
+                                    class="btn btn-sem3 btn-xs"
+                                    uib-tooltip="{{::'Supprimer' | translate}}"
+                                    tooltip-append-to-body="true"
+                                    ng-click="repCtrl.deleteDetail(repCtrl.currentDetail)"
+                                    ng-show="!detailForm.$visible && !repCtrl.isInitDetailSelected() && !repCtrl.isStateValidated(repCtrl.currentDetail.type) && !(repCtrl.isUserUnauthorized() || repCtrl.isPrestaUnauthorized())"
+                                    sem-roles-allowed="COND_REPORT_HAB3"
+                                >
                                     <span class="glyphicon-halflings glyphicon-trash"></span>
                                 </button>
                             </div>
 
                             <div uib-tooltip="{{ ::repCtrl.types[repCtrl.currentDetail.type].description }}">
-                                 {{ repCtrl.currentDetail.position }}. <strong>{{ repCtrl.types[repCtrl.currentDetail.type].label }}</strong>
-                                 &nbsp;{{repCtrl.currentDetail.date | moment:"L"}}
+                                {{ repCtrl.currentDetail.position }}. <strong>{{ repCtrl.types[repCtrl.currentDetail.type].label }}</strong>
+                                &nbsp;{{repCtrl.currentDetail.date | moment:"L"}}
                             </div>
                         </div>
                         <div id="detail-current-collapse" class="collapse">
                             <div class="panel-body">
-                                <numa-editable-field placeholder="{{::'Date' | translate}}" type="datepicker" model="repCtrl.currentDetail.date" form="detailForm"
-                                        numa-readonly="repCtrl.formRO || repCtrl.isUserUnauthorized() || repCtrl.isPrestaUnauthorized()"></numa-editable-field>
+                                <numa-editable-field
+                                    placeholder="{{::'Date' | translate}}"
+                                    type="datepicker"
+                                    model="repCtrl.currentDetail.date"
+                                    form="detailForm"
+                                    numa-readonly="repCtrl.formRO || repCtrl.isUserUnauthorized() || repCtrl.isPrestaUnauthorized()"
+                                ></numa-editable-field>
                                 <div class="margin-t10" ng-if="repCtrl.currentDetail.type !== 'DIGITALIZATION' && repCtrl.currentDetail.type !== 'LIBRARY_BACK'">
                                     <strong translate>Rédacteur bibliothèque</strong>
                                 </div>
                                 <div ng-if="repCtrl.currentDetail.type !== 'DIGITALIZATION' && repCtrl.currentDetail.type !== 'LIBRARY_BACK'">
-                                <numa-editable-field placeholder="{{::'Nom' | translate}}" model="repCtrl.currentDetail.libWriterName" form="detailForm"
-                                                     numa-readonly="repCtrl.formRO || repCtrl.isUserUnauthorized() || repCtrl.isPrestaUnauthorized()"></numa-editable-field>
-                                <numa-editable-field placeholder="{{::'Qualité' | translate}}" model="repCtrl.currentDetail.libWriterFunction" form="detailForm"
-                                                     numa-readonly="repCtrl.formRO || repCtrl.isUserUnauthorized() || repCtrl.isPrestaUnauthorized()"></numa-editable-field>
+                                    <numa-editable-field
+                                        placeholder="{{::'Nom' | translate}}"
+                                        model="repCtrl.currentDetail.libWriterName"
+                                        form="detailForm"
+                                        numa-readonly="repCtrl.formRO || repCtrl.isUserUnauthorized() || repCtrl.isPrestaUnauthorized()"
+                                    ></numa-editable-field>
+                                    <numa-editable-field
+                                        placeholder="{{::'Qualité' | translate}}"
+                                        model="repCtrl.currentDetail.libWriterFunction"
+                                        form="detailForm"
+                                        numa-readonly="repCtrl.formRO || repCtrl.isUserUnauthorized() || repCtrl.isPrestaUnauthorized()"
+                                    ></numa-editable-field>
                                 </div>
                                 <div class="margin-t10" ng-if="repCtrl.currentDetail.type === 'DIGITALIZATION' || repCtrl.currentDetail.type === 'LIBRARY_BACK'">
                                     <strong translate>Rédacteur prestataire</strong>
                                 </div>
                                 <div ng-if="repCtrl.currentDetail.type === 'DIGITALIZATION' || repCtrl.currentDetail.type === 'LIBRARY_BACK'">
-                                <numa-editable-field placeholder="{{::'Nom' | translate}}" model="repCtrl.currentDetail.provWriterName" form="detailForm"
-                                                     numa-readonly="repCtrl.formRO || repCtrl.isUserUnauthorized() || repCtrl.isPrestaUnauthorized()"></numa-editable-field>
-                                <numa-editable-field placeholder="{{::'Qualité' | translate}}" model="repCtrl.currentDetail.provWriterFunction" form="detailForm"
-                                                     numa-readonly="repCtrl.formRO || repCtrl.isUserUnauthorized() || repCtrl.isPrestaUnauthorized()"></numa-editable-field>
+                                    <numa-editable-field
+                                        placeholder="{{::'Nom' | translate}}"
+                                        model="repCtrl.currentDetail.provWriterName"
+                                        form="detailForm"
+                                        numa-readonly="repCtrl.formRO || repCtrl.isUserUnauthorized() || repCtrl.isPrestaUnauthorized()"
+                                    ></numa-editable-field>
+                                    <numa-editable-field
+                                        placeholder="{{::'Qualité' | translate}}"
+                                        model="repCtrl.currentDetail.provWriterFunction"
+                                        form="detailForm"
+                                        numa-readonly="repCtrl.formRO || repCtrl.isUserUnauthorized() || repCtrl.isPrestaUnauthorized()"
+                                    ></numa-editable-field>
                                 </div>
                                 <div class="margin-t10"><strong translate>Commentaire</strong></div>
-                                <numa-editable-field type="textarea" model="repCtrl.currentDetail.comment" form="detailForm"
-                                                      numa-readonly="repCtrl.formRO || repCtrl.isUserUnauthorized() || repCtrl.isPrestaUnauthorized()"></numa-editable-field>
+                                <numa-editable-field
+                                    type="textarea"
+                                    model="repCtrl.currentDetail.comment"
+                                    form="detailForm"
+                                    numa-readonly="repCtrl.formRO || repCtrl.isUserUnauthorized() || repCtrl.isPrestaUnauthorized()"
+                                ></numa-editable-field>
 
                                 <div ng-if="repCtrl.isInitDetailSelected() && repCtrl.isStateValidated('PROVIDER_RECEPTION')">
                                     <div class="margin-t10"><strong translate>Validé par </strong></div>
-                                    <numa-editable-field type="textarea" model="repCtrl.currentDetail.provWriterName" form="detailForm"
-                                                      numa-readonly="true"></numa-editable-field>
+                                    <numa-editable-field type="textarea" model="repCtrl.currentDetail.provWriterName" form="detailForm" numa-readonly="true"></numa-editable-field>
                                 </div>
-
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Nouvel état -->
-                <div class="col-xs-12 col-sm-6 col-lg-3 padding-t20" ng-if="isAuthorized(userRoles.COND_REPORT_HAB1)
-                                && (!repCtrl.isUserPresta || repCtrl.parent.expectedProviderLogin === repCtrl.loginUser)">
+                <div
+                    class="col-xs-12 col-sm-6 col-lg-3 padding-t20"
+                    ng-if="isAuthorized(userRoles.COND_REPORT_HAB1)
+                                && (!repCtrl.isUserPresta || repCtrl.parent.expectedProviderLogin === repCtrl.loginUser)"
+                >
                     <div class="btn-group" uib-dropdown>
                         <button type="button" class="btn btn-sem3 btn-xs" uib-dropdown-toggle>
                             <span class="glyphicon-halflings glyphicon-plus"></span>&nbsp;{{ ::'Créer un nouvel état' | translate }}&nbsp;<b class="caret"></b>
@@ -262,36 +321,47 @@
                         </ul>
                     </div>
                 </div>
-                <div style="align: right;">
+                <div style="align: right">
                     <!-- Confirmation du constat initial par le prestataire -->
-                    <button type="button" class="btn btn-sem2 margin-l50"
-                            ng-if="repCtrl.isUserPresta && repCtrl.parent.expectedProviderLogin === repCtrl.loginUser && repCtrl.isInitDetailSelected()
+                    <button
+                        type="button"
+                        class="btn btn-sem2 margin-l50"
+                        ng-if="repCtrl.isUserPresta && repCtrl.parent.expectedProviderLogin === repCtrl.loginUser && repCtrl.isInitDetailSelected()
                                     && repCtrl.canConfirmCondReport() && repCtrl.isStateValidated('LIBRARY_LEAVING') && !repCtrl.isStateValidated('PROVIDER_RECEPTION')"
-                            ng-click="repCtrl.confirmValidatedCondReport()" ng-disabled="repCtrl.formRO">
-                            <span class="glyphicon-halflings glyphicon-check"></span> {{::'Valider le constat initial' | translate}}
+                        ng-click="repCtrl.confirmValidatedCondReport()"
+                        ng-disabled="repCtrl.formRO"
+                    >
+                        <span class="glyphicon-halflings glyphicon-check"></span> {{::'Valider le constat initial' | translate}}
                     </button>
                     <div class="padding-b5">
-	                    <!-- Validation du constat -->
-	                    <button type="button" class="btn btn-sem2 margin-l50"
-	                            ng-if="!detailForm.$visible && repCtrl.loaded && !repCtrl.isStateValidated(repCtrl.currentDetail.type) && repCtrl.canValidateCondReport()"
-	                            ng-click="repCtrl.validateCondReport(false)" ng-disabled="repCtrl.formRO" >
-	                            <span class="glyphicon-halflings glyphicon-check"></span> {{::'Valider' | translate}}
-	                    </button>
+                        <!-- Validation du constat -->
+                        <button
+                            type="button"
+                            class="btn btn-sem2 margin-l50"
+                            ng-if="!detailForm.$visible && repCtrl.loaded && !repCtrl.isStateValidated(repCtrl.currentDetail.type) && repCtrl.canValidateCondReport()"
+                            ng-click="repCtrl.validateCondReport(false)"
+                            ng-disabled="repCtrl.formRO"
+                        >
+                            <span class="glyphicon-halflings glyphicon-check"></span> {{::'Valider' | translate}}
+                        </button>
                     </div>
                     <div>
-	                    <!-- Validation du constat + propagation aux UD filles -->
-	                    <button type="button" class="btn btn-sem2 margin-l50"
-	                            ng-if="!detailForm.$visible && repCtrl.loaded && repCtrl.canPropagate() && !repCtrl.isStateValidated(repCtrl.currentDetail.type) && repCtrl.canValidateCondReport()"
-	                            ng-click="repCtrl.validateCondReport(true)" ng-disabled="repCtrl.formRO" >
-	                            <span class="glyphicon-halflings glyphicon-check"></span> {{::'Valider et propager' | translate}}
-	                    </button>
+                        <!-- Validation du constat + propagation aux UD filles -->
+                        <button
+                            type="button"
+                            class="btn btn-sem2 margin-l50"
+                            ng-if="!detailForm.$visible && repCtrl.loaded && repCtrl.canPropagate() && !repCtrl.isStateValidated(repCtrl.currentDetail.type) && repCtrl.canValidateCondReport()"
+                            ng-click="repCtrl.validateCondReport(true)"
+                            ng-disabled="repCtrl.formRO"
+                        >
+                            <span class="glyphicon-halflings glyphicon-check"></span> {{::'Valider et propager' | translate}}
+                        </button>
                     </div>
                 </div>
             </div>
 
             <!-- Détails des états -->
-            <div ng-if="repCtrl.loaded && repCtrl.currentDetail.identifier" ng-hide="reportForm.$visible"
-                    ng-init="repCtrl.initCantModifAndIsReportValidated()">
+            <div ng-if="repCtrl.loaded && repCtrl.currentDetail.identifier" ng-hide="reportForm.$visible" ng-init="repCtrl.initCantModifAndIsReportValidated()">
                 <!-- Description -->
                 <div class="formBlock margin-b20" style="margin-top: 10px">
                     <div class="formBlockTitle text-uppercase">
@@ -299,9 +369,13 @@
                     </div>
                     <div class="formBlockContent">
                         <div class="margin-b10">
-                            <numa-editable-field title="{{::'Valeur d\'assurance (€)' | translate}}" model="repCtrl.currentDetail.insurance"
-                                                 numa-readonly="repCtrl.formRO || isReportValidated || cantModif"
-                                                 type="number" form="detailForm"></numa-editable-field>
+                            <numa-editable-field
+                                title="{{::'Valeur d\'assurance (€)' | translate}}"
+                                model="repCtrl.currentDetail.insurance"
+                                numa-readonly="repCtrl.formRO || isReportValidated || cantModif"
+                                type="number"
+                                form="detailForm"
+                            ></numa-editable-field>
                         </div>
                         <!-- Type de document -->
                         <div class="row margin-t10" ng-if="detailForm.$visible || (repCtrl.currentDescriptions | filter:repCtrl.filterByType('TYPE')).length > 0">
@@ -310,46 +384,66 @@
                             </div>
                         </div>
                         <!-- Liste des descriptions de Type de document -->
-                        <div class="row" ng-repeat="desc in repCtrl.currentDescriptions | filter:repCtrl.filterByType('TYPE') | orderBy:repCtrl.getDescriptionPos"
-                             ng-init="handler={}"
-                             ng-switch="(handler.value.identifier || desc.property.identifier)">
+                        <div
+                            class="row"
+                            ng-repeat="desc in repCtrl.currentDescriptions | filter:repCtrl.filterByType('TYPE') | orderBy:repCtrl.getDescriptionPos"
+                            ng-init="handler={}"
+                            ng-switch="(handler.value.identifier || desc.property.identifier)"
+                        >
                             <div class="col-xs-4" ng-class="{'no-padding': detailForm.$visible && !repCtrl.formRO, 'text-right':  !detailForm.$visible || !desc.creationMode}">
                                 <span class="btn-group-xs margin-l15 pull-left" ng-show="detailForm.$visible" sem-roles-allowed="COND_REPORT_HAB2">
-                                    <button type="button" class="btn btn-sem1 btn-removable" uib-tooltip="{{::'Supprimer' | translate}}"
-                                            ng-click="repCtrl.deleteDescription(desc)"
-                                            ng-disabled="repCtrl.formRO || isReportValidated || cantModif">
+                                    <button
+                                        type="button"
+                                        class="btn btn-sem1 btn-removable"
+                                        uib-tooltip="{{::'Supprimer' | translate}}"
+                                        ng-click="repCtrl.deleteDescription(desc)"
+                                        ng-disabled="repCtrl.formRO || isReportValidated || cantModif"
+                                    >
                                         <span class="glyphicon-halflings glyphicon-trash"></span>
                                     </button>
-                                    <a class="text-danger cursor-help" ng-if="repCtrl.isDescriptionValueRequired(handler, desc)"
-                                       uib-tooltip="{{ ::'Ce champ est obligatoire' | translate }}">*</a>
+                                    <a class="text-danger cursor-help" ng-if="repCtrl.isDescriptionValueRequired(handler, desc)" uib-tooltip="{{ ::'Ce champ est obligatoire' | translate }}" tooltip-append-to-body="true"
+                                        >*</a
+                                    >
                                 </span>
                                 <!-- Libellé - Liste déroulante si ajout en cours ou Label/Lien selon l'état du formulaire -->
-                                <numa-editable-field type="{{repCtrl.getEditableType(desc, detailForm)}}"
-                                                     value="{{repCtrl.getAttributeLabel(desc) | translate}}"
-                                                     form="detailForm" model="desc.property"
-                                                     ng-init="config = repCtrl.descriptionPropertyConfig(handler, 'TYPE')" config="config"
-                                                     numa-onchange="repCtrl.changeDescriptionValue(handler, desc)"
-                                                     numa-readonly="repCtrl.formRO || isReportValidated || cantModif"></numa-editable-field>
+                                <numa-editable-field
+                                    type="{{repCtrl.getEditableType(desc, detailForm)}}"
+                                    value="{{repCtrl.getAttributeLabel(desc) | translate}}"
+                                    form="detailForm"
+                                    model="desc.property"
+                                    ng-init="config = repCtrl.descriptionPropertyConfig(handler, 'TYPE')"
+                                    config="config"
+                                    numa-onchange="repCtrl.changeDescriptionValue(handler, desc)"
+                                    numa-readonly="repCtrl.formRO || isReportValidated || cantModif"
+                                ></numa-editable-field>
                             </div>
                             <!-- Description -->
                             <div class="col-xs-8" ng-switch-default>
-                                <numa-editable-field type="uiselect" form="detailForm" model="desc.value"
-                                                     ng-init="config = repCtrl.descriptionValueConfig(handler, desc)" config="config"
-                                                     numa-readonly="repCtrl.formRO || isReportValidated || cantModif"
-                                                     ng-show="repCtrl.isDescriptionValueVisible(handler, desc, detailForm)"></numa-editable-field>
-                                <numa-editable-field type="textarea" model="desc.comment" form="detailForm" numa-readonly="repCtrl.formRO || isReportValidated || cantModif"
-                                                     ng-show="repCtrl.isDescriptionCommentVisible(handler, desc, detailForm)"></numa-editable-field>
+                                <numa-editable-field
+                                    type="uiselect"
+                                    form="detailForm"
+                                    model="desc.value"
+                                    ng-init="config = repCtrl.descriptionValueConfig(handler, desc)"
+                                    config="config"
+                                    numa-readonly="repCtrl.formRO || isReportValidated || cantModif"
+                                    ng-show="repCtrl.isDescriptionValueVisible(handler, desc, detailForm)"
+                                ></numa-editable-field>
+                                <numa-editable-field
+                                    type="textarea"
+                                    model="desc.comment"
+                                    form="detailForm"
+                                    numa-readonly="repCtrl.formRO || isReportValidated || cantModif"
+                                    ng-show="repCtrl.isDescriptionCommentVisible(handler, desc, detailForm)"
+                                ></numa-editable-field>
                             </div>
                             <!-- Autres infos -->
                             <div class="col-xs-8" ng-switch-when="BINDING_DESC">
-                                <numa-editable-field type="textarea" model="repCtrl.currentDetail.bindingDesc"
-                                                     form="detailForm" numa-readonly="repCtrl.formRO || isReportValidated || cantModif"></numa-editable-field>
+                                <numa-editable-field type="textarea" model="repCtrl.currentDetail.bindingDesc" form="detailForm" numa-readonly="repCtrl.formRO || isReportValidated || cantModif"></numa-editable-field>
                             </div>
                         </div>
                         <div class="row margin-b20" ng-show="detailForm.$visible" sem-roles-allowed="COND_REPORT_HAB2">
                             <div class="col-xs-8 col-xs-offset-4 text-left">
-                                <button type="button" class="btn btn-sem1 btn-xs" ng-click="repCtrl.addDescription('TYPE')"
-                                        ng-if="!repCtrl.formRO  && !isReportValidated && !cantModif">
+                                <button type="button" class="btn btn-sem1 btn-xs" ng-click="repCtrl.addDescription('TYPE')" ng-if="!repCtrl.formRO  && !isReportValidated && !cantModif">
                                     <span class="glyphicon-halflings glyphicon-plus"></span>
                                     <i translate>Ajouter une nouvelle description</i>
                                 </button>
@@ -363,46 +457,66 @@
                             </div>
                         </div>
                         <!-- Liste des descriptions de Etat du document -->
-                        <div class="row" ng-repeat="desc in repCtrl.currentDescriptions | filter:repCtrl.filterByType('STATE') | orderBy:repCtrl.getDescriptionPos"
-                             ng-init="handler={}"
-                             ng-switch="(handler.value.identifier || desc.property.identifier)">
+                        <div
+                            class="row"
+                            ng-repeat="desc in repCtrl.currentDescriptions | filter:repCtrl.filterByType('STATE') | orderBy:repCtrl.getDescriptionPos"
+                            ng-init="handler={}"
+                            ng-switch="(handler.value.identifier || desc.property.identifier)"
+                        >
                             <div class="col-xs-4" ng-class="{'no-padding': detailForm.$visible && !repCtrl.formRO, 'text-right':  !detailForm.$visible || !desc.creationMode}">
                                 <span class="btn-group-xs margin-l15 pull-left" ng-show="detailForm.$visible" sem-roles-allowed="COND_REPORT_HAB2">
-                                    <button type="button" class="btn btn-sem1 btn-removable" uib-tooltip="{{::'Supprimer' | translate}}"
-                                            ng-click="repCtrl.deleteDescription(desc)"
-                                            ng-disabled="repCtrl.formRO || isReportValidated || cantModif">
+                                    <button
+                                        type="button"
+                                        class="btn btn-sem1 btn-removable"
+                                        uib-tooltip="{{::'Supprimer' | translate}}"
+                                        ng-click="repCtrl.deleteDescription(desc)"
+                                        ng-disabled="repCtrl.formRO || isReportValidated || cantModif"
+                                    >
                                         <span class="glyphicon-halflings glyphicon-trash"></span>
                                     </button>
-                                    <a class="text-danger cursor-help" ng-if="repCtrl.isDescriptionValueRequired(handler, desc)"
-                                       uib-tooltip="{{ ::'Ce champ est obligatoire' | translate }}">*</a>
+                                    <a class="text-danger cursor-help" ng-if="repCtrl.isDescriptionValueRequired(handler, desc)" uib-tooltip="{{ ::'Ce champ est obligatoire' | translate }}" tooltip-append-to-body="true"
+                                        >*</a
+                                    >
                                 </span>
                                 <!-- Libellé - Liste déroulante si ajout en cours ou Label/Lien selon l'état du formulaire -->
-                                <numa-editable-field type="{{repCtrl.getEditableType(desc, detailForm)}}"
-                                                     value="{{repCtrl.getAttributeLabel(desc) | translate}}"
-                                                     form="detailForm" model="desc.property"
-                                                     ng-init="config = repCtrl.descriptionPropertyConfig(handler, 'STATE')" config="config"
-                                                     numa-onchange="repCtrl.changeDescriptionValue(handler, desc)"
-                                                     numa-readonly="repCtrl.formRO || isReportValidated || cantModif"></numa-editable-field>
+                                <numa-editable-field
+                                    type="{{repCtrl.getEditableType(desc, detailForm)}}"
+                                    value="{{repCtrl.getAttributeLabel(desc) | translate}}"
+                                    form="detailForm"
+                                    model="desc.property"
+                                    ng-init="config = repCtrl.descriptionPropertyConfig(handler, 'STATE')"
+                                    config="config"
+                                    numa-onchange="repCtrl.changeDescriptionValue(handler, desc)"
+                                    numa-readonly="repCtrl.formRO || isReportValidated || cantModif"
+                                ></numa-editable-field>
                             </div>
                             <!-- Description -->
                             <div class="col-xs-8" ng-switch-default>
-                                <numa-editable-field type="uiselect" form="detailForm" model="desc.value"
-                                                     ng-init="config = repCtrl.descriptionValueConfig(handler, desc)" config="config"
-                                                     numa-readonly="repCtrl.formRO || isReportValidated || cantModif"
-                                                     ng-show="repCtrl.isDescriptionValueVisible(handler, desc, detailForm)"></numa-editable-field>
-                                <numa-editable-field type="textarea" model="desc.comment" form="detailForm" numa-readonly="repCtrl.formRO || isReportValidated || cantModif"
-                                                     ng-show="repCtrl.isDescriptionCommentVisible(handler, desc, detailForm)"></numa-editable-field>
+                                <numa-editable-field
+                                    type="uiselect"
+                                    form="detailForm"
+                                    model="desc.value"
+                                    ng-init="config = repCtrl.descriptionValueConfig(handler, desc)"
+                                    config="config"
+                                    numa-readonly="repCtrl.formRO || isReportValidated || cantModif"
+                                    ng-show="repCtrl.isDescriptionValueVisible(handler, desc, detailForm)"
+                                ></numa-editable-field>
+                                <numa-editable-field
+                                    type="textarea"
+                                    model="desc.comment"
+                                    form="detailForm"
+                                    numa-readonly="repCtrl.formRO || isReportValidated || cantModif"
+                                    ng-show="repCtrl.isDescriptionCommentVisible(handler, desc, detailForm)"
+                                ></numa-editable-field>
                             </div>
                             <!-- Autres infos -->
                             <div class="col-xs-8" ng-switch-when="BINDING_DESC">
-                                <numa-editable-field type="textarea" model="repCtrl.currentDetail.bindingDesc"
-                                                     form="detailForm" numa-readonly="repCtrl.formRO || isReportValidated || cantModif"></numa-editable-field>
+                                <numa-editable-field type="textarea" model="repCtrl.currentDetail.bindingDesc" form="detailForm" numa-readonly="repCtrl.formRO || isReportValidated || cantModif"></numa-editable-field>
                             </div>
                         </div>
                         <div class="row margin-b20" ng-show="detailForm.$visible" sem-roles-allowed="COND_REPORT_HAB2">
                             <div class="col-xs-8 col-xs-offset-4 text-left">
-                                <button type="button" class="btn btn-sem1 btn-xs" ng-click="repCtrl.addDescription('STATE')"
-                                        ng-if="!repCtrl.formRO  && !isReportValidated && !cantModif">
+                                <button type="button" class="btn btn-sem1 btn-xs" ng-click="repCtrl.addDescription('STATE')" ng-if="!repCtrl.formRO  && !isReportValidated && !cantModif">
                                     <span class="glyphicon-halflings glyphicon-plus"></span>
                                     <i translate>Ajouter une nouvelle description</i>
                                 </button>
@@ -416,112 +530,154 @@
                             </div>
                         </div>
                         <!-- Liste des descriptions de reliure -->
-                        <div class="row" ng-repeat="desc in repCtrl.currentDescriptions | filter:repCtrl.filterByType('BINDING') | orderBy:repCtrl.getDescriptionPos"
-                             ng-init="handler={}"
-                             ng-switch="(handler.value.identifier || desc.property.identifier)">
+                        <div
+                            class="row"
+                            ng-repeat="desc in repCtrl.currentDescriptions | filter:repCtrl.filterByType('BINDING') | orderBy:repCtrl.getDescriptionPos"
+                            ng-init="handler={}"
+                            ng-switch="(handler.value.identifier || desc.property.identifier)"
+                        >
                             <div class="col-xs-4" ng-class="{'no-padding': detailForm.$visible && !repCtrl.formRO, 'text-right':  !detailForm.$visible || !desc.creationMode}">
                                 <span class="btn-group-xs margin-l15 pull-left" ng-show="detailForm.$visible" sem-roles-allowed="COND_REPORT_HAB2">
-                                    <button type="button" class="btn btn-sem1 btn-removable" uib-tooltip="{{::'Supprimer' | translate}}"
-                                            ng-click="repCtrl.deleteDescription(desc)"
-                                            ng-disabled="repCtrl.formRO || isReportValidated || cantModif">
+                                    <button
+                                        type="button"
+                                        class="btn btn-sem1 btn-removable"
+                                        uib-tooltip="{{::'Supprimer' | translate}}"
+                                        ng-click="repCtrl.deleteDescription(desc)"
+                                        ng-disabled="repCtrl.formRO || isReportValidated || cantModif"
+                                    >
                                         <span class="glyphicon-halflings glyphicon-trash"></span>
                                     </button>
-                                    <a class="text-danger cursor-help" ng-if="repCtrl.isDescriptionValueRequired(handler, desc)"
-                                       uib-tooltip="{{ ::'Ce champ est obligatoire' | translate }}">*</a>
+                                    <a class="text-danger cursor-help" ng-if="repCtrl.isDescriptionValueRequired(handler, desc)" uib-tooltip="{{ ::'Ce champ est obligatoire' | translate }}" tooltip-append-to-body="true"
+                                        >*</a
+                                    >
                                 </span>
                                 <!-- Libellé - Liste déroulante si ajout en cours ou Label/Lien selon l'état du formulaire -->
-                                <numa-editable-field type="{{repCtrl.getEditableType(desc, detailForm)}}"
-                                                     value="{{repCtrl.getAttributeLabel(desc) | translate}}"
-                                                     form="detailForm" model="desc.property"
-                                                     ng-init="config = repCtrl.descriptionPropertyConfig(handler, 'BINDING')" config="config"
-                                                     numa-onchange="repCtrl.changeDescriptionValue(handler, desc)"
-                                                     numa-readonly="repCtrl.formRO || isReportValidated || cantModif"></numa-editable-field>
+                                <numa-editable-field
+                                    type="{{repCtrl.getEditableType(desc, detailForm)}}"
+                                    value="{{repCtrl.getAttributeLabel(desc) | translate}}"
+                                    form="detailForm"
+                                    model="desc.property"
+                                    ng-init="config = repCtrl.descriptionPropertyConfig(handler, 'BINDING')"
+                                    config="config"
+                                    numa-onchange="repCtrl.changeDescriptionValue(handler, desc)"
+                                    numa-readonly="repCtrl.formRO || isReportValidated || cantModif"
+                                ></numa-editable-field>
                             </div>
                             <!-- Description -->
                             <div class="col-xs-8" ng-switch-default>
-                                <numa-editable-field type="uiselect" form="detailForm" model="desc.value"
-                                                    ng-init="config = repCtrl.descriptionValueConfig(handler, desc)" config="config"
-                                                    numa-readonly="repCtrl.formRO || isReportValidated || cantModif"
-                                                    ng-show="repCtrl.isDescriptionValueVisible(handler, desc, detailForm)"></numa-editable-field>
-                                <numa-editable-field type="textarea" model="desc.comment" form="detailForm" numa-readonly="repCtrl.formRO || isReportValidated || cantModif"
-                                                    ng-show="repCtrl.isDescriptionCommentVisible(handler, desc, detailForm)"></numa-editable-field>
+                                <numa-editable-field
+                                    type="uiselect"
+                                    form="detailForm"
+                                    model="desc.value"
+                                    ng-init="config = repCtrl.descriptionValueConfig(handler, desc)"
+                                    config="config"
+                                    numa-readonly="repCtrl.formRO || isReportValidated || cantModif"
+                                    ng-show="repCtrl.isDescriptionValueVisible(handler, desc, detailForm)"
+                                ></numa-editable-field>
+                                <numa-editable-field
+                                    type="textarea"
+                                    model="desc.comment"
+                                    form="detailForm"
+                                    numa-readonly="repCtrl.formRO || isReportValidated || cantModif"
+                                    ng-show="repCtrl.isDescriptionCommentVisible(handler, desc, detailForm)"
+                                ></numa-editable-field>
                             </div>
                             <!-- Autres infos -->
                             <div class="col-xs-8" ng-switch-when="BINDING_DESC">
-                                <numa-editable-field type="textarea" model="repCtrl.currentDetail.bindingDesc"
-                                                    form="detailForm" numa-readonly="repCtrl.formRO || isReportValidated || cantModif"></numa-editable-field>
+                                <numa-editable-field type="textarea" model="repCtrl.currentDetail.bindingDesc" form="detailForm" numa-readonly="repCtrl.formRO || isReportValidated || cantModif"></numa-editable-field>
                             </div>
                         </div>
                         <div class="row margin-b20" ng-show="detailForm.$visible" sem-roles-allowed="COND_REPORT_HAB2">
                             <div class="col-xs-8 col-xs-offset-4 text-left">
-                                <button type="button" class="btn btn-sem1 btn-xs" ng-click="repCtrl.addDescription('BINDING')"
-                                        ng-if="!repCtrl.formRO  && !isReportValidated && !cantModif">
+                                <button type="button" class="btn btn-sem1 btn-xs" ng-click="repCtrl.addDescription('BINDING')" ng-if="!repCtrl.formRO  && !isReportValidated && !cantModif">
                                     <span class="glyphicon-halflings glyphicon-plus"></span>
                                     <i translate>Ajouter une nouvelle description</i>
                                 </button>
                             </div>
                         </div>
 
-                                                <!-- Description du document -->
+                        <!-- Description du document -->
                         <div class="row" ng-if="detailForm.$visible || (repCtrl.currentDescriptions | filter:repCtrl.filterByType('BINDING')).length > 0">
                             <div class="col-xs-8 col-xs-offset-4">
-                                <h4 translate>Document </h4>
+                                <h4 translate>Document</h4>
                             </div>
                         </div>
                         <!-- Description générale -->
-                        <div class="row" ng-repeat="desc in repCtrl.currentDescriptions | filter:repCtrl.filterByType('DESCRIPTION') | orderBy:repCtrl.getDescriptionPos"
-                                         ng-init="handler={}"
-                                         ng-switch="(handler.value.identifier || desc.property.identifier)">
+                        <div
+                            class="row"
+                            ng-repeat="desc in repCtrl.currentDescriptions | filter:repCtrl.filterByType('DESCRIPTION') | orderBy:repCtrl.getDescriptionPos"
+                            ng-init="handler={}"
+                            ng-switch="(handler.value.identifier || desc.property.identifier)"
+                        >
                             <div class="col-xs-4" ng-class="{'no-padding': detailForm.$visible && !repCtrl.formRO, 'text-right':  !detailForm.$visible || !desc.creationMode}">
                                 <span class="btn-group-xs margin-l15 pull-left" ng-show="detailForm.$visible" sem-roles-allowed="COND_REPORT_HAB2">
-                                    <button type="button" class="btn btn-sem1 btn-removable" uib-tooltip="{{::'Supprimer' | translate}}"
-                                            ng-click="repCtrl.deleteDescription(desc)"
-                                            ng-disabled="repCtrl.formRO || isReportValidated || cantModif">
+                                    <button
+                                        type="button"
+                                        class="btn btn-sem1 btn-removable"
+                                        uib-tooltip="{{::'Supprimer' | translate}}"
+                                        ng-click="repCtrl.deleteDescription(desc)"
+                                        ng-disabled="repCtrl.formRO || isReportValidated || cantModif"
+                                    >
                                         <span class="glyphicon-halflings glyphicon-trash"></span>
                                     </button>
-                                    <a class="text-danger cursor-help" ng-if="repCtrl.isDescriptionValueRequired(handler, desc)"
-                                        uib-tooltip="{{ ::'Ce champ est obligatoire' | translate }}">*</a>
-                                 </span>
+                                    <a class="text-danger cursor-help" ng-if="repCtrl.isDescriptionValueRequired(handler, desc)" uib-tooltip="{{ ::'Ce champ est obligatoire' | translate }}" tooltip-append-to-body="true"
+                                        >*</a
+                                    >
+                                </span>
                                 <!-- Libellé - Liste déroulante si ajout en cours ou Label/Lien selon l'état du formulaire -->
-                                <numa-editable-field type="{{repCtrl.getEditableType(desc, detailForm)}}"
-                                                     value="{{repCtrl.getAttributeLabel(desc) | translate}}"
-                                                     form="detailForm" model="desc.property"
-                                                     ng-init="config = repCtrl.descriptionPropertyConfig(handler, 'DESCRIPTION')" config="config"
-                                                     numa-onchange="repCtrl.changeDescriptionValue(handler, desc)"
-                                                     numa-readonly="repCtrl.formRO || isReportValidated || cantModif"></numa-editable-field>
+                                <numa-editable-field
+                                    type="{{repCtrl.getEditableType(desc, detailForm)}}"
+                                    value="{{repCtrl.getAttributeLabel(desc) | translate}}"
+                                    form="detailForm"
+                                    model="desc.property"
+                                    ng-init="config = repCtrl.descriptionPropertyConfig(handler, 'DESCRIPTION')"
+                                    config="config"
+                                    numa-onchange="repCtrl.changeDescriptionValue(handler, desc)"
+                                    numa-readonly="repCtrl.formRO || isReportValidated || cantModif"
+                                ></numa-editable-field>
                             </div>
-<!--                             <div>{{repCtrl.getDescriptionPos(desc)}}</div> -->
+                            <!--                             <div>{{repCtrl.getDescriptionPos(desc)}}</div> -->
                             <!-- Description -->
                             <div class="col-xs-8" ng-switch-default>
-                                <numa-editable-field type="uiselect" form="detailForm" model="desc.value"
-                                                    ng-init="config = repCtrl.descriptionValueConfig(handler, desc)" config="config"
-                                                    numa-readonly="repCtrl.formRO || isReportValidated || cantModif"
-                                                    ng-show="repCtrl.isDescriptionValueVisible(handler, desc, detailForm)"></numa-editable-field>
-                                <numa-editable-field type="textarea" model="desc.comment" form="detailForm"
-                                                    numa-readonly="repCtrl.formRO || isReportValidated || cantModif"
-                                                    ng-show="repCtrl.isDescriptionCommentVisible(handler, desc, detailForm)"></numa-editable-field>
+                                <numa-editable-field
+                                    type="uiselect"
+                                    form="detailForm"
+                                    model="desc.value"
+                                    ng-init="config = repCtrl.descriptionValueConfig(handler, desc)"
+                                    config="config"
+                                    numa-readonly="repCtrl.formRO || isReportValidated || cantModif"
+                                    ng-show="repCtrl.isDescriptionValueVisible(handler, desc, detailForm)"
+                                ></numa-editable-field>
+                                <numa-editable-field
+                                    type="textarea"
+                                    model="desc.comment"
+                                    form="detailForm"
+                                    numa-readonly="repCtrl.formRO || isReportValidated || cantModif"
+                                    ng-show="repCtrl.isDescriptionCommentVisible(handler, desc, detailForm)"
+                                ></numa-editable-field>
                             </div>
                             <!-- Dimensions du document -->
                             <div class="col-xs-8" ng-switch-when="DIMENSION">
-                                <span editable-semnumber="repCtrl.currentDetail.dim1" class="editable editable-click" ng-click="detailForm.$show()"
-                                        e-ng-readonly="repCtrl.formRO || isReportValidated || cantModif">{{ repCtrl.currentDetail.dim1 || ('Non renseigné' | translate) }}</span>
+                                <span editable-semnumber="repCtrl.currentDetail.dim1" class="editable editable-click" ng-click="detailForm.$show()" e-ng-readonly="repCtrl.formRO || isReportValidated || cantModif"
+                                    >{{ repCtrl.currentDetail.dim1 || ('Non renseigné' | translate) }}</span
+                                >
                                 <span class="fa fa-times"></span>
-                                <span editable-semnumber="repCtrl.currentDetail.dim2" class="editable editable-click" ng-click="detailForm.$show()"
-                                        e-ng-readonly="repCtrl.formRO || isReportValidated || cantModif">{{ repCtrl.currentDetail.dim2 || ('Non renseigné' | translate) }}</span>
+                                <span editable-semnumber="repCtrl.currentDetail.dim2" class="editable editable-click" ng-click="detailForm.$show()" e-ng-readonly="repCtrl.formRO || isReportValidated || cantModif"
+                                    >{{ repCtrl.currentDetail.dim2 || ('Non renseigné' | translate) }}</span
+                                >
                                 <span class="fa fa-times"></span>
-                                <span editable-semnumber="repCtrl.currentDetail.dim3" class="editable editable-click" ng-click="detailForm.$show()"
-                                        e-ng-readonly="repCtrl.formRO || isReportValidated || cantModif">{{ repCtrl.currentDetail.dim3 || ('Non renseigné' | translate) }}</span>
+                                <span editable-semnumber="repCtrl.currentDetail.dim3" class="editable editable-click" ng-click="detailForm.$show()" e-ng-readonly="repCtrl.formRO || isReportValidated || cantModif"
+                                    >{{ repCtrl.currentDetail.dim3 || ('Non renseigné' | translate) }}</span
+                                >
                             </div>
                             <!-- Autres infos -->
                             <div class="col-xs-8" ng-switch-when="BINDING_DESC">
-                                <numa-editable-field type="textarea" model="repCtrl.currentDetail.additionnalDesc"
-                                                     form="detailForm" numa-readonly="repCtrl.formRO || isReportValidated || cantModif"></numa-editable-field>
+                                <numa-editable-field type="textarea" model="repCtrl.currentDetail.additionnalDesc" form="detailForm" numa-readonly="repCtrl.formRO || isReportValidated || cantModif"></numa-editable-field>
                             </div>
                         </div>
                         <div class="row margin-b20" ng-show="detailForm.$visible" sem-roles-allowed="COND_REPORT_HAB2">
                             <div class="col-xs-8 col-xs-offset-4 text-left">
-                                <button type="button" class="btn btn-sem1 btn-xs" ng-click="repCtrl.addDescription('DESCRIPTION')"
-                                        ng-if="!repCtrl.formRO  && !isReportValidated && !cantModif">
+                                <button type="button" class="btn btn-sem1 btn-xs" ng-click="repCtrl.addDescription('DESCRIPTION')" ng-if="!repCtrl.formRO  && !isReportValidated && !cantModif">
                                     <span class="glyphicon-halflings glyphicon-plus"></span>
                                     <i translate>Ajouter une nouvelle description</i>
                                 </button>
@@ -535,46 +691,70 @@
                             </div>
                         </div>
                         <!-- Description générale -->
-                        <div class="row" ng-repeat="desc in repCtrl.currentDescriptions | filter:repCtrl.filterByType('NUMBERING') | orderBy:repCtrl.getDescriptionPos"
-                                        ng-init="handler={}"
-                                        ng-switch="(handler.value.identifier || desc.property.identifier)">
+                        <div
+                            class="row"
+                            ng-repeat="desc in repCtrl.currentDescriptions | filter:repCtrl.filterByType('NUMBERING') | orderBy:repCtrl.getDescriptionPos"
+                            ng-init="handler={}"
+                            ng-switch="(handler.value.identifier || desc.property.identifier)"
+                        >
                             <div class="col-xs-4" ng-class="{'no-padding': detailForm.$visible && !repCtrl.formRO, 'text-right':  !detailForm.$visible || !desc.creationMode}">
                                 <span class="btn-group-xs margin-l15 pull-left" ng-show="detailForm.$visible" sem-roles-allowed="COND_REPORT_HAB2">
-                                    <button type="button" class="btn btn-sem1 btn-removable" uib-tooltip="{{::'Supprimer' | translate}}"
-                                            ng-click="repCtrl.deleteDescription(desc)"
-                                            ng-disabled="repCtrl.formRO || isReportValidated || cantModif">
+                                    <button
+                                        type="button"
+                                        class="btn btn-sem1 btn-removable"
+                                        uib-tooltip="{{::'Supprimer' | translate}}"
+                                        ng-click="repCtrl.deleteDescription(desc)"
+                                        ng-disabled="repCtrl.formRO || isReportValidated || cantModif"
+                                    >
                                         <span class="glyphicon-halflings glyphicon-trash"></span>
-                                        <a class="text-danger cursor-help" ng-if="repCtrl.isDescriptionValueRequired(handler, desc)"
-                                            uib-tooltip="{{ ::'Ce champ est obligatoire' | translate }}">*</a>
+                                        <a
+                                            class="text-danger cursor-help"
+                                            ng-if="repCtrl.isDescriptionValueRequired(handler, desc)"
+                                            uib-tooltip="{{ ::'Ce champ est obligatoire' | translate }}"
+                                            tooltip-append-to-body="true"
+                                            >*</a
+                                        >
                                     </button>
                                 </span>
                                 <!-- Libellé - Liste déroulante si ajout en cours ou Label/Lien selon l'état du formulaire -->
-                                <numa-editable-field type="{{repCtrl.getEditableType(desc, detailForm)}}"
-                                                     value="{{repCtrl.getAttributeLabel(desc) | translate}}"
-                                                     form="detailForm" model="desc.property"
-                                                     ng-init="config = repCtrl.descriptionPropertyConfig(handler, 'NUMBERING')" config="config"
-                                                     numa-onchange="repCtrl.changeDescriptionValue(handler, desc)"
-                                                     numa-readonly="repCtrl.formRO || isReportValidated || cantModif"></numa-editable-field>
+                                <numa-editable-field
+                                    type="{{repCtrl.getEditableType(desc, detailForm)}}"
+                                    value="{{repCtrl.getAttributeLabel(desc) | translate}}"
+                                    form="detailForm"
+                                    model="desc.property"
+                                    ng-init="config = repCtrl.descriptionPropertyConfig(handler, 'NUMBERING')"
+                                    config="config"
+                                    numa-onchange="repCtrl.changeDescriptionValue(handler, desc)"
+                                    numa-readonly="repCtrl.formRO || isReportValidated || cantModif"
+                                ></numa-editable-field>
                             </div>
                             <!-- Description -->
                             <div class="col-xs-8" ng-switch-default>
-                                <numa-editable-field type="uiselect" form="detailForm" model="desc.value"
-                                                    ng-init="config = repCtrl.descriptionValueConfig(handler, desc)" config="config"
-                                                    numa-readonly="repCtrl.formRO || isReportValidated || cantModif"
-                                                    ng-show="repCtrl.isDescriptionValueVisible(handler, desc, detailForm)"></numa-editable-field>
-                                <numa-editable-field type="textarea" model="desc.comment" form="detailForm" numa-readonly="repCtrl.formRO || isReportValidated || cantModif"
-                                                    ng-show="repCtrl.isDescriptionCommentVisible(handler, desc, detailForm)"></numa-editable-field>
+                                <numa-editable-field
+                                    type="uiselect"
+                                    form="detailForm"
+                                    model="desc.value"
+                                    ng-init="config = repCtrl.descriptionValueConfig(handler, desc)"
+                                    config="config"
+                                    numa-readonly="repCtrl.formRO || isReportValidated || cantModif"
+                                    ng-show="repCtrl.isDescriptionValueVisible(handler, desc, detailForm)"
+                                ></numa-editable-field>
+                                <numa-editable-field
+                                    type="textarea"
+                                    model="desc.comment"
+                                    form="detailForm"
+                                    numa-readonly="repCtrl.formRO || isReportValidated || cantModif"
+                                    ng-show="repCtrl.isDescriptionCommentVisible(handler, desc, detailForm)"
+                                ></numa-editable-field>
                             </div>
                             <!-- Autres infos -->
                             <div class="col-xs-8" ng-switch-when="BINDING_DESC">
-                                <numa-editable-field type="textarea" model="repCtrl.currentDetail.bindingDesc"
-                                                    form="detailForm" numa-readonly="repCtrl.formRO || isReportValidated || cantModif"></numa-editable-field>
+                                <numa-editable-field type="textarea" model="repCtrl.currentDetail.bindingDesc" form="detailForm" numa-readonly="repCtrl.formRO || isReportValidated || cantModif"></numa-editable-field>
                             </div>
                         </div>
                         <div class="row margin-b20" ng-show="detailForm.$visible" sem-roles-allowed="COND_REPORT_HAB2">
                             <div class="col-xs-8 col-xs-offset-4 text-left">
-                                <button type="button" class="btn btn-sem1 btn-xs" ng-click="repCtrl.addDescription('NUMBERING')"
-                                        ng-if="!repCtrl.formRO  && !isReportValidated && !cantModif">
+                                <button type="button" class="btn btn-sem1 btn-xs" ng-click="repCtrl.addDescription('NUMBERING')" ng-if="!repCtrl.formRO  && !isReportValidated && !cantModif">
                                     <span class="glyphicon-halflings glyphicon-plus"></span>
                                     <i translate>Ajouter une nouvelle description</i>
                                 </button>
@@ -587,77 +767,126 @@
                                 <h4 translate>Estimation du nombre de vues</h4>
                             </div>
                         </div>
-                        <numa-editable-field type="number" model="repCtrl.currentDetail.nbViewBinding" title="{{ ::'Reliure' | translate }}"
-                                            form="detailForm" numa-readonly="repCtrl.formRO || isReportValidated || cantModif"></numa-editable-field>
-                        <numa-editable-field type="number" model="repCtrl.currentDetail.nbViewBody" title="{{ ::'Corps d\'ouvrage' | translate }}"
-                                            form="detailForm" numa-readonly="repCtrl.formRO || isReportValidated || cantModif"></numa-editable-field>
-                        <numa-editable-field type="number" model="repCtrl.currentDetail.nbViewAdditionnal" title="{{ ::'Vues supplémentaires' | translate }}"
-                                            form="detailForm" numa-readonly="repCtrl.formRO || isReportValidated || cantModif"></numa-editable-field>
-                        <numa-editable-field type="readonly" value="{{repCtrl.currentDetail.nbViewTotal}}" title="{{ ::'Total' | translate }}"
-                                            form="detailForm" numa-readonly="repCtrl.formRO || isReportValidated || cantModif"></numa-editable-field>
+                        <numa-editable-field
+                            type="number"
+                            model="repCtrl.currentDetail.nbViewBinding"
+                            title="{{ ::'Reliure' | translate }}"
+                            form="detailForm"
+                            numa-readonly="repCtrl.formRO || isReportValidated || cantModif"
+                        ></numa-editable-field>
+                        <numa-editable-field
+                            type="number"
+                            model="repCtrl.currentDetail.nbViewBody"
+                            title="{{ ::'Corps d\'ouvrage' | translate }}"
+                            form="detailForm"
+                            numa-readonly="repCtrl.formRO || isReportValidated || cantModif"
+                        ></numa-editable-field>
+                        <numa-editable-field
+                            type="number"
+                            model="repCtrl.currentDetail.nbViewAdditionnal"
+                            title="{{ ::'Vues supplémentaires' | translate }}"
+                            form="detailForm"
+                            numa-readonly="repCtrl.formRO || isReportValidated || cantModif"
+                        ></numa-editable-field>
+                        <numa-editable-field
+                            type="readonly"
+                            value="{{repCtrl.currentDetail.nbViewTotal}}"
+                            title="{{ ::'Total' | translate }}"
+                            form="detailForm"
+                            numa-readonly="repCtrl.formRO || isReportValidated || cantModif"
+                        ></numa-editable-field>
 
                         <!-- Synthèse -->
                         <div class="margin-t20">
-                            <numa-editable-field type="textarea" model="repCtrl.currentDetail.additionnalDesc" title="{{ ::'Synthèse' | translate}}"
-                                                form="detailForm" numa-readonly="repCtrl.formRO || isReportValidated || cantModif"></numa-editable-field>
+                            <numa-editable-field
+                                type="textarea"
+                                model="repCtrl.currentDetail.additionnalDesc"
+                                title="{{ ::'Synthèse' | translate}}"
+                                form="detailForm"
+                                numa-readonly="repCtrl.formRO || isReportValidated || cantModif"
+                            ></numa-editable-field>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Points de vigilance -->
-            <div class="formBlock" style="margin-top: 40px" ng-style="detailForm.$visible ? {'margin-bottom': '75px'} : {}"
-                 ng-if="repCtrl.loaded && repCtrl.currentDetail.identifier" ng-hide="reportForm.$visible"
-                 ng-init="cantModif = (repCtrl.isUserPresta && repCtrl.currentDetail.createdBy !== repCtrl.loginUser)
+            <div
+                class="formBlock"
+                style="margin-top: 40px"
+                ng-style="detailForm.$visible ? {'margin-bottom': '75px'} : {}"
+                ng-if="repCtrl.loaded && repCtrl.currentDetail.identifier"
+                ng-hide="reportForm.$visible"
+                ng-init="cantModif = (repCtrl.isUserPresta && repCtrl.currentDetail.createdBy !== repCtrl.loginUser)
                         || (repCtrl.isUserPresta && repCtrl.currentDetail.type !== 'DIGITALIZATION' && repCtrl.currentDetail.type !== 'LIBRARY_BACK')
                         || (!repCtrl.isUserPresta && (repCtrl.currentDetail.type === 'DIGITALIZATION' || repCtrl.currentDetail.type === 'LIBRARY_BACK'));
-                        isReportValidated = repCtrl.isStateValidated(repCtrl.currentDetail.type)">
+                        isReportValidated = repCtrl.isStateValidated(repCtrl.currentDetail.type)"
+            >
                 <div class="formBlockTitle text-uppercase">
                     <span translate>Points de vigilance pour la manipulation</span>
                 </div>
                 <div class="formBlockContent">
                     <!-- Liste de points de vigilance -->
-                    <div class="row" ng-repeat="desc in repCtrl.currentDescriptions | filter:repCtrl.filterByType('VIGILANCE') | orderBy:repCtrl.getDescriptionPos"
-                                        ng-init="handler={}"
-                                        ng-switch="(handler.value.identifier || desc.property.identifier)">
+                    <div
+                        class="row"
+                        ng-repeat="desc in repCtrl.currentDescriptions | filter:repCtrl.filterByType('VIGILANCE') | orderBy:repCtrl.getDescriptionPos"
+                        ng-init="handler={}"
+                        ng-switch="(handler.value.identifier || desc.property.identifier)"
+                    >
                         <div class="col-xs-4" ng-class="{'no-padding': detailForm.$visible && !repCtrl.formRO, 'text-right':  !detailForm.$visible || !desc.creationMode }">
                             <span class="btn-group-xs margin-l15 pull-left" ng-show="detailForm.$visible" sem-roles-allowed="COND_REPORT_HAB2">
-                                <button type="button" class="btn btn-sem1 btn-removable" uib-tooltip="{{::'Supprimer' | translate}}"
-                                        ng-click="repCtrl.deleteDescription(desc)"
-                                        ng-disabled="repCtrl.formRO || isReportValidated || cantModif">
+                                <button
+                                    type="button"
+                                    class="btn btn-sem1 btn-removable"
+                                    uib-tooltip="{{::'Supprimer' | translate}}"
+                                    ng-click="repCtrl.deleteDescription(desc)"
+                                    ng-disabled="repCtrl.formRO || isReportValidated || cantModif"
+                                >
                                     <span class="glyphicon-halflings glyphicon-trash"></span>
-                                    <a class="text-danger cursor-help" ng-if="repCtrl.isDescriptionValueRequired(handler, desc)"
-                                        uib-tooltip="{{ ::'Ce champ est obligatoire' | translate }}">*</a>
+                                    <a class="text-danger cursor-help" ng-if="repCtrl.isDescriptionValueRequired(handler, desc)" uib-tooltip="{{ ::'Ce champ est obligatoire' | translate }}" tooltip-append-to-body="true"
+                                        >*</a
+                                    >
                                 </button>
                             </span>
                             <!-- Libellé - Liste déroulante si ajout en cours ou Label/Lien selon l'état du formulaire -->
-                            <numa-editable-field type="{{repCtrl.getEditableType(desc, detailForm)}}"
-                                                 value="{{repCtrl.getAttributeLabel(desc) | translate}}"
-                                                 form="detailForm" model="desc.property"
-                                                 ng-init="config = repCtrl.descriptionPropertyConfig(handler, 'VIGILANCE')" config="config"
-                                                 numa-onchange="repCtrl.changeDescriptionValue(handler, desc)"
-                                                 numa-readonly="repCtrl.formRO || isReportValidated || cantModif"></numa-editable-field>
+                            <numa-editable-field
+                                type="{{repCtrl.getEditableType(desc, detailForm)}}"
+                                value="{{repCtrl.getAttributeLabel(desc) | translate}}"
+                                form="detailForm"
+                                model="desc.property"
+                                ng-init="config = repCtrl.descriptionPropertyConfig(handler, 'VIGILANCE')"
+                                config="config"
+                                numa-onchange="repCtrl.changeDescriptionValue(handler, desc)"
+                                numa-readonly="repCtrl.formRO || isReportValidated || cantModif"
+                            ></numa-editable-field>
                         </div>
                         <!-- Description -->
                         <div class="col-xs-8" ng-switch-default>
-                            <numa-editable-field type="uiselect" form="detailForm" model="desc.value"
-                                                ng-init="config = repCtrl.descriptionValueConfig(handler, desc)" config="config"
-                                                numa-readonly="repCtrl.formRO || isReportValidated || cantModif"
-                                                ng-show="repCtrl.isDescriptionValueVisible(handler, desc, detailForm)"></numa-editable-field>
-                            <numa-editable-field type="textarea" model="desc.comment" form="detailForm"
-                                                numa-readonly="repCtrl.formRO || isReportValidated || cantModif"
-                                                ng-show="repCtrl.isDescriptionCommentVisible(handler, desc, detailForm)"></numa-editable-field>
+                            <numa-editable-field
+                                type="uiselect"
+                                form="detailForm"
+                                model="desc.value"
+                                ng-init="config = repCtrl.descriptionValueConfig(handler, desc)"
+                                config="config"
+                                numa-readonly="repCtrl.formRO || isReportValidated || cantModif"
+                                ng-show="repCtrl.isDescriptionValueVisible(handler, desc, detailForm)"
+                            ></numa-editable-field>
+                            <numa-editable-field
+                                type="textarea"
+                                model="desc.comment"
+                                form="detailForm"
+                                numa-readonly="repCtrl.formRO || isReportValidated || cantModif"
+                                ng-show="repCtrl.isDescriptionCommentVisible(handler, desc, detailForm)"
+                            ></numa-editable-field>
                         </div>
                         <!-- Autres infos -->
                         <div class="col-xs-8" ng-switch-when="BODY_DESC">
-                            <numa-editable-field type="textarea" model="repCtrl.currentDetail.bodyDesc"
-                                                 form="detailForm" numa-readonly="repCtrl.formRO || isReportValidated || cantModif"></numa-editable-field>
+                            <numa-editable-field type="textarea" model="repCtrl.currentDetail.bodyDesc" form="detailForm" numa-readonly="repCtrl.formRO || isReportValidated || cantModif"></numa-editable-field>
                         </div>
                     </div>
                     <div class="row margin-b20" ng-show="detailForm.$visible" sem-roles-allowed="COND_REPORT_HAB2">
                         <div class="col-xs-8 col-xs-offset-4 text-left">
-                            <button type="button" class="btn btn-sem1 btn-xs" ng-click="repCtrl.addDescription('VIGILANCE')"
-                                    ng-if="!repCtrl.formRO  && !isReportValidated && !cantModif">
+                            <button type="button" class="btn btn-sem1 btn-xs" ng-click="repCtrl.addDescription('VIGILANCE')" ng-if="!repCtrl.formRO  && !isReportValidated && !cantModif">
                                 <span class="glyphicon-halflings glyphicon-plus"></span>
                                 <i translate>Ajouter une nouvelle description</i>
                             </button>
@@ -670,14 +899,15 @@
                 <div class="column-bottom-button">
                     <!-- Création / Modification -->
                     <div class="btn-group margin-r15">
-                        <button type="button" class="btn btn-sem4" ng-disabled="detailForm.$waiting" ng-click="detailForm.$cancel()">
-                            <span class="glyphicon-regular unshare"></span> {{::'Annuler' | translate}}
-                        </button>
-                        <button type="submit" class="btn btn-sem2"
+                        <button type="button" class="btn btn-sem4" ng-disabled="detailForm.$waiting" ng-click="detailForm.$cancel()"><span class="glyphicon-regular unshare"></span> {{::'Annuler' | translate}}</button>
+                        <button
+                            type="submit"
+                            class="btn btn-sem2"
                             ng-disabled="repCtrl.formRO || repCtrl.isStateValidated(repCtrl.currentDetail.type)
                                         || (repCtrl.isUserPresta && repCtrl.currentDetail.createdBy !== repCtrl.loginUser)
                                         || (repCtrl.isUserPresta && repCtrl.currentDetail.type !== 'DIGITALIZATION' && repCtrl.currentDetail.type !== 'LIBRARY_BACK')
-                                        || (!repCtrl.isUserPresta && (repCtrl.currentDetail.type === 'DIGITALIZATION' || repCtrl.currentDetail.type === 'LIBRARY_BACK'))">
+                                        || (!repCtrl.isUserPresta && (repCtrl.currentDetail.type === 'DIGITALIZATION' || repCtrl.currentDetail.type === 'LIBRARY_BACK'))"
+                        >
                             <span class="glyphicon-regular floppy-save"></span> {{::'Enregistrer' | translate}}
                         </button>
                     </div>
@@ -686,8 +916,7 @@
         </form>
 
         <!-- Pièces jointes -->
-        <div class="formBlock" style="margin-top: 40px"
-             ng-if="repCtrl.loaded && repCtrl.report.identifier" ng-hide="reportForm.$visible || detailForm.$visible">
+        <div class="formBlock" style="margin-top: 40px" ng-if="repCtrl.loaded && repCtrl.report.identifier" ng-hide="reportForm.$visible || detailForm.$visible">
             <div class="formBlockTitle text-uppercase">
                 <span translate>Pièces jointes</span>
             </div>
@@ -697,7 +926,7 @@
                         <div class="thumbnail text-center">
                             <div style="min-height: 138px">
                                 <a ng-href="/api/rest/condreport_attachment/{{::att.identifier}}?file=true" download>
-                                    <img class="img-thumbnail" ng-src="/api/rest/condreport_attachment/{{::att.identifier}}?thumbnail=true"/>
+                                    <img class="img-thumbnail" ng-src="/api/rest/condreport_attachment/{{::att.identifier}}?thumbnail=true" />
                                 </a>
                             </div>
                             <div class="caption text-center">
@@ -707,15 +936,19 @@
                                     <span ng-switch-default>({{ ::att.fileSize / 1024 | number:2 }} kB)</span>
                                 </div>
                                 <div>
-                                    <button type="button" class="btn btn-sem1 btn-xs" uib-tooltip="{{::'Supprimer' | translate}}"
-                                            ng-disabled="repCtrl.formRO || repCtrl.isStateValidated(repCtrl.currentDetail.type)
+                                    <button
+                                        type="button"
+                                        class="btn btn-sem1 btn-xs"
+                                        uib-tooltip="{{::'Supprimer' | translate}}"
+                                        ng-disabled="repCtrl.formRO || repCtrl.isStateValidated(repCtrl.currentDetail.type)
                                                 || (repCtrl.isUserPresta && repCtrl.currentDetail.type !== 'DIGITALIZATION' && repCtrl.currentDetail.type !== 'LIBRARY_BACK')
                                                 || (!repCtrl.isUserPresta && (repCtrl.currentDetail.type === 'DIGITALIZATION' || repCtrl.currentDetail.type === 'LIBRARY_BACK'))"
-                                            ng-click="repCtrl.deleteAttachment(att)" sem-roles-allowed="COND_REPORT_HAB2">
+                                        ng-click="repCtrl.deleteAttachment(att)"
+                                        sem-roles-allowed="COND_REPORT_HAB2"
+                                    >
                                         <span class="glyphicon-halflings glyphicon-trash"></span>
                                     </button>
-                                    <a class="btn btn-sem1 btn-xs" uib-tooltip="{{::'Télécharger' | translate}}"
-                                       ng-href="/api/rest/condreport_attachment/{{::att.identifier}}?file=true" download>
+                                    <a class="btn btn-sem1 btn-xs" uib-tooltip="{{::'Télécharger' | translate}}" ng-href="/api/rest/condreport_attachment/{{::att.identifier}}?file=true" download>
                                         <span class="fa fa-download"></span>
                                     </a>
                                 </div>
@@ -732,11 +965,15 @@
                             <label for="importFiles0"><i translate>Ajouter des pièces jointes: </i></label>
                         </div>
                         <div class="form-group">
-                            <input type="file" id="importFiles0" multiple="true"
+                            <input
+                                type="file"
+                                id="importFiles0"
+                                multiple="true"
                                 ng-disabled="repCtrl.formRO || repCtrl.isStateValidated(repCtrl.currentDetail.type)
                                             || (repCtrl.isUserPresta && repCtrl.currentDetail.type !== 'DIGITALIZATION' && repCtrl.currentDetail.type !== 'LIBRARY_BACK')
                                             || (!repCtrl.isUserPresta && (repCtrl.currentDetail.type === 'DIGITALIZATION' || repCtrl.currentDetail.type === 'LIBRARY_BACK'))"
-                                onchange="angular.element(this).scope().repCtrl.addAttachments(this)" />
+                                onchange="angular.element(this).scope().repCtrl.addAttachments(this)"
+                            />
                         </div>
                     </div>
                 </div>

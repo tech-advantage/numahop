@@ -1,13 +1,5 @@
 package fr.progilone.pgcn.service.exchange.internetarchive.mapper;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
-
 import fr.progilone.pgcn.domain.document.ArchiveCollection;
 import fr.progilone.pgcn.domain.document.ArchiveContributor;
 import fr.progilone.pgcn.domain.document.ArchiveCoverage;
@@ -17,12 +9,17 @@ import fr.progilone.pgcn.domain.document.ArchiveItem;
 import fr.progilone.pgcn.domain.document.ArchiveLanguage;
 import fr.progilone.pgcn.domain.document.ArchiveSubject;
 import fr.progilone.pgcn.service.exchange.internetarchive.InternetArchiveItemDTO;
-
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 
 @Mapper
 public interface ArchiveItemMapper {
 
-	ArchiveItemMapper INSTANCE = Mappers.getMapper(ArchiveItemMapper.class);
+    ArchiveItemMapper INSTANCE = Mappers.getMapper(ArchiveItemMapper.class);
 
     InternetArchiveItemDTO archiveItemToInternetArchiveItemDTO(ArchiveItem item);
 

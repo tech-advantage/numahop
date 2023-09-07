@@ -1,24 +1,33 @@
 package fr.progilone.pgcn.web.rest.exchange;
 
-import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.DOC_UNIT_HAB0;
-import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.DOC_UNIT_HAB4;
+import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.*;
 
+import com.codahale.metrics.annotation.Timed;
+import fr.progilone.pgcn.domain.administration.MailboxConfiguration;
+import fr.progilone.pgcn.domain.administration.SftpConfiguration;
+import fr.progilone.pgcn.domain.document.DocUnit;
+import fr.progilone.pgcn.domain.dto.document.BibliographicRecordDcDTO;
+import fr.progilone.pgcn.domain.exchange.cines.CinesReport;
+import fr.progilone.pgcn.domain.util.CustomUserDetails;
+import fr.progilone.pgcn.exception.PgcnException;
+import fr.progilone.pgcn.exception.PgcnTechnicalException;
+import fr.progilone.pgcn.security.SecurityUtils;
+import fr.progilone.pgcn.service.administration.MailboxConfigurationService;
+import fr.progilone.pgcn.service.exchange.cines.CinesRequestHandlerService;
+import fr.progilone.pgcn.service.exchange.cines.ExportCinesService;
+import fr.progilone.pgcn.web.rest.AbstractRestController;
+import fr.progilone.pgcn.web.rest.administration.security.AuthorizationConstants;
+import fr.progilone.pgcn.web.util.AccessHelper;
+import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.File;
-import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.xml.bind.MarshalException;
-
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -30,30 +39,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.codahale.metrics.annotation.Timed;
-
-import fr.progilone.pgcn.domain.administration.MailboxConfiguration;
-import fr.progilone.pgcn.domain.administration.SftpConfiguration;
-import fr.progilone.pgcn.domain.document.DocUnit;
-import fr.progilone.pgcn.domain.dto.document.BibliographicRecordDcDTO;
-import fr.progilone.pgcn.domain.exchange.cines.CinesReport;
-import fr.progilone.pgcn.domain.util.CustomUserDetails;
-import fr.progilone.pgcn.exception.PgcnException;
-import fr.progilone.pgcn.exception.PgcnTechnicalException;
-import fr.progilone.pgcn.security.SecurityUtils;
-import fr.progilone.pgcn.service.administration.MailboxConfigurationService;
-import fr.progilone.pgcn.service.administration.SftpConfigurationService;
-import fr.progilone.pgcn.service.document.DocUnitService;
-import fr.progilone.pgcn.service.es.EsCinesReportService;
-import fr.progilone.pgcn.service.exchange.cines.CinesReportService;
-import fr.progilone.pgcn.service.exchange.cines.CinesRequestHandlerService;
-import fr.progilone.pgcn.service.exchange.cines.ExportCinesService;
-import fr.progilone.pgcn.service.exchange.ssh.SftpService;
-import fr.progilone.pgcn.web.rest.AbstractRestController;
-import fr.progilone.pgcn.web.rest.administration.security.AuthorizationConstants;
-import fr.progilone.pgcn.web.util.AccessHelper;
-import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
-
 /**
  * Contrôleur gérant l'export d'unités documentaires
  * <p>
@@ -63,65 +48,27 @@ import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
 @RequestMapping(value = "/api/rest/export/cines")
 public class ExportCinesController extends AbstractRestController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ExportCinesController.class);
-
-    private final CinesReportService cinesReportService;
     private final CinesRequestHandlerService cinesRequestHandlerService;
-    private final DocUnitService docUnitService;
-    private final EsCinesReportService esCinesReportService;
     private final ExportCinesService exportCinesService;
     private final MailboxConfigurationService mailboxConfigurationService;
-    private final SftpService sftpService;
-    private final SftpConfigurationService sftpConfigurationService;
     private final LibraryAccesssHelper libraryAccesssHelper;
     private final AccessHelper accessHelper;
 
     @Autowired
-    public ExportCinesController(final CinesReportService cinesReportService,
-                                 final CinesRequestHandlerService cinesRequestHandlerService,
-                                 final DocUnitService docUnitService,
-                                 final EsCinesReportService esCinesReportService,
+    public ExportCinesController(final CinesRequestHandlerService cinesRequestHandlerService,
                                  final ExportCinesService exportCinesService,
                                  final MailboxConfigurationService mailboxConfigurationService,
-                                 final SftpService sftpService,
-                                 final SftpConfigurationService sftpConfigurationService,
                                  final LibraryAccesssHelper libraryAccesssHelper,
                                  final AccessHelper accessHelper) {
-        this.cinesReportService = cinesReportService;
         this.cinesRequestHandlerService = cinesRequestHandlerService;
-        this.docUnitService = docUnitService;
-        this.esCinesReportService = esCinesReportService;
         this.exportCinesService = exportCinesService;
         this.mailboxConfigurationService = mailboxConfigurationService;
-        this.sftpService = sftpService;
-        this.sftpConfigurationService = sftpConfigurationService;
         this.libraryAccesssHelper = libraryAccesssHelper;
         this.accessHelper = accessHelper;
     }
-    
-    /**
-     * DEBUG ONLY
-     * 
-     * @param identifier
-     * @return
-     */
-//    @RequestMapping(value = "/checkbal")
-//    @PermitAll
-//    public ResponseEntity<?> checkBalCines() {
-//        
-//        // call : http://localhost:8080/api/rest/export/cines/checkbal
-//        cinesRequestHandlerService.updateExportedDocUnitsCron();
-//        
-//        return new ResponseEntity(HttpStatus.OK);
-//    }
 
-    
-    
     /**
      * Récupération des données enregistrées lors du précédent export
-     *
-     * @param identifier
-     * @return
      */
     @RequestMapping(value = "/{identifier}", method = RequestMethod.GET, params = {"export"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
@@ -141,43 +88,37 @@ public class ExportCinesController extends AbstractRestController {
         }
         exportCinesService.save(identifier, metaDc);
         return new ResponseEntity<>(HttpStatus.OK);
-        
+
     }
 
     /**
      * Génération du répertoire d'export et upload sur le serveur CINES (avec les métadonnées Dublin Core).
-     *
-     * @param request
-     * @param docUnitId
-     * @param conf
-     * @return
      */
-    @RequestMapping(method = RequestMethod.POST, params = {"send", "dc"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.POST,
+                    params = {"send",
+                              "dc"},
+                    produces = MediaType.APPLICATION_JSON_VALUE)
     @RolesAllowed({DOC_UNIT_HAB4})
     public ResponseEntity<CinesReport> exportDocUnitToCinesWithDc(final HttpServletRequest request,
                                                                   @RequestParam(value = "docUnit") final String docUnitId,
                                                                   @RequestParam(value = "conf", required = false) final SftpConfiguration conf,
-                                                                  @RequestParam(value = "reversion", required = false, defaultValue = "false") final
-                                                                      boolean reversion,
+                                                                  @RequestParam(value = "reversion", required = false, defaultValue = "false") final boolean reversion,
                                                                   @RequestBody final BibliographicRecordDcDTO metaDc) {
-         return exportCinesService.exportDocUnitToCines(request, docUnitId, metaDc, reversion, false, conf);
+        return exportCinesService.exportDocUnitToCines(request, docUnitId, metaDc, reversion, false, conf);
     }
 
     /**
      * Génération du répertoire d'export et upload sur le serveur CINES (avec les métadonnées EAD).
-     *
-     * @param request
-     * @param docUnitId
-     * @param conf
-     * @return
      */
-    @RequestMapping(method = RequestMethod.POST, params = {"send", "ead"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.POST,
+                    params = {"send",
+                              "ead"},
+                    produces = MediaType.APPLICATION_JSON_VALUE)
     @RolesAllowed({DOC_UNIT_HAB4})
     public ResponseEntity<CinesReport> exportDocUnitToCinesWithEad(final HttpServletRequest request,
                                                                    @RequestParam(value = "docUnit") final String docUnitId,
                                                                    @RequestParam(value = "conf", required = false) final SftpConfiguration conf,
-                                                                   @RequestParam(value = "reversion", required = false, defaultValue = "false") final
-                                                                       boolean reversion) {
+                                                                   @RequestParam(value = "reversion", required = false, defaultValue = "false") final boolean reversion) {
         return exportCinesService.exportDocUnitToCines(request, docUnitId, null, reversion, true, conf);
     }
 
@@ -186,8 +127,8 @@ public class ExportCinesController extends AbstractRestController {
      */
     @RequestMapping(method = RequestMethod.GET, params = {"check_mailbox"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @RolesAllowed({DOC_UNIT_HAB4})
-    public ResponseEntity<?> checkMailbox(final HttpServletRequest request,
-                                          @RequestParam(value = "conf", required = false) MailboxConfiguration conf) throws PgcnTechnicalException {
+    public ResponseEntity<?> checkMailbox(final HttpServletRequest request, @RequestParam(value = "conf", required = false) MailboxConfiguration conf)
+                                                                                                                                                       throws PgcnTechnicalException {
         Set<MailboxConfiguration> confs = null;
 
         // Vérification de la bibliothèque de l'utilisateur sur la configuration mail
@@ -224,11 +165,13 @@ public class ExportCinesController extends AbstractRestController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_XML_VALUE, params = {"aip", "docUnit"})
+    @RequestMapping(method = RequestMethod.GET,
+                    produces = MediaType.APPLICATION_XML_VALUE,
+                    params = {"aip",
+                              "docUnit"})
     @RolesAllowed({DOC_UNIT_HAB4})
-    public ResponseEntity<?> getAip(final HttpServletRequest request,
-                                    final HttpServletResponse response,
-                                    @RequestParam(value = "docUnit") final String docUnitId) throws PgcnTechnicalException {
+    public ResponseEntity<?> getAip(final HttpServletRequest request, final HttpServletResponse response, @RequestParam(value = "docUnit") final String docUnitId)
+                                                                                                                                                                   throws PgcnTechnicalException {
 
         final File aip = cinesRequestHandlerService.retrieveAip(docUnitId);
         // Non trouvé
@@ -239,8 +182,11 @@ public class ExportCinesController extends AbstractRestController {
             return new ResponseEntity<>(HttpStatus.OK);
         }
     }
-    
-    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_XML_VALUE, params = {"sip", "docUnit"})
+
+    @RequestMapping(method = RequestMethod.GET,
+                    produces = MediaType.APPLICATION_XML_VALUE,
+                    params = {"sip",
+                              "docUnit"})
     @RolesAllowed({DOC_UNIT_HAB4})
     public ResponseEntity<?> getSip(final HttpServletRequest request,
                                     final HttpServletResponse response,
@@ -248,7 +194,7 @@ public class ExportCinesController extends AbstractRestController {
                                     @RequestParam(value = "cinesStatus") final String status) throws PgcnTechnicalException {
 
         final File sip = cinesRequestHandlerService.retrieveSip(docUnitId, StringUtils.equals(status, "FAILED"));
-        
+
         // Non trouvé
         if (sip == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -257,13 +203,16 @@ public class ExportCinesController extends AbstractRestController {
             return new ResponseEntity<>(HttpStatus.OK);
         }
     }
-    
-    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_XML_VALUE, params = {"mets", "docUnit"})
+
+    @RequestMapping(method = RequestMethod.GET,
+                    produces = MediaType.APPLICATION_XML_VALUE,
+                    params = {"mets",
+                              "docUnit"})
     @RolesAllowed({DOC_UNIT_HAB4})
     public ResponseEntity<?> getMets(final HttpServletRequest request,
-                                    final HttpServletResponse response,
-                                    @RequestParam(value = "docUnit") final String docUnitId,
-                                    @RequestParam(value = "cinesStatus") final String status) throws PgcnTechnicalException {
+                                     final HttpServletResponse response,
+                                     @RequestParam(value = "docUnit") final String docUnitId,
+                                     @RequestParam(value = "cinesStatus") final String status) throws PgcnTechnicalException {
 
         final File mets = cinesRequestHandlerService.retrieveMets(docUnitId, StringUtils.equals(status, "FAILED"));
         // Non trouvé
@@ -277,43 +226,32 @@ public class ExportCinesController extends AbstractRestController {
 
     /**
      * Déclenche l'export CINES de la liste de documents spécifiés.
-     *
-     * @throws PgcnTechnicalException
      */
     @RolesAllowed({DOC_UNIT_HAB4})
     @RequestMapping(method = RequestMethod.GET, params = {"mass_export"})
     @Timed
-    public ResponseEntity<?> massExport(final HttpServletRequest request, 
-                                        @RequestParam(name = "docs") final List<String> docs) throws PgcnTechnicalException {
+    public ResponseEntity<?> massExport(final HttpServletRequest request, @RequestParam(name = "docs") final List<String> docs) throws PgcnTechnicalException {
         // droits d'accès à l'ud
         final Collection<DocUnit> filteredDocUnits = accessHelper.filterDocUnits(docs);
         if (filteredDocUnits.isEmpty()) {
-            return new ResponseEntity(HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         for (final DocUnit docUnit : filteredDocUnits) {
             exportCinesService.exportDocUnitToCines(request, docUnit.getIdentifier());
         }
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
-    
-    
+
     /**
      * Reprise d'historique des controles.
-     * 
-     * @param request
-     * @param libraryId
-     * @return
-     * @throws PgcnException
      */
     @RequestMapping(value = "/regenerateMets", method = RequestMethod.GET)
     @Timed
     @RolesAllowed(AuthorizationConstants.SUPER_ADMIN)
-    public ResponseEntity<?> regenerateMets(final HttpServletRequest request, 
-                                                 @RequestParam(name = "library") final String libraryId) throws PgcnException {
-        
+    public ResponseEntity<?> regenerateMets(final HttpServletRequest request, @RequestParam(name = "library") final String libraryId) throws PgcnException {
+
         exportCinesService.regenerateMetsforArchivedDocUnits(libraryId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-    
- 
+
 }

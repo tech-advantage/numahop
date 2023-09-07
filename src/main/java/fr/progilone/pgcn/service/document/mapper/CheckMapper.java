@@ -8,7 +8,7 @@ import org.mapstruct.factory.Mappers;
 @Mapper(uses = {DocPageMapper.class})
 public interface CheckMapper {
 
-	CheckMapper INSTANCE = Mappers.getMapper(CheckMapper.class);
+    CheckMapper INSTANCE = Mappers.getMapper(CheckMapper.class);
 
     CheckDTO checkToCheckDTO(Check check);
 }

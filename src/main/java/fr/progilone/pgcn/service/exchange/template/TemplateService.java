@@ -1,24 +1,5 @@
 package fr.progilone.pgcn.service.exchange.template;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.util.List;
-
-import javax.annotation.PostConstruct;
-
-import org.apache.commons.io.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
 import fr.progilone.pgcn.domain.exchange.template.Name;
 import fr.progilone.pgcn.domain.exchange.template.Template;
 import fr.progilone.pgcn.domain.library.Library;
@@ -28,6 +9,22 @@ import fr.progilone.pgcn.exception.message.PgcnErrorCode;
 import fr.progilone.pgcn.exception.message.PgcnList;
 import fr.progilone.pgcn.repository.exchange.template.TemplateRepository;
 import fr.progilone.pgcn.service.storage.FileStorageManager;
+import jakarta.annotation.PostConstruct;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.util.List;
+import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Gestion des templates Velocity
@@ -57,7 +54,7 @@ public class TemplateService {
 
     @Transactional
     public void delete(final String id) {
-        final Template template = templateRepository.findOne(id);
+        final Template template = templateRepository.findById(id).orElse(null);
         deleteTemplateFile(template);
         templateRepository.delete(template);
     }
@@ -99,9 +96,6 @@ public class TemplateService {
 
     /**
      * Retourne un {@link Reader} sur le fichier de ce template
-     *
-     * @param template
-     * @return
      */
     @Transactional(readOnly = true)
     public InputStream getContentStream(final Template template) {
@@ -119,20 +113,17 @@ public class TemplateService {
     /**
      * File correspondant au template passé en paramètre
      *
-     * @param template
      * @return null si aucun fichier n'est trouvé
      */
     @Transactional(readOnly = true)
     public File getTemplateFile(final Template template) {
-        
-        if (template != null &&
-                    template.getName() == Name.ReinitPassword) {
+
+        if (template != null && template.getName() == Name.ReinitPassword) {
             return fm.uncheckedRetrieveFile(templateDir, template);
         } else {
             return fm.retrieveFile(templateDir, template);
         }
-        
-            
+
     }
 
     @Transactional
@@ -145,7 +136,7 @@ public class TemplateService {
     public Template save(final Template template, final MultipartFile file) {
         // Upload du fichier
         if (file != null && file.getSize() > 0) {
-            final Template dbTemplate = templateRepository.findOne(template.getIdentifier());
+            final Template dbTemplate = templateRepository.findById(template.getIdentifier()).orElseThrow();
             // Suppression de l'ancien fichier
             deleteTemplateFile(dbTemplate);
             // Mise à jour du template
@@ -164,9 +155,7 @@ public class TemplateService {
             }
 
             if (templateFile == null) {
-                LOG.error("Une erreur s'est produite lors de la sauvegarde du template {} (Template {})",
-                          file.getOriginalFilename(),
-                          savedTemplate.getIdentifier());
+                LOG.error("Une erreur s'est produite lors de la sauvegarde du template {} (Template {})", file.getOriginalFilename(), savedTemplate.getIdentifier());
 
             } else {
                 LOG.debug("Fichier {} importé", templateFile.getAbsolutePath());
@@ -194,17 +183,12 @@ public class TemplateService {
 
         if (library != null && templateName != null) {
             // name + engine + library unique
-            final Long countDupl = template.getIdentifier() == null ?
-                                   templateRepository.countByNameAndLibraryIdentifier(templateName, library.getIdentifier()) :
-                                   templateRepository.countByNameAndLibraryIdentifierAndIdentifierNot(templateName,
-                                                                                                      library.getIdentifier(),
-                                                                                                      template.getIdentifier());
+            final Long countDupl = template.getIdentifier() == null ? templateRepository.countByNameAndLibraryIdentifier(templateName, library.getIdentifier())
+                                                                    : templateRepository.countByNameAndLibraryIdentifierAndIdentifierNot(templateName,
+                                                                                                                                         library.getIdentifier(),
+                                                                                                                                         template.getIdentifier());
             if (countDupl > 0) {
-                errors.add(builder.reinit()
-                                  .setCode(PgcnErrorCode.TPL_DUPLICATE)
-                                  .addComplement("name: " + templateName)
-                                  .addComplement("library: " + library)
-                                  .build());
+                errors.add(builder.reinit().setCode(PgcnErrorCode.TPL_DUPLICATE).addComplement("name: " + templateName).addComplement("library: " + library).build());
             }
         }
 

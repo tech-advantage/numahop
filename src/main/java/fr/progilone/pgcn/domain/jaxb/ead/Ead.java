@@ -1,30 +1,30 @@
 //
-// Ce fichier a été généré par l'implémentation de référence JavaTM Architecture for XML Binding (JAXB), v2.2.8-b130911.1802 
-// Voir <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
-// Toute modification apportée à ce fichier sera perdue lors de la recompilation du schéma source. 
-// Généré le : 2017.05.16 à 10:56:55 AM CEST 
+// Ce fichier a été généré par l'implémentation de référence JavaTM Architecture for XML Binding (JAXB), v2.2.8-b130911.1802
+// Voir <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a>
+// Toute modification apportée à ce fichier sera perdue lors de la recompilation du schéma source.
+// Généré le : 2017.05.16 à 10:56:55 AM CEST
 //
-
 
 package fr.progilone.pgcn.domain.jaxb.ead;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlID;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlID;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
- * <p>Classe Java pour anonymous complex type.
- * 
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
- * 
+ * <p>
+ * Classe Java pour anonymous complex type.
+ *
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ *
  * <pre>
  * &lt;complexType>
  *   &lt;complexContent>
@@ -40,15 +40,14 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
+ *
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "eadheader",
-    "frontmatter",
-    "archdesc"
-})
+@XmlType(name = "",
+         propOrder = {"eadheader",
+                      "frontmatter",
+                      "archdesc"})
 @XmlRootElement(name = "ead")
 public class Ead {
 
@@ -74,11 +73,11 @@ public class Ead {
 
     /**
      * Obtient la valeur de la propriété eadheader.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link Eadheader }
-     *     
+     *         possible object is
+     *         {@link Eadheader }
+     *
      */
     public Eadheader getEadheader() {
         return eadheader;
@@ -86,11 +85,11 @@ public class Ead {
 
     /**
      * Définit la valeur de la propriété eadheader.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link Eadheader }
-     *     
+     *            allowed object is
+     *            {@link Eadheader }
+     *
      */
     public void setEadheader(Eadheader value) {
         this.eadheader = value;
@@ -98,11 +97,11 @@ public class Ead {
 
     /**
      * Obtient la valeur de la propriété frontmatter.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link Frontmatter }
-     *     
+     *         possible object is
+     *         {@link Frontmatter }
+     *
      */
     public Frontmatter getFrontmatter() {
         return frontmatter;
@@ -110,11 +109,11 @@ public class Ead {
 
     /**
      * Définit la valeur de la propriété frontmatter.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link Frontmatter }
-     *     
+     *            allowed object is
+     *            {@link Frontmatter }
+     *
      */
     public void setFrontmatter(Frontmatter value) {
         this.frontmatter = value;
@@ -122,11 +121,11 @@ public class Ead {
 
     /**
      * Obtient la valeur de la propriété archdesc.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link Archdesc }
-     *     
+     *         possible object is
+     *         {@link Archdesc }
+     *
      */
     public Archdesc getArchdesc() {
         return archdesc;
@@ -134,11 +133,11 @@ public class Ead {
 
     /**
      * Définit la valeur de la propriété archdesc.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link Archdesc }
-     *     
+     *            allowed object is
+     *            {@link Archdesc }
+     *
      */
     public void setArchdesc(Archdesc value) {
         this.archdesc = value;
@@ -146,11 +145,11 @@ public class Ead {
 
     /**
      * Obtient la valeur de la propriété relatedencoding.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *         possible object is
+     *         {@link String }
+     *
      */
     public String getRelatedencoding() {
         return relatedencoding;
@@ -158,11 +157,11 @@ public class Ead {
 
     /**
      * Définit la valeur de la propriété relatedencoding.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is
+     *            {@link String }
+     *
      */
     public void setRelatedencoding(String value) {
         this.relatedencoding = value;
@@ -170,11 +169,11 @@ public class Ead {
 
     /**
      * Obtient la valeur de la propriété id.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *         possible object is
+     *         {@link String }
+     *
      */
     public String getId() {
         return id;
@@ -182,11 +181,11 @@ public class Ead {
 
     /**
      * Définit la valeur de la propriété id.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is
+     *            {@link String }
+     *
      */
     public void setId(String value) {
         this.id = value;
@@ -194,11 +193,11 @@ public class Ead {
 
     /**
      * Obtient la valeur de la propriété altrender.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *         possible object is
+     *         {@link String }
+     *
      */
     public String getAltrender() {
         return altrender;
@@ -206,11 +205,11 @@ public class Ead {
 
     /**
      * Définit la valeur de la propriété altrender.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is
+     *            {@link String }
+     *
      */
     public void setAltrender(String value) {
         this.altrender = value;
@@ -218,11 +217,11 @@ public class Ead {
 
     /**
      * Obtient la valeur de la propriété audience.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *         possible object is
+     *         {@link String }
+     *
      */
     public String getAudience() {
         return audience;
@@ -230,11 +229,11 @@ public class Ead {
 
     /**
      * Définit la valeur de la propriété audience.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is
+     *            {@link String }
+     *
      */
     public void setAudience(String value) {
         this.audience = value;

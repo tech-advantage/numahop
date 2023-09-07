@@ -1,14 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <!-- 2 flags de plus pour les controles automatiques -->
     <changeSet id="pgcn-document-16" author="progilone">
 
         <addColumn tableName="del_delivery">
-            <column name="file_bib_prefix_ok" type="BOOLEAN" defaultValueBoolean="false"/>
-            <column name="file_case_ok" type="BOOLEAN" defaultValueBoolean="false"/>
+            <column name="file_bib_prefix_ok" type="BOOLEAN" defaultValueBoolean="false" />
+            <column name="file_case_ok" type="BOOLEAN" defaultValueBoolean="false" />
         </addColumn>
 
     </changeSet>

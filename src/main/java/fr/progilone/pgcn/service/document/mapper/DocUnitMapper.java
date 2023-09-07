@@ -1,13 +1,5 @@
 package fr.progilone.pgcn.service.document.mapper;
 
-import org.apache.commons.lang3.StringUtils;
-import org.mapstruct.AfterMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.Mappings;
-import org.mapstruct.factory.Mappers;
-
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.dto.document.DocUnitDTO;
 import fr.progilone.pgcn.domain.dto.document.SummaryDocUnitDTO;
@@ -23,6 +15,13 @@ import fr.progilone.pgcn.service.ocrlangconfiguration.mapper.OcrLanguageMapper;
 import fr.progilone.pgcn.service.project.mapper.ProjectMapper;
 import fr.progilone.pgcn.service.project.mapper.SimpleProjectMapper;
 import fr.progilone.pgcn.service.workflow.mapper.WorkflowMapper;
+import org.apache.commons.lang3.StringUtils;
+import org.mapstruct.AfterMapping;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.Mappings;
+import org.mapstruct.factory.Mappers;
 
 @Mapper(uses = {AutomaticCheckResultMapper.class,
                 BibliographicRecordMapper.class,
@@ -50,7 +49,7 @@ public abstract class DocUnitMapper {
     public abstract DocUnitDTO docUnitToDocUnitDTO(DocUnit doc);
 
     public abstract SummaryDocUnitDTO docUnitToDocUnitSummaryDTO(DocUnit doc);
-    
+
     public abstract SummaryDocUnitWithLotDTO docUnitToDocUnitSummaryWithLotDTO(DocUnit doc);
 
     /**
@@ -69,14 +68,13 @@ public abstract class DocUnitMapper {
         }
         final long nbChildren = doc.getChildren().stream().filter(ch -> ch.getState() == DocUnit.State.AVAILABLE).count();
         dto.setNbChildren((int) nbChildren);
-        final long nbSiblings = doc.getSibling() == null ?
-                                0 :
-                                doc.getSibling()
-                                   .getDocUnits()
-                                   .stream()
-                                   .filter(ch -> ch.getState() == DocUnit.State.AVAILABLE && !StringUtils.equals(ch.getIdentifier(),
-                                                                                                                 doc.getIdentifier()))
-                                   .count();
+        final long nbSiblings = doc.getSibling() == null ? 0
+                                                         : doc.getSibling()
+                                                              .getDocUnits()
+                                                              .stream()
+                                                              .filter(ch -> ch.getState() == DocUnit.State.AVAILABLE && !StringUtils.equals(ch.getIdentifier(),
+                                                                                                                                            doc.getIdentifier()))
+                                                              .count();
         dto.setNbSiblings((int) nbSiblings);
         // on en profite pour recuperer le statut
         dto.setState(doc.getState().name());

@@ -1,16 +1,46 @@
 <div class="progress-wrapper">
     <div class="clock-progress ng-cloak" ng-style="mainCtrl.getStyle()">{{ mainCtrl.time }}</div>
-    <round-progress max="24" current="mainCtrl.hours" color="#9D6D7B" bgcolor="transparent" radius="{{ mainCtrl.radius*1.5 }}"
-        semi="false" rounded="false" clockwise="true" responsive="true" stroke="{{ mainCtrl.stroke*1.5 }}" animation="easeOutCubic">
-
-        <round-progress max="59" current="mainCtrl.minutes" color="#722E42" bgcolor="transparent" radius="{{ mainCtrl.radius*1.5 }}"
-            semi="false" rounded="false" clockwise="true" responsive="true" stroke="{{ mainCtrl.stroke*1.5 }}" animation="easeOutCubic"
-            offset="inherit">
-
-
-            <round-progress max="59" current="mainCtrl.seconds" color="#5C2E42" bgcolor="transparent" radius="{{ mainCtrl.radius*1.5 }}"
-                semi="false" rounded="false" clockwise="true" responsive="true" stroke="{{ mainCtrl.stroke*1.5 }}" animation="easeOutCubic"
-                offset="inherit"></round-progress>
+    <round-progress
+        max="24"
+        current="mainCtrl.hours"
+        color="#9D6D7B"
+        bgcolor="transparent"
+        radius="{{ mainCtrl.radius*1.5 }}"
+        semi="false"
+        rounded="false"
+        clockwise="true"
+        responsive="true"
+        stroke="{{ mainCtrl.stroke*1.5 }}"
+        animation="easeOutCubic"
+    >
+        <round-progress
+            max="59"
+            current="mainCtrl.minutes"
+            color="#722E42"
+            bgcolor="transparent"
+            radius="{{ mainCtrl.radius*1.5 }}"
+            semi="false"
+            rounded="false"
+            clockwise="true"
+            responsive="true"
+            stroke="{{ mainCtrl.stroke*1.5 }}"
+            animation="easeOutCubic"
+            offset="inherit"
+        >
+            <round-progress
+                max="59"
+                current="mainCtrl.seconds"
+                color="#5C2E42"
+                bgcolor="transparent"
+                radius="{{ mainCtrl.radius*1.5 }}"
+                semi="false"
+                rounded="false"
+                clockwise="true"
+                responsive="true"
+                stroke="{{ mainCtrl.stroke*1.5 }}"
+                animation="easeOutCubic"
+                offset="inherit"
+            ></round-progress>
         </round-progress>
     </round-progress>
 </div>

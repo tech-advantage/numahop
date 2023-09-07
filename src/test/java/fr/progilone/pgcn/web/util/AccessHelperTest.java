@@ -1,5 +1,8 @@
 package fr.progilone.pgcn.web.util;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 import fr.progilone.pgcn.domain.delivery.Delivery;
 import fr.progilone.pgcn.domain.document.DigitalDocument;
 import fr.progilone.pgcn.domain.document.DocUnit;
@@ -19,28 +22,24 @@ import fr.progilone.pgcn.service.lot.LotService;
 import fr.progilone.pgcn.service.project.ProjectService;
 import fr.progilone.pgcn.service.train.TrainService;
 import fr.progilone.pgcn.service.user.UserService;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.security.authentication.TestingAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
  * Created by Sébastien on 20/12/2016.
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class AccessHelperTest {
 
     public static final CustomUserDetails USER_PRESTA = new CustomUserDetails("4efbfc73-3af8-4747-b730-8610374acf86",
@@ -89,7 +88,7 @@ public class AccessHelperTest {
 
     private AccessHelper accessHelper;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         accessHelper = new AccessHelper(bibliographicRecordService,
                                         deliveryService,
@@ -108,7 +107,7 @@ public class AccessHelperTest {
         final String identifier = "18b62180-6773-407c-9171-2e978b8f57eb";
 
         // pas connecté
-        boolean actual = accessHelper.checkProject(identifier);
+        final boolean actual = accessHelper.checkProject(identifier);
         assertFalse(actual);
         verify(projectService, never()).findByIdentifier(identifier);
     }
@@ -120,7 +119,7 @@ public class AccessHelperTest {
         // super user
         setUser(USER_SUPER);
 
-        boolean actual = accessHelper.checkProject(identifier);
+        final boolean actual = accessHelper.checkProject(identifier);
         assertTrue(actual);
         verify(projectService, never()).findByIdentifier(identifier);
     }
@@ -209,8 +208,7 @@ public class AccessHelperTest {
 
     @Test
     public void testFilterProjects() {
-        final List<String> identifiers =
-            Arrays.asList("e00d7033-1935-4f21-b825-91fec1ec3067", "6c2aa430-e67d-4b8a-800f-352a754498ae", "c0d6edc7-6e5d-4100-9b36-eb295a63cfa9");
+        final List<String> identifiers = Arrays.asList("e00d7033-1935-4f21-b825-91fec1ec3067", "6c2aa430-e67d-4b8a-800f-352a754498ae", "c0d6edc7-6e5d-4100-9b36-eb295a63cfa9");
         final List<Project> projects = identifiers.stream().map(id -> {
             final Project project = new Project();
             project.setIdentifier(id);
@@ -238,8 +236,7 @@ public class AccessHelperTest {
 
     @Test
     public void testFilterLots() {
-        final List<String> identifiers =
-            Arrays.asList("e00d7033-1935-4f21-b825-91fec1ec3067", "6c2aa430-e67d-4b8a-800f-352a754498ae", "c0d6edc7-6e5d-4100-9b36-eb295a63cfa9");
+        final List<String> identifiers = Arrays.asList("e00d7033-1935-4f21-b825-91fec1ec3067", "6c2aa430-e67d-4b8a-800f-352a754498ae", "c0d6edc7-6e5d-4100-9b36-eb295a63cfa9");
         final List<Lot> lots = identifiers.stream().map(id -> {
             final Lot lot = new Lot();
             lot.setIdentifier(id);
@@ -272,8 +269,7 @@ public class AccessHelperTest {
 
     @Test
     public void testFilterTrains() {
-        final List<String> identifiers =
-            Arrays.asList("e00d7033-1935-4f21-b825-91fec1ec3067", "6c2aa430-e67d-4b8a-800f-352a754498ae", "c0d6edc7-6e5d-4100-9b36-eb295a63cfa9");
+        final List<String> identifiers = Arrays.asList("e00d7033-1935-4f21-b825-91fec1ec3067", "6c2aa430-e67d-4b8a-800f-352a754498ae", "c0d6edc7-6e5d-4100-9b36-eb295a63cfa9");
         final List<Train> trains = identifiers.stream().map(id -> {
             final Train train = new Train();
             train.setIdentifier(id);
@@ -341,8 +337,7 @@ public class AccessHelperTest {
 
     @Test
     public void testFilterDigitalDocuments() {
-        final List<String> identifiers =
-            Arrays.asList("e00d7033-1935-4f21-b825-91fec1ec3067", "6c2aa430-e67d-4b8a-800f-352a754498ae", "c0d6edc7-6e5d-4100-9b36-eb295a63cfa9");
+        final List<String> identifiers = Arrays.asList("e00d7033-1935-4f21-b825-91fec1ec3067", "6c2aa430-e67d-4b8a-800f-352a754498ae", "c0d6edc7-6e5d-4100-9b36-eb295a63cfa9");
         final List<DigitalDocument> digitalDocuments = identifiers.stream().map(id -> {
             final DigitalDocument digitalDocument = new DigitalDocument();
             digitalDocument.setIdentifier(id);
@@ -368,8 +363,7 @@ public class AccessHelperTest {
 
     @Test
     public void testFilterDocUnits() {
-        final List<String> identifiers =
-            Arrays.asList("e00d7033-1935-4f21-b825-91fec1ec3067", "6c2aa430-e67d-4b8a-800f-352a754498ae", "c0d6edc7-6e5d-4100-9b36-eb295a63cfa9");
+        final List<String> identifiers = Arrays.asList("e00d7033-1935-4f21-b825-91fec1ec3067", "6c2aa430-e67d-4b8a-800f-352a754498ae", "c0d6edc7-6e5d-4100-9b36-eb295a63cfa9");
         final Set<DocUnit> docUnits = identifiers.stream().map(id -> {
             final DocUnit docUnit = new DocUnit();
             docUnit.setIdentifier(id);
@@ -459,8 +453,7 @@ public class AccessHelperTest {
 
     @Test
     public void testFilterUsers() {
-        final List<String> identifiers =
-            Arrays.asList("e00d7033-1935-4f21-b825-91fec1ec3067", "6c2aa430-e67d-4b8a-800f-352a754498ae", "c0d6edc7-6e5d-4100-9b36-eb295a63cfa9");
+        final List<String> identifiers = Arrays.asList("e00d7033-1935-4f21-b825-91fec1ec3067", "6c2aa430-e67d-4b8a-800f-352a754498ae", "c0d6edc7-6e5d-4100-9b36-eb295a63cfa9");
         final List<User> users = identifiers.stream().map(id -> {
             final User user = new User();
             user.setIdentifier(id);

@@ -1,9 +1,12 @@
 <!-- Format de représentation -->
-<sem-field sem-type="select" sem-label="{{::'Format' | translate}}"
-           sem-model="config.format" sem-label-class="col-xs-3" sem-field-class="col-xs-9"
-           sem-select-options="t as t.label for t in optionData track by t.identifier"
-           sem-option-data="mainCtrl.config.dataFormats"></sem-field>
+<sem-field
+    sem-type="select"
+    sem-label="{{::'Format' | translate}}"
+    sem-model="config.format"
+    sem-label-class="col-xs-3"
+    sem-field-class="col-xs-9"
+    sem-select-options="t as t.label for t in optionData track by t.identifier"
+    sem-option-data="mainCtrl.config.dataFormats"
+></sem-field>
 <!-- Bibliothèques -->
-<sem-field sem-type="uiselect" sem-label="{{::'Bibliothèque' | translate}}" 
-           sem-model="config.libraries" sem-label-class="col-xs-3" sem-field-class="col-xs-9"
-           sem-option-data="mainCtrl.config.libraries"></sem-field>
+<sem-field sem-type="uiselect" sem-label="{{::'Bibliothèque' | translate}}" sem-model="config.libraries" sem-label-class="col-xs-3" sem-field-class="col-xs-9" sem-option-data="mainCtrl.config.libraries"></sem-field>

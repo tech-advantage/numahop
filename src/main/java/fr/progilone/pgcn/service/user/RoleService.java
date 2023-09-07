@@ -11,14 +11,13 @@ import fr.progilone.pgcn.repository.library.LibraryRepository;
 import fr.progilone.pgcn.repository.user.RoleRepository;
 import fr.progilone.pgcn.repository.user.UserRepository;
 import fr.progilone.pgcn.service.user.mapper.RoleMapper;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class RoleService {
@@ -62,8 +61,9 @@ public class RoleService {
      */
     @Transactional(readOnly = true)
     public boolean isAuthorized(Role role, Authorization authorization) {
-        return role != null && authorization != null && CollectionUtils.isNotEmpty(role.getAuthorizations()) && role.getAuthorizations()
-                                                                                                                    .contains(authorization);
+        return role != null && authorization != null
+               && CollectionUtils.isNotEmpty(role.getAuthorizations())
+               && role.getAuthorizations().contains(authorization);
     }
 
     @Transactional
@@ -73,7 +73,7 @@ public class RoleService {
         validateDelete(role);
 
         // Suppression
-        roleRepository.delete(identifier);
+        roleRepository.deleteById(identifier);
     }
 
     private void validateDelete(final Role role) throws PgcnValidationException {
@@ -129,7 +129,8 @@ public class RoleService {
         }
         // le code est unique
         else {
-            final Role dup = id != null ? roleRepository.findByCodeAndIdentifierNot(code, id) : roleRepository.findByCode(code);
+            final Role dup = id != null ? roleRepository.findByCodeAndIdentifierNot(code, id)
+                                        : roleRepository.findByCode(code);
             if (dup != null) {
                 errors.add(builder.reinit().setCode(PgcnErrorCode.USER_ROLE_UNIQUE_CODE_VIOLATION).setField("code").build());
             }
@@ -140,7 +141,8 @@ public class RoleService {
         }
         // le label est unique
         else {
-            final Role dup = id != null ? roleRepository.findOneByLabelAndIdentifierNot(label, id) : roleRepository.findOneByLabel(label);
+            final Role dup = id != null ? roleRepository.findOneByLabelAndIdentifierNot(label, id)
+                                        : roleRepository.findOneByLabel(label);
             if (dup != null) {
                 errors.add(builder.reinit().setCode(PgcnErrorCode.USER_ROLE_UNIQUE_LABEL_VIOLATION).setField("label").build());
             }

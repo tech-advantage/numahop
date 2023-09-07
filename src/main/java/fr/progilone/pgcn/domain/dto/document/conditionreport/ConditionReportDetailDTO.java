@@ -1,9 +1,8 @@
 package fr.progilone.pgcn.domain.dto.document.conditionreport;
 
+import com.google.common.base.MoreObjects;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.common.base.MoreObjects;
 
 public class ConditionReportDetailDTO {
 

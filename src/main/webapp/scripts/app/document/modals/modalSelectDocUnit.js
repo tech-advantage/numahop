@@ -1,11 +1,9 @@
 (function () {
     'use strict';
 
-    angular.module("numaHopApp.controller")
-        .controller("ModalSelectDocUnitCtrl", ModalSelectDocUnitCtrl);
+    angular.module('numaHopApp.controller').controller('ModalSelectDocUnitCtrl', ModalSelectDocUnitCtrl);
 
     function ModalSelectDocUnitCtrl($uibModalInstance, DocUnitSrvc, options) {
-
         var mainCtrl = this;
         mainCtrl.close = close;
         mainCtrl.getPage = getPage;
@@ -25,7 +23,7 @@
             totalItems: 0,
             busy: true,
             page: PAGE_START,
-            size: PAGE_SIZE
+            size: PAGE_SIZE,
         };
 
         mainCtrl.selection = [];
@@ -34,7 +32,7 @@
 
         /**
          * Initialisation du contrôleur
-         * 
+         *
          */
         function init() {
             mainCtrl.multiple = !!options.multiple;
@@ -49,8 +47,8 @@
          */
         function getPage() {
             var params = {};
-            params["page"] = mainCtrl.pagination.page - 1;
-            params["size"] = PAGE_SIZE;
+            params['page'] = mainCtrl.pagination.page - 1;
+            params['size'] = PAGE_SIZE;
 
             var body = getSearchParams();
 
@@ -77,8 +75,7 @@
                     if (found) {
                         found._selected = true;
                         return found;
-                    }
-                    else {
+                    } else {
                         return sel;
                     }
                 });
@@ -96,7 +93,7 @@
          * Recherche d'entité
          */
         function search(event) {
-            if (angular.isDefined(event) && event.type === "keypress" && event.keyCode !== 13) {
+            if (angular.isDefined(event) && event.type === 'keypress' && event.keyCode !== 13) {
                 return;
             }
 
@@ -114,14 +111,14 @@
          */
         function getSearchParams() {
             var params = {};
-            params["active"] = true;
+            params['active'] = true;
 
             // Bibliothèque
             if (mainCtrl.library) {
-                params["libraries"] = [mainCtrl.library];
+                params['libraries'] = [mainCtrl.library];
             }
 
-            params["search"] = mainCtrl.searchRequest || "";
+            params['search'] = mainCtrl.searchRequest || '';
             return params;
         }
 
@@ -137,8 +134,7 @@
                 if (idx >= 0) {
                     mainCtrl.selection.splice(idx, 1);
                 }
-            }
-            else {
+            } else {
                 docUnit._selected = true;
                 mainCtrl.selection.push(docUnit);
             }
@@ -149,8 +145,7 @@
                         if (sel.identifier !== docUnit.identifier) {
                             delete sel._selected;
                             return;
-                        }
-                        else {
+                        } else {
                             return sel;
                         }
                     })
@@ -163,7 +158,7 @@
          * Fermeture / Annulation
          */
         function close() {
-            $uibModalInstance.dismiss("cancel");
+            $uibModalInstance.dismiss('cancel');
         }
 
         /**

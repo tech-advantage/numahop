@@ -3,27 +3,16 @@ package fr.progilone.pgcn.domain.document.conditionreport;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import fr.progilone.pgcn.domain.AbstractDomainObject;
 import fr.progilone.pgcn.domain.document.DocUnit;
-import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldIndex;
-import org.springframework.data.elasticsearch.annotations.FieldType;
-import org.springframework.data.elasticsearch.annotations.Parent;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
-
-import static fr.progilone.pgcn.service.es.EsConstant.*;
 
 /**
  * Constat d'état: données générales
@@ -31,18 +20,14 @@ import static fr.progilone.pgcn.service.es.EsConstant.*;
 @Entity
 @Table(name = ConditionReport.TABLE_NAME)
 @JsonSubTypes({@JsonSubTypes.Type(name = "doc_condreport", value = ConditionReport.class)})
-// Elasticsearch
-@Document(indexName = "#{elasticsearchIndexName}", type = ConditionReport.ES_TYPE, createIndex = false)
 public class ConditionReport extends AbstractDomainObject {
 
     public static final String TABLE_NAME = "doc_condreport";
-    public static final String ES_TYPE = "cond_report";
 
     /**
      * Constats d'états effectués
      */
     @OneToMany(mappedBy = "report", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    @Field(type = FieldType.Object)
     private final Set<ConditionReportDetail> details = new HashSet<>();
 
     /**
@@ -51,14 +36,6 @@ public class ConditionReport extends AbstractDomainObject {
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "doc_unit")
     private DocUnit docUnit;
-
-    /**
-     * Le champ "Unité documentaire rattachée" est répété pour la config elasticsearch @Parent, qui doit être de type String
-     */
-    @Column(name = "doc_unit", insertable = false, updatable = false)
-    @Parent(type = DocUnit.ES_TYPE)
-    @Field(type = FieldType.String, index = FieldIndex.not_analyzed)
-    private String docUnitId;
 
     /**
      * Responsable bibliothèque: nom
@@ -138,37 +115,8 @@ public class ConditionReport extends AbstractDomainObject {
     @OneToMany(mappedBy = "report", orphanRemoval = true, fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private final Set<ConditionReportAttachment> attachments = new HashSet<>();
 
-    /**
-     * Champ DocUnit: PgcnId répété pour l'indexation
-     */
-    @Transient
-    @Field(type = FieldType.String, analyzer = ANALYZER_PHRASE, searchAnalyzer = ANALYZER_PHRASE)
-    private final String docUnitPgcnId = null;
-
-    /**
-     * Champ DocUnit: label répété pour l'indexation
-     */
-    @Transient
-    @Field(type = FieldType.String, analyzer = ANALYZER_PHRASE, searchAnalyzer = ANALYZER_PHRASE)
-    private final String docUnitLabel = null;
-
-    /**
-     * Champ DocUnit: condReportType répété pour l'indexation
-     */
-    @Transient
-    @Enumerated(EnumType.STRING)
-    @Field(type = FieldType.String, analyzer = ANALYZER_KEYWORD)
-    private DocUnit.CondReportType docUnitCondReportType = null;
-
     public Set<ConditionReportDetail> getDetails() {
         return details;
-    }
-
-    public void setDetails(final Set<ConditionReportDetail> details) {
-        this.details.clear();
-        if (details != null) {
-            details.forEach(this::addDetail);
-        }
     }
 
     public void addDetail(final ConditionReportDetail detail) {
@@ -184,26 +132,6 @@ public class ConditionReport extends AbstractDomainObject {
 
     public void setDocUnit(final DocUnit docUnit) {
         this.docUnit = docUnit;
-    }
-
-    public String getDocUnitId() {
-        return docUnitId;
-    }
-
-    public void setDocUnitId(final String docUnitId) {
-        this.docUnitId = docUnitId;
-    }
-
-    public String getDocUnitPgcnId() {
-        return docUnit != null ? docUnit.getPgcnId() : null;
-    }
-
-    public String getDocUnitLabel() {
-        return docUnit != null ? docUnit.getLabel() : null;
-    }
-
-    public DocUnit.CondReportType getDocUnitCondReportType() {
-        return docUnit != null ? docUnit.getCondReportType() : null;
     }
 
     public String getLibRespName() {

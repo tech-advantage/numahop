@@ -1,36 +1,32 @@
 package fr.progilone.pgcn.service.storage;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static fr.progilone.pgcn.service.storage.BinaryStorageManager.Metadatas;
+import static org.junit.jupiter.api.Assertions.*;
 
+import com.lowagie.text.pdf.PdfReader;
+import fr.progilone.pgcn.domain.administration.viewsformat.ViewsFormatConfiguration;
+import fr.progilone.pgcn.exception.PgcnTechnicalException;
+import fr.progilone.pgcn.service.util.ImageUtils;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.test.util.ReflectionTestUtils;
 
-import com.lowagie.text.pdf.PdfReader;
-
-import fr.progilone.pgcn.domain.administration.viewsformat.ViewsFormatConfiguration;
-import fr.progilone.pgcn.exception.PgcnTechnicalException;
-import fr.progilone.pgcn.service.util.ImageUtils;
-
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ImageMagickServiceTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(ImageMagickServiceTest.class);
@@ -39,14 +35,13 @@ public class ImageMagickServiceTest {
     private static final String PATH_TO_IM_CONVERT = "C://Program Files/ImageMagick/convert.exe";
     private static final String PATH_TO_IM_IDENTIFY = "C://Program Files/ImageMagick/identify.exe";
 
-
     @InjectMocks
     private ImageMagickService service;
 
-
-    @Before
+    @BeforeEach
     public void setUp() {
         service.initialize(PATH_TO_IM_CONVERT, PATH_TO_IM_IDENTIFY);
+        ReflectionTestUtils.setField(service, "quoteDelim", "\"");
     }
 
     /**
@@ -55,16 +50,16 @@ public class ImageMagickServiceTest {
      * @throws IOException
      * @throws PgcnTechnicalException
      */
-    @Ignore
+    @Disabled
     @Test
     public void generateThumbnail() throws IOException, PgcnTechnicalException {
 
-//        final StoredFileFormat f = new StoredFileFormat();
-//        f.setWidth(2835L);
-//        f.setHeight(1964L);
-//        when(storedFileFormatRepository
-//             .getOneByLabel(StoredFileFormat.LABEL_PRINT))
-//                .thenReturn(f);
+        // final StoredFileFormat f = new StoredFileFormat();
+        // f.setWidth(2835L);
+        // f.setHeight(1964L);
+        // when(storedFileFormatRepository
+        // .getOneByLabel(StoredFileFormat.LABEL_PRINT))
+        // .thenReturn(f);
 
         if (service.isConfigured()) {
 
@@ -76,19 +71,24 @@ public class ImageMagickServiceTest {
             destTmpFile.deleteOnExit();
             assertTrue(destTmpFile.length() == 0L);
 
-         // Define format
+            // Define format
             final ViewsFormatConfiguration.FileFormat formatThumb = ViewsFormatConfiguration.FileFormat.THUMB;
             final ViewsFormatConfiguration conf = new ViewsFormatConfiguration();
             conf.setThumbHeight(100L);
             conf.setThumbWidth(100L);
-            service.generateThumbnail(sourceFile, destTmpFile, formatThumb, conf, new Long[] {192L, 192L});
+            service.generateThumbnail(sourceFile,
+                                      destTmpFile,
+                                      formatThumb,
+                                      conf,
+                                      new Long[] {192L,
+                                                  192L});
             assertTrue(destTmpFile.length() > 0L);
         } else {
             fail("Image Magick not configured");
         }
     }
 
-    @Ignore
+    @Disabled
     @Test
     public void getImagesFromPdf() {
 
@@ -105,7 +105,7 @@ public class ImageMagickServiceTest {
         }
     }
 
-    @Ignore
+    @Disabled
     @Test
     public void countPdfNumberPages() {
 
@@ -130,24 +130,24 @@ public class ImageMagickServiceTest {
      * @throws IOException
      * @throws PgcnTechnicalException
      */
-    @Ignore
+    @Disabled
     @Test
     public void getMetadatas() throws IOException, PgcnTechnicalException {
         if (service.isConfigured()) {
             final File sourceFile = new File(SRC_FILE);
-            if (sourceFile == null || !sourceFile.exists()) {
+            if (!sourceFile.exists()) {
                 fail("Unable to load " + SRC_FILE);
             }
-            final Optional<Map<String, String>> metas = service.getMetadatasOfFile(sourceFile, false);
+            final Optional<Metadatas> metas = service.getMetadatasOfFile(sourceFile, false);
             assertTrue(metas.isPresent());
-            assertTrue(StringUtils.equals(metas.get().get("Colorspace"), "sRGB"));
-            assertEquals(metas.get().get("Filesize"), "777835B");
+            assertTrue(StringUtils.equals(metas.get().getColorSpace(), "sRGB"));
+            assertEquals("777835B", metas.get().getFilesize());
         } else {
             fail("Image Magick not configured");
         }
     }
 
-    @Ignore
+    @Disabled
     @Test
     public void compareIMtoImgScalr() throws IOException {
         if (service.isConfigured()) {
@@ -175,7 +175,12 @@ public class ImageMagickServiceTest {
             final long startIM = System.nanoTime();
             destIMFiles.stream().forEach(file -> {
                 try {
-                    service.generateThumbnail(sourceFile, file, formatView, conf, new Long[] {100L, 100L});
+                    service.generateThumbnail(sourceFile,
+                                              file,
+                                              formatView,
+                                              conf,
+                                              new Long[] {100L,
+                                                          100L});
                 } catch (final PgcnTechnicalException e) {
                     fail();
                 }
@@ -184,12 +189,7 @@ public class ImageMagickServiceTest {
             LOG.info("Time elapsed : {} s", TimeUnit.NANOSECONDS.toSeconds(endIM - startIM));
 
             final long startScalr = System.nanoTime();
-            destIMFiles.stream().forEach(
-                                         file -> ImageUtils.createThumbnail(
-                                                                            sourceFile,
-                                                                            file,
-                                                                            (int) conf.getWidthByFormat(formatView),
-                                                                            (int) conf.getHeightByFormat(formatView)));
+            destIMFiles.stream().forEach(file -> ImageUtils.createThumbnail(sourceFile, file, (int) conf.getWidthByFormat(formatView), (int) conf.getHeightByFormat(formatView)));
             final long endScalr = System.nanoTime();
             LOG.info("Time elapsed : {} s", TimeUnit.NANOSECONDS.toSeconds(endScalr - startScalr));
             assertTrue(endIM - startIM > 0L);
@@ -199,8 +199,8 @@ public class ImageMagickServiceTest {
     }
 
     @Test
-    public void testAlphanumericSort(){
-        List<File> files = new ArrayList<>();
+    public void testAlphanumericSort() {
+        final List<File> files = new ArrayList<>();
 
         final File file1 = new File("src/files/GB_000040_001_0200.jpg");
         files.add(file1);
@@ -221,8 +221,8 @@ public class ImageMagickServiceTest {
 
         final Pattern p = Pattern.compile("\\d+");
         files.sort((f1, f2) -> {
-            String name1 = f1.getName();
-            String name2 = f2.getName();
+            final String name1 = f1.getName();
+            final String name2 = f2.getName();
             Matcher m = p.matcher(name1);
             Integer number1 = null;
             if (!m.find()) {
@@ -240,7 +240,7 @@ public class ImageMagickServiceTest {
                         number2 = Integer.parseInt(m.group());
                     }
                     int comparison = 0;
-                    if(number2 != null){
+                    if (number2 != null) {
                         comparison = number1.compareTo(number2);
                     }
                     if (comparison != 0) {

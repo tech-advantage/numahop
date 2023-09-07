@@ -1,16 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
 
     <changeSet id="pgcn-document-7" author="progilone">
         <addColumn tableName="doc_physical_document">
-            <column name="train" type="varchar(191)"/>
+            <column name="train" type="varchar(191)" />
         </addColumn>
 
-        <addForeignKeyConstraint baseTableName="doc_physical_document" baseColumnNames="train"
-                                 referencedTableName="train_train" referencedColumnNames="identifier"
-                                 constraintName="fk_doc_physical_document_train_train"/>
+        <addForeignKeyConstraint baseTableName="doc_physical_document" baseColumnNames="train" referencedTableName="train_train" referencedColumnNames="identifier" constraintName="fk_doc_physical_document_train_train" />
     </changeSet>
 </databaseChangeLog>

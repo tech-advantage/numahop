@@ -1,12 +1,9 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('OmekaConfigurationCtrl', OmekaConfigurationCtrl);
+    angular.module('numaHopApp.controller').controller('OmekaConfigurationCtrl', OmekaConfigurationCtrl);
 
-    function OmekaConfigurationCtrl($location, $scope, $timeout, $q, gettextCatalog,
-        OmekaConfigurationSrvc, StringTools, NumahopStorageService, NumaHopInitializationSrvc, HistorySrvc) {
-
+    function OmekaConfigurationCtrl($location, $scope, $timeout, $q, gettextCatalog, OmekaConfigurationSrvc, StringTools, NumahopStorageService, NumaHopInitializationSrvc, HistorySrvc) {
         $scope.applyFilter = applyFilter;
         $scope.clearSelection = clearSelection;
         $scope.create = create;
@@ -19,27 +16,26 @@
         $scope.unfilterInitial = unfilterInitial;
         $scope.updateConfiguration = updateConfiguration;
 
-        $scope.configurationInclude = "scripts/app/platformconfiguration/omekaconfigurationEdit.html";
+        $scope.configurationInclude = 'scripts/app/platformconfiguration/omekaconfigurationEdit.html';
         $scope.configuration = null;
 
-        var FILTER_STORAGE_SERVICE_KEY = "omeka_configurations";
+        var FILTER_STORAGE_SERVICE_KEY = 'omeka_configurations';
 
-        $scope.filters = {
-        };
+        $scope.filters = {};
 
         /**
          * Liste des options pour les listes déroulantes
          */
         $scope.options = {
             institutions: [],
-            libraries: []
+            libraries: [],
         };
         $scope.pagination = {
             items: [],
             totalItems: 0,
             busy: false,
             last: false,
-            page: 0
+            page: 0,
         };
         $scope.newConfigurations = []; // liste des configurations récemment créées
 
@@ -51,15 +47,13 @@
             loadFilters();
             nextPage();
 
-            $scope.$on("$routeUpdate",
-                function ($currentRoute, $previousRoute) {
-                    $timeout(function () {
-                        $scope.configurationInclude = null;
-                        $scope.$apply();
-                        $scope.configurationInclude = "scripts/app/platformconfiguration/omekaconfigurationEdit.html";
-                    });
-                }
-            );
+            $scope.$on('$routeUpdate', function ($currentRoute, $previousRoute) {
+                $timeout(function () {
+                    $scope.configurationInclude = null;
+                    $scope.$apply();
+                    $scope.configurationInclude = 'scripts/app/platformconfiguration/omekaconfigurationEdit.html';
+                });
+            });
         }
 
         // CRUD
@@ -68,7 +62,7 @@
                 $scope.configuration._selected = false;
                 $scope.configuration = null;
             }
-            $location.path("/platformconfiguration/omekaconfiguration").search({ id: null, mode: "edit" });
+            $location.path('/platformconfiguration/omekaconfiguration').search({ id: null, mode: 'edit' });
         }
         function edit(configuration) {
             clearSelection();
@@ -80,7 +74,7 @@
                 configuration._selected = true;
                 search = { id: configuration.identifier };
             }
-            $location.path("/platformconfiguration/omekaconfiguration").search(search);
+            $location.path('/platformconfiguration/omekaconfiguration').search(search);
         }
 
         function filterConfigurations() {
@@ -88,21 +82,21 @@
 
             var searchParams = {
                 page: $scope.pagination.page,
-                search: $scope.filterWith || ""
+                search: $scope.filterWith || '',
             };
 
             if ($scope.filters.libraries) {
-                var librariesIds = _.pluck($scope.filters.libraries, "identifier");
-                searchParams["libraries"] = librariesIds;
+                var librariesIds = _.pluck($scope.filters.libraries, 'identifier');
+                searchParams['libraries'] = librariesIds;
             }
             if ($scope.filters.omekas) {
-                searchParams["omekas"] = true;
+                searchParams['omekas'] = true;
 
-                if($scope.filters.omeka){
-                    searchParams["omekas"] = null;
+                if ($scope.filters.omeka) {
+                    searchParams['omekas'] = null;
                 }
-            } else if($scope.filters.omeka){
-                searchParams["omekas"] = false;
+            } else if ($scope.filters.omeka) {
+                searchParams['omekas'] = false;
             }
 
             return OmekaConfigurationSrvc.search(searchParams).$promise;
@@ -118,7 +112,7 @@
             doFilter();
         }
         function applyFilter(filterWith, event) {
-            if (event.type === "keypress" && event.keyCode === 13) {
+            if (event.type === 'keypress' && event.keyCode === 13) {
                 doFilter();
             }
         }
@@ -142,8 +136,7 @@
                         } else {
                             $scope.pagination.items.push(value.content[i]);
                         }
-                    }
-                    else {
+                    } else {
                         // On ne compte pas 2 fois les nouvelles configurations rechargées
                         $scope.pagination.totalItems--;
                     }
@@ -172,11 +165,10 @@
                 }
             }
 
-            $q.all([NumaHopInitializationSrvc.loadLibraries()])
-                .then(function (data) {
-                    $scope.options.libraries = data[0];
-                    nextPage();
-                });
+            $q.all([NumaHopInitializationSrvc.loadLibraries()]).then(function (data) {
+                $scope.options.libraries = data[0];
+                nextPage();
+            });
 
             return !!filters;
         }
@@ -188,15 +180,16 @@
         }
 
         function reinitFilters(reload) {
-            $scope.filters = {
-            };
+            $scope.filters = {};
             if (reload) {
                 doFilter();
             }
         }
         // liste
         function nextPage() {
-            if ($scope.pagination.busy || $scope.pagination.last) { return; }
+            if ($scope.pagination.busy || $scope.pagination.last) {
+                return;
+            }
             $scope.pagination.busy = true;
 
             filterConfigurations().then(function (value, responseHeaders) {
@@ -220,13 +213,12 @@
             }
         }
         function clearSelection() {
-            _.union($scope.pagination.items, $scope.newConfigurations)
-                .forEach(function (elt, i) {
-                    elt._selected = false;
-                });
+            _.union($scope.pagination.items, $scope.newConfigurations).forEach(function (elt, i) {
+                elt._selected = false;
+            });
         }
         function getFirstLetter(conf) {
-            return StringTools.getFirstLetter(conf.label, "OTHER");
+            return StringTools.getFirstLetter(conf.label, 'OTHER');
         }
     }
 })();

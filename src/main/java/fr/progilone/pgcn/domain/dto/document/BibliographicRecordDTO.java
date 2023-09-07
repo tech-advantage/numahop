@@ -1,11 +1,10 @@
 package fr.progilone.pgcn.domain.dto.document;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
 import fr.progilone.pgcn.domain.document.BibliographicRecord;
 import fr.progilone.pgcn.domain.dto.AbstractVersionedDTO;
 import fr.progilone.pgcn.domain.dto.library.SimpleLibraryDTO;
+import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * BibliographicRecord DTO
@@ -16,17 +15,17 @@ import fr.progilone.pgcn.domain.dto.library.SimpleLibraryDTO;
  */
 public class BibliographicRecordDTO extends AbstractVersionedDTO {
 
-	private String identifier;
-	private String title;
-	private String calames;
-	private String sigb;
-	private String sudoc;
-	private String docElectronique;
-	private SimpleLibraryDTO library;
-	private SimpleDocUnitDTO docUnit;
-	private List<DocPropertyDTO> properties;
+    private String identifier;
+    private String title;
+    private String calames;
+    private String sigb;
+    private String sudoc;
+    private String docElectronique;
+    private SimpleLibraryDTO library;
+    private SimpleDocUnitDTO docUnit;
+    private List<DocPropertyDTO> properties;
 
-	/** Ajout des infos de création */
+    /** Ajout des infos de création */
     private String createdBy;
     private LocalDateTime createdDate;
 
@@ -34,9 +33,10 @@ public class BibliographicRecordDTO extends AbstractVersionedDTO {
     private String lastModifiedBy;
     private LocalDateTime lastModifiedDate;
 
-    public BibliographicRecordDTO() {}
+    public BibliographicRecordDTO() {
+    }
 
-	public SimpleLibraryDTO getLibrary() {
+    public SimpleLibraryDTO getLibrary() {
         return library;
     }
 
@@ -45,60 +45,60 @@ public class BibliographicRecordDTO extends AbstractVersionedDTO {
     }
 
     public final SimpleDocUnitDTO getDocUnit() {
-		return docUnit;
-	}
+        return docUnit;
+    }
 
-	public void setDocUnit(SimpleDocUnitDTO docUnit) {
-		this.docUnit = docUnit;
-	}
+    public void setDocUnit(SimpleDocUnitDTO docUnit) {
+        this.docUnit = docUnit;
+    }
 
-	public final List<DocPropertyDTO> getProperties() {
-		return properties;
-	}
+    public final List<DocPropertyDTO> getProperties() {
+        return properties;
+    }
 
-	public void setProperties(List<DocPropertyDTO> properties) {
-		this.properties = properties;
-	}
+    public void setProperties(List<DocPropertyDTO> properties) {
+        this.properties = properties;
+    }
 
-	public final String getIdentifier() {
-		return identifier;
-	}
+    public final String getIdentifier() {
+        return identifier;
+    }
 
-	public void setIdentifier(String identifier) {
-		this.identifier = identifier;
-	}
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
+    }
 
-	public final String getTitle() {
-		return title;
-	}
+    public final String getTitle() {
+        return title;
+    }
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-	public final String getCalames() {
-		return calames;
-	}
+    public final String getCalames() {
+        return calames;
+    }
 
-	public void setCalames(String calames) {
-		this.calames = calames;
-	}
+    public void setCalames(String calames) {
+        this.calames = calames;
+    }
 
-	public final String getSigb() {
-		return sigb;
-	}
+    public final String getSigb() {
+        return sigb;
+    }
 
-	public void setSigb(String sigb) {
-		this.sigb = sigb;
-	}
+    public void setSigb(String sigb) {
+        this.sigb = sigb;
+    }
 
-	public final String getSudoc() {
-		return sudoc;
-	}
+    public final String getSudoc() {
+        return sudoc;
+    }
 
-	public void setSudoc(String sudoc) {
-		this.sudoc = sudoc;
-	}
+    public void setSudoc(String sudoc) {
+        this.sudoc = sudoc;
+    }
 
     public String getCreatedBy() {
         return createdBy;

@@ -1,17 +1,19 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <changeSet id="pgcn-project-11" author="progilone">
-        <dropColumn tableName="lot_lot" columnName="required_compression"/>
-        <dropColumn tableName="lot_lot" columnName="required_quality"/>
-        <dropColumn tableName="lot_lot" columnName="required_resolution"/>
+        <dropColumn tableName="lot_lot" columnName="required_compression" />
+        <dropColumn tableName="lot_lot" columnName="required_quality" />
+        <dropColumn tableName="lot_lot" columnName="required_resolution" />
 
         <addColumn tableName="lot_lot">
-            <column name="required_type_compression" type="varchar(191)"></column>
-            <column name="required_taux_compression" type="integer"></column>
-            <column name="required_resolution" type="varchar(191)"></column>
+            <column name="required_type_compression" type="varchar(191)" />
+            <column name="required_taux_compression" type="integer" />
+            <column name="required_resolution" type="varchar(191)" />
         </addColumn>
     </changeSet>
 

@@ -3,7 +3,7 @@ package fr.progilone.pgcn.domain.dto.administration;
 /**
  *
  * @author jbrunet
- * Créé le 19 avr. 2017
+ *         Créé le 19 avr. 2017
  */
 public class CinesPACDTO {
 

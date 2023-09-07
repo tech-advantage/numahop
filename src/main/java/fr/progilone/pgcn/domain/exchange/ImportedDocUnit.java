@@ -3,27 +3,25 @@ package fr.progilone.pgcn.domain.exchange;
 import com.google.common.base.MoreObjects;
 import fr.progilone.pgcn.domain.AbstractDomainObject;
 import fr.progilone.pgcn.domain.document.DocUnit;
-import org.apache.commons.lang3.RegExUtils;
-
-import javax.annotation.Nullable;
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Embeddable;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import org.apache.commons.lang3.RegExUtils;
 
 /**
  * Récapitulatif de l'importation d'une unité documentaire
@@ -116,8 +114,6 @@ public class ImportedDocUnit extends AbstractDomainObject {
 
     /**
      * Code de regroupement, par exemple pour regrouper des UD issues d'une même notice MARC
-     *
-     * @return
      */
     @Column(name = "group_code")
     private String groupCode;
@@ -188,7 +184,6 @@ public class ImportedDocUnit extends AbstractDomainObject {
         }
     }
 
-    @Nullable
     public DocUnit getDocUnit() {
         return docUnit;
     }
@@ -199,13 +194,13 @@ public class ImportedDocUnit extends AbstractDomainObject {
 
     /**
      * Set docUnit + champs de docUnit répétés dans {@link ImportedDocUnit}
-     *
-     * @param docUnit
      */
     public void initDocUnitFields(final DocUnit docUnit) {
         setDocUnit(docUnit);
-        setDocUnitLabel(docUnit != null ? docUnit.getLabel() : null);
-        setDocUnitPgcnId(docUnit != null ? docUnit.getPgcnId() : null);
+        setDocUnitLabel(docUnit != null ? docUnit.getLabel()
+                                        : null);
+        setDocUnitPgcnId(docUnit != null ? docUnit.getPgcnId()
+                                         : null);
     }
 
     public String getDocUnitPgcnId() {
@@ -289,7 +284,7 @@ public class ImportedDocUnit extends AbstractDomainObject {
             return code;
         }
 
-        public void setCode(String code) {
+        public void setCode(final String code) {
             this.code = code;
         }
 
@@ -297,7 +292,7 @@ public class ImportedDocUnit extends AbstractDomainObject {
             return complement;
         }
 
-        public void setComplement(String complement) {
+        public void setComplement(final String complement) {
             this.complement = complement;
         }
 

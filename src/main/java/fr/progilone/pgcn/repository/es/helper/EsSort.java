@@ -1,21 +1,20 @@
 package fr.progilone.pgcn.repository.es.helper;
 
 import fr.progilone.pgcn.service.es.AbstractElasticsearchOperations.SearchEntity;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.domain.Sort;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Sort;
 
 public class EsSort {
 
     /**
      * @param rawSorts
-     *         DOCUNIT:pgcnId=ASC
+     *            DOCUNIT:pgcnId=ASC
      * @param searchOn
-     *         DOCUNIT
+     *            DOCUNIT
      * @return
      */
     public static Sort fromRawSorts(final String[] rawSorts, final SearchEntity searchOn) {
@@ -29,7 +28,8 @@ public class EsSort {
                                                   .filter(StringUtils::isNotEmpty)
                                                   .map(EsSort::fromRawSort)
                                                   .collect(Collectors.toList());
-            return orders.isEmpty() ? null : new Sort(orders);
+            return orders.isEmpty() ? null
+                                    : Sort.by(orders);
         }
     }
 

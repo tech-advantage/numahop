@@ -5,21 +5,20 @@
 // Généré le : 2017.01.02 à 04:49:01 PM CET
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.rdf;
 
 import fr.progilone.pgcn.domain.jaxb.dc.ElementContainer;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlType;
-
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlType;
 
 /**
- * <p>Classe Java pour DescriptionType complex type.
+ * <p>
+ * Classe Java pour DescriptionType complex type.
  *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="DescriptionType">
@@ -35,9 +34,7 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DescriptionType", namespace = "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
-public class DescriptionType
-    extends ElementContainer
-{
+public class DescriptionType extends ElementContainer {
 
     @XmlAttribute(name = "about", namespace = "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
     protected String about;
@@ -46,8 +43,8 @@ public class DescriptionType
      * Obtient la valeur de la propriété about.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getAbout() {
@@ -58,8 +55,8 @@ public class DescriptionType
      * Définit la valeur de la propriété about.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setAbout(String value) {

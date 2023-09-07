@@ -5,21 +5,21 @@
 // Généré le : 2018.08.13 à 01:08:19 PM CEST
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.oaipmh;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
-
 
 /**
- * <p>Classe Java pour ListMetadataFormatsType complex type.
+ * <p>
+ * Classe Java pour ListMetadataFormatsType complex type.
  *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="ListMetadataFormatsType">
@@ -36,9 +36,7 @@ import javax.xml.bind.annotation.XmlType;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ListMetadataFormatsType", propOrder = {
-    "metadataFormat"
-})
+@XmlType(name = "ListMetadataFormatsType", propOrder = {"metadataFormat"})
 public class ListMetadataFormatsType {
 
     @XmlElement(required = true)
@@ -55,8 +53,9 @@ public class ListMetadataFormatsType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getMetadataFormat().add(newItem);
+     * getMetadataFormat().add(newItem);
      * </pre>
      *
      *

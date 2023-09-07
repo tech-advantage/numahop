@@ -2,7 +2,6 @@ package fr.progilone.pgcn.domain.dto.document.conditionreport;
 
 import com.google.common.base.MoreObjects;
 import fr.progilone.pgcn.domain.dto.AbstractVersionedDTO;
-
 import java.util.Set;
 
 public class PropertyConfigurationDTO extends AbstractVersionedDTO {

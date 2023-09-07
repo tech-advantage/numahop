@@ -1,7 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <!-- Changeset du module Import/Export -->
     <changeSet id="pgcn-create-exchange-002" author="progilone">
@@ -12,152 +14,146 @@
         <!-- Configuration SFTP -->
         <createTable tableName="conf_sftp">
             <column name="identifier" type="varchar(191)">
-                <constraints primaryKey="true" nullable="false"/>
+                <constraints primaryKey="true" nullable="false" />
             </column>
             <column name="label" type="varchar(255)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="library" type="varchar(191)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
-            <column name="username" type="varchar(255)"/>
-            <column name="password" type="varchar(255)"/>
-            <column name="host" type="varchar(255)"/>
-            <column name="port" type="INTEGER"/>
-            <column name="target_dir" type="varchar(255)"/>
+            <column name="username" type="varchar(255)" />
+            <column name="password" type="varchar(255)" />
+            <column name="host" type="varchar(255)" />
+            <column name="port" type="INTEGER" />
+            <column name="target_dir" type="varchar(255)" />
             <column name="active" type="boolean" defaultValueBoolean="true">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="version" type="BIGINT">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_by" type="varchar(255)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_by" type="varchar(255)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>
 
         <!-- Configuration emails -->
         <createTable tableName="conf_email">
             <column name="identifier" type="varchar(191)">
-                <constraints primaryKey="true" nullable="false"/>
+                <constraints primaryKey="true" nullable="false" />
             </column>
             <column name="label" type="varchar(255)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="library" type="varchar(191)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
-            <column name="username" type="varchar(255)"/>
-            <column name="password" type="varchar(255)"/>
-            <column name="host" type="varchar(255)"/>
-            <column name="port" type="INTEGER"/>
-            <column name="inbox" type="varchar(255)"/>
+            <column name="username" type="varchar(255)" />
+            <column name="password" type="varchar(255)" />
+            <column name="host" type="varchar(255)" />
+            <column name="port" type="INTEGER" />
+            <column name="inbox" type="varchar(255)" />
             <column name="active" type="boolean" defaultValueBoolean="true">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="version" type="BIGINT">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_by" type="varchar(255)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_by" type="varchar(255)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>
 
         <createTable tableName="conf_email_prop">
-            <column name="conf_id" type="varchar(191)"/>
-            <column name="name" type="varchar(255)"/>
-            <column name="value" type="varchar(255)"/>
+            <column name="conf_id" type="varchar(191)" />
+            <column name="name" type="varchar(255)" />
+            <column name="value" type="varchar(255)" />
         </createTable>
 
         <!-- Suivi des exports CINES -->
         <createTable tableName="exc_cines_report">
             <column name="identifier" type="varchar(191)">
-                <constraints primaryKey="true" nullable="false"/>
+                <constraints primaryKey="true" nullable="false" />
             </column>
             <column name="doc_unit" type="varchar(191)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="status" type="varchar(255)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
-            <column name="date_sent" type="timestamp"/>
-            <column name="date_ar" type="timestamp"/>
-            <column name="date_rejection" type="timestamp"/>
-            <column name="date_archived" type="timestamp"/>
-            <column name="rejection" type="text"/>
-            <column name="certificate" type="longtext"/>
-            <column name="message" type="text"/>
+            <column name="date_sent" type="timestamp" />
+            <column name="date_ar" type="timestamp" />
+            <column name="date_rejection" type="timestamp" />
+            <column name="date_archived" type="timestamp" />
+            <column name="rejection" type="text" />
+            <column name="certificate" type="longtext" />
+            <column name="message" type="text" />
             <column name="version" type="BIGINT">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_by" type="varchar(255)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_by" type="varchar(255)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>
 
         <!-- Clés étrangères conf_sftp -->
-        <addForeignKeyConstraint baseTableName="conf_sftp" baseColumnNames="library" constraintName="fk_conf_sftp_library"
-                                 referencedTableName="lib_library" referencedColumnNames="identifier"/>
+        <addForeignKeyConstraint baseTableName="conf_sftp" baseColumnNames="library" constraintName="fk_conf_sftp_library" referencedTableName="lib_library" referencedColumnNames="identifier" />
 
         <!-- Clés étrangères conf_email -->
-        <addForeignKeyConstraint baseTableName="conf_email" baseColumnNames="library" constraintName="fk_conf_email_library"
-                                 referencedTableName="lib_library" referencedColumnNames="identifier"/>
-        <addForeignKeyConstraint baseTableName="conf_email_prop" baseColumnNames="conf_id" constraintName="fk_conf_email_prop_conf"
-                                 referencedTableName="conf_email" referencedColumnNames="identifier"/>
+        <addForeignKeyConstraint baseTableName="conf_email" baseColumnNames="library" constraintName="fk_conf_email_library" referencedTableName="lib_library" referencedColumnNames="identifier" />
+        <addForeignKeyConstraint baseTableName="conf_email_prop" baseColumnNames="conf_id" constraintName="fk_conf_email_prop_conf" referencedTableName="conf_email" referencedColumnNames="identifier" />
 
         <!-- Clés étrangères exc_cines_report -->
-        <addForeignKeyConstraint baseTableName="exc_cines_report" baseColumnNames="doc_unit" constraintName="fk_exc_cines_report_doc_unit"
-                                 referencedTableName="doc_unit" referencedColumnNames="identifier"/>
+        <addForeignKeyConstraint baseTableName="exc_cines_report" baseColumnNames="doc_unit" constraintName="fk_exc_cines_report_doc_unit" referencedTableName="doc_unit" referencedColumnNames="identifier" />
 
         <!-- Index conf_sftp -->
         <createIndex tableName="conf_sftp" indexName="idx_conf_sftp_library">
-            <column name="library"/>
+            <column name="library" />
         </createIndex>
 
         <!-- Index conf_email -->
         <createIndex tableName="conf_email" indexName="idx_conf_email_library">
-            <column name="library"/>
+            <column name="library" />
         </createIndex>
         <createIndex tableName="conf_email_prop" indexName="idx_conf_email_prop_conf">
-            <column name="conf_id"/>
+            <column name="conf_id" />
         </createIndex>
 
         <!-- Index exc_cines_report -->
         <createIndex tableName="exc_cines_report" indexName="idx_exc_cines_report_doc_unit">
-            <column name="doc_unit"/>
+            <column name="doc_unit" />
         </createIndex>
 
         <!-- Droits supplémentaires -->
-        <loadData encoding="UTF-8" separator=";"
-                  file="config/liquibase/numahop/user/authorization-002.csv"
-                  tableName="user_authorization"/>
+        <loadData encoding="UTF-8" separator=";" file="config/liquibase/numahop/user/authorization-002.csv" tableName="user_authorization" />
 
 
     </changeSet>

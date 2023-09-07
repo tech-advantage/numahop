@@ -1,11 +1,9 @@
 package fr.progilone.pgcn.domain.dto.statistics;
 
-import java.time.LocalDate;
-
 import com.google.common.collect.Ordering;
 import com.opencsv.bean.CsvBindByName;
-
 import fr.progilone.pgcn.domain.workflow.WorkflowStateKey;
+import java.time.LocalDate;
 
 public class StatisticsDocPublishedDTO implements Comparable<StatisticsDocPublishedDTO> {
 
@@ -48,13 +46,13 @@ public class StatisticsDocPublishedDTO implements Comparable<StatisticsDocPublis
 
     @CsvBindByName(column = "09. Diffusion")
     private WorkflowStateKey workflowState;
-    
+
     @CsvBindByName(column = "10. Lien IA")
     private String linkIA;
-    
+
     @CsvBindByName(column = "11. Url ark")
     private String urlArk;
-    
+
     @CsvBindByName(column = "12. Regroupement")
     private String collection;
     @CsvBindByName(column = "13. Nombre de pages")

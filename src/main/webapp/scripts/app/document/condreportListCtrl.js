@@ -1,14 +1,35 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('CondreportListCtrl', CondreportListCtrl);
+    angular.module('numaHopApp.controller').controller('CondreportListCtrl', CondreportListCtrl);
 
-    function CondreportListCtrl($q, $location, $http, $httpParamSerializer, $routeParams, $scope, CondreportSrvc, CondreportDescPropertySrvc,
-        CondreportDescValueSrvc, CondreportPropertyConfSrvc, DocUnitBaseService, FileSaver, gettext, gettextCatalog, HistorySrvc,
-        LibrarySrvc, MessageSrvc, ModalSrvc, NumahopStorageService, SelectionSrvc, Principal, WorkflowHandleSrvc, WorkflowSrvc,
-        NumaHopInitializationSrvc, DtoService) {
-
+    function CondreportListCtrl(
+        $q,
+        $location,
+        $http,
+        $httpParamSerializer,
+        $routeParams,
+        $scope,
+        CondreportSrvc,
+        CondreportDescPropertySrvc,
+        CondreportDescValueSrvc,
+        CondreportPropertyConfSrvc,
+        DocUnitBaseService,
+        FileSaver,
+        gettext,
+        gettextCatalog,
+        HistorySrvc,
+        LibrarySrvc,
+        MessageSrvc,
+        ModalSrvc,
+        NumahopStorageService,
+        SelectionSrvc,
+        Principal,
+        WorkflowHandleSrvc,
+        WorkflowSrvc,
+        NumaHopInitializationSrvc,
+        DtoService
+    ) {
         var mainCtrl = this;
         $scope.mainCtrl = mainCtrl;
 
@@ -41,104 +62,105 @@
         mainCtrl.trainProject = undefined;
 
         var PAGE_START = 1;
-        var FILTER_STORAGE_SERVICE_KEY = "cond_report_list";
+        var FILTER_STORAGE_SERVICE_KEY = 'cond_report_list';
 
         mainCtrl.config = {
             _cache: {}, // mise en cache des listes déroulantes
             properties_desc: {
-                text: "label",
-                placeholder: gettextCatalog.getString("Propriété"),
-                trackby: "identifier",
+                text: 'label',
+                placeholder: gettextCatalog.getString('Propriété'),
+                trackby: 'identifier',
                 'refresh-delay': 300,
-                'allow-clear': true
+                'allow-clear': true,
             },
             /**
              * modèle de config pour les listes de valeurs des descriptions
              * refresh est défini dans descValueConfig
              */
             values_desc: {
-                text: "label",
-                placeholder: gettextCatalog.getString("Valeur"),
-                trackby: "identifier",
+                text: 'label',
+                placeholder: gettextCatalog.getString('Valeur'),
+                trackby: 'identifier',
                 multiple: true,
                 'refresh-delay': 300,
-                'allow-clear': true
+                'allow-clear': true,
             },
             dim_ops: {
-                data: [{
-                    code: "EQ",
-                    label: gettextCatalog.getString("Égales à")
-                }, {
-                    code: "LTE",
-                    label: gettextCatalog.getString("Inférieures à")
-                }, {
-                    code: "GTE",
-                    label: gettextCatalog.getString("Supérieures à")
-                }]
+                data: [
+                    {
+                        code: 'EQ',
+                        label: gettextCatalog.getString('Égales à'),
+                    },
+                    {
+                        code: 'LTE',
+                        label: gettextCatalog.getString('Inférieures à'),
+                    },
+                    {
+                        code: 'GTE',
+                        label: gettextCatalog.getString('Supérieures à'),
+                    },
+                ],
             },
             libraries: {
-                text: "name",
-                placeholder: gettextCatalog.getString("Bibliothèque"),
-                trackby: "identifier",
+                text: 'name',
+                placeholder: gettextCatalog.getString('Bibliothèque'),
+                trackby: 'identifier',
                 multiple: true,
                 // Chargement avec mise en cache du résultat
                 refresh: function () {
                     if (!mainCtrl.config.libraries.data) {
                         mainCtrl.config.libraries.data = LibrarySrvc.query({ dto: true });
                         return mainCtrl.config.libraries.data.$promise;
-                    }
-                    else {
+                    } else {
                         return $q.when(mainCtrl.config.libraries.data);
                     }
                 },
                 'refresh-delay': 0, // pas de refresh-delay, car on lit les données en cache après le 1er chargement
-                'allow-clear': true
+                'allow-clear': true,
             },
             projects: {
-                text: "name",
-                placeholder: gettextCatalog.getString("Projet"),
-                trackby: "identifier",
+                text: 'name',
+                placeholder: gettextCatalog.getString('Projet'),
+                trackby: 'identifier',
                 multiple: true,
                 // Chargement avec mise en cache du résultat
                 refresh: function () {
                     if (!mainCtrl.config.projects.data) {
-                       mainCtrl.config.projects.data = NumaHopInitializationSrvc.loadProjects();
-                       return mainCtrl.config.projects.data.$promise;
-                    }
-                    else {
+                        mainCtrl.config.projects.data = NumaHopInitializationSrvc.loadProjects();
+                        return mainCtrl.config.projects.data.$promise;
+                    } else {
                         return $q.when(mainCtrl.config.projects.data);
                     }
                 },
                 'refresh-delay': 0, // pas de refresh-delay, car on lit les données en cache après le 1er chargement
-                'allow-clear': true
+                'allow-clear': true,
             },
             lots: {
-                text: "label",
-                placeholder: gettextCatalog.getString("Lot"),
-                trackby: "identifier",
+                text: 'label',
+                placeholder: gettextCatalog.getString('Lot'),
+                trackby: 'identifier',
                 multiple: true,
                 // Chargement avec mise en cache du résultat
                 refresh: function () {
                     if (!mainCtrl.config.lots.data) {
                         mainCtrl.config.lots.data = NumaHopInitializationSrvc.loadLots();
                         return mainCtrl.config.lots.data.$promise;
-                    }
-                    else {
+                    } else {
                         return $q.when(mainCtrl.config.lots.data);
                     }
                 },
                 'refresh-delay': 0, // pas de refresh-delay, car on lit les données en cache après le 1er chargement
-                'allow-clear': true
-            }
+                'allow-clear': true,
+            },
         };
 
         mainCtrl.options = {
-            libraries: []
+            libraries: [],
         };
 
         mainCtrl.filters = {
             libraries: [],
-            descriptions: []
+            descriptions: [],
         };
 
         mainCtrl.accordions = {
@@ -148,22 +170,22 @@
             BINDING: false,
             VIGILANCE: false,
             TYPE: false,
-            STATE: false
+            STATE: false,
         };
 
         mainCtrl.pagination = {
             items: [],
             totalItems: 0,
             busy: false,
-            page: PAGE_START
+            page: PAGE_START,
         };
         mainCtrl.sizeOptions = [
-            { value: 10, label: "10" },
-            { value: 20, label: "20" },
-            { value: 50, label: "50" },
-            { value: 100, label: "100" }
+            { value: 10, label: '10' },
+            { value: 20, label: '20' },
+            { value: 50, label: '50' },
+            { value: 100, label: '100' },
         ];
-        mainCtrl.sortModel = ["docUnit.label"];
+        mainCtrl.sortModel = ['docUnit.label'];
         mainCtrl.loaded = false;
 
         mainCtrl.selection = {};
@@ -183,9 +205,9 @@
 
             Principal.identity().then(function (usr) {
                 mainCtrl.user = usr;
-                mainCtrl.isUserPresta = usr.category === "PROVIDER";
+                mainCtrl.isUserPresta = usr.category === 'PROVIDER';
             });
-            
+
             loadPageSize();
             loadOptions().then(function () {
                 // auto-sélection
@@ -200,13 +222,13 @@
          * Chargement des résultats de recherche sélectionnés
          */
         function initFromSearchResults() {
-            var searchSelection = SelectionSrvc.get("SEARCH_RESULT_CONDREPORT");
+            var searchSelection = SelectionSrvc.get('SEARCH_RESULT_CONDREPORT');
             // Sélection
             _.each(searchSelection, function (s) {
                 mainCtrl.selection[s.identifier] = s;
             });
             // Filtre
-            mainCtrl.filteredIds = _.pluck(searchSelection, "identifier");
+            mainCtrl.filteredIds = _.pluck(searchSelection, 'identifier');
         }
 
         /*****************************
@@ -214,25 +236,21 @@
          *****************************/
         function loadOptions() {
             // Chargement des données
-            return $q.all([NumaHopInitializationSrvc.loadLibraries(),
-            NumaHopInitializationSrvc.loadProjects(),
-            NumaHopInitializationSrvc.loadLots(),
-            NumaHopInitializationSrvc.loadTrains()])
-                .then(function (data) {
-                    mainCtrl.options.libraries = data[0];
-                    mainCtrl.options.projects = data[1];
-                    mainCtrl.options.lots = data[2];
-                    loadFilters();
+            return $q.all([NumaHopInitializationSrvc.loadLibraries(), NumaHopInitializationSrvc.loadProjects(), NumaHopInitializationSrvc.loadLots(), NumaHopInitializationSrvc.loadTrains()]).then(function (data) {
+                mainCtrl.options.libraries = data[0];
+                mainCtrl.options.projects = data[1];
+                mainCtrl.options.lots = data[2];
+                loadFilters();
 
-                    return getPage();
-                });
+                return getPage();
+            });
         }
 
         /**
-        * loadFilters - Chargement des filtres depuis le local Storage
-        *
-        * @return {type}  description
-        */
+         * loadFilters - Chargement des filtres depuis le local Storage
+         *
+         * @return {type}  description
+         */
         function loadFilters() {
             var filters = NumahopStorageService.getFilter(FILTER_STORAGE_SERVICE_KEY);
             if (filters) {
@@ -244,30 +262,30 @@
                 // Accordions deplies ou non?
                 if (filters.filters.dim1 || filters.filters.dim2 || filters.filters.dim3) {
                     mainCtrl.accordions.dimensions = true;
-                }            
-                _.each(filters.filters.descriptions, function(desc) {
-                   switch (desc.type) {
-                       case 'DESCRIPTION':
-                           mainCtrl.accordions.DESCRIPTION = true;
-                           break;
-                       case 'NUMBERING':
-                           mainCtrl.accordions.NUMBERING = true;
-                           break;
-                       case 'BINDING':
-                           mainCtrl.accordions.BINDING = true;
-                           break;
-                       case 'VIGILANCE':
-                           mainCtrl.accordions.VIGILANCE = true;
-                           break;
-                       case 'TYPE':
-                           mainCtrl.accordions.TYPE = true;
-                           break;
-                       case 'STATE':
-                           mainCtrl.accordions.STATE = true;
-                           break;
-                       default: 
-                           break;
-                   }
+                }
+                _.each(filters.filters.descriptions, function (desc) {
+                    switch (desc.type) {
+                        case 'DESCRIPTION':
+                            mainCtrl.accordions.DESCRIPTION = true;
+                            break;
+                        case 'NUMBERING':
+                            mainCtrl.accordions.NUMBERING = true;
+                            break;
+                        case 'BINDING':
+                            mainCtrl.accordions.BINDING = true;
+                            break;
+                        case 'VIGILANCE':
+                            mainCtrl.accordions.VIGILANCE = true;
+                            break;
+                        case 'TYPE':
+                            mainCtrl.accordions.TYPE = true;
+                            break;
+                        case 'STATE':
+                            mainCtrl.accordions.STATE = true;
+                            break;
+                        default:
+                            break;
+                    }
                 });
             }
             return !!filters;
@@ -296,7 +314,7 @@
 
             mainCtrl.filters = {
                 libraries: [],
-                descriptions: []
+                descriptions: [],
             };
             mainCtrl.sortModel = [];
             search();
@@ -310,50 +328,50 @@
             // Filtrage à partir des résultats de recherche
             if (mainCtrl.isFilteredByIds && mainCtrl.filteredIds) {
                 return {
-                    filter: mainCtrl.filteredIds
+                    filter: mainCtrl.filteredIds,
                 };
             }
-            
+
             var params = {};
 
             // Bibliothèque
             if (mainCtrl.filters.libraries) {
-                var librariesIds = _.pluck(mainCtrl.filters.libraries, "identifier");
-                params["libraries"] = librariesIds;
+                var librariesIds = _.pluck(mainCtrl.filters.libraries, 'identifier');
+                params['libraries'] = librariesIds;
             }
             // Projet
             if (mainCtrl.filters.projects) {
-                var projectsIds = _.pluck(mainCtrl.filters.projects, "identifier");
-                params["projects"] = projectsIds;
+                var projectsIds = _.pluck(mainCtrl.filters.projects, 'identifier');
+                params['projects'] = projectsIds;
             }
             // Lot
             if (mainCtrl.filters.lots) {
-                var lotsIds = _.pluck(mainCtrl.filters.lots, "identifier");
-                params["lots"] = lotsIds;
+                var lotsIds = _.pluck(mainCtrl.filters.lots, 'identifier');
+                params['lots'] = lotsIds;
             }
             // Dates
-            params["from"] = mainCtrl.filters.from;
-            params["to"] = mainCtrl.filters.to;
+            params['from'] = mainCtrl.filters.from;
+            params['to'] = mainCtrl.filters.to;
 
             // Dimensions
-            params["dim1"] = mainCtrl.filters.dim1;
-            params["dim2"] = mainCtrl.filters.dim2;
-            params["dim3"] = mainCtrl.filters.dim3;
+            params['dim1'] = mainCtrl.filters.dim1;
+            params['dim2'] = mainCtrl.filters.dim2;
+            params['dim3'] = mainCtrl.filters.dim3;
 
-            if (params["dim1"] !== null || params["dim2"] !== null || params["dim3"] !== null) {
-                params["op"] = mainCtrl.filters.dimop;
+            if (params['dim1'] !== null || params['dim2'] !== null || params['dim3'] !== null) {
+                params['op'] = mainCtrl.filters.dimop;
             }
-            
-            params["validateOnly"] = mainCtrl.filters.validateOnly;
-            
+
+            params['validateOnly'] = mainCtrl.filters.validateOnly;
+
             // Descriptions
-            params["descriptions"] = _.chain(mainCtrl.filters.descriptions)
+            params['descriptions'] = _.chain(mainCtrl.filters.descriptions)
                 .filter(function (desc) {
                     return desc.property && desc.property.identifier && desc.value && desc.value.length > 0;
                 })
                 .map(function (desc) {
                     return _.map(desc.value, function (val) {
-                        return desc.property.identifier + "=" + val.identifier;
+                        return desc.property.identifier + '=' + val.identifier;
                     });
                 })
                 .flatten()
@@ -369,9 +387,9 @@
             mainCtrl.pagination.busy = true;
 
             var params = {};
-            params["page"] = mainCtrl.pagination.page - 1;
-            params["size"] = mainCtrl.pagination.size;
-            params["sorts"] = mainCtrl.sortModel;
+            params['page'] = mainCtrl.pagination.page - 1;
+            params['size'] = mainCtrl.pagination.size;
+            params['sorts'] = mainCtrl.sortModel;
 
             var body = getSearchParams();
 
@@ -398,9 +416,9 @@
             saveFilters();
 
             var params = {};
-            params["page"] = mainCtrl.pagination.page - 1;
-            params["size"] = mainCtrl.pagination.size;
-            params["sorts"] = mainCtrl.sortModel;
+            params['page'] = mainCtrl.pagination.page - 1;
+            params['size'] = mainCtrl.pagination.size;
+            params['sorts'] = mainCtrl.sortModel;
 
             var body = getSearchParams();
             CondreportSrvc.search(params, body).$promise.then(handlePageOfItems);
@@ -424,14 +442,13 @@
             });
             mainCtrl.pagination.busy = false;
         }
-        
+
         function changeValidateOnly() {
             if (mainCtrl.filters.validateOnly) {
-                mainCtrl.search(mainCtrl.sortModel, {validateOnly: mainCtrl.filters.validateOnly});
+                mainCtrl.search(mainCtrl.sortModel, { validateOnly: mainCtrl.filters.validateOnly });
             } else {
-                mainCtrl.search(mainCtrl.sortModel, {validateOnly: false});
+                mainCtrl.search(mainCtrl.sortModel, { validateOnly: false });
             }
-            
         }
 
         /*****************************
@@ -466,51 +483,48 @@
 
         /**
          * Ajoute la sélection à un train existant.
-         * 
+         *
          * - ts les constats doivent dependre du mm projet non terminé
-         * - le wkf des docs doit etre sur 1 étape < 'En attente de numérisation' 
+         * - le wkf des docs doit etre sur 1 étape < 'En attente de numérisation'
          **/
         function addSelectionToTrain() {
-            
             if (validSelectionForTrain()) {
-                ModalSrvc.integrateToTrain(mainCtrl.selection, mainCtrl.trainProject, "sm")
-                .then(function () {
+                ModalSrvc.integrateToTrain(mainCtrl.selection, mainCtrl.trainProject, 'sm').then(function () {
                     search();
                 });
             }
-
         }
-        
+
         /**
          * addSelectionToNewTrain - Création d'un nouveau train à partir de tous les exemplaires sélectionnés.
          **/
-//        function addSelectionToNewTrain() {
-//            
-//            if (validSelectionForTrain()) {
-//                
-//                var docIdentifiers = _.pluck(_.pluck(mainCtrl.selection, "docUnit"), "identifier");
-//                DtoService.addDocs(docIdentifiers);
-//                $location.path("/train/train").search({ id: null, mode: "edit", new: true, project: mainCtrl.trainProject.identifier});
-//            }
-//        }
-        
+        //        function addSelectionToNewTrain() {
+        //
+        //            if (validSelectionForTrain()) {
+        //
+        //                var docIdentifiers = _.pluck(_.pluck(mainCtrl.selection, "docUnit"), "identifier");
+        //                DtoService.addDocs(docIdentifiers);
+        //                $location.path("/train/train").search({ id: null, mode: "edit", new: true, project: mainCtrl.trainProject.identifier});
+        //            }
+        //        }
+
         /**
          * Validation avant d'affecter la selection dans un train.
          */
         function validSelectionForTrain() {
-            
-            // On autorise la selection de constats/UDs appartenant ttes au mm projet en cours. 
-            var testValue = _.find(mainCtrl.selection, function (item) { return item.docUnit && item.docUnit.project; });
+            // On autorise la selection de constats/UDs appartenant ttes au mm projet en cours.
+            var testValue = _.find(mainCtrl.selection, function (item) {
+                return item.docUnit && item.docUnit.project;
+            });
             var selectionLength = 0;
             var filteredDocs = [];
             if (angular.isDefined(testValue)) {
                 filteredDocs = _.filter(mainCtrl.selection, function (item) {
                     selectionLength++;
-                    return item.docUnit && item.docUnit.project 
-                                && item.docUnit.project.identifier === testValue.docUnit.project.identifier;
+                    return item.docUnit && item.docUnit.project && item.docUnit.project.identifier === testValue.docUnit.project.identifier;
                 });
                 if (selectionLength !== filteredDocs.length) {
-                    MessageSrvc.addWarn(gettext("Les unités documentaires sélectionnées ne peuvent pas être traitées car elles appartiennent à des projets différents"), {}, false);
+                    MessageSrvc.addWarn(gettext('Les unités documentaires sélectionnées ne peuvent pas être traitées car elles appartiennent à des projets différents'), {}, false);
                     return false;
                 }
                 if ('CLOSED' === testValue.docUnit.project.status) {
@@ -522,7 +536,7 @@
                     return !item.docUnit.changeTrainAuthorized;
                 });
                 if (notAuthorized) {
-                    MessageSrvc.addWarn(gettext("La sélection ne peut pas être traitée, le workflow est trop avancé"), {}, false);
+                    MessageSrvc.addWarn(gettext('La sélection ne peut pas être traitée, le workflow est trop avancé'), {}, false);
                     return false;
                 }
                 mainCtrl.trainProject = testValue.docUnit.project;
@@ -530,8 +544,7 @@
             }
             return false;
         }
-        
-        
+
         /**
          * Validation des constats sélectionnés.
          */
@@ -540,10 +553,10 @@
                 return;
             }
             if (mainCtrl.selection.length === 0) {
-                MessageSrvc.addWarn(gettext("La sélection est vide"), {}, false);
+                MessageSrvc.addWarn(gettext('La sélection est vide'), {}, false);
                 return;
             }
-            
+
             var docUnitIds = [];
             var docUnits = _.chain(mainCtrl.selection)
                 .values()
@@ -551,60 +564,59 @@
                     return item.docUnit;
                 })
                 .map(function (item) {
-                    return _.pick(item.docUnit, "identifier", "label");
+                    return _.pick(item.docUnit, 'identifier', 'label');
                 })
                 .value();
-            
+
             // on ne conserve que les docs avec 1 constat à valider
             var promises = [];
-            _.each(docUnits, function (doc) { 
-                  promises.push(WorkflowHandleSrvc.isReportToValidate(doc.identifier).then(function(res) {
-                      return {doc : doc, done : res.done};
-                  }));
+            _.each(docUnits, function (doc) {
+                promises.push(
+                    WorkflowHandleSrvc.isReportToValidate(doc.identifier).then(function (res) {
+                        return { doc: doc, done: res.done };
+                    })
+                );
             });
-            
-            $q.all(promises).then(function(promiseResults) {
-                _.each(promiseResults, function (res) { 
-                    if (res.done) {
-                        docUnitIds.push(res.doc.identifier);
-                  } else {
-                      MessageSrvc.addWarn(gettext("L'unité documentaire {{label}} ne contient pas de constat à valider."), {label: res.doc.label}, false); 
-                  }
+
+            $q.all(promises)
+                .then(function (promiseResults) {
+                    _.each(promiseResults, function (res) {
+                        if (res.done) {
+                            docUnitIds.push(res.doc.identifier);
+                        } else {
+                            MessageSrvc.addWarn(gettext("L'unité documentaire {{label}} ne contient pas de constat à valider."), { label: res.doc.label }, false);
+                        }
+                    });
+                    return docUnitIds;
+                })
+                .then(function (docUnitIds) {
+                    // validation des etapes de workflow des constats d'etat pour les docs eligibles.
+                    WorkflowSrvc.massValidateCondReports({ massValidate: true }, docUnitIds).$promise.then(function () {
+                        MessageSrvc.addSuccess(gettextCatalog.getString('La sélection a été validée'));
+                    });
                 });
-                return docUnitIds;
-            }).then(function (docUnitIds) {
-                // validation des etapes de workflow des constats d'etat pour les docs eligibles.
-                WorkflowSrvc.massValidateCondReports({massValidate: true}, docUnitIds).$promise
-                    .then(function () {
-                        MessageSrvc.addSuccess(gettextCatalog.getString("La sélection a été validée"));
-                });
-            });
-           
-        } 
+        }
 
         /**
          * Téléchargement du bordereau de livraison
          */
         function downloadSlip(format) {
-
             if (mainCtrl.selection.length === 0) {
-                MessageSrvc.addWarn(gettext("La sélection est vide"), {}, false);
+                MessageSrvc.addWarn(gettext('La sélection est vide'), {}, false);
                 return;
             }
             var params = {};
-            params.reports = _.pluck(_.pluck(mainCtrl.selection, "detail"), "identifier");
+            params.reports = _.pluck(_.pluck(mainCtrl.selection, 'detail'), 'identifier');
 
             var url = 'api/rest/condreport/' + format + '?' + $httpParamSerializer(params);
 
             // on met la réponse dans un arraybuffer pour conserver l'encodage original dans le fichier sauvegardé
-            $http.get(url, { responseType: 'arraybuffer' })
-                .then(function (response) {
-                    var filename = "bordereau." + format;
-                    var blob = new Blob([response.data], { type: response.headers("content-type") });
-                    FileSaver.saveAs(blob, filename);
-                });
+            $http.get(url, { responseType: 'arraybuffer' }).then(function (response) {
+                var filename = 'bordereau.' + format;
+                var blob = new Blob([response.data], { type: response.headers('content-type') });
+                FileSaver.saveAs(blob, filename);
+            });
         }
-
 
         /*************************************************
          *  Configuration des contrôles de la recherche  *
@@ -643,7 +655,7 @@
 
         /**
          * Configuration des listes déroulantes de propriétés de descriptions
-         * 
+         *
          * @param {any} type
          */
         function descPropertyConfig(type) {
@@ -661,23 +673,22 @@
                 }
 
                 // Chargement de la liste en cache
-                if (angular.isUndefined(mainCtrl.config._cache["__descProperty__"])) {
-                    mainCtrl.config._cache["__descProperty__"] = CondreportDescPropertySrvc.query();
+                if (angular.isUndefined(mainCtrl.config._cache['__descProperty__'])) {
+                    mainCtrl.config._cache['__descProperty__'] = CondreportDescPropertySrvc.query();
                 }
-                return mainCtrl.config._cache["__descProperty__"].$promise
-                    .then(function (values) {
-                        return _.filter(values, function (v) {
-                            return v.type === type.code;
-                        });
+                return mainCtrl.config._cache['__descProperty__'].$promise.then(function (values) {
+                    return _.filter(values, function (v) {
+                        return v.type === type.code;
                     });
+                });
             };
             return config;
         }
 
         /**
          * Configuration des listes déroulantes de valeur de descriptions
-         * 
-         * @param {any} desc 
+         *
+         * @param {any} desc
          */
         function descValueConfig(desc) {
             var config = angular.copy(mainCtrl.config.values_desc);
@@ -705,9 +716,9 @@
 
         /**
          * Extrait une propriété d'un détail de constat d'état
-         * 
-         * @param {any} code 
-         * @param {any} properties 
+         *
+         * @param {any} code
+         * @param {any} properties
          */
         function getProperty(code, properties, field) {
             var found = _.find(properties, function (p) {
@@ -722,12 +733,12 @@
          * Calcule les dimensions maximales de la sélection
          */
         function getSelectionDimensions() {
-            return _.chain(["dim1", "dim2", "dim3"])
+            return _.chain(['dim1', 'dim2', 'dim3'])
                 .map(function (dim) {
-                    return _.chain(mainCtrl.selection).pluck("detail").pluck(dim).max().value() || 0;
+                    return _.chain(mainCtrl.selection).pluck('detail').pluck(dim).max().value() || 0;
                 })
                 .reduce(function (a, b) {
-                    return angular.isDefined(a) ? a + " x " + b : b;
+                    return angular.isDefined(a) ? a + ' x ' + b : b;
                 }, undefined)
                 .value();
         }
@@ -737,10 +748,10 @@
          */
         function getSelectionInsurance() {
             return _.chain(mainCtrl.selection)
-                .pluck("detail")
+                .pluck('detail')
                 .map(function (det) {
                     if (det && det.insurance) {
-                        return Number(det.insurance.replace(/,/, ".").replace(/[^0-9.]/g, ""));
+                        return Number(det.insurance.replace(/,/, '.').replace(/[^0-9.]/g, ''));
                     }
                 })
                 .filter(function (i) {

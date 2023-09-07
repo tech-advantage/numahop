@@ -15,17 +15,16 @@ import fr.progilone.pgcn.domain.user.User.Category;
 import fr.progilone.pgcn.repository.user.AddressRepository;
 import fr.progilone.pgcn.service.library.LibraryService;
 import fr.progilone.pgcn.service.user.RoleService;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.stream.Collectors;
 
 @Service
 public class UIUserMapper {
 
-    private RoleService roleService;
-    private LibraryService libraryService;
-    private AddressRepository addressRepository;
+    private final RoleService roleService;
+    private final LibraryService libraryService;
+    private final AddressRepository addressRepository;
 
     @Autowired
     public UIUserMapper(final RoleService roleService, final LibraryService libraryService, final AddressRepository addressRepository) {
@@ -43,13 +42,13 @@ public class UIUserMapper {
         // PROVIDER fields only
         if (Category.PROVIDER.equals(user.getCategory())) {
             // Address
-            AddressDTO addressDTO = userDTO.getAddress();
+            final AddressDTO addressDTO = userDTO.getAddress();
             Address address;
             if (addressDTO != null) {
                 if (addressDTO.getIdentifier() == null) {
                     address = new Address();
                 } else {
-                    address = addressRepository.findOne(addressDTO.getIdentifier());
+                    address = addressRepository.findById(addressDTO.getIdentifier()).orElseThrow();
                 }
                 address.setLabel(addressDTO.getLabel());
                 address.setAddress1(addressDTO.getAddress1());
@@ -67,7 +66,7 @@ public class UIUserMapper {
         user.setFirstname(userDTO.getFirstname());
         user.setFunction(userDTO.getFunction());
         // Library
-        SimpleLibraryDTO library = userDTO.getLibrary();
+        final SimpleLibraryDTO library = userDTO.getLibrary();
         if (library != null && library.getIdentifier() != null) {
             final Library lib = libraryService.findOne(library.getIdentifier());
             user.setLibrary(lib);
@@ -76,9 +75,9 @@ public class UIUserMapper {
         user.setPhoneNumber(userDTO.getPhoneNumber());
         user.setSurname(userDTO.getSurname());
         // Role
-        RoleDTO roleDTO = userDTO.getRole();
+        final RoleDTO roleDTO = userDTO.getRole();
         if (roleDTO != null && roleDTO.getIdentifier() != null) {
-            Role role = roleService.findOne(roleDTO.getIdentifier());
+            final Role role = roleService.findOne(roleDTO.getIdentifier());
             user.setRole(role);
         }
         // handle password if creation
@@ -87,22 +86,24 @@ public class UIUserMapper {
         }
     }
 
-    public SimpleUserAccountDTO userToSimpleUserAccountDTO(User user) {
+    public SimpleUserAccountDTO userToSimpleUserAccountDTO(final User user) {
         return new SimpleUserAccountDTO.Builder().reinit()
                                                  .setFirstname(user.getFirstname())
                                                  .setIdentifier(user.getIdentifier())
                                                  .setLogin(user.getLogin())
                                                  .setSurname(user.getSurname())
-                                                 .setDashboard(user.getDashboard() != null ? user.getDashboard().getDashboard() : null)
-                                                 .setLibrary(user.getLibrary() != null ? user.getLibrary().getIdentifier() : null)
-                                                 .setCategory(user.getCategory() != null ? user.getCategory().name() : null)
-                                                 .setRoles(user.getRole() != null ?
-                                                           user.getRole()
-                                                               .getAuthorizations()
-                                                               .stream()
-                                                               .map(Authorization::getCode)
-                                                               .collect(Collectors.toList()) :
-                                                           null)
+                                                 .setDashboard(user.getDashboard() != null ? user.getDashboard().getDashboard()
+                                                                                           : null)
+                                                 .setLibrary(user.getLibrary() != null ? user.getLibrary().getIdentifier()
+                                                                                       : null)
+                                                 .setCategory(user.getCategory() != null ? user.getCategory().name()
+                                                                                         : null)
+                                                 .setRoles(user.getRole() != null ? user.getRole()
+                                                                                        .getAuthorizations()
+                                                                                        .stream()
+                                                                                        .map(Authorization::getCode)
+                                                                                        .collect(Collectors.toList())
+                                                                                  : null)
                                                  .build();
     }
 }

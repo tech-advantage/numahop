@@ -1,32 +1,5 @@
 package fr.progilone.pgcn.service.exchange.ead;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.MalformedURLException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.annotation.PostConstruct;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.xml.sax.SAXException;
-
-import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
-
 import fr.progilone.pgcn.domain.jaxb.ead.Archdesc;
 import fr.progilone.pgcn.domain.jaxb.ead.AvLevel;
 import fr.progilone.pgcn.domain.jaxb.ead.C;
@@ -41,6 +14,26 @@ import fr.progilone.pgcn.domain.jaxb.ead.Titleproper;
 import fr.progilone.pgcn.domain.jaxb.ead.Titlestmt;
 import fr.progilone.pgcn.domain.jaxb.ead.Unitid;
 import fr.progilone.pgcn.service.storage.FileStorageManager;
+import jakarta.annotation.PostConstruct;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.xml.sax.SAXException;
 
 /**
  * Created by Sébastien on 31/05/2017.
@@ -50,7 +43,7 @@ public class ExportEadService {
 
     private static final Logger LOG = LoggerFactory.getLogger(ExportEadService.class);
 
-    //    private static final String EAD_SCHEMA_VALIDATION = "http://www.loc.gov/ead/ead.xsd";
+    // private static final String EAD_SCHEMA_VALIDATION = "http://www.loc.gov/ead/ead.xsd";
     private static final String NS_EAD = "urn:isbn:1-931666-22-9";
     private static final String EAD_XML_FILE = "ead.xml";
 
@@ -88,7 +81,7 @@ public class ExportEadService {
                 final Path root = Paths.get(workingDir);
                 LOG.debug("Export EAD dans le répertoire {}", root.toAbsolutePath());
                 fm.copyInputStreamToFileWithOtherDirs(in, root.toFile(), Arrays.asList(docUnitId), EAD_XML_FILE, true, true);
-                
+
             } catch (IOException | JAXBException | SAXException e) {
                 LOG.error(e.getMessage(), e);
             }
@@ -138,7 +131,6 @@ public class ExportEadService {
         // m.setSchema(sf.newSchema(new URL(EAD_SCHEMA_VALIDATION)));
         m.setProperty(Marshaller.JAXB_ENCODING, StandardCharsets.UTF_8.name());
         m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        m.setProperty("com.sun.xml.bind.namespacePrefixMapper", new EadNamespacePrefixMapper());
 
         m.marshal(ead, out);
     }
@@ -166,7 +158,8 @@ public class ExportEadService {
         archDesc.getMDescFull().add(dsc);
 
         final Ead ead = new Ead();
-        ead.setEadheader(eadheader != null ? eadheader : getDefaultEadheader(identifier));
+        ead.setEadheader(eadheader != null ? eadheader
+                                           : getDefaultEadheader(identifier));
         ead.setArchdesc(archDesc);
 
         return ead;
@@ -187,23 +180,5 @@ public class ExportEadService {
         eadheader.setFiledesc(filedesc);
 
         return eadheader;
-    }
-
-    /**
-     * Personnalisation des préfixes des namespaces utilisés
-     */
-    private static class EadNamespacePrefixMapper extends NamespacePrefixMapper {
-
-        private final Map<String, String> namespaceMap = new HashMap<>();
-
-        public EadNamespacePrefixMapper() {
-            namespaceMap.put(NS_EAD, "");
-            namespaceMap.put("http://www.w3.org/1999/xlink", "xlink");
-        }
-
-        @Override
-        public String getPreferredPrefix(final String namespaceUri, final String suggestion, final boolean requirePrefix) {
-            return namespaceMap.getOrDefault(namespaceUri, suggestion);
-        }
     }
 }

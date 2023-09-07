@@ -1,18 +1,5 @@
 package fr.progilone.pgcn.service.administration.digitallibrary;
 
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-import org.mapstruct.factory.Mappers;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import fr.progilone.pgcn.domain.administration.digitallibrary.DigitalLibraryConfiguration;
 import fr.progilone.pgcn.domain.dto.administration.digitallibrary.DigitalLibraryConfigurationDTO;
 import fr.progilone.pgcn.domain.library.Library;
@@ -25,6 +12,15 @@ import fr.progilone.pgcn.repository.administration.digitallibrary.DigitalLibrary
 import fr.progilone.pgcn.service.administration.mapper.DigitalLibraryConfigurationMapper;
 import fr.progilone.pgcn.service.library.LibraryService;
 import fr.progilone.pgcn.service.util.CryptoService;
+import java.util.List;
+import java.util.Set;
+import org.apache.commons.lang3.StringUtils;
+import org.mapstruct.factory.Mappers;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Service de gestion des DigitalLibraryConfiguration
@@ -38,9 +34,7 @@ public class DigitalLibraryConfigurationService {
 
     private final DigitalLibraryConfigurationMapper mapper = Mappers.getMapper(DigitalLibraryConfigurationMapper.class);
 
-    public DigitalLibraryConfigurationService(final DigitalLibraryConfigurationRepository repository,
-                                              final LibraryService libraryService,
-                                              final CryptoService cryptoService) {
+    public DigitalLibraryConfigurationService(final DigitalLibraryConfigurationRepository repository, final LibraryService libraryService, final CryptoService cryptoService) {
         this.repository = repository;
         this.libraryService = libraryService;
         this.cryptoService = cryptoService;
@@ -58,7 +52,7 @@ public class DigitalLibraryConfigurationService {
 
     @Transactional(readOnly = true)
     public DigitalLibraryConfiguration findOne(final String identifier) {
-        return repository.findOne(identifier);
+        return repository.findById(identifier).orElse(null);
     }
 
     @Transactional(readOnly = true)
@@ -68,7 +62,7 @@ public class DigitalLibraryConfigurationService {
 
     @Transactional(readOnly = true)
     public DigitalLibraryConfigurationDTO getById(final String identifier) {
-        return mapper.configurationToDto(repository.findOne(identifier));
+        return mapper.configurationToDto(repository.findById(identifier).orElse(null));
     }
 
     /**
@@ -99,7 +93,7 @@ public class DigitalLibraryConfigurationService {
 
     @Transactional
     public void delete(final String id) {
-        repository.delete(id);
+        repository.deleteById(id);
     }
 
     /**
@@ -110,7 +104,7 @@ public class DigitalLibraryConfigurationService {
         setDefaultValues(conf);
         validate(conf);
         final DigitalLibraryConfiguration savedConf = repository.save(conf);
-        return repository.findOne(savedConf.getIdentifier());
+        return repository.findById(savedConf.getIdentifier()).orElse(null);
     }
 
     private void setDefaultValues(final DigitalLibraryConfiguration conf) throws PgcnTechnicalException {
@@ -152,20 +146,9 @@ public class DigitalLibraryConfigurationService {
         return repository.save(configuration);
     }
 
-    public Page<DigitalLibraryConfigurationDTO>
-           search(final String search, final List<String> filteredLibraries, final Integer page, final Integer size) {
-        final Pageable pageRequest = new PageRequest(page, size);
+    public Page<DigitalLibraryConfigurationDTO> search(final String search, final List<String> filteredLibraries, final Integer page, final Integer size) {
+        final Pageable pageRequest = PageRequest.of(page, size);
 
-        final Page<DigitalLibraryConfiguration> configurations = repository.search(search, filteredLibraries, pageRequest);
-
-        final List<DigitalLibraryConfigurationDTO> results =
-                                                           configurations.getContent()
-                                                                         .stream()
-                                                                         .map(mapper::configurationToDto)
-                                                                         .collect(Collectors.toList());
-
-        return new PageImpl<>(results,
-                              new PageRequest(configurations.getNumber(), configurations.getSize(), configurations.getSort()),
-                              configurations.getTotalElements());
+        return repository.search(search, filteredLibraries, pageRequest).map(mapper::configurationToDto);
     }
 }

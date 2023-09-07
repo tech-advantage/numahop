@@ -1,12 +1,14 @@
 package fr.progilone.pgcn.service.exchange.internetarchive.ui;
 
-import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.dto.exchange.InternetArchiveReportDTO;
 import fr.progilone.pgcn.domain.dto.statistics.StatisticsProcessedDocUnitDTO;
 import fr.progilone.pgcn.domain.exchange.internetarchive.InternetArchiveReport;
-import fr.progilone.pgcn.service.document.ui.UIDocUnitService;
 import fr.progilone.pgcn.service.exchange.internetarchive.InternetArchiveReportService;
 import fr.progilone.pgcn.service.exchange.internetarchive.mapper.InternetArchiveReportMapper;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -19,11 +21,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Service dédié à les gestion des vues des unités documentaires
@@ -47,9 +44,7 @@ public class UIInternetArchiveReportService {
     @Transactional(readOnly = true)
     public List<InternetArchiveReportDTO> findAllByDocUnitIdentifier(String docUnitId) {
         final List<InternetArchiveReport> reports = iaReportService.findByDocUnit(docUnitId);
-        return reports.stream()
-                      .map(InternetArchiveReportMapper.INSTANCE::internetArchiveReportToInternetArchiveReportDTO)
-                      .collect(Collectors.toList());
+        return reports.stream().map(InternetArchiveReportMapper.INSTANCE::internetArchiveReportToInternetArchiveReportDTO).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
@@ -74,7 +69,8 @@ public class UIInternetArchiveReportService {
      * @return
      */
     public String getIaArkUrl(final String aiIdentifier) {
-        final String idArkUrl = "https://archive.org/metadata/" + aiIdentifier + "/metadata/identifier-ark";
+        final String idArkUrl = "https://archive.org/metadata/" + aiIdentifier
+                                + "/metadata/identifier-ark";
         final HttpClient client = HttpClientBuilder.create().build();
         final HttpGet request = new HttpGet(idArkUrl);
 

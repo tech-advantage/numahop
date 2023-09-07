@@ -1,27 +1,27 @@
 package fr.progilone.pgcn.domain.dto.document;
 
-import java.util.Set;
-
 import fr.progilone.pgcn.domain.document.Check;
 import fr.progilone.pgcn.domain.dto.AbstractDTO;
+import java.util.Set;
 
 /**
  * Structure pour renseigner les erreurs sur une page & les notes.
- * 
+ *
  * Fait également office de 'passe-plat' pour données de table des matieres.
- * 
+ *
  */
-public class DocPageErrorsDTO extends AbstractDTO{
-    public DocPageErrorsDTO(){}
+public class DocPageErrorsDTO extends AbstractDTO {
+
+    public DocPageErrorsDTO() {
+    }
 
     private Set<Check.ErrorLabel> failedChecks;
     private String checkNotes;
-    
+
     /* Donnees pour TOC */
     private String typeToc;
     private String orderToc;
     private String titleToc;
-        
 
     public Set<Check.ErrorLabel> getFailedChecks() {
         return failedChecks;

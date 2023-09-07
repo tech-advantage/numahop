@@ -1,10 +1,9 @@
 package fr.progilone.pgcn.domain.dto.checkconfiguration;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import fr.progilone.pgcn.domain.dto.AbstractVersionedDTO;
 import fr.progilone.pgcn.domain.dto.library.SimpleLibraryDTO;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CheckConfigurationDTO extends AbstractVersionedDTO {
 
@@ -13,10 +12,11 @@ public class CheckConfigurationDTO extends AbstractVersionedDTO {
     private SimpleLibraryDTO library;
     private Double minorErrorRate;
     private Double majorErrorRate;
+    private Double definitionErrorRate;
     private Double sampleRate;
     private String sampleMode;
     private String separators;
-    
+
     // contrôles auto
     private List<AutomaticCheckRuleDTO> automaticCheckRules;
 
@@ -25,6 +25,7 @@ public class CheckConfigurationDTO extends AbstractVersionedDTO {
                                  SimpleLibraryDTO library,
                                  Double minorErrorRate,
                                  Double majorErrorRate,
+                                 Double definitionErrorRate,
                                  Double sampleRate,
                                  String sampleMode,
                                  String separators,
@@ -34,6 +35,7 @@ public class CheckConfigurationDTO extends AbstractVersionedDTO {
         this.library = library;
         this.minorErrorRate = minorErrorRate;
         this.majorErrorRate = majorErrorRate;
+        this.definitionErrorRate = definitionErrorRate;
         this.sampleRate = sampleRate;
         this.sampleMode = sampleMode;
         this.separators = separators;
@@ -42,7 +44,7 @@ public class CheckConfigurationDTO extends AbstractVersionedDTO {
         } else {
             this.automaticCheckRules = new ArrayList<>();
         }
-    } 
+    }
 
     public CheckConfigurationDTO() {
 
@@ -104,6 +106,14 @@ public class CheckConfigurationDTO extends AbstractVersionedDTO {
         this.sampleMode = sampleMode;
     }
 
+    public Double getDefinitionErrorRate() {
+        return definitionErrorRate;
+    }
+
+    public void setDefinitionErrorRate(Double definitionErrorRate) {
+        this.definitionErrorRate = definitionErrorRate;
+    }
+
     public String getSeparators() {
         return separators;
     }
@@ -121,11 +131,13 @@ public class CheckConfigurationDTO extends AbstractVersionedDTO {
     }
 
     public static final class Builder {
+
         private String identifier;
         private String label;
         private SimpleLibraryDTO library;
         private Double minorErrorRate;
         private Double majorErrorRate;
+        private Double definitionErrorRate;
         private Double sampleRate;
         private String sampleMode;
         private String separators;
@@ -173,25 +185,41 @@ public class CheckConfigurationDTO extends AbstractVersionedDTO {
             this.sampleRate = sampleRate;
             return this;
         }
-        
+
         public Builder setSampleMode(String sampleMode) {
             this.sampleMode = sampleMode;
             return this;
         }
-        
+
+        public Double getDefinitionErrorRate() {
+            return definitionErrorRate;
+        }
+
+        public void setDefinitionErrorRate(Double definitionErrorRate) {
+            this.definitionErrorRate = definitionErrorRate;
+        }
+
         public Builder setSeparators(String separators) {
             this.separators = separators;
             return this;
         }
-        
+
         public Builder setAutomaticCheckRules(List<AutomaticCheckRuleDTO> automaticCheckRules) {
             this.automaticCheckRules = automaticCheckRules;
             return this;
         }
-        
 
         public CheckConfigurationDTO build() {
-            return new CheckConfigurationDTO(identifier, label, library, minorErrorRate, majorErrorRate, sampleRate, sampleMode, separators, automaticCheckRules);
+            return new CheckConfigurationDTO(identifier,
+                                             label,
+                                             library,
+                                             minorErrorRate,
+                                             majorErrorRate,
+                                             definitionErrorRate,
+                                             sampleRate,
+                                             sampleMode,
+                                             separators,
+                                             automaticCheckRules);
         }
     }
 }

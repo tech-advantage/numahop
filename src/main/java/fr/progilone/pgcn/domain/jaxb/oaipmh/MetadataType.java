@@ -5,23 +5,23 @@
 // Généré le : 2018.08.13 à 01:08:19 PM CEST
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.oaipmh;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAnyElement;
-import javax.xml.bind.annotation.XmlType;
-
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAnyElement;
+import jakarta.xml.bind.annotation.XmlType;
 
 /**
  * Metadata must be expressed in XML that complies
- *        with another XML Schema (namespace=#other). Metadata must be
- *        explicitly qualified in the response.
+ * with another XML Schema (namespace=#other). Metadata must be
+ * explicitly qualified in the response.
  *
- * <p>Classe Java pour metadataType complex type.
+ * <p>
+ * Classe Java pour metadataType complex type.
  *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="metadataType">
@@ -38,9 +38,7 @@ import javax.xml.bind.annotation.XmlType;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "metadataType", propOrder = {
-    "any"
-})
+@XmlType(name = "metadataType", propOrder = {"any"})
 public class MetadataType {
 
     @XmlAnyElement(lax = true)
@@ -50,8 +48,8 @@ public class MetadataType {
      * Obtient la valeur de la propriété any.
      *
      * @return
-     *     possible object is
-     *     {@link Object }
+     *         possible object is
+     *         {@link Object }
      *
      */
     public Object getAny() {
@@ -62,8 +60,8 @@ public class MetadataType {
      * Définit la valeur de la propriété any.
      *
      * @param value
-     *     allowed object is
-     *     {@link Object }
+     *            allowed object is
+     *            {@link Object }
      *
      */
     public void setAny(Object value) {

@@ -1,19 +1,13 @@
 package fr.progilone.pgcn.service.document.conditionreport;
 
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
+
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.document.conditionreport.DescriptionProperty;
 import fr.progilone.pgcn.domain.document.conditionreport.DescriptionValue;
 import fr.progilone.pgcn.service.document.DocUnitService;
 import fr.progilone.pgcn.service.exchange.template.MessageService;
-import org.apache.commons.lang3.StringUtils;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.internal.stubbing.answers.ReturnsArgumentAt;
-import org.mockito.runners.MockitoJUnitRunner;
-
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -22,11 +16,17 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.internal.stubbing.answers.ReturnsArgumentAt;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.mockito.Mockito.*;
-
-@Ignore
-@RunWith(MockitoJUnitRunner.class)
+@Disabled
+@ExtendWith(MockitoExtension.class)
 public class ConditionReportExportServiceTest {
 
     @Mock
@@ -42,13 +42,9 @@ public class ConditionReportExportServiceTest {
 
     private ConditionReportExportService service;
 
-    @Before
+    @BeforeEach
     public void setUp() {
-        service = new ConditionReportExportService(descBindingPropertyService,
-                                                   descriptionValueService,
-                                                   docUnitService,
-                                                   messageService,
-                                                   propertyConfigurationService);
+        service = new ConditionReportExportService(descBindingPropertyService, descriptionValueService, docUnitService, messageService, propertyConfigurationService);
         when(messageService.getMessage(anyString(), anyString())).then(new ReturnsArgumentAt(1));
     }
 

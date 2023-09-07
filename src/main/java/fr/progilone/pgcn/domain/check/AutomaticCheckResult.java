@@ -1,18 +1,5 @@
 package fr.progilone.pgcn.domain.check;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
 import fr.progilone.pgcn.domain.AbstractDomainObject;
 import fr.progilone.pgcn.domain.check.AutomaticCheckType.AutoCheckType;
 import fr.progilone.pgcn.domain.delivery.Delivery;
@@ -20,6 +7,17 @@ import fr.progilone.pgcn.domain.document.DigitalDocument;
 import fr.progilone.pgcn.domain.document.DocPage;
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.document.PhysicalDocument;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Classe représentant un résultat de contrôle automatique
@@ -71,7 +69,7 @@ public class AutomaticCheckResult extends AbstractDomainObject {
     @ManyToOne(optional = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "delivery")
     private Delivery delivery;
-    
+
     /* Liste fichiers en erreur */
     @Transient
     private List<String> errorFiles = new ArrayList<>();
@@ -169,13 +167,15 @@ public class AutomaticCheckResult extends AbstractDomainObject {
      * Récupération des infos du parent (label) (EAGER fetched)
      */
     public String getLabel() {
-        return check.getLabel();
+        return check != null ? check.getLabel()
+                             : null;
     }
 
     /**
      * Récupération des infos du parent (type) (EAGER fetched)
      */
     public AutoCheckType getType() {
-        return check.getType();
+        return check != null ? check.getType()
+                             : null;
     }
 }

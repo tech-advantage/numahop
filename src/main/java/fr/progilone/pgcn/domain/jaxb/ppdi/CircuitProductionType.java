@@ -7,22 +7,23 @@
 
 package fr.progilone.pgcn.domain.jaxb.ppdi;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
-
 
 /**
  *
- * Pr�sentation du circuit de production et de collecte des documents avant leur archivage au CINES.
+ * Présentation du circuit de production et de collecte des documents avant leur archivage au CINES.
  *
  *
- * <p>Classe Java pour CircuitProductionType complex type.
+ * <p>
+ * Classe Java pour CircuitProductionType complex type.
  *
- * <p>Le fragment de sch�ma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="CircuitProductionType">
@@ -40,10 +41,9 @@ import javax.xml.bind.annotation.XmlType;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "CircuitProductionType", propOrder = {
-    "productionCollecte",
-    "numerisation"
-})
+@XmlType(name = "CircuitProductionType",
+         propOrder = {"productionCollecte",
+                      "numerisation"})
 public class CircuitProductionType {
 
     @XmlElement(required = true)
@@ -61,8 +61,9 @@ public class CircuitProductionType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getProductionCollecte().add(newItem);
+     * getProductionCollecte().add(newItem);
      * </pre>
      *
      *
@@ -90,8 +91,9 @@ public class CircuitProductionType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getNumerisation().add(newItem);
+     * getNumerisation().add(newItem);
      * </pre>
      *
      *

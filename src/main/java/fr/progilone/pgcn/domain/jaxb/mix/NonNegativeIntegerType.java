@@ -1,27 +1,27 @@
 //
-// Ce fichier a été généré par l'implémentation de référence JavaTM Architecture for XML Binding (JAXB), v2.2.8-b130911.1802 
-// Voir <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
-// Toute modification apportée à ce fichier sera perdue lors de la recompilation du schéma source. 
-// Généré le : 2017.08.25 à 03:15:17 PM CEST 
+// Ce fichier a été généré par l'implémentation de référence JavaTM Architecture for XML Binding (JAXB), v2.2.8-b130911.1802
+// Voir <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a>
+// Toute modification apportée à ce fichier sera perdue lors de la recompilation du schéma source.
+// Généré le : 2017.08.25 à 03:15:17 PM CEST
 //
-
 
 package fr.progilone.pgcn.domain.jaxb.mix;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlValue;
 import java.math.BigInteger;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.XmlValue;
-
 
 /**
- * <p>Classe Java pour nonNegativeIntegerType complex type.
- * 
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
- * 
+ * <p>
+ * Classe Java pour nonNegativeIntegerType complex type.
+ *
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ *
  * <pre>
  * &lt;complexType name="nonNegativeIntegerType">
  *   &lt;simpleContent>
@@ -31,13 +31,11 @@ import javax.xml.bind.annotation.XmlValue;
  *   &lt;/simpleContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
+ *
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "nonNegativeIntegerType", propOrder = {
-    "value"
-})
+@XmlType(name = "nonNegativeIntegerType", propOrder = {"value"})
 public class NonNegativeIntegerType {
 
     @XmlValue
@@ -48,11 +46,11 @@ public class NonNegativeIntegerType {
 
     /**
      * Obtient la valeur de la propriété value.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link BigInteger }
-     *     
+     *         possible object is
+     *         {@link BigInteger }
+     *
      */
     public BigInteger getValue() {
         return value;
@@ -60,11 +58,11 @@ public class NonNegativeIntegerType {
 
     /**
      * Définit la valeur de la propriété value.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link BigInteger }
-     *     
+     *            allowed object is
+     *            {@link BigInteger }
+     *
      */
     public void setValue(BigInteger value) {
         this.value = value;
@@ -72,11 +70,11 @@ public class NonNegativeIntegerType {
 
     /**
      * Obtient la valeur de la propriété use.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *         possible object is
+     *         {@link String }
+     *
      */
     public String getUse() {
         return use;
@@ -84,11 +82,11 @@ public class NonNegativeIntegerType {
 
     /**
      * Définit la valeur de la propriété use.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is
+     *            {@link String }
+     *
      */
     public void setUse(String value) {
         this.use = value;

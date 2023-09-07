@@ -1,22 +1,9 @@
 package fr.progilone.pgcn.service.delivery;
 
-import static org.junit.Assert.*;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.TrueFileFilter;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import fr.progilone.pgcn.repository.document.PhysicalDocumentRepository;
+import fr.progilone.pgcn.repository.imagemetadata.ImageMetadataRepository;
 import fr.progilone.pgcn.repository.storage.BinaryRepository;
 import fr.progilone.pgcn.service.check.AutomaticCheckService;
 import fr.progilone.pgcn.service.check.MetaDatasCheckService;
@@ -37,8 +24,20 @@ import fr.progilone.pgcn.service.storage.TesseractService;
 import fr.progilone.pgcn.service.util.DeliveryProgressService;
 import fr.progilone.pgcn.service.util.transaction.TransactionService;
 import fr.progilone.pgcn.service.workflow.WorkflowService;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.TrueFileFilter;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class DeliveryAsyncServiceTest {
 
     private static final String RESOURCE_FOLDER = "src/test/resources/delivery";
@@ -92,10 +91,12 @@ public class DeliveryAsyncServiceTest {
     private DocUnitService docUnitService;
     @Mock
     private UIDigitalDocumentService uidigitalDocumentService;
+    @Mock
+    private ImageMetadataRepository imageMetadataRepository;
 
     private DeliveryAsyncService service;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         service = new DeliveryAsyncService(deliveryService,
                                            esDeliveryService,
@@ -119,7 +120,8 @@ public class DeliveryAsyncServiceTest {
                                            bibliographicRecordService,
                                            tesseractService,
                                            docUnitService,
-                                           uidigitalDocumentService);
+                                           uidigitalDocumentService,
+                                           imageMetadataRepository);
     }
 
     @Test
@@ -133,9 +135,7 @@ public class DeliveryAsyncServiceTest {
         final File file3 = new File(baseDirectory, "IHE14001000.png");
         final File file4 = new File(baseDirectory, "IHE14001000.pdf");
 
-        files.addAll(FileUtils.listFiles(baseDirectory,
-                                         service.getFormatFilter(expectedFormat),
-                                         TrueFileFilter.TRUE));
+        files.addAll(FileUtils.listFiles(baseDirectory, service.getFormatFilter(expectedFormat), TrueFileFilter.TRUE));
         assertEquals(2, files.size());
     }
 
@@ -151,9 +151,7 @@ public class DeliveryAsyncServiceTest {
         final File file3 = new File(baseDirectory, "BSG_120587445_003.png");
         final File file4 = new File(baseDirectory, "BSG_120587445_004.pdf");
 
-        files.addAll(FileUtils.listFiles(baseDirectory,
-                                         service.getPrefixFilter(prefix, seqSeparator, false, false),
-                                         TrueFileFilter.TRUE));
+        files.addAll(FileUtils.listFiles(baseDirectory, service.getPrefixFilter(prefix, seqSeparator, false, false), TrueFileFilter.TRUE));
         assertEquals(4, files.size());
     }
 }

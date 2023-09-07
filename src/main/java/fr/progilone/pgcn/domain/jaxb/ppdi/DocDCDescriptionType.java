@@ -5,21 +5,21 @@
 // Généré le : 2017.12.08 à 03:23:15 PM CET
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.ppdi;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
-
 
 /**
- * <p>Classe Java pour DocDCDescriptionType complex type.
+ * <p>
+ * Classe Java pour DocDCDescriptionType complex type.
  *
- * <p>Le fragment de sch�ma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="DocDCDescriptionType">
@@ -49,22 +49,21 @@ import javax.xml.bind.annotation.XmlType;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "DocDCDescriptionType", propOrder = {
-    "title",
-    "creator",
-    "subject",
-    "description",
-    "publisher",
-    "contributor",
-    "date",
-    "type",
-    "format",
-    "source",
-    "language",
-    "relation",
-    "coverage",
-    "rights"
-})
+@XmlType(name = "DocDCDescriptionType",
+         propOrder = {"title",
+                      "creator",
+                      "subject",
+                      "description",
+                      "publisher",
+                      "contributor",
+                      "date",
+                      "type",
+                      "format",
+                      "source",
+                      "language",
+                      "relation",
+                      "coverage",
+                      "rights"})
 public class DocDCDescriptionType {
 
     @XmlElement(required = true)
@@ -107,8 +106,9 @@ public class DocDCDescriptionType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getTitle().add(newItem);
+     * getTitle().add(newItem);
      * </pre>
      *
      *
@@ -136,8 +136,9 @@ public class DocDCDescriptionType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getCreator().add(newItem);
+     * getCreator().add(newItem);
      * </pre>
      *
      *
@@ -165,8 +166,9 @@ public class DocDCDescriptionType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getSubject().add(newItem);
+     * getSubject().add(newItem);
      * </pre>
      *
      *
@@ -194,8 +196,9 @@ public class DocDCDescriptionType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getDescription().add(newItem);
+     * getDescription().add(newItem);
      * </pre>
      *
      *
@@ -223,8 +226,9 @@ public class DocDCDescriptionType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getPublisher().add(newItem);
+     * getPublisher().add(newItem);
      * </pre>
      *
      *
@@ -252,8 +256,9 @@ public class DocDCDescriptionType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getContributor().add(newItem);
+     * getContributor().add(newItem);
      * </pre>
      *
      *
@@ -281,8 +286,9 @@ public class DocDCDescriptionType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getDate().add(newItem);
+     * getDate().add(newItem);
      * </pre>
      *
      *
@@ -310,8 +316,9 @@ public class DocDCDescriptionType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getType().add(newItem);
+     * getType().add(newItem);
      * </pre>
      *
      *
@@ -339,8 +346,9 @@ public class DocDCDescriptionType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getFormat().add(newItem);
+     * getFormat().add(newItem);
      * </pre>
      *
      *
@@ -368,8 +376,9 @@ public class DocDCDescriptionType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getSource().add(newItem);
+     * getSource().add(newItem);
      * </pre>
      *
      *
@@ -397,8 +406,9 @@ public class DocDCDescriptionType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getLanguage().add(newItem);
+     * getLanguage().add(newItem);
      * </pre>
      *
      *
@@ -426,8 +436,9 @@ public class DocDCDescriptionType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getRelation().add(newItem);
+     * getRelation().add(newItem);
      * </pre>
      *
      *
@@ -455,8 +466,9 @@ public class DocDCDescriptionType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getCoverage().add(newItem);
+     * getCoverage().add(newItem);
      * </pre>
      *
      *
@@ -484,8 +496,9 @@ public class DocDCDescriptionType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getRights().add(newItem);
+     * getRights().add(newItem);
      * </pre>
      *
      *

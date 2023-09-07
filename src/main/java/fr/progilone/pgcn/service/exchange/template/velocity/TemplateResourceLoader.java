@@ -2,14 +2,14 @@ package fr.progilone.pgcn.service.exchange.template.velocity;
 
 import fr.progilone.pgcn.domain.exchange.template.Template;
 import fr.progilone.pgcn.service.exchange.template.loader.ResourceName;
-import org.apache.commons.collections.ExtendedProperties;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.runtime.resource.Resource;
 import org.apache.velocity.runtime.resource.loader.ResourceLoader;
-
-import java.io.InputStream;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
+import org.apache.velocity.util.ExtProperties;
 
 /**
  * Ce {@link ResourceLoader} gère les templates Velocity stockés dans la table des Templates.
@@ -30,14 +30,14 @@ public class TemplateResourceLoader extends ResourceLoader {
     private fr.progilone.pgcn.service.exchange.template.loader.TemplateResourceLoader delegate;
 
     @Override
-    public void init(final ExtendedProperties configuration) {
+    public void init(final ExtProperties configuration) {
         final Object service = configuration.get("service");
         delegate = new fr.progilone.pgcn.service.exchange.template.loader.TemplateResourceLoader(service);
     }
 
     @Override
-    public synchronized InputStream getResourceStream(final String name) throws ResourceNotFoundException {
-        return delegate.getResourceStream(new ResourceName(name));
+    public synchronized Reader getResourceReader(final String source, final String encoding) throws ResourceNotFoundException {
+        return new InputStreamReader(delegate.getResourceStream(new ResourceName(source)));
     }
 
     @Override
@@ -53,6 +53,7 @@ public class TemplateResourceLoader extends ResourceLoader {
     private long readLastModified(final Resource resource) {
         final Template template = delegate.findTemplateByName(new ResourceName(resource.getName()));
         final LocalDateTime lastModifiedDate = template.getLastModifiedDate();
-        return lastModifiedDate != null ? Timestamp.valueOf(lastModifiedDate).getTime() : 0;
+        return lastModifiedDate != null ? Timestamp.valueOf(lastModifiedDate).getTime()
+                                        : 0;
     }
 }

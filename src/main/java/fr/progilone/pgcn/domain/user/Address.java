@@ -1,15 +1,13 @@
 package fr.progilone.pgcn.domain.user;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-
 import com.fasterxml.jackson.annotation.JsonSubTypes;
-
 import fr.progilone.pgcn.domain.AbstractDomainObject;
 import fr.progilone.pgcn.domain.library.Library;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 
 /**
  * Adresse
@@ -122,17 +120,16 @@ public class Address extends AbstractDomainObject {
         return user;
     }
 
-	public  Library getLibrary() {
-		return library;
-	}
+    public Library getLibrary() {
+        return library;
+    }
 
-	public  void setLibrary(Library library) {
-		this.library = library;
-	}
+    public void setLibrary(Library library) {
+        this.library = library;
+    }
 
-	public  void setUser(User user) {
-		this.user = user;
-	}
-    
-    
+    public void setUser(User user) {
+        this.user = user;
+    }
+
 }

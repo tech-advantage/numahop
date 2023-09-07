@@ -1,13 +1,18 @@
 <div class="pull-right">
-    <button type="button" class="btn btn-sem2 btn-xs" ng-if="editMode" uib-tooltip="{{::'Ajouter un widget' | translate}}" ng-click="addWidgetDialog()">
+    <button type="button" class="btn btn-sem2 btn-xs" ng-if="editMode" uib-tooltip="{{::'Ajouter un widget' | translate}}" tooltip-append-to-body="true" ng-click="addWidgetDialog()">
         <span class="glyphicon-halflings glyphicon-plus"></span>
     </button>
-    <button type="button" class="btn btn-sem2 btn-xs" ng-if="options.editable"
-        uib-tooltip="{{editMode ? 'Sauvegarder les modifications' : 'Ouvrir le mode configuration' | translate}}" ng-click="toggleEditMode()">
+    <button
+        type="button"
+        class="btn btn-sem2 btn-xs"
+        ng-if="options.editable"
+        uib-tooltip="{{editMode ? 'Sauvegarder les modifications' : 'Ouvrir le mode configuration' | translate}}"
+        tooltip-append-to-body="true"
+        ng-click="toggleEditMode()"
+    >
         <i x-ng-class="{'glyphicon-halflings glyphicon-edit' : !editMode, 'glyphicon-regular floppy-save' : editMode}"></i>
     </button>
-    <button type="button" class="btn btn-sem2 btn-xs" ng-if="editMode" uib-tooltip="{{::'Annuler les modifications' | translate}}"
-        ng-click="cancelEditMode()">
+    <button type="button" class="btn btn-sem2 btn-xs" ng-if="editMode" uib-tooltip="{{::'Annuler les modifications' | translate}}" tooltip-append-to-body="true" ng-click="cancelEditMode()">
         <i class="glyphicon-regular unshare"></i>
     </button>
 </div>

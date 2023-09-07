@@ -1,13 +1,9 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('RecordCtrl', RecordCtrl);
+    angular.module('numaHopApp.controller').controller('RecordCtrl', RecordCtrl);
 
-    function RecordCtrl($location, $scope, $timeout, $q,
-        RecordSrvc, gettextCatalog, HistorySrvc,DocUnitSrvc,
-        NumahopEditService, NumahopStorageService, NumaHopInitializationSrvc) {
-
+    function RecordCtrl($location, $scope, $timeout, $q, RecordSrvc, gettextCatalog, HistorySrvc, DocUnitSrvc, NumahopEditService, NumahopStorageService, NumaHopInitializationSrvc) {
         $scope.applyFilter = applyFilter;
         $scope.clearSelection = clearSelection;
         $scope.create = create;
@@ -26,13 +22,12 @@
         $scope.selectedIndex = null;
         $scope.selectedInNew = false;
 
-        $scope.entityInclude = "scripts/app/document/recordEdit.html";
+        $scope.entityInclude = 'scripts/app/document/recordEdit.html';
         $scope.record = null;
 
-        var FILTER_STORAGE_SERVICE_KEY = "bibliographic_record";
+        var FILTER_STORAGE_SERVICE_KEY = 'bibliographic_record';
 
-        $scope.filters = {
-        };
+        $scope.filters = {};
         $scope.listFilters = {
             // state_filter: true,
             has_docunit_filter: true,
@@ -43,21 +38,19 @@
             project_filter: true,
             lot_filter: true,
             created_date_filter: true,
-            wkf_status_filter: true
+            wkf_status_filter: true,
         };
-
 
         /**
          * Liste des options pour les listes déroulantes
          */
-        $scope.options = {
-        };
+        $scope.options = {};
         $scope.pagination = {
             items: [],
             totalItems: 0,
             busy: false,
             last: false,
-            page: 0
+            page: 0,
         };
         $scope.newEntities = []; // liste des entités récemment créés
 
@@ -65,47 +58,39 @@
 
         /** Initialisation */
         function init() {
-            HistorySrvc.add(gettextCatalog.getString("Notices"));
+            HistorySrvc.add(gettextCatalog.getString('Notices'));
             reinitFilters(false);
             loadOptionsAndFilters();
 
-            $scope.$on("$routeUpdate",
-                function ($currentRoute, $previousRoute) {
-                    $timeout(function () {
-                        $scope.entityInclude = null;
-                        $scope.$apply();
-                        $scope.entityInclude = "scripts/app/document/recordEdit.html";
-                    });
-                }
-            );
+            $scope.$on('$routeUpdate', function ($currentRoute, $previousRoute) {
+                $timeout(function () {
+                    $scope.entityInclude = null;
+                    $scope.$apply();
+                    $scope.entityInclude = 'scripts/app/document/recordEdit.html';
+                });
+            });
         }
 
         function loadOptionsAndFilters() {
-            $q.all([NumaHopInitializationSrvc.loadLibraries(),
-            NumaHopInitializationSrvc.loadProjects(),
-            NumaHopInitializationSrvc.loadLots(),
-            DocUnitSrvc.getConfigFilterStatuses()])
-                .then(function (data) {
-                    $scope.options.libraries = data[0];
-                    $scope.options.projects = data[1];
-                    $scope.options.lots = data[2];
-                    $scope.options.statuses = data[3];
-                    loadFilters();
-                    nextPage();
-                });
+            $q.all([NumaHopInitializationSrvc.loadLibraries(), NumaHopInitializationSrvc.loadProjects(), NumaHopInitializationSrvc.loadLots(), DocUnitSrvc.getConfigFilterStatuses()]).then(function (data) {
+                $scope.options.libraries = data[0];
+                $scope.options.projects = data[1];
+                $scope.options.lots = data[2];
+                $scope.options.statuses = data[3];
+                loadFilters();
+                nextPage();
+            });
         }
 
         function refreshFilterLists() {
-            var librariesIds = _.pluck($scope.filters.libraries, "identifier");
-            var projectsIds = _.pluck($scope.filters.projects, "identifier");
-            NumaHopInitializationSrvc.loadProjects(librariesIds)
-                .then(function (data) {
-                    $scope.options.projects = data;
-                    NumaHopInitializationSrvc.loadLots(librariesIds, projectsIds)
-                        .then(function (data) {
-                            $scope.options.lots = data;
-                        });
+            var librariesIds = _.pluck($scope.filters.libraries, 'identifier');
+            var projectsIds = _.pluck($scope.filters.projects, 'identifier');
+            NumaHopInitializationSrvc.loadProjects(librariesIds).then(function (data) {
+                $scope.options.projects = data;
+                NumaHopInitializationSrvc.loadLots(librariesIds, projectsIds).then(function (data) {
+                    $scope.options.lots = data;
                 });
+            });
         }
 
         function doFilterLibrary() {
@@ -124,7 +109,7 @@
                 $scope.entity._selected = false;
                 $scope.entity = null;
             }
-            $location.path("/document/record").search({ id: null, new: "true" });
+            $location.path('/document/record').search({ id: null, new: 'true' });
         }
         function edit(entity, index, selectedInNew) {
             clearSelection();
@@ -139,7 +124,7 @@
                 search = { id: entity.identifier };
             }
 
-            $location.path("/document/record").search(search);
+            $location.path('/document/record').search(search);
         }
 
         function filterEntities(newValue, field) {
@@ -148,38 +133,38 @@
             var searchParams = {
                 page: $scope.pagination.page,
                 orphan: $scope.filters.orphan,
-                search: $scope.filterWith || ""
+                search: $scope.filterWith || '',
             };
             if ($scope.filters.initiale) {
-                searchParams["initiale"] = $scope.filters.initiale;
+                searchParams['initiale'] = $scope.filters.initiale;
             }
             if ($scope.filters.libraries) {
-                var librariesIds = _.pluck($scope.filters.libraries, "identifier");
-                searchParams["libraries"] = librariesIds;
+                var librariesIds = _.pluck($scope.filters.libraries, 'identifier');
+                searchParams['libraries'] = librariesIds;
             }
             if ($scope.filters.projects) {
-                var projectsIds = _.pluck($scope.filters.projects, "identifier");
-                searchParams["projects"] = projectsIds;
+                var projectsIds = _.pluck($scope.filters.projects, 'identifier');
+                searchParams['projects'] = projectsIds;
             }
             if ($scope.filters.lots) {
-                var lotsIds = _.pluck($scope.filters.lots, "identifier");
-                searchParams["lots"] = lotsIds;
+                var lotsIds = _.pluck($scope.filters.lots, 'identifier');
+                searchParams['lots'] = lotsIds;
             }
             if ($scope.filters.wkf_statuses) {
-                var statusesIds = _.pluck($scope.filters.wkf_statuses, "identifier");
-                searchParams["statuses"] = statusesIds;
+                var statusesIds = _.pluck($scope.filters.wkf_statuses, 'identifier');
+                searchParams['statuses'] = statusesIds;
             }
             if ($scope.filters.createdDateFrom) {
-                searchParams["createdDateFrom"] = $scope.filters.createdDateFrom;
+                searchParams['createdDateFrom'] = $scope.filters.createdDateFrom;
             }
             if ($scope.filters.createdDateTo) {
-                searchParams["createdDateTo"] = $scope.filters.createdDateTo;
+                searchParams['createdDateTo'] = $scope.filters.createdDateTo;
             }
             if ($scope.filters.lastModifiedDateFrom) {
-                searchParams["lastModifiedDateFrom"] = $scope.filters.lastModifiedDateFrom;
+                searchParams['lastModifiedDateFrom'] = $scope.filters.lastModifiedDateFrom;
             }
             if ($scope.filters.lastModifiedDateTo) {
-                searchParams["lastModifiedDateTo"] = $scope.filters.lastModifiedDateTo;
+                searchParams['lastModifiedDateTo'] = $scope.filters.lastModifiedDateTo;
             }
             if (field) {
                 if (newValue) {
@@ -204,7 +189,7 @@
             doFilter();
         }
         function applyFilter(filterWith, event) {
-            if (event.type === "keypress" && event.keyCode === 13) {
+            if (event.type === 'keypress' && event.keyCode === 13) {
                 doFilter();
             }
         }
@@ -228,8 +213,7 @@
                         } else {
                             $scope.pagination.items.push(value.content[i]);
                         }
-                    }
-                    else {
+                    } else {
                         // On ne compte pas 2 fois les nouvelles notices rechargées
                         $scope.pagination.totalItems--;
                     }
@@ -275,7 +259,7 @@
 
         function reinitFilters(reload) {
             $scope.filters = {
-                inactive: false
+                inactive: false,
             };
             if (reload) {
                 doFilter();
@@ -283,7 +267,9 @@
         }
         // liste
         function nextPage() {
-            if ($scope.pagination.busy || $scope.pagination.last) { return; }
+            if ($scope.pagination.busy || $scope.pagination.last) {
+                return;
+            }
             $scope.pagination.busy = true;
 
             filterEntities().then(function (value, responseHeaders) {
@@ -295,10 +281,9 @@
             });
         }
         function clearSelection() {
-            _.union($scope.pagination.items, $scope.newEntities)
-                .forEach(function (elt, i) {
-                    elt._selected = false;
-                });
+            _.union($scope.pagination.items, $scope.newEntities).forEach(function (elt, i) {
+                elt._selected = false;
+            });
         }
 
         function moveUp() {

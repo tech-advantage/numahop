@@ -2,16 +2,27 @@
     <div class="panel panel-column-3">
         <div class="panel-heading">
             <div class="pull-right">
-                <button type="button" class="btn btn-sem2 btn-xs"
-                        ng-click="configurationForm.$show()" uib-tooltip="{{::'Modifier' | translate}}"
-                        ng-disabled="exportFtpConfigForm.$visible" ng-show="loaded"
-                        sem-roles-allowed="CONF_DIFFUSION_OMEKA_HAB1">
+                <button
+                    type="button"
+                    class="btn btn-sem2 btn-xs"
+                    ng-click="configurationForm.$show()"
+                    uib-tooltip="{{::'Modifier' | translate}}"
+                    tooltip-append-to-body="true"
+                    ng-disabled="exportFtpConfigForm.$visible"
+                    ng-show="loaded"
+                    sem-roles-allowed="CONF_DIFFUSION_OMEKA_HAB1"
+                >
                     <span class="glyphicon-regular edit"></span>
                 </button>
-                <button type="button" class="btn btn-sem2 btn-xs"
-                        ng-click="delete(configuration)" ng-disabled="!configuration || !configuration.identifier || !loaded"
-                        uib-tooltip="{{::'Supprimer' | translate}}"
-                        sem-roles-allowed="CONF_DIFFUSION_OMEKA_HAB2">
+                <button
+                    type="button"
+                    class="btn btn-sem2 btn-xs"
+                    ng-click="delete(configuration)"
+                    ng-disabled="!configuration || !configuration.identifier || !loaded"
+                    uib-tooltip="{{::'Supprimer' | translate}}"
+                    tooltip-append-to-body="true"
+                    sem-roles-allowed="CONF_DIFFUSION_OMEKA_HAB2"
+                >
                     <span class="glyphicon-halflings glyphicon-trash"></span>
                 </button>
             </div>
@@ -19,91 +30,150 @@
         </div>
         <div class="panel-body">
             <div>
-                <form editable-form name="configurationForm" onaftersave="saveConfiguration()" ng-show="loaded"
-                      ng-init="formRO = !isAuthorized([userRoles.CONF_DIFFUSION_OMEKA_HAB1, userRoles.CONF_DIFFUSION_OMEKA_HAB2])">
+                <form
+                    editable-form
+                    name="configurationForm"
+                    onaftersave="saveConfiguration()"
+                    ng-show="loaded"
+                    ng-init="formRO = !isAuthorized([userRoles.CONF_DIFFUSION_OMEKA_HAB1, userRoles.CONF_DIFFUSION_OMEKA_HAB2])"
+                >
+                    <numa-editable-field
+                        title="{{::'Libellé' | translate}}"
+                        type="text"
+                        model="configuration.label"
+                        onbeforesave="validation.required"
+                        mandatory="true"
+                        form="configurationForm"
+                        errors="{{ errors.label }}"
+                        numa-readonly="formRO"
+                    ></numa-editable-field>
 
-                    <numa-editable-field title="{{::'Libellé' | translate}}" type="text" model="configuration.label"
-                                         onbeforesave="validation.required" mandatory="true" form="configurationForm"
-                                         errors="{{ errors.label }}" numa-readonly="formRO"></numa-editable-field>
+                    <numa-editable-field
+                        title="{{::'OmekaS' | translate}}"
+                        type="radiolist"
+                        model="configuration.omekas"
+                        form="configurationForm"
+                        id="omekas"
+                        onbeforesave="validation.required"
+                        errors="{{ errors.omekas }}"
+                        numa-readonly="formRO"
+                        config="{ data: options.boolean, displayFn: displayBoolean,
+                                                    query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }"
+                    ></numa-editable-field>
 
-                    <numa-editable-field title="{{::'OmekaS' | translate}}" type="radiolist" model="configuration.omekas"
-                                         form="configurationForm" id="omekas"
-                                         onbeforesave="validation.required"
-                                         errors="{{ errors.omekas }}" numa-readonly="formRO"
-                                         config="{ data: options.boolean, displayFn: displayBoolean,
-                                                    query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }"></numa-editable-field>
+                    <numa-editable-field
+                        title="{{::'Active' | translate}}"
+                        type="radiolist"
+                        model="configuration.active"
+                        form="configurationForm"
+                        onbeforesave="validation.required"
+                        id="active"
+                        errors="{{ errors.active }}"
+                        numa-readonly="formRO"
+                        config="{ data: options.boolean, displayFn: displayBoolean,
+                                                    query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }"
+                    ></numa-editable-field>
 
-                    <numa-editable-field title="{{::'Active' | translate}}" type="radiolist" model="configuration.active"
-                                         form="configurationForm" onbeforesave="validation.required" id="active"
-                                         errors="{{ errors.active }}" numa-readonly="formRO"
-                                         config="{ data: options.boolean, displayFn: displayBoolean,
-                                                    query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }"></numa-editable-field>
+                    <numa-editable-field
+                        title="{{::'Bibliothèque' | translate}}"
+                        type="select"
+                        model="configuration.library"
+                        mandatory="true"
+                        onbeforesave="validation.required"
+                        errors="{{ errors.library }}"
+                        numa-readonly="formRO"
+                        form="configurationForm"
+                        config="{ data: options.libraries, display: 'name', query: 'o.name for o in $ctrl.config.data track by o.identifier' }"
+                    ></numa-editable-field>
 
-                    <numa-editable-field title="{{::'Bibliothèque' | translate}}" type="select" model="configuration.library" mandatory="true"
-                                         onbeforesave="validation.required" errors="{{ errors.library }}" numa-readonly="formRO" form="configurationForm"
-                                         config="{ data: options.libraries, display: 'name', query: 'o.name for o in $ctrl.config.data track by o.identifier' }"></numa-editable-field>
-
-                    <numa-editable-field title="{{::'Serveur de stockage' | translate}}" type="text" model="configuration.storageServer"
-                                         onbeforesave="validation.required" mandatory="true" numa-readonly="formRO" form="configurationForm"
-                                         errors="{{ errors.storageServer }}"></numa-editable-field>
-                    <numa-editable-field title="{{::'Port' | translate}}" type="text" model="configuration.port"
-                                         onbeforesave="validation.required" mandatory="true" numa-readonly="formRO" form="configurationForm"
-                                         errors="{{ errors.port }}"></numa-editable-field>
-                    <numa-editable-field title="{{::'Adresse de dépôt' | translate}}" type="text" numa-readonly="formRO" form="configurationForm"
-                                         model="configuration.address" errors="{{ errors.address }}"></numa-editable-field>
-                    <numa-editable-field title="{{::'Login' | translate}}" type="text" numa-readonly="formRO" form="configurationForm"
-                                         model="configuration.login" errors="{{ errors.login }}"></numa-editable-field>
-                    <numa-editable-field title="{{::'Mot de passe' | translate}}" type="password"
-                                         placeholder="{{::'Mot de passe' | translate}}" form="configurationForm"
-                                         model="configuration.password" numa-readonly="formRo"></numa-editable-field>
-                    <numa-editable-field title="{{::'Connexion SFTP' | translate}}" type="radiolist" model="configuration.sftp"
-                                         form="configurationForm" numa-readonly="formRO" id="sftp"
-                                         onbeforesave="validation.required" onaftersave="onaftersave"
-                                         errors="{{ errors.sftp }}"
-                                         config="{ data: options.boolean, displayFn: displayBoolean,
-                                                    query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }"></numa-editable-field>
-                    <numa-editable-field title="{{::'Url d\'accès Omeka' | translate}}" type="text" numa-readonly="formRO" form="configurationForm"
-                                         model="configuration.accessUrl" errors="{{ errors.accessUrl }}"></numa-editable-field>
-                    <numa-editable-field title="{{::'Email' | translate}}" type="text" numa-readonly="formRO" form="configurationForm"
-                                         model="configuration.mailCsv" errors="{{ errors.mailCsv }}"></numa-editable-field>
+                    <numa-editable-field
+                        title="{{::'Serveur de stockage' | translate}}"
+                        type="text"
+                        model="configuration.storageServer"
+                        onbeforesave="validation.required"
+                        mandatory="true"
+                        numa-readonly="formRO"
+                        form="configurationForm"
+                        errors="{{ errors.storageServer }}"
+                    ></numa-editable-field>
+                    <numa-editable-field
+                        title="{{::'Port' | translate}}"
+                        type="text"
+                        model="configuration.port"
+                        onbeforesave="validation.required"
+                        mandatory="true"
+                        numa-readonly="formRO"
+                        form="configurationForm"
+                        errors="{{ errors.port }}"
+                    ></numa-editable-field>
+                    <numa-editable-field
+                        title="{{::'Adresse de dépôt' | translate}}"
+                        type="text"
+                        numa-readonly="formRO"
+                        form="configurationForm"
+                        model="configuration.address"
+                        errors="{{ errors.address }}"
+                    ></numa-editable-field>
+                    <numa-editable-field title="{{::'Login' | translate}}" type="text" numa-readonly="formRO" form="configurationForm" model="configuration.login" errors="{{ errors.login }}"></numa-editable-field>
+                    <numa-editable-field
+                        title="{{::'Mot de passe' | translate}}"
+                        type="password"
+                        placeholder="{{::'Mot de passe' | translate}}"
+                        form="configurationForm"
+                        model="configuration.password"
+                        numa-readonly="formRo"
+                    ></numa-editable-field>
+                    <numa-editable-field
+                        title="{{::'Connexion SFTP' | translate}}"
+                        type="radiolist"
+                        model="configuration.sftp"
+                        form="configurationForm"
+                        numa-readonly="formRO"
+                        id="sftp"
+                        onbeforesave="validation.required"
+                        onaftersave="onaftersave"
+                        errors="{{ errors.sftp }}"
+                        config="{ data: options.boolean, displayFn: displayBoolean,
+                                                    query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }"
+                    ></numa-editable-field>
+                    <numa-editable-field
+                        title="{{::'Url d\'accès Omeka' | translate}}"
+                        type="text"
+                        numa-readonly="formRO"
+                        form="configurationForm"
+                        model="configuration.accessUrl"
+                        errors="{{ errors.accessUrl }}"
+                    ></numa-editable-field>
+                    <numa-editable-field title="{{::'Email' | translate}}" type="text" numa-readonly="formRO" form="configurationForm" model="configuration.mailCsv" errors="{{ errors.mailCsv }}"></numa-editable-field>
 
                     <div uib-accordion>
                         <div uib-accordion-group is-open="accordions.collections">
                             <uib-accordion-heading>
-                                <span class="pull-left glyphicon-halflings"
-                                      ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordions.collections]"/>
+                                <i ng-class="{false: 'fa fa-chevron-right rotate-icon-up', true: 'fa fa-chevron-right rotate-icon-down'}[accordions.collections]"></i>
                                 <span>{{::' Collections Omeka' | translate}}</span>
                             </uib-accordion-heading>
-                            <button type="button" class="btn btn-sem2 btn-xs"
-                                    ng-click="addCollection()"
-                                    uib-tooltip="{{::'Ajouter' | translate}}"
-                                    ng-show="configurationForm.$visible && loaded"
-                                    >
+                            <button type="button" class="btn btn-sem2 btn-xs" ng-click="addCollection()" uib-tooltip="{{::'Ajouter' | translate}}" ng-show="configurationForm.$visible && loaded">
                                 <span class="glyphicon-regular plus"></span>
                             </button>
                             <div class="pull-left"></div>
                             <table class="table table-condensed table-hover">
                                 <thead>
-                                <tr>
-                                    <th class="text-center" translate>Nom</th>
-                                    <th class="text-center" translate>Action</th>
-                                </tr>
+                                    <tr>
+                                        <th class="text-center" translate>Nom</th>
+                                        <th class="text-center" translate>Action</th>
+                                    </tr>
                                 </thead>
                                 <tbody>
-                                        <tr ng-repeat="collection in configuration.omekaCollections">
-                                            <td class="text-center">
-                                                <numa-editable-field type="text" model="collection.name" onaftersave="onaftersave" form="configurationForm"
-                                                                     errors="{{ errors.name }}"></numa-editable-field>
-                                            </td>
-                                            <td class="text-center">
-                                                <button type="button" class="btn btn-sem2 btn-xs"
-                                                        ng-click="deleteCollection($index)" ng-show="configurationForm.$visible"
-                                                        uib-tooltip="{{::'Supprimer' | translate}}"
-                                                >
-                                                    <span class="glyphicon-regular remove"></span>
-                                                </button>
-                                            </td>
-                                        </tr>
+                                    <tr ng-repeat="collection in configuration.omekaCollections">
+                                        <td class="text-center">
+                                            <numa-editable-field type="text" model="collection.name" onaftersave="onaftersave" form="configurationForm" errors="{{ errors.name }}"></numa-editable-field>
+                                        </td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-sem2 btn-xs" ng-click="deleteCollection($index)" ng-show="configurationForm.$visible" uib-tooltip="{{::'Supprimer' | translate}}">
+                                                <span class="glyphicon-regular remove"></span>
+                                            </button>
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -111,40 +181,37 @@
                     <div uib-accordion>
                         <div uib-accordion-group is-open="accordions.items">
                             <uib-accordion-heading>
-                                <span class="pull-left glyphicon-halflings"
-                                        ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordions.items]"/>
+                                <i ng-class="{false: 'fa fa-chevron-right rotate-icon-up', true: 'fa fa-chevron-right rotate-icon-down'}[accordions.items]"></i>
                                 <span>{{::' Types d\'items Omeka' | translate}}</span>
                             </uib-accordion-heading>
-                            <button type="button" class="btn btn-sem2 btn-xs"
-                                    ng-click="addItem()"
-                                    uib-tooltip="{{::'Ajouter' | translate}}"
-                                    ng-show="configurationForm.$visible && loaded"
-                                    >
+                            <button type="button" class="btn btn-sem2 btn-xs" ng-click="addItem()" uib-tooltip="{{::'Ajouter' | translate}}" ng-show="configurationForm.$visible && loaded">
                                 <span class="glyphicon-regular plus"></span>
                             </button>
-                            <div class="pull-left">
-                            </div>
+                            <div class="pull-left"></div>
                             <table class="table table-condensed table-hover">
                                 <thead>
-                                <tr>
-                                    <th class="text-center" translate>Nom</th>
-                                    <th class="text-center" translate>Action</th>
-                                </tr>
+                                    <tr>
+                                        <th class="text-center" translate>Nom</th>
+                                        <th class="text-center" translate>Action</th>
+                                    </tr>
                                 </thead>
                                 <tbody>
-                                        <tr ng-repeat="item in configuration.omekaItems">
-                                            <td class="text-center">
-                                                <numa-editable-field type="text" model="item.name" onaftersave="onaftersave" form="configurationForm"
-                                                                     errors="{{ (configuration.errors | filter:{field: 'collections'}:true) }}"></numa-editable-field>
-                                            </td>
-                                            <td class="text-center">
-                                                <button type="button" class="btn btn-sem2 btn-xs"
-                                                        ng-click="deleteItem($index)" ng-show="configurationForm.$visible"
-                                                        uib-tooltip="{{::'Supprimer' | translate}}">
-                                                    <span class="glyphicon-regular remove"></span>
-                                                </button>
-                                            </td>
-                                        </tr>
+                                    <tr ng-repeat="item in configuration.omekaItems">
+                                        <td class="text-center">
+                                            <numa-editable-field
+                                                type="text"
+                                                model="item.name"
+                                                onaftersave="onaftersave"
+                                                form="configurationForm"
+                                                errors="{{ (configuration.errors | filter:{field: 'collections'}:true) }}"
+                                            ></numa-editable-field>
+                                        </td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-sem2 btn-xs" ng-click="deleteItem($index)" ng-show="configurationForm.$visible" uib-tooltip="{{::'Supprimer' | translate}}">
+                                                <span class="glyphicon-regular remove"></span>
+                                            </button>
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -153,12 +220,8 @@
                         <div class="column-bottom-button">
                             <!-- Création / Modification -->
                             <div class="btn-group">
-                                <button type="button" class="btn btn-sem4" ng-click="cancel()">
-                                    <span class="glyphicon-regular unshare"></span> {{::'Annuler' | translate}}
-                                </button>
-                                <button type="submit" class="btn btn-sem2" sem-roles-allowed="CONF_DIFFUSION_OMEKA_HAB1">
-                                    <span class="glyphicon-regular floppy-save"></span> {{::'Enregistrer' | translate}}
-                                </button>
+                                <button type="button" class="btn btn-sem4" ng-click="cancel()"><span class="glyphicon-regular unshare"></span> {{::'Annuler' | translate}}</button>
+                                <button type="submit" class="btn btn-sem2" sem-roles-allowed="CONF_DIFFUSION_OMEKA_HAB1"><span class="glyphicon-regular floppy-save"></span> {{::'Enregistrer' | translate}}</button>
                             </div>
                         </div>
                     </div>

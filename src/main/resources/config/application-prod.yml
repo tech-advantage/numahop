@@ -1,27 +1,20 @@
-spring:
-    profiles: prod
-
-logging:
-    file: /opt/pgcn/logs/numahop
-
-
 storage:
     binaries: /opt/pgcn/DAM/DAM_Repository
 
-imageMagick: 
+imageMagick:
     convert: /usr/bin/convert
     identify: /usr/bin/identify
-    
+
 exifTool:
     process: /usr/bin/exiftool
     quot_char: ''
-    
-tesseract:    
+
+tesseract:
     process: /usr/bin/tesseract
 
 messaging:
     template:
-      path: /opt/pgcn/Messaging/MessagingTemplate
+        path: /opt/pgcn/Messaging/MessagingTemplate
 
 nativeLibraries:
     path: /opt/svcmgmt/lib
@@ -49,7 +42,7 @@ services:
         cache: /opt/pgcn/cines/cache
         facile: https://facile.cines.fr/xml
         xsd:
-           sip: /opt/pgcn/xsd/sip.xsd
+            sip: /opt/pgcn/xsd/sip.xsd
     archive:
         alto: /opt/pgcn/archive/alto
         text: /opt/pgcn/archive/text

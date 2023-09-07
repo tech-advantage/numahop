@@ -1,12 +1,9 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('CondReportSlipConfEditCtrl', CondReportSlipConfEditCtrl);
+    angular.module('numaHopApp.controller').controller('CondReportSlipConfEditCtrl', CondReportSlipConfEditCtrl);
 
-    function CondReportSlipConfEditCtrl($location, $q, $route, $routeParams, $scope, $timeout, CondreportDescValueSrvc,
-        CondReportSlipConfSrvc, DocUnitBaseService, gettext, gettextCatalog, MessageSrvc, ValidationSrvc) {
-
+    function CondReportSlipConfEditCtrl($location, $q, $route, $routeParams, $scope, $timeout, CondreportDescValueSrvc, CondReportSlipConfSrvc, DocUnitBaseService, gettext, gettextCatalog, MessageSrvc, ValidationSrvc) {
         var editCtrl = this;
         editCtrl.cancel = cancel;
         editCtrl.displayBoolean = DocUnitBaseService.displayBoolean;
@@ -17,24 +14,24 @@
 
         editCtrl.options = {
             boolean: [
-                { value: true, text: "Oui" },
-                { value: false, text: "Non" }
+                { value: true, text: 'Oui' },
+                { value: false, text: 'Non' },
             ],
             types: {
-                display: "label",
+                display: 'label',
                 placeholder: gettextCatalog.getString("Type de constat d'état"),
-                trackby: "identifier",
+                trackby: 'identifier',
                 multiple: true,
                 'allow-clear': true,
-                data: DocUnitBaseService.options.condreportTypes
-            }
+                data: DocUnitBaseService.options.condreportTypes,
+            },
         };
 
         /**
          * Chargement des valeurs de la bibliothèque library
-         * 
-         * @param {any} library 
-         * @returns 
+         *
+         * @param {any} library
+         * @returns
          */
         function loadValues(library) {
             editCtrl.loaded = false;
@@ -54,7 +51,7 @@
 
         /**
          * Annulation de l'édition en cours
-         * 
+         *
          */
         function cancel() {
             loadValues(editCtrl.library).then(function () {
@@ -64,14 +61,14 @@
 
         /**
          * Sauvegarde des modifications apportées dans l'édition en cours
-         * 
-         * @returns 
+         *
+         * @returns
          */
         function saveValues() {
             $timeout(function () {
                 // Mise à jour de la propriété
                 editCtrl.config.$save().then(function () {
-                    MessageSrvc.addSuccess(gettext("Les modifications ont été sauvegardées"));
+                    MessageSrvc.addSuccess(gettext('Les modifications ont été sauvegardées'));
                     $location.search({ library: editCtrl.library.identifier });
                 });
             });

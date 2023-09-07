@@ -1,28 +1,25 @@
 package fr.progilone.pgcn.domain.multilotsdelivery;
 
+import fr.progilone.pgcn.domain.AbstractDomainObject;
+import fr.progilone.pgcn.domain.delivery.Delivery;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-
-import fr.progilone.pgcn.domain.AbstractDomainObject;
-import fr.progilone.pgcn.domain.delivery.Delivery;
-
 @Entity
 @Table(name = MultiLotsDelivery.TABLE_NAME)
 public class MultiLotsDelivery extends AbstractDomainObject {
-    
+
     /**
      * Nom des tables dans la base de données.
      */
     public static final String TABLE_NAME = "del_multi_lots_delivery";
-
 
     @Column(name = "label", nullable = false)
     private String label;
@@ -31,20 +28,15 @@ public class MultiLotsDelivery extends AbstractDomainObject {
     private String description;
 
     @Column(name = "delivery_payment")
-    //@Field(type = FieldType.String, analyzer = ANALYZER_KEYWORD)
     private DeliveryPayment payment;
 
     @Column(name = "delivery_status")
-    //@Field(type = FieldType.String, analyzer = ANALYZER_KEYWORD)
-    //@Audited
     private Delivery.DeliveryStatus status;
 
     @Column(name = "delivery_method")
-    //@Field(type = FieldType.String, analyzer = ANALYZER_KEYWORD)
     private DeliveryMethod method;
 
     @Column(name = "reception_date", nullable = false)
-    //@Field(type = FieldType.Date)
     private LocalDate receptionDate;
 
     @Column(name = "folder_path", nullable = false)
@@ -52,18 +44,18 @@ public class MultiLotsDelivery extends AbstractDomainObject {
 
     @Column(name = "digitizing_notes")
     private String digitizingNotes;
-    
+
     @Column(name = "control_notes")
     private String controlNotes;
-    
+
     @Column(name = "selected_by_train")
     private boolean selectedByTrain;
-    
+
     @Column(name = "train_id")
     private String trainId;
-    
+
     /**
-     * Liste des livraisons constituant la livraison groupée. 
+     * Liste des livraisons constituant la livraison groupée.
      */
     @OneToMany(mappedBy = "multiLotsDelivery", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Delivery> deliveries = new ArrayList<>();
@@ -174,5 +166,5 @@ public class MultiLotsDelivery extends AbstractDomainObject {
         DISK,
         OTHER
     }
-    
+
 }

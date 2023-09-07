@@ -1,13 +1,5 @@
 package fr.progilone.pgcn.service.ocrlangconfiguration;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import fr.progilone.pgcn.domain.ocrlangconfiguration.OcrLangConfiguration;
 import fr.progilone.pgcn.exception.PgcnValidationException;
 import fr.progilone.pgcn.exception.message.PgcnError;
@@ -15,21 +7,25 @@ import fr.progilone.pgcn.exception.message.PgcnErrorCode;
 import fr.progilone.pgcn.exception.message.PgcnList;
 import fr.progilone.pgcn.repository.library.LibraryRepository;
 import fr.progilone.pgcn.repository.ocrlangconfiguration.OcrLangConfigurationRepository;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class OcrLangConfigurationService {
 
     private final OcrLangConfigurationRepository ocrLangConfigurationRepository;
     private final LibraryRepository libraryRepository;
-    
+
     @Autowired
-    public OcrLangConfigurationService(final OcrLangConfigurationRepository ocrLangConfigurationRepository,
-                                       final LibraryRepository libraryRepository) {
+    public OcrLangConfigurationService(final OcrLangConfigurationRepository ocrLangConfigurationRepository, final LibraryRepository libraryRepository) {
         this.ocrLangConfigurationRepository = ocrLangConfigurationRepository;
         this.libraryRepository = libraryRepository;
     }
-    
-    
+
     /**
      * Suppression d'une conf.
      *
@@ -42,7 +38,7 @@ public class OcrLangConfigurationService {
         validateDelete(conf);
 
         // Suppression
-        ocrLangConfigurationRepository.delete(id);
+        ocrLangConfigurationRepository.deleteById(id);
     }
 
     private void validateDelete(final OcrLangConfiguration conf) throws PgcnValidationException {
@@ -58,8 +54,7 @@ public class OcrLangConfigurationService {
             throw new PgcnValidationException(conf, errors);
         }
     }
-    
-    
+
     /**
      * Sauvegarde
      *
@@ -84,8 +79,7 @@ public class OcrLangConfigurationService {
         }
         return ocrLangConfigurationRepository.findOneWithDependencies(identifier);
     }
-    
-    
+
     /**
      * Recherche paginée paramétrée
      *

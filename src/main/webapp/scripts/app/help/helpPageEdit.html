@@ -2,51 +2,77 @@
     <div class="panel panel-column-3">
         <div class="panel-heading">
             <div class="pull-right" sem-roles-allowed="SUPER_ADMIN,HELP">
-                <button type="button" class="btn btn-sem2 btn-xs" ng-click="setViewMode(viewModes.EDIT)" 
-                        uib-tooltip="{{::'Modifier' | translate}}"
-                        ng-show="viewMode === viewModes.VIEW && loaded">
+                <button
+                    type="button"
+                    class="btn btn-sem2 btn-xs"
+                    ng-click="setViewMode(viewModes.EDIT)"
+                    uib-tooltip="{{::'Modifier' | translate}}"
+                    tooltip-append-to-body="true"
+                    ng-show="viewMode === viewModes.VIEW && loaded"
+                >
                     <span class="glyphicon-regular edit"></span>
                 </button>
-                <button type="button" class="btn btn-sem2 btn-xs" ng-click="remove(helpPage)" 
-                        uib-tooltip="{{::'Supprimer' | translate}}" ng-show="loaded">
+                <button type="button" class="btn btn-sem2 btn-xs" ng-click="remove(helpPage)" uib-tooltip="{{::'Supprimer' | translate}}" tooltip-append-to-body="true" ng-show="loaded">
                     <span class="glyphicon-halflings glyphicon-trash"></span>
                 </button>
             </div>
             <h5>{{helpPage.title}}</h5>
         </div>
         <div class="panel-body" ng-show="viewMode === viewModes.EDIT && loaded">
-            <sem-field sem-label="{{::'Parent' | translate}}" sem-type="select" sem-model="helpPage.parent" sem-option-data="helpPages"
-                       sem-select-options="page as page.title group by page.module for page in optionData track by page.identifier" sem-register-validation="validationFns"
-                       ng-readonly="helpPage.identifier" sem-errors="{{ (helpPage.errors | filter:{field: 'parent'}:true) }}"></sem-field>
-            <sem-field sem-label="{{::'Type' | translate}}" sem-type="select" sem-model="helpPage.type" sem-option-data="helpPageTypes"
-                       sem-select-options="option.code as option.label for option in optionData" onbeforesave="validation.required"
-                       sem-register-validation="validationFns" ng-readonly="helpPage.identifier"
-                       ng-show="isAuthorized(userRoles.SUPER_ADMIN) && (!helpPage.parent || !helpPage.parent.identifier)"
-                       sem-errors="{{ (helpPage.errors | filter:{field: 'type'}:true) }}"></sem-field>
+            <sem-field
+                sem-label="{{::'Parent' | translate}}"
+                sem-type="select"
+                sem-model="helpPage.parent"
+                sem-option-data="helpPages"
+                sem-select-options="page as page.title group by page.module for page in optionData track by page.identifier"
+                sem-register-validation="validationFns"
+                ng-readonly="helpPage.identifier"
+                sem-errors="{{ (helpPage.errors | filter:{field: 'parent'}:true) }}"
+            ></sem-field>
+            <sem-field
+                sem-label="{{::'Type' | translate}}"
+                sem-type="select"
+                sem-model="helpPage.type"
+                sem-option-data="helpPageTypes"
+                sem-select-options="option.code as option.label for option in optionData"
+                onbeforesave="validation.required"
+                sem-register-validation="validationFns"
+                ng-readonly="helpPage.identifier"
+                ng-show="isAuthorized(userRoles.SUPER_ADMIN) && (!helpPage.parent || !helpPage.parent.identifier)"
+                sem-errors="{{ (helpPage.errors | filter:{field: 'type'}:true) }}"
+            ></sem-field>
             <div style="margin-bottom: 10px" class="row vertical-align" ng-show="!helpPage.parent || !helpPage.parent.identifier">
                 <div class="col-xs-4 text-right">
                     <label translate>Module</label>
                 </div>
                 <div class="model-container col-xs-8">
-                    <input type="text" class="form-control" ng-model="helpPage.module" uib-typeahead="module.name for module in modules"
-                           ng-readonly="helpPage.identifier" typeahead-wait-ms="0" typeahead-on-select="helpPage.module = $model"
-                           typeahead-focus-first="false"/>
+                    <input
+                        type="text"
+                        class="form-control"
+                        ng-model="helpPage.module"
+                        uib-typeahead="module.name for module in modules"
+                        ng-readonly="helpPage.identifier"
+                        typeahead-wait-ms="0"
+                        typeahead-on-select="helpPage.module = $model"
+                        typeahead-focus-first="false"
+                    />
                 </div>
             </div>
-            <sem-field sem-label="{{::'Titre' | translate}}" sem-type="text" sem-model="helpPage.title" onbeforesave="validation.required"
-                       sem-register-validation="validationFns" sem-errors="{{ (helpPage.errors | filter:{field: 'title'}:true) }}"></sem-field>
-            <sem-field sem-label="{{::'Tag' | translate}}" sem-type="text" sem-model="helpPage.tag"
-                       sem-errors="{{ (helpPage.errors | filter:{field: 'tag'}:true) }}"></sem-field>
+            <sem-field
+                sem-label="{{::'Titre' | translate}}"
+                sem-type="text"
+                sem-model="helpPage.title"
+                onbeforesave="validation.required"
+                sem-register-validation="validationFns"
+                sem-errors="{{ (helpPage.errors | filter:{field: 'title'}:true) }}"
+            ></sem-field>
+            <sem-field sem-label="{{::'Tag' | translate}}" sem-type="text" sem-model="helpPage.tag" sem-errors="{{ (helpPage.errors | filter:{field: 'tag'}:true) }}"></sem-field>
             <div id="summernote"></div>
             <div class="text-center column-bottom column-7 margin-t10">
                 <div class="column-bottom-button">
                     <div class="btn-group">
-                        <button type="button" class="btn btn-sem4" ng-click="cancel()">
-                            <span class="glyphicon-regular unshare"></span> {{::'Annuler' | translate}}
-                        </button>
-                        <button type="button" class="btn btn-sem2" ng-click="save()">
-                            <span class="glyphicon-regular floppy-save"></span> {{::'Enregistrer' | translate}}
-                        </button>
+                        <button type="button" class="btn btn-sem4" ng-click="cancel()"><span class="glyphicon-regular unshare"></span> {{::'Annuler' | translate}}</button>
+                        <button type="button" class="btn btn-sem2" ng-click="save()"><span class="glyphicon-regular floppy-save"></span> {{::'Enregistrer' | translate}}</button>
                     </div>
                 </div>
             </div>

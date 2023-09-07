@@ -1,26 +1,6 @@
 package fr.progilone.pgcn.domain.library;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldIndex;
-import org.springframework.data.elasticsearch.annotations.FieldType;
-
 import com.google.common.base.MoreObjects;
-
 import fr.progilone.pgcn.domain.AbstractDomainObject;
 import fr.progilone.pgcn.domain.administration.viewsformat.ViewsFormatConfiguration;
 import fr.progilone.pgcn.domain.checkconfiguration.CheckConfiguration;
@@ -33,6 +13,19 @@ import fr.progilone.pgcn.domain.ocrlangconfiguration.OcrLangConfiguration;
 import fr.progilone.pgcn.domain.platform.Platform;
 import fr.progilone.pgcn.domain.user.Address;
 import fr.progilone.pgcn.domain.user.Role;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import java.util.HashSet;
+import java.util.Set;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 /**
  * Classe métier permettant de gérer les bibliothèques.
@@ -51,7 +44,6 @@ public class Library extends AbstractDomainObject {
      * Nom de la bibliothèque
      */
     @Column(name = "name", unique = true)
-    @Field(type = FieldType.String, index = FieldIndex.not_analyzed)
     private String name;
 
     /**
@@ -152,38 +144,37 @@ public class Library extends AbstractDomainObject {
 
     @OneToOne(mappedBy = "library", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private DeliverySlipConfiguration deliverySlipConfiguration;
-    
+
     @OneToOne(mappedBy = "library", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private CheckSlipConfiguration checkSlipConfiguration;
-    
+
     @OneToOne(mappedBy = "library", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private ConditionReportSlipConfiguration condReportSlipConfiguration;
 
     @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "active_configuration_check")
     private CheckConfiguration activeCheckConfiguration;
-    
+
     @OneToMany(mappedBy = "library", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private final Set<ViewsFormatConfiguration> viewsFormatConfigurations = new HashSet<>();
 
     @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "active_format_configuration")
     private ViewsFormatConfiguration activeFormatConfiguration;
-    
+
     @OneToMany(mappedBy = "library", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private Set<ExportFTPConfiguration> exportFtpConfigurations = new HashSet<>();
 
     @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "active_configuration_export_ftp")
     private ExportFTPConfiguration activeExportFTPConfiguration;
-    
+
     @OneToMany(mappedBy = "library", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private Set<OcrLangConfiguration> ocrLangConfigurations = new HashSet<>();
-    
+
     @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "active_configuration_ocr_lang")
     private OcrLangConfiguration activeOcrLangConfiguration;
-    
 
     public String getName() {
         return name;
@@ -326,7 +317,7 @@ public class Library extends AbstractDomainObject {
         return libRespName;
     }
 
-    public void setLibRespName(String libRespName) {
+    public void setLibRespName(final String libRespName) {
         this.libRespName = libRespName;
     }
 
@@ -334,7 +325,7 @@ public class Library extends AbstractDomainObject {
         return libRespPhone;
     }
 
-    public void setLibRespPhone(String libRespPhone) {
+    public void setLibRespPhone(final String libRespPhone) {
         this.libRespPhone = libRespPhone;
     }
 
@@ -342,7 +333,7 @@ public class Library extends AbstractDomainObject {
         return libRespEmail;
     }
 
-    public void setLibRespEmail(String libRespEmail) {
+    public void setLibRespEmail(final String libRespEmail) {
         this.libRespEmail = libRespEmail;
     }
 
@@ -426,5 +417,5 @@ public class Library extends AbstractDomainObject {
     public void setActiveOcrLangConfiguration(final OcrLangConfiguration activeOcrLangConfiguration) {
         this.activeOcrLangConfiguration = activeOcrLangConfiguration;
     }
-    
+
 }

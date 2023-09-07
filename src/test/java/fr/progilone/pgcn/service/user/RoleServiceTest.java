@@ -1,5 +1,10 @@
 package fr.progilone.pgcn.service.user;
 
+import static fr.progilone.pgcn.exception.message.PgcnErrorCode.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
 import fr.progilone.pgcn.domain.dto.user.RoleDTO;
 import fr.progilone.pgcn.domain.user.Role;
 import fr.progilone.pgcn.exception.PgcnValidationException;
@@ -7,21 +12,15 @@ import fr.progilone.pgcn.repository.library.LibraryRepository;
 import fr.progilone.pgcn.repository.user.RoleRepository;
 import fr.progilone.pgcn.repository.user.UserRepository;
 import fr.progilone.pgcn.util.TestUtil;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
-
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import static fr.progilone.pgcn.exception.message.PgcnErrorCode.*;
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
-
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class RoleServiceTest {
 
     @Mock
@@ -33,7 +32,7 @@ public class RoleServiceTest {
 
     private RoleService service;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         service = new RoleService(libraryRepository, roleRepository, userRepository);
     }
@@ -79,7 +78,7 @@ public class RoleServiceTest {
     public void testDelete() {
         final String identifier = "123";
         service.delete(identifier);
-        verify(roleRepository).delete(identifier);
+        verify(roleRepository).deleteById(identifier);
     }
 
     @Test

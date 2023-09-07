@@ -1,7 +1,6 @@
 'use strict';
 
 xdescribe('Controllers Tests ', function () {
-
     beforeEach(module('numaHopApp'));
 
     describe('HealthController', function () {
@@ -20,7 +19,7 @@ xdescribe('Controllers Tests ', function () {
 
             it('should verify object with property status and no subsystems is a health property leaf', function () {
                 var healthObject = {
-                    'status': 'UP'
+                    status: 'UP',
                 };
                 expect($scope.isHealthObject(healthObject)).toBe(true);
                 expect($scope.hasSubSystem(healthObject)).toBe(false);
@@ -28,10 +27,10 @@ xdescribe('Controllers Tests ', function () {
 
             it('should verify that object property status and unrecognized objects is a health property leaf', function () {
                 var healthObject = {
-                    'status': 'UP',
-                    'subsystem': {
-                        'hello': 'UP'
-                    }
+                    status: 'UP',
+                    subsystem: {
+                        hello: 'UP',
+                    },
                 };
                 expect($scope.isHealthObject(healthObject)).toBe(true);
                 expect($scope.hasSubSystem(healthObject)).toBe(false);
@@ -39,15 +38,14 @@ xdescribe('Controllers Tests ', function () {
 
             it('should verify object with property status but with subsystems is NOT a health property leaf', function () {
                 var healthObject = {
-                    'status': 'UP',
-                    'subsystem': {
-                        'status': 'UP'
-                    }
+                    status: 'UP',
+                    subsystem: {
+                        status: 'UP',
+                    },
                 };
                 expect($scope.isHealthObject(healthObject)).toBe(true);
                 expect($scope.hasSubSystem(healthObject)).toBe(true);
             });
-
         });
 
         describe('transformHealthData', function () {
@@ -59,219 +57,219 @@ xdescribe('Controllers Tests ', function () {
 
             it('should flatten health data with no subsystems', function () {
                 var data = {
-                    'status': 'UP',
-                    'db': {
-                        'status': 'UP',
-                        'database': 'H2',
-                        'hello': '1'
+                    status: 'UP',
+                    db: {
+                        status: 'UP',
+                        database: 'H2',
+                        hello: '1',
                     },
-                    'mail': {
-                        'status': 'UP',
-                        'error': 'mail.a.b.c'
-                    }
+                    mail: {
+                        status: 'UP',
+                        error: 'mail.a.b.c',
+                    },
                 };
                 var expected = [
                     {
-                        'name': 'db',
-                        'status': 'UP',
-                        'details': {
-                            'database': 'H2',
-                            'hello': '1'
-                        }
+                        name: 'db',
+                        status: 'UP',
+                        details: {
+                            database: 'H2',
+                            hello: '1',
+                        },
                     },
                     {
-                        'name': 'mail',
-                        'status': 'UP',
-                        'error': 'mail.a.b.c'
-                    }
+                        name: 'mail',
+                        status: 'UP',
+                        error: 'mail.a.b.c',
+                    },
                 ];
                 expect($scope.transformHealthData(data)).toEqual(expected);
             });
 
             it('should flatten health data with subsystems at level 1, main system has no additional information', function () {
                 var data = {
-                    'status': 'UP',
-                    'db': {
-                        'status': 'UP',
-                        'database': 'H2',
-                        'hello': '1'
+                    status: 'UP',
+                    db: {
+                        status: 'UP',
+                        database: 'H2',
+                        hello: '1',
                     },
-                    'mail': {
-                        'status': 'UP',
-                        'error': 'mail.a.b.c'
+                    mail: {
+                        status: 'UP',
+                        error: 'mail.a.b.c',
                     },
-                    'system': {
-                        'status': 'DOWN',
-                        'subsystem1': {
-                            'status': 'UP',
-                            'property1': 'system.subsystem1.property1'
+                    system: {
+                        status: 'DOWN',
+                        subsystem1: {
+                            status: 'UP',
+                            property1: 'system.subsystem1.property1',
                         },
-                        'subsystem2': {
-                            'status': 'DOWN',
-                            'error': 'system.subsystem1.error',
-                            'property2': 'system.subsystem2.property2'
-                        }
-                    }
+                        subsystem2: {
+                            status: 'DOWN',
+                            error: 'system.subsystem1.error',
+                            property2: 'system.subsystem2.property2',
+                        },
+                    },
                 };
                 var expected = [
                     {
-                        'name': 'db',
-                        'status': 'UP',
-                        'details': {
-                            'database': 'H2',
-                            'hello': '1'
-                        }
+                        name: 'db',
+                        status: 'UP',
+                        details: {
+                            database: 'H2',
+                            hello: '1',
+                        },
                     },
                     {
-                        'name': 'mail',
-                        'status': 'UP',
-                        'error': 'mail.a.b.c'
+                        name: 'mail',
+                        status: 'UP',
+                        error: 'mail.a.b.c',
                     },
                     {
-                        'name': 'system.subsystem1',
-                        'status': 'UP',
-                        'details': {
-                            'property1': 'system.subsystem1.property1'
-                        }
+                        name: 'system.subsystem1',
+                        status: 'UP',
+                        details: {
+                            property1: 'system.subsystem1.property1',
+                        },
                     },
                     {
-                        'name': 'system.subsystem2',
-                        'status': 'DOWN',
-                        'error': 'system.subsystem1.error',
-                        'details': {
-                            'property2': 'system.subsystem2.property2'
-                        }
-                    }
+                        name: 'system.subsystem2',
+                        status: 'DOWN',
+                        error: 'system.subsystem1.error',
+                        details: {
+                            property2: 'system.subsystem2.property2',
+                        },
+                    },
                 ];
                 expect($scope.transformHealthData(data)).toEqual(expected);
             });
 
             it('should flatten health data with subsystems at level 1, main system has additional information', function () {
                 var data = {
-                    'status': 'UP',
-                    'db': {
-                        'status': 'UP',
-                        'database': 'H2',
-                        'hello': '1'
+                    status: 'UP',
+                    db: {
+                        status: 'UP',
+                        database: 'H2',
+                        hello: '1',
                     },
-                    'mail': {
-                        'status': 'UP',
-                        'error': 'mail.a.b.c'
+                    mail: {
+                        status: 'UP',
+                        error: 'mail.a.b.c',
                     },
-                    'system': {
-                        'status': 'DOWN',
-                        'property1': 'system.property1',
-                        'subsystem1': {
-                            'status': 'UP',
-                            'property1': 'system.subsystem1.property1'
+                    system: {
+                        status: 'DOWN',
+                        property1: 'system.property1',
+                        subsystem1: {
+                            status: 'UP',
+                            property1: 'system.subsystem1.property1',
                         },
-                        'subsystem2': {
-                            'status': 'DOWN',
-                            'error': 'system.subsystem1.error',
-                            'property2': 'system.subsystem2.property2'
-                        }
-                    }
+                        subsystem2: {
+                            status: 'DOWN',
+                            error: 'system.subsystem1.error',
+                            property2: 'system.subsystem2.property2',
+                        },
+                    },
                 };
                 var expected = [
                     {
-                        'name': 'db',
-                        'status': 'UP',
-                        'details': {
-                            'database': 'H2',
-                            'hello': '1'
-                        }
+                        name: 'db',
+                        status: 'UP',
+                        details: {
+                            database: 'H2',
+                            hello: '1',
+                        },
                     },
                     {
-                        'name': 'mail',
-                        'status': 'UP',
-                        'error': 'mail.a.b.c'
+                        name: 'mail',
+                        status: 'UP',
+                        error: 'mail.a.b.c',
                     },
                     {
-                        'name': 'system',
-                        'status': 'DOWN',
-                        'details': {
-                            'property1': 'system.property1'
-                        }
+                        name: 'system',
+                        status: 'DOWN',
+                        details: {
+                            property1: 'system.property1',
+                        },
                     },
                     {
-                        'name': 'system.subsystem1',
-                        'status': 'UP',
-                        'details': {
-                            'property1': 'system.subsystem1.property1'
-                        }
+                        name: 'system.subsystem1',
+                        status: 'UP',
+                        details: {
+                            property1: 'system.subsystem1.property1',
+                        },
                     },
                     {
-                        'name': 'system.subsystem2',
-                        'status': 'DOWN',
-                        'error': 'system.subsystem1.error',
-                        'details': {
-                            'property2': 'system.subsystem2.property2'
-                        }
-                    }
+                        name: 'system.subsystem2',
+                        status: 'DOWN',
+                        error: 'system.subsystem1.error',
+                        details: {
+                            property2: 'system.subsystem2.property2',
+                        },
+                    },
                 ];
                 expect($scope.transformHealthData(data)).toEqual(expected);
             });
 
             it('should flatten health data with subsystems at level 1, main system has additional error', function () {
                 var data = {
-                    'status': 'UP',
-                    'db': {
-                        'status': 'UP',
-                        'database': 'H2',
-                        'hello': '1'
+                    status: 'UP',
+                    db: {
+                        status: 'UP',
+                        database: 'H2',
+                        hello: '1',
                     },
-                    'mail': {
-                        'status': 'UP',
-                        'error': 'mail.a.b.c'
+                    mail: {
+                        status: 'UP',
+                        error: 'mail.a.b.c',
                     },
-                    'system': {
-                        'status': 'DOWN',
-                        'error': 'show me',
-                        'subsystem1': {
-                            'status': 'UP',
-                            'property1': 'system.subsystem1.property1'
+                    system: {
+                        status: 'DOWN',
+                        error: 'show me',
+                        subsystem1: {
+                            status: 'UP',
+                            property1: 'system.subsystem1.property1',
                         },
-                        'subsystem2': {
-                            'status': 'DOWN',
-                            'error': 'system.subsystem1.error',
-                            'property2': 'system.subsystem2.property2'
-                        }
-                    }
+                        subsystem2: {
+                            status: 'DOWN',
+                            error: 'system.subsystem1.error',
+                            property2: 'system.subsystem2.property2',
+                        },
+                    },
                 };
                 var expected = [
                     {
-                        'name': 'db',
-                        'status': 'UP',
-                        'details': {
-                            'database': 'H2',
-                            'hello': '1'
-                        }
+                        name: 'db',
+                        status: 'UP',
+                        details: {
+                            database: 'H2',
+                            hello: '1',
+                        },
                     },
                     {
-                        'name': 'mail',
-                        'status': 'UP',
-                        'error': 'mail.a.b.c'
+                        name: 'mail',
+                        status: 'UP',
+                        error: 'mail.a.b.c',
                     },
                     {
-                        'name': 'system',
-                        'status': 'DOWN',
-                        'error': 'show me'
+                        name: 'system',
+                        status: 'DOWN',
+                        error: 'show me',
                     },
                     {
-                        'name': 'system.subsystem1',
-                        'status': 'UP',
-                        'details': {
-                            'property1': 'system.subsystem1.property1'
-                        }
+                        name: 'system.subsystem1',
+                        status: 'UP',
+                        details: {
+                            property1: 'system.subsystem1.property1',
+                        },
                     },
                     {
-                        'name': 'system.subsystem2',
-                        'status': 'DOWN',
-                        'error': 'system.subsystem1.error',
-                        'details': {
-                            'property2': 'system.subsystem2.property2'
-                        }
-                    }
+                        name: 'system.subsystem2',
+                        status: 'DOWN',
+                        error: 'system.subsystem1.error',
+                        details: {
+                            property2: 'system.subsystem2.property2',
+                        },
+                    },
                 ];
                 expect($scope.transformHealthData(data)).toEqual(expected);
             });
@@ -279,7 +277,7 @@ xdescribe('Controllers Tests ', function () {
 
         describe('getModuleName(path, name)', function () {
             it('should show both path and name if defined', function () {
-                expect($scope.getModuleName('path', 'name')).toEqual('path' +  $scope.separator + 'name');
+                expect($scope.getModuleName('path', 'name')).toEqual('path' + $scope.separator + 'name');
             });
 
             it('should show only path if name is not defined', function () {

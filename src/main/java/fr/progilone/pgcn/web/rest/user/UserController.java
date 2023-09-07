@@ -1,15 +1,26 @@
 package fr.progilone.pgcn.web.rest.user;
 
-import static fr.progilone.pgcn.domain.user.User.Category.PROVIDER;
-import static fr.progilone.pgcn.web.rest.library.security.AuthorizationConstants.LIB_HAB5;
-import static fr.progilone.pgcn.web.rest.library.security.AuthorizationConstants.LIB_HAB6;
-import static fr.progilone.pgcn.web.rest.library.security.AuthorizationConstants.LIB_HAB7;
-import static fr.progilone.pgcn.web.rest.user.security.AuthorizationConstants.USER_HAB0;
-import static fr.progilone.pgcn.web.rest.user.security.AuthorizationConstants.USER_HAB1;
-import static fr.progilone.pgcn.web.rest.user.security.AuthorizationConstants.USER_HAB2;
-import static fr.progilone.pgcn.web.rest.user.security.AuthorizationConstants.USER_HAB3;
-import static fr.progilone.pgcn.web.rest.user.security.AuthorizationConstants.USER_HAB6;
+import static fr.progilone.pgcn.domain.user.User.Category.*;
+import static fr.progilone.pgcn.web.rest.library.security.AuthorizationConstants.*;
+import static fr.progilone.pgcn.web.rest.user.security.AuthorizationConstants.*;
 
+import com.codahale.metrics.annotation.Timed;
+import fr.progilone.pgcn.domain.dto.user.SimpleUserDTO;
+import fr.progilone.pgcn.domain.dto.user.UserCreationDTO;
+import fr.progilone.pgcn.domain.dto.user.UserDTO;
+import fr.progilone.pgcn.domain.user.User;
+import fr.progilone.pgcn.domain.util.CustomUserDetails;
+import fr.progilone.pgcn.exception.PgcnException;
+import fr.progilone.pgcn.exception.PgcnTechnicalException;
+import fr.progilone.pgcn.security.SecurityUtils;
+import fr.progilone.pgcn.service.user.UserService;
+import fr.progilone.pgcn.service.user.ui.UIUserService;
+import fr.progilone.pgcn.web.rest.AbstractRestController;
+import fr.progilone.pgcn.web.util.AccessHelper;
+import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -19,11 +30,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -42,22 +48,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.codahale.metrics.annotation.Timed;
-
-import fr.progilone.pgcn.domain.dto.user.SimpleUserDTO;
-import fr.progilone.pgcn.domain.dto.user.UserCreationDTO;
-import fr.progilone.pgcn.domain.dto.user.UserDTO;
-import fr.progilone.pgcn.domain.user.User;
-import fr.progilone.pgcn.domain.util.CustomUserDetails;
-import fr.progilone.pgcn.exception.PgcnException;
-import fr.progilone.pgcn.exception.PgcnTechnicalException;
-import fr.progilone.pgcn.security.SecurityUtils;
-import fr.progilone.pgcn.service.user.UserService;
-import fr.progilone.pgcn.service.user.ui.UIUserService;
-import fr.progilone.pgcn.web.rest.AbstractRestController;
-import fr.progilone.pgcn.web.util.AccessHelper;
-import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
-
 @RestController
 @RequestMapping(value = "/api/rest/user")
 public class UserController extends AbstractRestController {
@@ -73,10 +63,7 @@ public class UserController extends AbstractRestController {
     private final UIUserService uiUserService;
 
     @Autowired
-    public UserController(final UserService userService,
-                          final UIUserService uiUserService,
-                          final AccessHelper accessHelper,
-                          final LibraryAccesssHelper libraryAccesssHelper) {
+    public UserController(final UserService userService, final UIUserService uiUserService, final AccessHelper accessHelper, final LibraryAccesssHelper libraryAccesssHelper) {
         this.userService = userService;
         this.uiUserService = uiUserService;
         this.accessHelper = accessHelper;
@@ -97,7 +84,7 @@ public class UserController extends AbstractRestController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed({USER_HAB1})
     public ResponseEntity<UserDTO> create(final HttpServletRequest request, @RequestBody final UserCreationDTO user) throws PgcnException {
@@ -109,7 +96,7 @@ public class UserController extends AbstractRestController {
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed({USER_HAB3})
     public ResponseEntity<UserDTO> delete(@PathVariable final String id) {
@@ -139,8 +126,7 @@ public class UserController extends AbstractRestController {
         final CustomUserDetails currentUser = SecurityUtils.getCurrentUser();
         final boolean filterProviders = currentUser == null || Objects.equals(currentUser.getCategory(), User.Category.PROVIDER);
 
-        return new ResponseEntity<>(uiUserService.search(search, initiale, active, filterProviders, filteredLibraries, categories, roles, page, size),
-                                    HttpStatus.OK);
+        return new ResponseEntity<>(uiUserService.search(search, initiale, active, filterProviders, filteredLibraries, categories, roles, page, size), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -175,7 +161,9 @@ public class UserController extends AbstractRestController {
 
     @RequestMapping(method = RequestMethod.GET, params = {"dto"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    @RolesAllowed({LIB_HAB5, LIB_HAB6, LIB_HAB7})
+    @RolesAllowed({LIB_HAB5,
+                   LIB_HAB6,
+                   LIB_HAB7})
     public ResponseEntity<Collection<SimpleUserDTO>> findAllDTO(final HttpServletRequest request) {
         Collection<SimpleUserDTO> users = uiUserService.findAllActiveDTO();
         // Droits d'accès
@@ -185,7 +173,9 @@ public class UserController extends AbstractRestController {
 
     @RequestMapping(method = RequestMethod.GET, params = {"providers"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    @RolesAllowed({LIB_HAB5, LIB_HAB6, LIB_HAB7})
+    @RolesAllowed({LIB_HAB5,
+                   LIB_HAB6,
+                   LIB_HAB7})
     public ResponseEntity<Collection<SimpleUserDTO>> findProvidersDTO() {
         final CustomUserDetails currentUser = SecurityUtils.getCurrentUser();
         // Un prestataire ne peut pas voir les autres prestataires
@@ -198,9 +188,10 @@ public class UserController extends AbstractRestController {
         }
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/{id}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    @RolesAllowed({USER_HAB2, USER_HAB6})
+    @RolesAllowed({USER_HAB2,
+                   USER_HAB6})
     public ResponseEntity<UserDTO> update(final HttpServletRequest request, @RequestBody final UserDTO user) throws PgcnException {
         // Droits d'accès: autres profils
         if (request.isUserInRole(USER_HAB2)) {
@@ -322,7 +313,8 @@ public class UserController extends AbstractRestController {
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, params = {"signexists"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    @RolesAllowed({USER_HAB0, USER_HAB6})
+    @RolesAllowed({USER_HAB0,
+                   USER_HAB6})
     public ResponseEntity<Map<?, ?>> hasSignature(@PathVariable("id") final String userId) {
 
         final User user = userService.getOne(userId);
@@ -348,7 +340,8 @@ public class UserController extends AbstractRestController {
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, params = {"signature"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    @RolesAllowed({USER_HAB2, USER_HAB6})
+    @RolesAllowed({USER_HAB2,
+                   USER_HAB6})
     public void deleteSignature(final HttpServletRequest request, final HttpServletResponse response, @PathVariable("id") final String userId) {
         // Droits d'accès: autres profils
         if (request.isUserInRole(USER_HAB2)) {
@@ -384,7 +377,8 @@ public class UserController extends AbstractRestController {
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.POST, params = {"signature"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    @RolesAllowed({USER_HAB2, USER_HAB6})
+    @RolesAllowed({USER_HAB2,
+                   USER_HAB6})
     public void uploadSignature(final HttpServletRequest request,
                                 final HttpServletResponse response,
                                 @PathVariable("id") final String userId,

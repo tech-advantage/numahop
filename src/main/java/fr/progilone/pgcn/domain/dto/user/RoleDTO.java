@@ -16,7 +16,7 @@ public class RoleDTO {
     }
 
     public RoleDTO(final String identifier, final String code, final String label) {
-    	super();
+        super();
         this.identifier = identifier;
         this.code = code;
         this.label = label;
@@ -35,20 +35,18 @@ public class RoleDTO {
     }
 
     public void setIdentifier(String identifier) {
-		this.identifier = identifier;
-	}
+        this.identifier = identifier;
+    }
 
-	public void setCode(String code) {
-		this.code = code;
-	}
+    public void setCode(String code) {
+        this.code = code;
+    }
 
-	public void setLabel(String label) {
-		this.label = label;
-	}
+    public void setLabel(String label) {
+        this.label = label;
+    }
 
-
-
-	/**
+    /**
      * Builder pour la classe RoleDTO
      *
      * @author Sebastien

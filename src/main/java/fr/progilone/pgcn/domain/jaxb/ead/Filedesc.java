@@ -1,29 +1,29 @@
 //
-// Ce fichier a été généré par l'implémentation de référence JavaTM Architecture for XML Binding (JAXB), v2.2.8-b130911.1802 
-// Voir <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
-// Toute modification apportée à ce fichier sera perdue lors de la recompilation du schéma source. 
-// Généré le : 2017.05.16 à 10:56:55 AM CEST 
+// Ce fichier a été généré par l'implémentation de référence JavaTM Architecture for XML Binding (JAXB), v2.2.8-b130911.1802
+// Voir <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a>
+// Toute modification apportée à ce fichier sera perdue lors de la recompilation du schéma source.
+// Généré le : 2017.05.16 à 10:56:55 AM CEST
 //
-
 
 package fr.progilone.pgcn.domain.jaxb.ead;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlID;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlID;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
- * <p>Classe Java pour filedesc complex type.
- * 
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
- * 
+ * <p>
+ * Classe Java pour filedesc complex type.
+ *
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ *
  * <pre>
  * &lt;complexType name="filedesc">
  *   &lt;complexContent>
@@ -41,17 +41,16 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
+ *
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "filedesc", propOrder = {
-    "titlestmt",
-    "editionstmt",
-    "publicationstmt",
-    "seriesstmt",
-    "notestmt"
-})
+@XmlType(name = "filedesc",
+         propOrder = {"titlestmt",
+                      "editionstmt",
+                      "publicationstmt",
+                      "seriesstmt",
+                      "notestmt"})
 public class Filedesc {
 
     @XmlElement(required = true)
@@ -77,11 +76,11 @@ public class Filedesc {
 
     /**
      * Obtient la valeur de la propriété titlestmt.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link Titlestmt }
-     *     
+     *         possible object is
+     *         {@link Titlestmt }
+     *
      */
     public Titlestmt getTitlestmt() {
         return titlestmt;
@@ -89,11 +88,11 @@ public class Filedesc {
 
     /**
      * Définit la valeur de la propriété titlestmt.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link Titlestmt }
-     *     
+     *            allowed object is
+     *            {@link Titlestmt }
+     *
      */
     public void setTitlestmt(Titlestmt value) {
         this.titlestmt = value;
@@ -101,11 +100,11 @@ public class Filedesc {
 
     /**
      * Obtient la valeur de la propriété editionstmt.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link Editionstmt }
-     *     
+     *         possible object is
+     *         {@link Editionstmt }
+     *
      */
     public Editionstmt getEditionstmt() {
         return editionstmt;
@@ -113,11 +112,11 @@ public class Filedesc {
 
     /**
      * Définit la valeur de la propriété editionstmt.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link Editionstmt }
-     *     
+     *            allowed object is
+     *            {@link Editionstmt }
+     *
      */
     public void setEditionstmt(Editionstmt value) {
         this.editionstmt = value;
@@ -125,11 +124,11 @@ public class Filedesc {
 
     /**
      * Obtient la valeur de la propriété publicationstmt.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link Publicationstmt }
-     *     
+     *         possible object is
+     *         {@link Publicationstmt }
+     *
      */
     public Publicationstmt getPublicationstmt() {
         return publicationstmt;
@@ -137,11 +136,11 @@ public class Filedesc {
 
     /**
      * Définit la valeur de la propriété publicationstmt.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link Publicationstmt }
-     *     
+     *            allowed object is
+     *            {@link Publicationstmt }
+     *
      */
     public void setPublicationstmt(Publicationstmt value) {
         this.publicationstmt = value;
@@ -149,11 +148,11 @@ public class Filedesc {
 
     /**
      * Obtient la valeur de la propriété seriesstmt.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link Seriesstmt }
-     *     
+     *         possible object is
+     *         {@link Seriesstmt }
+     *
      */
     public Seriesstmt getSeriesstmt() {
         return seriesstmt;
@@ -161,11 +160,11 @@ public class Filedesc {
 
     /**
      * Définit la valeur de la propriété seriesstmt.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link Seriesstmt }
-     *     
+     *            allowed object is
+     *            {@link Seriesstmt }
+     *
      */
     public void setSeriesstmt(Seriesstmt value) {
         this.seriesstmt = value;
@@ -173,11 +172,11 @@ public class Filedesc {
 
     /**
      * Obtient la valeur de la propriété notestmt.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link Notestmt }
-     *     
+     *         possible object is
+     *         {@link Notestmt }
+     *
      */
     public Notestmt getNotestmt() {
         return notestmt;
@@ -185,11 +184,11 @@ public class Filedesc {
 
     /**
      * Définit la valeur de la propriété notestmt.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link Notestmt }
-     *     
+     *            allowed object is
+     *            {@link Notestmt }
+     *
      */
     public void setNotestmt(Notestmt value) {
         this.notestmt = value;
@@ -197,11 +196,11 @@ public class Filedesc {
 
     /**
      * Obtient la valeur de la propriété encodinganalog.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *         possible object is
+     *         {@link String }
+     *
      */
     public String getEncodinganalog() {
         return encodinganalog;
@@ -209,11 +208,11 @@ public class Filedesc {
 
     /**
      * Définit la valeur de la propriété encodinganalog.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is
+     *            {@link String }
+     *
      */
     public void setEncodinganalog(String value) {
         this.encodinganalog = value;
@@ -221,11 +220,11 @@ public class Filedesc {
 
     /**
      * Obtient la valeur de la propriété id.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *         possible object is
+     *         {@link String }
+     *
      */
     public String getId() {
         return id;
@@ -233,11 +232,11 @@ public class Filedesc {
 
     /**
      * Définit la valeur de la propriété id.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is
+     *            {@link String }
+     *
      */
     public void setId(String value) {
         this.id = value;
@@ -245,11 +244,11 @@ public class Filedesc {
 
     /**
      * Obtient la valeur de la propriété altrender.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *         possible object is
+     *         {@link String }
+     *
      */
     public String getAltrender() {
         return altrender;
@@ -257,11 +256,11 @@ public class Filedesc {
 
     /**
      * Définit la valeur de la propriété altrender.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is
+     *            {@link String }
+     *
      */
     public void setAltrender(String value) {
         this.altrender = value;
@@ -269,11 +268,11 @@ public class Filedesc {
 
     /**
      * Obtient la valeur de la propriété audience.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *         possible object is
+     *         {@link String }
+     *
      */
     public String getAudience() {
         return audience;
@@ -281,11 +280,11 @@ public class Filedesc {
 
     /**
      * Définit la valeur de la propriété audience.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is
+     *            {@link String }
+     *
      */
     public void setAudience(String value) {
         this.audience = value;

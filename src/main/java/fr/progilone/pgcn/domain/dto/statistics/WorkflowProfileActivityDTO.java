@@ -3,8 +3,7 @@ package fr.progilone.pgcn.domain.dto.statistics;
 import com.google.common.collect.Ordering;
 import com.opencsv.bean.CsvBindByName;
 import fr.progilone.pgcn.domain.workflow.WorkflowStateKey;
-
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 import java.time.LocalDateTime;
 
 public class WorkflowProfileActivityDTO implements Comparable<WorkflowProfileActivityDTO> {

@@ -1,7 +1,6 @@
 package fr.progilone.pgcn.domain.dto.document;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import java.util.ArrayList;
 import java.util.List;
 

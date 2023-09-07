@@ -5,11 +5,10 @@
     angular.module('numaHopApp.controller').controller('DashboardCtrl', DashboardCtrl);
 
     function DashboardCtrl($scope, gettextCatalog, DashboardSrvc, HistorySrvc, Principal) {
-
         Principal.identity().then(init);
 
         function init() {
-            HistorySrvc.add(gettextCatalog.getString("Tableau de bord"));
+            HistorySrvc.add(gettextCatalog.getString('Tableau de bord'));
 
             $scope.model = DashboardSrvc.getDashboard();
             $scope.model.getNumberOfWidgets = function () {
@@ -22,7 +21,6 @@
                     });
                 });
                 return numberOfWidgets;
-
             };
             $scope.$on('adfDashboardChanged', function (event, name, model) {
                 DashboardSrvc.saveDashboard($scope.model);

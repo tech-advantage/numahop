@@ -8,6 +8,7 @@ import fr.progilone.pgcn.domain.dto.train.SimpleTrainDTO;
 import fr.progilone.pgcn.service.lot.mapper.SimpleLotMapper;
 import fr.progilone.pgcn.service.project.mapper.SimpleProjectMapper;
 import fr.progilone.pgcn.service.train.mapper.SimpleTrainMapper;
+import java.util.Set;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -15,15 +16,16 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
-import java.util.Set;
-
-@Mapper(uses = {SimpleDocUnitMapper.class, SimpleLotMapper.class, SimpleProjectMapper.class})
+@Mapper(uses = {SimpleDocUnitMapper.class,
+                SimpleLotMapper.class,
+                SimpleProjectMapper.class})
 public abstract class SimpleBibliographicRecordMapper {
 
     public static final SimpleBibliographicRecordMapper INSTANCE = Mappers.getMapper(SimpleBibliographicRecordMapper.class);
     private static final SimpleTrainMapper INSTANCE_TRAIN = Mappers.getMapper(SimpleTrainMapper.class);
 
-    @Mappings({@Mapping(target = "project", source = "docUnit.project"), @Mapping(target = "lot", source = "docUnit.lot")})
+    @Mappings({@Mapping(target = "project", source = "docUnit.project"),
+               @Mapping(target = "lot", source = "docUnit.lot")})
     public abstract SimpleListBibliographicRecordDTO docUnitToSimpleListDocUnitDTO(BibliographicRecord record);
 
     /**

@@ -1,14 +1,29 @@
 <!-- Diffusé / archivé -->
-<sem-field sem-type="select" sem-model="config.type" sem-label="{{::'Type' | translate}}"
-           sem-select-options="option.value as option.text for option in optionData"
-           sem-option-data="mainCtrl.options.types"
-           sem-label-class="col-xs-3" sem-field-class="col-xs-9"></sem-field>
+<sem-field
+    sem-type="select"
+    sem-model="config.type"
+    sem-label="{{::'Type' | translate}}"
+    sem-select-options="option.value as option.text for option in optionData"
+    sem-option-data="mainCtrl.options.types"
+    sem-label-class="col-xs-3"
+    sem-field-class="col-xs-9"
+></sem-field>
 <!-- En erreur -->
-<sem-field sem-type="select" sem-model="config.failures" sem-label="{{::'En erreur' | translate}}"
-           sem-select-options="option.value as option.text for option in optionData"
-           sem-option-data="mainCtrl.options.boolean"
-           sem-label-class="col-xs-3" sem-field-class="col-xs-9"></sem-field>
+<sem-field
+    sem-type="select"
+    sem-model="config.failures"
+    sem-label="{{::'En erreur' | translate}}"
+    sem-select-options="option.value as option.text for option in optionData"
+    sem-option-data="mainCtrl.options.boolean"
+    sem-label-class="col-xs-3"
+    sem-field-class="col-xs-9"
+></sem-field>
 <!-- Depuis le -->
-<sem-field sem-type="semnumber" sem-model="config.from"
-           sem-label="{{::'Depuis (jours)' | translate}}" sem-placeholder="{{::'Depuis (jours)' | translate}}"
-           sem-label-class="col-xs-3" sem-field-class="col-xs-9"></sem-field>
+<sem-field
+    sem-type="semnumber"
+    sem-model="config.from"
+    sem-label="{{::'Depuis (jours)' | translate}}"
+    sem-placeholder="{{::'Depuis (jours)' | translate}}"
+    sem-label-class="col-xs-3"
+    sem-field-class="col-xs-9"
+></sem-field>

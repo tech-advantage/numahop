@@ -1,21 +1,15 @@
 package fr.progilone.pgcn.service.exchange.dc;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import fr.progilone.pgcn.domain.document.BibliographicRecord;
 import fr.progilone.pgcn.domain.document.DocProperty;
 import fr.progilone.pgcn.domain.document.DocPropertyType;
 import fr.progilone.pgcn.domain.document.DocUnit;
-import org.apache.jena.rdf.model.Property;
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.test.util.ReflectionTestUtils;
-
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Map;
-
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 
 /**
  * Created by Sébastien on 23/12/2016.
@@ -24,7 +18,7 @@ public class DocUnitToJenaServiceTest {
 
     private DocUnitToJenaService service;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         service = new DocUnitToJenaService();
         ReflectionTestUtils.setField(service, "defaultUri", "http://test/");
@@ -35,11 +29,10 @@ public class DocUnitToJenaServiceTest {
         final DocUnit docUnit = getDocUnit();
 
         String actual = service.convert(docUnit, DocPropertyType.DocPropertySuperType.DC);
-        //        System.out.println(actual);
+        // System.out.println(actual);
 
         actual = actual.replaceAll("\\s+", " ").replaceAll("\\r|\\n", "").trim();
-        String expected = "<rdf:RDF\n"
-                          + "    xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n"
+        String expected = "<rdf:RDF\n" + "    xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n"
                           + "    xmlns:dc=\"http://purl.org/dc/elements/1.1/\">\n"
                           + "  <rdf:Description rdf:about=\"http://test/REC-002\">\n"
                           + "    <dc:title>American Psycho</dc:title>\n"

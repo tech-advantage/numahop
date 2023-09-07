@@ -3,15 +3,14 @@ package fr.progilone.pgcn.domain.exchange.template;
 import com.google.common.base.MoreObjects;
 import fr.progilone.pgcn.domain.AbstractDomainObject;
 import fr.progilone.pgcn.domain.library.Library;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 /**
  * Template velocity
@@ -82,11 +81,6 @@ public class Template extends AbstractDomainObject {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
-                          .add("identifier", identifier)
-                          .add("name", name)
-                          .add("originalFilename", originalFilename)
-                          .add("fileSize", fileSize)
-                          .toString();
+        return MoreObjects.toStringHelper(this).add("identifier", identifier).add("name", name).add("originalFilename", originalFilename).add("fileSize", fileSize).toString();
     }
 }

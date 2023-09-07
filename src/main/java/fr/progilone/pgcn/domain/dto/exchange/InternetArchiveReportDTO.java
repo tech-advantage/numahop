@@ -1,14 +1,13 @@
 package fr.progilone.pgcn.domain.dto.exchange;
 
-import java.time.LocalDateTime;
-
 import fr.progilone.pgcn.domain.dto.AbstractDTO;
+import java.time.LocalDateTime;
 
 /**
  * DTO pour un rapport d'archivage sur Internet Archive
- * 
+ *
  * @author jbrunet
- * Créé le 3 mars 2017
+ *         Créé le 3 mars 2017
  */
 public class InternetArchiveReportDTO extends AbstractDTO {
 
@@ -20,8 +19,9 @@ public class InternetArchiveReportDTO extends AbstractDTO {
     private String message;
     private String number;
     private String total;
-    
-    public InternetArchiveReportDTO() {}
+
+    public InternetArchiveReportDTO() {
+    }
 
     public String getIdentifier() {
         return identifier;

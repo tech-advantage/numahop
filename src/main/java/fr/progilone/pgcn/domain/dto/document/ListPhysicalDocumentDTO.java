@@ -11,12 +11,17 @@ public class ListPhysicalDocumentDTO extends AbstractDTO {
     private Integer totalPage;
     private PhysicalDocument.PhysicalDocumentStatus status;
     private SimpleDocUnitDTO docUnit;
-    
+
     private String reportDetailDim;
     private String reportDetailInsurance;
     private String reportDetailOperture;
 
-    public ListPhysicalDocumentDTO(final String identifier, final String name, final String digitalId, final Integer totalPage, final PhysicalDocument.PhysicalDocumentStatus status, final SimpleDocUnitDTO docUnit) {
+    public ListPhysicalDocumentDTO(final String identifier,
+                                   final String name,
+                                   final String digitalId,
+                                   final Integer totalPage,
+                                   final PhysicalDocument.PhysicalDocumentStatus status,
+                                   final SimpleDocUnitDTO docUnit) {
         this.identifier = identifier;
         this.name = name;
         this.digitalId = digitalId;
@@ -100,5 +105,4 @@ public class ListPhysicalDocumentDTO extends AbstractDTO {
         this.reportDetailOperture = reportDetailOperture;
     }
 
-   
 }

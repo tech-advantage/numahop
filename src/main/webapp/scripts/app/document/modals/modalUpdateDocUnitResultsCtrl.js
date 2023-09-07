@@ -1,24 +1,22 @@
-(function() {
+(function () {
     'use strict';
 
-    angular.module("numaHopApp.controller")
-        .controller("modalUpdateDocUnitResultsCtrl", ModalUpdateDocUnitResultsCtrl);
+    angular.module('numaHopApp.controller').controller('modalUpdateDocUnitResultsCtrl', ModalUpdateDocUnitResultsCtrl);
 
     function ModalUpdateDocUnitResultsCtrl($uibModalInstance, options, gettextCatalog, DocUnitBaseService) {
-
         var mainCtrl = this;
         mainCtrl.update = update;
         mainCtrl.close = close;
         mainCtrl.values = {};
-        
-     // Définition des listes déroulantes
+
+        // Définition des listes déroulantes
         mainCtrl.options = {
-            condreportTypes: DocUnitBaseService.options.condreportTypes
+            condreportTypes: DocUnitBaseService.options.condreportTypes,
         };
-        
+
         init();
-        
-        function init() { 
+
+        function init() {
             mainCtrl.values.distributable = false;
             mainCtrl.values.archivable = false;
             mainCtrl.values.reportType = {};
@@ -34,18 +32,15 @@
         }
 
         function close() {
-            $uibModalInstance.dismiss("cancel");
+            $uibModalInstance.dismiss('cancel');
         }
-        
-        
-        mainCtrl.updateDistributable = function() {
+
+        mainCtrl.updateDistributable = function () {
             mainCtrl.values.distributable = !mainCtrl.values.distributable;
         };
-        
-        mainCtrl.updateArchivable = function() {
+
+        mainCtrl.updateArchivable = function () {
             mainCtrl.values.archivable = !mainCtrl.values.archivable;
         };
-
     }
-
 })();

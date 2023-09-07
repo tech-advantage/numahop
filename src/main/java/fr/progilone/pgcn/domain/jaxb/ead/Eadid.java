@@ -1,28 +1,28 @@
 //
-// Ce fichier a été généré par l'implémentation de référence JavaTM Architecture for XML Binding (JAXB), v2.2.8-b130911.1802 
-// Voir <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
-// Toute modification apportée à ce fichier sera perdue lors de la recompilation du schéma source. 
-// Généré le : 2017.05.16 à 10:56:55 AM CEST 
+// Ce fichier a été généré par l'implémentation de référence JavaTM Architecture for XML Binding (JAXB), v2.2.8-b130911.1802
+// Voir <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a>
+// Toute modification apportée à ce fichier sera perdue lors de la recompilation du schéma source.
+// Généré le : 2017.05.16 à 10:56:55 AM CEST
 //
-
 
 package fr.progilone.pgcn.domain.jaxb.ead;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.XmlValue;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlValue;
+import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
- * <p>Classe Java pour eadid complex type.
- * 
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
- * 
+ * <p>
+ * Classe Java pour eadid complex type.
+ *
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ *
  * <pre>
  * &lt;complexType name="eadid">
  *   &lt;complexContent>
@@ -38,13 +38,11 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
+ *
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "eadid", propOrder = {
-    "content"
-})
+@XmlType(name = "eadid", propOrder = {"content"})
 public class Eadid {
 
     @XmlValue
@@ -73,11 +71,11 @@ public class Eadid {
 
     /**
      * Obtient la valeur de la propriété content.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *         possible object is
+     *         {@link String }
+     *
      */
     public String getContent() {
         return content;
@@ -85,11 +83,11 @@ public class Eadid {
 
     /**
      * Définit la valeur de la propriété content.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is
+     *            {@link String }
+     *
      */
     public void setContent(String value) {
         this.content = value;
@@ -97,11 +95,11 @@ public class Eadid {
 
     /**
      * Obtient la valeur de la propriété publicid.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *         possible object is
+     *         {@link String }
+     *
      */
     public String getPublicid() {
         return publicid;
@@ -109,11 +107,11 @@ public class Eadid {
 
     /**
      * Définit la valeur de la propriété publicid.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is
+     *            {@link String }
+     *
      */
     public void setPublicid(String value) {
         this.publicid = value;
@@ -121,11 +119,11 @@ public class Eadid {
 
     /**
      * Obtient la valeur de la propriété urn.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *         possible object is
+     *         {@link String }
+     *
      */
     public String getUrn() {
         return urn;
@@ -133,11 +131,11 @@ public class Eadid {
 
     /**
      * Définit la valeur de la propriété urn.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is
+     *            {@link String }
+     *
      */
     public void setUrn(String value) {
         this.urn = value;
@@ -145,11 +143,11 @@ public class Eadid {
 
     /**
      * Obtient la valeur de la propriété url.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *         possible object is
+     *         {@link String }
+     *
      */
     public String getUrl() {
         return url;
@@ -157,11 +155,11 @@ public class Eadid {
 
     /**
      * Définit la valeur de la propriété url.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is
+     *            {@link String }
+     *
      */
     public void setUrl(String value) {
         this.url = value;
@@ -169,11 +167,11 @@ public class Eadid {
 
     /**
      * Obtient la valeur de la propriété mainagencycode.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *         possible object is
+     *         {@link String }
+     *
      */
     public String getMainagencycode() {
         return mainagencycode;
@@ -181,11 +179,11 @@ public class Eadid {
 
     /**
      * Définit la valeur de la propriété mainagencycode.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is
+     *            {@link String }
+     *
      */
     public void setMainagencycode(String value) {
         this.mainagencycode = value;
@@ -193,11 +191,11 @@ public class Eadid {
 
     /**
      * Obtient la valeur de la propriété identifier.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *         possible object is
+     *         {@link String }
+     *
      */
     public String getIdentifier() {
         return identifier;
@@ -205,11 +203,11 @@ public class Eadid {
 
     /**
      * Définit la valeur de la propriété identifier.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is
+     *            {@link String }
+     *
      */
     public void setIdentifier(String value) {
         this.identifier = value;
@@ -217,11 +215,11 @@ public class Eadid {
 
     /**
      * Obtient la valeur de la propriété encodinganalog.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *         possible object is
+     *         {@link String }
+     *
      */
     public String getEncodinganalog() {
         return encodinganalog;
@@ -229,11 +227,11 @@ public class Eadid {
 
     /**
      * Définit la valeur de la propriété encodinganalog.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is
+     *            {@link String }
+     *
      */
     public void setEncodinganalog(String value) {
         this.encodinganalog = value;
@@ -241,11 +239,11 @@ public class Eadid {
 
     /**
      * Obtient la valeur de la propriété countrycode.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *         possible object is
+     *         {@link String }
+     *
      */
     public String getCountrycode() {
         return countrycode;
@@ -253,11 +251,11 @@ public class Eadid {
 
     /**
      * Définit la valeur de la propriété countrycode.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is
+     *            {@link String }
+     *
      */
     public void setCountrycode(String value) {
         this.countrycode = value;

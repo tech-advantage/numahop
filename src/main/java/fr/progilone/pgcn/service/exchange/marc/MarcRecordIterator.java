@@ -1,10 +1,9 @@
 package fr.progilone.pgcn.service.exchange.marc;
 
-import org.marc4j.MarcReader;
-import org.marc4j.marc.Record;
-
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import org.marc4j.MarcReader;
+import org.marc4j.marc.Record;
 
 /**
  * Implémentation de l'interface Iterator pour MarcReader

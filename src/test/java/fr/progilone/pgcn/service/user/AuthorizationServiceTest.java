@@ -1,24 +1,22 @@
 package fr.progilone.pgcn.service.user;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
-import java.util.ArrayList;
-import java.util.List;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
 import fr.progilone.pgcn.domain.administration.Module;
 import fr.progilone.pgcn.domain.dto.user.AuthorizationDTO;
 import fr.progilone.pgcn.domain.user.Authorization;
 import fr.progilone.pgcn.repository.user.AuthorizationRepository;
-import fr.progilone.pgcn.service.user.AuthorizationService;
 import fr.progilone.pgcn.web.util.AuthorizationManager;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import java.util.ArrayList;
+import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class AuthorizationServiceTest {
 
     @Mock
@@ -26,7 +24,7 @@ public class AuthorizationServiceTest {
 
     private AuthorizationService service;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         service = new AuthorizationService(authorizationRepository);
     }

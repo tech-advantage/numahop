@@ -1,20 +1,17 @@
 package fr.progilone.pgcn.domain.document;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import fr.progilone.pgcn.domain.AbstractDomainObject;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import java.util.LinkedHashSet;
 import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-
-import fr.progilone.pgcn.domain.AbstractDomainObject;
 
 /**
  * Classe représentant un objet d'export IA
@@ -41,43 +38,43 @@ public class ArchiveItem extends AbstractDomainObject {
     @OneToMany(mappedBy = "item", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private final Set<ArchiveLanguage> languages = new LinkedHashSet<>();
 
-    @Column(name="archive_identifier")
+    @Column(name = "archive_identifier")
     private String archiveIdentifier;
 
-    @Column(name="credits")
+    @Column(name = "credits")
     private String credits;
 
-    @Column(name="date")
+    @Column(name = "date")
     private String date;
 
-    @Column(name="description")
+    @Column(name = "description")
     private String description;
 
-    @Column(name="license_url")
+    @Column(name = "license_url")
     private String licenseUrl;
 
-    @Column(name="mediatype")
+    @Column(name = "mediatype")
     private String mediatype;
 
-    @Column(name="customMediatype")
+    @Column(name = "customMediatype")
     private String customMediatype;
 
-    @Column(name="notes")
+    @Column(name = "notes")
     private String notes;
 
-    @Column(name="publisher")
+    @Column(name = "publisher")
     private String publisher;
 
-    @Column(name="rights")
+    @Column(name = "rights")
     private String rights;
 
-    @Column(name="title")
+    @Column(name = "title")
     private String title;
-    
-    @Column(name="type")
+
+    @Column(name = "type")
     private String type;
-    
-    @Column(name="source")
+
+    @Column(name = "source")
     private String source;
 
     /**

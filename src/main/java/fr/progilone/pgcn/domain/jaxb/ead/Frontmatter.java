@@ -5,25 +5,25 @@
 // Généré le : 2017.05.16 à 10:56:55 AM CEST
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.ead;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlID;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlID;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 
 /**
- * <p>Classe Java pour frontmatter complex type.
+ * <p>
+ * Classe Java pour frontmatter complex type.
  *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="frontmatter">
@@ -42,10 +42,9 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "frontmatter", propOrder = {
-    "titlepage",
-    "div"
-})
+@XmlType(name = "frontmatter",
+         propOrder = {"titlepage",
+                      "div"})
 public class Frontmatter {
 
     protected Titlepage titlepage;
@@ -66,8 +65,8 @@ public class Frontmatter {
      * Obtient la valeur de la propriété titlepage.
      *
      * @return
-     *     possible object is
-     *     {@link Titlepage }
+     *         possible object is
+     *         {@link Titlepage }
      *
      */
     public Titlepage getTitlepage() {
@@ -78,8 +77,8 @@ public class Frontmatter {
      * Définit la valeur de la propriété titlepage.
      *
      * @param value
-     *     allowed object is
-     *     {@link Titlepage }
+     *            allowed object is
+     *            {@link Titlepage }
      *
      */
     public void setTitlepage(Titlepage value) {
@@ -97,8 +96,9 @@ public class Frontmatter {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getDiv().add(newItem);
+     * getDiv().add(newItem);
      * </pre>
      *
      *
@@ -119,8 +119,8 @@ public class Frontmatter {
      * Obtient la valeur de la propriété id.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getId() {
@@ -131,8 +131,8 @@ public class Frontmatter {
      * Définit la valeur de la propriété id.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setId(String value) {
@@ -143,8 +143,8 @@ public class Frontmatter {
      * Obtient la valeur de la propriété altrender.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getAltrender() {
@@ -155,8 +155,8 @@ public class Frontmatter {
      * Définit la valeur de la propriété altrender.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setAltrender(String value) {
@@ -167,8 +167,8 @@ public class Frontmatter {
      * Obtient la valeur de la propriété audience.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getAudience() {
@@ -179,8 +179,8 @@ public class Frontmatter {
      * Définit la valeur de la propriété audience.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setAudience(String value) {

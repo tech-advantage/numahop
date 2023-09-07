@@ -2,11 +2,11 @@ package fr.progilone.pgcn.repository.train;
 
 import fr.progilone.pgcn.domain.dto.train.SimpleTrainDTO;
 import fr.progilone.pgcn.domain.train.Train;
+import java.time.LocalDate;
+import java.util.Collection;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import java.time.LocalDate;
-import java.util.List;
 
 public interface TrainRepositoryCustom {
 
@@ -63,7 +63,7 @@ public interface TrainRepositoryCustom {
      * @param projectIds
      * @return
      */
-    List<SimpleTrainDTO> findAllIdentifiersInProjectIds(Iterable<String> projectIds);
+    List<SimpleTrainDTO> findAllIdentifiersInProjectIds(Collection<String> projectIds);
 
     List<Object[]> getTrainGroupByStatus(List<String> libraries, List<String> projects);
 }

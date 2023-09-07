@@ -1,25 +1,25 @@
 //
-// Ce fichier a été généré par l'implémentation de référence JavaTM Architecture for XML Binding (JAXB), v2.2.8-b130911.1802 
-// Voir <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
-// Toute modification apportée à ce fichier sera perdue lors de la recompilation du schéma source. 
-// Généré le : 2017.08.25 à 03:15:17 PM CEST 
+// Ce fichier a été généré par l'implémentation de référence JavaTM Architecture for XML Binding (JAXB), v2.2.8-b130911.1802
+// Voir <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a>
+// Toute modification apportée à ce fichier sera perdue lors de la recompilation du schéma source.
+// Généré le : 2017.08.25 à 03:15:17 PM CEST
 //
-
 
 package fr.progilone.pgcn.domain.jaxb.mix;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlType;
 import java.math.BigInteger;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlType;
-
 
 /**
- * <p>Classe Java pour rationalType complex type.
- * 
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
- * 
+ * <p>
+ * Classe Java pour rationalType complex type.
+ *
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ *
  * <pre>
  * &lt;complexType name="rationalType">
  *   &lt;complexContent>
@@ -33,14 +33,13 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
+ *
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "rationalType", propOrder = {
-    "numerator",
-    "denominator"
-})
+@XmlType(name = "rationalType",
+         propOrder = {"numerator",
+                      "denominator"})
 public class RationalType {
 
     protected BigInteger numerator;
@@ -50,11 +49,11 @@ public class RationalType {
 
     /**
      * Obtient la valeur de la propriété numerator.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link BigInteger }
-     *     
+     *         possible object is
+     *         {@link BigInteger }
+     *
      */
     public BigInteger getNumerator() {
         return numerator;
@@ -62,11 +61,11 @@ public class RationalType {
 
     /**
      * Définit la valeur de la propriété numerator.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link BigInteger }
-     *     
+     *            allowed object is
+     *            {@link BigInteger }
+     *
      */
     public void setNumerator(BigInteger value) {
         this.numerator = value;
@@ -74,11 +73,11 @@ public class RationalType {
 
     /**
      * Obtient la valeur de la propriété denominator.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link BigInteger }
-     *     
+     *         possible object is
+     *         {@link BigInteger }
+     *
      */
     public BigInteger getDenominator() {
         return denominator;
@@ -86,11 +85,11 @@ public class RationalType {
 
     /**
      * Définit la valeur de la propriété denominator.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link BigInteger }
-     *     
+     *            allowed object is
+     *            {@link BigInteger }
+     *
      */
     public void setDenominator(BigInteger value) {
         this.denominator = value;
@@ -98,11 +97,11 @@ public class RationalType {
 
     /**
      * Obtient la valeur de la propriété use.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *         possible object is
+     *         {@link String }
+     *
      */
     public String getUse() {
         return use;
@@ -110,11 +109,11 @@ public class RationalType {
 
     /**
      * Définit la valeur de la propriété use.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is
+     *            {@link String }
+     *
      */
     public void setUse(String value) {
         this.use = value;

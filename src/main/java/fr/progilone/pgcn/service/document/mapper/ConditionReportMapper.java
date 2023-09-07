@@ -4,13 +4,12 @@ import fr.progilone.pgcn.domain.document.conditionreport.ConditionReport;
 import fr.progilone.pgcn.domain.document.conditionreport.ConditionReportDetail;
 import fr.progilone.pgcn.domain.dto.document.conditionreport.ConditionReportDTO;
 import fr.progilone.pgcn.domain.dto.document.conditionreport.ConditionReportSearchDTO;
+import java.util.Comparator;
+import java.util.stream.Collectors;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
-
-import java.util.Comparator;
-import java.util.stream.Collectors;
 
 @Mapper(uses = {ConditionReportValueMapper.class})
 public abstract class ConditionReportMapper {
@@ -23,9 +22,11 @@ public abstract class ConditionReportMapper {
     public abstract ConditionReportSearchDTO reportToSearchDTO(ConditionReport report);
 
     @AfterMapping
-    protected void updateSearchDTO(ConditionReport report, @MappingTarget final ConditionReportSearchDTO dto) {
+    protected void updateSearchDTO(final ConditionReport report, @MappingTarget final ConditionReportSearchDTO dto) {
         // Tri par type
-        report.getDetails().stream().max(Comparator.comparing(ConditionReportDetail::getPosition))
+        report.getDetails()
+              .stream()
+              .max(Comparator.comparing(ConditionReportDetail::getPosition))
               // Alimentation du DTO
               .ifPresent(det -> {
                   dto.setDate(det.getDate());

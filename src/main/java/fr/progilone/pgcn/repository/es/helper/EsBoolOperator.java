@@ -1,8 +1,7 @@
 package fr.progilone.pgcn.repository.es.helper;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.Arrays;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Type de recherche

@@ -15,13 +15,7 @@ public class FTPConfigurationDTO extends AbstractVersionedDTO {
 
     private String deliveryFolder;
 
-    public FTPConfigurationDTO(String identifier,
-                               String label,
-                               SimpleLibraryDTO library,
-                               String address,
-                               String login,
-                               String password,
-                               String deliveryFolder) {
+    public FTPConfigurationDTO(String identifier, String label, SimpleLibraryDTO library, String address, String login, String password, String deliveryFolder) {
         this.identifier = identifier;
         this.label = label;
         this.library = library;
@@ -92,6 +86,7 @@ public class FTPConfigurationDTO extends AbstractVersionedDTO {
     }
 
     public static final class Builder {
+
         private String identifier;
         private String label;
         private SimpleLibraryDTO library;

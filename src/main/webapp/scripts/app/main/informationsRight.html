@@ -4,28 +4,28 @@
     </a>
 </div>
 <div id="sem-infos" sem-auto-hide-infos>
-	<div class="panel panel-column-4 no-print" ng-class="{'panel-info': recommendations.content}">
-	    <div class="panel-heading text-right">
+    <div class="panel panel-column-4 no-print" ng-class="{'panel-info': recommendations.content}">
+        <div class="panel-heading text-right">
             <span translate>Informations</span>
         </div>
-	    <div class="panel-body">
-	        <div id="notificationColumn">
-	            <table>
-	                <tbody>
-	                <tr ng-repeat="notification in getPermanentMessages()">
-	                    <td class="notif-info-point text-center hide">
-	                        <div uib-alert ng-class="'alert-' + notification.level"></div>
-	                    </td>
-	                    <td class="text-center">
-	                        <div uib-alert ng-class="'alert-' + notification.level">
-	                      <span class="badge pull-right" ng-if="msg.count > 1">{{notification.count}}</span>
-	                      <span class="preserve-line-breaks" ng-bind-html="notification.content"></span>
-	                  </div>
-	                    </td>
-	                </tr>
-	                </tbody>
-	            </table>
-	        </div>
-	    </div>
-	</div>
+        <div class="panel-body">
+            <div id="notificationColumn">
+                <table>
+                    <tbody>
+                        <tr ng-repeat="notification in getPermanentMessages()">
+                            <td class="notif-info-point text-center hide">
+                                <div uib-alert ng-class="'alert-' + notification.level"></div>
+                            </td>
+                            <td class="text-center">
+                                <div uib-alert ng-class="'alert-' + notification.level">
+                                    <span class="badge pull-right" ng-if="msg.count > 1">{{notification.count}}</span>
+                                    <span class="preserve-line-breaks" ng-bind-html="notification.content"></span>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>

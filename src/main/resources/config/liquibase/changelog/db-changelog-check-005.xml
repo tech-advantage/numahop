@@ -1,14 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <!-- Changeset du module Automatic Check -->
     <changeSet id="pgcn-check-005" author="progilone">
 <!--         Ajout flag configurable et order -->
         <addColumn tableName="check_automatic_type">
             <column name="configurable" type="BOOLEAN" defaultValueBoolean="true" />
-            <column name="order" type="integer"/>
+            <column name="order" type="integer" />
         </addColumn>
 <!--         Mise à jour des libelles et ordre -->
         <update tableName="check_automatic_type">

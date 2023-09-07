@@ -8,29 +8,23 @@ import fr.progilone.pgcn.domain.library.Library;
 import fr.progilone.pgcn.domain.project.Project;
 import fr.progilone.pgcn.domain.security.PersistentToken;
 import fr.progilone.pgcn.domain.workflow.WorkflowGroup;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import java.util.HashSet;
+import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import java.util.HashSet;
-import java.util.Set;
-
-import static fr.progilone.pgcn.service.es.EsConstant.*;
 
 /**
  * Usager
@@ -49,7 +43,6 @@ public class User extends AbstractDomainObject {
      * identifiant
      */
     @Column(name = "login", unique = true, nullable = false)
-    @Field(type = FieldType.String, analyzer = ANALYZER_KEYWORD)
     private String login;
 
     /**
@@ -163,10 +156,6 @@ public class User extends AbstractDomainObject {
     @ManyToMany(mappedBy = "users")
     private Set<WorkflowGroup> groups;
 
-    @Transient
-    @Field(type = FieldType.String, analyzer = ANALYZER_KEYWORD)
-    private String fullName;
-
     public void setAddress(final Address address) {
         this.address = address;
     }
@@ -179,7 +168,7 @@ public class User extends AbstractDomainObject {
         return function;
     }
 
-    public void setFunction(String function) {
+    public void setFunction(final String function) {
         this.function = function;
     }
 
@@ -187,7 +176,7 @@ public class User extends AbstractDomainObject {
         return active;
     }
 
-    public void setActive(boolean active) {
+    public void setActive(final boolean active) {
         this.active = active;
     }
 
@@ -195,7 +184,7 @@ public class User extends AbstractDomainObject {
         return companyName;
     }
 
-    public void setCompanyName(String companyName) {
+    public void setCompanyName(final String companyName) {
         this.companyName = companyName;
     }
 
@@ -203,7 +192,7 @@ public class User extends AbstractDomainObject {
         return library;
     }
 
-    public void setLibrary(Library library) {
+    public void setLibrary(final Library library) {
         this.library = library;
     }
 
@@ -211,7 +200,7 @@ public class User extends AbstractDomainObject {
         return firstname;
     }
 
-    public void setFirstname(String firstname) {
+    public void setFirstname(final String firstname) {
         this.firstname = firstname;
     }
 
@@ -219,7 +208,7 @@ public class User extends AbstractDomainObject {
         return login;
     }
 
-    public void setLogin(String login) {
+    public void setLogin(final String login) {
         this.login = login;
     }
 
@@ -227,7 +216,7 @@ public class User extends AbstractDomainObject {
         return password;
     }
 
-    public void setPassword(String password) {
+    public void setPassword(final String password) {
         this.password = password;
     }
 
@@ -235,7 +224,7 @@ public class User extends AbstractDomainObject {
         return persistentTokens;
     }
 
-    public void setPersistentTokens(Set<PersistentToken> persistentTokens) {
+    public void setPersistentTokens(final Set<PersistentToken> persistentTokens) {
         this.persistentTokens = persistentTokens;
     }
 
@@ -243,7 +232,7 @@ public class User extends AbstractDomainObject {
         return role;
     }
 
-    public void setRole(Role role) {
+    public void setRole(final Role role) {
         this.role = role;
     }
 
@@ -251,7 +240,7 @@ public class User extends AbstractDomainObject {
         return surname;
     }
 
-    public void setSurname(String surname) {
+    public void setSurname(final String surname) {
         this.surname = surname;
     }
 
@@ -259,7 +248,7 @@ public class User extends AbstractDomainObject {
         return category;
     }
 
-    public void setCategory(Category category) {
+    public void setCategory(final Category category) {
         this.category = category;
     }
 
@@ -267,7 +256,7 @@ public class User extends AbstractDomainObject {
         return lang;
     }
 
-    public void setLang(Lang lang) {
+    public void setLang(final Lang lang) {
         this.lang = lang;
     }
 
@@ -275,7 +264,7 @@ public class User extends AbstractDomainObject {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
+    public void setPhoneNumber(final String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
@@ -283,7 +272,7 @@ public class User extends AbstractDomainObject {
         return email;
     }
 
-    public void setEmail(String email) {
+    public void setEmail(final String email) {
         this.email = email;
     }
 
@@ -291,7 +280,7 @@ public class User extends AbstractDomainObject {
         return projects;
     }
 
-    public void setProjects(Set<Project> projects) {
+    public void setProjects(final Set<Project> projects) {
         this.projects = projects;
     }
 
@@ -300,7 +289,7 @@ public class User extends AbstractDomainObject {
         return MoreObjects.toStringHelper(this).omitNullValues().add("login", login).add("firstname", firstname).add("surname", surname).toString();
     }
 
-    public void setSuperuser(boolean superuser) {
+    public void setSuperuser(final boolean superuser) {
         this.superuser = superuser;
     }
 

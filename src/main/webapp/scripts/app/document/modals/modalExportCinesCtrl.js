@@ -1,11 +1,9 @@
 (function () {
     'use strict';
 
-    angular.module("numaHopApp.controller")
-        .controller("ModalExportCinesCtrl", ModalExportCinesCtrl);
+    angular.module('numaHopApp.controller').controller('ModalExportCinesCtrl', ModalExportCinesCtrl);
 
     function ModalExportCinesCtrl($uibModalInstance, gettextCatalog, options, ExportCinesSrvc, MessageSrvc) {
-
         var mainCtrl = this;
         mainCtrl.validDatas = validDatas;
         mainCtrl.errFields = [];
@@ -15,28 +13,28 @@
         mainCtrl.close = close;
         mainCtrl.exportCines = exportCines;
         mainCtrl.saveCines = saveCines;
-        mainCtrl.majAndReversion = "maj";
+        mainCtrl.majAndReversion = 'maj';
 
         mainCtrl.dcFields = [
-            { "code": "title", "rank": 1, "label": gettextCatalog.getString("Title"), "mandatory": true },
-            { "code": "creator", "rank": 2, "label": gettextCatalog.getString("Creator"), "mandatory": true },
-            { "code": "subject", "rank": 3, "label": gettextCatalog.getString("Subject"), "mandatory": true },
-            { "code": "description", "rank": 4, "label": gettextCatalog.getString("Description"), "mandatory": true },
-            { "code": "publisher", "rank": 5, "label": gettextCatalog.getString("Publisher"), "mandatory": true },
-            { "code": "contributor", "rank": 6, "label": gettextCatalog.getString("Contributor") },
-            { "code": "date", "rank": 7, "label": gettextCatalog.getString("Date") },
-            { "code": "type", "rank": 8, "label": gettextCatalog.getString("Type"), "mandatory": true },
-            { "code": "format", "rank": 9, "label": gettextCatalog.getString("Format"), "mandatory": true },
-            { "code": "identifier", "rank": 10, "label": gettextCatalog.getString("Identifier"),  "mandatory": true},
-            { "code": "source", "rank": 11, "label": gettextCatalog.getString("Source") },
-            { "code": "language", "rank": 12, "label": gettextCatalog.getString("Language"), "mandatory": true },
-            { "code": "relation", "rank": 13, "label": gettextCatalog.getString("Relation") },
-            { "code": "coverage", "rank": 14, "label": gettextCatalog.getString("Coverage") },
-            { "code": "rights", "rank": 15, "label": gettextCatalog.getString("Rights"), "mandatory": true }
+            { code: 'title', rank: 1, label: gettextCatalog.getString('Title'), mandatory: true },
+            { code: 'creator', rank: 2, label: gettextCatalog.getString('Creator'), mandatory: true },
+            { code: 'subject', rank: 3, label: gettextCatalog.getString('Subject'), mandatory: true },
+            { code: 'description', rank: 4, label: gettextCatalog.getString('Description'), mandatory: true },
+            { code: 'publisher', rank: 5, label: gettextCatalog.getString('Publisher'), mandatory: true },
+            { code: 'contributor', rank: 6, label: gettextCatalog.getString('Contributor') },
+            { code: 'date', rank: 7, label: gettextCatalog.getString('Date') },
+            { code: 'type', rank: 8, label: gettextCatalog.getString('Type'), mandatory: true },
+            { code: 'format', rank: 9, label: gettextCatalog.getString('Format'), mandatory: true },
+            { code: 'identifier', rank: 10, label: gettextCatalog.getString('Identifier'), mandatory: true },
+            { code: 'source', rank: 11, label: gettextCatalog.getString('Source') },
+            { code: 'language', rank: 12, label: gettextCatalog.getString('Language'), mandatory: true },
+            { code: 'relation', rank: 13, label: gettextCatalog.getString('Relation') },
+            { code: 'coverage', rank: 14, label: gettextCatalog.getString('Coverage') },
+            { code: 'rights', rank: 15, label: gettextCatalog.getString('Rights'), mandatory: true },
         ];
         mainCtrl.meta = {
             dc: true,
-            ead: false
+            ead: false,
         };
 
         init();
@@ -48,44 +46,41 @@
             mainCtrl.meta.ead = options.ead;
             mainCtrl.meta.dc = !mainCtrl.metaEad;
             mainCtrl.version = options.version;
-            mainCtrl.alertPlanPac = options.planClassmt === null
-                || angular.isUndefined(options.planClassmt.identifier);
+            mainCtrl.alertPlanPac = options.planClassmt === null || angular.isUndefined(options.planClassmt.identifier);
 
             // Chargement des champs Dublin Core de la notice
-            ExportCinesSrvc.export({ id: options.identifier }).$promise
-                .then(function (dc) {
-                    mainCtrl.dc = {};
+            ExportCinesSrvc.export({ id: options.identifier }).$promise.then(function (dc) {
+                mainCtrl.dc = {};
 
-                    _.each(mainCtrl.dcFields, function (field) {
-                        // Ajout des champs vides
-                        if (dc[field.code].length === 0) {
-                            dc[field.code].push("");
-                        }
-                        // Création d'objet, pour qu'angular gère les valeurs correctement
-                        mainCtrl.dc[field.code] = _.map(dc[field.code], function (v) {
-                            return { value: v };
-                        });
+                _.each(mainCtrl.dcFields, function (field) {
+                    // Ajout des champs vides
+                    if (dc[field.code].length === 0) {
+                        dc[field.code].push('');
+                    }
+                    // Création d'objet, pour qu'angular gère les valeurs correctement
+                    mainCtrl.dc[field.code] = _.map(dc[field.code], function (v) {
+                        return { value: v };
                     });
-                    mainCtrl.majAndReversion = 'maj';
-                    mainCtrl.loaded = true;
                 });
+                mainCtrl.majAndReversion = 'maj';
+                mainCtrl.loaded = true;
+            });
         }
-
 
         /**
          * Ajout d'une propriété
-         * 
-         * @param {any} dc 
+         *
+         * @param {any} dc
          */
         function addProperty(dc) {
-            mainCtrl.dc[dc.code].push({ value: "" });
+            mainCtrl.dc[dc.code].push({ value: '' });
         }
 
         /**
          * Suppression d'une propriété existante
-         * 
-         * @param {any} dc 
-         * @param {any} property 
+         *
+         * @param {any} dc
+         * @param {any} property
          */
         function removeProperty(dc, property) {
             var idx = mainCtrl.dc[dc.code].indexOf(property);
@@ -94,20 +89,17 @@
             }
         }
 
-
         /**
          * Fermeture/Annulation de la fenêtre modale
          */
         function close() {
-            $uibModalInstance.dismiss("cancel");
+            $uibModalInstance.dismiss('cancel');
         }
-
 
         /**
          * Validation champs obligatoires.
          */
         function validDatas() {
-
             var mandatories = _.filter(mainCtrl.dcFields, function (l) {
                 return l.mandatory === true;
             });
@@ -117,8 +109,7 @@
 
             mainCtrl.errFields = [];
             _.each(mainCtrl.dc, function (values, key) {
-                if (_.contains(mandatoryCodes, key)
-                    && (!values[0].value || values[0].value.length === 0)) {
+                if (_.contains(mandatoryCodes, key) && (!values[0].value || values[0].value.length === 0)) {
                     mainCtrl.errFields.push(key);
                 }
             });
@@ -143,7 +134,6 @@
             }
             return true;
         }
-
 
         /**
          * Fermeture/Validation de la fenêtre modale
@@ -198,13 +188,15 @@
                     .value();
             }
 
-            ExportCinesSrvc.save({
-                id: options.identifier
-            }, result.dc, function () {
-                MessageSrvc.addSuccess(
-                    gettextCatalog.getString("Les données d'export CINES pour {{label}} ont été sauvegardées"),
-                    { label: result.dc.title[0] });
-            });
+            ExportCinesSrvc.save(
+                {
+                    id: options.identifier,
+                },
+                result.dc,
+                function () {
+                    MessageSrvc.addSuccess(gettextCatalog.getString("Les données d'export CINES pour {{label}} ont été sauvegardées"), { label: result.dc.title[0] });
+                }
+            );
         }
     }
 })();

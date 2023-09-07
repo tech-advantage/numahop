@@ -1,41 +1,52 @@
 package fr.progilone.pgcn.config;
 
-import fr.progilone.pgcn.service.es.jackson.PgcnEntityMapper;
-import org.elasticsearch.client.Client;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import java.util.stream.Stream;
+import org.elasticsearch.client.RestClientBuilder;
+import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
+import org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchProperties;
+import org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchRestClientAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
-import org.springframework.data.elasticsearch.core.EntityMapper;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 
 @Configuration
 @EnableElasticsearchRepositories(basePackages = {"fr.progilone.pgcn.repository.es"})
+@Import(ElasticsearchRestClientAutoConfiguration.class)
 public class ElasticsearchConfiguration {
 
-    @Value("${elasticsearch.index.name}")
-    private String elasticsearchIndexName;
+    private static final int STARTUP_INTERVAL = 1;
+    private static final int STARTUP_TIMEOUT = 1800;
 
-    @Bean
-    public String elasticsearchIndexName() {
-        return elasticsearchIndexName;
-    }
+    private final ElasticsearchProperties elasticsearchProperties;
 
-    @Bean
-    public EntityMapper entityMapper() {
-        return new PgcnEntityMapper();
+    public ElasticsearchConfiguration(final ElasticsearchProperties elasticsearchProperties) {
+        this.elasticsearchProperties = elasticsearchProperties;
     }
 
     /**
-     * @param client
-     * @param entityMapper
-     * @return
-     * @see <a href="https://github.com/spring-projects/spring-data-elasticsearch/wiki/Custom-ObjectMapper">Custom ObjectMapper</a>
+     * Bean permettant d'attendre que Elasticsearch soit démarré.
      */
     @Bean
-    @ConditionalOnBean({Client.class, EntityMapper.class})
-    public ElasticsearchTemplate elasticsearchTemplate(Client client, EntityMapper entityMapper) {
-        return new ElasticsearchTemplate(client, entityMapper);
+    @Profile("!" + Constants.SPRING_PROFILE_TEST)
+    public HttpServiceStartupValidator elasticsearchStartupValidator() {
+        final var dsv = new HttpServiceStartupValidator(elasticsearchProperties.getUris().get(0));
+        dsv.setInterval(STARTUP_INTERVAL);
+        dsv.setTimeout(STARTUP_TIMEOUT);
+        return dsv;
+    }
+
+    /**
+     * On fait dépendre le client Elasticsearch de notre bean permettant d'attendre que Elasticsearch soit démarré pour que l'application attende
+     * Elasticsearch avant de continuer à démarrer.
+     */
+    @Bean
+    @Profile("!" + Constants.SPRING_PROFILE_TEST)
+    public static BeanFactoryPostProcessor dependsOnElasticsearchPostProcessor() {
+        return bf -> {
+            final String[] clientRegistrationRepository = bf.getBeanNamesForType(RestClientBuilder.class);
+            Stream.of(clientRegistrationRepository).map(bf::getBeanDefinition).forEach(it -> it.setDependsOn("elasticsearchStartupValidator"));
+        };
     }
 }

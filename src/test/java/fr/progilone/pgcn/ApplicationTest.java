@@ -1,29 +1,22 @@
 package fr.progilone.pgcn;
 
 import java.util.stream.Stream;
-
 import javax.sql.DataSource;
-
-import org.springframework.boot.actuate.autoconfigure.MetricFilterAutoConfiguration;
-import org.springframework.boot.actuate.autoconfigure.MetricRepositoryAutoConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.bind.RelaxedPropertyResolver;
-import org.springframework.cache.CacheManager;
-import org.springframework.cache.guava.GuavaCacheManager;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 
-@EnableAutoConfiguration(exclude = {MetricFilterAutoConfiguration.class, MetricRepositoryAutoConfiguration.class})
+@EnableAutoConfiguration()
 public class ApplicationTest implements EnvironmentAware {
 
-    private RelaxedPropertyResolver propertyResolver;
+    private Environment environment;
 
     @Override
     public void setEnvironment(final Environment environment) {
-        this.propertyResolver = new RelaxedPropertyResolver(environment, "spring.jpa.properties.");
+        this.environment = environment;
     }
 
     @Bean
@@ -33,20 +26,15 @@ public class ApplicationTest implements EnvironmentAware {
         bean.setJpaVendorAdapter(jpaVendorAdapter);
         bean.setPackagesToScan("fr.progilone.pgcn.domain");
 
-        Stream.of("hibernate.cache.use_second_level_cache",
-                  "hibernate.cache.use_query_cache",
-                  "hibernate.generate_statistics",
-                  "hibernate.cache.region.factory_class",
-                  "hibernate.cache.use_minimal_puts",
-                  "hibernate.cache.hazelcast.use_lite_member",
-                  "hibernate.default_batch_fetch_size")
-              .filter(property -> this.propertyResolver.containsProperty(property))
-              .forEach(property -> bean.getJpaPropertyMap().put(property, this.propertyResolver.getProperty(property)));
+        Stream.of("spring.jpa.properties.hibernate.cache.use_second_level_cache",
+                  "spring.jpa.properties.hibernate.cache.use_query_cache",
+                  "spring.jpa.properties.hibernate.generate_statistics",
+                  "spring.jpa.properties.hibernate.cache.region.factory_class",
+                  "spring.jpa.properties.hibernate.cache.use_minimal_puts",
+                  "spring.jpa.properties.hibernate.cache.hazelcast.use_lite_member",
+                  "spring.jpa.properties.hibernate.default_batch_fetch_size")
+              .filter(property -> this.environment.containsProperty(property))
+              .forEach(property -> bean.getJpaPropertyMap().put(property, this.environment.getProperty(property)));
         return bean;
-    }
-
-    @Bean
-    public CacheManager cacheManager() {
-        return new GuavaCacheManager();
     }
 }

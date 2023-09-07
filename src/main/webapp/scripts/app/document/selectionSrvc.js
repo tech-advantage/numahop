@@ -4,13 +4,12 @@
     angular.module('numaHopApp.service').factory('SelectionSrvc', SelectionSrvc);
 
     function SelectionSrvc() {
-
         var selections = {};
 
         /**
          * Ajoute une liste d'éléments à la sélection courante
-         * @param {*} code 
-         * @param {*} selection 
+         * @param {*} code
+         * @param {*} selection
          */
         function add(code, selection) {
             if (!selection) {
@@ -29,7 +28,7 @@
 
         /**
          * Vide la sélection courante
-         * @param {*} code 
+         * @param {*} code
          */
         function clear(code) {
             selections[code] = [];
@@ -44,8 +43,8 @@
 
         /**
          * Retire une liste d'éléments de la sélection courante
-         * @param {*} code 
-         * @param {*} unselection 
+         * @param {*} code
+         * @param {*} unselection
          */
         function del(code, unselection) {
             if (!selections[code] || !unselection) {
@@ -62,7 +61,7 @@
 
         /**
          * Retourne la sélection courante
-         * @param {*} code 
+         * @param {*} code
          */
         function get(code) {
             if (!selections[code]) {
@@ -73,8 +72,8 @@
 
         /**
          * Position d'un élément dans la liste de sélection
-         * @param {*} code 
-         * @param {*} element 
+         * @param {*} code
+         * @param {*} element
          */
         function indexOf(code, element) {
             var idx = -1;
@@ -90,8 +89,8 @@
 
         /**
          * Initialise la sélection courante avec une liste d'éléments
-         * @param {*} code 
-         * @param {*} selection 
+         * @param {*} code
+         * @param {*} selection
          */
         function set(code, selection) {
             clear(code);
@@ -103,8 +102,8 @@
 
         /**
          * Inverse la sélection de l'élément
-         * @param {*} code 
-         * @param {*} element 
+         * @param {*} code
+         * @param {*} element
          */
         function toggle(code, element) {
             if (!selections[code]) {
@@ -113,16 +112,15 @@
             var idx = indexOf(code, element);
             if (idx >= 0) {
                 selections[code].splice(idx, 1);
-            }
-            else {
+            } else {
                 selections[code].push(element);
             }
         }
 
         /**
          * Tous les éléments passés en paramètres sont-ils sélectionnés ?
-         * @param {*} code 
-         * @param {*} elements 
+         * @param {*} code
+         * @param {*} elements
          */
         function allSelected(code, elements) {
             if (!selections[code]) {
@@ -138,8 +136,8 @@
 
         /**
          * L'élément passé en paramètre est-il sélectionné ?
-         * @param {*} code 
-         * @param {*} element 
+         * @param {*} code
+         * @param {*} element
          */
         function isSelected(code, element) {
             return selections[code] && indexOf(code, element) >= 0;
@@ -154,11 +152,11 @@
             get: get,
             isSelected: isSelected,
             keys: {
-                CHECK_LIST: "checks_checks",
-                DOC_UNIT_LIST: "doc_unit_list"
+                CHECK_LIST: 'checks_checks',
+                DOC_UNIT_LIST: 'doc_unit_list',
             },
             set: set,
-            toggle: toggle
+            toggle: toggle,
         };
     }
 })();

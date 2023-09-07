@@ -1,5 +1,8 @@
 package fr.progilone.pgcn.web.rest.administration;
 
+import static fr.progilone.pgcn.web.rest.administration.security.AuthorizationConstants.*;
+import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.*;
+
 import com.codahale.metrics.annotation.Timed;
 import fr.progilone.pgcn.domain.administration.InternetArchiveCollection;
 import fr.progilone.pgcn.domain.administration.InternetArchiveConfiguration;
@@ -11,6 +14,11 @@ import fr.progilone.pgcn.service.administration.InternetArchiveConfigurationServ
 import fr.progilone.pgcn.web.rest.AbstractRestController;
 import fr.progilone.pgcn.web.util.AccessHelper;
 import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.servlet.http.HttpServletRequest;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,20 +32,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletRequest;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-
-import static fr.progilone.pgcn.web.rest.administration.security.AuthorizationConstants.*;
-import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.*;
-
 /**
  * Configuration d'Internet Archive
  *
  * @author jbrunet
- * Créé le 19 avr. 2017
+ *         Créé le 19 avr. 2017
  */
 @RestController
 @RequestMapping(value = "/api/rest/conf_internet_archive")
@@ -62,8 +61,8 @@ public class InternetArchiveConfigurationController extends AbstractRestControll
     @RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed({CONF_INTERNET_ARCHIVE_HAB1})
-    public ResponseEntity<InternetArchiveConfiguration> create(final HttpServletRequest request,
-                                                               @RequestBody final InternetArchiveConfiguration conf) throws PgcnTechnicalException {
+    public ResponseEntity<InternetArchiveConfiguration> create(final HttpServletRequest request, @RequestBody final InternetArchiveConfiguration conf)
+                                                                                                                                                       throws PgcnTechnicalException {
         // Vérification des droits d'accès par rapport à la bibliothèque de l'utilisateur, pour le conf à importer
         if (!libraryAccesssHelper.checkLibrary(request, conf, InternetArchiveConfiguration::getLibrary)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
@@ -93,7 +92,8 @@ public class InternetArchiveConfigurationController extends AbstractRestControll
 
     @RequestMapping(method = RequestMethod.GET, params = {"collections"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    @RolesAllowed({CONF_INTERNET_ARCHIVE_HAB0, DOC_UNIT_HAB0})
+    @RolesAllowed({CONF_INTERNET_ARCHIVE_HAB0,
+                   DOC_UNIT_HAB0})
     public ResponseEntity<Collection<InternetArchiveCollection>> findIA(final HttpServletRequest request,
                                                                         @RequestParam(name = "library", required = false) final List<String> libraries,
                                                                         @RequestParam(name = "project", required = false) final String projectId) {
@@ -110,10 +110,10 @@ public class InternetArchiveConfigurationController extends AbstractRestControll
 
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    @RolesAllowed({CONF_INTERNET_ARCHIVE_HAB0, DOC_UNIT_HAB0})
+    @RolesAllowed({CONF_INTERNET_ARCHIVE_HAB0,
+                   DOC_UNIT_HAB0})
     public ResponseEntity<Collection<InternetArchiveConfigurationDTO>> findAll(final HttpServletRequest request,
-                                                                               @RequestParam(name = "active", required = false)
-                                                                               final Boolean active) {
+                                                                               @RequestParam(name = "active", required = false) final Boolean active) {
         // Chargement des configurationSftp
         Collection<InternetArchiveConfigurationDTO> confs = iaConfigurationService.findAllDto(active);
         // Filtrage des configurationSftp par rapport à la bibliothèque de l'utilisateur, pour les non-admin
@@ -122,7 +122,10 @@ public class InternetArchiveConfigurationController extends AbstractRestControll
         return new ResponseEntity<>(confs, HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.GET, params = {"configurations", "library"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.GET,
+                    params = {"configurations",
+                              "library"},
+                    produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed({CONF_INTERNET_ARCHIVE_HAB0})
     public ResponseEntity<Set<InternetArchiveConfigurationDTO>> findByLibrary(final HttpServletRequest request,
@@ -141,12 +144,9 @@ public class InternetArchiveConfigurationController extends AbstractRestControll
     @RolesAllowed({CONF_INTERNET_ARCHIVE_HAB0})
     public ResponseEntity<Page<InternetArchiveConfigurationDTO>> search(final HttpServletRequest request,
                                                                         @RequestParam(value = "search", required = false) final String search,
-                                                                        @RequestParam(value = "libraries", required = false)
-                                                                        final List<String> libraries,
-                                                                        @RequestParam(value = "page", required = false, defaultValue = "0")
-                                                                        final Integer page,
-                                                                        @RequestParam(value = "size", required = false, defaultValue = "10")
-                                                                        final Integer size) {
+                                                                        @RequestParam(value = "libraries", required = false) final List<String> libraries,
+                                                                        @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
+                                                                        @RequestParam(value = "size", required = false, defaultValue = "10") final Integer size) {
         // Recherche suivant les droits de l'utilisateur
         final List<String> filteredLibraries = libraryAccesssHelper.getLibraryFilter(request, libraries);
         // Recherche
@@ -175,8 +175,8 @@ public class InternetArchiveConfigurationController extends AbstractRestControll
     @RequestMapping(value = "/{id}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed({CONF_INTERNET_ARCHIVE_HAB1})
-    public ResponseEntity<InternetArchiveConfiguration> udpate(final HttpServletRequest request,
-                                                               @RequestBody final InternetArchiveConfiguration conf) throws PgcnTechnicalException {
+    public ResponseEntity<InternetArchiveConfiguration> udpate(final HttpServletRequest request, @RequestBody final InternetArchiveConfiguration conf)
+                                                                                                                                                       throws PgcnTechnicalException {
 
         // Vérification des droits d'accès par rapport à la bibliothèque de l'utilisateur, pour le conf à importer
         if (!libraryAccesssHelper.checkLibrary(request, conf, InternetArchiveConfiguration::getLibrary)) {

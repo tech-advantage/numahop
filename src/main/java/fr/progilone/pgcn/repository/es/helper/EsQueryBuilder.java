@@ -1,9 +1,8 @@
 package fr.progilone.pgcn.repository.es.helper;
 
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-
+import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
+import co.elastic.clients.elasticsearch._types.query_dsl.Query;
+import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +16,7 @@ public class EsQueryBuilder {
      * @param queryBuilder
      * @return
      */
-    public EsQueryBuilder filter(final QueryBuilder queryBuilder) {
+    public EsQueryBuilder filter(final Query queryBuilder) {
         return addQuery(EsBoolOperator.FILTER, queryBuilder);
     }
 
@@ -27,7 +26,7 @@ public class EsQueryBuilder {
      * @param queryBuilder
      * @return
      */
-    public EsQueryBuilder must(final QueryBuilder queryBuilder) {
+    public EsQueryBuilder must(final Query queryBuilder) {
         return addQuery(EsBoolOperator.MUST, queryBuilder);
     }
 
@@ -37,17 +36,18 @@ public class EsQueryBuilder {
      * @param queryBuilder
      * @return
      */
-    public EsQueryBuilder mustNot(final QueryBuilder queryBuilder) {
+    public EsQueryBuilder mustNot(final Query queryBuilder) {
         return addQuery(EsBoolOperator.MUST_NOT, queryBuilder);
     }
 
     /**
-     * The clause (query) should appear in the matching document. In a boolean query with no must or filter clauses, one or more should clauses must match a document.
+     * The clause (query) should appear in the matching document. In a boolean query with no must or filter clauses, one or more should clauses must
+     * match a document.
      *
      * @param queryBuilder
      * @return
      */
-    public EsQueryBuilder should(final QueryBuilder queryBuilder) {
+    public EsQueryBuilder should(final Query queryBuilder) {
         return addQuery(EsBoolOperator.SHOULD, queryBuilder);
     }
 
@@ -58,16 +58,16 @@ public class EsQueryBuilder {
      * @param queryBuilder
      * @return
      */
-    public EsQueryBuilder addQuery(final EsBoolOperator op, final QueryBuilder queryBuilder) {
+    public EsQueryBuilder addQuery(final EsBoolOperator op, final Query queryBuilder) {
         if (queryBuilder != null) {
             this.subQueries.add(new SubQuery(op, queryBuilder));
         }
         return this;
     }
 
-    public QueryBuilder build() {
+    public Query build() {
         if (subQueries.size() > 1) {
-            final BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery().minimumNumberShouldMatch(1);
+            final BoolQuery.Builder queryBuilder = QueryBuilders.bool().minimumShouldMatch("1");
 
             subQueries.forEach(subQ -> {
                 switch (subQ.getType()) {
@@ -85,13 +85,13 @@ public class EsQueryBuilder {
                         break;
                 }
             });
-            return queryBuilder;
+            return queryBuilder.build()._toQuery();
 
         } else if (!subQueries.isEmpty()) {
             return subQueries.get(0).getQueryBuilder();
 
         } else {
-            return QueryBuilders.matchAllQuery();
+            return QueryBuilders.matchAll().build()._toQuery();
         }
     }
 
@@ -101,9 +101,9 @@ public class EsQueryBuilder {
     private static class SubQuery {
 
         private EsBoolOperator type;
-        private QueryBuilder queryBuilder;
+        private Query queryBuilder;
 
-        public SubQuery(final EsBoolOperator type, final QueryBuilder queryBuilder) {
+        public SubQuery(final EsBoolOperator type, final Query queryBuilder) {
             this.type = type;
             this.queryBuilder = queryBuilder;
         }
@@ -116,11 +116,11 @@ public class EsQueryBuilder {
             this.type = type;
         }
 
-        public QueryBuilder getQueryBuilder() {
+        public Query getQueryBuilder() {
             return queryBuilder;
         }
 
-        public void setQueryBuilder(final QueryBuilder queryBuilder) {
+        public void setQueryBuilder(final Query queryBuilder) {
             this.queryBuilder = queryBuilder;
         }
     }

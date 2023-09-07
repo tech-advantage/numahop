@@ -2,15 +2,12 @@
     <div class="col-sm-12 col-layout-columns">
         <div class="panel panel-column-1">
             <div class="panel-body">
-
                 <div class="row" ng-if="mainCtrl.loaded">
                     <div class="col-xs-12 col-lg-8 col-lg-offset-2">
                         <!-- Résumé et image de l'usager -->
                         <div class="row vertical-align margin-b20">
                             <div class="text-right col-xs-4">
-                                <a class="btn btn-sem2"
-                                ng-href="#/user/user?id={{::mainCtrl.user.identifier}}"
-                                ng-if="mainCtrl.canEdit" translate>Éditer mon profil</a>
+                                <a class="btn btn-sem2" ng-href="#/user/user?id={{::mainCtrl.user.identifier}}" ng-if="mainCtrl.canEdit" translate>Éditer mon profil</a>
                             </div>
                             <div class="model-container col-xs-8">
                                 <div class="user-name">{{::mainCtrl.user.firstname}} {{::mainCtrl.user.surname}}</div>
@@ -20,45 +17,65 @@
                         </div>
 
                         <div class="row vertical-align">
-                            <div class="text-right col-xs-4"><label><strong translate>Login</strong></label></div>
+                            <div class="text-right col-xs-4">
+                                <label><strong translate>Login</strong></label>
+                            </div>
                             <div class="model-container col-xs-8">{{::mainCtrl.user.login}}</div>
                         </div>
                         <div class="row vertical-align">
-                            <div class="text-right col-xs-4"><label><strong translate>Nom</strong></label></div>
+                            <div class="text-right col-xs-4">
+                                <label><strong translate>Nom</strong></label>
+                            </div>
                             <div class="model-container col-xs-8">{{::mainCtrl.user.surname}}</div>
                         </div>
                         <div class="row vertical-align">
-                            <div class="text-right col-xs-4"><label><strong translate>Prénom</strong></label></div>
+                            <div class="text-right col-xs-4">
+                                <label><strong translate>Prénom</strong></label>
+                            </div>
                             <div class="model-container col-xs-8">{{::mainCtrl.user.firstname}}</div>
                         </div>
                         <div class="row vertical-align">
-                            <div class="text-right col-xs-4"><label><strong translate>Fonction</strong></label></div>
+                            <div class="text-right col-xs-4">
+                                <label><strong translate>Fonction</strong></label>
+                            </div>
                             <div class="model-container col-xs-8">{{::mainCtrl.user.function}}</div>
                         </div>
                         <div class="row vertical-align">
-                            <div class="text-right col-xs-4"><label><strong translate>Téléphone</strong></label></div>
+                            <div class="text-right col-xs-4">
+                                <label><strong translate>Téléphone</strong></label>
+                            </div>
                             <div class="model-container col-xs-8">{{::mainCtrl.user.phoneNumber}}</div>
                         </div>
                         <div class="row vertical-align">
-                            <div class="text-right col-xs-4"><label><strong translate>Courriel</strong></label></div>
+                            <div class="text-right col-xs-4">
+                                <label><strong translate>Courriel</strong></label>
+                            </div>
                             <div class="model-container col-xs-8">{{::mainCtrl.user.email}}</div>
                         </div>
                         <div class="row vertical-align">
-                            <div class="text-right col-xs-4"><label><strong translate>Catégorie</strong></label></div>
+                            <div class="text-right col-xs-4">
+                                <label><strong translate>Catégorie</strong></label>
+                            </div>
                             <div class="model-container col-xs-8">{{mainCtrl.getCategoryLabel(mainCtrl.user.category)}}</div>
                         </div>
                         <div class="row vertical-align">
-                            <div class="text-right col-xs-4"><label><strong translate>Bibliothèque</strong></label></div>
+                            <div class="text-right col-xs-4">
+                                <label><strong translate>Bibliothèque</strong></label>
+                            </div>
                             <div class="model-container col-xs-8">{{::mainCtrl.user.library.name}}</div>
                         </div>
                         <div class="row vertical-align">
-                            <div class="text-right col-xs-4"><label><strong translate>Profil</strong></label></div>
+                            <div class="text-right col-xs-4">
+                                <label><strong translate>Profil</strong></label>
+                            </div>
                             <div class="model-container col-xs-8">{{::mainCtrl.user.role.label}}</div>
                         </div>
 
                         <!-- Prestataire -->
                         <div class="row vertical-align" ng-if="::mainCtrl.user.category === 'PROVIDER'">
-                            <div class="text-right col-xs-4"><label><strong translate>Société</strong></label></div>
+                            <div class="text-right col-xs-4">
+                                <label><strong translate>Société</strong></label>
+                            </div>
                             <div class="model-container col-xs-8">{{::mainCtrl.user.companyName}}</div>
                         </div>
 
@@ -71,31 +88,45 @@
                                 <div class="row">
                                     <div class="col-sm-12">
                                         <div class="row vertical-align">
-                                            <div class="text-right col-xs-4"><label><strong translate>Appartement, escalier, étage</strong></label></div>
+                                            <div class="text-right col-xs-4">
+                                                <label><strong translate>Appartement, escalier, étage</strong></label>
+                                            </div>
                                             <div class="model-container col-xs-8">{{::mainCtrl.user.address.address2}}</div>
                                         </div>
                                         <div class="row vertical-align">
-                                            <div class="text-right col-xs-4"><label><strong translate>Bâtiment, résidence</strong></label></div>
+                                            <div class="text-right col-xs-4">
+                                                <label><strong translate>Bâtiment, résidence</strong></label>
+                                            </div>
                                             <div class="model-container col-xs-8">{{::mainCtrl.user.address.address3}}</div>
                                         </div>
                                         <div class="row vertical-align">
-                                            <div class="text-right col-xs-4"><label><strong translate>Numéro et nom de la voie</strong></label></div>
+                                            <div class="text-right col-xs-4">
+                                                <label><strong translate>Numéro et nom de la voie</strong></label>
+                                            </div>
                                             <div class="model-container col-xs-8">{{::mainCtrl.user.address.address1}}</div>
                                         </div>
                                         <div class="row vertical-align">
-                                            <div class="text-right col-xs-4"><label><strong translate>Complément d'adresse</strong></label></div>
+                                            <div class="text-right col-xs-4">
+                                                <label><strong translate>Complément d'adresse</strong></label>
+                                            </div>
                                             <div class="model-container col-xs-8">{{::mainCtrl.user.address.complement}}</div>
                                         </div>
                                         <div class="row vertical-align">
-                                            <div class="text-right col-xs-4"><label><strong translate>Code postal</strong></label></div>
+                                            <div class="text-right col-xs-4">
+                                                <label><strong translate>Code postal</strong></label>
+                                            </div>
                                             <div class="model-container col-xs-8">{{::mainCtrl.user.address.postcode}}</div>
                                         </div>
                                         <div class="row vertical-align">
-                                            <div class="text-right col-xs-4"><label><strong translate>Ville</strong></label></div>
+                                            <div class="text-right col-xs-4">
+                                                <label><strong translate>Ville</strong></label>
+                                            </div>
                                             <div class="model-container col-xs-8">{{::mainCtrl.user.address.city}}</div>
                                         </div>
                                         <div class="row vertical-align">
-                                            <div class="text-right col-xs-4"><label><strong translate>Pays</strong></label></div>
+                                            <div class="text-right col-xs-4">
+                                                <label><strong translate>Pays</strong></label>
+                                            </div>
                                             <div class="model-container col-xs-8">{{::mainCtrl.user.address.country}}</div>
                                         </div>
                                     </div>
@@ -106,5 +137,5 @@
                 </div>
             </div>
         </div>
-	</div>
+    </div>
 </div>

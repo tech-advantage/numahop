@@ -1,40 +1,41 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <!-- Gestion des fratries de notice -->
     <changeSet id="pgcn-document-14" author="progilone">
 
         <createTable tableName="doc_unit_sibling">
             <column name="identifier" type="varchar(191)">
-                <constraints primaryKey="true" nullable="false"/>
+                <constraints primaryKey="true" nullable="false" />
             </column>
             <column name="version" type="BIGINT">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>
 
         <addColumn tableName="doc_unit">
-            <column name="sibling" type="varchar(191)"/>
+            <column name="sibling" type="varchar(191)" />
         </addColumn>
 
-        <addForeignKeyConstraint baseTableName="doc_unit" baseColumnNames="sibling" constraintName="fk_doc_unit_sibling"
-                                 referencedTableName="doc_unit_sibling" referencedColumnNames="identifier"/>
+        <addForeignKeyConstraint baseTableName="doc_unit" baseColumnNames="sibling" constraintName="fk_doc_unit_sibling" referencedTableName="doc_unit_sibling" referencedColumnNames="identifier" />
         <createIndex tableName="doc_unit" indexName="idx_doc_unit_sibling">
-            <column name="sibling"/>
+            <column name="sibling" />
         </createIndex>
 
     </changeSet>

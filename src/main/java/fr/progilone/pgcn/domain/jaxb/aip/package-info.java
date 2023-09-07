@@ -5,11 +5,12 @@
 // Généré le : 2017.01.03 à 11:16:35 AM CET
 //
 
-@javax.xml.bind.annotation.XmlSchema(namespace = "http://www.cines.fr/pac/test/aip", elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
+@jakarta.xml.bind.annotation.XmlSchema(namespace = "http://www.cines.fr/pac/test/aip",
+                                       elementFormDefault = jakarta.xml.bind.annotation.XmlNsForm.QUALIFIED,
+                                       xmlns = {@jakarta.xml.bind.annotation.XmlNs(namespaceURI = "http://www.cines.fr/pac/test/aip", prefix = "")})
 @XmlJavaTypeAdapter(value = LocalDateTimeXmlAdapter.class, type = LocalDateTime.class)
 package fr.progilone.pgcn.domain.jaxb.aip;
 
 import fr.progilone.pgcn.domain.jaxb.adapters.LocalDateTimeXmlAdapter;
-
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.LocalDateTime;

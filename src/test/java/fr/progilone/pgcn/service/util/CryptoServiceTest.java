@@ -1,16 +1,8 @@
 package fr.progilone.pgcn.service.util;
 
-import fr.progilone.pgcn.exception.PgcnTechnicalException;
-import org.apache.commons.codec.CharEncoding;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.springframework.test.util.ReflectionTestUtils;
+import static org.junit.jupiter.api.Assertions.*;
 
-import javax.crypto.*;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.PBEKeySpec;
-import javax.crypto.spec.SecretKeySpec;
+import fr.progilone.pgcn.exception.PgcnTechnicalException;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -20,9 +12,21 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.util.Base64;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import javax.crypto.Cipher;
+import javax.crypto.CipherInputStream;
+import javax.crypto.CipherOutputStream;
+import javax.crypto.KeyGenerator;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.SecretKeySpec;
+import org.apache.commons.codec.CharEncoding;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 
 /**
  * Created by Sébastien on 29/12/2016.
@@ -31,7 +35,7 @@ public class CryptoServiceTest {
 
     private CryptoService service;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         service = new CryptoService();
         ReflectionTestUtils.setField(service, "password", "azerty");
@@ -45,14 +49,14 @@ public class CryptoServiceTest {
         final String encrypted = service.encrypt(text);
         assertNotNull(encrypted);
 
-//        System.out.println(encrypted);
+        // System.out.println(encrypted);
 
         // Decrypt
         final String decrypted = service.decrypt(encrypted);
         assertEquals(text, decrypted);
     }
 
-    @Ignore
+    @Disabled
     @Test
     public void testDecrypt() throws PgcnTechnicalException {
         final String encrypted = "xxfS/PpEV2Dqmali/z04lt/vjDaFCm+U0zMd1iQTMWU=";
@@ -65,7 +69,7 @@ public class CryptoServiceTest {
         System.out.println("decrypted = " + decrypted);
     }
 
-    @Ignore
+    @Disabled
     @Test
     public void generateSalt() throws NoSuchAlgorithmException {
         // Génération de la clé
@@ -75,10 +79,9 @@ public class CryptoServiceTest {
         System.out.println(Base64.getEncoder().encodeToString(key0.getEncoded()));
     }
 
-    @Ignore
+    @Disabled
     @Test
-    public void testFullProcess() throws
-                                  NoSuchAlgorithmException,
+    public void testFullProcess() throws NoSuchAlgorithmException,
                                   NoSuchPaddingException,
                                   InvalidKeyException,
                                   IOException,
@@ -96,7 +99,10 @@ public class CryptoServiceTest {
         SecretKey key = factory.generateSecret(spec);
         key = new SecretKeySpec(key.getEncoded(), "AES");
 
-        System.out.println("key base64 (" + key.getAlgorithm() + "," + key.getFormat() + "): "
+        System.out.println("key base64 (" + key.getAlgorithm()
+                           + ","
+                           + key.getFormat()
+                           + "): "
                            + new String(Base64.getEncoder().encode(key.getEncoded())));
 
         // Encrypt cipher
@@ -120,10 +126,9 @@ public class CryptoServiceTest {
         decryptCipher.init(Cipher.DECRYPT_MODE, key, ivParameterSpec);
 
         // Decrypt
-        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-             ByteArrayInputStream inStream = new ByteArrayInputStream(encryptedBytes)) {
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream(); ByteArrayInputStream inStream = new ByteArrayInputStream(encryptedBytes)) {
             try (CipherInputStream cipherInputStream = new CipherInputStream(inStream, decryptCipher)) {
-                byte[] buf = new byte[1024];
+                final byte[] buf = new byte[1024];
                 int bytesRead;
                 while ((bytesRead = cipherInputStream.read(buf)) >= 0) {
                     outputStream.write(buf, 0, bytesRead);

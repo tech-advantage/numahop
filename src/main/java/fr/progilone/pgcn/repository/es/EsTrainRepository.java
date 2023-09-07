@@ -1,7 +1,7 @@
 package fr.progilone.pgcn.repository.es;
 
-import fr.progilone.pgcn.domain.train.Train;
+import fr.progilone.pgcn.domain.es.train.EsTrain;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
-public interface EsTrainRepository extends ElasticsearchRepository<Train, String>, EsTrainRepositoryCustom {
+public interface EsTrainRepository extends ElasticsearchRepository<EsTrain, String>, EsTrainRepositoryCustom {
 }

@@ -1,19 +1,13 @@
 package fr.progilone.pgcn.domain.administration;
 
-import java.util.Objects;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldIndex;
-import org.springframework.data.elasticsearch.annotations.FieldType;
-
 import fr.progilone.pgcn.domain.AbstractDomainObject;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import java.util.Objects;
 
 @Entity
 @Table(name = CinesPAC.TABLE_NAME)
@@ -22,7 +16,6 @@ public class CinesPAC extends AbstractDomainObject {
     public static final String TABLE_NAME = "conf_classement_pac";
 
     @Column(name = "name", nullable = false)
-    @Field(type = FieldType.String, index = FieldIndex.not_analyzed)
     private String name;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
@@ -33,7 +26,7 @@ public class CinesPAC extends AbstractDomainObject {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -41,11 +34,10 @@ public class CinesPAC extends AbstractDomainObject {
         return confPac;
     }
 
-    public void setConfPac(SftpConfiguration confPac) {
+    public void setConfPac(final SftpConfiguration confPac) {
         this.confPac = confPac;
     }
-    
-    
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
@@ -63,5 +55,4 @@ public class CinesPAC extends AbstractDomainObject {
         return Objects.hash(name);
     }
 
-    
 }

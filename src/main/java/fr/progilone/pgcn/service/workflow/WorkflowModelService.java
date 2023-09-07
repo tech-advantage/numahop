@@ -11,6 +11,8 @@ import fr.progilone.pgcn.repository.workflow.DocUnitWorkflowRepository;
 import fr.progilone.pgcn.repository.workflow.WorkflowModelRepository;
 import fr.progilone.pgcn.security.SecurityUtils;
 import fr.progilone.pgcn.service.util.SortUtils;
+import java.util.Collection;
+import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,9 +21,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Collection;
-import java.util.List;
 
 @Service
 public class WorkflowModelService {
@@ -47,35 +46,28 @@ public class WorkflowModelService {
 
     /**
      * Sauvegarde un modele
-     *
-     * @param model
-     * @return
-     * @throws PgcnValidationException
      */
     @Transactional
     public WorkflowModel save(final WorkflowModel model) throws PgcnValidationException {
         validate(model);
-        WorkflowModel savedModel = repository.save(model);
+        final WorkflowModel savedModel = repository.save(model);
         model.getModelStates().forEach(workflowModelStateService::save);
         return savedModel;
     }
 
     /**
      * Retourne un modele
-     *
-     * @param identifier
-     * @return
      */
     @Transactional(readOnly = true)
     public WorkflowModel getOne(final String identifier) {
-        return repository.getOne(identifier);
+        return repository.findById(identifier).orElse(null);
     }
 
     @Transactional(readOnly = true)
-    public Page<WorkflowModel> search(String search, final String initiale, List<String> libraries, Integer page, Integer size, List<String> sorts) {
+    public Page<WorkflowModel> search(final String search, final String initiale, final List<String> libraries, final Integer page, final Integer size, final List<String> sorts) {
 
         final Sort sort = SortUtils.getSort(sorts);
-        final Pageable pageRequest = new PageRequest(page, size, sort);
+        final Pageable pageRequest = PageRequest.of(page, size, sort);
 
         if (libraries.isEmpty() && SecurityUtils.getCurrentUser().getLibraryId() != null) {
             libraries.add(SecurityUtils.getCurrentUser().getLibraryId());
@@ -86,15 +78,13 @@ public class WorkflowModelService {
 
     /**
      * Suppression de modele
-     *
-     * @param identifier
      */
     @Transactional
     public void delete(final String identifier) {
-        final WorkflowModel model = repository.findOne(identifier);
-        validateDelete(model);
-
-        repository.delete(model);
+        repository.findById(identifier).ifPresent(model -> {
+            validateDelete(model);
+            repository.delete(model);
+        });
     }
 
     /**
@@ -116,8 +106,8 @@ public class WorkflowModelService {
         }
         // nom unique
         else {
-            final Long countDuplicates =
-                model.getIdentifier() == null ? repository.countByName(name) : repository.countByNameAndIdentifierNot(name, model.getIdentifier());
+            final Long countDuplicates = model.getIdentifier() == null ? repository.countByName(name)
+                                                                       : repository.countByNameAndIdentifierNot(name, model.getIdentifier());
             if (countDuplicates > 0) {
                 errors.add(builder.reinit().setCode(PgcnErrorCode.WORKFLOW_MODEL_DUPLICATE_NAME).setField("name").build());
             }
@@ -164,7 +154,7 @@ public class WorkflowModelService {
     }
 
     @Transactional(readOnly = true)
-    public Collection<WorkflowModel> findAllForLibrary(String identifier) {
+    public Collection<WorkflowModel> findAllForLibrary(final String identifier) {
         return repository.findAllByLibraryIdentifierAndActive(identifier, true);
     }
 }

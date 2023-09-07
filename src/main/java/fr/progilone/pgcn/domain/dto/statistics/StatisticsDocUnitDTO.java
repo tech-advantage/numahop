@@ -1,7 +1,6 @@
 package fr.progilone.pgcn.domain.dto.statistics;
 
 import fr.progilone.pgcn.domain.workflow.WorkflowStateKey;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -87,6 +86,7 @@ public class StatisticsDocUnitDTO {
     }
 
     public static final class WorkflowState {
+
         private WorkflowStateKey state; // étape de workflow en cours
         private LocalDateTime date; // start date de l'ud sur l'étape de workflow
 

@@ -5,26 +5,26 @@
 // Généré le : 2017.05.16 à 10:56:55 AM CEST
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.ead;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElements;
+import jakarta.xml.bind.annotation.XmlID;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.ArrayList;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlID;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 
 /**
- * <p>Classe Java pour custodhist complex type.
+ * <p>
+ * Classe Java pour custodhist complex type.
  *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="custodhist">
@@ -48,24 +48,21 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "custodhist", propOrder = {
-    "head",
-    "addressOrChronlistOrList"
-})
+@XmlType(name = "custodhist",
+         propOrder = {"head",
+                      "addressOrChronlistOrList"})
 public class Custodhist {
 
     protected Head head;
-    @XmlElements({
-        @XmlElement(name = "address", type = Address.class),
-        @XmlElement(name = "chronlist", type = Chronlist.class),
-        @XmlElement(name = "list", type = List.class),
-        @XmlElement(name = "note", type = Note.class),
-        @XmlElement(name = "table", type = Table.class),
-        @XmlElement(name = "blockquote", type = Blockquote.class),
-        @XmlElement(name = "p", type = P.class),
-        @XmlElement(name = "custodhist", type = Custodhist.class),
-        @XmlElement(name = "acqinfo", type = Acqinfo.class)
-    })
+    @XmlElements({@XmlElement(name = "address", type = Address.class),
+                  @XmlElement(name = "chronlist", type = Chronlist.class),
+                  @XmlElement(name = "list", type = List.class),
+                  @XmlElement(name = "note", type = Note.class),
+                  @XmlElement(name = "table", type = Table.class),
+                  @XmlElement(name = "blockquote", type = Blockquote.class),
+                  @XmlElement(name = "p", type = P.class),
+                  @XmlElement(name = "custodhist", type = Custodhist.class),
+                  @XmlElement(name = "acqinfo", type = Acqinfo.class)})
     protected java.util.List<Object> addressOrChronlistOrList;
     @XmlAttribute(name = "encodinganalog")
     @XmlSchemaType(name = "anySimpleType")
@@ -86,8 +83,8 @@ public class Custodhist {
      * Obtient la valeur de la propriété head.
      *
      * @return
-     *     possible object is
-     *     {@link Head }
+     *         possible object is
+     *         {@link Head }
      *
      */
     public Head getHead() {
@@ -98,8 +95,8 @@ public class Custodhist {
      * Définit la valeur de la propriété head.
      *
      * @param value
-     *     allowed object is
-     *     {@link Head }
+     *            allowed object is
+     *            {@link Head }
      *
      */
     public void setHead(Head value) {
@@ -117,8 +114,9 @@ public class Custodhist {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getAddressOrChronlistOrList().add(newItem);
+     * getAddressOrChronlistOrList().add(newItem);
      * </pre>
      *
      *
@@ -147,8 +145,8 @@ public class Custodhist {
      * Obtient la valeur de la propriété encodinganalog.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getEncodinganalog() {
@@ -159,8 +157,8 @@ public class Custodhist {
      * Définit la valeur de la propriété encodinganalog.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setEncodinganalog(String value) {
@@ -171,8 +169,8 @@ public class Custodhist {
      * Obtient la valeur de la propriété id.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getId() {
@@ -183,8 +181,8 @@ public class Custodhist {
      * Définit la valeur de la propriété id.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setId(String value) {
@@ -195,8 +193,8 @@ public class Custodhist {
      * Obtient la valeur de la propriété altrender.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getAltrender() {
@@ -207,8 +205,8 @@ public class Custodhist {
      * Définit la valeur de la propriété altrender.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setAltrender(String value) {
@@ -219,8 +217,8 @@ public class Custodhist {
      * Obtient la valeur de la propriété audience.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getAudience() {
@@ -231,8 +229,8 @@ public class Custodhist {
      * Définit la valeur de la propriété audience.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setAudience(String value) {

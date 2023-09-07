@@ -1,35 +1,35 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
 
     <changeSet id="pgcn-fix-001" author="progilone">
         <!-- Nettoyage -->
-        <dropTable tableName="doc_check_file_format"/>
-        <dropTable tableName="user_persistent_audit_event_data"/>
-        <dropTable tableName="user_persistent_audit_event"/>
+        <dropTable tableName="doc_check_file_format" />
+        <dropTable tableName="user_persistent_audit_event_data" />
+        <dropTable tableName="user_persistent_audit_event" />
 
-        <dropForeignKeyConstraint baseTableName="conf_configuration_ftp" constraintName="fk_user_configuration_ftp"/>
-        <dropIndex tableName="conf_configuration_ftp" indexName="fk_user_configuration_ftp"/>
-        <dropColumn tableName="conf_configuration_ftp" columnName="user"/>
+        <dropForeignKeyConstraint baseTableName="conf_configuration_ftp" constraintName="fk_user_configuration_ftp" />
+        <dropIndex tableName="conf_configuration_ftp" indexName="fk_user_configuration_ftp" />
+        <dropColumn tableName="conf_configuration_ftp" columnName="user" />
 
-        <dropForeignKeyConstraint baseTableName="user_user" constraintName="fk_project_user"/>
-        <dropForeignKeyConstraint baseTableName="user_user" constraintName="fk_user_project"/>
-        <dropIndex tableName="user_user" indexName="fk_user_project"/>
-        <dropColumn tableName="user_user" columnName="project"/>
+        <dropForeignKeyConstraint baseTableName="user_user" constraintName="fk_project_user" />
+        <dropForeignKeyConstraint baseTableName="user_user" constraintName="fk_user_project" />
+        <dropIndex tableName="user_user" indexName="fk_user_project" />
+        <dropColumn tableName="user_user" columnName="project" />
 
         <!-- foreign key manquantes -->
-        <addForeignKeyConstraint baseTableName="lot_lot" baseColumnNames="project" constraintName="fk_lot_project" referencedTableName="proj_project"
-                                 referencedColumnNames="identifier"/>
+        <addForeignKeyConstraint baseTableName="lot_lot" baseColumnNames="project" constraintName="fk_lot_project" referencedTableName="proj_project" referencedColumnNames="identifier" />
         <createIndex tableName="lot_lot" indexName="idx_lot_project">
-            <column name="project"/>
+            <column name="project" />
         </createIndex>
 
-        <addForeignKeyConstraint baseTableName="train_train" baseColumnNames="project" constraintName="fk_train_project"
-                                 referencedTableName="proj_project" referencedColumnNames="identifier"/>
+        <addForeignKeyConstraint baseTableName="train_train" baseColumnNames="project" constraintName="fk_train_project" referencedTableName="proj_project" referencedColumnNames="identifier" />
         <createIndex tableName="train_train" indexName="idx_lot_project">
-            <column name="project"/>
+            <column name="project" />
         </createIndex>
 
     </changeSet>

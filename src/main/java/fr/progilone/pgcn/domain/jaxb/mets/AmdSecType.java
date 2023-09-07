@@ -5,33 +5,35 @@
 // Généré le : 2016.12.29 à 11:54:46 AM CET
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.mets;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAnyAttribute;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlID;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAnyAttribute;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlID;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
-
 
 /**
  * amdSecType: Complex Type for Administrative Metadata Sections
- * 			The administrative metadata section consists of four possible subsidiary sections: techMD (technical metadata for text/image/audio/video files), rightsMD (intellectual property rights metadata), sourceMD (analog/digital source metadata), and digiprovMD (digital provenance metadata, that is, the history of migrations/translations performed on a digital library object from it's original digital capture/encoding).
+ * The administrative metadata section consists of four possible subsidiary sections: techMD (technical metadata for text/image/audio/video files),
+ * rightsMD (intellectual property rights metadata), sourceMD (analog/digital source metadata), and digiprovMD (digital provenance metadata, that is,
+ * the history of migrations/translations performed on a digital library object from it's original digital capture/encoding).
  *
  *
- * <p>Classe Java pour amdSecType complex type.
+ * <p>
+ * Classe Java pour amdSecType complex type.
  *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="amdSecType"&gt;
@@ -53,12 +55,11 @@ import javax.xml.namespace.QName;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "amdSecType", propOrder = {
-    "techMD",
-    "rightsMD",
-    "sourceMD",
-    "digiprovMD"
-})
+@XmlType(name = "amdSecType",
+         propOrder = {"techMD",
+                      "rightsMD",
+                      "sourceMD",
+                      "digiprovMD"})
 public class AmdSecType {
 
     protected List<MdSecType> techMD;
@@ -84,8 +85,9 @@ public class AmdSecType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getTechMD().add(newItem);
+     * getTechMD().add(newItem);
      * </pre>
      *
      *
@@ -113,8 +115,9 @@ public class AmdSecType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getRightsMD().add(newItem);
+     * getRightsMD().add(newItem);
      * </pre>
      *
      *
@@ -142,8 +145,9 @@ public class AmdSecType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getSourceMD().add(newItem);
+     * getSourceMD().add(newItem);
      * </pre>
      *
      *
@@ -171,8 +175,9 @@ public class AmdSecType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getDigiprovMD().add(newItem);
+     * getDigiprovMD().add(newItem);
      * </pre>
      *
      *
@@ -193,8 +198,8 @@ public class AmdSecType {
      * Obtient la valeur de la propriété id.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getID() {
@@ -205,8 +210,8 @@ public class AmdSecType {
      * Définit la valeur de la propriété id.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setID(String value) {
@@ -225,7 +230,7 @@ public class AmdSecType {
      *
      *
      * @return
-     *     always non-null
+     *         always non-null
      */
     public Map<QName, String> getOtherAttributes() {
         return otherAttributes;

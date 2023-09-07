@@ -1,28 +1,5 @@
 package fr.progilone.pgcn.service.project;
 
-import java.time.LocalDate;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import javax.inject.Inject;
-import javax.print.Doc;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.IterableUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.lot.Lot;
 import fr.progilone.pgcn.domain.lot.Lot.LotStatus;
@@ -41,7 +18,24 @@ import fr.progilone.pgcn.service.document.DocUnitService;
 import fr.progilone.pgcn.service.es.EsProjectService;
 import fr.progilone.pgcn.service.exchange.ImportReportService;
 import fr.progilone.pgcn.service.util.SortUtils;
-
+import java.time.LocalDate;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.IterableUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ProjectService {
@@ -53,7 +47,6 @@ public class ProjectService {
     private final EsProjectService esProjectService;
     private final ProjectRepository projectRepository;
 
-    @Inject
     public ProjectService(final DocUnitService docUnitService,
                           final ImportReportService importReportService,
                           final EsProjectService esProjectService,
@@ -78,18 +71,18 @@ public class ProjectService {
         // Nettoyage
         importReportService.setProjectNull(projects.stream().map(Project::getIdentifier).collect(Collectors.toList()));
         // Suppression
-        projectRepository.delete(projects);
+        projectRepository.deleteAll(projects);
         // Moteur de recherche
-        esProjectService.deleteAsync(projects);
+        esProjectService.deleteAsync(projects.stream().map(Project::getIdentifier).collect(Collectors.toSet()));
     }
 
     /**
      * Suppression d'un projet depuis son identifiant
      *
      * @param identifier
-     *         l'identifiant d'un project
+     *            l'identifiant d'un project
      * @throws PgcnValidationException
-     *         si la suppression du projet échoue
+     *             si la suppression du projet échoue
      */
     @Transactional
     public void delete(final String identifier) throws PgcnValidationException {
@@ -102,9 +95,9 @@ public class ProjectService {
         // Nettoyage
         importReportService.setProjectNull(Collections.singletonList(identifier));
         // Suppression
-        projectRepository.delete(identifier);
+        projectRepository.deleteById(identifier);
         // Moteur de recherche
-        esProjectService.deleteAsync(project);
+        esProjectService.deleteAsync(project.getIdentifier());
     }
 
     @Transactional(readOnly = true)
@@ -132,7 +125,7 @@ public class ProjectService {
 
     @Transactional(readOnly = true)
     public Project findByIdentifier(final String id) {
-        return projectRepository.findOne(id);
+        return projectRepository.findById(id).orElse(null);
     }
 
     @Transactional(readOnly = true)
@@ -162,16 +155,6 @@ public class ProjectService {
 
     /**
      * Recherche de projets
-     *
-     * @param search
-     * @param initiale
-     * @param libraries
-     * @param status
-     * @param providers
-     * @param active
-     * @param page
-     * @param size
-     * @return
      */
     @Transactional(readOnly = true)
     public Page<Project> search(final String search,
@@ -182,7 +165,7 @@ public class ProjectService {
                                 final boolean active,
                                 final Integer page,
                                 final Integer size) {
-        final Pageable pageRequest = new PageRequest(page, size);
+        final Pageable pageRequest = PageRequest.of(page, size);
         return projectRepository.search(new ProjectSearchBuilder().setSearch(search)
                                                                   .setInitiale(initiale)
                                                                   .setStatuses(status)
@@ -193,13 +176,6 @@ public class ProjectService {
 
     /**
      * Liste de projets
-     *
-     * @param searchProject
-     * @param initiale
-     * @param libraries
-     * @param statuses
-     * @param active
-     * @return
      */
     @Transactional(readOnly = true)
     public List<Project> loadCreatedProjects(final String searchProject,
@@ -227,16 +203,6 @@ public class ProjectService {
 
     /**
      * Retourne l'ensemble des projets pour les statistiques
-     *
-     * @param search
-     * @param libraries
-     * @param projects
-     * @param fromDate
-     * @param toDate
-     * @param page
-     * @param size
-     * @param sorts
-     * @return
      */
     @Transactional(readOnly = true)
     public Page<Project> findAllForStatistics(final String search,
@@ -248,18 +214,12 @@ public class ProjectService {
                                               final Integer size,
                                               final List<String> sorts) {
         final Sort sort = SortUtils.getSort(sorts);
-        final Pageable pageRequest = new PageRequest(page, size, sort);
-        return projectRepository.search(new ProjectSearchBuilder().setSearch(search)
-                                                                  .setLibraries(libraries)
-                                                                  .setProjects(projects)
-                                                                  .setFrom(fromDate)
-                                                                  .setTo(toDate), pageRequest);
+        final Pageable pageRequest = PageRequest.of(page, size, sort);
+        return projectRepository.search(new ProjectSearchBuilder().setSearch(search).setLibraries(libraries).setProjects(projects).setFrom(fromDate).setTo(toDate), pageRequest);
     }
 
     /**
      * Récupère le projet auquel appartient la docUnit
-     *
-     * @param identifier
      */
     @Transactional(readOnly = true)
     public Project findByDocUnitIdentifier(final String identifier) {
@@ -268,8 +228,6 @@ public class ProjectService {
 
     /**
      * Récupère le projet auquel appartient le lot
-     *
-     * @param identifier
      */
     @Transactional(readOnly = true)
     public Project findByLotId(final String identifier) {
@@ -279,14 +237,12 @@ public class ProjectService {
     /**
      * Recherche les projets par bibliothèque, groupés par statut
      *
-     * @param libraries
      * @return liste de map avec 2 clés: statut et décompte
      */
     @Transactional(readOnly = true)
     public List<Map<String, Object>> getProjectGroupByStatus(final List<String> libraries) {
-        final List<Object[]> results = CollectionUtils.isNotEmpty(libraries) ?
-                                       projectRepository.getProjectGroupByStatus(libraries) :
-                                       projectRepository.getProjectGroupByStatus();    // status, count
+        final List<Object[]> results = CollectionUtils.isNotEmpty(libraries) ? projectRepository.getProjectGroupByStatus(libraries)
+                                                                             : projectRepository.getProjectGroupByStatus();    // status, count
         return results.stream().map(res -> {
             final Map<String, Object> resMap = new HashMap<>();
             resMap.put("status", res[0]);
@@ -297,9 +253,6 @@ public class ProjectService {
 
     /**
      * Recherche les projets clôtures par librairie depuis un delai en jours.
-     *
-     * @param libraryIdentifier
-     * @param delay
      */
     @Transactional(readOnly = true)
     public List<Project> getClosedProjectsByLibrary(final String libraryIdentifier, final int delay) {
@@ -364,22 +317,14 @@ public class ProjectService {
 
     /**
      * Close le projet si les conditions sont reunies.
-     *
-     * @param project
      */
     @Transactional
     public void checkAndCloseProject(final Project project) {
         // Lots non cloturés
-        final List<Lot> processingLots = project.getLots()
-                                                .stream()
-                                                .filter(lp -> !LotStatus.CLOSED.equals(lp.getStatus()))
-                                                .collect(Collectors.toList());
+        final List<Lot> processingLots = project.getLots().stream().filter(lp -> !LotStatus.CLOSED.equals(lp.getStatus())).collect(Collectors.toList());
 
         // Documents non attachés à un lot
-        final List<DocUnit> processingDocs = docUnitService.findAllByProjectId(project.getIdentifier())
-                                                    .stream()
-                                                    .filter(doc -> doc.getLot() == null)
-                                                    .collect(Collectors.toList());
+        final List<DocUnit> processingDocs = docUnitService.findAllByProjectId(project.getIdentifier()).stream().filter(doc -> doc.getLot() == null).collect(Collectors.toList());
         if (processingLots.isEmpty() && processingDocs.isEmpty()) {
             // Tous les lots sont finis, on termine aussi le projet et les trains du coup
             project.setRealEndDate(LocalDate.now());
@@ -396,8 +341,6 @@ public class ProjectService {
 
     /**
      * Décloture le projet et ses trains éventuels.
-     *
-     * @param project
      */
     @Transactional
     public void declotureProject(final Project project) {

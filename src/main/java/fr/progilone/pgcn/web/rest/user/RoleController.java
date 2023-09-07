@@ -1,5 +1,8 @@
 package fr.progilone.pgcn.web.rest.user;
 
+import static fr.progilone.pgcn.web.rest.library.security.AuthorizationConstants.LIB_HAB5;
+import static fr.progilone.pgcn.web.rest.user.security.AuthorizationConstants.*;
+
 import com.codahale.metrics.annotation.Timed;
 import fr.progilone.pgcn.domain.dto.user.RoleDTO;
 import fr.progilone.pgcn.domain.user.Role;
@@ -7,6 +10,9 @@ import fr.progilone.pgcn.exception.PgcnException;
 import fr.progilone.pgcn.exception.PgcnValidationException;
 import fr.progilone.pgcn.service.user.RoleService;
 import fr.progilone.pgcn.web.rest.AbstractRestController;
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.servlet.http.HttpServletRequest;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,13 +24,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-
-import static fr.progilone.pgcn.web.rest.user.security.AuthorizationConstants.*;
-import static fr.progilone.pgcn.web.rest.library.security.AuthorizationConstants.LIB_HAB5;
 
 @RestController
 @RequestMapping(value = "/api/rest/role")
@@ -63,14 +62,17 @@ public class RoleController extends AbstractRestController {
 
     @RequestMapping(method = RequestMethod.GET, params = {"dto"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    @RolesAllowed({ROLE_HAB0, USER_HAB0, LIB_HAB5})
+    @RolesAllowed({ROLE_HAB0,
+                   USER_HAB0,
+                   LIB_HAB5})
     public ResponseEntity<List<RoleDTO>> findAll(@RequestParam("dto") final Boolean dto) {
         return new ResponseEntity<>(roleService.findAllDTO(), HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    @RolesAllowed({ROLE_HAB0, LIB_HAB5})
+    @RolesAllowed({ROLE_HAB0,
+                   LIB_HAB5})
     public ResponseEntity<List<Role>> findAll() {
         return new ResponseEntity<>(roleService.findAll(), HttpStatus.OK);
     }

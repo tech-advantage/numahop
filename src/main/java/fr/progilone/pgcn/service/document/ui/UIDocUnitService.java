@@ -1,49 +1,10 @@
 package fr.progilone.pgcn.service.document.ui;
 
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-
-import javax.annotation.PostConstruct;
-import javax.xml.bind.JAXBException;
-
-import fr.progilone.pgcn.domain.administration.ExportFTPDeliveryFolder;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.xml.sax.SAXException;
-
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
-
+import fr.progilone.pgcn.domain.administration.ExportFTPDeliveryFolder;
 import fr.progilone.pgcn.domain.administration.SftpConfiguration;
 import fr.progilone.pgcn.domain.administration.viewsformat.ViewsFormatConfiguration;
 import fr.progilone.pgcn.domain.delivery.DeliveredDocument;
@@ -104,6 +65,41 @@ import fr.progilone.pgcn.service.util.DateUtils;
 import fr.progilone.pgcn.service.util.ImageUtils;
 import fr.progilone.pgcn.service.util.transaction.VersionValidationService;
 import fr.progilone.pgcn.service.workflow.WorkflowService;
+import jakarta.annotation.PostConstruct;
+import jakarta.xml.bind.JAXBException;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.xml.sax.SAXException;
 
 /**
  * Service dédié à les gestion des vues des unités documentaires
@@ -234,8 +230,7 @@ public class UIDocUnitService {
         uiDocUnitMapper.mapInto(request, doc);
 
         // Le parent est mis à jour
-        if (request.getParentIdentifier() != null && (doc.getParent() == null || !StringUtils.equals(request.getParentIdentifier(),
-                                                                                                     doc.getParent().getIdentifier()))) {
+        if (request.getParentIdentifier() != null && (doc.getParent() == null || !StringUtils.equals(request.getParentIdentifier(), doc.getParent().getIdentifier()))) {
             final DocUnit parent = docUnitService.findOneWithAllDependencies(request.getParentIdentifier());
             setParent(doc, parent, false);
         }
@@ -509,12 +504,7 @@ public class UIDocUnitService {
                                                        final List<String> trains,
                                                        final List<String> statuses) {
 
-        final List<DocUnit> docs = docUnitService.searchMinList(search,
-                                                                libraries,
-                                                                projects,
-                                                                lots,
-                                                                trains,
-                                                                statuses);
+        final List<DocUnit> docs = docUnitService.searchMinList(search, libraries, projects, lots, trains, statuses);
 
         return docs.stream().map(SimpleDocUnitMapper.INSTANCE::docUnitToMinimalListDocUnitDTO).collect(Collectors.toList());
     }
@@ -528,7 +518,8 @@ public class UIDocUnitService {
     @Transactional
     public void setProjectAndLot(final List<String> docs, final String project, final String lot, final String train) {
 
-        final Lot l = StringUtils.isBlank(lot) ? null : lotRepository.findOne(lot);
+        final Lot l = StringUtils.isBlank(lot) ? null
+                                               : lotRepository.findById(lot).orElse(null);
         final Set<DocUnit> dus = docUnitService.findByIdentifierInWithDocs(docs);
 
         // En cas de lot renum, il faut s'assurer que les workflows des autres docs en cours ne restent pas bloqués...
@@ -548,9 +539,7 @@ public class UIDocUnitService {
      */
     protected boolean isLotRenum(final Set<DocUnit> dus, final Lot lot) {
 
-        return lot != null && dus.stream()
-           .anyMatch(du -> du.getLot() != null
-                         && !du.getLot().getIdentifier().equals(lot.getIdentifier()));
+        return lot != null && dus.stream().anyMatch(du -> du.getLot() != null && !du.getLot().getIdentifier().equals(lot.getIdentifier()));
     }
 
     /**
@@ -581,7 +570,7 @@ public class UIDocUnitService {
 
             final DigitalDocument digDoc = du.getDigitalDocuments().stream().findFirst().orElse(null);
             // find delivery from last delivereddoc
-            if(digDoc != null){
+            if (digDoc != null) {
                 final String lastDelivId = digDoc.getDeliveries()
                                                  .stream()
                                                  .filter(deliv -> deliv.getDelivery() != null)
@@ -589,7 +578,7 @@ public class UIDocUnitService {
                                                  .map(deliv -> deliv.getDelivery().getIdentifier())
                                                  .findFirst()
                                                  .orElse(null);
-                if(lastDelivId != null){
+                if (lastDelivId != null) {
                     deliveriesToCheck.add(lastDelivId);
                 }
             }
@@ -604,8 +593,7 @@ public class UIDocUnitService {
 
             for (final DeliveredDocument delivered : delivery.getDocuments()) {
 
-                if (delivered.getDigitalDocument() == null
-                    || delivered.getDigitalDocument().getDocUnit() == null) {
+                if (delivered.getDigitalDocument() == null || delivered.getDigitalDocument().getDocUnit() == null) {
                     continue;
                 }
                 final String docUnitId = delivered.getDigitalDocument().getDocUnit().getIdentifier();
@@ -718,11 +706,7 @@ public class UIDocUnitService {
      */
     @Transactional(readOnly = true)
     public List<DocUnitDTO> getChildren(final String parentId) {
-        return docUnitService.getChildren(parentId)
-                             .stream()
-                             .filter(ch -> ch.getState() == DocUnit.State.AVAILABLE)
-                             .map(this::mapIntoDTO)
-                             .collect(Collectors.toList());
+        return docUnitService.getChildren(parentId).stream().filter(ch -> ch.getState() == DocUnit.State.AVAILABLE).map(this::mapIntoDTO).collect(Collectors.toList());
     }
 
     @Transactional
@@ -810,15 +794,14 @@ public class UIDocUnitService {
     }
 
     @Transactional
-    public boolean
-           massExportToFtp(final List<DocUnit> docUnits, final List<String> exportTypes, final Library lib) throws IOException {
+    public boolean massExportToFtp(final List<DocUnit> docUnits, final List<String> exportTypes, final Library lib) throws IOException {
 
         boolean exported = false;
         // Création du fichier zip global
         String zipName = DateUtils.formatDateToString(LocalDateTime.now(), "yyyy-MM-dd HH-mm-ss") + "_";
         if (!docUnits.isEmpty() && docUnits.size() == 1) {
             final DocUnit doc = docUnits.get(0);
-            zipName += doc.getPgcnId() + ".zip";
+            zipName += doc.getPgcnId().replaceAll("/", "_") + ".zip";
         } else {
             zipName += "export.zip";
         }
@@ -844,18 +827,18 @@ public class UIDocUnitService {
         // recup config export ftp
         List<DocUnit> docsInError = new ArrayList<>();
         docUnits.stream().forEach(docUnit -> {
-            //Get conf FTP on Lot then, if null, on project or terminate process to this docUnit
+            // Get conf FTP on Lot then, if null, on project or terminate process to this docUnit
             ExportFTPConfiguration confExport = docUnit.getLot().getActiveExportFTPConfiguration();
-            if(confExport == null) {
+            if (confExport == null) {
                 confExport = docUnit.getProject().getActiveExportFTPConfiguration();
             }
 
             ExportFTPDeliveryFolder deliveryFolder = docUnit.getLot().getActiveExportFTPDeliveryFolder();
-            if(deliveryFolder == null) {
+            if (deliveryFolder == null) {
                 deliveryFolder = docUnit.getProject().getActiveExportFTPDeliveryFolder();
             }
 
-            if(confExport != null && deliveryFolder != null) {
+            if (confExport != null && deliveryFolder != null) {
                 if (zipPath.toFile().exists()) {
 
                     final SftpConfiguration sftpConf = new SftpConfiguration();
@@ -895,7 +878,7 @@ public class UIDocUnitService {
 
     @Transactional
     public void massExport(final OutputStream out, final List<String> docUnitIdentifiers, final List<String> exportTypes) throws IOException {
-        //mandatory to prevent lazy loading exceptions
+        // mandatory to prevent lazy loading exceptions
         final Collection<DocUnit> docUnits = docUnitService.findAllById(docUnitIdentifiers);
         try (final ZipOutputStream zos = new ZipOutputStream(out)) {
 
@@ -903,13 +886,16 @@ public class UIDocUnitService {
 
                 final String libraryId = du.getLibrary().getIdentifier();
 
-                final String directory = du.getPgcnId() + "/";
+                final String directory = du.getPgcnId().replaceAll("/", "_") + "/";
                 final List<CheckSummedStoredFile> cssfs = new ArrayList<>();
                 zos.putNextEntry(new ZipEntry(directory));
                 zos.closeEntry();
 
                 // Export des images / format.
-                if(exportTypes.contains("METS") || exportTypes.contains("MASTER") || exportTypes.contains("PDF") || exportTypes.contains("VIEW") || exportTypes.contains("THUMBNAIL")){
+                if (exportTypes.contains("METS") || exportTypes.contains("MASTER")
+                    || exportTypes.contains("PDF")
+                    || exportTypes.contains("VIEW")
+                    || exportTypes.contains("THUMBNAIL")) {
                     for (final DigitalDocument dd : du.getDigitalDocuments()) {
                         // PDF
                         if (exportTypes.contains("PDF")) {
@@ -918,13 +904,16 @@ public class UIDocUnitService {
                                 final Optional<StoredFile> master = pdfPage.getMaster();
                                 final StoredFile sf = master.get();
                                 final File file = bm.getFileForStoredFile(sf, libraryId);
-                                zos.putNextEntry(new ZipEntry(directory + "pdf/" + sf.getFilename()));
+                                zos.putNextEntry(new ZipEntry(directory + "pdf/"
+                                                              + sf.getFilename()));
 
                                 copyToZip(zos, file);
                             }
                         }
 
-                        if(exportTypes.contains("METS") || exportTypes.contains("MASTER") ||  exportTypes.contains("VIEW") || exportTypes.contains("THUMBNAIL")) {
+                        if (exportTypes.contains("METS") || exportTypes.contains("MASTER")
+                            || exportTypes.contains("VIEW")
+                            || exportTypes.contains("THUMBNAIL")) {
 
                             for (final DocPage dp : dd.getOrderedPages()) {
 
@@ -939,7 +928,8 @@ public class UIDocUnitService {
                                     }
 
                                     if (exportTypes.contains("MASTER") && dp.getNumber() != null) {
-                                        zos.putNextEntry(new ZipEntry(directory + "master/" + sf.getFilename()));
+                                        zos.putNextEntry(new ZipEntry(directory + "master/"
+                                                                      + sf.getFilename()));
 
                                         copyToZip(zos, file);
                                     }
@@ -1033,7 +1023,7 @@ public class UIDocUnitService {
 
     private void copyToZip(ZipOutputStream zos, File file) throws IOException {
         LOG.trace("copyToZip - start");
-        try (Stream<Path> paths = Files.walk(Paths.get(file.getPath()))){
+        try (Stream<Path> paths = Files.walk(Paths.get(file.getPath()))) {
             paths.filter(Files::isRegularFile).forEach(path -> {
                 try {
                     LOG.trace("copyToZip - walk - " + path.toString());

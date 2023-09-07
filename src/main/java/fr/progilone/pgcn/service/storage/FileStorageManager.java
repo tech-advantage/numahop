@@ -1,5 +1,13 @@
 package fr.progilone.pgcn.service.storage;
 
+import fr.progilone.pgcn.domain.AbstractDomainObject;
+import fr.progilone.pgcn.domain.administration.viewsformat.ViewsFormatConfiguration;
+import fr.progilone.pgcn.domain.exchange.template.Template;
+import fr.progilone.pgcn.domain.user.User;
+import fr.progilone.pgcn.repository.user.UserRepository;
+import fr.progilone.pgcn.security.SecurityUtils;
+import fr.progilone.pgcn.service.util.DefaultFileFormats;
+import fr.progilone.pgcn.service.util.ImageUtils;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,7 +18,6 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.List;
-
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,20 +28,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import fr.progilone.pgcn.domain.AbstractDomainObject;
-import fr.progilone.pgcn.domain.administration.viewsformat.ViewsFormatConfiguration;
-import fr.progilone.pgcn.domain.exchange.template.Template;
-import fr.progilone.pgcn.domain.user.User;
-import fr.progilone.pgcn.repository.user.UserRepository;
-import fr.progilone.pgcn.security.SecurityUtils;
-import fr.progilone.pgcn.service.util.DefaultFileFormats;
-import fr.progilone.pgcn.service.util.ImageUtils;
-
 /**
  * Service de stockage des fichiers non managés
  *
  * @author jbrunet
- * Créé le 7 mars 2017
+ *         Créé le 7 mars 2017
  */
 @Service
 public class FileStorageManager {
@@ -43,15 +41,13 @@ public class FileStorageManager {
 
     @Value("${instance.libraries}")
     private String[] instanceLibraries;
-    
+
     private final ImageDispatcherService imageDispatcherService;
     private final DefaultFileFormats defautFileFormats;
     private final UserRepository userRepository;
 
     @Autowired
-    public FileStorageManager(final ImageDispatcherService imageDispatcherService, 
-                              final DefaultFileFormats defaultFileFormats,
-                              final UserRepository userRepository) {
+    public FileStorageManager(final ImageDispatcherService imageDispatcherService, final DefaultFileFormats defaultFileFormats, final UserRepository userRepository) {
         this.imageDispatcherService = imageDispatcherService;
         this.defautFileFormats = defaultFileFormats;
         this.userRepository = userRepository;
@@ -63,9 +59,9 @@ public class FileStorageManager {
      * @param storageDir
      */
     public void initializeStorage(final String storageDir) {
-        
+
         if (instanceLibraries != null) {
-            // 1 disk space per library 
+            // 1 disk space per library
             Arrays.asList(instanceLibraries).forEach(lib -> {
                 try {
                     FileUtils.forceMkdir(new File(storageDir, lib));
@@ -75,9 +71,10 @@ public class FileStorageManager {
             });
         }
     }
-    
+
     /**
      * Renvoie l'id de la librairie du user connecté.
+     *
      * @return
      */
     public String getUserLibraryId() {
@@ -85,9 +82,9 @@ public class FileStorageManager {
         if (user != null && user.getLibrary() != null) {
             return user.getLibrary().getIdentifier();
         } else {
-            throw new RuntimeException("Bibliotheque non autorisee!"); 
+            throw new RuntimeException("Bibliotheque non autorisee!");
         }
-        
+
     }
 
     /**
@@ -99,12 +96,13 @@ public class FileStorageManager {
      * @param createDir
      * @param addLibInPath
      */
-    public File copyInputStreamToFile(final InputStream input, final File directory, final String filename, 
-                                              final boolean createDir, final boolean addLibInPath) { 
-        if (input != null && directory != null && filename != null) {
-            final Path path = addLibInPath ? Paths.get(directory.getPath(), getUserLibraryId()) : Paths.get(directory.getPath());
+    public File copyInputStreamToFile(final InputStream input, final File directory, final String filename, final boolean createDir, final boolean addLibInPath) {
+        if (input != null && directory != null
+            && filename != null) {
+            final Path path = addLibInPath ? Paths.get(directory.getPath(), getUserLibraryId())
+                                           : Paths.get(directory.getPath());
             if (createDir) {
-                try {  
+                try {
                     FileUtils.forceMkdir(path.toFile());
 
                 } catch (final IOException e) {
@@ -122,25 +120,25 @@ public class FileStorageManager {
         }
         return null;
     }
-    
+
     /**
      * Store a file, no questions asked.
      * idem ci-dessus, mais sans chercher la library (réservé à ADMIN!).
-     * 
+     *
      * @param input
      * @param directory
      * @param filename
      * @param createDir
      * @return
      */
-    public File copyInputStreamToFileAdmin(final InputStream input, final File directory, final String filename, 
-                                      final boolean createDir) { 
-        if (input != null && directory != null && filename != null) {
+    public File copyInputStreamToFileAdmin(final InputStream input, final File directory, final String filename, final boolean createDir) {
+        if (input != null && directory != null
+            && filename != null) {
             final Path path = Paths.get(directory.getPath());
             if (createDir) {
-                try {  
+                try {
                     FileUtils.forceMkdir(path.toFile());
-        
+
                 } catch (final IOException e) {
                     LOG.error(e.getMessage(), e);
                 }
@@ -149,14 +147,14 @@ public class FileStorageManager {
                 final File destination = new File(path.toFile(), filename);
                 FileUtils.copyInputStreamToFile(input, destination);
                 return destination;
-        
+
             } catch (final IOException e) {
                 LOG.error(e.getMessage(), e);
             }
         }
         return null;
-}
-    
+    }
+
     /**
      * Store a file, no questions asked.
      * idem ci-dessus, mais avec possiblilité d'intercaler des dossiers supplémentaires.
@@ -166,19 +164,23 @@ public class FileStorageManager {
      * @param filename
      * @param createDir
      */
-    public File copyInputStreamToFileWithOtherDirs(final InputStream input, final File directory, final List<String> dirsToAdd, 
-                                                       final String filename, final boolean createDir, final boolean addLibInPath) {
-        if (input != null 
-                && directory != null 
-                    && filename != null) {
-            
-            Path path = addLibInPath ? Paths.get(directory.getPath(), getUserLibraryId()) : Paths.get(directory.getPath());
+    public File copyInputStreamToFileWithOtherDirs(final InputStream input,
+                                                   final File directory,
+                                                   final List<String> dirsToAdd,
+                                                   final String filename,
+                                                   final boolean createDir,
+                                                   final boolean addLibInPath) {
+        if (input != null && directory != null
+            && filename != null) {
+
+            Path path = addLibInPath ? Paths.get(directory.getPath(), getUserLibraryId())
+                                     : Paths.get(directory.getPath());
             for (final String dir : dirsToAdd) {
                 path = Paths.get(path.toString(), dir);
             }
-            
+
             if (createDir) {
-                try {  
+                try {
                     FileUtils.forceMkdir(path.toFile());
 
                 } catch (final IOException e) {
@@ -196,17 +198,18 @@ public class FileStorageManager {
         }
         return null;
     }
-    
+
     /**
-     * Appends lines in existing file.  
-     * 
+     * Appends lines in existing file.
+     *
      * @param linesToAdd
      * @param directory
      * @param filename
      * @return
      */
     public File appendFile(final Collection<String> linesToAdd, final File directory, final String filename) {
-        if (directory != null && filename != null && !linesToAdd.isEmpty()) {
+        if (directory != null && filename != null
+            && !linesToAdd.isEmpty()) {
             final File destination = new File(directory, filename);
             try {
                 FileUtils.writeLines(destination, StandardCharsets.UTF_8.toString(), linesToAdd, true);
@@ -269,25 +272,25 @@ public class FileStorageManager {
         }
         return null;
     }
-    
+
     /**
      * Retrieve a file, no questions asked
-     * 
+     *
      * storageDir/libraryId/obj.getIdentifier()/name
-     * 
+     *
      * @param directory
      * @param dirsToAdd
      * @param filename
-     * @return 
+     * @return
      */
     public File retrieveFileWithOtherDirs(final File directory, final List<String> dirsToAdd, final String filename) {
-        
+
         if (directory != null && filename != null) {
             Path path = Paths.get(directory.getPath(), getUserLibraryId());
             for (final String dir : dirsToAdd) {
                 path = Paths.get(path.toString(), dir);
             }
-            return retrieveFile(new File(path.toFile(), filename));            
+            return retrieveFile(new File(path.toFile(), filename));
         }
         return null;
     }
@@ -308,11 +311,11 @@ public class FileStorageManager {
         final String filename = Base64.getEncoder().encodeToString(obj.getIdentifier().getBytes(StandardCharsets.UTF_8));
         return retrieveFile(root, filename);
     }
-    
+
     /**
      * Récupération d'un fichier lié à un {@link AbstractDomainObject}
      * storageDir/obj.getIdentifier()
-     * 
+     *
      * Pas de controle du user / library
      * !!!! A reserver au reset password !!!!
      *
@@ -369,9 +372,13 @@ public class FileStorageManager {
             return null;
         }
 
-        final boolean generationResult =
-            imageDispatcherService.createThumbnailDerived(mimeType, source, destination, format, null, new Long[] {defautFileFormats.getHeightByFormat(format), 
-                                                                                                                   defautFileFormats.getWidthByFormat(format)});
+        final boolean generationResult = imageDispatcherService.createThumbnailDerived(mimeType,
+                                                                                       source,
+                                                                                       destination,
+                                                                                       format,
+                                                                                       null,
+                                                                                       new Long[] {defautFileFormats.getHeightByFormat(format),
+                                                                                                   defautFileFormats.getWidthByFormat(format)});
         if (!generationResult || destination.length() == 0L) {
 
             LOG.debug("La génération de l'aperçu pour le fichier {} a échoué ({})", source.getAbsolutePath(), destination.getAbsolutePath());
@@ -403,17 +410,17 @@ public class FileStorageManager {
         if (destination == null) {
             return null;
         }
-        
+
         final boolean generationResult;
 
         switch (mimeType) {
             case MediaType.IMAGE_GIF_VALUE:
             case MediaType.IMAGE_JPEG_VALUE:
             case MediaType.IMAGE_PNG_VALUE:
-                generationResult =
-                    ImageUtils.createThumbnail(source, destination, 
-                                               Long.valueOf(defautFileFormats.getWidthByFormat(format)).intValue(), 
-                                               Long.valueOf(defautFileFormats.getHeightByFormat(format)).intValue());
+                generationResult = ImageUtils.createThumbnail(source,
+                                                              destination,
+                                                              Long.valueOf(defautFileFormats.getWidthByFormat(format)).intValue(),
+                                                              Long.valueOf(defautFileFormats.getHeightByFormat(format)).intValue());
                 break;
             default:
                 generationResult = false;
@@ -428,7 +435,6 @@ public class FileStorageManager {
         return destination;
     }
 
-    
     /**
      * Fichier correspondant aux paramètres
      *
@@ -439,17 +445,18 @@ public class FileStorageManager {
      */
     public File getUploadFile(final String storageDir, final String libraryId, final AbstractDomainObject obj, final String name) {
         final String destination = Base64.getEncoder().encodeToString(name.getBytes(StandardCharsets.UTF_8));
-        final String librId = libraryId==null ? getUserLibraryId() : libraryId;
-        
+        final String librId = libraryId == null ? getUserLibraryId()
+                                                : libraryId;
+
         final Path path;
-        if(obj == null) {
+        if (obj == null) {
             path = Paths.get(storageDir, librId, destination);
         } else {
             path = Paths.get(storageDir, librId, obj.getIdentifier(), destination);
         }
         return path.toFile();
     }
-    
+
     /**
      * Génération du fichier temporaire utilisé pour le traitement asynchrone d'un MultipartFile
      *
@@ -457,7 +464,6 @@ public class FileStorageManager {
      * @return
      */
     public File getImportFile(final MultipartFile multipartFile, final String targetDir) {
-        return new File(targetDir,
-                        String.format("%s-%s-%s", SecurityUtils.getCurrentLogin(), System.currentTimeMillis(), multipartFile.getOriginalFilename()));
+        return new File(targetDir, String.format("%s-%s-%s", SecurityUtils.getCurrentLogin(), System.currentTimeMillis(), multipartFile.getOriginalFilename()));
     }
 }

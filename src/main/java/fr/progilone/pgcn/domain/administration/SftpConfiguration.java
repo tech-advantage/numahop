@@ -1,21 +1,11 @@
 package fr.progilone.pgcn.domain.administration;
 
-import java.util.List;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import fr.progilone.pgcn.domain.AbstractDomainObject;
 import fr.progilone.pgcn.domain.library.Library;
+import jakarta.persistence.*;
+import java.util.List;
 
 /**
  * Configuration d'une connexion SFTP, utilisée en particulier pour l'export CINES
@@ -72,7 +62,7 @@ public class SftpConfiguration extends AbstractDomainObject {
     @Column(name = "target_dir")
     private String targetDir;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "confPac", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "confPac", cascade = CascadeType.MERGE, orphanRemoval = true)
     private List<CinesPAC> pacs;
 
     /**
@@ -148,14 +138,24 @@ public class SftpConfiguration extends AbstractDomainObject {
 
     @Override
     public String toString() {
-        return "ConfigurationSFTP{" +
-               "label='" + label + '\'' +
-               ", username='" + username + '\'' +
-               ", host='" + host + '\'' +
-               ", port=" + port +
-               ", targetDir='" + targetDir + '\'' +
-               ", active='" + active + '\'' +
-               '}';
+        return "ConfigurationSFTP{" + "label='"
+               + label
+               + '\''
+               + ", username='"
+               + username
+               + '\''
+               + ", host='"
+               + host
+               + '\''
+               + ", port="
+               + port
+               + ", targetDir='"
+               + targetDir
+               + '\''
+               + ", active='"
+               + active
+               + '\''
+               + '}';
     }
 
     public List<CinesPAC> getPacs() {

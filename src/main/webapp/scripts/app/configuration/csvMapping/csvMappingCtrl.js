@@ -1,10 +1,25 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('CSVMappingCtrl', CSVMappingCtrl);
+    angular.module('numaHopApp.controller').controller('CSVMappingCtrl', CSVMappingCtrl);
 
-    function CSVMappingCtrl($filter, $q, gettext, gettextCatalog, HistorySrvc, LibrarySrvc, CSVMappingSrvc, MappingSrvc, MessageSrvc, ModalSrvc, Principal, USER_ROLES) {
+    function CSVMappingCtrl(
+        $filter,
+        $q,
+        gettext,
+        gettextCatalog,
+        HistorySrvc,
+        LibrarySrvc,
+        CSVMappingSrvc,
+        MappingSrvc,
+        MessageSrvc,
+        ModalSrvc,
+        CondreportDescPropertySrvc,
+        CondreportPropertyConfSrvc,
+        ImagesMetadataSrvc,
+        Principal,
+        USER_ROLES
+    ) {
         var mainCtrl = this;
         mainCtrl.mappingModified = mappingModified;
         /** Mapping */
@@ -27,46 +42,58 @@
         /* Listes ui-select */
         mainCtrl.uioptions = {
             libraries: {
-                text: "name",
-                placeholder: gettextCatalog.getString("Bibliothèque"),
-                trackby: "identifier",
+                text: 'name',
+                placeholder: gettextCatalog.getString('Bibliothèque'),
+                trackby: 'identifier',
                 // Chargement avec mise en cache du résultat
                 refresh: function () {
                     if (!mainCtrl.uioptions.libraries.data) {
                         mainCtrl.uioptions.libraries.data = LibrarySrvc.query({ dto: true });
                         return mainCtrl.uioptions.libraries.data.$promise;
-                    }
-                    else {
+                    } else {
                         return $q.when(mainCtrl.uioptions.libraries.data);
                     }
                 },
                 'refresh-delay': 0, // pas de refresh-delay, car on lit les données en cache après le 1er chargement
-                'allow-clear': true
-            }
+                'allow-clear': true,
+            },
         };
-
 
         init();
 
         /** Initialisation du contrôleur */
         function init() {
-            HistorySrvc.add(gettextCatalog.getString("Configuration des mappings"));
+            HistorySrvc.add(gettextCatalog.getString('Configuration des mappings'));
 
             mainCtrl.isSuperAdmin = Principal.isInRole(USER_ROLES.SUPER_ADMIN);
-            mainCtrl.rwCheckLib = Principal.isInRole(USER_ROLES.ADMINISTRATION_LIB);    // mapping des autres bib en lecture seule
+            mainCtrl.rwCheckLib = Principal.isInRole(USER_ROLES.ADMINISTRATION_LIB); // mapping des autres bib en lecture seule
             mainCtrl.library = Principal.library();
 
             loadMappings();
+
+            CondreportDescPropertySrvc.getAllWithFakes({ library: mainCtrl.library }).$promise.then(function (propTypes) {
+                _.map(propTypes, function (prop) {
+                    var type = _.find(CondreportPropertyConfSrvc.types, function (catType) {
+                        return prop.type === catType.code;
+                    });
+                    prop.category = type.label;
+                });
+
+                mainCtrl.props = propTypes;
+            });
+
+            ImagesMetadataSrvc.query().$promise.then(function (metadataProperties) {
+                mainCtrl.metadataProperties = metadataProperties;
+            });
         }
         /** Chargement des mappings existants */
         function loadMappings() {
             mainCtrl.mappings = CSVMappingSrvc.query();
-            mainCtrl.mappings.$promise
-                .then(updateMappingLibraries);
+            mainCtrl.mappings.$promise.then(updateMappingLibraries);
         }
         function updateMappingLibraries(mappings) {
             mainCtrl.libraries = _.chain(mappings)
-                .pluck("library")
+                .pluck('library')
                 .uniq(false, function (l) {
                     return l.identifier;
                 })
@@ -81,7 +108,9 @@
             mainCtrl.editedMapping = new CSVMappingSrvc();
             mainCtrl.editedMapping.rules = [];
             if (mainCtrl.library) {
-                mainCtrl.editedMapping.library = _.find(mainCtrl.uioptions.libraries.data, function (lib) { return lib.identifier = mainCtrl.library; });
+                mainCtrl.editedMapping.library = _.find(mainCtrl.uioptions.libraries.data, function (lib) {
+                    return (lib.identifier = mainCtrl.library);
+                });
             }
 
             mainCtrl.rw = Principal.isInRole(USER_ROLES.MAP_HAB1);
@@ -93,19 +122,19 @@
             mainCtrl.loaded = false;
 
             mainCtrl.editedMapping = CSVMappingSrvc.get({ id: mapping.identifier });
-            mainCtrl.editedMapping.$promise
-                .then(function () {
-                    mainCtrl.rw = mainCtrl.isSuperAdmin || (Principal.isInRole(USER_ROLES.MAP_HAB1) && (!mainCtrl.rwCheckLib || mapping.library.identifier === mainCtrl.library));
-                    mainCtrl.modified = false;
-                    mainCtrl.loaded = true;
-                });
+            mainCtrl.editedMapping.$promise.then(function () {
+                mainCtrl.rw = mainCtrl.isSuperAdmin || (Principal.isInRole(USER_ROLES.MAP_HAB1) && (!mainCtrl.rwCheckLib || mapping.library.identifier === mainCtrl.library));
+                mainCtrl.modified = false;
+                mainCtrl.loaded = true;
+
+                updateCondReportAndMetadata(mainCtrl.editedMapping);
+            });
         }
         /** Rechargement d'un mapping */
         function reload(mapping) {
             if (angular.isDefined(mapping.identifier)) {
                 edit(mapping);
-            }
-            else {
+            } else {
                 create();
             }
         }
@@ -114,12 +143,12 @@
             if (!mapping) {
                 return;
             }
-            ModalSrvc.confirmDeletion(gettextCatalog.getString("Le mapping {{label}}", mapping))
+            ModalSrvc.confirmDeletion(gettextCatalog.getString('Le mapping {{label}}', mapping))
                 .then(function () {
                     return mapping.$delete();
                 })
                 .then(function () {
-                    MessageSrvc.addSuccess(gettext("Le mapping {{label}} a été supprimé"), mapping);
+                    MessageSrvc.addSuccess(gettext('Le mapping {{label}} a été supprimé'), mapping);
                     loadMappings();
 
                     mainCtrl.modified = false;
@@ -146,27 +175,54 @@
                 return;
             }
             var isCreation = !mapping.identifier;
-            mapping.$save()
-                .then(function () {
-                    MessageSrvc.addSuccess(gettext("Le mapping {{label}} a été sauvegardé"), mapping);
-                    mainCtrl.modified = false;
+            mapping.$save().then(function () {
+                MessageSrvc.addSuccess(gettext('Le mapping {{label}} a été sauvegardé'), mapping);
+                mainCtrl.modified = false;
 
-                    // Mise à jour de la liste des DTOs
-                    if (isCreation) {
-                        var editedDtoC = _.pick(mapping, "identifier", "label", "library");
-                        mainCtrl.mappings.push(editedDtoC);
+                // Mise à jour de la liste des DTOs
+                if (isCreation) {
+                    var editedDtoC = _.pick(mapping, 'identifier', 'label', 'library');
+                    mainCtrl.mappings.push(editedDtoC);
+                } else {
+                    var editedDtoU = _.find(mainCtrl.mappings, function (m) {
+                        return m.identifier === mapping.identifier;
+                    });
+                    if (angular.isDefined(editedDtoU)) {
+                        editedDtoU.label = mapping.label;
+                        editedDtoU.library = mapping.library;
                     }
-                    else {
-                        var editedDtoU = _.find(mainCtrl.mappings, function (m) {
-                            return m.identifier === mapping.identifier;
-                        });
-                        if (angular.isDefined(editedDtoU)) {
-                            editedDtoU.label = mapping.label;
-                            editedDtoU.library = mapping.library;
-                        }
-                    }
-                    updateMappingLibraries(mainCtrl.mappings);
-                });
+
+                    updateCondReportAndMetadata(mapping);
+                }
+                updateMappingLibraries(mainCtrl.mappings);
+            });
+        }
+
+        function updateCondReportAndMetadata(mapping) {
+            mapping.rules.forEach(function (rule) {
+                if (rule.condReport != null) {
+                    updateCondReport(rule);
+                }
+
+                if (rule.metadata != null) {
+                    updateMetadata(rule);
+                }
+            });
+        }
+
+        function updateCondReport(rule) {
+            //search in the mainCtrl.props the right prop and put in in rule.condReportField
+            var rightProp = _.find(mainCtrl.props, function (prop) {
+                return prop.identifier === rule.condReport;
+            });
+            if (rightProp != null) rule.condReportField = rightProp;
+        }
+
+        function updateMetadata(rule) {
+            var rightMetadata = _.find(mainCtrl.metadataProperties, function (meta) {
+                return meta.identifier === rule.metadata;
+            });
+            if (rightMetadata != null) rule.metadataField = rightMetadata;
         }
 
         /** Ajout d'une nouvelle règle */
@@ -175,18 +231,18 @@
         }
         /** Copie d'une règle existante */
         function copyRule(rule, mapping) {
-            var copyOfRule = rule
-                ? _.pick(rule, "csvField", "docUnitField", "bibRecordField", "property")
-                : {};
-            var options = { rule: copyOfRule };
-            return ModalSrvc.open("scripts/app/configuration/csvMapping/csvModalEditRule.html", options, "lg", "CSVModalEditRuleCtrl")
-                .then(function (edRule) {
-
-                    mapping.rules.push(edRule);
-                    computeRanks(mapping.rules);
-                    mainCtrl.modified = true;
-                    return edRule;
-                });
+            var copyOfRule = rule ? _.pick(rule, 'csvField', 'docUnitField', 'bibRecordField', 'property', 'condReportField', 'metadataField') : {};
+            var options = {
+                rule: copyOfRule,
+                library: mainCtrl.editedMapping.library,
+                mapping: mapping,
+            };
+            return ModalSrvc.open('scripts/app/configuration/csvMapping/csvModalEditRule.html', options, 'lg', 'CSVModalEditRuleCtrl').then(function (edRule) {
+                mapping.rules.push(edRule);
+                computeRanks(mapping.rules);
+                mainCtrl.modified = true;
+                return edRule;
+            });
         }
         /** Suppression d'une règle existante */
         function delRule(rule, mapping) {
@@ -196,21 +252,27 @@
                 computeRanks(mapping.rules);
                 mainCtrl.modified = true;
             }
-
         }
         /** Suppression d'une règle existante */
         function editRule(rule, mapping) {
-            var options = { rule: angular.copy(rule) };
-            return ModalSrvc.open("scripts/app/configuration/csvMapping/csvModalEditRule.html", options, "lg", "CSVModalEditRuleCtrl")
-                .then(function (edRule) {
-                    mainCtrl.modified = true;
+            var options = {
+                rule: angular.copy(rule),
+                library: mainCtrl.editedMapping.library,
+                mapping: mapping,
+            };
 
-                    var idx = mapping.rules.indexOf(rule);
-                    if (idx >= 0) {
-                        mapping.rules.splice(idx, 1, edRule);   // remplacement de la règle originale par la règle éditée
-                    }
-                    return rule;
-                });
+            return ModalSrvc.open('scripts/app/configuration/csvMapping/csvModalEditRule.html', options, 'lg', 'CSVModalEditRuleCtrl').then(function (edRule) {
+                mainCtrl.modified = true;
+
+                if (edRule.condReportField != null) edRule.condReport = edRule.condReportField.identifier;
+                if (edRule.metadataField != null) edRule.metadata = edRule.metadataField.identifier;
+
+                var idx = mapping.rules.indexOf(rule);
+                if (idx >= 0) {
+                    mapping.rules.splice(idx, 1, edRule); // remplacement de la règle originale par la règle éditée
+                }
+                return rule;
+            });
         }
 
         /**
@@ -225,7 +287,7 @@
             var found = _.find(MappingSrvc.docUnitFields, function (f) {
                 return f.code === field;
             });
-            return found ? found.label : "";
+            return found ? found.label : '';
         }
         /**
          * Libellé d'un champ d'une notice bibliographique
@@ -239,7 +301,7 @@
             var found = _.find(MappingSrvc.bibRecordFields, function (f) {
                 return f.code === field;
             });
-            return found ? found.label : "";
+            return found ? found.label : '';
         }
 
         /**
@@ -249,25 +311,33 @@
          * @param {any} rules
          */
         function downRule(rule, rules) {
-            moveRule(rule, rules, "down");
+            moveRule(rule, rules, 'down');
         }
 
         function upRule(rule, rules) {
-            moveRule(rule, rules, "up");
+            moveRule(rule, rules, 'up');
         }
 
         function moveRule(rule, rules, direction) {
             var rank = rule.rank || 0;
-            var sortBy = direction === "up" ? function (r) { return -(r.rank || 0); } : "rank";
-            var find = direction === "up" ? function (r) { return r.rank < rank; } : function (r) { return r.rank > rank; };
+            var sortBy =
+                direction === 'up'
+                    ? function (r) {
+                          return -(r.rank || 0);
+                      }
+                    : 'rank';
+            var find =
+                direction === 'up'
+                    ? function (r) {
+                          return r.rank < rank;
+                      }
+                    : function (r) {
+                          return r.rank > rank;
+                      };
 
-            var next = _.chain(rules)
-                    .sortBy(sortBy)
-                    .find(find)
-                    .value();
+            var next = _.chain(rules).sortBy(sortBy).find(find).value();
 
             if (angular.isDefined(next)) {
-
                 swapItems(rules, rule, next);
                 computeRanks(rules);
 
@@ -289,12 +359,10 @@
          * recalcul systematique des positions.
          */
         function computeRanks(rules) {
-           var rank = 0;
-           _.each(rules, function(r) {
-              r.rank = rank++;
-           });
-
+            var rank = 0;
+            _.each(rules, function (r) {
+                r.rank = rank++;
+            });
         }
-
     }
 })();

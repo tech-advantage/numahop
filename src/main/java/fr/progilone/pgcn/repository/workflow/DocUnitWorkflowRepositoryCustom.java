@@ -1,16 +1,14 @@
 package fr.progilone.pgcn.repository.workflow;
 
-import java.time.LocalDate;
-import java.util.List;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
 import fr.progilone.pgcn.domain.document.DigitalDocument.DigitalDocumentStatus;
 import fr.progilone.pgcn.domain.workflow.DocUnitWorkflow;
 import fr.progilone.pgcn.domain.workflow.WorkflowStateKey;
 import fr.progilone.pgcn.domain.workflow.WorkflowStateStatus;
 import fr.progilone.pgcn.repository.workflow.helper.DocUnitWorkflowSearchBuilder;
+import java.time.LocalDate;
+import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface DocUnitWorkflowRepositoryCustom {
 
@@ -53,16 +51,16 @@ public interface DocUnitWorkflowRepositoryCustom {
      * @return
      */
     List<DocUnitWorkflow> findDocUnitProgressStatsPending(List<String> libraries,
-                                                   List<String> projects,
-                                                   boolean projetActive,
-                                                   List<String> lots,
-                                                   List<String> trains,
-                                                   String pgcnId,
-                                                   List<WorkflowStateKey> states,
-                                                   final List<WorkflowStateStatus> status,
-                                                   List<String> users,
-                                                   LocalDate fromDate,
-                                                   LocalDate toDate);
+                                                          List<String> projects,
+                                                          boolean projetActive,
+                                                          List<String> lots,
+                                                          List<String> trains,
+                                                          String pgcnId,
+                                                          List<WorkflowStateKey> states,
+                                                          final List<WorkflowStateStatus> status,
+                                                          List<String> users,
+                                                          LocalDate fromDate,
+                                                          LocalDate toDate);
 
     /**
      * Recherche de DocUnitWorkflow
@@ -119,6 +117,7 @@ public interface DocUnitWorkflowRepositoryCustom {
                                                               List<String> lots,
                                                               List<DigitalDocumentStatus> states,
                                                               LocalDate fromDate);
+
     /**
      * Retrouve les docUnitWorkflow candidats pour diffusion vers Archive.
      * (diffusable et workflow en attente de diffusion)

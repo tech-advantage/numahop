@@ -1,23 +1,5 @@
 package fr.progilone.pgcn.service.exchange.ssh;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Path;
-import java.util.Optional;
-import java.util.Properties;
-import java.util.Vector;
-
-import javax.annotation.PostConstruct;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.HostKey;
@@ -26,10 +8,24 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
-
 import fr.progilone.pgcn.domain.administration.SftpConfiguration;
 import fr.progilone.pgcn.exception.PgcnTechnicalException;
 import fr.progilone.pgcn.service.util.CryptoService;
+import jakarta.annotation.PostConstruct;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Path;
+import java.util.Optional;
+import java.util.Properties;
+import java.util.Vector;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 /**
  * Created by Sébastien on 28/12/2016.
@@ -59,7 +55,8 @@ public class SftpService {
     /**
      * Vérification de la clé du serveur yes / no<br/>
      * - yes (conseillé): les connexions aux serveurs absents du fichier knownHosts sont rejetées
-     * - no:  toutes les connexions sont autorisées; si un fichier knownHosts est renseignés, il est alimenté automatiquement avec les nouvelles connexions
+     * - no: toutes les connexions sont autorisées; si un fichier knownHosts est renseignés, il est alimenté automatiquement avec les nouvelles
+     * connexions
      */
     @Value("${export.ssh.strictHostKeyChecking}")
     private String strictHostKeyChecking;
@@ -192,9 +189,9 @@ public class SftpService {
      * Copie récursive d'un répertoire
      *
      * @param localSource
-     *         fichier ou répertoire à transférer
+     *            fichier ou répertoire à transférer
      * @param channelSftp
-     *         connexion SFTP établie
+     *            connexion SFTP établie
      */
     private void putPathRecursively(final File localSource, final ChannelSftp channelSftp) {
         final String targetName = localSource.getName();
@@ -232,10 +229,7 @@ public class SftpService {
                 channelSftp.chmod(0660, targetName);    // permission en octal
 
             } catch (final IOException | SftpException e) {
-                LOG.error("Une erreur s'est produite lors de la copie du fichier {} vers {}: {}",
-                          localSource.getAbsolutePath(),
-                          targetName,
-                          e.getMessage());
+                LOG.error("Une erreur s'est produite lors de la copie du fichier {} vers {}: {}", localSource.getAbsolutePath(), targetName, e.getMessage());
                 LOG.error(e.getMessage(), e);
             }
         }
@@ -248,11 +242,7 @@ public class SftpService {
      * @throws JSchException
      */
     private Session openSession(final SftpConfiguration conf, final boolean disableKeyCheck) throws JSchException, PgcnTechnicalException {
-        LOG.debug("Ouverture d'une session distante sur {}@{}:{}, StrictHostKeyChecking = {}",
-                  conf.getUsername(),
-                  conf.getHost(),
-                  conf.getPort(),
-                  !disableKeyCheck);
+        LOG.debug("Ouverture d'une session distante sur {}@{}:{}, StrictHostKeyChecking = {}", conf.getUsername(), conf.getHost(), conf.getPort(), !disableKeyCheck);
         final Session session = jSch.getSession(conf.getUsername(), conf.getHost(), conf.getPort());
         if (conf.getPassword() != null) {
             session.setPassword(cryptoService.decrypt(conf.getPassword()));
@@ -310,13 +300,7 @@ public class SftpService {
             msg.append("Host keys du fichier: ").append(hkr.getKnownHostsRepositoryID());
 
             for (final HostKey hk : hks) {
-                msg.append('\n')
-                   .append("\tHost: ")
-                   .append(hk.getHost())
-                   .append(", Type: ")
-                   .append(hk.getType())
-                   .append(", FingerPrint: ")
-                   .append(hk.getFingerPrint(jSch));
+                msg.append('\n').append("\tHost: ").append(hk.getHost()).append(", Type: ").append(hk.getType()).append(", FingerPrint: ").append(hk.getFingerPrint(jSch));
             }
             LOG.debug(msg.toString());
         }

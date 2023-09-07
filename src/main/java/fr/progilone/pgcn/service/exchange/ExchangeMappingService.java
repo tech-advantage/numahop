@@ -7,18 +7,17 @@ import fr.progilone.pgcn.domain.library.Library;
 import fr.progilone.pgcn.exception.PgcnTechnicalException;
 import fr.progilone.pgcn.service.document.DocPropertyTypeService;
 import fr.progilone.pgcn.service.es.jackson.MappingJacksonMapper;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Comparator;
+import java.util.List;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.Comparator;
-import java.util.List;
 
 @Service
 public class ExchangeMappingService {
@@ -104,14 +103,19 @@ public class ExchangeMappingService {
         final List<DocPropertyType> properties = docPropertyTypeService.findAll();
 
         destination.getRules().clear();
-        source.getRules().stream().sorted(Comparator.comparing(MappingRule::getPosition))
+        source.getRules()
+              .stream()
+              .sorted(Comparator.comparing(MappingRule::getPosition))
               // màj des DocPropertyType avec celles trouvée en bd
               .peek(rule -> {
                   final DocPropertyType property = rule.getProperty();
                   if (property != null) {
                       properties.stream()
-                                // On importe les pptés à partir de leur libellé, l'identifiant pouvant être différent entre 2 installations différentes
-                                .filter(p -> StringUtils.equalsIgnoreCase(p.getLabel(), property.getLabel())).findAny().ifPresent(rule::setProperty);
+                                // On importe les pptés à partir de leur libellé, l'identifiant pouvant être différent entre 2 installations
+                                // différentes
+                                .filter(p -> StringUtils.equalsIgnoreCase(p.getLabel(), property.getLabel()))
+                                .findAny()
+                                .ifPresent(rule::setProperty);
                   }
               })
               // Ajout des règles au mapping cible

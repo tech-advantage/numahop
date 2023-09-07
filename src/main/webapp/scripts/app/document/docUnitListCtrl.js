@@ -1,14 +1,35 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('DocUnitListCtrl', DocUnitListCtrl);
+    angular.module('numaHopApp.controller').controller('DocUnitListCtrl', DocUnitListCtrl);
 
-    function DocUnitListCtrl($http, $httpParamSerializer, $q, $location, $routeParams, CONFIGURATION,
-        DocUnitBaseService, DocUnitSrvc, DtoService, ErreurSrvc, FileSaver, gettext, gettextCatalog, HistorySrvc,
-        NumahopUrlService, MessageSrvc, ModalSrvc, NumaHopInitializationSrvc, NumahopStorageService, ExportCinesSrvc,
-        SelectionSrvc, ExportInternetArchiveSrvc, ExportOmekaSrvc, ExportDigitalLibrarySrvc, ExportHandlerSrvc) {
-
+    function DocUnitListCtrl(
+        $http,
+        $httpParamSerializer,
+        $q,
+        $location,
+        $routeParams,
+        CONFIGURATION,
+        DocUnitBaseService,
+        DocUnitSrvc,
+        DtoService,
+        ErreurSrvc,
+        FileSaver,
+        gettext,
+        gettextCatalog,
+        HistorySrvc,
+        NumahopUrlService,
+        MessageSrvc,
+        ModalSrvc,
+        NumaHopInitializationSrvc,
+        NumahopStorageService,
+        ExportCinesSrvc,
+        SelectionSrvc,
+        ExportInternetArchiveSrvc,
+        ExportOmekaSrvc,
+        ExportDigitalLibrarySrvc,
+        ExportHandlerSrvc
+    ) {
         var mainCtrl = this;
 
         /** check actions **/
@@ -57,7 +78,7 @@
         mainCtrl.massDigitalLibrary = massDigitalLibrary;
 
         var PAGE_START = 1;
-        var FILTER_STORAGE_SERVICE_KEY = "doc_unit_list";
+        var FILTER_STORAGE_SERVICE_KEY = 'doc_unit_list';
 
         /**
          * Recherche
@@ -71,10 +92,10 @@
         mainCtrl.selectedLength = 0;
 
         mainCtrl.sizeOptions = [
-            { value: 10, label: "10" },
-            { value: 20, label: "20" },
-            { value: 50, label: "50" },
-            { value: 100, label: "100" }
+            { value: 10, label: '10' },
+            { value: 20, label: '20' },
+            { value: 50, label: '50' },
+            { value: 100, label: '100' },
         ];
         /**
          * Objet de pagination
@@ -84,7 +105,7 @@
             items: [],
             totalItems: 0,
             busy: false,
-            page: PAGE_START
+            page: PAGE_START,
         };
         /**
          * Filtres
@@ -100,7 +121,7 @@
             archivable: true,
             nonArchivable: true,
             diffusable: true,
-            nonDiffusable: true
+            nonDiffusable: true,
         };
 
         /**
@@ -118,14 +139,14 @@
             wkf_status_filter: true,
             created_date_filter: true,
             archive_filter: true,
-            diffusion_filter: true
+            diffusion_filter: true,
         };
 
         /**
          * Modèle pour le tri
          * @type {Object}
          */
-        mainCtrl.sortModel = ["pgcnId"];
+        mainCtrl.sortModel = ['pgcnId'];
 
         /**
          * La liste a déjà été chargé une première fois
@@ -139,8 +160,8 @@
             libraries: [],
             projects: [],
             lots: [],
-            trains:[],
-            statuses: []
+            trains: [],
+            statuses: [],
         };
 
         init();
@@ -150,7 +171,7 @@
          * @return {[type]} [description]
          */
         function init() {
-            HistorySrvc.add(gettextCatalog.getString("Gestion des unités documentaires"));
+            HistorySrvc.add(gettextCatalog.getString('Gestion des unités documentaires'));
             mainCtrl.isFilteredByIds = !!$routeParams.searchresult;
 
             // Opérations groupées sur les résultats de recherche
@@ -164,46 +185,44 @@
                 NumaHopInitializationSrvc.loadProjects(),
                 NumaHopInitializationSrvc.loadLots(),
                 NumaHopInitializationSrvc.loadTrains(),
-                DocUnitSrvc.getConfigFilterStatuses()])
+                DocUnitSrvc.getConfigFilterStatuses(),
+            ]).then(function (data) {
+                mainCtrl.options.libraries = data[0];
+                mainCtrl.options.projects = data[1];
+                mainCtrl.options.lots = data[2];
+                mainCtrl.options.trains = data[3];
+                mainCtrl.options.statuses = data[4];
 
-                .then(function (data) {
-                    mainCtrl.options.libraries = data[0];
-                    mainCtrl.options.projects = data[1];
-                    mainCtrl.options.lots = data[2];
-                    mainCtrl.options.trains = data[3];
-                    mainCtrl.options.statuses = data[4];
+                loadFilters();
+                loadPageSize();
 
-                    loadFilters();
-                    loadPageSize();
-
-                    getPage().then(function () {
-                        // auto-sélection
-                        if (mainCtrl.isFilteredByIds) {
-                            mainCtrl.checkAll();
-                        }
-                        mainCtrl.loaded = true;
-                    });
-
-                    // Affichage pour un temps limité à l'ouverture
-                    MessageSrvc.initPanel();
+                getPage().then(function () {
+                    // auto-sélection
+                    if (mainCtrl.isFilteredByIds) {
+                        mainCtrl.checkAll();
+                    }
+                    mainCtrl.loaded = true;
                 });
 
+                // Affichage pour un temps limité à l'ouverture
+                MessageSrvc.initPanel();
+            });
+
             // callback création projet / lot / train
-            if ($routeParams["project"]) {
-                addSelectionToNewProjectCallback($routeParams["project"], $routeParams["lot"], $routeParams["train"]);
-                $location.search({});   // suppression du paramètre
+            if ($routeParams['project']) {
+                addSelectionToNewProjectCallback($routeParams['project'], $routeParams['lot'], $routeParams['train']);
+                $location.search({}); // suppression du paramètre
             }
             // sélection d'UD pour ajout à un projet / lot / train
-            else if ($routeParams["action"]) {
+            else if ($routeParams['action']) {
                 buildAction();
             }
             // restauration de la sélection
             else {
-                _.each(SelectionSrvc.get(SelectionSrvc.keys.DOC_UNIT_LIST),
-                    function (sel) {
-                        sel.checked = true;
-                        changeItem(sel);
-                    });
+                _.each(SelectionSrvc.get(SelectionSrvc.keys.DOC_UNIT_LIST), function (sel) {
+                    sel.checked = true;
+                    changeItem(sel);
+                });
             }
         }
 
@@ -211,42 +230,41 @@
          * Chargement des résultats de recherche sélectionnés
          */
         function initFromSearchResults() {
-            var searchSelection = SelectionSrvc.get("SEARCH_RESULT_DOCUNIT");
+            var searchSelection = SelectionSrvc.get('SEARCH_RESULT_DOCUNIT');
             // Sélection
             _.each(searchSelection, function (s) {
                 mainCtrl.selection[s.identifier] = s;
             });
             // Filtre
-            mainCtrl.filteredIds = _.pluck(searchSelection, "identifier");
+            mainCtrl.filteredIds = _.pluck(searchSelection, 'identifier');
         }
 
         function buildAction() {
             mainCtrl.action = {
-                code: $routeParams["action"],
-                projectId: $routeParams["toProject"],
-                lotId: $routeParams["toLot"],
-                trainId: $routeParams["toTrain"]
+                code: $routeParams['action'],
+                projectId: $routeParams['toProject'],
+                lotId: $routeParams['toLot'],
+                trainId: $routeParams['toTrain'],
             };
-            switch ($routeParams["action"]) {
-                case "add_to_project":
-                    mainCtrl.action.label = gettextCatalog.getString("Ajouter la sélection au projet");
-                    mainCtrl.action.cancelLabel = gettextCatalog.getString("Revenir au projet");
+            switch ($routeParams['action']) {
+                case 'add_to_project':
+                    mainCtrl.action.label = gettextCatalog.getString('Ajouter la sélection au projet');
+                    mainCtrl.action.cancelLabel = gettextCatalog.getString('Revenir au projet');
                     break;
-                case "add_to_lot":
-                    mainCtrl.action.label = gettextCatalog.getString("Ajouter la sélection au lot");
-                    mainCtrl.action.cancelLabel = gettextCatalog.getString("Revenir au lot");
+                case 'add_to_lot':
+                    mainCtrl.action.label = gettextCatalog.getString('Ajouter la sélection au lot');
+                    mainCtrl.action.cancelLabel = gettextCatalog.getString('Revenir au lot');
                     break;
-                case "add_to_train":
-                    mainCtrl.action.label = gettextCatalog.getString("Ajouter la sélection au train");
-                    mainCtrl.action.cancelLabel = gettextCatalog.getString("Revenir au train");
+                case 'add_to_train':
+                    mainCtrl.action.label = gettextCatalog.getString('Ajouter la sélection au train');
+                    mainCtrl.action.cancelLabel = gettextCatalog.getString('Revenir au train');
                     break;
             }
             if ($routeParams.callback) {
                 mainCtrl.action.callback = function () {
-                    addDocUnitsToProject(mainCtrl.selection, mainCtrl.action.projectId, mainCtrl.action.lotId, mainCtrl.action.trainId)
-                        .then(function () {
-                            $location.url($routeParams.callback);
-                        });
+                    addDocUnitsToProject(mainCtrl.selection, mainCtrl.action.projectId, mainCtrl.action.lotId, mainCtrl.action.trainId).then(function () {
+                        $location.url($routeParams.callback);
+                    });
                 };
                 mainCtrl.action.cancel = function () {
                     $location.url($routeParams.callback);
@@ -255,20 +273,17 @@
         }
 
         function refreshFilterLists() {
-            var librariesIds = _.pluck(mainCtrl.filters.libraries, "identifier");
-            var projectsIds = _.pluck(mainCtrl.filters.projects, "identifier");
-            NumaHopInitializationSrvc.loadProjects(librariesIds)
-                .then(function (data) {
-                    mainCtrl.options.projects = data;
-                    NumaHopInitializationSrvc.loadLots(librariesIds, projectsIds)
-                        .then(function (data) {
-                            mainCtrl.options.lots = data;
-                        });
-                    NumaHopInitializationSrvc.loadTrains(librariesIds, projectsIds)
-                    .then(function (data) {
-                        mainCtrl.options.trains = data;
-                    });
+            var librariesIds = _.pluck(mainCtrl.filters.libraries, 'identifier');
+            var projectsIds = _.pluck(mainCtrl.filters.projects, 'identifier');
+            NumaHopInitializationSrvc.loadProjects(librariesIds).then(function (data) {
+                mainCtrl.options.projects = data;
+                NumaHopInitializationSrvc.loadLots(librariesIds, projectsIds).then(function (data) {
+                    mainCtrl.options.lots = data;
                 });
+                NumaHopInitializationSrvc.loadTrains(librariesIds, projectsIds).then(function (data) {
+                    mainCtrl.options.trains = data;
+                });
+            });
         }
 
         function searchLibrary() {
@@ -329,9 +344,9 @@
             mainCtrl.pagination.busy = true;
 
             var params = {};
-            params["page"] = mainCtrl.pagination.page - 1;
-            params["size"] = mainCtrl.pagination.size;
-            params["sorts"] = mainCtrl.sortModel;
+            params['page'] = mainCtrl.pagination.page - 1;
+            params['size'] = mainCtrl.pagination.size;
+            params['sorts'] = mainCtrl.sortModel;
 
             var body = getSearchParams();
 
@@ -372,11 +387,10 @@
             savePageSize();
             saveFilters(newValue, field);
 
-
             var params = {};
-            params["page"] = mainCtrl.pagination.page - 1;
-            params["size"] = mainCtrl.pagination.size;
-            params["sorts"] = mainCtrl.sortModel;
+            params['page'] = mainCtrl.pagination.page - 1;
+            params['size'] = mainCtrl.pagination.size;
+            params['sorts'] = mainCtrl.sortModel;
 
             var body = getSearchParams(newValue, field);
 
@@ -391,60 +405,60 @@
             // Filtrage à partir des résultats de recherche
             if (mainCtrl.isFilteredByIds && mainCtrl.filteredIds) {
                 return {
-                    filter: mainCtrl.filteredIds
+                    filter: mainCtrl.filteredIds,
                 };
             }
 
             var params = {};
-            params["search"] = mainCtrl.searchRequest || "";
-            params["available"] = mainCtrl.filters.available;
-            params["hasDigitalDocuments"] = mainCtrl.filters.hasDigitalDocuments;
-            params["active"] = !mainCtrl.filters.inactive;
-            params["archived"] = mainCtrl.filters.archived;
-            params["nonArchived"] = mainCtrl.filters.nonArchived;
-            params["archivable"] = mainCtrl.filters.archivable;
-            params["nonArchivable"] = mainCtrl.filters.nonArchivable;
-            params["distributed"] = mainCtrl.filters.distributed;
-            params["nonDistributed"] = mainCtrl.filters.nonDistributed;
-            params["diffusable"] = mainCtrl.filters.diffusable;
-            params["nonDiffusable"] = mainCtrl.filters.nonDiffusable;
+            params['search'] = mainCtrl.searchRequest || '';
+            params['available'] = mainCtrl.filters.available;
+            params['hasDigitalDocuments'] = mainCtrl.filters.hasDigitalDocuments;
+            params['active'] = !mainCtrl.filters.inactive;
+            params['archived'] = mainCtrl.filters.archived;
+            params['nonArchived'] = mainCtrl.filters.nonArchived;
+            params['archivable'] = mainCtrl.filters.archivable;
+            params['nonArchivable'] = mainCtrl.filters.nonArchivable;
+            params['distributed'] = mainCtrl.filters.distributed;
+            params['nonDistributed'] = mainCtrl.filters.nonDistributed;
+            params['diffusable'] = mainCtrl.filters.diffusable;
+            params['nonDiffusable'] = mainCtrl.filters.nonDiffusable;
 
             // Bibliothèque
             if (mainCtrl.filters.libraries) {
-                var librariesIds = _.pluck(mainCtrl.filters.libraries, "identifier");
-                params["libraries"] = librariesIds;
+                var librariesIds = _.pluck(mainCtrl.filters.libraries, 'identifier');
+                params['libraries'] = librariesIds;
             }
             // Projet
             if (mainCtrl.filters.projects) {
-                var projectsIds = _.pluck(mainCtrl.filters.projects, "identifier");
-                params["projects"] = projectsIds;
+                var projectsIds = _.pluck(mainCtrl.filters.projects, 'identifier');
+                params['projects'] = projectsIds;
             }
             // Lot
             if (mainCtrl.filters.lots) {
-                var lotsIds = _.pluck(mainCtrl.filters.lots, "identifier");
-                params["lots"] = lotsIds;
+                var lotsIds = _.pluck(mainCtrl.filters.lots, 'identifier');
+                params['lots'] = lotsIds;
             }
             // train
             if (mainCtrl.filters.trains) {
-                var trainsIds = _.pluck(mainCtrl.filters.trains, "identifier");
-                params["trains"] = trainsIds;
+                var trainsIds = _.pluck(mainCtrl.filters.trains, 'identifier');
+                params['trains'] = trainsIds;
             }
             // statut
             if (mainCtrl.filters.wkf_statuses) {
-                var statuses = _.pluck(mainCtrl.filters.wkf_statuses, "identifier");
-                params["statuses"] = statuses;
+                var statuses = _.pluck(mainCtrl.filters.wkf_statuses, 'identifier');
+                params['statuses'] = statuses;
             }
             if (mainCtrl.filters.createdDateFrom) {
-                params["createdDateFrom"] = mainCtrl.filters.createdDateFrom;
+                params['createdDateFrom'] = mainCtrl.filters.createdDateFrom;
             }
             if (mainCtrl.filters.createdDateTo) {
-                params["createdDateTo"] = mainCtrl.filters.createdDateTo;
+                params['createdDateTo'] = mainCtrl.filters.createdDateTo;
             }
             if (mainCtrl.filters.lastModifiedDateFrom) {
-                params["lastModifiedDateFrom"] = mainCtrl.filters.lastModifiedDateFrom;
+                params['lastModifiedDateFrom'] = mainCtrl.filters.lastModifiedDateFrom;
             }
             if (mainCtrl.filters.lastModifiedDateTo) {
-                params["lastModifiedDateTo"] = mainCtrl.filters.lastModifiedDateTo;
+                params['lastModifiedDateTo'] = mainCtrl.filters.lastModifiedDateTo;
             }
 
             if (field) {
@@ -541,13 +555,10 @@
          */
         function addSelectionToDocUnit() {
             if (mainCtrl.selectedLength === 0) {
-                MessageSrvc.addWarn(gettext("La sélection est vide"), {}, false);
+                MessageSrvc.addWarn(gettext('La sélection est vide'), {}, false);
                 return;
             }
-            var docs = _.chain(mainCtrl.selection)
-                .values()
-                .pluck("identifier")
-                .value();
+            var docs = _.chain(mainCtrl.selection).values().pluck('identifier').value();
 
             // Sélection de la notice parente
             var params = { multiple: false, disabled: docs };
@@ -559,7 +570,7 @@
                     return $q.reject();
                 })
                 .then(function (parentUnit) {
-                    MessageSrvc.addSuccess(gettext("Les unités documentaires sélectionnées ont été rattachées à {{pgcnId}} {{label}}"), parentUnit);
+                    MessageSrvc.addSuccess(gettext('Les unités documentaires sélectionnées ont été rattachées à {{pgcnId}} {{label}}'), parentUnit);
                     search();
                 });
         }
@@ -568,8 +579,10 @@
          * Modifier un projet/ lot/ train.
          **/
         function addSelectionToProject() {
-            var docs = getValidSelection("project");
-            var ud = _.find(mainCtrl.selection, function (item) { return item.project; });
+            var docs = getValidSelection('project');
+            var ud = _.find(mainCtrl.selection, function (item) {
+                return item.project;
+            });
             var proj = angular.isDefined(ud) && ud.project ? ud.project : undefined;
 
             // Preselection lot et/ou train ?
@@ -579,13 +592,11 @@
                 if (ud.train !== null) {
                     train = getPreSelectedTrain(ud.train);
                 }
-
             }
             if (docs) {
-                ModalSrvc.integrateToProject(docs, "sm", proj, lot, train)
-                    .then(function () {
-                        search();
-                    });
+                ModalSrvc.integrateToProject(docs, 'sm', proj, lot, train).then(function () {
+                    search();
+                });
             }
         }
 
@@ -630,10 +641,10 @@
          */
         function addSelectionToNewProject() {
             var docs = getValidSelectionForProject();
-            var searchParams = { new: true, callback: "/document/docunit_list" };
+            var searchParams = { new: true, callback: '/document/docunit_list' };
             if (docs) {
                 SelectionSrvc.set(SelectionSrvc.keys.DOC_UNIT_LIST, docs);
-                $location.path("/project/project").search(searchParams);
+                $location.path('/project/project').search(searchParams);
             }
         }
 
@@ -643,7 +654,7 @@
          * avec de basculer sur la page de création de lot.
          */
         function addSelectionToNewLot() {
-            addSelectionToNewObject("/lot/lot", "lot");
+            addSelectionToNewObject('/lot/lot', 'lot');
         }
 
         /**
@@ -652,14 +663,16 @@
          * avec de basculer sur la page de création de train.
          */
         function addSelectionToNewTrain() {
-            addSelectionToNewObject("/train/train", "train");
+            addSelectionToNewObject('/train/train', 'train');
         }
 
         function addSelectionToNewObject(path, type) {
             var docs = getValidSelection(type);
-            var searchParams = { new: true, callback: "/document/docunit_list" };
+            var searchParams = { new: true, callback: '/document/docunit_list' };
 
-            var ud = _.find(mainCtrl.selection, function (item) { return item.project; });
+            var ud = _.find(mainCtrl.selection, function (item) {
+                return item.project;
+            });
             var projId = angular.isDefined(ud) && ud.project && ud.project.identifier ? ud.project.identifier : undefined;
             if (angular.isDefined(projId)) {
                 searchParams.project = projId;
@@ -681,10 +694,9 @@
         function addSelectionToNewProjectCallback(projectId, lotId, trainId) {
             var selection = SelectionSrvc.get(SelectionSrvc.keys.DOC_UNIT_LIST);
 
-            addDocUnitsToProject(selection, projectId, lotId, trainId)
-                .then(function () {
-                    search();   // rafraichissement de la liste
-                });
+            addDocUnitsToProject(selection, projectId, lotId, trainId).then(function () {
+                search(); // rafraichissement de la liste
+            });
         }
 
         /**
@@ -711,12 +723,19 @@
             if (trainId) {
                 params.train = trainId;
             }
-            var body = _.pluck(docUnits, "identifier");
+            var body = _.pluck(docUnits, 'identifier');
 
             var defer = $q.defer();
-            DocUnitSrvc.addToProjectAndLot(params, body,
-                function () { defer.resolve(); },
-                function () { defer.reject(); });
+            DocUnitSrvc.addToProjectAndLot(
+                params,
+                body,
+                function () {
+                    defer.resolve();
+                },
+                function () {
+                    defer.reject();
+                }
+            );
             return defer.promise;
         }
 
@@ -727,12 +746,14 @@
          */
         function getValidSelection(type) {
             if (mainCtrl.selectedLength === 0) {
-                MessageSrvc.addWarn(gettext("La sélection est vide"), {}, false);
+                MessageSrvc.addWarn(gettext('La sélection est vide'), {}, false);
                 return;
             }
 
             // On autorise la selection d'UDs appartenant ttes au mm projet, ou alors toutes sans projet.
-            var testValue = _.find(mainCtrl.selection, function (item) { return item.project; });
+            var testValue = _.find(mainCtrl.selection, function (item) {
+                return item.project;
+            });
             var filteredDocs = [];
             if (angular.isDefined(testValue)) {
                 filteredDocs = _.filter(mainCtrl.selection, function (item) {
@@ -748,14 +769,14 @@
                 });
             }
             if (mainCtrl.selectedLength !== filteredDocs.length) {
-                MessageSrvc.addWarn(gettext("Les unités documentaires sélectionnées ne peuvent pas être traitées car elles appartiennent à des projets différents"), {}, false);
+                MessageSrvc.addWarn(gettext('Les unités documentaires sélectionnées ne peuvent pas être traitées car elles appartiennent à des projets différents'), {}, false);
                 return;
             }
 
             // On autorise la sélection d'UDs :
             //   - avec les lots s'ils sont au statut Créé (CREATED),
             //   - ou sans lot.
-            if(type == "lot"){
+            if (type == 'lot') {
                 filteredDocs = _.filter(mainCtrl.selection, function (item) {
                     return !item.lot || mainCtrl.canRemoveLot(item);
                 });
@@ -768,7 +789,7 @@
             var docs = _.chain(mainCtrl.selection)
                 .values()
                 .map(function (item) {
-                    return _.pick(item, "identifier", "label", "lot");
+                    return _.pick(item, 'identifier', 'label', 'lot');
                 })
                 .value();
             return docs;
@@ -781,7 +802,7 @@
          */
         function getValidSelectionForProject() {
             if (mainCtrl.selectedLength === 0) {
-                MessageSrvc.addWarn(gettext("La sélection est vide"), {}, false);
+                MessageSrvc.addWarn(gettext('La sélection est vide'), {}, false);
                 return;
             }
             var docs = _.chain(mainCtrl.selection)
@@ -790,50 +811,45 @@
                     return !item.project;
                 })
                 .map(function (item) {
-                    return _.pick(item, "identifier", "label");
+                    return _.pick(item, 'identifier', 'label');
                 })
                 .value();
 
             if (docs.length === 0) {
-                MessageSrvc.addWarn(gettext("Les unités documentaires sélectionnées ne peuvent pas être traitées car elles appartiennent déjà à un projet existant"), {}, false);
+                MessageSrvc.addWarn(gettext('Les unités documentaires sélectionnées ne peuvent pas être traitées car elles appartiennent déjà à un projet existant'), {}, false);
                 return;
             }
             return docs;
         }
-
 
         /**
          * Modification des UD selectionnées.
          */
         function updateSelection() {
             if (mainCtrl.selectedLength === 0) {
-                MessageSrvc.addWarn(gettext("La sélection est vide"), {}, false);
+                MessageSrvc.addWarn(gettext('La sélection est vide'), {}, false);
                 return;
             }
 
-            ModalSrvc.modalUpdateDocUnitResults()
-                .then(function (updates) {
+            ModalSrvc.modalUpdateDocUnitResults().then(function (updates) {
+                updates.condReportType = updates.reportType['identifier'];
+                updates.docUnitIds = _.chain(mainCtrl.selection).values().pluck('identifier').value();
 
-                    updates.condReportType = updates.reportType['identifier'];
-                    updates.docUnitIds = _.chain(mainCtrl.selection).values().pluck("identifier").value();
-
-                    var deferred = $q.defer();
-                    DocUnitSrvc.updateSelection(updates).$promise
-                        .then(function (values) {
-                            deferred.resolve(values);
-                            if (values.length && values.length > 0) {
-                                _.each(values, function (val) {
-                                    MessageSrvc.addWarn(gettext("Le document [{{id}}] - {{label}} n'a pas été modifié: {{msg}}."),
-                                        { id: val.identifier, label: val.label, msg: val.message }, false, 30000);
-                                });
-                            }
-                            if (values.length < updates.docUnitIds.length) {
-                                MessageSrvc.addSuccess(gettext("Les unités documentaires ont été mises à jour"));
-                            }
-
-                            search();
+                var deferred = $q.defer();
+                DocUnitSrvc.updateSelection(updates).$promise.then(function (values) {
+                    deferred.resolve(values);
+                    if (values.length && values.length > 0) {
+                        _.each(values, function (val) {
+                            MessageSrvc.addWarn(gettext("Le document [{{id}}] - {{label}} n'a pas été modifié: {{msg}}."), { id: val.identifier, label: val.label, msg: val.message }, false, 30000);
                         });
+                    }
+                    if (values.length < updates.docUnitIds.length) {
+                        MessageSrvc.addSuccess(gettext('Les unités documentaires ont été mises à jour'));
+                    }
+
+                    search();
                 });
+            });
         }
 
         /**
@@ -842,22 +858,23 @@
          */
         function deleteSelection() {
             if (mainCtrl.selectedLength === 0) {
-                MessageSrvc.addWarn(gettext("La sélection est vide"), {}, false);
+                MessageSrvc.addWarn(gettext('La sélection est vide'), {}, false);
                 return;
             }
-            ModalSrvc.confirmDeletion(gettextCatalog.getPlural(mainCtrl.selectedLength,
-                "l'unité documentaire sélectionnée",
-                "les {{n}} unités documentaires sélectionnées", { n: mainCtrl.selectedLength }), 'xl', gettext("Les notices correspondantes seront également supprimées."))
-                .then(function () {
-                    DocUnitSrvc.deleteSelection({}, _.keys(mainCtrl.selection), function (value) {
-                        if (value.length > 0) {
-                            ModalSrvc.modalDeleteDocUnitResults(value, 'xl');
-                        } else {
-                            MessageSrvc.addSuccess(gettext("Aucune unité documentaire n'a été supprimée"));
-                        }
-                        search();
-                    });
+            ModalSrvc.confirmDeletion(
+                gettextCatalog.getPlural(mainCtrl.selectedLength, "l'unité documentaire sélectionnée", 'les {{n}} unités documentaires sélectionnées', { n: mainCtrl.selectedLength }),
+                'xl',
+                gettext('Les notices correspondantes seront également supprimées.')
+            ).then(function () {
+                DocUnitSrvc.deleteSelection({}, _.keys(mainCtrl.selection), function (value) {
+                    if (value.length > 0) {
+                        ModalSrvc.modalDeleteDocUnitResults(value, 'xl');
+                    } else {
+                        MessageSrvc.addSuccess(gettext("Aucune unité documentaire n'a été supprimée"));
+                    }
+                    search();
                 });
+            });
         }
 
         /**
@@ -865,66 +882,61 @@
          */
         function unlink() {
             if (mainCtrl.selectedLength === 0) {
-                MessageSrvc.addWarn(gettext("La sélection est vide"), {}, false);
+                MessageSrvc.addWarn(gettext('La sélection est vide'), {}, false);
                 return;
             }
             DocUnitSrvc.unlink({}, _.keys(mainCtrl.selection), function (value) {
                 if (value.length > 0) {
                     ModalSrvc.modalUnlinkDocUnitResults(value, 'xl');
                 } else {
-                    MessageSrvc.addSuccess(gettext("Les unités documentaires ont été détachées du projet / lot / train"));
+                    MessageSrvc.addSuccess(gettext('Les unités documentaires ont été détachées du projet / lot / train'));
                 }
                 search();
             });
         }
-
 
         /**
          * Téléchargement d'un modèle d'import de constats d'état pour les unités documentaires sélectionnées
          */
         function downloadCondReportTemplate() {
             if (mainCtrl.selectedLength === 0) {
-                MessageSrvc.addWarn(gettext("La sélection est vide"), {}, false);
+                MessageSrvc.addWarn(gettext('La sélection est vide'), {}, false);
                 return;
             }
             var params = {
-                "import-template": _.pluck(mainCtrl.selection, "identifier"),
-                "format": "XLSX",
-                "sortAttributes": mainCtrl.sortModel
+                'import-template': _.pluck(mainCtrl.selection, 'identifier'),
+                format: 'XLSX',
+                sortAttributes: mainCtrl.sortModel,
             };
             var url = 'api/rest/condreport?' + $httpParamSerializer(params);
             // on met la réponse dans un arraybuffer pour conserver l'encodage original dans le fichier sauvegardé
-            $http.get(url, { responseType: 'arraybuffer' })
-                .then(function (response) {
-                    var filename = "condition_report_import.xlsx";
-                    var blob = new Blob([response.data], { type: response.headers("content-type") });
-                    FileSaver.saveAs(blob, filename);
-                });
+            $http.get(url, { responseType: 'arraybuffer' }).then(function (response) {
+                var filename = 'condition_report_import.xlsx';
+                var blob = new Blob([response.data], { type: response.headers('content-type') });
+                FileSaver.saveAs(blob, filename);
+            });
         }
 
         /**
          * Téléchargement d'une archive pour l'export de masse
          */
         function massExport() {
-            ModalSrvc.selectExportTypes()
-                .then(function (types) {
-                    if (mainCtrl.selectedLength === 0) {
-                        MessageSrvc.addWarn(gettext("La sélection est vide"), {}, false);
-                        return;
-                    }
+            ModalSrvc.selectExportTypes().then(function (types) {
+                if (mainCtrl.selectedLength === 0) {
+                    MessageSrvc.addWarn(gettext('La sélection est vide'), {}, false);
+                    return;
+                }
 
-                    var filteredWithoutRecord = _.filter(mainCtrl.selection, function (sel) {
-                        return sel.hasRecord === false;
-                    });
-                    if (filteredWithoutRecord.length > 0) {
-                        MessageSrvc.addWarn(gettext(filteredWithoutRecord.length + " unité(s) documentaire(s) sélectionnée(s) sans notice. Les métadonnées (Mets) ne seront pas exportées."), {}, false);
-                    }
-                    ExportHandlerSrvc.massExport(
-                        _.pluck(mainCtrl.selection, "identifier"),
-                        {
-                            types: types
-                        });
+                var filteredWithoutRecord = _.filter(mainCtrl.selection, function (sel) {
+                    return sel.hasRecord === false;
                 });
+                if (filteredWithoutRecord.length > 0) {
+                    MessageSrvc.addWarn(gettext(filteredWithoutRecord.length + ' unité(s) documentaire(s) sélectionnée(s) sans notice. Les métadonnées (Mets) ne seront pas exportées.'), {}, false);
+                }
+                ExportHandlerSrvc.massExport(_.pluck(mainCtrl.selection, 'identifier'), {
+                    types: types,
+                });
+            });
         }
 
         /**
@@ -932,19 +944,17 @@
          * Zip file contains csv files
          */
         function massExportCSV() {
-            ModalSrvc.configureCsvExport()
-                .then(function (params) {
-                    params.docUnit = _.pluck(mainCtrl.selection, "identifier");
-                    var url = 'api/rest/export/csv?' + $httpParamSerializer(params);
+            ModalSrvc.configureCsvExport().then(function (params) {
+                params.docUnit = _.pluck(mainCtrl.selection, 'identifier');
+                var url = 'api/rest/export/csv?' + $httpParamSerializer(params);
 
-                    // on met la réponse dans un arraybuffer pour conserver l'encodage original dans le fichier sauvegardé
-                    $http.get(url, { responseType: 'arraybuffer' })
-                        .then(function (response) {
-                            var filename = "massDocUnits-" + new Date().getTime().toString(32) + ".csv";
-                            var blob = new Blob([response.data], { type: response.headers("content-type") });
-                            FileSaver.saveAs(blob, filename);
-                        });
+                // on met la réponse dans un arraybuffer pour conserver l'encodage original dans le fichier sauvegardé
+                $http.get(url, { responseType: 'arraybuffer' }).then(function (response) {
+                    var filename = 'massDocUnits-' + new Date().getTime().toString(32) + '.csv';
+                    var blob = new Blob([response.data], { type: response.headers('content-type') });
+                    FileSaver.saveAs(blob, filename);
                 });
+            });
         }
 
         /**
@@ -952,14 +962,14 @@
          */
         function massCines() {
             if (mainCtrl.selectedLength === 0) {
-                MessageSrvc.addWarn(gettext("La sélection est vide"), {}, false);
+                MessageSrvc.addWarn(gettext('La sélection est vide'), {}, false);
                 return;
             }
             var notValids = _.filter(mainCtrl.selection, function (ud) {
                 return ud.digitalDocumentStatus !== 'VALIDATED';
             });
             var params = {
-                "docs": _.pluck(_.difference(mainCtrl.selection, notValids), "identifier")
+                docs: _.pluck(_.difference(mainCtrl.selection, notValids), 'identifier'),
             };
 
             if (notValids.length > 0) {
@@ -974,22 +984,21 @@
                 }
             }
             MessageSrvc.addSuccess(gettext("Lancement de l'archivage CINES des documents"), {}, false, 10000);
-            ExportCinesSrvc.massExport(params).$promise
-                .then(function () {
-                    MessageSrvc.addSuccess(gettext("L'archivage CINES des documents a été effectué. Pour plus de détails, consultez la page des documents concernés"));
-                });
+            ExportCinesSrvc.massExport(params).$promise.then(function () {
+                MessageSrvc.addSuccess(gettext("L'archivage CINES des documents a été effectué. Pour plus de détails, consultez la page des documents concernés"));
+            });
         }
 
         function massOmeka() {
             if (mainCtrl.selectedLength === 0) {
-                MessageSrvc.addWarn(gettext("La sélection est vide"), {}, false);
+                MessageSrvc.addWarn(gettext('La sélection est vide'), {}, false);
                 return;
             }
             var notValids = _.filter(mainCtrl.selection, function (ud) {
                 return ud.digitalDocumentStatus !== 'VALIDATED';
             });
             var params = {
-                "docs": _.pluck(_.difference(mainCtrl.selection, notValids), "identifier")
+                docs: _.pluck(_.difference(mainCtrl.selection, notValids), 'identifier'),
             };
             if (notValids.length > 0) {
                 // seuls les docs validés peuvent etre archivés.
@@ -1002,23 +1011,22 @@
                     });
                 }
             }
-            MessageSrvc.addSuccess(gettext("Lancement de la diffusion vers Omeka des documents"), {}, false, 10000);
-            ExportOmekaSrvc.massExport(params).$promise
-            .then(function () {
-                MessageSrvc.addSuccess(gettext("La diffusion vers Omeka des documents a été effectuée. Pour plus de détails, consultez la page des documents concernés"));
+            MessageSrvc.addSuccess(gettext('Lancement de la diffusion vers Omeka des documents'), {}, false, 10000);
+            ExportOmekaSrvc.massExport(params).$promise.then(function () {
+                MessageSrvc.addSuccess(gettext('La diffusion vers Omeka des documents a été effectuée. Pour plus de détails, consultez la page des documents concernés'));
             });
         }
 
         function massIA() {
             if (mainCtrl.selectedLength === 0) {
-                MessageSrvc.addWarn(gettext("La sélection est vide"), {}, false);
+                MessageSrvc.addWarn(gettext('La sélection est vide'), {}, false);
                 return;
             }
             var notValids = _.filter(mainCtrl.selection, function (ud) {
                 return ud.digitalDocumentStatus !== 'VALIDATED';
             });
             var params = {
-                "docs": _.pluck(_.difference(mainCtrl.selection, notValids), "identifier")
+                docs: _.pluck(_.difference(mainCtrl.selection, notValids), 'identifier'),
             };
             if (notValids.length > 0) {
                 // seuls les docs validés peuvent etre archivés.
@@ -1031,26 +1039,25 @@
                     });
                 }
             }
-            MessageSrvc.addSuccess(gettext("Lancement de la diffusion IA des documents"), {}, false, 10000);
-            ExportInternetArchiveSrvc.massExport(params).$promise
-                .then(function () {
-                    MessageSrvc.addSuccess(gettext("La diffusion IA des documents a été effectuée. Pour plus de détails, consultez la page des documents concernés"));
-                });
+            MessageSrvc.addSuccess(gettext('Lancement de la diffusion IA des documents'), {}, false, 10000);
+            ExportInternetArchiveSrvc.massExport(params).$promise.then(function () {
+                MessageSrvc.addSuccess(gettext('La diffusion IA des documents a été effectuée. Pour plus de détails, consultez la page des documents concernés'));
+            });
         }
 
         /**
-        * diffusion sur la bibliothèque numérique
-        */
-        function massDigitalLibrary(){
+         * diffusion sur la bibliothèque numérique
+         */
+        function massDigitalLibrary() {
             if (mainCtrl.selectedLength === 0) {
-                MessageSrvc.addWarn(gettext("La sélection est vide"), {}, false);
+                MessageSrvc.addWarn(gettext('La sélection est vide'), {}, false);
                 return;
             }
             var notValids = _.filter(mainCtrl.selection, function (ud) {
                 return ud.digitalDocumentStatus !== 'VALIDATED';
             });
             var params = {
-                "docs": _.pluck(_.difference(mainCtrl.selection, notValids), "identifier")
+                docs: _.pluck(_.difference(mainCtrl.selection, notValids), 'identifier'),
             };
             if (notValids.length > 0) {
                 // seuls les docs validés peuvent etre archivés.
@@ -1063,44 +1070,43 @@
                     });
                 }
             }
-            MessageSrvc.addSuccess(gettext("Lancement de la diffusion des documents sur la bibliothèque numérique"), {}, false, 10000);
-            ExportDigitalLibrarySrvc.massExport(params).$promise
-                .then(function () {
-                    MessageSrvc.addSuccess(gettext("La diffusion des documents sur la bibliothèque numérique a été effectuée. Pour plus de détails, consultez la page des documents concernés"));
-                });
+            MessageSrvc.addSuccess(gettext('Lancement de la diffusion des documents sur la bibliothèque numérique'), {}, false, 10000);
+            ExportDigitalLibrarySrvc.massExport(params).$promise.then(function () {
+                MessageSrvc.addSuccess(gettext('La diffusion des documents sur la bibliothèque numérique a été effectuée. Pour plus de détails, consultez la page des documents concernés'));
+            });
         }
 
         /**
          * Téléversement des constats d'état, complétés à partir d'un modèle d'import
          */
         function uploadCondReport() {
-            ModalSrvc.selectFile()
-                .then(function (files) {
-                    var url = CONFIGURATION.numahop.url + 'api/rest/condreport';
+            ModalSrvc.selectFile().then(function (files) {
+                var url = CONFIGURATION.numahop.url + 'api/rest/condreport';
 
-                    var formData = new FormData();
-                    formData.append("import-report", true);
+                var formData = new FormData();
+                formData.append('import-report', true);
 
-                    // Emplacement du/des fichiers à importer
-                    _.each(files, function (file) {
-                        formData.append("file", file);
-                    });
-
-                    var config = {
-                        transformRequest: angular.identity,
-                        headers: {
-                            'Content-Type': undefined
-                        }
-                    };
-                    $http.post(url, formData, config)
-                        .success(function (data) {
-                            showErrorMessage(data);
-                            showSuccessMessage(data);
-                        })
-                        .error(function () {
-                            MessageSrvc.addError(gettext("Échec lors du téléversement du fichier"));
-                        });
+                // Emplacement du/des fichiers à importer
+                _.each(files, function (file) {
+                    formData.append('file', file);
                 });
+
+                var config = {
+                    transformRequest: angular.identity,
+                    headers: {
+                        'Content-Type': undefined,
+                    },
+                };
+                $http
+                    .post(url, formData, config)
+                    .success(function (data) {
+                        showErrorMessage(data);
+                        showSuccessMessage(data);
+                    })
+                    .error(function () {
+                        MessageSrvc.addError(gettext('Échec lors du téléversement du fichier'));
+                    });
+            });
         }
 
         function showErrorMessage(response) {
@@ -1112,29 +1118,32 @@
                 // récupération des erreurs + pgcnId
                 .map(function (data) {
                     return _.chain(data.errors)
-                        .pluck("code")
+                        .pluck('code')
                         .uniq()
                         .map(function (error) {
                             return {
                                 error: error,
-                                pgcnId: data.pgcnId
+                                pgcnId: data.pgcnId,
                             };
                         })
                         .value();
                 })
                 .flatten()
                 // Regroupement des pgcnId par code d'erreur
-                .groupBy("error")
+                .groupBy('error')
                 .pairs()
                 // Pour chaque paire [code erreur; liste de pgcnId], afficher un message d'erreur
                 .each(function (pair) {
-                    MessageSrvc.addError(ErreurSrvc.getMessage(pair[0]) + ": "
-                        + _.chain(pair[1])
-                            .pluck("pgcnId")
-                            .reduce(function (a, b) {
-                                return a + "<br/>" + b;
-                            }, "")
-                            .value());
+                    MessageSrvc.addError(
+                        ErreurSrvc.getMessage(pair[0]) +
+                            ': ' +
+                            _.chain(pair[1])
+                                .pluck('pgcnId')
+                                .reduce(function (a, b) {
+                                    return a + '<br/>' + b;
+                                }, '')
+                                .value()
+                    );
                 });
         }
 
@@ -1143,15 +1152,13 @@
                 .filter(function (data) {
                     return !data.errors || !data.errors.length;
                 })
-                .pluck("pgcnId")
+                .pluck('pgcnId')
                 .reduce(function (a, b) {
-                    return a + "<br/>" + b;
-                }, "")
+                    return a + '<br/>' + b;
+                }, '')
                 .value();
 
             MessageSrvc.addSuccess(gettext("L'import s'est correctement exécuté pour les unités documentaires:{{ud}}"), { ud: message }, true);
         }
-
-
     }
 })();

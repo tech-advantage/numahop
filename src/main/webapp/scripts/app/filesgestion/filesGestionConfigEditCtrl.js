@@ -1,22 +1,18 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('FilesGestionConfigEditCtrl', FilesGestionConfigEditCtrl);
+    angular.module('numaHopApp.controller').controller('FilesGestionConfigEditCtrl', FilesGestionConfigEditCtrl);
 
     function FilesGestionConfigEditCtrl($scope, $timeout, gettext, gettextCatalog, FilesGestionConfigSrvc, MessageSrvc, NumaHopInitializationSrvc) {
-
-
         $scope.toggleChoice = toggleChoice;
         $scope.saveConfiguration = saveConfiguration;
         // toggle switch labels
-        $scope.onLabelActiv = gettextCatalog.getString("Oui");
-        $scope.offLabelActiv = gettextCatalog.getString("Non");
+        $scope.onLabelActiv = gettextCatalog.getString('Oui');
+        $scope.offLabelActiv = gettextCatalog.getString('Non');
         $scope.displayTypeDeclench = displayTypeDeclench;
         $scope.confExportFtpChanged = confExportFtpChanged;
         $scope.isDeliveryFolderDisplayed = isDeliveryFolderDisplayed;
         $scope.conf = {};
-
 
         function displayTypeDeclench(typeDeclench) {
             return $scope.options.typeDeclench[typeDeclench] || typeDeclench;
@@ -39,35 +35,35 @@
          * Chargement des types de propriété
          */
         function loadConf(library) {
-
             if (angular.isDefined(library)) {
-
                 // Chargement configuration
-                $scope.configuration = FilesGestionConfigSrvc.get({
-                    id: library.identifier, library: true
-                }, function (config) {
-                    if (!config.identifier) {
-                        $scope.conf = getDefaultConfig();
-                    } else {
-                        $scope.conf = config;
+                $scope.configuration = FilesGestionConfigSrvc.get(
+                    {
+                        id: library.identifier,
+                        library: true,
+                    },
+                    function (config) {
+                        if (!config.identifier) {
+                            $scope.conf = getDefaultConfig();
+                        } else {
+                            $scope.conf = config;
+                        }
+                        $scope.loaded = true;
+                        setSelectedDeleveryFolder();
                     }
-                    $scope.loaded = true;
-                    setSelectedDeleveryFolder();
-                });
+                );
             }
         }
 
         function saveConfiguration() {
-
             $timeout(function () {
                 MessageSrvc.clearMessages();
                 FilesGestionConfigSrvc.saveOrUpdate({}, $scope.conf, function (value) {
                     if (value.identifier) {
-                        MessageSrvc.addSuccess(gettext("La configuration a été sauvegardée"));
+                        MessageSrvc.addSuccess(gettext('La configuration a été sauvegardée'));
                     }
                 });
             });
-
         }
 
         $scope.changeTypeDeclench = function (val) {
@@ -91,7 +87,7 @@
                 saveAipSip: false,
                 useExportFtp: false,
                 destinationDir: '',
-                library: $scope.selectedLibrary
+                library: $scope.selectedLibrary,
             };
 
             return config;
@@ -144,26 +140,25 @@
         }
 
         function loadExportFTPConf(library) {
-            if(!library) {
+            if (!library) {
                 $scope.options.exportftp = [];
                 return;
             }
 
-            NumaHopInitializationSrvc.loadExportFtpConf(library.identifier)
-                .then(function (data) {
-                    $scope.options.exportftp = data;
-                });
+            NumaHopInitializationSrvc.loadExportFtpConf(library.identifier).then(function (data) {
+                $scope.options.exportftp = data;
+            });
         }
 
         function confExportFtpChanged(value) {
-            if(value.label != null && value.label != "") {
+            if (value.label != null && value.label != '') {
                 $scope.displayDeliveriesFolder = true;
                 $scope.options.exportftp.forEach(function (conf) {
-                    if(conf.identifier === value.identifier) {
+                    if (conf.identifier === value.identifier) {
                         $scope.conf.activeExportFTPConfiguration = conf;
                         $scope.conf.activeExportFTPConfiguration.deliveryFolders = conf.deliveryFolders;
                     }
-                })
+                });
             } else {
                 $scope.displayDeliveriesFolder = false;
             }
@@ -177,6 +172,5 @@
             var exportConfig = $scope.conf;
             $scope.displayDeliveriesFolder = exportConfig != null && $scope.conf.activeExportFTPDeliveryFolder != null;
         }
-
     }
 })();

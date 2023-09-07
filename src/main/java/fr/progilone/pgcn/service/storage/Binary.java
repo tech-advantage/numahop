@@ -5,18 +5,17 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-
-import javax.inject.Inject;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class Binary implements Serializable {
-	
+
     protected final String digest;
 
     protected transient File file;
 
     protected long length;
-    
-    @Inject
+
+    @Autowired
     BinaryStorageManager bm;
 
     public Binary(final File file, final String digest) {
@@ -55,11 +54,12 @@ public class Binary implements Serializable {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + '(' + digest + ')';
+        return getClass().getSimpleName() + '('
+               + digest
+               + ')';
     }
 
-    private void writeObject(final java.io.ObjectOutputStream oos)
-            throws IOException, ClassNotFoundException {
+    private void writeObject(final java.io.ObjectOutputStream oos) throws IOException, ClassNotFoundException {
         oos.defaultWriteObject();
         oos.writeObject(file);
     }

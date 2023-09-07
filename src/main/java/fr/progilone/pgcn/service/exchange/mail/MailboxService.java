@@ -3,15 +3,14 @@ package fr.progilone.pgcn.service.exchange.mail;
 import fr.progilone.pgcn.domain.administration.MailboxConfiguration;
 import fr.progilone.pgcn.exception.PgcnTechnicalException;
 import fr.progilone.pgcn.service.util.CryptoService;
+import jakarta.mail.*;
+import jakarta.mail.search.FlagTerm;
+import java.util.Properties;
+import java.util.function.Consumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.mail.*;
-import javax.mail.search.FlagTerm;
-import java.util.Properties;
-import java.util.function.Consumer;
 
 /**
  * Created by Sébastien on 03/01/2017.
@@ -50,7 +49,8 @@ public class MailboxService {
             store.connect(conf.getHost(), conf.getPort(), conf.getUsername(), cryptoService.decrypt(conf.getPassword()));
 
             // Ouverture du répertoire distant
-            final Folder folder = conf.getInbox() != null ? store.getFolder(conf.getInbox()) : store.getDefaultFolder();
+            final Folder folder = conf.getInbox() != null ? store.getFolder(conf.getInbox())
+                                                          : store.getDefaultFolder();
             LOG.debug("Ouverture du répertoire {}", folder.getURLName());
             folder.open(Folder.READ_WRITE);
 

@@ -1,13 +1,11 @@
 package fr.progilone.pgcn.service.administration.mapper;
 
-import java.util.Set;
-
-import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
-
 import fr.progilone.pgcn.domain.administration.SftpConfiguration;
 import fr.progilone.pgcn.domain.dto.administration.SftpConfigurationDTO;
 import fr.progilone.pgcn.service.library.mapper.SimpleLibraryMapper;
+import java.util.Set;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 
 /**
  * Created by Sébastien on 30/12/2016.

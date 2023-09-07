@@ -1,5 +1,6 @@
 .modal-dialog {
-    input.form-control, select.form-control {
+    input.form-control,
+    select.form-control {
         padding: 0 12px;
     }
     @media (max-width: $screen-xs-max) {
@@ -12,24 +13,28 @@
     width: 400px;
     margin-top: 95px;
     margin-right: 30px;
-    overflow:auto;
+    overflow: auto;
 }
 
 .modal-scrollable {
-    height:80vh;
-    overflow:auto;
+    height: 80vh;
+    overflow: auto;
 }
 
 ul.dropdown-menu {
-	z-index : 10000
+    z-index: 10000;
 }
 
 /* Création d'une modal extra large */
 @media (min-width: $screen-lg-min) {
-  .modal-xl { width: 1150px; }
+    .modal-xl {
+        width: 1150px;
+    }
 }
 @media (min-width: $screen-md-min) and (max-width: $screen-md-max) {
-  .modal-xl { width: $modal-lg; }
+    .modal-xl {
+        width: $modal-lg;
+    }
 }
 
 .thumbnail > img.error-thumbnail {

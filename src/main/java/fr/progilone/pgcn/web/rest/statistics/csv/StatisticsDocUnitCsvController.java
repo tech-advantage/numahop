@@ -10,6 +10,13 @@ import fr.progilone.pgcn.service.statistics.StatisticsService;
 import fr.progilone.pgcn.web.rest.AbstractRestController;
 import fr.progilone.pgcn.web.rest.statistics.StatisticsDocUnitController;
 import fr.progilone.pgcn.web.util.AccessHelper;
+import jakarta.annotation.security.PermitAll;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,14 +29,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
-
-import javax.annotation.security.PermitAll;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 @Controller
 @RequestMapping(value = "/api/rest/statistics/docunit/csv")
@@ -44,9 +43,7 @@ public class StatisticsDocUnitCsvController extends AbstractRestController {
     private final StatisticsDocUnitController delegate;
 
     @Autowired
-    public StatisticsDocUnitCsvController(final AccessHelper accessHelper,
-                                          final ExportCSVService statisticsCsvService,
-                                          final StatisticsDocUnitController delegate) {
+    public StatisticsDocUnitCsvController(final AccessHelper accessHelper, final ExportCSVService statisticsCsvService, final StatisticsDocUnitController delegate) {
         this.accessHelper = accessHelper;
         this.statisticsCsvService = statisticsCsvService;
         this.delegate = delegate;
@@ -63,12 +60,10 @@ public class StatisticsDocUnitCsvController extends AbstractRestController {
                                    @RequestParam(value = "delivery", required = false) final List<String> deliveries,
                                    @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "from", required = false) final LocalDate fromDate,
                                    @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "to", required = false) final LocalDate toDate,
-                                   @RequestParam(value = "groupby", required = false, defaultValue = "PROJECT")
-                                   final StatisticsService.GroupBy groupBy,
+                                   @RequestParam(value = "groupby", required = false, defaultValue = "PROJECT") final StatisticsService.GroupBy groupBy,
                                    @RequestParam(value = "encoding", defaultValue = "ISO-8859-15") final String encoding,
                                    @RequestParam(value = "separator", defaultValue = ";") final char separator) throws PgcnTechnicalException {
-        final ResponseEntity<List<StatisticsDocUnitAverageDTO>> result =
-            delegate.getDocUnitAverages(request, libraries, projects, lots, deliveries, fromDate, toDate, groupBy);
+        final ResponseEntity<List<StatisticsDocUnitAverageDTO>> result = delegate.getDocUnitAverages(request, libraries, projects, lots, deliveries, fromDate, toDate, groupBy);
 
         try {
             writeResponseHeaderForDownload(response, "text/csv; charset=" + encoding, null, FILENAME);
@@ -94,11 +89,19 @@ public class StatisticsDocUnitCsvController extends AbstractRestController {
                                     @RequestParam(value = "encoding", defaultValue = "ISO-8859-15") final String encoding,
                                     @RequestParam(value = "separator", defaultValue = ";") final char separator) throws PgcnTechnicalException {
         // Droits d'accès
-        if (accessHelper.checkUserIsPresta()) { //  no presta
+        if (accessHelper.checkUserIsPresta()) { // no presta
             return;
         }
-        final ResponseEntity<Page<StatisticsDocPublishedDTO>> result =
-            delegate.getDocPublishedStat(request, libraries, projects, lots, fromDate, toDate, types, collections, 0, Integer.MAX_VALUE);
+        final ResponseEntity<Page<StatisticsDocPublishedDTO>> result = delegate.getDocPublishedStat(request,
+                                                                                                    libraries,
+                                                                                                    projects,
+                                                                                                    lots,
+                                                                                                    fromDate,
+                                                                                                    toDate,
+                                                                                                    types,
+                                                                                                    collections,
+                                                                                                    0,
+                                                                                                    Integer.MAX_VALUE);
         final List<StatisticsDocPublishedDTO> dtos = new ArrayList<>(result.getBody().getContent());
 
         try {
@@ -123,11 +126,10 @@ public class StatisticsDocUnitCsvController extends AbstractRestController {
                                    @RequestParam(value = "encoding", defaultValue = "ISO-8859-15") final String encoding,
                                    @RequestParam(value = "separator", defaultValue = ";") final char separator) throws PgcnTechnicalException {
         // Droits d'accès
-        if (accessHelper.checkUserIsPresta()) { //  no presta
+        if (accessHelper.checkUserIsPresta()) { // no presta
             return;
         }
-        final ResponseEntity<Page<StatisticsDocRejectedDTO>> result =
-            delegate.getDocRejectedStat(request, libraries, projects, providers, fromDate, toDate, 0, Integer.MAX_VALUE);
+        final ResponseEntity<Page<StatisticsDocRejectedDTO>> result = delegate.getDocRejectedStat(request, libraries, projects, providers, fromDate, toDate, 0, Integer.MAX_VALUE);
         final List<StatisticsDocRejectedDTO> dtos = new ArrayList<>(result.getBody().getContent());
 
         try {

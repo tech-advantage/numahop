@@ -1,11 +1,9 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('MailboxCtrl', MailboxCtrl);
+    angular.module('numaHopApp.controller').controller('MailboxCtrl', MailboxCtrl);
 
     function MailboxCtrl($routeParams, $scope, $timeout, MailboxSrvc, NumaHopInitializationSrvc, NumahopStorageService, StringTools) {
-
         var mainCtrl = this;
         mainCtrl.create = create;
         mainCtrl.getFirstLetter = getFirstLetter;
@@ -18,7 +16,7 @@
         mainCtrl.loaded = true;
         mainCtrl.newBoxes = [];
 
-        var FILTER_STORAGE_SERVICE_KEY = "conf_mail";
+        var FILTER_STORAGE_SERVICE_KEY = 'conf_mail';
 
         init();
 
@@ -41,7 +39,7 @@
 
         /**
          * Initialisation des critères de filtrage à partir du localstorage
-         * 
+         *
          */
         function initFilters() {
             var filters = NumahopStorageService.getFilter(FILTER_STORAGE_SERVICE_KEY);
@@ -52,19 +50,18 @@
 
         /**
          * Chargement de la liste des bibliothèques
-         * 
-         * @returns 
+         *
+         * @returns
          */
         function loadLibraries() {
-            return NumaHopInitializationSrvc.loadLibraries()
-                .then(function (libs) {
-                    mainCtrl.options.libraries = libs;
-                });
+            return NumaHopInitializationSrvc.loadLibraries().then(function (libs) {
+                mainCtrl.options.libraries = libs;
+            });
         }
 
         /**
          * Création d'une nouvelle configuration
-         * 
+         *
          */
         function create() {
             mainCtrl.editedBox = {};
@@ -74,8 +71,8 @@
 
         /**
          * Édition d'une configuration existante
-         * 
-         * @param {any} box 
+         *
+         * @param {any} box
          */
         function edit(box) {
             mainCtrl.editedBox = box;
@@ -88,28 +85,28 @@
             return $timeout(function () {
                 mainCtrl.configurationInclude = null;
                 $scope.$apply();
-                mainCtrl.configurationInclude = "scripts/app/configuration/mailbox/mailboxEdit.html";
+                mainCtrl.configurationInclude = 'scripts/app/configuration/mailbox/mailboxEdit.html';
             });
         }
 
         /**
          * Recherche des configurations
-         * 
-         * @param {any} event 
-         * @returns 
+         *
+         * @param {any} event
+         * @returns
          */
         function search(event) {
             // Si la recherche est lancée depuis le clavier => touche entrée
-            if (event && event.type === "keypress" && event.keyCode !== 13) {
+            if (event && event.type === 'keypress' && event.keyCode !== 13) {
                 return;
             }
             mainCtrl.loaded = false;
             NumahopStorageService.saveFilter(FILTER_STORAGE_SERVICE_KEY, mainCtrl.filters);
 
             var params = {
-                library: _.pluck(mainCtrl.filters.libraries, "identifier"),
+                library: _.pluck(mainCtrl.filters.libraries, 'identifier'),
                 search: mainCtrl.filters.search,
-                active: !mainCtrl.filters.inactive
+                active: !mainCtrl.filters.inactive,
             };
             mainCtrl.mailboxes = MailboxSrvc.query(params);
 
@@ -123,8 +120,8 @@
 
         /**
          * Sélection d'une configuration à partir de son identifiant
-         * 
-         * @param {any} id 
+         *
+         * @param {any} id
          */
         function select(id) {
             if (id) {
@@ -133,23 +130,23 @@
                 });
                 if (angular.isDefined(found)) {
                     edit(found);
-                }
-                else {
+                } else {
                     edit({ identifier: id });
                 }
-            }
-            else {
+            } else {
                 setSelection();
             }
         }
 
         /**
          * Mise à jour des flags _selected
-         * 
-         * @param {any} selBox 
+         *
+         * @param {any} selBox
          */
         function setSelection(selBox) {
-            _.each(mainCtrl.mailboxes, function (box) { delete box._selected; });
+            _.each(mainCtrl.mailboxes, function (box) {
+                delete box._selected;
+            });
             if (selBox) {
                 selBox._selected = true;
             }
@@ -157,7 +154,7 @@
 
         /**
          * Réinitialisation du filtre de recherche
-         * 
+         *
          */
         function reinitFilters() {
             mainCtrl.filters = { libraries: [] };
@@ -166,12 +163,12 @@
 
         /**
          * Retourne la 1e lettre de la configuration, pour le tri de la liste des résultats
-         * 
-         * @param {any} conf 
-         * @returns 
+         *
+         * @param {any} conf
+         * @returns
          */
         function getFirstLetter(conf) {
-            return StringTools.getFirstLetter(conf.label, "OTHER");
+            return StringTools.getFirstLetter(conf.label, 'OTHER');
         }
     }
 })();

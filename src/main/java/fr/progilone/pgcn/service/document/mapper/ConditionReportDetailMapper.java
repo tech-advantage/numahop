@@ -2,18 +2,6 @@ package fr.progilone.pgcn.service.document.mapper;
 
 import static fr.progilone.pgcn.domain.dto.document.conditionreport.ConditionReportValueVelocityDTO.ValueType.*;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-import org.mapstruct.AfterMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.Mappings;
-import org.mapstruct.factory.Mappers;
-
 import fr.progilone.pgcn.domain.document.conditionreport.ConditionReportDetail;
 import fr.progilone.pgcn.domain.document.conditionreport.Description;
 import fr.progilone.pgcn.domain.document.conditionreport.DescriptionProperty;
@@ -22,13 +10,24 @@ import fr.progilone.pgcn.domain.dto.document.conditionreport.ConditionReportDeta
 import fr.progilone.pgcn.domain.dto.document.conditionreport.ConditionReportDetailVelocityDTO;
 import fr.progilone.pgcn.domain.dto.document.conditionreport.ConditionReportValueDTO;
 import fr.progilone.pgcn.domain.dto.document.conditionreport.ConditionReportValueVelocityDTO;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
+import org.mapstruct.AfterMapping;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.Mappings;
+import org.mapstruct.factory.Mappers;
 
 @Mapper(uses = {ConditionReportValueMapper.class})
 public abstract class ConditionReportDetailMapper {
 
     public static final ConditionReportDetailMapper INSTANCE = Mappers.getMapper(ConditionReportDetailMapper.class);
 
-    @Mappings({@Mapping(target = "date", dateFormat = "dd/MM/yyyy"), @Mapping(target = "insurance", numberFormat = "#,##0.##")})
+    @Mappings({@Mapping(target = "date", dateFormat = "dd/MM/yyyy"),
+               @Mapping(target = "insurance", numberFormat = "#,##0.##")})
     public abstract ConditionReportDetailDTO detailToDTO(ConditionReportDetail detail);
 
     @Mappings({@Mapping(target = "date", dateFormat = "dd/MM/yyyy"),
@@ -50,7 +49,9 @@ public abstract class ConditionReportDetailMapper {
 
     @AfterMapping
     protected void updateDTO(final ConditionReportDetail detail, @MappingTarget final ConditionReportDetailVelocityDTO dto) {
-        detail.getDescriptions().stream().collect(Collectors.groupingBy(Description::getProperty))
+        detail.getDescriptions()
+              .stream()
+              .collect(Collectors.groupingBy(Description::getProperty))
               // Descriptions regroupées par propriétés
               .forEach((property, descriptions) -> {
                   final ConditionReportValueVelocityDTO valueDto = new ConditionReportValueVelocityDTO();
@@ -84,19 +85,25 @@ public abstract class ConditionReportDetailMapper {
     private List<ConditionReportValueDTO> joinValuesByProperty(final List<ConditionReportValueDTO> values) {
         return values.stream()
                      // Regroupement desc descriptions par prorpriété
-                     .collect(Collectors.groupingBy(ConditionReportValueDTO::getPropertyId)).values().stream()
+                     .collect(Collectors.groupingBy(ConditionReportValueDTO::getPropertyId))
+                     .values()
+                     .stream()
                      // Concaténation des valeur par propriété
                      .map(v -> v.stream().reduce((a, b) -> {
                          a.setComment(concat(a.getComment(), b.getComment()));
                          a.setValue(concat(a.getValue(), b.getValue()));
                          return a;
-                     })).filter(Optional::isPresent).map(Optional::get)
+                     }))
+                     .filter(Optional::isPresent)
+                     .map(Optional::get)
                      // Liste de propriétés réduite
                      .collect(Collectors.toList());
     }
 
     private String concat(final String a, final String b) {
-        return StringUtils.isNotBlank(a) ? StringUtils.isNotBlank(b) ? a + ", " + b : a : StringUtils.isNotBlank(b) ? b : "";
+        return StringUtils.isNotBlank(a) ? StringUtils.isNotBlank(b) ? a + ", "
+                                                                       + b
+                                                                     : a : StringUtils.isNotBlank(b) ? b : "";
     }
 
     /**
@@ -110,8 +117,7 @@ public abstract class ConditionReportDetailMapper {
         return descriptions.stream().filter(d -> DescriptionProperty.Type.valueOf(d.getPropertyType()) == type).collect(Collectors.toList());
     }
 
-    private List<ConditionReportValueVelocityDTO> getDescriptionList(final ConditionReportDetailVelocityDTO dto,
-                                                                     final DescriptionProperty.Type type) {
+    private List<ConditionReportValueVelocityDTO> getDescriptionList(final ConditionReportDetailVelocityDTO dto, final DescriptionProperty.Type type) {
         switch (type) {
             case VIGILANCE:
                 return dto.getVigilances();

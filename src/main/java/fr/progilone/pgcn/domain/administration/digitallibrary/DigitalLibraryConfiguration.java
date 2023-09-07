@@ -1,16 +1,14 @@
 package fr.progilone.pgcn.domain.administration.digitallibrary;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import fr.progilone.pgcn.domain.AbstractDomainObject;
 import fr.progilone.pgcn.domain.library.Library;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 /**
  * Classe décrivant la configurtation de diffusion sur la bibliothèque numérique (ex: Limb Gallery)
@@ -243,20 +241,16 @@ public class DigitalLibraryConfiguration extends AbstractDomainObject {
 
     @Override
     public String toString() {
-        return "DigitalLibraryConfiguration{" +
-               "label='"
+        return "DigitalLibraryConfiguration{" + "label='"
                + label
                + '\''
-               +
-               ", Serveur='"
+               + ", Serveur='"
                + address
                + '\''
-               +
-               ", active='"
+               + ", active='"
                + active
                + '\''
-               +
-               '}';
+               + '}';
     }
 
     public enum RecordFormat {

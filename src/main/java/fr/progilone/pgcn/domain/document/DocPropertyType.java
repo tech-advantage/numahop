@@ -1,23 +1,19 @@
 package fr.progilone.pgcn.domain.document;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import fr.progilone.pgcn.domain.AbstractDomainObject;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-
-import fr.progilone.pgcn.domain.AbstractDomainObject;
 
 /**
  * Classe représentant un type propriété d'une notice

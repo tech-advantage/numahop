@@ -57,12 +57,21 @@ public class ActivityDTO {
 
     @Override
     public String toString() {
-        return "ActivityDTO{" +
-            "sessionId='" + sessionId + '\'' +
-            ", userLogin='" + userLogin + '\'' +
-            ", ipAddress='" + ipAddress + '\'' +
-            ", page='" + page + '\'' +
-            ", time='" + time + '\'' +
-            '}';
+        return "ActivityDTO{" + "sessionId='"
+               + sessionId
+               + '\''
+               + ", userLogin='"
+               + userLogin
+               + '\''
+               + ", ipAddress='"
+               + ipAddress
+               + '\''
+               + ", page='"
+               + page
+               + '\''
+               + ", time='"
+               + time
+               + '\''
+               + '}';
     }
 }

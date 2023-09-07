@@ -18,8 +18,7 @@
     background: url('../images/select2/select2.png') right top no-repeat;
 }
 
-@media only screen and (-webkit-min-device-pixel-ratio: 1.5),
-only screen and (min-resolution: 2dppx) {
+@media only screen and (-webkit-min-device-pixel-ratio: 1.5), only screen and (min-resolution: 2dppx) {
     .select2-search input,
     .select2-search-choice-close,
     .select2-container .select2-choice abbr,
@@ -68,5 +67,5 @@ only screen and (min-resolution: 2dppx) {
 
 /** bug d'affichage de la liste déroulante quand les données saisies sont vides */
 .select2-drop-active {
-	opacity: 1 !important;
+    opacity: 1 !important;
 }

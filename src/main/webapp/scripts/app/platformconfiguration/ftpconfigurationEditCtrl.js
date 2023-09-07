@@ -1,13 +1,25 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('FTPConfigurationEditCtrl', FTPConfigurationEditCtrl);
+    angular.module('numaHopApp.controller').controller('FTPConfigurationEditCtrl', FTPConfigurationEditCtrl);
 
-    function FTPConfigurationEditCtrl($location, $routeParams, $scope, $timeout, codeSrvc,
-        DocUnitBaseService, FTPConfigurationSrvc, gettext, gettextCatalog, HistorySrvc, ListTools,
-        MessageSrvc, ModalSrvc, NumaHopInitializationSrvc, ValidationSrvc) {
-
+    function FTPConfigurationEditCtrl(
+        $location,
+        $routeParams,
+        $scope,
+        $timeout,
+        codeSrvc,
+        DocUnitBaseService,
+        FTPConfigurationSrvc,
+        gettext,
+        gettextCatalog,
+        HistorySrvc,
+        ListTools,
+        MessageSrvc,
+        ModalSrvc,
+        NumaHopInitializationSrvc,
+        ValidationSrvc
+    ) {
         $scope.backToList = backToList;
         $scope.cancel = cancel;
         $scope.delete = deleteConf;
@@ -19,11 +31,10 @@
         // Définition des listes déroulantes
         $scope.options = {
             boolean: DocUnitBaseService.options.booleanObj,
-            libraries: []
+            libraries: [],
         };
 
         init();
-
 
         /** Initialisation */
         function init() {
@@ -32,30 +43,27 @@
         }
 
         function loadLibrarySelect() {
-            return NumaHopInitializationSrvc.loadLibraries()
-                .then(function (libs) {
-                    $scope.options.libraries = libs;
-                });
+            return NumaHopInitializationSrvc.loadLibraries().then(function (libs) {
+                $scope.options.libraries = libs;
+            });
         }
 
         /****************************************************************/
         /** Actions *****************************************************/
         /****************************************************************/
         function deleteConf(configuration) {
-            ModalSrvc.confirmDeletion(gettextCatalog.getString("la configuration FTP {{label}}", configuration))
-                .then(function () {
-                    configuration.$delete(function (value) {
-                        MessageSrvc.addSuccess(gettext("La configuration {{label}} a été supprimée"), value);
-                        var removed = ListTools.findAndRemoveItemFromList(configuration, $scope.pagination.items);
-                        if (removed) {
-                            $scope.pagination.totalItems--;
-                        }
-                        else {
-                            ListTools.findAndRemoveItemFromList(configuration, $scope.newConfigurations);
-                        }
-                        $scope.backToList();
-                    });
+            ModalSrvc.confirmDeletion(gettextCatalog.getString('la configuration FTP {{label}}', configuration)).then(function () {
+                configuration.$delete(function (value) {
+                    MessageSrvc.addSuccess(gettext('La configuration {{label}} a été supprimée'), value);
+                    var removed = ListTools.findAndRemoveItemFromList(configuration, $scope.pagination.items);
+                    if (removed) {
+                        $scope.pagination.totalItems--;
+                    } else {
+                        ListTools.findAndRemoveItemFromList(configuration, $scope.newConfigurations);
+                    }
+                    $scope.backToList();
                 });
+            });
         }
 
         function duplicate() {
@@ -64,21 +72,20 @@
                 $scope.configuration._selected = false;
                 var identifier = $scope.configuration.identifier;
                 $scope.configuration = null;
-                $location.path("/platformconfiguration/ftpconfiguration").search({ id: identifier, duplicate: true });
+                $location.path('/platformconfiguration/ftpconfiguration').search({ id: identifier, duplicate: true });
             }
         }
 
         function cancel() {
             if ($routeParams.new || $routeParams.duplicate) {
                 backToList();
-            }
-            else {
+            } else {
                 $scope.ftpConfigurationForm.$cancel();
             }
         }
 
         function backToList() {
-            $location.path("/platformconfiguration/ftpconfiguration").search({});
+            $location.path('/platformconfiguration/ftpconfiguration').search({});
         }
 
         /****************************************************************/
@@ -91,9 +98,10 @@
             $timeout(function () {
                 var creation = !$scope.configuration.identifier;
 
-                $scope.configuration.$save({},
+                $scope.configuration.$save(
+                    {},
                     function (value) {
-                        MessageSrvc.addSuccess(gettext("La configuration {{name}} a été sauvegardée"), { name: value.name });
+                        MessageSrvc.addSuccess(gettext('La configuration {{name}} a été sauvegardée'), { name: value.name });
                         onSuccess();
                         // si création, on ajoute à la liste, sinon, on essaye de MAJ les infos dans la colonne du milieu
                         if (creation) {
@@ -105,14 +113,15 @@
                     },
                     function (response) {
                         $scope.errors = _.chain(response.data.errors)
-                            .groupBy("field")
+                            .groupBy('field')
                             .mapObject(function (list) {
-                                return _.pluck(list, "code");
+                                return _.pluck(list, 'code');
                             })
                             .value();
 
                         openForm();
-                    });
+                    }
+                );
             });
         }
 
@@ -136,7 +145,7 @@
             var newConfiguration = {
                 _selected: true,
                 identifier: configuration.identifier,
-                label: configuration.label
+                label: configuration.label,
             };
             var i = 0;
             for (i = 0; i < newConfigurations.length; i++) {
@@ -149,7 +158,7 @@
         }
         // Gestion de la configuration renvoyée par le serveur
         function onSuccess() {
-            HistorySrvc.add(gettextCatalog.getString("Configuration {{label}}", $scope.configuration));
+            HistorySrvc.add(gettextCatalog.getString('Configuration {{label}}', $scope.configuration));
             displayMessages();
         }
         // Ouverture du formulaire et des sous formulaires
@@ -178,22 +187,28 @@
 
             if ('duplicate' in $routeParams && angular.isDefined($routeParams.id)) {
                 // Duplication
-                $scope.configuration = FTPConfigurationSrvc.duplicate({
-                    id: $routeParams.id
-                }, function () {
-                    afterLoadingConfiguration();
-                    openForm();
-                });
+                $scope.configuration = FTPConfigurationSrvc.duplicate(
+                    {
+                        id: $routeParams.id,
+                    },
+                    function () {
+                        afterLoadingConfiguration();
+                        openForm();
+                    }
+                );
             } else if (angular.isDefined($routeParams.id)) {
                 // Chargement confgiuration
-                $scope.configuration = FTPConfigurationSrvc.get({
-                    id: $routeParams.id
-                }, function () {
-                    afterLoadingConfiguration();
-                });
+                $scope.configuration = FTPConfigurationSrvc.get(
+                    {
+                        id: $routeParams.id,
+                    },
+                    function () {
+                        afterLoadingConfiguration();
+                    }
+                );
             } else if (angular.isDefined($routeParams.new)) {
                 // Création d'une nouvelle configuration
-                HistorySrvc.add(gettext("Nouvelle configuration"));
+                HistorySrvc.add(gettext('Nouvelle configuration'));
                 $scope.configuration = new FTPConfigurationSrvc();
                 $scope.configuration.active = true;
                 afterLoadingConfiguration();

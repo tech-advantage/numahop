@@ -1,24 +1,5 @@
 package fr.progilone.pgcn.service.delivery.ui;
 
-import java.time.LocalDate;
-import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import fr.progilone.pgcn.domain.checkconfiguration.CheckConfiguration;
 import fr.progilone.pgcn.domain.delivery.DeliveredDocument;
 import fr.progilone.pgcn.domain.delivery.Delivery;
@@ -62,6 +43,23 @@ import fr.progilone.pgcn.service.es.EsDeliveryService;
 import fr.progilone.pgcn.service.es.EsDocUnitService;
 import fr.progilone.pgcn.service.workflow.DocUnitWorkflowService;
 import fr.progilone.pgcn.web.util.AccessHelper;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Service dédié à les gestion des vues des lots
@@ -115,9 +113,8 @@ public class UIDeliveryService {
         return DeliveredDocumentMapper.INSTANCE.docToSimpleDTOs(digitalDocuments);
     }
 
-    @Transactional
     public PreDeliveryDTO predeliver(final String id, final boolean createDocs) {
-        final Delivery delivery = deliveryService.getOne(id);
+        final Delivery delivery = deliveryService.findOneWithDep(id);
         return deliveryProcessService.predeliver(delivery, createDocs);
     }
 
@@ -133,9 +130,6 @@ public class UIDeliveryService {
 
     /**
      * Infos espace disque / bibliothèque.
-     *
-     * @param libIdentifier
-     * @return
      */
     public Map<String, Long> getDiskInfos(final String libIdentifier) {
 
@@ -145,11 +139,6 @@ public class UIDeliveryService {
     /**
      * Réalisation de la livraison avec une partie synchrone (initialisation) et une
      * partie asynchrone (réalisation)
-     *
-     * @param identifier
-     * @param lockedDocs
-     * @param createDocs
-     * @throws PgcnTechnicalException
      */
     public void deliver(final String identifier,
                         final List<String> lockedDocs,
@@ -158,8 +147,8 @@ public class UIDeliveryService {
                         final List<String> prefixToExclude) throws PgcnTechnicalException {
 
         final CustomUserDetails user = SecurityUtils.getCurrentUser();
-        final String libraryId = user != null ? user.getLibraryId() : null;
-
+        final String libraryId = user != null ? user.getLibraryId()
+                                              : null;
 
         // Synchrone
         if (createDocs) {
@@ -188,16 +177,13 @@ public class UIDeliveryService {
         final List<SimpleDeliveryDTO> previousDeliveriesForSlips = new ArrayList<>();
         final List<DeliveredDocument> slips = deliveryService.findDeliveredWithCheckSlipsByDigitalDoc(digitalDocId);
         if (CollectionUtils.isNotEmpty(slips) && slips.size() > 1) {
-            slips.subList(1, slips.size())
-                 .stream()
-                 .filter(doc -> DigitalDocumentStatus.REJECTED.equals(doc.getStatus()) && doc.getCheckSlip() != null)
-                 .forEach(doc -> {
-                     final SimpleDeliveryDTO dto = new SimpleDeliveryDTO();
-                     dto.setIdentifier(doc.getDelivery().getIdentifier());
-                     dto.setLabel(doc.getDelivery().getLabel());
-                     dto.setStatus(DeliveryStatus.REJECTED);
-                     previousDeliveriesForSlips.add(dto);
-                 });
+            slips.subList(1, slips.size()).stream().filter(doc -> DigitalDocumentStatus.REJECTED.equals(doc.getStatus()) && doc.getCheckSlip() != null).forEach(doc -> {
+                final SimpleDeliveryDTO dto = new SimpleDeliveryDTO();
+                dto.setIdentifier(doc.getDelivery().getIdentifier());
+                dto.setLabel(doc.getDelivery().getLabel());
+                dto.setStatus(DeliveryStatus.REJECTED);
+                previousDeliveriesForSlips.add(dto);
+            });
         }
         return previousDeliveriesForSlips;
     }
@@ -238,16 +224,6 @@ public class UIDeliveryService {
 
     /**
      * Recherche paramétrée
-     *
-     * @param search
-     * @param projects
-     * @param lots
-     * @param status
-     * @param dateFrom
-     * @param dateTo
-     * @param page
-     * @param size
-     * @return
      */
     public Page<SimpleDeliveryDTO> search(final String search,
                                           final List<String> libraries,
@@ -339,12 +315,15 @@ public class UIDeliveryService {
                                                                         final LocalDate toDate) {
         return deliveryService.findByProviders(libraries,
                                                providers,
-                                               Arrays.asList(DeliveryStatus.TO_BE_CONTROLLED, DeliveryStatus.DELIVERING, DeliveryStatus.DELIVERING_ERROR,DeliveryStatus.AUTOMATICALLY_REJECTED),
+                                               Arrays.asList(DeliveryStatus.TO_BE_CONTROLLED,
+                                                             DeliveryStatus.DELIVERING,
+                                                             DeliveryStatus.DELIVERING_ERROR,
+                                                             DeliveryStatus.AUTOMATICALLY_REJECTED),
                                                fromDate,
-                                               toDate).stream()
+                                               toDate)
+                              .stream()
                               // la livraison a un lot, un projet, une bibliothèque
-                              .filter(dlv -> dlv.getLot() != null
-                                             && dlv.getLot().getProject() != null
+                              .filter(dlv -> dlv.getLot() != null && dlv.getLot().getProject() != null
                                              && dlv.getLot().getProject().getLibrary() != null)
 
                               // Regroupement des livraisons par bibliothèque et prestataire
@@ -354,7 +333,9 @@ public class UIDeliveryService {
                                   final Library library = project.getLibrary();
                                   return Pair.of(library, lot.getProvider());
 
-                              }, Collectors.toList())).entrySet().stream()
+                              }, Collectors.toList()))
+                              .entrySet()
+                              .stream()
                               // Pour chaque bibliothèque + prestataire: création d'un DTO
                               .map(e -> {
                                   final Library library = e.getKey().getLeft();
@@ -372,26 +353,23 @@ public class UIDeliveryService {
                                   }
 
                                   dto.setNbDelivery(deliveries.size());
-                                  dto.setNbLot(deliveries.stream().map(Delivery::getLotId).distinct().count());
+                                  dto.setNbLot(deliveries.stream().map(Delivery::getLot).distinct().count());
 
                                   return dto;
 
-                              }).collect(Collectors.toList());
+                              })
+                              .collect(Collectors.toList());
     }
 
     /**
      * Retourne le vrai statut de la livraison une fois que tous les documents ont ete livres.
-     *
-     * @param delivery
-     * @return
      */
     public Map<String, Object> getDeliveryStatus(final Delivery delivery) {
 
         final Map<String, Object> response = new HashMap<>();
         response.put("identifier", delivery.getIdentifier());
 
-        final Optional<DeliveredDocument> opt =
-            delivery.getDocuments().stream().filter(doc -> doc.getStatus() == DigitalDocument.DigitalDocumentStatus.DELIVERING).findAny();
+        final Optional<DeliveredDocument> opt = delivery.getDocuments().stream().filter(doc -> doc.getStatus() == DigitalDocument.DigitalDocumentStatus.DELIVERING).findAny();
         if (opt.isPresent()) {
             response.put("status", DigitalDocument.DigitalDocumentStatus.DELIVERING);
         } else {
@@ -404,10 +382,6 @@ public class UIDeliveryService {
      * Détache 1 digitalDocument de la livraison.
      * => debloquer la livraison
      * => permettre une relivraison du doc bloqué
-     *
-     * @param deliveryId
-     * @param docToDetach
-     * @return
      */
     @Transactional
     public DeliveryDTO detachDigitalDoc(final String deliveryId, final DigitalDocumentDTO docToDetach) {
@@ -415,8 +389,8 @@ public class UIDeliveryService {
         // suppression du deliveredDocument qui bloque
         deliveryService.deleteDeliveredDocument(deliveryId, docToDetach.getIdentifier());
 
-        //update status of related digital document
-        DigitalDocument digitDoc = digitalDocumentService.findOne(docToDetach.getIdentifier());
+        // update status of related digital document
+        final DigitalDocument digitDoc = digitalDocumentService.findOne(docToDetach.getIdentifier());
         digitDoc.setStatus(DigitalDocumentStatus.CANCELED);
         digitalDocumentService.save(digitDoc);
 

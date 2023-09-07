@@ -1,19 +1,13 @@
 package fr.progilone.pgcn.service;
 
+import fr.progilone.pgcn.exception.PgcnException;
+import fr.progilone.pgcn.exception.message.PgcnError;
+import fr.progilone.pgcn.exception.message.PgcnErrorCode;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
-import fr.progilone.pgcn.exception.PgcnException;
-import fr.progilone.pgcn.exception.message.PgcnError;
-import fr.progilone.pgcn.exception.message.PgcnErrorCode;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRParameter;
@@ -27,6 +21,10 @@ import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import net.sf.jasperreports.export.SimpleXlsReportConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 /**
  * Service de génération de rapports JasperReports
@@ -35,19 +33,19 @@ import net.sf.jasperreports.export.SimpleXlsReportConfiguration;
 public class JasperReportsService {
 
     private static final Logger LOG = LoggerFactory.getLogger(JasperReportsService.class);
-    
+
     public static final String ENCODING_UTF8 = "utf-8";
 
     /**
      * Rapports (sans l'extension jasper)
      */
     public static final String REPORT_TEST = "test";
-    
+
     // Bordereau de livraison
     public static final String REPORT_DELIV_SLIP = "deliverySlip";
     // Bordereau de controle
     public static final String REPORT_CHECK_SLIP = "checkSlip";
-    // Bordereau d'envoi du train (de constat d'etat) 
+    // Bordereau d'envoi du train (de constat d'etat)
     public static final String REPORT_CONDREPORT_SLIP = "condReportSlip";
 
     /**
@@ -63,7 +61,7 @@ public class JasperReportsService {
      */
     @Value("${report.imagePath}")
     private String imagePath;
-    
+
     /**
      * Repertoire contenant les logos des bibliotheques.
      */
@@ -97,12 +95,16 @@ public class JasperReportsService {
                                      final OutputStream outputStream,
                                      final String libraryId) throws PgcnException {
 
-        try (InputStream reportStream = this.getClass().getResourceAsStream("/reporting/" + report + ".jasper")) {
+        try (InputStream reportStream = this.getClass()
+                                            .getResourceAsStream("/reporting/" + report
+                                                                 + ".jasper")) {
             // Rapport
             final JasperReport jasperReport = (JasperReport) JRLoader.loadObject(reportStream);
 
             // Emplacement des images des rapports
-            parameters.put("P_IMAGE_PATH", libraryDir + "/" + libraryId);
+            parameters.put("P_IMAGE_PATH",
+                           libraryDir + "/"
+                                           + libraryId);
             parameters.put("P_REPORT_PATH", "reporting");
 
             // pas de pagination avec excel
@@ -130,11 +132,10 @@ public class JasperReportsService {
             LOG.error(e.getMessage(), e);
 
             final PgcnError error = new PgcnError.Builder().setCode(PgcnErrorCode.REPORT_GENERATION)
-                                                     .setMessage("Une erreur est survenue lors de la génération du rapport "
-                                                                 + report
-                                                                 + ": "
-                                                                 + e.getMessage())
-                                                     .build();
+                                                           .setMessage("Une erreur est survenue lors de la génération du rapport " + report
+                                                                       + ": "
+                                                                       + e.getMessage())
+                                                           .build();
             throw new PgcnException(error);
         }
     }

@@ -1,7 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <!-- Changeset du module Workflow (instances) -->
     <changeSet id="pgcn-create-workflow-2" author="progilone">
@@ -9,87 +11,89 @@
         <!-- DocUnit Workflow -->
         <createTable tableName="doc_workflow">
             <column name="identifier" type="varchar(191)">
-                <constraints primaryKey="true" nullable="false"/>
+                <constraints primaryKey="true" nullable="false" />
             </column>
             
             <column name="model" type="varchar(191)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="start_date" type="date" />
             <column name="end_date" type="date" />
             
             <column name="version" type="BIGINT">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_by" type="varchar(255)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_by" type="varchar(255)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>
         <!-- Clés étrangère -->
-        <addForeignKeyConstraint baseTableName="doc_workflow" baseColumnNames="model" constraintName="fk_doc_workflow_model"
-                                 referencedTableName="workflow_model" referencedColumnNames="identifier"/>
+        <addForeignKeyConstraint baseTableName="doc_workflow" baseColumnNames="model" constraintName="fk_doc_workflow_model" referencedTableName="workflow_model" referencedColumnNames="identifier" />
         
         <!-- DocUnit State -->
         <createTable tableName="doc_workflow_state">
             <column name="identifier" type="varchar(191)">
-                <constraints primaryKey="true" nullable="false"/>
+                <constraints primaryKey="true" nullable="false" />
             </column>
             
-            <column name="key" type="varchar(255)"/>
-            <column name="status" type="varchar(255)"/>
+            <column name="key" type="varchar(255)" />
+            <column name="status" type="varchar(255)" />
             <column name="model_state" type="varchar(191)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="workflow" type="varchar(191)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="start_date" type="date" />
             <column name="end_date" type="date" />
             <column name="due_date" type="date" />
-            <column name="user" type="varchar(255)"/>
+            <column name="user" type="varchar(255)" />
             
             <column name="version" type="BIGINT">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_by" type="varchar(255)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_by" type="varchar(255)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>
         <!-- Clés étrangère -->
-        <addForeignKeyConstraint baseTableName="doc_workflow_state" baseColumnNames="workflow" constraintName="fk_doc_workflow_state_workflow"
-                                 referencedTableName="doc_workflow" referencedColumnNames="identifier"/>
-        <addForeignKeyConstraint baseTableName="doc_workflow_state" baseColumnNames="model_state" constraintName="fk_doc_workflow_state_model_state"
-                                 referencedTableName="workflow_model_state" referencedColumnNames="identifier"/>
+        <addForeignKeyConstraint baseTableName="doc_workflow_state" baseColumnNames="workflow" constraintName="fk_doc_workflow_state_workflow" referencedTableName="doc_workflow" referencedColumnNames="identifier" />
+        <addForeignKeyConstraint
+            baseTableName="doc_workflow_state"
+            baseColumnNames="model_state"
+            constraintName="fk_doc_workflow_state_model_state"
+            referencedTableName="workflow_model_state"
+            referencedColumnNames="identifier"
+        />
         
         <!-- Lien DocUnit / Workflow -->
         <addColumn tableName="doc_unit">
-            <column name="workflow" type="varchar(191)"/>
+            <column name="workflow" type="varchar(191)" />
         </addColumn>
         <!-- Clés étrangère -->
-        <addForeignKeyConstraint baseTableName="doc_unit" baseColumnNames="workflow" constraintName="fk_doc_unit_workflow"
-                                 referencedTableName="doc_workflow" referencedColumnNames="identifier"/>
+        <addForeignKeyConstraint baseTableName="doc_unit" baseColumnNames="workflow" constraintName="fk_doc_unit_workflow" referencedTableName="doc_workflow" referencedColumnNames="identifier" />
                                  
         <!-- Ajout de la possibilité de rendre inactif un workflow model -->
         <addColumn tableName="workflow_model">
-            <column name="active" type="BOOLEAN"/>
+            <column name="active" type="BOOLEAN" />
         </addColumn>
     </changeSet>
 </databaseChangeLog>

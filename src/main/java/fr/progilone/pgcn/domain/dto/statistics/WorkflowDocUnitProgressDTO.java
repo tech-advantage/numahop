@@ -1,11 +1,10 @@
 package fr.progilone.pgcn.domain.dto.statistics;
 
+import fr.progilone.pgcn.domain.workflow.WorkflowStateKey;
+import fr.progilone.pgcn.domain.workflow.WorkflowStateStatus;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
-import fr.progilone.pgcn.domain.workflow.WorkflowStateKey;
-import fr.progilone.pgcn.domain.workflow.WorkflowStateStatus;
 
 public class WorkflowDocUnitProgressDTO {
 
@@ -151,6 +150,7 @@ public class WorkflowDocUnitProgressDTO {
     }
 
     public static final class WorkflowState {
+
         private WorkflowStateKey key;
         private WorkflowStateStatus status;
         private LocalDateTime startDate;

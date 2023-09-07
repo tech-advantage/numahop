@@ -1,97 +1,100 @@
 /** Mixins */
 @mixin sid-graphe-general-by-type($color) {
-	&.icon {
-		.from {
-			stop-color: lighten($color, 60%);
-           	stop-opacity: 1;
-		}
-		.to {
-			stop-color: $color;
+    &.icon {
+        .from {
+            stop-color: lighten($color, 60%);
             stop-opacity: 1;
-		}
+        }
+        .to {
+            stop-color: $color;
+            stop-opacity: 1;
+        }
     }
     svg &.bubble {
-    	.description > .fillwith {
-    		fill: $color;
-    	}
-    	.foreground {
-	    	>line, >circle {
-	        	stroke: $color;
-	    	}
-		}
+        .description > .fillwith {
+            fill: $color;
+        }
+        .foreground {
+            > line,
+            > circle {
+                stroke: $color;
+            }
+        }
     }
     svg &.path {
-   		stroke: $color;
+        stroke: $color;
     }
     svg .layout-tree &.bubble {
-    	&.entity, &.group, &.main {
-    		> circle {
-	    		fill: $color;
-	    		stroke: $color;
-    		}
-    	}
-    	&.entity > circle.nochild {
-   			fill: #FFF;
-   		}
-    	&.link > circle {
-    		stroke: $color;
-    	}
-	}
+        &.entity,
+        &.group,
+        &.main {
+            > circle {
+                fill: $color;
+                stroke: $color;
+            }
+        }
+        &.entity > circle.nochild {
+            fill: #fff;
+        }
+        &.link > circle {
+            stroke: $color;
+        }
+    }
 }
 
 /** SVG **/
 svg {
     .bubble {
         cursor: pointer;
-        
+
         a {
-        	fill: #fff;
+            fill: #fff;
             text-decoration: none;
         }
         circle.state {
-        	fill: none;
-        	stroke: #FFF;
-        	stroke-width: 2px;
-        	
-        	&.available {
-        		fill: #C6D523;
-        	}
-        	&.not_available {
-        		fill: #D9534F;
-        	}
+            fill: none;
+            stroke: #fff;
+            stroke-width: 2px;
+
+            &.available {
+                fill: #c6d523;
+            }
+            &.not_available {
+                fill: #d9534f;
+            }
         }
         text.detail {
             font-weight: normal;
             font-size: 10pt;
         }
         .background > .fillwith {
-        	fill: #E6E6E6;
+            fill: #e6e6e6;
         }
         .description {
-       		fill: #fff;
-       		
-        	.fillwith {
-        		opacity: 0.6;
-        	}
+            fill: #fff;
+
+            .fillwith {
+                opacity: 0.6;
+            }
         }
         .foreground {
-	    	>line {
-		        stroke-width: 6px;
-	    	}
-	    	>circle {
-	    		fill: none;
-		        stroke-width: 6px;
-	    	}
-	    }
+            > line {
+                stroke-width: 6px;
+            }
+            > circle {
+                fill: none;
+                stroke-width: 6px;
+            }
+        }
         .nothumb {
-        	>.backg {
-        		fill: $sid-main-color;
-	    	}
-	    	>text {
-	    		fill: #fff;
-		        font-weight: bold;
-		    }
-		}
+            > .backg {
+                fill: $sid-main-color;
+            }
+            > text {
+                fill: #fff;
+                font-weight: bold;
+            }
+        }
         .title {
             font-weight: bold;
             font-size: 12pt;
@@ -99,48 +102,48 @@ svg {
         }
     }
     path.path {
-		fill: none;
-		stroke: $sid-main-color;
-		stroke-width: 6px;
+        fill: none;
+        stroke: $sid-main-color;
+        stroke-width: 6px;
     }
     .layout-tree {
-    	text.title {
-    		font-size: 10pt;
-    		font-weight: normal;
-    	}
-    	.link > circle {
-    		fill: #FFF;
-    		stroke-width: 1.5px;
-    	}
-    	.group text.title {
-    		fill: #FFF;
-    	}
-    	.main text.title {
-    		fill: #FFF;
-    		font-size: 12pt;
-    		font-weight: bold;
-    	}
-    	path.path {
-    		opacity: 0.6;
-    		stroke-width: 1px;
-    	}
+        text.title {
+            font-size: 10pt;
+            font-weight: normal;
+        }
+        .link > circle {
+            fill: #fff;
+            stroke-width: 1.5px;
+        }
+        .group text.title {
+            fill: #fff;
+        }
+        .main text.title {
+            fill: #fff;
+            font-size: 12pt;
+            font-weight: bold;
+        }
+        path.path {
+            opacity: 0.6;
+            stroke-width: 1px;
+        }
     }
 }
 .agent {
-	@include sid-graphe-general-by-type(rgba(255, 0, 0, 0.7));
+    @include sid-graphe-general-by-type(rgba(255, 0, 0, 0.7));
 }
 .concept {
-	@include sid-graphe-general-by-type(#ec7404);
+    @include sid-graphe-general-by-type(#ec7404);
 }
 .expression {
-	@include sid-graphe-general-by-type(#67608B);
+    @include sid-graphe-general-by-type(#67608b);
 }
 .item {
-	@include sid-graphe-general-by-type(#2A6496);
+    @include sid-graphe-general-by-type(#2a6496);
 }
 .manifestation {
-	@include sid-graphe-general-by-type(#2FAF8E);
+    @include sid-graphe-general-by-type(#2faf8e);
 }
 .work {
-	@include sid-graphe-general-by-type($sid-main-color);
+    @include sid-graphe-general-by-type($sid-main-color);
 }

@@ -1,32 +1,9 @@
 package fr.progilone.pgcn.service.exchange;
 
-import static fr.progilone.pgcn.exception.message.PgcnErrorCode.MAPPING_LABEL_MANDATORY;
-import static fr.progilone.pgcn.exception.message.PgcnErrorCode.MAPPING_LIBRARY_MANDATORY;
-import static fr.progilone.pgcn.exception.message.PgcnErrorCode.MAPPING_RULE_FIELD_MANDATORY;
-import static fr.progilone.pgcn.exception.message.PgcnErrorCode.MAPPING_RULE_LABEL_MANDATORY;
-import static fr.progilone.pgcn.exception.message.PgcnErrorCode.MAPPING_RULE_PGCNID_MANDATORY;
-import static fr.progilone.pgcn.exception.message.PgcnErrorCode.MAPPING_RULE_RIGHTS_MANDATORY;
-import static fr.progilone.pgcn.exception.message.PgcnErrorCode.MAPPING_TYPE_MANDATORY;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.internal.stubbing.answers.ReturnsArgumentAt;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.test.util.ReflectionTestUtils;
+import static fr.progilone.pgcn.exception.message.PgcnErrorCode.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 import fr.progilone.pgcn.domain.document.DocPropertyType;
 import fr.progilone.pgcn.domain.dto.exchange.MappingDTO;
@@ -41,11 +18,21 @@ import fr.progilone.pgcn.service.exchange.mapper.MappingMapper;
 import fr.progilone.pgcn.service.library.mapper.SimpleLibraryMapper;
 import fr.progilone.pgcn.util.CatchAndReturnArgumentAt;
 import fr.progilone.pgcn.util.TestUtil;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.internal.stubbing.answers.ReturnsArgumentAt;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 /**
  * Created by Sebastien on 23/11/2016.
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class MappingServiceTest {
 
     @Mock
@@ -57,7 +44,7 @@ public class MappingServiceTest {
 
     private MappingService service;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         final MappingMapper mapper = MappingMapper.INSTANCE;
         ReflectionTestUtils.setField(mapper, "simpleLibraryMapper", SimpleLibraryMapper.INSTANCE);
@@ -133,7 +120,7 @@ public class MappingServiceTest {
     public void testDelete() {
         final String id = "MAPPING-001";
         service.delete(id);
-        verify(mappingRepository).delete(id);
+        verify(mappingRepository).deleteById(id);
     }
 
     @Test

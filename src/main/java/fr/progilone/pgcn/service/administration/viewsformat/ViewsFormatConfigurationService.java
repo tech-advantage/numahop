@@ -1,13 +1,5 @@
 package fr.progilone.pgcn.service.administration.viewsformat;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import fr.progilone.pgcn.domain.administration.viewsformat.ViewsFormatConfiguration;
 import fr.progilone.pgcn.domain.lot.Lot;
 import fr.progilone.pgcn.exception.PgcnValidationException;
@@ -19,16 +11,22 @@ import fr.progilone.pgcn.repository.library.LibraryRepository;
 import fr.progilone.pgcn.repository.lot.LotRepository;
 import fr.progilone.pgcn.repository.project.ProjectRepository;
 import fr.progilone.pgcn.service.util.DefaultFileFormats;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ViewsFormatConfigurationService {
-    
+
     private final ViewsFormatConfigurationRepository viewsFormatConfigurationRepository;
     private final LibraryRepository libraryRepository;
     private final ProjectRepository projectRepository;
     private final LotRepository lotRepository;
     private final DefaultFileFormats defaultFormats;
-    
+
     @Autowired
     public ViewsFormatConfigurationService(final ViewsFormatConfigurationRepository viewsFormatConfigurationRepository,
                                            final LibraryRepository libraryRepository,
@@ -40,9 +38,9 @@ public class ViewsFormatConfigurationService {
         this.projectRepository = projectRepository;
         this.lotRepository = lotRepository;
         this.defaultFormats = defaultFormats;
-        
+
     }
-    
+
     /**
      * Récupération d'une {@link ViewsFormatConfiguration}
      *
@@ -56,7 +54,7 @@ public class ViewsFormatConfigurationService {
         }
         return viewsFormatConfigurationRepository.findOneWithDependencies(identifier);
     }
-    
+
     /**
      * Récupération d'une {@link ViewsFormatConfiguration} par l'id de lot.
      *
@@ -84,7 +82,7 @@ public class ViewsFormatConfigurationService {
         }
         return formatConf;
     }
-    
+
     /**
      * Recherche paginée paramétrée
      *
@@ -97,7 +95,7 @@ public class ViewsFormatConfigurationService {
     public Page<ViewsFormatConfiguration> search(final String search, final List<String> libraries, final Pageable pageRequest) {
         return viewsFormatConfigurationRepository.search(search, libraries, pageRequest);
     }
-    
+
     /**
      * Sauvegarde
      *
@@ -120,7 +118,7 @@ public class ViewsFormatConfigurationService {
         final ViewsFormatConfiguration conf = viewsFormatConfigurationRepository.getOne(id);
         validateDelete(conf);
         // Suppression
-        viewsFormatConfigurationRepository.delete(id);
+        viewsFormatConfigurationRepository.deleteById(id);
     }
 
     private void validateDelete(final ViewsFormatConfiguration conf) throws PgcnValidationException {
@@ -132,7 +130,7 @@ public class ViewsFormatConfigurationService {
         if (libCount > 0) {
             errors.add(builder.reinit().setCode(PgcnErrorCode.CONF_CHECK_DEL_EXITS_LIB).setAdditionalComplement(libCount).build());
         }
-     // Projet
+        // Projet
         final Long projCount = projectRepository.countByActiveFormatConfiguration(conf);
         if (projCount > 0) {
             errors.add(builder.reinit().setCode(PgcnErrorCode.CONF_CHECK_DEL_EXITS_PROJECT).setAdditionalComplement(projCount).build());
@@ -142,7 +140,7 @@ public class ViewsFormatConfigurationService {
         if (lotCount > 0) {
             errors.add(builder.reinit().setCode(PgcnErrorCode.CONF_CHECK_DEL_EXITS_LOT).setAdditionalComplement(lotCount).build());
         }
-        
+
         if (!errors.isEmpty()) {
             conf.setErrors(errors);
             throw new PgcnValidationException(conf, errors);

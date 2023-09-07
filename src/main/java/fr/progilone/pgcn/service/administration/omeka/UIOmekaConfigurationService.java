@@ -1,14 +1,5 @@
 package fr.progilone.pgcn.service.administration.omeka;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.apache.commons.codec.binary.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import fr.progilone.pgcn.domain.administration.omeka.OmekaConfiguration;
 import fr.progilone.pgcn.domain.administration.omeka.OmekaList;
 import fr.progilone.pgcn.domain.dto.administration.omeka.OmekaConfigurationDTO;
@@ -17,6 +8,13 @@ import fr.progilone.pgcn.exception.PgcnTechnicalException;
 import fr.progilone.pgcn.service.administration.mapper.OmekaConfigurationMapper;
 import fr.progilone.pgcn.service.administration.mapper.OmekaListMapper;
 import fr.progilone.pgcn.service.library.LibraryService;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.apache.commons.codec.binary.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UIOmekaConfigurationService {
@@ -25,8 +23,7 @@ public class UIOmekaConfigurationService {
     private final LibraryService libraryService;
 
     @Autowired
-    public UIOmekaConfigurationService(final OmekaConfigurationService omekaConfigurationService,
-                                       final LibraryService libraryService) {
+    public UIOmekaConfigurationService(final OmekaConfigurationService omekaConfigurationService, final LibraryService libraryService) {
         this.omekaConfigurationService = omekaConfigurationService;
         this.libraryService = libraryService;
     }
@@ -60,27 +57,24 @@ public class UIOmekaConfigurationService {
      * @param dto
      */
     private void fusionLists(final OmekaConfigurationDTO dto) {
-        if (dto.getOmekaLists() == null){
+        if (dto.getOmekaLists() == null) {
             dto.setOmekaLists(new ArrayList<>());
         } else {
             dto.getOmekaLists().clear();
         }
         if (dto.getOmekaCollections() != null) {
-            final List<OmekaListDTO> colls = dto.getOmekaCollections().stream()
-                                            .filter(ol-> ol.getName() != null)
-                                            .collect(Collectors.toList());
+            final List<OmekaListDTO> colls = dto.getOmekaCollections().stream().filter(ol -> ol.getName() != null).collect(Collectors.toList());
             dto.getOmekaLists().addAll(colls);
         }
         if (dto.getOmekaItems() != null) {
-            final List<OmekaListDTO> itms = dto.getOmekaItems().stream()
-                                            .filter(ol-> ol.getName() != null)
-                                            .collect(Collectors.toList());
+            final List<OmekaListDTO> itms = dto.getOmekaItems().stream().filter(ol -> ol.getName() != null).collect(Collectors.toList());
             dto.getOmekaLists().addAll(itms);
         }
     }
 
     /**
      * MAJ des propriétés
+     *
      * @param src
      * @param dest
      */
@@ -88,7 +82,7 @@ public class UIOmekaConfigurationService {
         dest.setActive(srcDto.isActive());
         dest.setLabel(srcDto.getLabel());
 
-        if (! StringUtils.equals(srcDto.getLibrary().getIdentifier(), dest.getLibrary().getIdentifier())) {
+        if (!StringUtils.equals(srcDto.getLibrary().getIdentifier(), dest.getLibrary().getIdentifier())) {
             dest.setLibrary(libraryService.findOne(srcDto.getLibrary().getIdentifier()));
         }
         dest.setStorageServer(srcDto.getStorageServer());
@@ -105,12 +99,9 @@ public class UIOmekaConfigurationService {
         dest.setExportThumb(srcDto.isExportThumb());
         dest.setExportPdf(srcDto.isExportPdf());
 
-
         // Liste de collections et d'items
         final List<OmekaList> neueList = OmekaListMapper.INSTANCE.dtosToObjs(srcDto.getOmekaLists());
-        final List<String> toDel = dest.getOmekaLists().stream().filter(ol -> !neueList.contains(ol))
-                                                                   .map(ol -> ol.getIdentifier())
-                                                                   .collect(Collectors.toList());
+        final List<String> toDel = dest.getOmekaLists().stream().filter(ol -> !neueList.contains(ol)).map(ol -> ol.getIdentifier()).collect(Collectors.toList());
         // to remove
         final List<OmekaList> copy = dest.getOmekaLists().stream().collect(Collectors.toList());
         copy.forEach(ol -> {
@@ -121,10 +112,8 @@ public class UIOmekaConfigurationService {
         // to maj
         dest.getOmekaLists().forEach(ol -> {
             ol.setConfOmeka(dest);
-            final OmekaList nouv = neueList.stream()
-                                    .filter(nl -> StringUtils.equals(nl.getIdentifier(), ol.getIdentifier()))
-                                    .findFirst().orElse(null);
-                    ol.setName(nouv.getName());
+            final OmekaList nouv = neueList.stream().filter(nl -> StringUtils.equals(nl.getIdentifier(), ol.getIdentifier())).findFirst().orElse(null);
+            ol.setName(nouv.getName());
         });
         // to add
         neueList.forEach(ol -> {

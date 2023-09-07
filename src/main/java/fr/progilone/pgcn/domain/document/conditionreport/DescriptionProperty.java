@@ -1,21 +1,18 @@
 package fr.progilone.pgcn.domain.document.conditionreport;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.google.common.base.MoreObjects;
-
 import fr.progilone.pgcn.domain.AbstractDomainObject;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Propriété d'état de la reliure
@@ -70,14 +67,12 @@ public class DescriptionProperty extends AbstractDomainObject {
      */
     @OneToMany(mappedBy = "descProperty", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private final Set<PropertyConfiguration> configurations = new HashSet<>();
-    
-    
+
     /**
      * numero d'ordre
      */
     @Column(name = "sort_order")
     private int order;
-    
 
     public Type getType() {
         return type;

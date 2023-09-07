@@ -1,28 +1,5 @@
 package fr.progilone.pgcn.service.library;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
 import fr.progilone.pgcn.domain.administration.viewsformat.ViewsFormatConfiguration;
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.dto.ocrlangconfiguration.OcrLanguageDTO;
@@ -51,6 +28,25 @@ import fr.progilone.pgcn.service.exchange.MappingService;
 import fr.progilone.pgcn.service.exchange.template.TemplateService;
 import fr.progilone.pgcn.service.ocrlangconfiguration.mapper.OcrLanguageMapper;
 import fr.progilone.pgcn.service.storage.FileStorageManager;
+import jakarta.annotation.PostConstruct;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class LibraryService {
@@ -79,7 +75,6 @@ public class LibraryService {
     @Value("${uploadPath.library}")
     private String libraryDir;
 
-    @Inject
     public LibraryService(final BibliographicRecordRepository bibliographicRecordRepository,
                           final InternetArchiveConfigurationRepository internetArchiveConfigurationRepository,
                           final CSVMappingService csvMappingService,
@@ -130,7 +125,7 @@ public class LibraryService {
                                 final Integer page,
                                 final Integer size) {
 
-        final Pageable pageRequest = new PageRequest(page, size);
+        final Pageable pageRequest = PageRequest.of(page, size);
         return libraryRepository.search(search, libraries, initiale, institutions, isActive, pageRequest);
     }
 
@@ -138,9 +133,9 @@ public class LibraryService {
      * Suppression d'une bibliothèque depuis son identifiant
      *
      * @param identifier
-     *         l'identifiant d'une bibliothèque
+     *            l'identifiant d'une bibliothèque
      * @throws PgcnValidationException
-     *         si la suppression de la bibliothèque échoue
+     *             si la suppression de la bibliothèque échoue
      */
     @Transactional
     public void delete(final String identifier) throws PgcnValidationException {
@@ -237,7 +232,7 @@ public class LibraryService {
 
     @Transactional(readOnly = true)
     public Library findByIdentifier(final String id) {
-        return libraryRepository.findOne(id);
+        return libraryRepository.findById(id).orElse(null);
     }
 
     @Transactional(readOnly = true)
@@ -247,7 +242,7 @@ public class LibraryService {
 
     @Transactional(readOnly = true)
     public Library findOne(final String identifier) {
-        return libraryRepository.findOne(identifier);
+        return libraryRepository.findById(identifier).orElse(null);
     }
 
     @Transactional(readOnly = true)
@@ -260,23 +255,19 @@ public class LibraryService {
         final Library savedLibrary = libraryRepository.save(library);
         return findOneWithDependencies(savedLibrary.getIdentifier());
     }
-    
+
     @Transactional(readOnly = true)
     public List<OcrLanguageDTO> findActifsOcrLanguagesByLibrary(final String libraryId) {
-        
+
         final Library lib = libraryRepository.findOneWithActifsOcrLanguages(libraryId);
-        final List<OcrLanguageDTO> langDtos = new ArrayList<OcrLanguageDTO>();
-        
+        final List<OcrLanguageDTO> langDtos = new ArrayList<>();
+
         if (lib != null && lib.getActiveOcrLangConfiguration() != null) {
             final Set<ActivatedOcrLanguage> activated = lib.getActiveOcrLangConfiguration().getActivatedOcrLanguages();
-            langDtos.addAll( activated.stream()
-                             .map(ActivatedOcrLanguage::getOcrLanguage)    
-                                .map(OcrLanguageMapper.INSTANCE::objToDTO)
-                                    .collect(Collectors.toList()) ); 
+            langDtos.addAll(activated.stream().map(ActivatedOcrLanguage::getOcrLanguage).map(OcrLanguageMapper.INSTANCE::objToDTO).collect(Collectors.toList()));
         }
         return langDtos;
     }
-    
 
     /**
      * Suppression des fichiers logo et aperçu de la bibliothèque
@@ -302,10 +293,10 @@ public class LibraryService {
      */
     @Transactional(readOnly = true)
     public File getLibraryLogo(final Library library) {
-        final File logoFile = fm.getUploadFile(libraryDir, library.getIdentifier(), 
-                                               null, ViewsFormatConfiguration.FileFormat.MASTER.label()
-                                                         .concat(".")
-                                                         .concat(library.getIdentifier()));
+        final File logoFile = fm.getUploadFile(libraryDir,
+                                               library.getIdentifier(),
+                                               null,
+                                               ViewsFormatConfiguration.FileFormat.MASTER.label().concat(".").concat(library.getIdentifier()));
         return fm.retrieveFile(logoFile);
     }
 
@@ -317,10 +308,10 @@ public class LibraryService {
      */
     @Transactional(readOnly = true)
     public File getLibraryThumbnail(final Library library) {
-        final File thumbnailFile = fm.getUploadFile(libraryDir, library.getIdentifier(), 
-                                                    null, ViewsFormatConfiguration.FileFormat.THUMB.label()
-                                                                            .concat(".")
-                                                                            .concat(library.getIdentifier()));
+        final File thumbnailFile = fm.getUploadFile(libraryDir,
+                                                    library.getIdentifier(),
+                                                    null,
+                                                    ViewsFormatConfiguration.FileFormat.THUMB.label().concat(".").concat(library.getIdentifier()));
         return fm.retrieveFile(thumbnailFile);
     }
 
@@ -341,12 +332,14 @@ public class LibraryService {
 
     private void uploadImage(final Library library, final MultipartFile file, final ViewsFormatConfiguration.FileFormat format) {
         try (final InputStream in = file.getInputStream()) {
-            fm.createThumbnail(in, file.getContentType(), format, libraryDir, null, format.label() + "." + library.getIdentifier());
-            LOG.debug("Le logo de la bibliothèque {} ({}) a été importé: {} (format {})",
-                      library.getName(),
-                      library.getIdentifier(),
-                      file.getOriginalFilename(),
-                      format.name());
+            fm.createThumbnail(in,
+                               file.getContentType(),
+                               format,
+                               libraryDir,
+                               null,
+                               format.label() + "."
+                                     + library.getIdentifier());
+            LOG.debug("Le logo de la bibliothèque {} ({}) a été importé: {} (format {})", library.getName(), library.getIdentifier(), file.getOriginalFilename(), format.name());
 
         } catch (final IOException e) {
             LOG.error(e.getMessage(), e);

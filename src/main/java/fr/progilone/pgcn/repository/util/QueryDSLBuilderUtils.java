@@ -1,8 +1,8 @@
 package fr.progilone.pgcn.repository.util;
 
-import com.mysema.query.BooleanBuilder;
-import com.mysema.query.types.expr.BooleanExpression;
-import com.mysema.query.types.path.StringPath;
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.StringPath;
 import fr.progilone.pgcn.domain.library.QLibrary;
 import fr.progilone.pgcn.domain.lot.QLot;
 import fr.progilone.pgcn.domain.project.QProject;
@@ -10,11 +10,10 @@ import fr.progilone.pgcn.domain.user.QUser;
 import fr.progilone.pgcn.domain.user.User;
 import fr.progilone.pgcn.domain.util.CustomUserDetails;
 import fr.progilone.pgcn.security.SecurityUtils;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.List;
 import java.util.stream.IntStream;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public final class QueryDSLBuilderUtils {
 
@@ -25,10 +24,6 @@ public final class QueryDSLBuilderUtils {
 
     /**
      * Filtrage par initiale
-     *
-     * @param builder
-     * @param initiale
-     * @param path
      */
     public static void addFilterForInitiale(final BooleanBuilder builder, final String initiale, final StringPath path) {
         if (StringUtils.isNotBlank(initiale)) {
@@ -45,13 +40,6 @@ public final class QueryDSLBuilderUtils {
 
     /**
      * Filtrage des prestataires (si l'utilisateur courant est un prestataire)
-     *
-     * @param builder
-     * @param qLibrary
-     * @param qLot
-     * @param qProject
-     * @param libraries
-     * @param providers
      */
     public static void addAccessFilters(final BooleanBuilder builder,
                                         final QLibrary qLibrary,
@@ -64,7 +52,7 @@ public final class QueryDSLBuilderUtils {
         final CustomUserDetails currentUser = SecurityUtils.getCurrentUser();
 
         // Prestataire: voit les projets / lots sur lesquels il est prestataires + les données de sa bibliothèque
-        if (currentUser != null && currentUser.getCategory() == User.Category.PROVIDER) {
+        if (currentUser.getCategory() == User.Category.PROVIDER) {
             builder.and(qLot.provider.identifier.eq(currentUser.getIdentifier())
                                                 .or(qProject.provider.identifier.eq(currentUser.getIdentifier())
                                                                                 .and(qLot.provider.identifier.isNull())
@@ -73,33 +61,26 @@ public final class QueryDSLBuilderUtils {
         // Sinon on applique les filtres demandés
         else {
             if (CollectionUtils.isNotEmpty(libraries)) {
-                builder.and(
-                    qLibrary.identifier.in(libraries)
-                    // bibliothèque du projet
-                    .or(qProject.library.identifier.in(libraries)
-                                               // bibliothèque partenaire
-                                               .or(qAssociatedLibrary.identifier.in(libraries)
-                                                                                // pas d'intervenant défini
-                                                                                .and(qAssociatedUser.isNull()
-                                                                                                    // l'utilisateur fait partie des intervenants
-                                                                                                    .or(qAssociatedUser.identifier.contains(
-                                                                                                        currentUser.getIdentifier()))))));
+                builder.and(qLibrary.identifier.in(libraries)
+                                               // bibliothèque du projet
+                                               .or(qProject.library.identifier.in(libraries)
+                                                                              // bibliothèque partenaire
+                                                                              .or(qAssociatedLibrary.identifier.in(libraries)
+                                                                                                               // pas d'intervenant défini
+                                                                                                               .and(qAssociatedUser.isNull()
+                                                                                                                                   // l'utilisateur
+                                                                                                                                   // fait partie des
+                                                                                                                                   // intervenants
+                                                                                                                                   .or(qAssociatedUser.identifier.contains(currentUser.getIdentifier()))))));
             }
             if (CollectionUtils.isNotEmpty(providers)) {
-                builder.and(qLot.provider.identifier.in(providers)
-                                                    .or(qProject.provider.identifier.in(providers).and(qLot.provider.identifier.isNull())));
+                builder.and(qLot.provider.identifier.in(providers).or(qProject.provider.identifier.in(providers).and(qLot.provider.identifier.isNull())));
             }
         }
     }
 
     /**
      * Filtrage des prestataires (si l'utilisateur courant est un prestataire)
-     *
-     * @param builder
-     * @param qLibrary
-     * @param qProject
-     * @param libraries
-     * @param providers
      */
     public static void addAccessFilters(final BooleanBuilder builder,
                                         final QLibrary qLibrary,

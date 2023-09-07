@@ -1,7 +1,7 @@
 package fr.progilone.pgcn.domain.administration;
 
 /**
- * Modules  "métiers" de l'application
+ * Modules "métiers" de l'application
  */
 public enum Module {
     /**

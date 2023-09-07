@@ -4,7 +4,6 @@
     angular.module('numaHopApp.controller').controller('HelpPageEditCtrl', HelpPageEditCtrl);
 
     function HelpPageEditCtrl($routeParams, $scope, $sce, $timeout, HelpPageSrvc, ModalSrvc, MessageSrvc, gettext) {
-
         $scope.loaded = false;
         $scope.save = save;
         $scope.remove = remove;
@@ -12,29 +11,36 @@
         $scope.setViewMode = setViewMode;
         $scope.explicitlyTrustedContentHtml = undefined;
         $scope.viewModes = {
-            VIEW: "view", // Visualisation, Édition rapide
-            EDIT: "edit"
+            VIEW: 'view', // Visualisation, Édition rapide
+            EDIT: 'edit',
         }; // Création, Modification
         $scope.viewMode = $routeParams.mode || $scope.viewModes.VIEW;
-        $scope.helpPageTypes = [{
-            code: undefined,
-            label: ""
-        }].concat($scope.filtersAvailable.helpPageTypes);
-        $scope.helpPages = [{
-            title: "",
-            identifier: undefined
-        }].concat($scope.helpPages);
+        $scope.helpPageTypes = [
+            {
+                code: undefined,
+                label: '',
+            },
+        ].concat($scope.filtersAvailable.helpPageTypes);
+        $scope.helpPages = [
+            {
+                title: '',
+                identifier: undefined,
+            },
+        ].concat($scope.helpPages);
 
         loadHelpPage();
 
         function loadHelpPage() {
             if (angular.isDefined($routeParams.id)) {
-                HelpPageSrvc.get({
-                    id: $routeParams.id
-                }, function (helpPage) {
-                    $scope.loaded = true;
-                    initPage(helpPage);
-                });
+                HelpPageSrvc.get(
+                    {
+                        id: $routeParams.id,
+                    },
+                    function (helpPage) {
+                        $scope.loaded = true;
+                        initPage(helpPage);
+                    }
+                );
             } else if ($scope.viewMode === $scope.viewModes.EDIT) {
                 $scope.loaded = true;
                 initPage(new HelpPageSrvc());
@@ -71,28 +77,34 @@
             $timeout(function () {
                 $('#summernote').summernote({
                     lang: 'fr-FR',
-                    toolbar: [['style', ['style']],
-                    ['font', ['bold', 'italic', 'underline', 'clear']],
-                    ['fontname', ['fontname']],
-                    ['fontsize', ['fontsize']],
-                    ['color', ['color']],
-                    ['para', ['ul', 'ol', 'paragraph']],
-                    ['height', ['height']],
-                    ['table', ['table']],
-                    ['insert', ['link', 'picture', 'hr']],
-                    ['view', [/* 'fullscreen' , 'codeview' */]], // remove fullScreen and codeview button
-                    ['help', ['help']]],
+                    toolbar: [
+                        ['style', ['style']],
+                        ['font', ['bold', 'italic', 'underline', 'clear']],
+                        ['fontname', ['fontname']],
+                        ['fontsize', ['fontsize']],
+                        ['color', ['color']],
+                        ['para', ['ul', 'ol', 'paragraph']],
+                        ['height', ['height']],
+                        ['table', ['table']],
+                        ['insert', ['link', 'picture', 'hr']],
+                        [
+                            'view',
+                            [
+                                /* 'fullscreen' , 'codeview' */
+                            ],
+                        ], // remove fullScreen and codeview button
+                        ['help', ['help']],
+                    ],
                     dialogsInBody: true,
                     height: '400px',
                     onInit: function () {
                         $('.note-editing-area').css('min-height', '300px');
-                    }
-
+                    },
                 });
                 if (angular.isDefined($scope.helpPage.content)) {
                     $('#summernote').summernote('code', $scope.helpPage.content);
                 } else {
-                    $('#summernote').summernote('code', "");
+                    $('#summernote').summernote('code', '');
                 }
             });
         }

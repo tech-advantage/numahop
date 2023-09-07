@@ -1,12 +1,11 @@
 <div class="modal-header">
-	<h3 class="modal-title" translate>Annulation</h3>
+    <h3 class="modal-title" translate>Annulation</h3>
 </div>
 <form ng-submit="ok(comment)" name="cancelForm">
     <div class="modal-body">
         <div>{{ ::'Veuillez saisir un commentaire avant d\'annuler ' | translate }} <span ng-bind-html="label"></span></div>
         <div class="form-group" ng-class="{'has-error' : cancelForm.comment.$invalid}">
-            <textarea class="form-control margin-t20" name="comment" ng-model="comment"
-                      ng-minlength="{{minCommentLength}}" ng-required="minCommentLength > 0"></textarea>
+            <textarea class="form-control margin-t20" name="comment" ng-model="comment" ng-minlength="{{minCommentLength}}" ng-required="minCommentLength > 0"></textarea>
             <p ng-show="cancelForm.comment.$error.required" class="help-block" translate>Le commentaire est obligatoire.</p>
             <p ng-show="cancelForm.comment.$error.minlength" class="help-block" translate>Le commentaire doit faire au minimum {{minCommentLength}} caractères.</p>
         </div>

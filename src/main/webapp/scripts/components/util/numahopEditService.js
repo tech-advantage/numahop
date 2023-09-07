@@ -1,11 +1,9 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.service')
-        .factory('NumahopEditService', NumahopEditService);
+    angular.module('numaHopApp.service').factory('NumahopEditService', NumahopEditService);
 
     function NumahopEditService(StringTools, VIEW_MODES) {
-
         var service = {};
 
         service.preventDefault = preventDefault;
@@ -49,7 +47,7 @@
 
             /** Nouvelle entité **/
             var newEntity = {
-                _selected: true
+                _selected: true,
             };
             for (var k in entity) {
                 if (entity.hasOwnProperty(k)) {
@@ -108,7 +106,7 @@
          * Récupère la première lettre du champ passé en paramètre, OTHER sinon
          */
         function getFirstLetter(entityField) {
-            return StringTools.getFirstLetter(entityField, "OTHER");
+            return StringTools.getFirstLetter(entityField, 'OTHER');
         }
 
         /**
@@ -117,7 +115,7 @@
         function insertBasedOnRank(propertyList, property, param) {
             var i = 0;
             if (angular.isUndefined(param)) {
-                param = "rank";
+                param = 'rank';
             }
             for (i = 0; i < propertyList.length; i++) {
                 var b = propertyList[i];

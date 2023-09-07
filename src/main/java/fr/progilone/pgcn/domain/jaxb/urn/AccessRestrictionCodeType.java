@@ -5,19 +5,20 @@
 // Généré le : 2017.01.03 à 11:16:35 AM CET
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.urn;
 
-import javax.xml.bind.annotation.XmlEnum;
-import javax.xml.bind.annotation.XmlEnumValue;
-import javax.xml.bind.annotation.XmlType;
-
+import jakarta.xml.bind.annotation.XmlEnum;
+import jakarta.xml.bind.annotation.XmlEnumValue;
+import jakarta.xml.bind.annotation.XmlType;
 
 /**
- * <p>Classe Java pour AccessRestrictionCodeType.
- *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  * <p>
+ * Classe Java pour AccessRestrictionCodeType.
+ *
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ *
  * <pre>
  * &lt;simpleType name="AccessRestrictionCodeType"&gt;
  *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}token"&gt;
@@ -54,7 +55,6 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "AccessRestrictionCodeType", namespace = "urn:un:unece:uncefact:codelist:draft:DAF:accessRestrictionCode:2009-08-18")
 @XmlEnum
 public enum AccessRestrictionCodeType {
-
 
     /**
      *
@@ -505,6 +505,7 @@ public enum AccessRestrictionCodeType {
      */
     @XmlEnumValue("AR062")
     AR_062("AR062");
+
     private final String value;
 
     AccessRestrictionCodeType(String v) {
@@ -516,7 +517,7 @@ public enum AccessRestrictionCodeType {
     }
 
     public static AccessRestrictionCodeType fromValue(String v) {
-        for (AccessRestrictionCodeType c: AccessRestrictionCodeType.values()) {
+        for (AccessRestrictionCodeType c : AccessRestrictionCodeType.values()) {
             if (c.value.equals(v)) {
                 return c;
             }

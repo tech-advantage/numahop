@@ -1,17 +1,18 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <!-- Chargement des données du module Usager -->
     <changeSet id="pgcn-file-format3" author="progilone">
-        
-        <sql dbms="mysql">
-            INSERT INTO sto_stored_file_format 
+
+        <sql>
+            INSERT INTO sto_stored_file_format
                 (identifier, label, density_unit, height, width, density, version)
-            VALUES 
-                ('formatXtraZoom', 'XtraZoom', 'heh', 0, 0, 0, 0)
+            VALUES ('formatXtraZoom', 'XtraZoom', 'heh', 0, 0, 0, 0)
         </sql>
-        
+
     </changeSet>
 </databaseChangeLog>

@@ -1,24 +1,21 @@
 package fr.progilone.pgcn.repository.document;
 
-import java.time.LocalDate;
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
-import org.apache.commons.collections4.CollectionUtils;
-
-import com.mysema.query.BooleanBuilder;
-import com.mysema.query.jpa.impl.JPAQuery;
-
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import fr.progilone.pgcn.domain.document.DocCheckHistory;
 import fr.progilone.pgcn.domain.document.QDocCheckHistory;
+import java.time.LocalDate;
+import java.util.List;
+import org.apache.commons.collections4.CollectionUtils;
 
 public class DocCheckHistoryRepositoryImpl implements DocCheckHistoryRepositoryCustom {
 
-    @PersistenceContext
-    private EntityManager em;
-    
+    private final JPAQueryFactory queryFactory;
+
+    public DocCheckHistoryRepositoryImpl(final JPAQueryFactory queryFactory) {
+        this.queryFactory = queryFactory;
+    }
+
     @Override
     public List<DocCheckHistory> findDocCheckHistories(final List<String> libraries,
                                                        final List<String> projects,
@@ -26,13 +23,13 @@ public class DocCheckHistoryRepositoryImpl implements DocCheckHistoryRepositoryC
                                                        final List<String> deliveries,
                                                        final LocalDate fromDate,
                                                        final LocalDate toDate) {
-        
+
         final QDocCheckHistory qDocCheckHistory = QDocCheckHistory.docCheckHistory;
-        
+
         final BooleanBuilder builder = new BooleanBuilder();
 
         // Droits d'accès
-        //QueryDSLBuilderUtils.addAccessFilters(builder, qDocCheckHistory.library, qDocUnit.project, libraries, null);
+        // QueryDSLBuilderUtils.addAccessFilters(builder, qDocCheckHistory.library, qDocUnit.project, libraries, null);
 
         // Libraries
         if (CollectionUtils.isNotEmpty(libraries)) {
@@ -50,19 +47,15 @@ public class DocCheckHistoryRepositoryImpl implements DocCheckHistoryRepositoryC
         if (CollectionUtils.isNotEmpty(deliveries)) {
             builder.and(qDocCheckHistory.deliveryId.in(deliveries));
         }
-        
+
         if (fromDate != null) {
             builder.and(qDocCheckHistory.startCheckDate.after(fromDate.atStartOfDay()));
         }
         if (toDate != null) {
             builder.and(qDocCheckHistory.endCheckDate.before(toDate.plusDays(1).atStartOfDay()));
         }
-        
-        final JPAQuery query = new JPAQuery(em).from(qDocCheckHistory).fetchAll().where(builder.getValue());
 
-        return query.distinct().list(qDocCheckHistory);
+        return queryFactory.selectDistinct(qDocCheckHistory).from(qDocCheckHistory).where(builder.getValue()).fetch();
     }
-    
-    
 
 }

@@ -1,11 +1,11 @@
 <div class="modal-header">
-	<h3 class="modal-title" translate>{{::mainCtrl.title || ('Historique des modifications' | translate)}}</h3>
+    <h3 class="modal-title" translate>{{::mainCtrl.title || ('Historique des modifications' | translate)}}</h3>
 </div>
 <div class="modal-body">
-	<ul>
-		<li ng-repeat="rev in mainCtrl.revisions | orderBy:'-timestamp'" ng-bind-html="::mainCtrl._displayRevision(rev)"></li>
-	</ul>
+    <ul>
+        <li ng-repeat="rev in mainCtrl.revisions | orderBy:'-timestamp'" ng-bind-html="::mainCtrl._displayRevision(rev)"></li>
+    </ul>
 </div>
 <div class="modal-footer">
-	<button type="button" class="btn btn-sem2" ng-click="mainCtrl.close()" translate>Fermer</button>
+    <button type="button" class="btn btn-sem2" ng-click="mainCtrl.close()" translate>Fermer</button>
 </div>

@@ -1,28 +1,10 @@
 package fr.progilone.pgcn.domain.project;
 
-import static fr.progilone.pgcn.service.es.EsConstant.*;
-
-import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.persistence.*;
-
-import fr.progilone.pgcn.domain.administration.ExportFTPDeliveryFolder;
-import org.hibernate.envers.AuditTable;
-import org.hibernate.envers.Audited;
-import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldIndex;
-import org.springframework.data.elasticsearch.annotations.FieldType;
-import org.springframework.data.elasticsearch.annotations.InnerField;
-import org.springframework.data.elasticsearch.annotations.MultiField;
-
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.google.common.base.MoreObjects;
-
 import fr.progilone.pgcn.domain.AbstractDomainObject;
 import fr.progilone.pgcn.domain.administration.CinesPAC;
+import fr.progilone.pgcn.domain.administration.ExportFTPDeliveryFolder;
 import fr.progilone.pgcn.domain.administration.InternetArchiveCollection;
 import fr.progilone.pgcn.domain.administration.omeka.OmekaConfiguration;
 import fr.progilone.pgcn.domain.administration.omeka.OmekaList;
@@ -37,6 +19,23 @@ import fr.progilone.pgcn.domain.platform.Platform;
 import fr.progilone.pgcn.domain.train.Train;
 import fr.progilone.pgcn.domain.user.User;
 import fr.progilone.pgcn.domain.workflow.WorkflowModel;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
+import org.hibernate.envers.AuditTable;
+import org.hibernate.envers.Audited;
 
 /**
  * Classe métier permettant de gérer les projets.
@@ -48,8 +47,6 @@ import fr.progilone.pgcn.domain.workflow.WorkflowModel;
 @JsonSubTypes({@JsonSubTypes.Type(name = "project", value = Project.class)})
 // Audit
 @AuditTable(value = Project.AUDIT_TABLE_NAME)
-// Elasticsearch
-@Document(indexName = "#{elasticsearchIndexName}", type = Project.ES_TYPE, createIndex = false)
 public class Project extends AbstractDomainObject {
 
     /**
@@ -59,7 +56,6 @@ public class Project extends AbstractDomainObject {
     public static final String TABLE_NAME_PROJECT_LIBRARY = "proj_project_library";
     public static final String TABLE_NAME_PROJECT_PLATFORM = "proj_project_platform";
     public static final String TABLE_NAME_PROJECT_USER = "proj_project_user";
-    public static final String ES_TYPE = "project";
     public static final String AUDIT_TABLE_NAME = "aud_proj_project";
 
     /**
@@ -67,7 +63,6 @@ public class Project extends AbstractDomainObject {
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "library")
-    @Field(type = FieldType.Object)
     private Library library;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -80,7 +75,6 @@ public class Project extends AbstractDomainObject {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "provider")
-    @Field(type = FieldType.Object)
     private User provider;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -94,20 +88,6 @@ public class Project extends AbstractDomainObject {
      * Nom
      */
     @Column(name = "name")
-    @MultiField(mainField = @Field(type = FieldType.String),
-                otherFields = {@InnerField(type = FieldType.String, suffix = SUBFIELD_RAW, index = FieldIndex.not_analyzed),
-                               @InnerField(type = FieldType.String,
-                                           suffix = SUBFIELD_CI_AI,
-                                           indexAnalyzer = ANALYZER_CI_AI,
-                                           searchAnalyzer = ANALYZER_CI_AI),
-                               @InnerField(type = FieldType.String,
-                                           suffix = SUBFIELD_CI_AS,
-                                           indexAnalyzer = ANALYZER_CI_AS,
-                                           searchAnalyzer = ANALYZER_CI_AS),
-                               @InnerField(type = FieldType.String,
-                                           suffix = SUBFIELD_PHRASE,
-                                           indexAnalyzer = ANALYZER_PHRASE,
-                                           searchAnalyzer = ANALYZER_PHRASE)})
     private String name;
 
     /**
@@ -120,28 +100,24 @@ public class Project extends AbstractDomainObject {
      * Date de début
      */
     @Column(name = "start_date")
-    @Field(type = FieldType.Date)
     private LocalDate startDate;
 
     /**
      * Date de fin prévisionnelle
      */
     @Column(name = "forecast_end_date")
-    @Field(type = FieldType.Date)
     private LocalDate forecastEndDate;
 
     /**
      * Date de fin réelle
      */
     @Column(name = "real_end_date")
-    @Field(type = FieldType.Date)
     private LocalDate realEndDate;
 
     /**
      * Actif
      */
     @Column(name = "active")
-    @Field(type = FieldType.Boolean)
     private boolean active;
 
     /**
@@ -177,7 +153,6 @@ public class Project extends AbstractDomainObject {
      */
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
-    @Field(type = FieldType.String, analyzer = ANALYZER_KEYWORD)
     @Audited
     private ProjectStatus status;
 
@@ -209,7 +184,6 @@ public class Project extends AbstractDomainObject {
     @JoinTable(name = TABLE_NAME_PROJECT_LIBRARY,
                joinColumns = {@JoinColumn(name = "project", referencedColumnName = "identifier")},
                inverseJoinColumns = {@JoinColumn(name = "proj_library", referencedColumnName = "identifier")})
-    @Field(type = FieldType.Object)
     private final Set<Library> associatedLibraries = new HashSet<>();
 
     /**
@@ -219,7 +193,6 @@ public class Project extends AbstractDomainObject {
     @JoinTable(name = TABLE_NAME_PROJECT_USER,
                joinColumns = {@JoinColumn(name = "project", referencedColumnName = "identifier")},
                inverseJoinColumns = {@JoinColumn(name = "proj_user", referencedColumnName = "identifier")})
-    @Field(type = FieldType.Object)
     private final Set<User> associatedUsers = new HashSet<>();
 
     /**
@@ -537,8 +510,6 @@ public class Project extends AbstractDomainObject {
         this.omekaItem = omekaItem;
     }
 
-
-
     public ExportFTPConfiguration getActiveExportFTPConfiguration() {
         return activeExportFTPConfiguration;
     }
@@ -591,7 +562,7 @@ public class Project extends AbstractDomainObject {
         return activeExportFTPDeliveryFolder;
     }
 
-    public void setActiveExportFTPDeliveryFolder(ExportFTPDeliveryFolder activeExportFTPDeliveryFolder) {
+    public void setActiveExportFTPDeliveryFolder(final ExportFTPDeliveryFolder activeExportFTPDeliveryFolder) {
         this.activeExportFTPDeliveryFolder = activeExportFTPDeliveryFolder;
     }
 

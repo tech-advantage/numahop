@@ -1,11 +1,5 @@
 package fr.progilone.pgcn.domain.dto.document;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.document.DocUnit.ProgressStatus;
 import fr.progilone.pgcn.domain.document.DocUnit.RightsEnum;
@@ -22,6 +16,11 @@ import fr.progilone.pgcn.domain.dto.lot.SimpleLotDTO;
 import fr.progilone.pgcn.domain.dto.ocrlangconfiguration.OcrLanguageDTO;
 import fr.progilone.pgcn.domain.dto.project.SimpleProjectDTO;
 import fr.progilone.pgcn.domain.dto.workflow.DocUnitWorkflowDTO;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * DTO représentant une unité documentaire est ses dépendences
@@ -67,7 +66,7 @@ public class DocUnitDTO extends AbstractVersionedDTO {
     private String digLibExportStatus;
     private LocalDateTime digLibExportDate;
     private OcrLanguageDTO activeOcrLanguage;
-    
+
     // Retours de contrôles
     private List<AutomaticCheckResultDTO> automaticCheckResults;
     private List<CinesReportDTO> cinesReports;
@@ -83,6 +82,9 @@ public class DocUnitDTO extends AbstractVersionedDTO {
     private int nbChildren;
     // Info sur la fratrie
     private int nbSiblings;
+
+    private Integer imageHeight;
+    private Integer imageWidth;
 
     /**
      * Existence d'un fichier EAD
@@ -102,7 +104,7 @@ public class DocUnitDTO extends AbstractVersionedDTO {
      */
     private String lastModifiedBy;
     private LocalDateTime lastModifiedDate;
-    
+
     /**
      * Workflow lié
      */
@@ -229,6 +231,22 @@ public class DocUnitDTO extends AbstractVersionedDTO {
 
     public void setLabel(final String label) {
         this.label = label;
+    }
+
+    public Integer getImageHeight() {
+        return imageHeight;
+    }
+
+    public void setImageHeight(Integer imageHeight) {
+        this.imageHeight = imageHeight;
+    }
+
+    public Integer getImageWidth() {
+        return imageWidth;
+    }
+
+    public void setImageWidth(Integer imageWidth) {
+        this.imageWidth = imageWidth;
     }
 
     public Set<SimpleDigitalDocumentDTO> getDigitalDocuments() {
@@ -412,7 +430,7 @@ public class DocUnitDTO extends AbstractVersionedDTO {
     public void setWorkflow(final DocUnitWorkflowDTO workflow) {
         this.workflow = workflow;
     }
-    
+
     public Integer getCinesVersion() {
         return cinesVersion;
     }
@@ -480,7 +498,6 @@ public class DocUnitDTO extends AbstractVersionedDTO {
         this.foundRefAuthor = foundRefAuthor;
     }
 
-
     public ProgressStatus getProgressStatus() {
         return progressStatus;
     }
@@ -512,7 +529,7 @@ public class DocUnitDTO extends AbstractVersionedDTO {
     public void setOmekaExportStatus(final String omekaExportStatus) {
         this.omekaExportStatus = omekaExportStatus;
     }
-    
+
     public LocalDateTime getOmekaExportDate() {
         return omekaExportDate;
     }

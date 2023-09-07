@@ -1,25 +1,25 @@
 package fr.progilone.pgcn.service.document.conditionreport;
 
+import static fr.progilone.pgcn.domain.document.conditionreport.PropertyConfiguration.InternalProperty.BINDING_DESC;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 import fr.progilone.pgcn.domain.document.conditionreport.DescriptionProperty;
 import fr.progilone.pgcn.domain.document.conditionreport.PropertyConfiguration;
 import fr.progilone.pgcn.domain.library.Library;
 import fr.progilone.pgcn.repository.document.conditionreport.DescriptionPropertyRepository;
 import fr.progilone.pgcn.repository.document.conditionreport.PropertyConfigurationRepository;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import static fr.progilone.pgcn.domain.document.conditionreport.PropertyConfiguration.InternalProperty.*;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class PropertyConfigurationServiceTest {
 
     @Mock
@@ -29,7 +29,7 @@ public class PropertyConfigurationServiceTest {
 
     private PropertyConfigurationService service;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         service = new PropertyConfigurationService(descriptionPropertyRepository, propertyConfigurationRepository);
     }
@@ -55,7 +55,7 @@ public class PropertyConfigurationServiceTest {
         final List<PropertyConfiguration> confs = Collections.singletonList(conf);
 
         when(propertyConfigurationRepository.findByDescPropertyAndLibrary(property, library)).thenReturn(Collections.emptyList()).thenReturn(confs);
-        when(descriptionPropertyRepository.findOne(property.getIdentifier())).thenReturn(property);
+        when(descriptionPropertyRepository.findById(property.getIdentifier())).thenReturn(Optional.of(property));
 
         // conf pas trouvée
         PropertyConfiguration actual = service.findByDescPropertyAndLibrary(property, library);
@@ -78,8 +78,7 @@ public class PropertyConfigurationServiceTest {
         final PropertyConfiguration conf = new PropertyConfiguration();
         final List<PropertyConfiguration> confs = Collections.singletonList(conf);
 
-        when(propertyConfigurationRepository.findByInternalPropertyAndLibrary(property, library)).thenReturn(Collections.emptyList())
-                                                                                                 .thenReturn(confs);
+        when(propertyConfigurationRepository.findByInternalPropertyAndLibrary(property, library)).thenReturn(Collections.emptyList()).thenReturn(confs);
 
         // conf pas trouvée
         PropertyConfiguration actual = service.findByInternalPropertyAndLibrary(property, library);
@@ -97,7 +96,7 @@ public class PropertyConfigurationServiceTest {
     public void testDelete() {
         final String identifier = "1283b8f2-03f1-4201-ac2d-45d96c05be93";
         service.delete(identifier);
-        verify(propertyConfigurationRepository).delete(identifier);
+        verify(propertyConfigurationRepository).deleteById(identifier);
     }
 
     @Test

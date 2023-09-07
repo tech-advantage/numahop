@@ -1,54 +1,46 @@
 package fr.progilone.pgcn.service.exchange.ead;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doAnswer;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-
-import javax.xml.bind.JAXBException;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.tuple.Pair;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.mockito.stubbing.Answer;
-import org.springframework.test.util.ReflectionTestUtils;
-import org.xml.sax.SAXException;
 
 import fr.progilone.pgcn.domain.jaxb.ead.C;
 import fr.progilone.pgcn.domain.jaxb.ead.Eadheader;
 import fr.progilone.pgcn.service.storage.FileStorageManager;
+import jakarta.xml.bind.JAXBException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import javax.xml.parsers.ParserConfigurationException;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.tuple.Pair;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.stubbing.Answer;
+import org.springframework.test.util.ReflectionTestUtils;
+import org.xml.sax.SAXException;
 
 /**
  * Created by Sébastien on 16/05/2017.
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ExportEadServiceTest {
 
     private static final String TEST_DIR = FileUtils.getTempDirectoryPath() + "/pgcn_test/upload/ead";
-    
+
     @Mock
     private FileStorageManager fm;
 
     private ExportEadService service;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
-        
+
         service = new ExportEadService(fm);
         ReflectionTestUtils.setField(service, "workingDir", TEST_DIR);
     }
@@ -57,9 +49,9 @@ public class ExportEadServiceTest {
     public void testWrite() throws IOException, JAXBException, SAXException, ParserConfigurationException {
         final Pair<Eadheader, C> parsedXml = EadTestUtils.parseXml(SAMPLE_EAD);
         final EadCParser eadCParser = new EadCParser(parsedXml.getLeft(), parsedXml.getRight());
-        
+
         final GetInputStreamAnswer answer = new GetInputStreamAnswer();
-        doAnswer(answer).when(fm).copyInputStreamToFileWithOtherDirs(any(InputStream.class), any(File.class), Arrays.asList(anyString()), anyString(), eq(true), eq(true));
+        doAnswer(answer).when(fm).copyInputStreamToFileWithOtherDirs(any(), any(), any(), anyString(), eq(true), eq(true));
 
         final C c = eadCParser.getcLeaves().get(1);
         service.exportEad("test", eadCParser.getEadheader(), eadCParser.getBranch(c));
@@ -72,7 +64,6 @@ public class ExportEadServiceTest {
         assertFalse(xmlResult.contains("id=\"ligeo-31383\""));
         assertTrue(xmlResult.contains("id=\"ligeo-31384\""));
     }
-    
 
     /**
      * Answer permettant de récupérer dans une String le contenu d'un InputStream
@@ -83,7 +74,7 @@ public class ExportEadServiceTest {
 
         @Override
         public Object answer(final InvocationOnMock invocation) throws Throwable {
-            final InputStream in = invocation.getArgumentAt(0, InputStream.class);
+            final InputStream in = invocation.getArgument(0, InputStream.class);
             data = IOUtils.toString(in, StandardCharsets.UTF_8);
             return null;
         }

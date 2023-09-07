@@ -5,13 +5,12 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import fr.progilone.pgcn.domain.administration.Transliteration;
 import fr.progilone.pgcn.repository.administration.TransliterationRepository;
+import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Sébastien on 29/06/2017.
@@ -27,13 +26,13 @@ public class TransliterationService {
                                                                                               .maximumSize(10000)
                                                                                               .expireAfterWrite(1, TimeUnit.HOURS)
                                                                                               .build(new CacheLoader<Transliteration.TransliterationId, String>() {
+
                                                                                                   @Override
                                                                                                   public String load(final Transliteration.TransliterationId id) {
-                                                                                                      final Transliteration transliteration =
-                                                                                                          transliterationRepository.findOne(id);
-                                                                                                      return transliteration != null ?
-                                                                                                             transliteration.getValue() :
-                                                                                                             id.getCode();
+                                                                                                      final Transliteration transliteration = transliterationRepository.findById(id)
+                                                                                                                                                                       .orElse(null);
+                                                                                                      return transliteration != null ? transliteration.getValue()
+                                                                                                                                     : id.getCode();
                                                                                                   }
                                                                                               });
 

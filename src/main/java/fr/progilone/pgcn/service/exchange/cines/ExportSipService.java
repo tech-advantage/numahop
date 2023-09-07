@@ -1,42 +1,5 @@
 package fr.progilone.pgcn.service.exchange.cines;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.MalformedURLException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.annotation.PostConstruct;
-import javax.xml.XMLConstants;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.validation.SchemaFactory;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.hibernate.Hibernate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.xml.sax.SAXException;
-
-import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
-
 import fr.progilone.pgcn.domain.document.BibliographicRecord;
 import fr.progilone.pgcn.domain.document.DocProperty;
 import fr.progilone.pgcn.domain.document.DocPropertyType;
@@ -64,13 +27,43 @@ import fr.progilone.pgcn.service.library.LibraryParameterService;
 import fr.progilone.pgcn.service.storage.FileStorageManager;
 import fr.progilone.pgcn.service.util.DateIso8601Util;
 import fr.progilone.pgcn.service.util.FileUtils.CheckSumType;
+import jakarta.annotation.PostConstruct;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.Unmarshaller;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import javax.xml.XMLConstants;
+import javax.xml.validation.SchemaFactory;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.Hibernate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.xml.sax.SAXException;
 
 /**
  * Service de génération du fichiers sip.xml
  *
  * @see <a href="http://www.cines.fr/pac/sip.xsd">xsd</a>
- * <br/>
- * Created by Sébastien on 28/12/2016.
+ *      <br/>
+ *      Created by Sébastien on 28/12/2016.
  */
 @Service
 public class ExportSipService {
@@ -86,19 +79,19 @@ public class ExportSipService {
     private static final String STRUCTURE_FICHIER_TYPE_XSD = "XSD";
     private static final ObjectFactory SIP_FACTORY = new ObjectFactory();
     private static final String SIP_SCHEMA_LOCATION = "http://www.cines.fr/pac/sip http://www.cines.fr/pac/sip.xsd";
-    //private static final String SIP_SCHEMA_LOCATION = "http://www.cines.fr/pactest/sip http://www.cines.fr/pactest/sip.xsd";
-    
+    // private static final String SIP_SCHEMA_LOCATION = "http://www.cines.fr/pactest/sip http://www.cines.fr/pactest/sip.xsd";
+
     public static final String AIP_XML_FILE = "aip.xml";
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(ExportSipService.class);
 
     // Validation locale
     @Value("${services.cines.xsd.sip}")
     private String sipSchema;
-    
+
     @Value("${instance.libraries}")
     private String[] instanceLibraries;
-    
+
     // Stockage des AIP
     @Value("${services.cines.aip}")
     private String aipDir;
@@ -112,7 +105,7 @@ public class ExportSipService {
     @Autowired
     public ExportSipService(final LanguageCodeService languageCodeService,
                             final CinesLanguageCodeService cinesLanguageCodeService,
-                            final LibraryParameterService libraryParameterService, 
+                            final LibraryParameterService libraryParameterService,
                             final DocUnitRepository docUnitRepository,
                             final FileStorageManager fm) {
         this.languageCodeService = languageCodeService;
@@ -124,7 +117,7 @@ public class ExportSipService {
 
     @PostConstruct
     public void initialize() {
-        
+
         Arrays.asList(instanceLibraries).forEach(lib -> {
             try {
                 FileUtils.forceMkdir(new File(aipDir, lib));
@@ -134,24 +127,19 @@ public class ExportSipService {
         });
 
     }
-    
+
     public void writeMetadata(final OutputStream out,
                               final BibliographicRecordDcDTO metaDc,
                               final DocUnit docUnit,
                               final List<CheckSummedStoredFile> list,
                               final String checkSumMets,
-                              final boolean reversion) throws
-                                                         JAXBException,
-                                                         MalformedURLException,
-                                                         SAXException,
-                                                         PgcnTechnicalException,
-                                                         ExportCinesException {
+                              final boolean reversion) throws JAXBException, MalformedURLException, SAXException, PgcnTechnicalException, ExportCinesException {
         final PacType pacType = SIP_FACTORY.createPacType();
         final DocDCType docDC = getDocDC(docUnit, metaDc);
         checkDocDC(docDC);
         pacType.setDocDC(docDC);
         pacType.setDocMeta(getDocMeta(docUnit, reversion));
-                
+
         pacType.getFichMeta().add(getFichMetaMets(checkSumMets));
         pacType.getFichMeta().addAll(getFichMeta(list));
 
@@ -166,10 +154,8 @@ public class ExportSipService {
         m.setProperty(Marshaller.JAXB_ENCODING, StandardCharsets.UTF_8.name());
         m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         m.setProperty(Marshaller.JAXB_SCHEMA_LOCATION, SIP_SCHEMA_LOCATION);
-        m.setProperty("com.sun.xml.bind.namespacePrefixMapper", new SipNamespacePrefixMapper());
         m.marshal(pac, out);
     }
-    
 
     private void checkDocDC(final DocDCType docDc) throws ExportCinesException {
         // check mandatory fields : title, subject,
@@ -190,8 +176,8 @@ public class ExportSipService {
         }
         // check language found in table.
         for (final String language : docDc.getLanguage()) {
-            if (! languageCodeService.checkCinesLangCodeExists(language)){
-                throw new ExportCinesException("Champ \"Language\" incorrect"); 
+            if (!languageCodeService.checkCinesLangCodeExists(language)) {
+                throw new ExportCinesException("Champ \"Language\" incorrect");
             }
         }
         if (docDc.getPublisher().isEmpty()) {
@@ -219,30 +205,31 @@ public class ExportSipService {
      */
     private DocDCType getDocDC(final DocUnit docUnit, final BibliographicRecordDcDTO metaDc) {
         final DocDCType docDCType = SIP_FACTORY.createDocDCType();
-        
+
         // custom properties
         final BibliographicRecord notice = docUnit.getRecords().iterator().next();
-        List<DocProperty> customProps = new ArrayList<>(); 
-        if (notice != null) {           
+        List<DocProperty> customProps = new ArrayList<>();
+        if (notice != null) {
             // il faut reordonner les props custom selon le rank
-            customProps = notice.getProperties().stream()
-                                    .filter(p -> p.getType().getSuperType() == DocPropertyType.DocPropertySuperType.CUSTOM_CINES 
-                                            || p.getType().getSuperType() == DocPropertyType.DocPropertySuperType.CUSTOM)
-                                    .sorted(Comparator.comparing(DocProperty::getRank))
-                                    .collect(Collectors.toCollection(ArrayList::new));
+            customProps = notice.getProperties()
+                                .stream()
+                                .filter(p -> p.getType().getSuperType() == DocPropertyType.DocPropertySuperType.CUSTOM_CINES || p.getType().getSuperType()
+                                                                                                                                == DocPropertyType.DocPropertySuperType.CUSTOM)
+                                .sorted(Comparator.comparing(DocProperty::getRank))
+                                .collect(Collectors.toCollection(ArrayList::new));
         }
-     
+
         final String defaultLang = getDefaultLanguageByDocUnit(docUnit);
         // récupération du langage
         final String languageIso;
         if (metaDc.getLanguage().isEmpty() || StringUtils.isBlank(metaDc.getLanguage().get(0))) {
             languageIso = defaultLang;
         } else {
-            // transpose le language par celui indiqué dans la conf cines - "Codes lang à transposer" s'il y a lieu... 
+            // transpose le language par celui indiqué dans la conf cines - "Codes lang à transposer" s'il y a lieu...
             languageIso = cinesLanguageCodeService.getCinesLanguageByIdentifier(metaDc.getLanguage().get(0));
         }
-        
-        // Proprietes avec plusieurs languages possibles 
+
+        // Proprietes avec plusieurs languages possibles
         setPropertyDocType(docDCType.getTitle(), metaDc.getTitle(), languageIso, customProps, "title_language");
         setPropertyDocType(docDCType.getSubject(), metaDc.getSubject(), languageIso, customProps, "subject_language");
         setPropertyDocType(docDCType.getDescription(), metaDc.getDescription(), languageIso, customProps, "description_language");
@@ -252,7 +239,7 @@ public class ExportSipService {
         setPropertyDocType(docDCType.getSource(), metaDc.getSource(), languageIso, customProps, "source_language");
         setPropertyDocType(docDCType.getRelation(), metaDc.getRelation(), languageIso, customProps, "relation_language");
         setPropertyDocType(docDCType.getCoverage(), metaDc.getCoverage(), languageIso, customProps, "coverage_language");
-        
+
         // Autres proprietes
         for (final String s : metaDc.getCreator()) {
             addString(docDCType.getCreator(), s);
@@ -273,25 +260,28 @@ public class ExportSipService {
         setDefaultValues(docUnit, docDCType, defaultLang);
         return docDCType;
     }
-    
+
     /**
-     * 
-     * @param docDCTypeValues liste de props à valoriser
-     * @param metaDcValues liste de props sources
+     *
+     * @param docDCTypeValues
+     *            liste de props à valoriser
+     * @param metaDcValues
+     *            liste de props sources
      * @param languageIso
-     * @param customProps liste des proprietes personnalisees
+     * @param customProps
+     *            liste des proprietes personnalisees
      * @param propFilter
      */
-    private void setPropertyDocType(final List<StringNotNULLtext> docDCTypeValues, 
-                                    final List<String> metaDcValues, 
-                                    final String languageIso, 
-                                    final List<DocProperty> customProps, 
+    private void setPropertyDocType(final List<StringNotNULLtext> docDCTypeValues,
+                                    final List<String> metaDcValues,
+                                    final String languageIso,
+                                    final List<DocProperty> customProps,
                                     final String propFilter) {
-        if (!metaDcValues.isEmpty()) {           
+        if (!metaDcValues.isEmpty()) {
             final List<DocProperty> customLang = customProps.stream()
-                                                    .filter(p-> propFilter.equals(p.getType().getIdentifier()) )
-                                                    .sorted(Comparator.comparing(DocProperty::getRank))
-                                                    .collect(Collectors.toList());
+                                                            .filter(p -> propFilter.equals(p.getType().getIdentifier()))
+                                                            .sorted(Comparator.comparing(DocProperty::getRank))
+                                                            .collect(Collectors.toList());
             int idx = 0;
             for (final String s : metaDcValues) {
                 if (customLang != null && customLang.size() > idx) {
@@ -302,24 +292,23 @@ public class ExportSipService {
                 }
                 idx++;
             }
-        }    
+        }
     }
-    
 
     /**
-     * 
+     *
      * @param docUnit
      * @return
      */
     private String getDefaultLanguageByDocUnit(final DocUnit docUnit) {
-        
+
         // Vérification présence configuration
         final LibraryParameter libParam = libraryParameterService.findCinesParameterForLibrary(docUnit.getLibrary());
         return getDefaultLanguage(libParam);
     }
-    
+
     /**
-     * 
+     *
      * @param libParam
      * @return
      */
@@ -329,11 +318,10 @@ public class ExportSipService {
             final LibraryParameterValueCines cinesParam = getLibraryParameterValueForType(libParam, LibraryParameterValueCinesType.LANGUAGE_DEFAULT_VALUE);
             if (cinesParam != null) {
                 defaultLang = cinesParam.getValue();
-            } 
+            }
         }
         return defaultLang;
     }
-    
 
     /**
      * Initialisation d'un {@link DocMetaType} à partir d'une unité documentaire
@@ -344,75 +332,73 @@ public class ExportSipService {
      */
     private DocMetaType getDocMeta(final DocUnit docUnit, final boolean reversion) throws PgcnTechnicalException {
         final DocMetaType docMetaType = SIP_FACTORY.createDocMetaType();
-        
+
         if (!docUnit.getRecords().isEmpty()) {
-            
+
             handleServiceVersant(docMetaType, docUnit);
             docMetaType.setIdentifiantDocProducteur(docUnit.getPgcnId());
-            
-            if (docUnit.getPlanClassementPAC() != null) {                
-                docMetaType.setPlanClassement(createStringNotNull(docUnit.getPlanClassementPAC().getName(), 
-                                                                  getDefaultLanguageByDocUnit(docUnit)));
+
+            if (docUnit.getPlanClassementPAC() != null) {
+                docMetaType.setPlanClassement(createStringNotNull(docUnit.getPlanClassementPAC().getName(), getDefaultLanguageByDocUnit(docUnit)));
             }
-            
+
             final boolean firstTime = docUnit.getCinesVersion() == null;
             if (firstTime) { // jamais archivé au cines
                 docMetaType.setVersion("1.0");
-                
+
             } else { // déjà connu du cines
                 docMetaType.setVersion("1." + docUnit.getCinesVersion());
                 if (docUnit.getCinesVersion() > 0) {
                     docMetaType.setVersionPrecedente("1." + (docUnit.getCinesVersion() - 1));
                 }
-                
+
                 // Recup identifiantdocPac depuis le fichier aip.
                 final String aipIdentifier = getAipIdentifier(docUnit);
                 final String idDocProd = getCoteRecord(docUnit);
-                
+
                 if (reversion) {
                     docMetaType.getDocRelation().add(getDocRelation("version", aipIdentifier, "PAC"));
-                    docMetaType.getDocRelation().add(getDocRelation("version", idDocProd, "Producteur")); 
-                    
+                    docMetaType.getDocRelation().add(getDocRelation("version", idDocProd, "Producteur"));
+
                 } else {
                     docMetaType.getDocRelation().add(getDocRelation("maj", aipIdentifier, "PAC"));
                     docMetaType.getDocRelation().add(getDocRelation("maj", idDocProd, "Producteur"));
                 }
-             // Filiation si parent present.
+                // Filiation si parent present.
                 if (docUnit.getParent() != null) {
-                   final DocUnit parentDoc = docUnitRepository.findOneByIdentifierWithRecords(docUnit.getParent().getIdentifier());
-                   final String aipParentIdentifier = getAipIdentifier(parentDoc);
-                   if (aipParentIdentifier != null) {
-                       docMetaType.getDocRelation().add(getDocRelation("filiation", aipParentIdentifier, "PAC"));
-                       docMetaType.getDocRelation().add(getDocRelation("filiation", getCoteRecord(parentDoc), "Producteur"));
-                   }
+                    final DocUnit parentDoc = docUnitRepository.findOneByIdentifierWithRecords(docUnit.getParent().getIdentifier());
+                    final String aipParentIdentifier = getAipIdentifier(parentDoc);
+                    if (aipParentIdentifier != null) {
+                        docMetaType.getDocRelation().add(getDocRelation("filiation", aipParentIdentifier, "PAC"));
+                        docMetaType.getDocRelation().add(getDocRelation("filiation", getCoteRecord(parentDoc), "Producteur"));
+                    }
                 }
             }
         }
-        
+
         return docMetaType;
     }
-    
+
     /**
      * Recupere l'identifiantDocPAC attribué par le Cines d'un doc déjà archivé.
-     * 
+     *
      * @param docUnit
      * @return
      */
     private String getAipIdentifier(final DocUnit docUnit) {
-        
+
         final File aipFile = retrieveAip(docUnit);
-        // pas trouvé => aie ! 
+        // pas trouvé => aie !
         if (aipFile == null) {
             return null;
         }
-        
+
         String aipIdentifier;
         try {
             final JAXBContext context = JAXBContext.newInstance(fr.progilone.pgcn.domain.jaxb.aip.ObjectFactory.class);
             final Unmarshaller unmarshaller = context.createUnmarshaller();
-            final fr.progilone.pgcn.domain.jaxb.aip.PacType pac = 
-                    (fr.progilone.pgcn.domain.jaxb.aip.PacType) unmarshaller.unmarshal(aipFile);
-            
+            final fr.progilone.pgcn.domain.jaxb.aip.PacType pac = (fr.progilone.pgcn.domain.jaxb.aip.PacType) unmarshaller.unmarshal(aipFile);
+
             if (pac != null && pac.getDocMeta() != null) {
                 aipIdentifier = pac.getDocMeta().getIdentifiantDocPac();
             } else {
@@ -423,10 +409,10 @@ public class ExportSipService {
             LOG.error(e.getMessage(), e);
             aipIdentifier = null;
         }
-        
+
         return aipIdentifier;
     }
-    
+
     /**
      * Récupération du fichier aip.xml stocké
      * pour un docUnit donné
@@ -435,7 +421,7 @@ public class ExportSipService {
      * @return
      */
     public File retrieveAip(final DocUnit docUnit) {
-        if(docUnit != null) {
+        if (docUnit != null) {
             final Path root = Paths.get(aipDir, docUnit.getLibrary().getIdentifier(), docUnit.getIdentifier());
             if (root != null) {
                 return fm.retrieveFile(root.toFile(), AIP_XML_FILE);
@@ -443,9 +429,9 @@ public class ExportSipService {
         }
         return null;
     }
-    
+
     /**
-     * 
+     *
      * @param typeRelation
      * @param idRelation
      * @return
@@ -457,24 +443,20 @@ public class ExportSipService {
         docRelType.setIdentifiantSourceRelation(idRelation);
         return docRelType;
     }
-    
+
     private String getCoteRecord(final DocUnit docUnit) {
         final BibliographicRecord record = docUnit.getRecords().iterator().next();
         // recuperation de la cote (prop. identifier de la notice).
-        final Optional<DocProperty> identifierProp = record.getProperties().stream()
-                                                .filter(property -> {
-                                                    final DocPropertyType type = property.getType();
-                                                    if (type.getSuperType() == DocPropertyType.DocPropertySuperType.DC 
-                                                            && "identifier".equals(type.getIdentifier())) {
-                                                        return true;
-                                                    }
-                                                    return false;
-                                                }).findFirst();
-        
-        return identifierProp.isPresent() ? 
-                                            identifierProp.get().getValue() 
-                                            : 
-                                            docUnit.getIdentifier();
+        final Optional<DocProperty> identifierProp = record.getProperties().stream().filter(property -> {
+            final DocPropertyType type = property.getType();
+            if (type.getSuperType() == DocPropertyType.DocPropertySuperType.DC && "identifier".equals(type.getIdentifier())) {
+                return true;
+            }
+            return false;
+        }).findFirst();
+
+        return identifierProp.isPresent() ? identifierProp.get().getValue()
+                                          : docUnit.getIdentifier();
     }
 
     /**
@@ -487,8 +469,7 @@ public class ExportSipService {
     private void handleServiceVersant(final DocMetaType docMetaType, final DocUnit docUnit) throws PgcnTechnicalException {
         final String serviceVersant = getServiceVersantFromDocUnit(docUnit);
         if (StringUtils.isBlank(serviceVersant)) {
-            throw new PgcnTechnicalException("L'identifiant du service versant CINES n'est pas renseigné pour la bibliothèque " + docUnit.getLibrary()
-                                                                                                                                         .getName());
+            throw new PgcnTechnicalException("L'identifiant du service versant CINES n'est pas renseigné pour la bibliothèque " + docUnit.getLibrary().getName());
         }
         docMetaType.setServiceVersant(serviceVersant);
     }
@@ -656,39 +637,21 @@ public class ExportSipService {
      */
     private void setDefaultValues(final DocUnit docUnit, final DocDCType docDCType, final String defaultLanguage) {
         // Vérification de la présence de configuration
-        final LibraryParameter libraryParameter = libraryParameterService.findCinesParameterForLibrary(docUnit.getLibrary());      
+        final LibraryParameter libraryParameter = libraryParameterService.findCinesParameterForLibrary(docUnit.getLibrary());
         // Si elle est présente alors elle est initialisée (entityGraph)
         if (libraryParameter != null) {
-            
-            // StringNotNull : creator, publisher, 
+
+            // StringNotNull : creator, publisher,
             handleDefaultValueForType(docDCType.getCreator(), libraryParameter, LibraryParameterValueCinesType.CREATOR_DEFAULT_VALUE);
             handleDefaultValueForType(docDCType.getPublisher(), libraryParameter, LibraryParameterValueCinesType.PUBLISHER_DEFAULT_VALUE);
-            
-            // StringNotNullText: Subject, title, description, type, format, rights 
-            handleDefaultNotNullValueForType(docDCType.getSubject(),
-                                             libraryParameter,
-                                             LibraryParameterValueCinesType.SUBJECT_DEFAULT_VALUE,
-                                             defaultLanguage);
-            handleDefaultNotNullValueForType(docDCType.getTitle(),
-                                             libraryParameter,
-                                             LibraryParameterValueCinesType.TITLE_DEFAULT_VALUE,
-                                             defaultLanguage);
-            handleDefaultNotNullValueForType(docDCType.getDescription(),
-                                             libraryParameter,
-                                             LibraryParameterValueCinesType.DESCRIPTION_DEFAULT_VALUE,
-                                             defaultLanguage);
-            handleDefaultNotNullValueForType(docDCType.getType(),
-                                             libraryParameter,
-                                             LibraryParameterValueCinesType.TYPE_DEFAULT_VALUE,
-                                             defaultLanguage);
-            handleDefaultNotNullValueForType(docDCType.getFormat(),
-                                             libraryParameter,
-                                             LibraryParameterValueCinesType.FORMAT_DEFAULT_VALUE,
-                                             defaultLanguage);
-            handleDefaultNotNullValueForType(docDCType.getRights(),
-                                             libraryParameter,
-                                             LibraryParameterValueCinesType.RIGHTS_DEFAULT_VALUE,
-                                             defaultLanguage);           
+
+            // StringNotNullText: Subject, title, description, type, format, rights
+            handleDefaultNotNullValueForType(docDCType.getSubject(), libraryParameter, LibraryParameterValueCinesType.SUBJECT_DEFAULT_VALUE, defaultLanguage);
+            handleDefaultNotNullValueForType(docDCType.getTitle(), libraryParameter, LibraryParameterValueCinesType.TITLE_DEFAULT_VALUE, defaultLanguage);
+            handleDefaultNotNullValueForType(docDCType.getDescription(), libraryParameter, LibraryParameterValueCinesType.DESCRIPTION_DEFAULT_VALUE, defaultLanguage);
+            handleDefaultNotNullValueForType(docDCType.getType(), libraryParameter, LibraryParameterValueCinesType.TYPE_DEFAULT_VALUE, defaultLanguage);
+            handleDefaultNotNullValueForType(docDCType.getFormat(), libraryParameter, LibraryParameterValueCinesType.FORMAT_DEFAULT_VALUE, defaultLanguage);
+            handleDefaultNotNullValueForType(docDCType.getRights(), libraryParameter, LibraryParameterValueCinesType.RIGHTS_DEFAULT_VALUE, defaultLanguage);
             if (StringUtils.isBlank(docDCType.getDate())) {
                 docDCType.setDate("s.d.");
             }
@@ -720,24 +683,6 @@ public class ExportSipService {
                        .filter(param -> param.getValue() != null)
                        .findFirst()
                        .orElse(null);
-    }
-
-    /**
-     * Personnalisation des préfixes des namespaces utilisés
-     */
-    private static class SipNamespacePrefixMapper extends NamespacePrefixMapper {
-
-        private final Map<String, String> namespaceMap = new HashMap<>();
-
-        public SipNamespacePrefixMapper() {
-            namespaceMap.put("urn:un:unece:uncefact:codelist:draft:DAF:languageCode:2011-10-07", "ISO-639-3");
-            namespaceMap.put("urn:un:unece:uncefact:codelist:draft:DAF:accessRestrictionCode:2009-08-18", "RA");
-        }
-
-        @Override
-        public String getPreferredPrefix(final String namespaceUri, final String suggestion, final boolean requirePrefix) {
-            return namespaceMap.getOrDefault(namespaceUri, suggestion);
-        }
     }
 
     private String getServiceVersantFromDocUnit(final DocUnit doc) {

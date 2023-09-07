@@ -2,7 +2,6 @@ package fr.progilone.pgcn.repository.help;
 
 import fr.progilone.pgcn.domain.dto.help.HelpPageDto;
 import fr.progilone.pgcn.domain.help.HelpPageType;
-
 import java.util.List;
 
 public interface HelpPageRepositoryCustom {

@@ -1,17 +1,15 @@
 package fr.progilone.pgcn.service.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import fr.progilone.pgcn.exception.PgcnTechnicalException;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test des conversions vers ISO-8601
+ *
  * @author jbrunet
- * Créé le 20 févr. 2017
+ *         Créé le 20 févr. 2017
  */
 public class DateIso8601UtilTest {
 
@@ -24,7 +22,7 @@ public class DateIso8601UtilTest {
         // Check
         assertEquals("1850/1856", converted);
     }
-    
+
     @Test
     public void validDate2() throws PgcnTechnicalException {
         // Create
@@ -34,7 +32,7 @@ public class DateIso8601UtilTest {
         // Check
         assertEquals("1850/1856", converted);
     }
-    
+
     @Test
     public void validDate3() throws PgcnTechnicalException {
         // Create
@@ -44,7 +42,7 @@ public class DateIso8601UtilTest {
         // Check
         assertEquals("1850/1856", converted);
     }
-    
+
     @Test
     public void validDate4() throws PgcnTechnicalException {
         // Create
@@ -56,7 +54,7 @@ public class DateIso8601UtilTest {
         converted = DateIso8601Util.importedDateToIso8601(validDate);
         assertEquals("18/19", converted);
     }
-    
+
     @Test
     public void validDate5() throws PgcnTechnicalException {
         // Create
@@ -66,7 +64,7 @@ public class DateIso8601UtilTest {
         // Check
         assertEquals("1859-06-25", converted);
     }
-    
+
     @Test
     public void failDate() throws PgcnTechnicalException {
         // Create
@@ -79,7 +77,7 @@ public class DateIso8601UtilTest {
         converted = DateIso8601Util.importedDateToIso8601(validDate);
         assertEquals("1859-06-01", converted);
     }
-    
+
     @Test
     public void failDate2() throws PgcnTechnicalException {
         // Create
@@ -89,7 +87,7 @@ public class DateIso8601UtilTest {
         // Check
         assertNull(converted);
     }
-    
+
     @Test
     public void failDate3() throws PgcnTechnicalException {
         // Create
@@ -99,7 +97,7 @@ public class DateIso8601UtilTest {
         // Check
         assertNull(converted);
     }
-    
+
     @Test
     public void splitDatesInterval() throws PgcnTechnicalException {
         final String date_valid = "12/03/2017";
@@ -109,11 +107,11 @@ public class DateIso8601UtilTest {
         final String date_mini = "19xx";
         final String dates_mini_ok = "156x-188x";
         final String dates_mini_ko = "15x-188xx";
-        
+
         String result = DateIso8601Util.importedDateToIso8601(date_valid);
         assertNotNull(result);
         assertEquals("2017-03-12", result);
-        
+
         result = DateIso8601Util.importedDateToIso8601(dates_valid);
         assertEquals("2018-06-15/2019-06-30", result);
         result = DateIso8601Util.importedDateToIso8601(dates_invalid);
@@ -122,7 +120,7 @@ public class DateIso8601UtilTest {
         assertNotNull(result);
         result = DateIso8601Util.importedDateToIso8601(date_mini);
         assertNotNull(result);
-        
+
         result = DateIso8601Util.importedDateToIso8601(dates_mini_ok);
         assertNotNull(result);
         result = DateIso8601Util.importedDateToIso8601(dates_mini_ko);

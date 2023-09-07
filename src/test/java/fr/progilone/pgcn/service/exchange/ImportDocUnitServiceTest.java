@@ -1,5 +1,9 @@
 package fr.progilone.pgcn.service.exchange;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+
 import fr.progilone.pgcn.domain.document.BibliographicRecord;
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.exchange.ImportReport;
@@ -11,34 +15,25 @@ import fr.progilone.pgcn.exception.message.PgcnErrorCode;
 import fr.progilone.pgcn.repository.exchange.ImportedDocUnitRepository;
 import fr.progilone.pgcn.service.document.DocUnitService;
 import fr.progilone.pgcn.service.document.DocUnitValidationService;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import java.util.Collections;
+import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.internal.matchers.CapturingMatcher;
 import org.mockito.internal.stubbing.answers.ReturnsArgumentAt;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import java.util.Collections;
-import java.util.List;
-
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyListOf;
-import static org.mockito.Matchers.argThat;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
-
 /**
  * Created by Sebastien on 08/12/2016.
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ImportDocUnitServiceTest {
 
     @Mock
@@ -50,7 +45,7 @@ public class ImportDocUnitServiceTest {
 
     private ImportDocUnitService service;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         service = new ImportDocUnitService(docUnitService, docUnitValidationService, importedDocUnitRepository);
     }
@@ -102,8 +97,8 @@ public class ImportDocUnitServiceTest {
         docUnit.addRecord(record);
         impDocUnit.initDocUnitFields(docUnit);
 
-        doThrow(new PgcnValidationException(docUnit, new PgcnError.Builder().setCode(PgcnErrorCode.DOC_UNIT_LABEL_MANDATORY).build())).when(
-            docUnitValidationService).validate(docUnit);
+        doThrow(new PgcnValidationException(docUnit, new PgcnError.Builder().setCode(PgcnErrorCode.DOC_UNIT_LABEL_MANDATORY).build())).when(docUnitValidationService)
+                                                                                                                                      .validate(docUnit);
 
         final CapturingMatcher<ImportedDocUnit> matcher = new CapturingMatcher<>();
         when(importedDocUnitRepository.save(argThat(matcher))).then(new ReturnsArgumentAt(0));
@@ -112,7 +107,7 @@ public class ImportDocUnitServiceTest {
             service.create(impDocUnit);
             fail("testCreate should have thrown PgcnValidationException");
 
-        } catch (PgcnValidationException e) {
+        } catch (final PgcnValidationException e) {
             final ImportedDocUnit actualImp = matcher.getLastValue();
             assertNotSame(impDocUnit, actualImp);
             assertEquals(1, actualImp.getMessages().size());
@@ -135,8 +130,8 @@ public class ImportDocUnitServiceTest {
         docUnit.addRecord(record);
         impDocUnit.initDocUnitFields(docUnit);
 
-        doThrow(new PgcnValidationException(docUnit, new PgcnError.Builder().setCode(PgcnErrorCode.DOC_UNIT_DUPLICATE_PGCN_ID).build())).when(
-            docUnitValidationService).validate(docUnit);
+        doThrow(new PgcnValidationException(docUnit, new PgcnError.Builder().setCode(PgcnErrorCode.DOC_UNIT_DUPLICATE_PGCN_ID).build())).when(docUnitValidationService)
+                                                                                                                                        .validate(docUnit);
 
         final CapturingMatcher<ImportedDocUnit> matcher = new CapturingMatcher<>();
         when(importedDocUnitRepository.save(argThat(matcher))).then(new ReturnsArgumentAt(0));
@@ -149,7 +144,7 @@ public class ImportDocUnitServiceTest {
             verify(importedDocUnitRepository).save(impDocUnit);
             assertSame(impDocUnit, actual);
 
-        } catch (PgcnValidationException e) {
+        } catch (final PgcnValidationException e) {
             fail("unexpected exception: " + e.getMessage());
         }
     }
@@ -167,7 +162,7 @@ public class ImportDocUnitServiceTest {
         when(importedDocUnitRepository.findIdentifiersByImportReport(eq(report), any(Pageable.class))).thenReturn(pageOfIds);
         when(importedDocUnitRepository.findByIdentifiersIn(eq(pageOfIds.getContent()), any(Sort.class))).thenReturn(impDocUnits);
 
-        final Page<ImportedDocUnit> actual = service.findByImportReport(report, new PageRequest(page, size));
+        final Page<ImportedDocUnit> actual = service.findByImportReport(report, PageRequest.of(page, size));
 
         assertEquals(1, actual.getContent().size());
     }
@@ -182,11 +177,7 @@ public class ImportDocUnitServiceTest {
         final Page<String> pageOfIds = new PageImpl<>(content);
         final List<ImportedDocUnit> impDocUnits = Collections.singletonList(new ImportedDocUnit());
 
-        when(importedDocUnitRepository.findIdentifiersByImportReport(eq(report),
-                                                                     anyListOf(DocUnit.State.class),
-                                                                     anyBoolean(),
-                                                                     anyBoolean(),
-                                                                     any(Pageable.class))).thenReturn(pageOfIds);
+        when(importedDocUnitRepository.findIdentifiersByImportReport(eq(report), any(), anyBoolean(), anyBoolean(), any(Pageable.class))).thenReturn(pageOfIds);
         when(importedDocUnitRepository.findByIdentifiersIn(eq(pageOfIds.getContent()), any(Sort.class))).thenReturn(impDocUnits);
 
         final Page<ImportedDocUnit> actual = service.findByImportReport(report, page, size, null, false, false);
@@ -204,15 +195,10 @@ public class ImportDocUnitServiceTest {
         final Page<String> pageOfIds = new PageImpl<>(content);
         final List<ImportedDocUnit> impDocUnits = Collections.singletonList(new ImportedDocUnit());
 
-        when(importedDocUnitRepository.findIdentifiersByImportReport(eq(report),
-                                                                     anyListOf(DocUnit.State.class),
-                                                                     anyBoolean(),
-                                                                     anyBoolean(),
-                                                                     any(Pageable.class))).thenReturn(pageOfIds);
+        when(importedDocUnitRepository.findIdentifiersByImportReport(eq(report), any(), anyBoolean(), anyBoolean(), any(Pageable.class))).thenReturn(pageOfIds);
         when(importedDocUnitRepository.findByIdentifiersIn(eq(pageOfIds.getContent()), any(Sort.class))).thenReturn(impDocUnits);
 
-        final Page<ImportedDocUnit> actual =
-            service.findByImportReport(report, page, size, Collections.singletonList(DocUnit.State.AVAILABLE), false, false);
+        final Page<ImportedDocUnit> actual = service.findByImportReport(report, page, size, Collections.singletonList(DocUnit.State.AVAILABLE), false, false);
 
         assertEquals(1, actual.getContent().size());
     }
@@ -223,16 +209,13 @@ public class ImportDocUnitServiceTest {
         final int page = 0;
         final int size = 10;
 
-        when(importedDocUnitRepository.findIdentifiersByImportReport(eq(report),
-                                                                     anyListOf(DocUnit.State.class),
-                                                                     anyBoolean(),
-                                                                     anyBoolean(),
-                                                                     any(Pageable.class))).thenReturn(new PageImpl<>(Collections.emptyList()));
+        when(importedDocUnitRepository.findIdentifiersByImportReport(eq(report), any(), anyBoolean(), anyBoolean(), any(Pageable.class))).thenReturn(new PageImpl<>(Collections
+                                                                                                                                                                               .emptyList()));
 
         final Page<ImportedDocUnit> actual = service.findByImportReport(report, page, size, null, false, false);
 
         assertTrue(actual.getContent().isEmpty());
-        verify(importedDocUnitRepository, never()).findByIdentifiersIn(anyListOf(String.class), any(Sort.class));
+        verify(importedDocUnitRepository, never()).findByIdentifiersIn(any(), any(Sort.class));
     }
 
 }

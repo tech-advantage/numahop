@@ -1,17 +1,18 @@
 .editable-controls {
-	button {
-		padding: 3px 7px;
-	}
-	input, select {
-		height: $sid-min-height-field;
-	}
-	input.editable-input {
-		padding-left: 5px;
-	}
-	.radio-inline > input[type="radio"] {
-    	height: auto;
+    button {
+        padding: 3px 7px;
     }
-	.select2-container {
-		width: 100%;
-	}
+    input,
+    select {
+        height: $sid-min-height-field;
+    }
+    input.editable-input {
+        padding-left: 5px;
+    }
+    .radio-inline > input[type='radio'] {
+        height: auto;
+    }
+    .select2-container {
+        width: 100%;
+    }
 }

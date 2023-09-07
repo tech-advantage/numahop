@@ -10,6 +10,7 @@ import org.mapstruct.factory.Mappers;
  */
 @Mapper
 public interface SimpleCheckConfigurationMapper {
+
     SimpleCheckConfigurationMapper INSTANCE = Mappers.getMapper(SimpleCheckConfigurationMapper.class);
 
     SimpleCheckConfigurationDTO checkConfigurationToSimpleCheckConfigurationDTO(CheckConfiguration checkConfiguration);

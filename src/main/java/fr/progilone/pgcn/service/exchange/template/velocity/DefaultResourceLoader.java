@@ -1,12 +1,11 @@
 package fr.progilone.pgcn.service.exchange.template.velocity;
 
 import fr.progilone.pgcn.service.exchange.template.loader.ResourceName;
-import org.apache.commons.collections.ExtendedProperties;
-import org.apache.velocity.exception.ResourceNotFoundException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import org.apache.velocity.runtime.resource.Resource;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
-
-import java.io.InputStream;
+import org.apache.velocity.util.ExtProperties;
 
 /**
  * Ce {@link org.apache.velocity.runtime.resource.loader.ResourceLoader} par défaut est en fait un {@link ClasspathResourceLoader}
@@ -26,15 +25,15 @@ public class DefaultResourceLoader extends ClasspathResourceLoader {
     private fr.progilone.pgcn.service.exchange.template.loader.DefaultResourceLoader delegate;
 
     @Override
-    public void init(final ExtendedProperties configuration) {
+    public void init(final ExtProperties configuration) {
         final String basePath = configuration.getString("basepath", "");
         delegate = new fr.progilone.pgcn.service.exchange.template.loader.DefaultResourceLoader(basePath);
         super.init(configuration);
     }
 
     @Override
-    public InputStream getResourceStream(final String name) throws ResourceNotFoundException {
-        return delegate.getResourceStream(new ResourceName(name));
+    public Reader getResourceReader(final String name, final String encoding) {
+        return new InputStreamReader(delegate.getResourceStream(new ResourceName(name)));
     }
 
     @Override

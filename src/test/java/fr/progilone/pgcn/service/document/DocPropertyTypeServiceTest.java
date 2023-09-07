@@ -1,26 +1,27 @@
 package fr.progilone.pgcn.service.document;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
 import fr.progilone.pgcn.domain.document.DocPropertyType;
 import fr.progilone.pgcn.exception.PgcnValidationException;
 import fr.progilone.pgcn.exception.message.PgcnErrorCode;
 import fr.progilone.pgcn.repository.document.DocPropertyTypeRepository;
 import fr.progilone.pgcn.service.exchange.MappingService;
 import fr.progilone.pgcn.util.TestUtil;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.internal.stubbing.answers.ReturnsArgumentAt;
-import org.mockito.runners.MockitoJUnitRunner;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.internal.stubbing.answers.ReturnsArgumentAt;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class DocPropertyTypeServiceTest {
 
     @Mock
@@ -32,7 +33,7 @@ public class DocPropertyTypeServiceTest {
 
     private DocPropertyTypeService service;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         service = new DocPropertyTypeService(docPropertyTypeRepository, docPropertyService, mappingService);
     }
@@ -57,7 +58,7 @@ public class DocPropertyTypeServiceTest {
     public void testFindAllByIdentifierIn() {
         final List<DocPropertyType> properties = new ArrayList<>();
         final List<String> identifiers = Arrays.asList("1", "2", "3");
-        when(docPropertyTypeRepository.findAll(identifiers)).thenReturn(properties);
+        when(docPropertyTypeRepository.findAllById(identifiers)).thenReturn(properties);
         final List<DocPropertyType> actual = service.findAllByIdentifierIn(identifiers);
         assertSame(properties, actual);
     }
@@ -66,7 +67,7 @@ public class DocPropertyTypeServiceTest {
     public void testFindOne() {
         final String identifier = "ID-001";
         final DocPropertyType property = new DocPropertyType();
-        when(docPropertyTypeRepository.findOne(identifier)).thenReturn(property);
+        when(docPropertyTypeRepository.findById(identifier)).thenReturn(Optional.of(property));
         final DocPropertyType actual = service.findOne(identifier);
         assertSame(property, actual);
     }
@@ -78,44 +79,44 @@ public class DocPropertyTypeServiceTest {
 
         try {
             // pas de libellé
-            DocPropertyType property = new DocPropertyType();
+            final DocPropertyType property = new DocPropertyType();
             property.setSuperType(DocPropertyType.DocPropertySuperType.CUSTOM);
             property.setRank(14);
 
-            DocPropertyType actual = service.save(property);
+            final DocPropertyType actual = service.save(property);
             fail("testSave: PgcnValidationException expected");
 
-        } catch (PgcnValidationException e) {
+        } catch (final PgcnValidationException e) {
             TestUtil.checkPgcnException(e, PgcnErrorCode.DOC_PROP_TYPE_LABEL_MANDATORY);
         }
 
         try {
             // le rang est défini
-            DocPropertyType property = new DocPropertyType();
+            final DocPropertyType property = new DocPropertyType();
             property.setSuperType(DocPropertyType.DocPropertySuperType.CUSTOM);
             property.setRank(14);
             property.setLabel("libellé de mon champ");
 
-            DocPropertyType actual = service.save(property);
+            final DocPropertyType actual = service.save(property);
             assertNotNull(actual);
             assertEquals(14L, actual.getRank().longValue());
 
-        } catch (PgcnValidationException e) {
+        } catch (final PgcnValidationException e) {
             fail("testSave: PgcnValidationException not expected");
         }
 
         try {
             // le rang n'est pas défini
-            DocPropertyType property = new DocPropertyType();
+            final DocPropertyType property = new DocPropertyType();
             property.setSuperType(DocPropertyType.DocPropertySuperType.CUSTOM);
             property.setLabel("libellé de mon champ");
 
-            DocPropertyType actual = service.save(property);
+            final DocPropertyType actual = service.save(property);
 
             assertNotNull(actual);
             assertEquals(46L, actual.getRank().longValue());
 
-        } catch (PgcnValidationException e) {
+        } catch (final PgcnValidationException e) {
             fail("testSave: PgcnValidationException not expected");
         }
     }
@@ -126,7 +127,6 @@ public class DocPropertyTypeServiceTest {
         final DocPropertyType property = new DocPropertyType();
         property.setIdentifier(identifier);
 
-        when(docPropertyTypeRepository.findOne(identifier)).thenReturn(property);
         when(docPropertyService.countByType(property)).thenReturn(10, 0);
         when(mappingService.countByPropertyType(property)).thenReturn(20, 0);
 
@@ -134,7 +134,7 @@ public class DocPropertyTypeServiceTest {
         try {
             service.delete(property);
             fail("testDelete: expecting validation exception");
-        } catch (PgcnValidationException e) {
+        } catch (final PgcnValidationException e) {
             verify(docPropertyTypeRepository, never()).delete(property);
             TestUtil.checkPgcnException(e, PgcnErrorCode.DOC_PROP_TYPE_DEL_USED_MAPPING, PgcnErrorCode.DOC_PROP_TYPE_DEL_USED_PROP);
         }
@@ -143,7 +143,7 @@ public class DocPropertyTypeServiceTest {
         try {
             service.delete(property);
             verify(docPropertyTypeRepository).delete(property);
-        } catch (PgcnValidationException e) {
+        } catch (final PgcnValidationException e) {
             fail("testDelete: expecting no validation exception");
         }
     }

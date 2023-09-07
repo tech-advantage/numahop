@@ -6,6 +6,7 @@ import java.util.Locale;
  * Langues supportées par l'application
  */
 public enum Lang {
+
     /**
      * Français
      */
@@ -17,11 +18,9 @@ public enum Lang {
 
     private Locale locale;
 
-
     Lang(Locale locale) {
         this.locale = locale;
     }
-
 
     public Locale getLocale() {
         return this.locale;

@@ -1,0 +1,53 @@
+<div class="modal-header">
+    <h3 class="modal-title">{{::mainCtrl.title}}</h3>
+</div>
+<div class="modal-body metadataModal" ng-form="metadataForm">
+    <div class="metadataModal__labelField">
+        <label>{{::'Label' | translate}}<span class="metadataModal__labelField-required">&nbsp;*</span></label>
+        <input
+            type="text"
+            class="form-control ng-pristine ng-untouched ng-valid ng-empty"
+            ng-model="mainCtrl.metadataProperty.label"
+            ng-readonly="readonly"
+            required
+            placeholder="{{::'Label de la metadata' | translate}}"
+        />
+    </div>
+    <div class="metadataModal__repeatTypeFields">
+        <label>{{::'Répétable' | translate}}<span class="metadataModal__repeatTypeFields-required">&nbsp;*</span></label>
+        <select class="form-control ng-pristine ng-untouched ng-valid ng-empty" ng-model="mainCtrl.metadataProperty.repeat">
+            <option value="true">{{::'Oui' | translate}}</option>
+            <option value="false">{{::'Non' | translate}}</option>
+        </select>
+
+        <label>{{::'Type' | translate}}<span class="metadataModal__repeatTypeFields-required">&nbsp;*</span></label>
+        <select class="form-control ng-pristine ng-untouched ng-valid ng-empty" ng-model="mainCtrl.metadataProperty.type" ng-options="type.label for type in mainCtrl.metadataPropertyTypes"></select>
+    </div>
+    <fieldset class="metadataModal__iptcXmpField">
+        <legend>
+            <h4>Tags ExifTool <span class="glyphicon-halflings glyphicon-question-sign cursor-help" uib-tooltip="{{::'Au moins un tag doit être saisi' | translate}}"></span></h4>
+        </legend>
+        <div class="metadataModal__iptcXmpField-iptc">
+            <label>{{::'IPTC Tag' | translate}}<span class="metadataModal__repeatTypeFields-required">&nbsp;*</span></label>
+            <input type="text" class="form-control ng-pristine ng-untouched ng-valid ng-empty" ng-model="mainCtrl.metadataProperty.iptcTag" ng-readonly="readonly" placeholder="{{::'IPTC Tag' | translate}}" />
+        </div>
+        <div class="metadataModal__iptcXmpField-xmp">
+            <label>{{::'XMP Tag' | translate}}<span class="metadataModal__repeatTypeFields-required">&nbsp;*</span></label>
+            <input type="text" class="form-control ng-pristine ng-untouched ng-valid ng-empty" ng-model="mainCtrl.metadataProperty.xmpTag" ng-readonly="readonly" placeholder="{{::'XMP Tag' | translate}}" />
+        </div>
+    </fieldset>
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-sem4" ng-click="mainCtrl.cancel()" translate>Annuler</button>
+    <button
+        type="button"
+        class="btn btn-sem2"
+        ng-click="mainCtrl.ok(mainCtrl.metadataProperty)"
+        ng-disabled="!mainCtrl.metadataProperty.label || !mainCtrl.metadataProperty.repeat || !mainCtrl.metadataProperty.type
+                            || (!mainCtrl.metadataProperty.iptcTag && !mainCtrl.metadataProperty.xmpTag)"
+        translate
+    >
+        Ok
+    </button>
+</div>

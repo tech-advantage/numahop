@@ -1,12 +1,11 @@
 package fr.progilone.pgcn.domain.dto.delivery;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-
 import fr.progilone.pgcn.domain.dto.AbstractDTO;
 import fr.progilone.pgcn.domain.dto.check.AutomaticCheckResultDTO;
 import fr.progilone.pgcn.domain.dto.lot.SimpleLotForDeliveryDTO;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * DTO représentant une livraison
@@ -46,7 +45,6 @@ public class DeliveryDTO extends AbstractDTO {
     private LocalDateTime lastModifiedDate;
     private String multiLotsDelId;
     private String multiLotsDelLabel;
-    
 
     public DeliveryDTO() {
     }
@@ -234,7 +232,7 @@ public class DeliveryDTO extends AbstractDTO {
     public void setSequentialNumbers(final Boolean sequentialNumbers) {
         this.sequentialNumbers = sequentialNumbers;
     }
-    
+
     public List<AutomaticCheckResultDTO> getAutomaticCheckResults() {
         return automaticCheckResults;
     }
@@ -290,6 +288,5 @@ public class DeliveryDTO extends AbstractDTO {
     public void setMultiLotsDelLabel(final String multiLotsDelLabel) {
         this.multiLotsDelLabel = multiLotsDelLabel;
     }
-
 
 }

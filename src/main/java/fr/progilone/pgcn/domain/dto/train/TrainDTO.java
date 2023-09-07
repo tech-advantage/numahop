@@ -1,13 +1,12 @@
 package fr.progilone.pgcn.domain.dto.train;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Set;
-
 import fr.progilone.pgcn.domain.dto.AbstractVersionedDTO;
 import fr.progilone.pgcn.domain.dto.document.SimplePhysicalDocumentDTO;
 import fr.progilone.pgcn.domain.dto.project.SimpleProjectDTO;
 import fr.progilone.pgcn.domain.train.Train;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Set;
 
 public class TrainDTO extends AbstractVersionedDTO {
 
@@ -37,8 +36,13 @@ public class TrainDTO extends AbstractVersionedDTO {
                     String description,
                     Boolean active,
                     Train.TrainStatus status,
-                    LocalDate providerSendingDate, LocalDate returnDate, Set<SimplePhysicalDocumentDTO> physicalDocuments,
-                    String createdBy, LocalDateTime createdDate, String lastModifiedBy, LocalDateTime lastModifiedDate) {
+                    LocalDate providerSendingDate,
+                    LocalDate returnDate,
+                    Set<SimplePhysicalDocumentDTO> physicalDocuments,
+                    String createdBy,
+                    LocalDateTime createdDate,
+                    String lastModifiedBy,
+                    LocalDateTime lastModifiedDate) {
         this.identifier = identifier;
         this.project = project;
         this.label = label;
@@ -162,6 +166,7 @@ public class TrainDTO extends AbstractVersionedDTO {
     }
 
     public static final class Builder {
+
         private String identifier;
         private SimpleProjectDTO project;
         private String label;
@@ -268,10 +273,10 @@ public class TrainDTO extends AbstractVersionedDTO {
                                 providerSendingDate,
                                 returnDate,
                                 physicalDocuments,
-                createdBy,
-                createdDate,
-                lastModifiedBy,
-                lastModifiedDate);
+                                createdBy,
+                                createdDate,
+                                lastModifiedBy,
+                                lastModifiedDate);
         }
 
     }

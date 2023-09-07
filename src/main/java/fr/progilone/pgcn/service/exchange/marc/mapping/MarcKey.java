@@ -34,7 +34,9 @@ public class MarcKey {
      * @return
      */
     public String getVariableName() {
-        return "marc_" + tag + (code != null ? "_" + code : "");
+        return "marc_" + tag
+               + (code != null ? "_" + code
+                               : "");
     }
 
     /**
@@ -43,9 +45,11 @@ public class MarcKey {
      * @return
      */
     public String getRegex() {
-        return code == null
-               ? "\\\\" + tag + "\\b(?!\\$)"    // \tag est en fin de mot, non suivi du caractère $
-               : "\\\\" + tag + "\\$" + code;
+        return code == null ? "\\\\" + tag
+                              + "\\b(?!\\$)"    // \tag est en fin de mot, non suivi du caractère $
+                            : "\\\\" + tag
+                              + "\\$"
+                              + code;
     }
 
     /**
@@ -59,7 +63,8 @@ public class MarcKey {
 
     @Override
     public String toString() {
-        return tag + (code != null ? "$" + code : "");
+        return tag + (code != null ? "$" + code
+                                   : "");
     }
 
     @Override
@@ -69,8 +74,7 @@ public class MarcKey {
         if (o == null || getClass() != o.getClass())
             return false;
         final MarcKey marcKey = (MarcKey) o;
-        return Objects.equals(tag, marcKey.tag) &&
-               Objects.equals(code, marcKey.code);
+        return Objects.equals(tag, marcKey.tag) && Objects.equals(code, marcKey.code);
     }
 
     @Override

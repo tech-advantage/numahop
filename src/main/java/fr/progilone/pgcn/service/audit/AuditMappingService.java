@@ -3,11 +3,10 @@ package fr.progilone.pgcn.service.audit;
 import fr.progilone.pgcn.domain.audit.AuditRevision;
 import fr.progilone.pgcn.domain.exchange.Mapping;
 import fr.progilone.pgcn.repository.audit.AuditMappingRepository;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 /**
  * Created by Sébastien on 27/06/2017.

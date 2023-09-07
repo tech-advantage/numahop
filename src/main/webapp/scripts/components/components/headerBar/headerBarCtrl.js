@@ -1,8 +1,7 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('HeaderBarController', HeaderBarController);
+    angular.module('numaHopApp.controller').controller('HeaderBarController', HeaderBarController);
 
     function HeaderBarController(NumahopUrlService) {
         var ctrl = this;
@@ -47,24 +46,23 @@
 
         function setLinks() {
             if (ctrl.delivery) {
-                ctrl.linkDelivery = NumahopUrlService.getUrlForTypeAndParameters("delivery", { id: ctrl.delivery.identifier });
+                ctrl.linkDelivery = NumahopUrlService.getUrlForTypeAndParameters('delivery', { id: ctrl.delivery.identifier });
             }
             if (ctrl.docUnit) {
-                ctrl.linkDocUnit = NumahopUrlService.getUrlForTypeAndParameters("docunit", { id: ctrl.docUnit.identifier });
+                ctrl.linkDocUnit = NumahopUrlService.getUrlForTypeAndParameters('docunit', { id: ctrl.docUnit.identifier });
             }
             if (ctrl.library) {
-                ctrl.linkLibrary = NumahopUrlService.getUrlForTypeAndParameters("library", { id: ctrl.library.identifier });
+                ctrl.linkLibrary = NumahopUrlService.getUrlForTypeAndParameters('library', { id: ctrl.library.identifier });
             }
             if (ctrl.lot) {
-                ctrl.linkLot = NumahopUrlService.getUrlForTypeAndParameters("lot", { id: ctrl.lot.identifier });
+                ctrl.linkLot = NumahopUrlService.getUrlForTypeAndParameters('lot', { id: ctrl.lot.identifier });
             }
             if (ctrl.project) {
-                ctrl.linkProject = NumahopUrlService.getUrlForTypeAndParameters("project", { id: ctrl.project.identifier });
+                ctrl.linkProject = NumahopUrlService.getUrlForTypeAndParameters('project', { id: ctrl.project.identifier });
             }
             if (ctrl.train) {
-                ctrl.linkTrain = NumahopUrlService.getUrlForTypeAndParameters("train", { id: ctrl.train.identifier });
+                ctrl.linkTrain = NumahopUrlService.getUrlForTypeAndParameters('train', { id: ctrl.train.identifier });
             }
-
         }
     }
 })();

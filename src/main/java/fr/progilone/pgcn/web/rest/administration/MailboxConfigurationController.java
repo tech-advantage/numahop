@@ -1,5 +1,7 @@
 package fr.progilone.pgcn.web.rest.administration;
 
+import static fr.progilone.pgcn.web.rest.administration.security.AuthorizationConstants.*;
+
 import com.codahale.metrics.annotation.Timed;
 import fr.progilone.pgcn.domain.administration.MailboxConfiguration;
 import fr.progilone.pgcn.domain.dto.administration.MailboxConfigurationDTO;
@@ -8,6 +10,10 @@ import fr.progilone.pgcn.service.administration.MailboxConfigurationService;
 import fr.progilone.pgcn.web.rest.AbstractRestController;
 import fr.progilone.pgcn.web.util.AccessHelper;
 import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.servlet.http.HttpServletRequest;
+import java.util.Collection;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,13 +24,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletRequest;
-import java.util.Collection;
-import java.util.List;
-
-import static fr.progilone.pgcn.web.rest.administration.security.AuthorizationConstants.*;
 
 /**
  * Created by Sébastien on 30/12/2016.
@@ -49,8 +48,7 @@ public class MailboxConfigurationController extends AbstractRestController {
     @RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed({MAIL_HAB1})
-    public ResponseEntity<MailboxConfiguration> create(final HttpServletRequest request, @RequestBody final MailboxConfiguration conf) throws
-                                                                                                                                       PgcnTechnicalException {
+    public ResponseEntity<MailboxConfiguration> create(final HttpServletRequest request, @RequestBody final MailboxConfiguration conf) throws PgcnTechnicalException {
         // Vérification des droits d'accès par rapport à la bibliothèque de l'utilisateur, pour le conf à importer
         if (!libraryAccesssHelper.checkLibrary(request, conf, MailboxConfiguration::getLibrary)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
@@ -84,8 +82,7 @@ public class MailboxConfigurationController extends AbstractRestController {
     public ResponseEntity<Collection<MailboxConfigurationDTO>> search(final HttpServletRequest request,
                                                                       @RequestParam(value = "search", required = false) String search,
                                                                       @RequestParam(value = "library", required = false) List<String> libraries,
-                                                                      @RequestParam(value = "active", required = false, defaultValue = "true")
-                                                                          boolean active) {
+                                                                      @RequestParam(value = "active", required = false, defaultValue = "true") boolean active) {
 
         Collection<MailboxConfigurationDTO> mailboxes = mailboxConfigurationService.search(search, libraries, active);
         // Filtrage des mailbox par rapport à la bibliothèque de l'utilisateur, pour les non-admin
@@ -115,8 +112,7 @@ public class MailboxConfigurationController extends AbstractRestController {
     @RequestMapping(value = "/{id}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed({MAIL_HAB1})
-    public ResponseEntity<MailboxConfiguration> udpate(final HttpServletRequest request, @RequestBody final MailboxConfiguration conf) throws
-                                                                                                                                       PgcnTechnicalException {
+    public ResponseEntity<MailboxConfiguration> udpate(final HttpServletRequest request, @RequestBody final MailboxConfiguration conf) throws PgcnTechnicalException {
 
         // Vérification des droits d'accès par rapport à la bibliothèque de l'utilisateur, pour le conf à importer
         if (!libraryAccesssHelper.checkLibrary(request, conf, MailboxConfiguration::getLibrary)) {

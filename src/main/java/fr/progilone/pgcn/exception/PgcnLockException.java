@@ -1,11 +1,10 @@
 package fr.progilone.pgcn.exception;
 
+import fr.progilone.pgcn.domain.Lock;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
-
-import fr.progilone.pgcn.domain.Lock;
 
 public class PgcnLockException extends PgcnTechnicalException {
 

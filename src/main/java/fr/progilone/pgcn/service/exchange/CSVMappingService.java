@@ -11,16 +11,15 @@ import fr.progilone.pgcn.exception.message.PgcnList;
 import fr.progilone.pgcn.repository.exchange.CSVMappingRepository;
 import fr.progilone.pgcn.repository.exchange.ImportReportRepository;
 import fr.progilone.pgcn.service.exchange.mapper.CSVMappingMapper;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by Sebastien on 23/11/2016.
@@ -69,7 +68,7 @@ public class CSVMappingService {
     @Transactional
     public void delete(final String id) {
         importReportRepository.setCsvMappingNull(id);
-        mappingRepository.delete(id);
+        mappingRepository.deleteById(id);
     }
 
     @Transactional
@@ -128,29 +127,26 @@ public class CSVMappingService {
     }
 
     private Stream<PgcnError> validateMandatoryRules(final List<CSVMappingRule> rules, final PgcnError.Builder builder) {
-        return Stream.of("label", "pgcnId", "rights", "type")
-                     .filter(field -> rules.stream().noneMatch(rule -> StringUtils.equals(rule.getDocUnitField(), field)))
-                     .map(field -> {
-                         final PgcnErrorCode code;
-                         switch (field) {
-                             case "label":
-                                 code = PgcnErrorCode.MAPPING_RULE_LABEL_MANDATORY;
-                                 break;
-                             case "pgcnId":
-                                 code = PgcnErrorCode.MAPPING_RULE_PGCNID_MANDATORY;
-                                 break;
-                             case "rights":
-                                 code = PgcnErrorCode.MAPPING_RULE_RIGHTS_MANDATORY;
-                                 break;
-                             default:
-                                 code = null;
-                         }
-                         if (code != null) {
-                             return builder.reinit().setCode(code).setField(field).build();
-                         }
-                         return null;
-                     })
-                     .filter(Objects::nonNull);
+        return Stream.of("label", "pgcnId", "rights", "type").filter(field -> rules.stream().noneMatch(rule -> StringUtils.equals(rule.getDocUnitField(), field))).map(field -> {
+            final PgcnErrorCode code;
+            switch (field) {
+                case "label":
+                    code = PgcnErrorCode.MAPPING_RULE_LABEL_MANDATORY;
+                    break;
+                case "pgcnId":
+                    code = PgcnErrorCode.MAPPING_RULE_PGCNID_MANDATORY;
+                    break;
+                case "rights":
+                    code = PgcnErrorCode.MAPPING_RULE_RIGHTS_MANDATORY;
+                    break;
+                default:
+                    code = null;
+            }
+            if (code != null) {
+                return builder.reinit().setCode(code).setField(field).build();
+            }
+            return null;
+        }).filter(Objects::nonNull);
     }
 
     @Transactional
@@ -184,6 +180,8 @@ public class CSVMappingService {
         CSVMappingRule destination = new CSVMappingRule();
         destination.setCsvField(source.getCsvField());
         destination.setDocUnitField(source.getDocUnitField());
+        destination.setCondReport(source.getCondReport());
+        destination.setMetadata(source.getMetadata());
         return destination;
     }
 }

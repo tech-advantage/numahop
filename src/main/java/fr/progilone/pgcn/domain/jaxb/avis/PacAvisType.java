@@ -5,23 +5,23 @@
 // Généré le : 2017.01.03 à 11:16:18 AM CET
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.avis;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlType;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-
 
 /**
- * <p>Classe Java pour pac_avisType complex type.
+ * <p>
+ * Classe Java pour pac_avisType complex type.
  *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="pac_avisType"&gt;
@@ -51,22 +51,21 @@ import javax.xml.bind.annotation.XmlType;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "pac_avisType", propOrder = {
-    "serveur",
-    "id",
-    "idVersement",
-    "idDemande",
-    "title",
-    "dateArchivage",
-    "dateDemande",
-    "dateCommunication",
-    "identifiantDocPac",
-    "identifiantDocProducteur",
-    "codeErreur",
-    "commentaire",
-    "erreurValidation",
-    "contrles"
-})
+@XmlType(name = "pac_avisType",
+         propOrder = {"serveur",
+                      "id",
+                      "idVersement",
+                      "idDemande",
+                      "title",
+                      "dateArchivage",
+                      "dateDemande",
+                      "dateCommunication",
+                      "identifiantDocPac",
+                      "identifiantDocProducteur",
+                      "codeErreur",
+                      "commentaire",
+                      "erreurValidation",
+                      "contrles"})
 public class PacAvisType {
 
     @XmlElement(required = true)
@@ -96,8 +95,8 @@ public class PacAvisType {
      * Obtient la valeur de la propriété serveur.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getServeur() {
@@ -108,8 +107,8 @@ public class PacAvisType {
      * Définit la valeur de la propriété serveur.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setServeur(String value) {
@@ -120,8 +119,8 @@ public class PacAvisType {
      * Obtient la valeur de la propriété id.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getId() {
@@ -132,8 +131,8 @@ public class PacAvisType {
      * Définit la valeur de la propriété id.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setId(String value) {
@@ -144,8 +143,8 @@ public class PacAvisType {
      * Obtient la valeur de la propriété idVersement.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getIdVersement() {
@@ -156,8 +155,8 @@ public class PacAvisType {
      * Définit la valeur de la propriété idVersement.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setIdVersement(String value) {
@@ -168,8 +167,8 @@ public class PacAvisType {
      * Obtient la valeur de la propriété idDemande.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getIdDemande() {
@@ -180,8 +179,8 @@ public class PacAvisType {
      * Définit la valeur de la propriété idDemande.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setIdDemande(String value) {
@@ -199,8 +198,9 @@ public class PacAvisType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getTitle().add(newItem);
+     * getTitle().add(newItem);
      * </pre>
      *
      *
@@ -221,8 +221,8 @@ public class PacAvisType {
      * Obtient la valeur de la propriété dateArchivage.
      *
      * @return
-     *     possible object is
-     *     {@link LocalDateTime }
+     *         possible object is
+     *         {@link LocalDateTime }
      *
      */
     public LocalDateTime getDateArchivage() {
@@ -233,8 +233,8 @@ public class PacAvisType {
      * Définit la valeur de la propriété dateArchivage.
      *
      * @param value
-     *     allowed object is
-     *     {@link LocalDateTime }
+     *            allowed object is
+     *            {@link LocalDateTime }
      *
      */
     public void setDateArchivage(LocalDateTime value) {
@@ -245,8 +245,8 @@ public class PacAvisType {
      * Obtient la valeur de la propriété dateDemande.
      *
      * @return
-     *     possible object is
-     *     {@link LocalDateTime }
+     *         possible object is
+     *         {@link LocalDateTime }
      *
      */
     public LocalDateTime getDateDemande() {
@@ -257,8 +257,8 @@ public class PacAvisType {
      * Définit la valeur de la propriété dateDemande.
      *
      * @param value
-     *     allowed object is
-     *     {@link LocalDateTime }
+     *            allowed object is
+     *            {@link LocalDateTime }
      *
      */
     public void setDateDemande(LocalDateTime value) {
@@ -269,8 +269,8 @@ public class PacAvisType {
      * Obtient la valeur de la propriété dateCommunication.
      *
      * @return
-     *     possible object is
-     *     {@link LocalDateTime }
+     *         possible object is
+     *         {@link LocalDateTime }
      *
      */
     public LocalDateTime getDateCommunication() {
@@ -281,8 +281,8 @@ public class PacAvisType {
      * Définit la valeur de la propriété dateCommunication.
      *
      * @param value
-     *     allowed object is
-     *     {@link LocalDateTime }
+     *            allowed object is
+     *            {@link LocalDateTime }
      *
      */
     public void setDateCommunication(LocalDateTime value) {
@@ -293,8 +293,8 @@ public class PacAvisType {
      * Obtient la valeur de la propriété identifiantDocPac.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getIdentifiantDocPac() {
@@ -305,8 +305,8 @@ public class PacAvisType {
      * Définit la valeur de la propriété identifiantDocPac.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setIdentifiantDocPac(String value) {
@@ -317,8 +317,8 @@ public class PacAvisType {
      * Obtient la valeur de la propriété identifiantDocProducteur.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getIdentifiantDocProducteur() {
@@ -329,8 +329,8 @@ public class PacAvisType {
      * Définit la valeur de la propriété identifiantDocProducteur.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setIdentifiantDocProducteur(String value) {
@@ -341,8 +341,8 @@ public class PacAvisType {
      * Obtient la valeur de la propriété codeErreur.
      *
      * @return
-     *     possible object is
-     *     {@link CodeErreurType }
+     *         possible object is
+     *         {@link CodeErreurType }
      *
      */
     public CodeErreurType getCodeErreur() {
@@ -353,8 +353,8 @@ public class PacAvisType {
      * Définit la valeur de la propriété codeErreur.
      *
      * @param value
-     *     allowed object is
-     *     {@link CodeErreurType }
+     *            allowed object is
+     *            {@link CodeErreurType }
      *
      */
     public void setCodeErreur(CodeErreurType value) {
@@ -365,8 +365,8 @@ public class PacAvisType {
      * Obtient la valeur de la propriété commentaire.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getCommentaire() {
@@ -377,8 +377,8 @@ public class PacAvisType {
      * Définit la valeur de la propriété commentaire.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setCommentaire(String value) {
@@ -389,8 +389,8 @@ public class PacAvisType {
      * Obtient la valeur de la propriété erreurValidation.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getErreurValidation() {
@@ -401,8 +401,8 @@ public class PacAvisType {
      * Définit la valeur de la propriété erreurValidation.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setErreurValidation(String value) {
@@ -413,8 +413,8 @@ public class PacAvisType {
      * Obtient la valeur de la propriété contrles.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getContrles() {
@@ -425,8 +425,8 @@ public class PacAvisType {
      * Définit la valeur de la propriété contrles.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setContrles(String value) {

@@ -1,14 +1,13 @@
 package fr.progilone.pgcn.domain.exchange;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-
 import fr.progilone.pgcn.domain.AbstractDomainObject;
 import fr.progilone.pgcn.domain.document.DocPropertyType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 /**
  * Régle de mapping
@@ -26,16 +25,28 @@ public class CSVMappingRule extends AbstractDomainObject {
 
     @Column(name = "csv_field")
     private String csvField;
-    
+
     /**
      * Champ de {@link fr.progilone.pgcn.domain.document.BibliographicRecord} concerné par cette règle de mapping
      */
     @Column(name = "bib_record_field")
     private String bibRecordField;
-    
+
+    /**
+     * Id de la propriété du constat d'état concerné (DescriptionProperty ou attribut du ConditionReportDetail)
+     */
+    @Column(name = "cond_report")
+    private String condReport;
+
+    /**
+     * Metadata concernée par cette règle de mapping
+     */
+    @Column(name = "metadata")
+    private String metadata;
+
     @Column(name = "rank")
     private int rank;
-    
+
     /**
      * Propriété concernée par cette règle de mapping
      */
@@ -68,10 +79,15 @@ public class CSVMappingRule extends AbstractDomainObject {
 
     @Override
     public String toString() {
-        return "CSVMappingRule{" +
-               "docUnitField='" + docUnitField + '\'' +
-               ", csvField=" + csvField +
-               '}';
+        return "CSVMappingRule{" + "docUnitField='"
+               + docUnitField
+               + '\''
+               + ", csvField="
+               + csvField
+               + ", "
+               + "propertyId="
+               + condReport
+               + '}';
     }
 
     public String getCsvField() {
@@ -90,6 +106,14 @@ public class CSVMappingRule extends AbstractDomainObject {
         this.bibRecordField = bibRecordField;
     }
 
+    public String getCondReport() {
+        return condReport;
+    }
+
+    public void setCondReport(final String propertyId) {
+        this.condReport = propertyId;
+    }
+
     public int getRank() {
         return rank;
     }
@@ -104,5 +128,13 @@ public class CSVMappingRule extends AbstractDomainObject {
 
     public void setProperty(final DocPropertyType property) {
         this.property = property;
+    }
+
+    public String getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(String metadata) {
+        this.metadata = metadata;
     }
 }

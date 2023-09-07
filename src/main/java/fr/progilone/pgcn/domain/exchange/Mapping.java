@@ -2,22 +2,21 @@ package fr.progilone.pgcn.domain.exchange;
 
 import fr.progilone.pgcn.domain.AbstractDomainObject;
 import fr.progilone.pgcn.domain.library.Library;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
 import org.hibernate.envers.AuditTable;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Ensemble de règle de mapping, pour un type de donnée et une bibliothèque donnés
@@ -125,11 +124,14 @@ public class Mapping extends AbstractDomainObject {
 
     @Override
     public String toString() {
-        String str = "Mapping{" + "label='" + label + '\'';
+        String str = "Mapping{" + "label='"
+                     + label
+                     + '\'';
         if (library != null) {
             str += ", library=" + library.getName();
         }
-        str += ", type=" + type + '}';
+        str += ", type=" + type
+               + '}';
         return str;
     }
 }

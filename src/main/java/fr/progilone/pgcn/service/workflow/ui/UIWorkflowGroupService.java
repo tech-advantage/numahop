@@ -1,14 +1,5 @@
 package fr.progilone.pgcn.service.workflow.ui;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import fr.progilone.pgcn.domain.dto.workflow.SimpleWorkflowGroupDTO;
 import fr.progilone.pgcn.domain.dto.workflow.WorkflowGroupDTO;
 import fr.progilone.pgcn.domain.workflow.WorkflowGroup;
@@ -21,6 +12,13 @@ import fr.progilone.pgcn.service.workflow.WorkflowGroupService;
 import fr.progilone.pgcn.service.workflow.mapper.SimpleWorkflowMapper;
 import fr.progilone.pgcn.service.workflow.mapper.UIWorkflowGroupMapper;
 import fr.progilone.pgcn.service.workflow.mapper.WorkflowMapper;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Service dédié à les gestion des vues des groupes de workflow
@@ -32,8 +30,7 @@ public class UIWorkflowGroupService {
     private final UIWorkflowGroupMapper mapper;
 
     @Autowired
-    public UIWorkflowGroupService(final WorkflowGroupService service,
-                        final UIWorkflowGroupMapper mapper) {
+    public UIWorkflowGroupService(final WorkflowGroupService service, final UIWorkflowGroupMapper mapper) {
         this.service = service;
         this.mapper = mapper;
     }
@@ -53,7 +50,8 @@ public class UIWorkflowGroupService {
     /**
      * Mise à jour d'un lot
      *
-     * @param dto un objet contenant les informations necessaires à l'enregistrement d'un lot
+     * @param dto
+     *            un objet contenant les informations necessaires à l'enregistrement d'un lot
      * @return le lot nouvellement créée ou mise à jour
      * @throws PgcnValidationException
      */
@@ -77,8 +75,7 @@ public class UIWorkflowGroupService {
         final PgcnError.Builder builder = new PgcnError.Builder();
         switch (pgcnErrorCode) {
             case WORKFLOW_GROUP_DUPLICATE_NAME:
-                builder.setCode(pgcnErrorCode)
-                       .setField("name");
+                builder.setCode(pgcnErrorCode).setField("name");
                 break;
             default:
                 break;
@@ -99,14 +96,12 @@ public class UIWorkflowGroupService {
 
     /**
      * Retourne les groupes de workflow liés à une biliothèque
+     *
      * @param identifier
      * @return
      */
     @Transactional(readOnly = true)
     public Collection<SimpleWorkflowGroupDTO> findAllForLibrary(String identifier) {
-        return service.findAllForLibrary(identifier)
-                .stream()
-                .map(SimpleWorkflowMapper.INSTANCE::groupToSimpleGroupDTO)
-                .collect(Collectors.toList());
+        return service.findAllForLibrary(identifier).stream().map(SimpleWorkflowMapper.INSTANCE::groupToSimpleGroupDTO).collect(Collectors.toList());
     }
 }

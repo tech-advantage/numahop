@@ -1,5 +1,7 @@
 package fr.progilone.pgcn.web.rest.document.conditionreport;
 
+import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.*;
+
 import com.codahale.metrics.annotation.Timed;
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.document.conditionreport.ConditionReportAttachment;
@@ -8,6 +10,12 @@ import fr.progilone.pgcn.service.document.conditionreport.ConditionReportAttachm
 import fr.progilone.pgcn.service.document.conditionreport.ConditionReportService;
 import fr.progilone.pgcn.web.rest.AbstractRestController;
 import fr.progilone.pgcn.web.util.AccessHelper;
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -22,15 +30,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-
-import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.*;
 
 @RestController
 @RequestMapping(value = "/api/rest/condreport_attachment")

@@ -1,23 +1,9 @@
 package fr.progilone.pgcn.service.lot.ui;
 
-import java.time.LocalDate;
-import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.dto.audit.AuditLotRevisionDTO;
 import fr.progilone.pgcn.domain.dto.lot.LotDTO;
 import fr.progilone.pgcn.domain.dto.lot.LotListDTO;
-import fr.progilone.pgcn.domain.dto.lot.LotWithConfigRulesDTO;
 import fr.progilone.pgcn.domain.dto.lot.SimpleLotDTO;
 import fr.progilone.pgcn.domain.lot.Lot;
 import fr.progilone.pgcn.domain.lot.Lot.LotStatus;
@@ -31,12 +17,22 @@ import fr.progilone.pgcn.exception.message.PgcnErrorCode;
 import fr.progilone.pgcn.security.SecurityUtils;
 import fr.progilone.pgcn.service.lot.LotService;
 import fr.progilone.pgcn.service.lot.mapper.LotMapper;
-import fr.progilone.pgcn.service.lot.mapper.LotWithConfigRulesMapper;
 import fr.progilone.pgcn.service.lot.mapper.SimpleLotMapper;
 import fr.progilone.pgcn.service.lot.mapper.UILotMapper;
 import fr.progilone.pgcn.service.util.transaction.VersionValidationService;
 import fr.progilone.pgcn.service.workflow.WorkflowService;
 import fr.progilone.pgcn.web.util.AccessHelper;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Service dédié à les gestion des vues des lots
@@ -50,8 +46,7 @@ public class UILotService {
     private final WorkflowService workflowService;
 
     @Autowired
-    public UILotService(final LotService lotService, final UILotMapper uiLotMapper,
-                        final AccessHelper accessHelper, final WorkflowService workflowService) {
+    public UILotService(final LotService lotService, final UILotMapper uiLotMapper, final AccessHelper accessHelper, final WorkflowService workflowService) {
         this.lotService = lotService;
         this.uiLotMapper = uiLotMapper;
         this.accessHelper = accessHelper;
@@ -77,7 +72,7 @@ public class UILotService {
      * Mise à jour d'un lot
      *
      * @param request
-     *         un objet contenant les informations necessaires à l'enregistrement d'un lot
+     *            un objet contenant les informations necessaires à l'enregistrement d'un lot
      * @return le lot nouvellement créée ou mise à jour
      * @throws PgcnValidationException
      */
@@ -155,24 +150,22 @@ public class UILotService {
     private boolean checkLotIsAvailableForDeliv(final Lot lot) {
 
         boolean isAvailable = false;
-        if (Lot.Type.PHYSICAL ==  lot.getType()) {
+        if (Lot.Type.PHYSICAL == lot.getType()) {
             isAvailable = true;
-        } else if (Lot.Type.DIGITAL ==  lot.getType()) {
+        } else if (Lot.Type.DIGITAL == lot.getType()) {
             if (LotStatus.CREATED == lot.getStatus()) {
                 isAvailable = true;
             } else if (LotStatus.ONGOING == lot.getStatus()) {
-                    for (final DocUnit du : lot.getDocUnits()) {
-                        if (workflowService.isStateRunning(du, WorkflowStateKey.RELIVRAISON_DOCUMENT_EN_COURS)) {
-                            isAvailable = true;
-                            break;
-                        }
+                for (final DocUnit du : lot.getDocUnits()) {
+                    if (workflowService.isStateRunning(du, WorkflowStateKey.RELIVRAISON_DOCUMENT_EN_COURS)) {
+                        isAvailable = true;
+                        break;
                     }
+                }
             }
         }
         return isAvailable;
     }
-
-
 
     @Transactional(readOnly = true)
     public List<LotListDTO> findAllActiveForMultiLotsDelivery() {
@@ -232,8 +225,7 @@ public class UILotService {
         final CustomUserDetails currentUser = SecurityUtils.getCurrentUser();
         if (currentUser != null && User.Category.PROVIDER.equals(currentUser.getCategory())) {
             return lotsIn.stream()
-                         .filter(lot -> lot.getProvider() != null && StringUtils.equals(lot.getProvider().getIdentifier(),
-                                                                                        currentUser.getIdentifier()))
+                         .filter(lot -> lot.getProvider() != null && StringUtils.equals(lot.getProvider().getIdentifier(), currentUser.getIdentifier()))
                          .collect(Collectors.toList());
         } else {
             return lotsIn;
@@ -252,16 +244,12 @@ public class UILotService {
                                      final Integer page,
                                      final Integer size,
                                      final List<String> sorts) {
-        final Page<Lot> lots =
-            lotService.search(search, libraries, projects, active, lotStatuses, null, docNumber, fileFormats, identifiers, page, size, sorts);
+        final Page<Lot> lots = lotService.search(search, libraries, projects, active, lotStatuses, null, docNumber, fileFormats, identifiers, page, size, sorts);
         return lots.map(SimpleLotMapper.INSTANCE::lotToSimpleLotDTO);
     }
 
     @Transactional(readOnly = true)
-    public List<AuditLotRevisionDTO> getLotsForWidget(final LocalDate fromDate,
-                                                      final List<String> libraries,
-                                                      final List<String> projects,
-                                                      final List<Lot.LotStatus> status) {
+    public List<AuditLotRevisionDTO> getLotsForWidget(final LocalDate fromDate, final List<String> libraries, final List<String> projects, final List<Lot.LotStatus> status) {
 
         final List<Lot> lots = lotService.findLotsForWidget(fromDate, libraries, projects, status);
         final List<AuditLotRevisionDTO> revs = new ArrayList<>();

@@ -1,25 +1,12 @@
 package fr.progilone.pgcn.repository.user;
 
-import fr.progilone.pgcn.domain.dto.user.SimpleUserDTO;
 import fr.progilone.pgcn.domain.user.User;
 import fr.progilone.pgcn.domain.user.User.Category;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-
 public interface UserRepositoryCustom {
-
-    /**
-     * récupère tous les usagers sous forme allégée
-     *
-     * @param fromDate
-     *         date à partir de laquelle on veut faire un delta des modifications
-     * @return liste contenant l'ensemble des BorrowerSimpleDTO
-     */
-    List<SimpleUserDTO> findAllSimpleDTO(final Optional<Date> fromDate);
 
     /**
      * Recherche rapide d'utilisateurs

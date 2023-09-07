@@ -3,14 +3,13 @@
 </div>
 <div class="modal-body">
     <div class="row">
-
         <div>
             <h4 translate>Type d'export:</h4>
             <div class="form-control">
                 <label translate>Téléchargement</label>
-                <input type="radio" ng-model="mainCtrl.ftpExport" value="false" ng-checked="true"/>
-                <label style="margin-left:15px;" translate>Export FTP</label>
-                <input type="radio" ng-model="mainCtrl.ftpExport" value="true">
+                <input type="radio" ng-model="mainCtrl.ftpExport" value="false" ng-checked="true" />
+                <label style="margin-left: 15px" translate>Export FTP</label>
+                <input type="radio" ng-model="mainCtrl.ftpExport" value="true" />
             </div>
         </div>
         <!--           <div>&nbsp;</div> -->
@@ -19,34 +18,34 @@
         </div>
         <div class="form-control">
             <label translate>METS</label>
-            <input type="checkbox" ng-model="mainCtrl.mets">
+            <input type="checkbox" ng-model="mainCtrl.mets" />
 
             <label ng-if="mainCtrl.mets" translate>avec notice EAD</label>
-            <input ng-if="mainCtrl.mets" type="checkbox" ng-model="mainCtrl.metaEad">
+            <input ng-if="mainCtrl.mets" type="checkbox" ng-model="mainCtrl.metaEad" />
         </div>
         <div class="form-control">
             <label translate>AIP / SIP</label>
-            <input type="checkbox" ng-model="mainCtrl.aip">
+            <input type="checkbox" ng-model="mainCtrl.aip" />
         </div>
         <div class="form-control">
             <label translate>Fichiers Master</label>
-            <input type="checkbox" ng-model="mainCtrl.master">
+            <input type="checkbox" ng-model="mainCtrl.master" />
         </div>
         <div class="form-control">
             <label translate>Fichiers View</label>
-            <input type="checkbox" ng-model="mainCtrl.view">
+            <input type="checkbox" ng-model="mainCtrl.view" />
         </div>
         <div class="form-control">
             <label translate>Vignettes</label>
-            <input type="checkbox" ng-model="mainCtrl.thumb">
+            <input type="checkbox" ng-model="mainCtrl.thumb" />
         </div>
         <div class="form-control">
             <label translate>Pdf</label>
-            <input type="checkbox" ng-model="mainCtrl.pdf">
+            <input type="checkbox" ng-model="mainCtrl.pdf" />
         </div>
         <div class="form-control">
             <label uib-tooltip="Fichiers alto.xml et ocr.txt en cas d'océrisation via NumaHop" translate>Alto</label>
-            <input type="checkbox" ng-model="mainCtrl.alto">
+            <input type="checkbox" ng-model="mainCtrl.alto" />
         </div>
     </div>
 </div>

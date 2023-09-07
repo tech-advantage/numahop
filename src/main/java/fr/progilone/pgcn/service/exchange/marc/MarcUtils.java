@@ -3,6 +3,18 @@ package fr.progilone.pgcn.service.exchange.marc;
 import fr.progilone.pgcn.domain.exchange.DataEncoding;
 import fr.progilone.pgcn.service.exchange.ExchangeHelper;
 import fr.progilone.pgcn.service.exchange.marc.mapping.MarcKey;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.marc4j.MarcReader;
@@ -24,19 +36,6 @@ import org.marc4j.marc.Subfield;
 import org.marc4j.marc.VariableField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Fonctions d'aide à la manipulation de notices MARC
@@ -188,9 +187,8 @@ public class MarcUtils {
 
             // Recherche des clés qui correspondent au tag du champ courant
             final List<MarcKey> matchedKeys = marcKeys.stream()
-                                                      .filter(key -> key.isXX() ?
-                                                                     key.getTag().charAt(0) == recordTag.charAt(0) :
-                                                                     key.getTag().equals(recordTag))
+                                                      .filter(key -> key.isXX() ? key.getTag().charAt(0) == recordTag.charAt(0)
+                                                                                : key.getTag().equals(recordTag))
                                                       .collect(Collectors.toList());
             if (matchedKeys.isEmpty()) {
                 otherFields.add(recordField);
@@ -239,8 +237,7 @@ public class MarcUtils {
                     // champ
                     final DataField copyOfField = marcFactory.newDataField(f.getTag(), dataField.getIndicator1(), dataField.getIndicator2());
                     // sous-champs
-                    dataField.getSubfields()
-                             .forEach(subfield -> copyOfField.addSubfield(marcFactory.newSubfield(subfield.getCode(), subfield.getData())));
+                    dataField.getSubfields().forEach(subfield -> copyOfField.addSubfield(marcFactory.newSubfield(subfield.getCode(), subfield.getData())));
                     return copyOfField;
 
                 } else {

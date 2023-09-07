@@ -28,7 +28,6 @@ public class SimpleListDocUnitDTO extends AbstractDTO {
     private boolean hasRecord;
     private String digitalDocumentStatus;
     private boolean changeTrainAuthorized;
-    
 
     public SimpleListDocUnitDTO() {
     }

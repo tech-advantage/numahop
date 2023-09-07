@@ -5,22 +5,21 @@
 // Généré le : 2017.01.03 à 11:16:35 AM CET
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.aip;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
-
-
 /**
- * <p>Classe Java pour pacType complex type.
+ * <p>
+ * Classe Java pour pacType complex type.
  *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="pacType"&gt;
@@ -39,11 +38,10 @@ import javax.xml.bind.annotation.XmlType;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "pacType", propOrder = {
-    "docDC",
-    "docMeta",
-    "fichMeta"
-})
+@XmlType(name = "pacType",
+         propOrder = {"docDC",
+                      "docMeta",
+                      "fichMeta"})
 public class PacType {
 
     @XmlElement(name = "DocDC", required = true)
@@ -57,8 +55,8 @@ public class PacType {
      * Obtient la valeur de la propriété docDC.
      *
      * @return
-     *     possible object is
-     *     {@link DocDCType }
+     *         possible object is
+     *         {@link DocDCType }
      *
      */
     public DocDCType getDocDC() {
@@ -69,8 +67,8 @@ public class PacType {
      * Définit la valeur de la propriété docDC.
      *
      * @param value
-     *     allowed object is
-     *     {@link DocDCType }
+     *            allowed object is
+     *            {@link DocDCType }
      *
      */
     public void setDocDC(final DocDCType value) {
@@ -81,8 +79,8 @@ public class PacType {
      * Obtient la valeur de la propriété docMeta.
      *
      * @return
-     *     possible object is
-     *     {@link DocMetaType }
+     *         possible object is
+     *         {@link DocMetaType }
      *
      */
     public DocMetaType getDocMeta() {
@@ -93,8 +91,8 @@ public class PacType {
      * Définit la valeur de la propriété docMeta.
      *
      * @param value
-     *     allowed object is
-     *     {@link DocMetaType }
+     *            allowed object is
+     *            {@link DocMetaType }
      *
      */
     public void setDocMeta(final DocMetaType value) {
@@ -112,8 +110,9 @@ public class PacType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getFichMeta().add(newItem);
+     * getFichMeta().add(newItem);
      * </pre>
      *
      *

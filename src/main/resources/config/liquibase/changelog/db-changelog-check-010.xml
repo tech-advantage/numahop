@@ -1,7 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <!-- Ajout table check_slip -->
     <changeSet id="pgcn-check-010" author="progilone">
@@ -19,16 +21,16 @@
                 <constraints nullable="false" />
             </column>
             <column name="created_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>
     
@@ -43,8 +45,8 @@
             <column name="title" type="varchar(255)" />
             <column name="status" type="varchar(255)" />
             <column name="doc_errors" type="text" />
-            <column name="nb_pages" type="int"/>
-            <column name="nb_pages_to_bill" type="int"/>
+            <column name="nb_pages" type="int" />
+            <column name="nb_pages_to_bill" type="int" />
                         
             <!-- Liens techniques -->
             <column name="check_slip" type="varchar(191)" />
@@ -54,16 +56,16 @@
                 <constraints nullable="false" />
             </column>
             <column name="created_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>
         
@@ -72,13 +74,15 @@
             <column name="check_slip" type="varchar(191)" />
         </addColumn>
     
-        <addForeignKeyConstraint baseColumnNames="check_slip" baseTableName="check_slip_line"
-            constraintName="fk_check_slip_check_slip_lines"
-            referencedColumnNames="identifier" referencedTableName="check_slip" />
+        <addForeignKeyConstraint baseColumnNames="check_slip" baseTableName="check_slip_line" constraintName="fk_check_slip_check_slip_lines" referencedColumnNames="identifier" referencedTableName="check_slip" />
             
-        <addForeignKeyConstraint baseColumnNames="check_slip" baseTableName="del_delivered_document"
+        <addForeignKeyConstraint
+            baseColumnNames="check_slip"
+            baseTableName="del_delivered_document"
             constraintName="fk_check_slip_delivered_document"
-            referencedColumnNames="identifier" referencedTableName="check_slip" />    
+            referencedColumnNames="identifier"
+            referencedTableName="check_slip"
+        />    
     
     </changeSet>
-</databaseChangeLog>    
+</databaseChangeLog>

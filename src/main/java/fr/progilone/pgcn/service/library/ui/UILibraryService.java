@@ -1,15 +1,5 @@
 package fr.progilone.pgcn.service.library.ui;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import fr.progilone.pgcn.domain.dto.library.LibraryDTO;
 import fr.progilone.pgcn.domain.dto.library.SimpleLibraryDTO;
 import fr.progilone.pgcn.domain.dto.user.SimpleUserDTO;
@@ -26,6 +16,14 @@ import fr.progilone.pgcn.service.library.mapper.UILibraryMapper;
 import fr.progilone.pgcn.service.user.UserService;
 import fr.progilone.pgcn.service.user.mapper.UserMapper;
 import fr.progilone.pgcn.service.util.transaction.VersionValidationService;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Service dédié à les gestion des vues des bibliothèques
@@ -40,9 +38,7 @@ public class UILibraryService {
     private final UserService userService;
 
     @Autowired
-    public UILibraryService(final LibraryService libraryService,
-                            final UILibraryMapper uiLibraryMapper,
-                            final UserService userService) {
+    public UILibraryService(final LibraryService libraryService, final UILibraryMapper uiLibraryMapper, final UserService userService) {
         this.libraryService = libraryService;
         this.uiLibraryMapper = uiLibraryMapper;
         this.userService = userService;
@@ -61,7 +57,8 @@ public class UILibraryService {
     /**
      * Mise à jour d'une bibliothèque
      *
-     * @param request un objet contenant les informations necessaires à l'enregistrement d'une bibliothèque
+     * @param request
+     *            un objet contenant les informations necessaires à l'enregistrement d'une bibliothèque
      * @return la bibliothèque nouvellement créée ou mise à jour
      * @throws PgcnValidationException
      */

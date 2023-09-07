@@ -3,22 +3,17 @@ package fr.progilone.pgcn.domain.dto.statistics.csv;
 import com.google.common.collect.Ordering;
 import com.opencsv.bean.CsvBindByName;
 import fr.progilone.pgcn.domain.workflow.WorkflowStateKey;
-
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 public class WorkflowDeliveryProgressCsvDTO implements Comparable<WorkflowDeliveryProgressCsvDTO> {
 
     private static final Ordering<WorkflowDeliveryProgressCsvDTO> ORDER_DTO;
 
     static {
-        final Ordering<WorkflowDeliveryProgressCsvDTO> orderLib =
-            Ordering.natural().nullsFirst().onResultOf(WorkflowDeliveryProgressCsvDTO::getLibraryName);
-        final Ordering<WorkflowDeliveryProgressCsvDTO> orderPj =
-            Ordering.natural().nullsFirst().onResultOf(WorkflowDeliveryProgressCsvDTO::getProjectName);
-        final Ordering<WorkflowDeliveryProgressCsvDTO> orderLot =
-            Ordering.natural().nullsFirst().onResultOf(WorkflowDeliveryProgressCsvDTO::getLotLabel);
-        final Ordering<WorkflowDeliveryProgressCsvDTO> orderDlv =
-            Ordering.natural().nullsFirst().onResultOf(WorkflowDeliveryProgressCsvDTO::getDeliveryLabel);
+        final Ordering<WorkflowDeliveryProgressCsvDTO> orderLib = Ordering.natural().nullsFirst().onResultOf(WorkflowDeliveryProgressCsvDTO::getLibraryName);
+        final Ordering<WorkflowDeliveryProgressCsvDTO> orderPj = Ordering.natural().nullsFirst().onResultOf(WorkflowDeliveryProgressCsvDTO::getProjectName);
+        final Ordering<WorkflowDeliveryProgressCsvDTO> orderLot = Ordering.natural().nullsFirst().onResultOf(WorkflowDeliveryProgressCsvDTO::getLotLabel);
+        final Ordering<WorkflowDeliveryProgressCsvDTO> orderDlv = Ordering.natural().nullsFirst().onResultOf(WorkflowDeliveryProgressCsvDTO::getDeliveryLabel);
 
         ORDER_DTO = orderLib.compound(orderPj).compound(orderLot).compound(orderDlv);
     }

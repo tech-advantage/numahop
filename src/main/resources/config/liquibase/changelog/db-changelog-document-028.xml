@@ -1,7 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <!-- Changeset du module Document - Creation table del_multi_lots_delivery  -->
     <changeSet id="pgcn-document-28" author="progilone">
@@ -17,28 +19,28 @@
             <column name="delivery_status" type="integer" />
             <column name="delivery_method" type="integer" />
             <column name="reception_date" type="date">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
 
-            <column name="folder_path" type="varchar(255)"/>
-            <column name="digitizing_notes" type="varchar(255)"/>
-            <column name="control_notes" type="varchar(255)"/>
+            <column name="folder_path" type="varchar(255)" />
+            <column name="digitizing_notes" type="varchar(255)" />
+            <column name="control_notes" type="varchar(255)" />
 
             <!-- Données techniques auto -->
             <column name="version" type="BIGINT">
                 <constraints nullable="false" />
             </column>
             <column name="created_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>
         
@@ -46,9 +48,13 @@
             <column name="multi_lots_delivery" type="varchar(191)" />
         </addColumn>
         
-        <addForeignKeyConstraint baseColumnNames="multi_lots_delivery"
-                                 baseTableName="del_delivery" constraintName="fk_delivery_multi_delivery"
-                                 referencedColumnNames="identifier" referencedTableName="del_multi_lots_delivery" />
+        <addForeignKeyConstraint
+            baseColumnNames="multi_lots_delivery"
+            baseTableName="del_delivery"
+            constraintName="fk_delivery_multi_delivery"
+            referencedColumnNames="identifier"
+            referencedTableName="del_multi_lots_delivery"
+        />
         
     </changeSet>
 </databaseChangeLog>

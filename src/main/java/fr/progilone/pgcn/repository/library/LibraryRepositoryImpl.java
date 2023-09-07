@@ -1,29 +1,34 @@
 package fr.progilone.pgcn.repository.library;
 
-import com.mysema.query.BooleanBuilder;
-import com.mysema.query.jpa.JPQLQuery;
-import com.mysema.query.jpa.impl.JPAQuery;
-import com.mysema.query.types.expr.BooleanExpression;
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import fr.progilone.pgcn.domain.library.Library;
 import fr.progilone.pgcn.domain.library.QLibrary;
 import fr.progilone.pgcn.repository.util.QueryDSLBuilderUtils;
+import java.util.List;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import java.util.List;
-
 public class LibraryRepositoryImpl implements LibraryRepositoryCustom {
 
-    @PersistenceContext
-    private EntityManager em;
+    private final JPAQueryFactory queryFactory;
+
+    public LibraryRepositoryImpl(final JPAQueryFactory queryFactory) {
+        this.queryFactory = queryFactory;
+    }
 
     @Override
-    public Page<Library> search(String search, List<String> libraries, String initiale, List<String> institutions, boolean isActive, Pageable pageable) {
+    public Page<Library> search(final String search,
+                                final List<String> libraries,
+                                final String initiale,
+                                final List<String> institutions,
+                                final boolean isActive,
+                                final Pageable pageable) {
 
         final QLibrary library = QLibrary.library;
         final BooleanBuilder builder = new BooleanBuilder();
@@ -50,25 +55,14 @@ public class LibraryRepositoryImpl implements LibraryRepositoryCustom {
             builder.and(library.active.eq(true));
         }
 
-        final JPQLQuery baseQuery = new JPAQuery(em);
-        final JPQLQuery countQuery = new JPAQuery(em);
+        final JPAQuery<Library> baseQuery = queryFactory.selectDistinct(library).from(library).where(builder).orderBy(library.name.asc());
 
         if (pageable != null) {
             baseQuery.offset(pageable.getOffset()).limit(pageable.getPageSize());
         }
 
-        final List<String> librariesIdentifiers = countQuery.from(library)
-                                                            .groupBy(library.identifier)
-                                                            .where(builder.getValue())
-                                                            .distinct()
-                                                            .list(library.identifier);
-        final long total = librariesIdentifiers.size();
+        final long total = queryFactory.select(library.countDistinct()).from(library).where(builder).fetchOne();
 
-        final List<Library> result = baseQuery.from(library)
-                                              .where(builder.getValue())
-                                              .orderBy(library.name.asc())
-                                              .distinct()
-                                              .list(library);
-        return new PageImpl<>(result, pageable, total);
+        return new PageImpl<>(baseQuery.fetch(), pageable, total);
     }
 }

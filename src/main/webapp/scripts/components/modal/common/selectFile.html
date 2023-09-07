@@ -5,12 +5,9 @@
     <div class="row">
         <!-- Sélection du fichier -->
         <div class="row vertical-align">
-            <div class="col-xs-4 text-right">
-                <label for="importFiles0" translate>Fichier à téléverser</label><br/>
-            </div>
+            <div class="col-xs-4 text-right"><label for="importFiles0" translate>Fichier à téléverser</label><br /></div>
             <div class="col-xs-12 col-lg-4">
-                <input type="file" id="importFiles0" ng-attr-accept="{{mainCtrl.accept}}"
-                       onchange="angular.element(this).scope().mainCtrl.setFiles(this)" />
+                <input type="file" id="importFiles0" ng-attr-accept="{{mainCtrl.accept}}" onchange="angular.element(this).scope().mainCtrl.setFiles(this)" />
             </div>
         </div>
         <!-- Liste de fichiers -->
@@ -30,6 +27,5 @@
 </div>
 <div class="modal-footer">
     <button type="button" class="btn btn-sem4" ng-click="mainCtrl.cancel()" translate>Annuler</button>
-    <button type="button" class="btn btn-sem2" ng-click="mainCtrl.ok()" 
-            ng-disabled="!mainCtrl.files.length" translate>Téléverser</button>
+    <button type="button" class="btn btn-sem2" ng-click="mainCtrl.ok()" ng-disabled="!mainCtrl.files.length" translate>Téléverser</button>
 </div>

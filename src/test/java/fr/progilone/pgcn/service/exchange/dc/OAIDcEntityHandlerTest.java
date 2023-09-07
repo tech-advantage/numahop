@@ -1,21 +1,19 @@
 package fr.progilone.pgcn.service.exchange.dc;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import jakarta.xml.bind.JAXBException;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.xml.bind.JAXBException;
 import javax.xml.parsers.ParserConfigurationException;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
 /**
@@ -33,12 +31,10 @@ public class OAIDcEntityHandlerTest {
         test(OAI_CALAMES, "Ms. 126 [cote]");
     }
 
-    public void test(final String xml, final String expectedIdentifier) throws
-                                                                        IOException,
-                                                                        JAXBException,
-                                                                        ParserConfigurationException,
-                                                                        SAXException {
-        final File tmpFile = new File(FileUtils.getTempDirectory(), "OaiDcEntityHandlerTest_test_" + System.currentTimeMillis() + ".xml");
+    public void test(final String xml, final String expectedIdentifier) throws IOException, JAXBException, ParserConfigurationException, SAXException {
+        final File tmpFile = new File(FileUtils.getTempDirectory(),
+                                      "OaiDcEntityHandlerTest_test_" + System.currentTimeMillis()
+                                                                    + ".xml");
         try (final FileWriter writer = new FileWriter(tmpFile)) {
             IOUtils.write(xml.getBytes(), writer, StandardCharsets.UTF_8);
         }
@@ -62,30 +58,28 @@ public class OAIDcEntityHandlerTest {
     }
 
     // https://www.openarchives.org/OAI/openarchivesprotocol.html
-    private static final String OAI_STANDARD =
-        "<oai_dc:dc xmlns:oai_dc=\"http://www.openarchives.org/OAI/2.0/oai_dc/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xsi:schemaLocation=\"http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd\">\n"
-        + "  <dc:title>Demain Jean Lecanuet un homme neuf... une France en marche</dc:title>\n"
-        + "  <dc:creator />\n"
-        + "  <dc:subject>LECANUET Jean, France, Elections présidentielles, Ve République</dc:subject>\n"
-        + "  <dc:description>Election présidentielle 1965, 1er tour, Affiche</dc:description>\n"
-        + "  <dc:publisher>Sciences Po</dc:publisher>\n"
-        + "  <dc:contributor />\n"
-        + "  <dc:date>1965-12-05</dc:date>\n"
-        + "  <dc:type>text</dc:type>\n"
-        + "  <dc:format>116x38 cm</dc:format>\n"
-        + "  <dc:identifier>EL033_P_1965_067</dc:identifier>\n"
-        + "  <dc:source>EL033</dc:source>\n"
-        + "  <dc:language>fra</dc:language>\n"
-        + "  <dc:relation>archives électorales du CEVIPOF</dc:relation>\n"
-        + "  <dc:coverage />\n"
-        + "  <dc:rights>Attribution-NonCommercial-NoDerivs</dc:rights>\n"
-        + "</oai_dc:dc>";
+    private static final String OAI_STANDARD = "<oai_dc:dc xmlns:oai_dc=\"http://www.openarchives.org/OAI/2.0/oai_dc/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xsi:schemaLocation=\"http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd\">\n"
+                                               + "  <dc:title>Demain Jean Lecanuet un homme neuf... une France en marche</dc:title>\n"
+                                               + "  <dc:creator />\n"
+                                               + "  <dc:subject>LECANUET Jean, France, Elections présidentielles, Ve République</dc:subject>\n"
+                                               + "  <dc:description>Election présidentielle 1965, 1er tour, Affiche</dc:description>\n"
+                                               + "  <dc:publisher>Sciences Po</dc:publisher>\n"
+                                               + "  <dc:contributor />\n"
+                                               + "  <dc:date>1965-12-05</dc:date>\n"
+                                               + "  <dc:type>text</dc:type>\n"
+                                               + "  <dc:format>116x38 cm</dc:format>\n"
+                                               + "  <dc:identifier>EL033_P_1965_067</dc:identifier>\n"
+                                               + "  <dc:source>EL033</dc:source>\n"
+                                               + "  <dc:language>fra</dc:language>\n"
+                                               + "  <dc:relation>archives électorales du CEVIPOF</dc:relation>\n"
+                                               + "  <dc:coverage />\n"
+                                               + "  <dc:rights>Attribution-NonCommercial-NoDerivs</dc:rights>\n"
+                                               + "</oai_dc:dc>";
 
     // Format spécifique calames:
     // -> les déclarations des namespaces sont incorrectes (dc) ou absentes (oai_dc)
     // -> oai_dc (namespace) est utilisé au lieu de oai_dc:dc (élément dc du namespace oai_dc)
-    private static final String OAI_CALAMES = "<ListRecords>\n"
-                                              + "  <record>\n"
+    private static final String OAI_CALAMES = "<ListRecords>\n" + "  <record>\n"
                                               + "    <header>\n"
                                               + "      <identifier>oai:oaicalames.abes.fr:BSGA10185</identifier>\n"
                                               + "      <datestamp />\n"

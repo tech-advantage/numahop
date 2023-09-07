@@ -1,25 +1,26 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <changeSet id="pgcn-create-administration-002" author="progilone">
 
         <!-- Nouvelle table pour gérer les conversion code > valeur lors de l'import -->
         <createTable tableName="conf_transliteration">
             <column name="type" type="varchar(191)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="code" type="varchar(191)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
-            <column name="value" type="varchar(255)"/>
+            <column name="value" type="varchar(255)" />
         </createTable>
 
-        <addPrimaryKey tableName="conf_transliteration" columnNames="type,code"/>
+        <addPrimaryKey tableName="conf_transliteration" columnNames="type,code" />
 
-        <loadData encoding="UTF-8" separator="," file="config/liquibase/numahop/administration/conf_transliteration.csv"
-                  tableName="conf_transliteration"/>
+        <loadData encoding="UTF-8" separator="," file="config/liquibase/numahop/administration/conf_transliteration.csv" tableName="conf_transliteration" />
 
     </changeSet>
 </databaseChangeLog>

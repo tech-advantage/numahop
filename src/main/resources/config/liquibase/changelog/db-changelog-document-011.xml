@@ -1,17 +1,19 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
 
     <changeSet id="pgcn-document-11" author="progilone">
         <!-- indicateurs à false par defaut -->
 
         <addColumn tableName="del_delivery">
-            <column name="compression_type_ok" type="BOOLEAN" defaultValueBoolean="false"/>
-            <column name="compression_rate_ok" type="BOOLEAN" defaultValueBoolean="false"/>
-            <column name="resolution_ok" type="BOOLEAN" defaultValueBoolean="false"/>
-            <column name="colorspace_ok" type="BOOLEAN" defaultValueBoolean="false"/>
+            <column name="compression_type_ok" type="BOOLEAN" defaultValueBoolean="false" />
+            <column name="compression_rate_ok" type="BOOLEAN" defaultValueBoolean="false" />
+            <column name="resolution_ok" type="BOOLEAN" defaultValueBoolean="false" />
+            <column name="colorspace_ok" type="BOOLEAN" defaultValueBoolean="false" />
         </addColumn>
 
     </changeSet>

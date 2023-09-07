@@ -1,17 +1,19 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <!-- Changeset du module Document - Tri des propriétés dans l'interface -->
     <changeSet id="pgcn-document-33" author="progilone">
 
         <addColumn tableName="doc_archive_item">
-            <column name="type" type="varchar(255)"/>
+            <column name="type" type="varchar(255)" />
         </addColumn>
         
         <addColumn tableName="doc_archive_item">
-            <column name="source" type="varchar(255)"/>
+            <column name="source" type="varchar(255)" />
         </addColumn>
 
     </changeSet>

@@ -1,11 +1,10 @@
 package fr.progilone.pgcn.service.exchange.ead.script.format;
 
+import static fr.progilone.pgcn.service.exchange.ead.EadCParser.*;
+
 import fr.progilone.pgcn.service.exchange.ead.EadCParser;
 import fr.progilone.pgcn.service.exchange.ead.script.CustomScript;
-
 import java.util.List;
-
-import static fr.progilone.pgcn.service.exchange.ead.EadCParser.*;
 
 /**
  * Si un objet définit l'attribut "normal", il est affiché; sinon son contenu est affiché.
@@ -34,7 +33,11 @@ public class NormalFormatter extends CustomScript {
         if (values.isEmpty()) {
             values = EadCParser.getObjectValues(o, ATTR_CONTENT);
         }
-        return values.stream().map(String::valueOf).reduce((a, b) -> a + " " + b).orElse("");
+        return values.stream()
+                     .map(String::valueOf)
+                     .reduce((a, b) -> a + " "
+                                       + b)
+                     .orElse("");
     }
 
     /**
@@ -44,11 +47,20 @@ public class NormalFormatter extends CustomScript {
      * @return
      */
     public String format(final List<?> list) {
-        return list.stream().map(this::format).reduce((a, b) -> a + " " + b).orElse("");
+        return list.stream()
+                   .map(this::format)
+                   .reduce((a, b) -> a + " "
+                                     + b)
+                   .orElse("");
     }
 
     @Override
     public String getInitScript() {
-        return "def " + SCRIPT_NAME + " = {\n" + "      Object o -> script." + getCode() + ".format(o)\n" + "}\n";
+        return "def " + SCRIPT_NAME
+               + " = {\n"
+               + "      Object o -> script."
+               + getCode()
+               + ".format(o)\n"
+               + "}\n";
     }
 }

@@ -1,21 +1,18 @@
 package fr.progilone.pgcn.domain.checkconfiguration;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-
 import com.fasterxml.jackson.annotation.JsonSubTypes;
-
 import fr.progilone.pgcn.domain.AbstractDomainObject;
 import fr.progilone.pgcn.domain.library.Library;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Classe métier permettant de gérer la configuration des contrôles.
@@ -42,13 +39,16 @@ public class CheckConfiguration extends AbstractDomainObject {
 
     @Column(name = "sample_rate")
     private Double sampleRate;
-    
+
+    @Column(name = "definition_error_rate")
+    private Double definitionErrorRate;
+
     @Column(name = "sample_mode")
     private String sampleMode;
-    
+
     @Column(name = "separators")
     private String separators;
-    
+
     /**
      * Liste des regles de contrôles automatiques associés
      */
@@ -103,6 +103,14 @@ public class CheckConfiguration extends AbstractDomainObject {
         this.sampleMode = sampleMode;
     }
 
+    public Double getDefinitionErrorRate() {
+        return definitionErrorRate;
+    }
+
+    public void setDefinitionErrorRate(Double definitionRate) {
+        this.definitionErrorRate = definitionRate;
+    }
+
     public String getSeparators() {
         return separators;
     }
@@ -114,7 +122,7 @@ public class CheckConfiguration extends AbstractDomainObject {
     public List<AutomaticCheckRule> getAutomaticCheckRules() {
         return automaticCheckRules;
     }
-    
+
     public void setAutomaticCheckRules(List<AutomaticCheckRule> rules) {
         this.automaticCheckRules.clear();
         if (rules != null) {

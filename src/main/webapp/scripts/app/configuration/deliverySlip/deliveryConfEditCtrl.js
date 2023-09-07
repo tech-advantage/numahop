@@ -1,12 +1,9 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('DeliveryConfEditCtrl', DeliveryConfEditCtrl);
+    angular.module('numaHopApp.controller').controller('DeliveryConfEditCtrl', DeliveryConfEditCtrl);
 
-    function DeliveryConfEditCtrl($location, $q, $route, $routeParams, $scope, $timeout,
-        DeliveryConfSrvc, DocUnitBaseService, gettext, gettextCatalog, MessageSrvc, ValidationSrvc) {
-
+    function DeliveryConfEditCtrl($location, $q, $route, $routeParams, $scope, $timeout, DeliveryConfSrvc, DocUnitBaseService, gettext, gettextCatalog, MessageSrvc, ValidationSrvc) {
         var editCtrl = this;
         editCtrl.cancel = cancel;
         editCtrl.displayBoolean = DocUnitBaseService.displayBoolean;
@@ -15,18 +12,18 @@
         editCtrl.saveValues = saveValues;
         editCtrl.validation = ValidationSrvc;
 
-        editCtrl.options = {                
+        editCtrl.options = {
             boolean: [
-                { value: true, text: "Oui" },
-                { value: false, text: "Non" }
-            ]
+                { value: true, text: 'Oui' },
+                { value: false, text: 'Non' },
+            ],
         };
 
         /**
          * Chargement des valeurs de la bibliothèque library
-         * 
-         * @param {any} library 
-         * @returns 
+         *
+         * @param {any} library
+         * @returns
          */
         function loadValues(library) {
             editCtrl.loaded = false;
@@ -46,7 +43,7 @@
 
         /**
          * Annulation de l'édition en cours
-         * 
+         *
          */
         function cancel() {
             loadValues(editCtrl.library).then(function () {
@@ -56,15 +53,15 @@
 
         /**
          * Sauvegarde des modifications apportées dans l'édition en cours
-         * 
-         * @returns 
+         *
+         * @returns
          */
         function saveValues() {
             $timeout(function () {
                 // Mise à jour de la propriété
-                editCtrl.config.$save().then(function() {
-                        MessageSrvc.addSuccess(gettext("Les modifications ont été sauvegardées"));
-                        $location.search({ library: editCtrl.library.identifier });
+                editCtrl.config.$save().then(function () {
+                    MessageSrvc.addSuccess(gettext('Les modifications ont été sauvegardées'));
+                    $location.search({ library: editCtrl.library.identifier });
                 });
             });
         }

@@ -1,43 +1,5 @@
 package fr.progilone.pgcn.service.storage;
 
-import java.awt.*;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.RandomAccessFile;
-import java.nio.file.FileVisitOption;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.stream.FileImageInputStream;
-import javax.imageio.stream.ImageInputStream;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.tika.Tika;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import fr.progilone.pgcn.domain.administration.viewsformat.ViewsFormatConfiguration;
 import fr.progilone.pgcn.domain.delivery.Delivery;
 import fr.progilone.pgcn.domain.document.DocPage;
@@ -53,6 +15,32 @@ import fr.progilone.pgcn.repository.user.UserRepository;
 import fr.progilone.pgcn.security.SecurityUtils;
 import fr.progilone.pgcn.service.administration.viewsformat.ViewsFormatConfigurationService;
 import fr.progilone.pgcn.service.util.DeliveryProgressService;
+import java.awt.*;
+import java.io.*;
+import java.nio.file.FileVisitOption;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.*;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.FileImageInputStream;
+import javax.imageio.stream.ImageInputStream;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.tika.Tika;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class BinaryStorageManager {
@@ -76,8 +64,8 @@ public class BinaryStorageManager {
     public static final String TMP = "tmp";
 
     public static final String EXTENSION_JPG = ".jpg";
-    
-    protected Map<String, Map<String,File>> storageInfos = new HashMap<>();
+
+    protected Map<String, Map<String, File>> storageInfos = new HashMap<>();
 
     protected File storageDir;
 
@@ -94,7 +82,6 @@ public class BinaryStorageManager {
     private final DeliveryProgressService deliveryProgressService;
     private final ViewsFormatConfigurationService formatConfigurationService;
     private final UserRepository userRepository;
- 
 
     @Autowired
     public BinaryStorageManager(final BinaryRepository binaryRepository,
@@ -114,17 +101,20 @@ public class BinaryStorageManager {
     }
 
     public void initialize(final String binaries, final int depth, final String digest, final String[] instanceLibraries) throws IOException {
-        
+
         final String path;
         if (binaries == null || binaries.trim().length() == 0) {
-            path = (FileUtils.getUserDirectoryPath() + "/pgcn/" + DEFAULT_PATH).trim();
+            path = (FileUtils.getUserDirectoryPath() + "/pgcn/"
+                    + DEFAULT_PATH).trim();
             LOG.warn("Default path is used for binaries : {}", path);
         } else {
             path = binaries.trim();
         }
 
         final File base;
-        if (path.startsWith("/") || path.startsWith("\\") || path.contains("://") || path.contains(":\\")) {
+        if (path.startsWith("/") || path.startsWith("\\")
+            || path.contains("://")
+            || path.contains(":\\")) {
             // absolute
             base = new File(path);
         } else {
@@ -134,8 +124,8 @@ public class BinaryStorageManager {
         }
 
         this.depth = depth;
-        
-        // 1 disk space per library 
+
+        // 1 disk space per library
         Arrays.asList(instanceLibraries).forEach(lib -> {
             final Map<String, File> files = new HashMap<>();
             final File libBase = new File(base, lib);
@@ -145,13 +135,13 @@ public class BinaryStorageManager {
             files.put("storageDir", storageDir);
             files.put("tmpDir", tmpDir);
             files.put("filesStorageDir", filesStorageDir);
-            
+
             storageInfos.put(lib, files);
             // create directories if necessary
             storageDir.mkdirs();
             tmpDir.mkdirs();
             filesStorageDir.mkdirs();
-            
+
             LOG.info("LIBRARY {} : Binaries storage using {} for data and {} for temporary data. Binary global store: {}", lib, storageDir, tmpDir, libBase);
         });
     }
@@ -166,12 +156,11 @@ public class BinaryStorageManager {
     @Transactional
     public StoredFile create(final StoredFile storedFile) throws PgcnException {
         StoredFile savedStoredFile = binaryRepository.save(storedFile);
-        savedStoredFile = binaryRepository.findOne(savedStoredFile.getIdentifier());
+        savedStoredFile = binaryRepository.findById(savedStoredFile.getIdentifier()).orElse(null);
 
         LOG.debug("Created binary stored file: {}", savedStoredFile);
         return savedStoredFile;
     }
-
 
     @Transactional
     public StoredFile createFromFileForPage(final DocPage page,
@@ -183,9 +172,16 @@ public class BinaryStorageManager {
 
         return createFromFileForPage(page, file, type, format, ocrByPage, null, libraryId);
     }
-    
-    public Optional<Map<String, String>> getMetadatas(final File file) throws PgcnTechnicalException {
-        Optional<Map<String, String>> metas = Optional.empty();
+
+    /**
+     * Permet d'extraire les métadonnées d'un fichier. Des métadonnées de base sont extraites et il est possible de passer une liste de tags exiftools
+     * supplémentaires à extraire
+     *
+     * @param tags
+     *            tags exiftool à extraire. La collection peut-être vide si on ne souhaite pas de tag supplémentaire
+     */
+    public Optional<Metadatas> getMetadatas(final File file, final List<String> tags) throws PgcnTechnicalException {
+        final Optional<Metadatas> metas;
         final String format = FilenameUtils.getExtension(file.getName()).toUpperCase();
         switch (format.toUpperCase()) {
             case "JPEG":
@@ -195,16 +191,48 @@ public class BinaryStorageManager {
             case "GIF":
             case "SVG":
             case "PNG":
+                if (CollectionUtils.isEmpty(tags)) {
+                    metas = imageMagickService.getMetadatasOfFile(file, false);
+                } else {
+                    metas = mergeMetadatas(imageMagickService.getMetadatasOfFile(file, false), exifToolService.extractMetadatas(file, tags));
+                }
+                break;
             case "PDF":
-                metas = imageMagickService.getMetadatasOfFile(file, format.toUpperCase().equals("PDF"));
+                metas = imageMagickService.getMetadatasOfFile(file, true);
                 break;
             case "JP2":
-                metas = exifToolService.extractMetadatas(file);
+                metas = exifToolService.extractMetadatas(file, tags);
                 break;
             default:
+                metas = Optional.empty();
                 break;
         }
-        return metas;
+        return metas.isPresent() && !metas.get().isEmpty() ? metas
+                                                           : Optional.empty();
+    }
+
+    private Optional<Metadatas> mergeMetadatas(final Optional<Metadatas> oMeta1, final Optional<Metadatas> oMeta2) {
+        if (oMeta1.isPresent() && oMeta2.isPresent()) {
+            final Metadatas.Builder builder = new Metadatas.Builder();
+            final Metadatas meta1 = oMeta1.get();
+            final Metadatas meta2 = oMeta2.get();
+            builder.setColorSpace(StringUtils.defaultIfBlank(meta1.getColorSpace(), meta2.getColorSpace()))
+                   .setCompression(StringUtils.defaultIfBlank(meta1.getCompression(), meta2.getCompression()))
+                   .setFilesize(StringUtils.defaultIfBlank(meta1.getFilesize(), meta2.getFilesize()))
+                   .setFormat(StringUtils.defaultIfBlank(meta1.getFormat(), meta2.getFormat()))
+                   .setHeight(StringUtils.defaultIfBlank(meta1.getHeight(), meta2.getHeight()))
+                   .setQuality(StringUtils.defaultIfBlank(meta1.getQuality(), meta2.getQuality()))
+                   .setResolution(StringUtils.defaultIfBlank(meta1.getResolution(), meta2.getResolution()))
+                   .setWidth(StringUtils.defaultIfBlank(meta1.getWidth(), meta2.getWidth()));
+            meta1.getTags().forEach((k, l) -> l.forEach(v -> builder.addTag(k, v)));
+            meta2.getTags().forEach((k, l) -> l.forEach(v -> builder.addTag(k, v)));
+            return Optional.of(builder.build());
+        } else if (oMeta1.isPresent()) {
+            return oMeta1;
+        } else if (oMeta2.isPresent()) {
+            return oMeta2;
+        }
+        return Optional.empty();
     }
 
     /**
@@ -216,7 +244,7 @@ public class BinaryStorageManager {
      * @param page
      * @param file
      * @param type
-     *         MASTER ou DERIVED
+     *            MASTER ou DERIVED
      * @return
      * @throws PgcnException
      */
@@ -226,9 +254,8 @@ public class BinaryStorageManager {
                                             final StoredFileType type,
                                             final ViewsFormatConfiguration.FileFormat format,
                                             final Optional<Map<Integer, String>> ocrByPage,
-                                            final Map<File, Optional<Map<String,String>>> fileMetadatas,
+                                            final Map<File, Optional<Metadatas>> fileMetadatas,
                                             final String libraryId) throws PgcnException {
-
 
         final PgcnList<PgcnError> errors = new PgcnList<>();
         final PgcnError.Builder builder = new PgcnError.Builder();
@@ -257,7 +284,7 @@ public class BinaryStorageManager {
             final String mimeType = new Tika().detect(file);
             storedFile.setMimetype(mimeType);
 
-            if (! ViewsFormatConfiguration.FileFormat.MASTER.equals(format)) {
+            if (!ViewsFormatConfiguration.FileFormat.MASTER.equals(format)) {
                 // DERIVES
                 // set dimensions
                 final Optional<Dimension> dim = getImgDimension(file, Optional.of(mimeType));
@@ -267,11 +294,12 @@ public class BinaryStorageManager {
                 }
             } else {
                 // MASTERS
-                final Optional<Map<String, String>> meta;
+                final Optional<Metadatas> meta;
                 // get metadatas of masters.
                 if (fileMetadatas == null) {
                     try {
-                        meta = getMetadatas(file);
+                        // On passe une collection vide pour les tags car on n'a pas besoin de métadonnées supplémentaires ici
+                        meta = getMetadatas(file, Collections.emptyList());
                     } catch (final PgcnTechnicalException e) {
                         LOG.error("Can't collect metadatas of file: {} - ", file.getName(), e);
                         errors.add(builder.reinit().setMessage("Can't collect metadatas of file").build());
@@ -279,17 +307,17 @@ public class BinaryStorageManager {
                     }
                 } else {
                     // get metadatas of masters from big map.
-                    meta = fileMetadatas.entrySet().stream()
-                                .filter((entry)->StringUtils.equals(entry.getKey().getName(), file.getName()))
-                                .map(entry->entry.getValue().get())
-                                .findFirst();
+                    meta = fileMetadatas.entrySet()
+                                        .stream()
+                                        .filter((entry) -> StringUtils.equals(entry.getKey().getName(), file.getName()))
+                                        .map(entry -> entry.getValue().get())
+                                        .findFirst();
                 }
 
                 meta.ifPresent(stringStringMap -> setMetadatas(stringStringMap, storedFile));
                 // text d'OCR s'il existe.
-                if ( ocrByPage.isPresent()) {
-                    if ( ocrByPage.get().containsKey(page.getNumber())
-                            && StringUtils.isNotBlank(ocrByPage.get().get(page.getNumber())) ) {
+                if (ocrByPage.isPresent()) {
+                    if (ocrByPage.get().containsKey(page.getNumber()) && StringUtils.isNotBlank(ocrByPage.get().get(page.getNumber()))) {
                         storedFile.setTextOcr(ocrByPage.get().get(page.getNumber()));
                     }
                 }
@@ -314,25 +342,25 @@ public class BinaryStorageManager {
      * @param metas
      * @param storedFile
      */
-    private void setMetadatas(final Map<String, String> metas, final StoredFile storedFile) {
+    private void setMetadatas(final Metadatas metas, final StoredFile storedFile) {
         // Compression | Quality | Geometry | Colorspace
         final Long dims[] = getDimensionsFromMeta(metas);
         if (dims != null) {
             storedFile.setWidth(dims[0]);
             storedFile.setHeight(dims[1]);
         }
-        if (StringUtils.equalsIgnoreCase("None", metas.get("Compression")) ) {
+        if (StringUtils.equalsIgnoreCase("None", metas.getCompression())) {
             storedFile.setCompressionType("Non compressé");
-        } else if (StringUtils.equalsIgnoreCase("Undefined", metas.get("Compression"))) {
+        } else if (StringUtils.equalsIgnoreCase("Undefined", metas.getCompression())) {
             storedFile.setCompressionType("Non renseigné");
         } else {
-            storedFile.setCompressionType(metas.get("Compression"));
+            storedFile.setCompressionType(metas.getCompression());
         }
-        if (NumberUtils.isParsable(metas.get("Quality"))) {
-            storedFile.setCompressionRate(Integer.valueOf(metas.get("Quality")));  // en fait, bit depth (8) 
+        if (NumberUtils.isParsable(metas.getQuality())) {
+            storedFile.setCompressionRate(Integer.valueOf(metas.getQuality()));  // en fait, bit depth (8)
         }
         storedFile.setResolution(getResolutionFromMeta(metas));
-        storedFile.setColorspace(metas.get("Colorspace"));
+        storedFile.setColorspace(metas.getColorSpace());
     }
 
     /**
@@ -341,18 +369,20 @@ public class BinaryStorageManager {
      * @param metas
      * @return
      */
-    private Long[] getDimensionsFromMeta(final Map<String, String> metas) {
+    private Long[] getDimensionsFromMeta(final Metadatas metas) {
 
         String width = "0";
         String height = "0";
 
-        if (StringUtils.isNotBlank(metas.get("width")) && NumberUtils.isParsable(metas.get("width"))
-                && StringUtils.isNotBlank(metas.get("height")) && NumberUtils.isParsable(metas.get("height")) ) {
-            width = metas.get("width");
-            height = metas.get("height");
+        if (StringUtils.isNotBlank(metas.getWidth()) && NumberUtils.isParsable(metas.getWidth())
+            && StringUtils.isNotBlank(metas.getHeight())
+            && NumberUtils.isParsable(metas.getHeight())) {
+            width = metas.getWidth();
+            height = metas.getHeight();
         }
-        
-        final Long dims[] = {Long.valueOf(width), Long.valueOf(height)};
+
+        final Long dims[] = {Long.valueOf(width),
+                             Long.valueOf(height)};
         return dims;
     }
 
@@ -362,15 +392,16 @@ public class BinaryStorageManager {
      * @param metas
      * @return
      */
-    private Integer getResolutionFromMeta(final Map<String, String> metas) {
+    private Integer getResolutionFromMeta(final Metadatas metas) {
 
-        final String[] vals = StringUtils.split(StringUtils.trimToEmpty(metas.get("Resolution")), "x", 2);
+        final String[] vals = StringUtils.split(StringUtils.trimToEmpty(metas.getResolution()), "x", 2);
         Integer fileRes = 0;
-        if (vals != null && vals.length > 0 && StringUtils.isNotBlank(vals[0])) {
+        if (vals != null && vals.length > 0
+            && StringUtils.isNotBlank(vals[0])) {
             try {
-                final Long rounded =  Math.round(Double.valueOf(vals[0]));
+                final Long rounded = Math.round(Double.valueOf(vals[0]));
                 fileRes = rounded.intValue();
-            } catch(final NumberFormatException e) {
+            } catch (final NumberFormatException e) {
                 LOG.error("Invalid resolution in metadatas");
                 fileRes = 0;
             }
@@ -383,12 +414,15 @@ public class BinaryStorageManager {
     public void generateDerivedThumbnailForMaster(final StoredFile master,
                                                   final DocPage page,
                                                   final ViewsFormatConfiguration.FileFormat format,
-                                                  final Map<File, Optional<Map<String,String>>> fileMetadatas,
-                                                  final double progress, final Delivery delivery, final String libraryId) throws PgcnException {
+                                                  final Map<File, Optional<Metadatas>> fileMetadatas,
+                                                  final double progress,
+                                                  final Delivery delivery,
+                                                  final String libraryId) throws PgcnException {
 
         final PgcnList<PgcnError> errors = new PgcnList<>();
         final PgcnError.Builder builder = new PgcnError.Builder();
-        if (page == null || master == null || format == null) {
+        if (page == null || master == null
+            || format == null) {
             errors.add(builder.reinit().setMessage("Page, master and format are required").build());
             throw new PgcnException(errors);
         }
@@ -408,18 +442,26 @@ public class BinaryStorageManager {
 
         // Get master File and dimensions.
         final File masterFile = getFileForStoredFile(master, libraryId);
-        final Optional<Map<String, String>> meta = fileMetadatas.entrySet().stream()
-                    .filter((entry)->StringUtils.equals(entry.getKey().getName(), master.getFilename()))
-                    .map(entry->entry.getValue().get())
-                    .findFirst();
-        final Long[] masterDims = meta.isPresent()?getDimensionsFromMeta(meta.get()):new Long[] {0L, 0L};
+        final Optional<Metadatas> meta = fileMetadatas.entrySet()
+                                                      .stream()
+                                                      .filter((entry) -> StringUtils.equals(entry.getKey().getName(), master.getFilename()))
+                                                      .map(entry -> entry.getValue().get())
+                                                      .findFirst();
+        final Long[] masterDims = meta.isPresent() ? getDimensionsFromMeta(meta.get())
+                                                   : new Long[] {0L,
+                                                                 0L};
 
         // generate, store & save the binary
         try {
             // Temp file for generation
             final File thumbnailTmp = File.createTempFile("create_", EXTENSION_JPG, getTmpDir(libraryId));
 
-            final boolean generationResult = imageDispatcherService.createThumbnailDerived(master.getMimetype(), masterFile, thumbnailTmp, format, master.getFormatConfiguration(), masterDims);
+            final boolean generationResult = imageDispatcherService.createThumbnailDerived(master.getMimetype(),
+                                                                                           masterFile,
+                                                                                           thumbnailTmp,
+                                                                                           format,
+                                                                                           master.getFormatConfiguration(),
+                                                                                           masterDims);
             if (generationResult && thumbnailTmp.length() > 0L) {
                 // store the file and set required parameters
                 generated.setLength(thumbnailTmp.length());
@@ -456,8 +498,10 @@ public class BinaryStorageManager {
     public void generateDerivedThumbnailForPage(final DocPage page,
                                                 final StoredFile master,
                                                 final ViewsFormatConfiguration.FileFormat format,
-                                                final Map<File, Optional<Map<String,String>>> fileMetadatas,
-                                                final double progress, final Delivery delivery, final String libraryId) throws PgcnException {
+                                                final Map<File, Optional<Metadatas>> fileMetadatas,
+                                                final double progress,
+                                                final Delivery delivery,
+                                                final String libraryId) throws PgcnException {
         final PgcnList<PgcnError> errors = new PgcnList<>();
         final PgcnError.Builder builder = new PgcnError.Builder();
         if (page == null) {
@@ -470,7 +514,6 @@ public class BinaryStorageManager {
         }
         generateDerivedThumbnailForMaster(master, page, format, fileMetadatas, progress, delivery, libraryId);
     }
-
 
     /**
      * Retourne les dimensions de l'image.
@@ -519,7 +562,6 @@ public class BinaryStorageManager {
         return Optional.of(dim);
     }
 
-
     /**
      * Retrieve a master or a derived for given storedFile.
      *
@@ -529,13 +571,13 @@ public class BinaryStorageManager {
     public File getFileForStoredFile(final StoredFile storedFile) {
         return getFileForStoredFile(storedFile, false, getUserLibraryId());
     }
-    
+
     public File getFileForStoredFile(final StoredFile storedFile, final String libraryId) {
         return getFileForStoredFile(storedFile, false, libraryId);
     }
 
     private File getFileForStoredFile(final StoredFile storedFile, final boolean createDir, final String libraryId) {
-        
+
         final String digest = storedFile.getPageDigest();
         if (digest.length() < 2 * depth) {
             return null;
@@ -547,7 +589,7 @@ public class BinaryStorageManager {
             }
             buf.append(digest.substring(2 * i, 2 * i + 2));
         }
-        
+
         final File dir = new File(getFilesStorageDir(libraryId), buf.toString());
         final File digestDir = new File(dir, digest);
         if (createDir) {
@@ -572,7 +614,7 @@ public class BinaryStorageManager {
         }
         return FileUtils.getFile(digestDir, path, storedFile.getDigest());
     }
-    
+
     public File getTmpDir(final String library) {
         final Map<String, File> infos = storageInfos.get(library);
         if (infos != null) {
@@ -581,7 +623,7 @@ public class BinaryStorageManager {
             throw new RuntimeException("Bibliotheque non autorisee!");
         }
     }
-    
+
     public File getStorageDir(final String library) {
         final Map<String, File> infos = storageInfos.get(library);
         if (infos != null) {
@@ -590,7 +632,7 @@ public class BinaryStorageManager {
             throw new RuntimeException("Bibliotheque non autorisee!");
         }
     }
-    
+
     private File getFilesStorageDir(final String library) {
         final Map<String, File> infos = storageInfos.get(library);
         if (infos != null) {
@@ -599,7 +641,7 @@ public class BinaryStorageManager {
             throw new RuntimeException("Bibliotheque non autorisee!");
         }
     }
-    
+
     private String getUserLibraryId() {
         final User user = userRepository.findOneWithLibrary(SecurityUtils.getCurrentUserId());
         return user.getLibrary().getIdentifier();
@@ -617,7 +659,7 @@ public class BinaryStorageManager {
             }
             buf.append(digest.substring(2 * i, 2 * i + 2));
         }
-        
+
         final File dir = new File(getFilesStorageDir(libraryId), buf.toString());
         final File digestDir = new File(dir, digest);
         FileUtils.deleteDirectory(digestDir);
@@ -685,7 +727,7 @@ public class BinaryStorageManager {
     }
 
     protected void storeWithDigest(final InputStream in, final StoredFile storedFile, final String libraryId) throws IOException {
-        
+
         final File tmp = File.createTempFile("create_", ".tmp", getTmpDir(libraryId));
         /*
          * First, write the input stream to a temporary file, while computing a
@@ -769,7 +811,7 @@ public class BinaryStorageManager {
      * Sets the last modification date to now on a file
      *
      * @param file
-     *         the file
+     *            the file
      */
     public static void touch(final File file) {
         final long time = System.currentTimeMillis();
@@ -794,6 +836,7 @@ public class BinaryStorageManager {
      * @author jbrunet
      */
     public enum FileExtension {
+
         PNG(".png"),
         JPG(".jpg");
 
@@ -807,41 +850,40 @@ public class BinaryStorageManager {
             return this.extension;
         }
     }
-    
+
     @Transactional
     public void deleteOrphanFiles(final String libraryId) {
-        
-        final File binStorage = storageInfos.get(libraryId).get("filesStorageDir"); 
-        final Path dest =  binStorage.toPath();
-        
+
+        final File binStorage = storageInfos.get(libraryId).get("filesStorageDir");
+        final Path dest = binStorage.toPath();
+
         LOG.warn("DELETE ORPHANS - filesstoragedir = {}", binStorage.getAbsolutePath());
-        
+
         try (final Stream<Path> stream = Files.walk(dest, FileVisitOption.FOLLOW_LINKS)) {
-            
+
             final List<File> dirDigests = stream.filter(p -> MASTER_PATH.equals(p.getFileName().toString()))
-                    .map(Path::getParent)
-                    .map(Path::toFile)
-                    .filter(f -> f.isDirectory())
-                    .filter(f -> binaryRepository.countByPageDigest(f.getName()) == 0)
-                    .collect(Collectors.toList());
+                                                .map(Path::getParent)
+                                                .map(Path::toFile)
+                                                .filter(f -> f.isDirectory())
+                                                .filter(f -> binaryRepository.countByPageDigest(f.getName()) == 0)
+                                                .collect(Collectors.toList());
             LOG.warn("dossiers parents de master à supprimer : {}", dirDigests.size());
-            
-            dirDigests.stream()
-                        .forEach(f -> {
-                            LOG.debug("orphan file found : {}", f.getName());
-                            FileUtils.deleteQuietly(f);
-                        });            
-                  
+
+            dirDigests.stream().forEach(f -> {
+                LOG.debug("orphan file found : {}", f.getName());
+                FileUtils.deleteQuietly(f);
+            });
+
             stream.close();
         } catch (final IOException | SecurityException e) {
             LOG.error("Erreur lors de la suppression des fichiers binaires dans {}", dest.toAbsolutePath().toString(), e);
         }
-        
+
     }
 
     /**
      * SCRAMBLER
-    */
+     */
     protected BinaryScrambler getBinaryScrambler() {
         return NullBinaryScrambler.INSTANCE;
     }
@@ -850,6 +892,7 @@ public class BinaryStorageManager {
      * A {@link BinaryScrambler} that does nothing.
      */
     public static class NullBinaryScrambler implements BinaryScrambler {
+
         public static final BinaryScrambler INSTANCE = new NullBinaryScrambler();
 
         @Override
@@ -950,6 +993,160 @@ public class BinaryStorageManager {
         @Override
         public void close() throws IOException {
             is.close();
+        }
+    }
+
+    public static class Metadatas {
+
+        private final String width;
+        private final String height;
+        private final String filesize;
+        private final String format;
+        private final String colorSpace;
+        private final String compression;
+        private final String quality;
+        private final String resolution;
+        private final Map<String, List<String>> tags;
+
+        public Metadatas(final String width,
+                         final String height,
+                         final String filesize,
+                         final String format,
+                         final String colorSpace,
+                         final String compression,
+                         final String quality,
+                         final String resolution,
+                         final Map<String, List<String>> tags) {
+            this.width = width;
+            this.height = height;
+            this.filesize = filesize;
+            this.format = format;
+            this.colorSpace = colorSpace;
+            this.compression = compression;
+            this.quality = quality;
+            this.resolution = resolution;
+            this.tags = tags;
+        }
+
+        public String getWidth() {
+            return width;
+        }
+
+        public String getHeight() {
+            return height;
+        }
+
+        public String getFilesize() {
+            return filesize;
+        }
+
+        public String getFormat() {
+            return format;
+        }
+
+        public String getColorSpace() {
+            return colorSpace;
+        }
+
+        public String getCompression() {
+            return compression;
+        }
+
+        public String getQuality() {
+            return quality;
+        }
+
+        public String getResolution() {
+            return resolution;
+        }
+
+        public Map<String, List<String>> getTags() {
+            return tags;
+        }
+
+        public static class Builder {
+
+            private String width;
+            private String height;
+            private String filesize;
+            private String format;
+            private String colorSpace;
+            private String compression;
+            private String quality;
+            private String resolution;
+            private final Map<String, List<String>> tags = new HashMap<>();
+
+            public Builder setWidth(final String width) {
+                this.width = width;
+                return this;
+            }
+
+            public Builder setHeight(final String height) {
+                this.height = height;
+                return this;
+            }
+
+            public Builder setFilesize(final String filesize) {
+                this.filesize = filesize;
+                return this;
+            }
+
+            public Builder setFormat(final String format) {
+                this.format = format;
+                return this;
+            }
+
+            public Builder setColorSpace(final String colorSpace) {
+                this.colorSpace = colorSpace;
+                return this;
+            }
+
+            public Builder setCompression(final String compression) {
+                this.compression = compression;
+                return this;
+            }
+
+            public Builder setQuality(final String quality) {
+                this.quality = quality;
+                return this;
+            }
+
+            public Builder setResolution(final String resolution) {
+                this.resolution = resolution;
+                return this;
+            }
+
+            public Builder addTag(final String key, final String value) {
+                final List<String> list = this.tags.computeIfAbsent(key, k -> new ArrayList<>());
+                final String tValue = StringUtils.trim(value);
+                if (!list.contains(tValue)) {
+                    list.add(tValue);
+                }
+                return this;
+            }
+
+            public Metadatas build() {
+                return new Metadatas(StringUtils.trim(width),
+                                     StringUtils.trim(height),
+                                     StringUtils.trim(filesize),
+                                     StringUtils.trim(format),
+                                     StringUtils.trim(colorSpace),
+                                     StringUtils.trim(compression),
+                                     StringUtils.trim(quality),
+                                     StringUtils.trim(resolution),
+                                     tags);
+            }
+        }
+
+        public boolean isEmpty() {
+            return StringUtils.isBlank(width) && StringUtils.isBlank(height)
+                   && StringUtils.isBlank(filesize)
+                   && StringUtils.isBlank(format)
+                   && StringUtils.isBlank(colorSpace)
+                   && StringUtils.isBlank(compression)
+                   && StringUtils.isBlank(quality)
+                   && StringUtils.isBlank(resolution)
+                   && tags.isEmpty();
         }
     }
 }

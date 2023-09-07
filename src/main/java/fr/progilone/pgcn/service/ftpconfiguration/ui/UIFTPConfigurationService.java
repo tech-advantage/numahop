@@ -11,15 +11,14 @@ import fr.progilone.pgcn.service.ftpconfiguration.mapper.SimpleFTPConfigurationM
 import fr.progilone.pgcn.service.ftpconfiguration.mapper.UIFTPConfigurationMapper;
 import fr.progilone.pgcn.service.project.ProjectService;
 import fr.progilone.pgcn.service.util.transaction.VersionValidationService;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by lebouchp on 03/02/2017.
@@ -76,7 +75,7 @@ public class UIFTPConfigurationService {
      */
     @Transactional(readOnly = true)
     public Page<SimpleFTPConfigurationDTO> search(String search, List<String> libraries, Integer page, Integer size) {
-        final Pageable pageRequest = new PageRequest(page, size);
+        final Pageable pageRequest = PageRequest.of(page, size);
         final Page<FTPConfiguration> ftpConfigurations = ftpConfigurationService.search(search, libraries, pageRequest);
         return ftpConfigurations.map(SimpleFTPConfigurationMapper.INSTANCE::ftpConfigurationToSimpleFTPConfigurationDTO);
     }
@@ -86,7 +85,7 @@ public class UIFTPConfigurationService {
      *
      * @param projectId
      * @param libraries
-     *         filtrage par bibliothèque (pour les droits d'accès)
+     *            filtrage par bibliothèque (pour les droits d'accès)
      * @return
      */
     @Transactional(readOnly = true)
@@ -95,8 +94,7 @@ public class UIFTPConfigurationService {
         return project.getLibrary()
                       .getFtpConfigurations()
                       .stream()
-                      .filter(conf -> CollectionUtils.isEmpty(libraries) || (conf.getLibrary() != null && libraries.contains(conf.getLibrary()
-                                                                                                                                   .getIdentifier())))
+                      .filter(conf -> CollectionUtils.isEmpty(libraries) || (conf.getLibrary() != null && libraries.contains(conf.getLibrary().getIdentifier())))
                       .map(SimpleFTPConfigurationMapper.INSTANCE::ftpConfigurationToSimpleFTPConfigurationDTO)
                       .collect(Collectors.toList());
     }

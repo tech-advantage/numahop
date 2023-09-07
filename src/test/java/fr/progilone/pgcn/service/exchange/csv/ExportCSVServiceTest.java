@@ -1,8 +1,10 @@
 package fr.progilone.pgcn.service.exchange.csv;
 
 import static com.opencsv.CSVWriter.RFC4180_LINE_END;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import com.opencsv.bean.CsvBindByName;
+import fr.progilone.pgcn.exception.PgcnTechnicalException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringWriter;
@@ -10,21 +12,16 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
-
 import org.apache.commons.io.output.WriterOutputStream;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Before;
-import org.junit.Test;
-
-import com.opencsv.bean.CsvBindByName;
-
-import fr.progilone.pgcn.exception.PgcnTechnicalException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ExportCSVServiceTest {
 
     private ExportCSVService service;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         service = new ExportCSVService();
     }
@@ -32,8 +29,7 @@ public class ExportCSVServiceTest {
     @Test
     public void testConvert() throws IOException, PgcnTechnicalException {
         final LocalDate dt = LocalDate.of(2018, 1, 1);
-        final List<TestBean> beans = Arrays.asList(new TestBean("test-001", "bonne année", 14, dt),
-                                                   new TestBean("test-002", "bonne galette", 6, dt.plusDays(5)));
+        final List<TestBean> beans = Arrays.asList(new TestBean("test-001", "bonne année", 14, dt), new TestBean("test-002", "bonne galette", 6, dt.plusDays(5)));
         String actual;
 
         try (final StringWriter writer = new StringWriter(); final OutputStream out = new WriterOutputStream(writer, StandardCharsets.UTF_8)) {
@@ -43,9 +39,8 @@ public class ExportCSVServiceTest {
             writer.flush();
             actual = writer.getBuffer().toString();
         }
-        
-        final String expected = "\"1. IDENTIFIANT\",\"2. LIBELLÉ\",\"3. VALEUR\",\"4. DATE\""
-                                + RFC4180_LINE_END
+
+        final String expected = "\"1. IDENTIFIANT\",\"2. LIBELLÉ\",\"3. VALEUR\",\"4. DATE\"" + RFC4180_LINE_END
                                 + "\"test-001\",\"bonne année\",\"14\",\"2018-01-01\""
                                 + RFC4180_LINE_END
                                 + "\"test-002\",\"bonne galette\",\"6\",\"2018-01-06\""

@@ -5,38 +5,42 @@
 // Généré le : 2016.12.29 à 11:54:46 AM CET
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.mets;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAnyAttribute;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlID;
+import jakarta.xml.bind.annotation.XmlIDREF;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAnyAttribute;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlID;
-import javax.xml.bind.annotation.XmlIDREF;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
-
 
 /**
  * divType: Complex Type for Divisions
- * 					The METS standard represents a document structurally as a series of nested div elements, that is, as a hierarchy (e.g., a book, which is composed of chapters, which are composed of subchapters, which are composed of text).  Every div node in the structural map hierarchy may be connected (via subsidiary mptr or fptr elements) to content files which represent that div's portion of the whole document.
+ * The METS standard represents a document structurally as a series of nested div elements, that is, as a hierarchy (e.g., a book, which is composed
+ * of chapters, which are composed of subchapters, which are composed of text). Every div node in the structural map hierarchy may be connected (via
+ * subsidiary mptr or fptr elements) to content files which represent that div's portion of the whole document.
  *
  * SPECIAL NOTE REGARDING DIV ATTRIBUTE VALUES:
- * to clarify the differences between the ORDER, ORDERLABEL, and LABEL attributes for the <div> element, imagine a text with 10 roman numbered pages followed by 10 arabic numbered pages. Page iii would have an ORDER of "3", an ORDERLABEL of "iii" and a LABEL of "Page iii", while page 3 would have an ORDER of "13", an ORDERLABEL of "3" and a LABEL of "Page 3".
+ * to clarify the differences between the ORDER, ORDERLABEL, and LABEL attributes for the <div> element, imagine a text with 10 roman numbered pages
+ * followed by 10 arabic numbered pages. Page iii would have an ORDER of "3", an ORDERLABEL of "iii" and a LABEL of "Page iii", while page 3 would
+ * have an ORDER of "13", an ORDERLABEL of "3" and a LABEL of "Page 3".
  *
  *
- * <p>Classe Java pour divType complex type.
+ * <p>
+ * Classe Java pour divType complex type.
  *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="divType"&gt;
@@ -88,11 +92,10 @@ import javax.xml.namespace.QName;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "divType", propOrder = {
-    "mptr",
-    "fptr",
-    "div"
-})
+@XmlType(name = "divType",
+         propOrder = {"mptr",
+                      "fptr",
+                      "div"})
 public class DivType {
 
     protected List<DivType.Mptr> mptr;
@@ -135,8 +138,9 @@ public class DivType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getMptr().add(newItem);
+     * getMptr().add(newItem);
      * </pre>
      *
      *
@@ -164,8 +168,9 @@ public class DivType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getFptr().add(newItem);
+     * getFptr().add(newItem);
      * </pre>
      *
      *
@@ -193,8 +198,9 @@ public class DivType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getDiv().add(newItem);
+     * getDiv().add(newItem);
      * </pre>
      *
      *
@@ -215,8 +221,8 @@ public class DivType {
      * Obtient la valeur de la propriété id.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getID() {
@@ -227,8 +233,8 @@ public class DivType {
      * Définit la valeur de la propriété id.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setID(String value) {
@@ -246,8 +252,9 @@ public class DivType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getDMDID().add(newItem);
+     * getDMDID().add(newItem);
      * </pre>
      *
      *
@@ -275,8 +282,9 @@ public class DivType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getADMID().add(newItem);
+     * getADMID().add(newItem);
      * </pre>
      *
      *
@@ -297,8 +305,8 @@ public class DivType {
      * Obtient la valeur de la propriété type.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getTYPE() {
@@ -309,8 +317,8 @@ public class DivType {
      * Définit la valeur de la propriété type.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setTYPE(String value) {
@@ -328,8 +336,9 @@ public class DivType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getCONTENTIDS().add(newItem);
+     * getCONTENTIDS().add(newItem);
      * </pre>
      *
      *
@@ -350,8 +359,8 @@ public class DivType {
      * Obtient la valeur de la propriété order.
      *
      * @return
-     *     possible object is
-     *     {@link BigInteger }
+     *         possible object is
+     *         {@link BigInteger }
      *
      */
     public BigInteger getORDER() {
@@ -362,8 +371,8 @@ public class DivType {
      * Définit la valeur de la propriété order.
      *
      * @param value
-     *     allowed object is
-     *     {@link BigInteger }
+     *            allowed object is
+     *            {@link BigInteger }
      *
      */
     public void setORDER(BigInteger value) {
@@ -374,8 +383,8 @@ public class DivType {
      * Obtient la valeur de la propriété orderlabel.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getORDERLABEL() {
@@ -386,8 +395,8 @@ public class DivType {
      * Définit la valeur de la propriété orderlabel.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setORDERLABEL(String value) {
@@ -398,8 +407,8 @@ public class DivType {
      * Obtient la valeur de la propriété label.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getLABEL() {
@@ -410,8 +419,8 @@ public class DivType {
      * Définit la valeur de la propriété label.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setLABEL(String value) {
@@ -427,9 +436,11 @@ public class DivType {
     }
 
     /**
-     * <p>Classe Java pour anonymous complex type.
+     * <p>
+     * Classe Java pour anonymous complex type.
      *
-     * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+     * <p>
+     * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
      *
      * <pre>
      * &lt;complexType&gt;
@@ -452,11 +463,10 @@ public class DivType {
      *
      */
     @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "par",
-        "seq",
-        "area"
-    })
+    @XmlType(name = "",
+             propOrder = {"par",
+                          "seq",
+                          "area"})
     public static class Fptr {
 
         protected ParType par;
@@ -480,8 +490,8 @@ public class DivType {
          * Obtient la valeur de la propriété par.
          *
          * @return
-         *     possible object is
-         *     {@link ParType }
+         *         possible object is
+         *         {@link ParType }
          *
          */
         public ParType getPar() {
@@ -492,8 +502,8 @@ public class DivType {
          * Définit la valeur de la propriété par.
          *
          * @param value
-         *     allowed object is
-         *     {@link ParType }
+         *            allowed object is
+         *            {@link ParType }
          *
          */
         public void setPar(ParType value) {
@@ -504,8 +514,8 @@ public class DivType {
          * Obtient la valeur de la propriété seq.
          *
          * @return
-         *     possible object is
-         *     {@link SeqType }
+         *         possible object is
+         *         {@link SeqType }
          *
          */
         public SeqType getSeq() {
@@ -516,8 +526,8 @@ public class DivType {
          * Définit la valeur de la propriété seq.
          *
          * @param value
-         *     allowed object is
-         *     {@link SeqType }
+         *            allowed object is
+         *            {@link SeqType }
          *
          */
         public void setSeq(SeqType value) {
@@ -528,8 +538,8 @@ public class DivType {
          * Obtient la valeur de la propriété area.
          *
          * @return
-         *     possible object is
-         *     {@link AreaType }
+         *         possible object is
+         *         {@link AreaType }
          *
          */
         public AreaType getArea() {
@@ -540,8 +550,8 @@ public class DivType {
          * Définit la valeur de la propriété area.
          *
          * @param value
-         *     allowed object is
-         *     {@link AreaType }
+         *            allowed object is
+         *            {@link AreaType }
          *
          */
         public void setArea(AreaType value) {
@@ -552,8 +562,8 @@ public class DivType {
          * Obtient la valeur de la propriété id.
          *
          * @return
-         *     possible object is
-         *     {@link String }
+         *         possible object is
+         *         {@link String }
          *
          */
         public String getID() {
@@ -564,8 +574,8 @@ public class DivType {
          * Définit la valeur de la propriété id.
          *
          * @param value
-         *     allowed object is
-         *     {@link String }
+         *            allowed object is
+         *            {@link String }
          *
          */
         public void setID(String value) {
@@ -576,8 +586,8 @@ public class DivType {
          * Obtient la valeur de la propriété fileid.
          *
          * @return
-         *     possible object is
-         *     {@link Object }
+         *         possible object is
+         *         {@link Object }
          *
          */
         public Object getFILEID() {
@@ -588,8 +598,8 @@ public class DivType {
          * Définit la valeur de la propriété fileid.
          *
          * @param value
-         *     allowed object is
-         *     {@link Object }
+         *            allowed object is
+         *            {@link Object }
          *
          */
         public void setFILEID(Object value) {
@@ -607,8 +617,9 @@ public class DivType {
          *
          * <p>
          * For example, to add a new item, do as follows:
+         *
          * <pre>
-         *    getCONTENTIDS().add(newItem);
+         * getCONTENTIDS().add(newItem);
          * </pre>
          *
          *
@@ -637,7 +648,7 @@ public class DivType {
          *
          *
          * @return
-         *     always non-null
+         *         always non-null
          */
         public Map<QName, String> getOtherAttributes() {
             return otherAttributes;
@@ -645,11 +656,12 @@ public class DivType {
 
     }
 
-
     /**
-     * <p>Classe Java pour anonymous complex type.
+     * <p>
+     * Classe Java pour anonymous complex type.
      *
-     * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+     * <p>
+     * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
      *
      * <pre>
      * &lt;complexType&gt;
@@ -701,8 +713,8 @@ public class DivType {
          * Obtient la valeur de la propriété id.
          *
          * @return
-         *     possible object is
-         *     {@link String }
+         *         possible object is
+         *         {@link String }
          *
          */
         public String getID() {
@@ -713,8 +725,8 @@ public class DivType {
          * Définit la valeur de la propriété id.
          *
          * @param value
-         *     allowed object is
-         *     {@link String }
+         *            allowed object is
+         *            {@link String }
          *
          */
         public void setID(String value) {
@@ -732,8 +744,9 @@ public class DivType {
          *
          * <p>
          * For example, to add a new item, do as follows:
+         *
          * <pre>
-         *    getCONTENTIDS().add(newItem);
+         * getCONTENTIDS().add(newItem);
          * </pre>
          *
          *
@@ -754,8 +767,8 @@ public class DivType {
          * Obtient la valeur de la propriété type.
          *
          * @return
-         *     possible object is
-         *     {@link String }
+         *         possible object is
+         *         {@link String }
          *
          */
         public String getType() {
@@ -770,8 +783,8 @@ public class DivType {
          * Définit la valeur de la propriété type.
          *
          * @param value
-         *     allowed object is
-         *     {@link String }
+         *            allowed object is
+         *            {@link String }
          *
          */
         public void setType(String value) {
@@ -782,8 +795,8 @@ public class DivType {
          * Obtient la valeur de la propriété href.
          *
          * @return
-         *     possible object is
-         *     {@link String }
+         *         possible object is
+         *         {@link String }
          *
          */
         public String getHref() {
@@ -794,8 +807,8 @@ public class DivType {
          * Définit la valeur de la propriété href.
          *
          * @param value
-         *     allowed object is
-         *     {@link String }
+         *            allowed object is
+         *            {@link String }
          *
          */
         public void setHref(String value) {
@@ -806,8 +819,8 @@ public class DivType {
          * Obtient la valeur de la propriété role.
          *
          * @return
-         *     possible object is
-         *     {@link String }
+         *         possible object is
+         *         {@link String }
          *
          */
         public String getRole() {
@@ -818,8 +831,8 @@ public class DivType {
          * Définit la valeur de la propriété role.
          *
          * @param value
-         *     allowed object is
-         *     {@link String }
+         *            allowed object is
+         *            {@link String }
          *
          */
         public void setRole(String value) {
@@ -830,8 +843,8 @@ public class DivType {
          * Obtient la valeur de la propriété arcrole.
          *
          * @return
-         *     possible object is
-         *     {@link String }
+         *         possible object is
+         *         {@link String }
          *
          */
         public String getArcrole() {
@@ -842,8 +855,8 @@ public class DivType {
          * Définit la valeur de la propriété arcrole.
          *
          * @param value
-         *     allowed object is
-         *     {@link String }
+         *            allowed object is
+         *            {@link String }
          *
          */
         public void setArcrole(String value) {
@@ -854,8 +867,8 @@ public class DivType {
          * Obtient la valeur de la propriété title.
          *
          * @return
-         *     possible object is
-         *     {@link String }
+         *         possible object is
+         *         {@link String }
          *
          */
         public String getTitle() {
@@ -866,8 +879,8 @@ public class DivType {
          * Définit la valeur de la propriété title.
          *
          * @param value
-         *     allowed object is
-         *     {@link String }
+         *            allowed object is
+         *            {@link String }
          *
          */
         public void setTitle(String value) {
@@ -878,8 +891,8 @@ public class DivType {
          * Obtient la valeur de la propriété show.
          *
          * @return
-         *     possible object is
-         *     {@link String }
+         *         possible object is
+         *         {@link String }
          *
          */
         public String getShow() {
@@ -890,8 +903,8 @@ public class DivType {
          * Définit la valeur de la propriété show.
          *
          * @param value
-         *     allowed object is
-         *     {@link String }
+         *            allowed object is
+         *            {@link String }
          *
          */
         public void setShow(String value) {
@@ -902,8 +915,8 @@ public class DivType {
          * Obtient la valeur de la propriété actuate.
          *
          * @return
-         *     possible object is
-         *     {@link String }
+         *         possible object is
+         *         {@link String }
          *
          */
         public String getActuate() {
@@ -914,8 +927,8 @@ public class DivType {
          * Définit la valeur de la propriété actuate.
          *
          * @param value
-         *     allowed object is
-         *     {@link String }
+         *            allowed object is
+         *            {@link String }
          *
          */
         public void setActuate(String value) {
@@ -926,8 +939,8 @@ public class DivType {
          * Obtient la valeur de la propriété loctype.
          *
          * @return
-         *     possible object is
-         *     {@link String }
+         *         possible object is
+         *         {@link String }
          *
          */
         public String getLOCTYPE() {
@@ -938,8 +951,8 @@ public class DivType {
          * Définit la valeur de la propriété loctype.
          *
          * @param value
-         *     allowed object is
-         *     {@link String }
+         *            allowed object is
+         *            {@link String }
          *
          */
         public void setLOCTYPE(String value) {
@@ -950,8 +963,8 @@ public class DivType {
          * Obtient la valeur de la propriété otherloctype.
          *
          * @return
-         *     possible object is
-         *     {@link String }
+         *         possible object is
+         *         {@link String }
          *
          */
         public String getOTHERLOCTYPE() {
@@ -962,8 +975,8 @@ public class DivType {
          * Définit la valeur de la propriété otherloctype.
          *
          * @param value
-         *     allowed object is
-         *     {@link String }
+         *            allowed object is
+         *            {@link String }
          *
          */
         public void setOTHERLOCTYPE(String value) {

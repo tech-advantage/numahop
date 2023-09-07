@@ -4,7 +4,6 @@ import fr.progilone.pgcn.domain.dto.AbstractDTO;
 
 public class SimpleOcrLangConfigDTO extends AbstractDTO {
 
-    
     private String identifier;
     private String label;
 
@@ -16,7 +15,6 @@ public class SimpleOcrLangConfigDTO extends AbstractDTO {
     public SimpleOcrLangConfigDTO() {
     }
 
-    
     public String getIdentifier() {
         return identifier;
     }
@@ -32,5 +30,5 @@ public class SimpleOcrLangConfigDTO extends AbstractDTO {
     public void setLabel(final String label) {
         this.label = label;
     }
-    
+
 }

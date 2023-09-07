@@ -1,28 +1,28 @@
 //
-// Ce fichier a été généré par l'implémentation de référence JavaTM Architecture for XML Binding (JAXB), v2.2.8-b130911.1802 
-// Voir <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
-// Toute modification apportée à ce fichier sera perdue lors de la recompilation du schéma source. 
-// Généré le : 2017.05.16 à 10:56:55 AM CEST 
+// Ce fichier a été généré par l'implémentation de référence JavaTM Architecture for XML Binding (JAXB), v2.2.8-b130911.1802
+// Voir <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a>
+// Toute modification apportée à ce fichier sera perdue lors de la recompilation du schéma source.
+// Généré le : 2017.05.16 à 10:56:55 AM CEST
 //
-
 
 package fr.progilone.pgcn.domain.jaxb.ead;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlID;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlID;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
- * <p>Classe Java pour daoloc complex type.
- * 
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
- * 
+ * <p>
+ * Classe Java pour daoloc complex type.
+ *
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ *
  * <pre>
  * &lt;complexType name="daoloc">
  *   &lt;complexContent>
@@ -36,13 +36,11 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
+ *
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "daoloc", propOrder = {
-    "daodesc"
-})
+@XmlType(name = "daoloc", propOrder = {"daodesc"})
 public class Daoloc {
 
     protected Daodesc daodesc;
@@ -78,11 +76,11 @@ public class Daoloc {
 
     /**
      * Obtient la valeur de la propriété daodesc.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link Daodesc }
-     *     
+     *         possible object is
+     *         {@link Daodesc }
+     *
      */
     public Daodesc getDaodesc() {
         return daodesc;
@@ -90,11 +88,11 @@ public class Daoloc {
 
     /**
      * Définit la valeur de la propriété daodesc.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link Daodesc }
-     *     
+     *            allowed object is
+     *            {@link Daodesc }
+     *
      */
     public void setDaodesc(Daodesc value) {
         this.daodesc = value;
@@ -102,11 +100,11 @@ public class Daoloc {
 
     /**
      * Obtient la valeur de la propriété id.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *         possible object is
+     *         {@link String }
+     *
      */
     public String getId() {
         return id;
@@ -114,11 +112,11 @@ public class Daoloc {
 
     /**
      * Définit la valeur de la propriété id.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is
+     *            {@link String }
+     *
      */
     public void setId(String value) {
         this.id = value;
@@ -126,11 +124,11 @@ public class Daoloc {
 
     /**
      * Obtient la valeur de la propriété altrender.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *         possible object is
+     *         {@link String }
+     *
      */
     public String getAltrender() {
         return altrender;
@@ -138,11 +136,11 @@ public class Daoloc {
 
     /**
      * Définit la valeur de la propriété altrender.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is
+     *            {@link String }
+     *
      */
     public void setAltrender(String value) {
         this.altrender = value;
@@ -150,11 +148,11 @@ public class Daoloc {
 
     /**
      * Obtient la valeur de la propriété audience.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *         possible object is
+     *         {@link String }
+     *
      */
     public String getAudience() {
         return audience;
@@ -162,11 +160,11 @@ public class Daoloc {
 
     /**
      * Définit la valeur de la propriété audience.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is
+     *            {@link String }
+     *
      */
     public void setAudience(String value) {
         this.audience = value;
@@ -174,11 +172,11 @@ public class Daoloc {
 
     /**
      * Obtient la valeur de la propriété entityref.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *         possible object is
+     *         {@link String }
+     *
      */
     public String getEntityref() {
         return entityref;
@@ -186,11 +184,11 @@ public class Daoloc {
 
     /**
      * Définit la valeur de la propriété entityref.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is
+     *            {@link String }
+     *
      */
     public void setEntityref(String value) {
         this.entityref = value;
@@ -198,11 +196,11 @@ public class Daoloc {
 
     /**
      * Obtient la valeur de la propriété xpointer.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *         possible object is
+     *         {@link String }
+     *
      */
     public String getXpointer() {
         return xpointer;
@@ -210,11 +208,11 @@ public class Daoloc {
 
     /**
      * Définit la valeur de la propriété xpointer.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is
+     *            {@link String }
+     *
      */
     public void setXpointer(String value) {
         this.xpointer = value;
@@ -222,11 +220,11 @@ public class Daoloc {
 
     /**
      * Obtient la valeur de la propriété type.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *         possible object is
+     *         {@link String }
+     *
      */
     public String getType() {
         if (type == null) {
@@ -238,11 +236,11 @@ public class Daoloc {
 
     /**
      * Définit la valeur de la propriété type.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is
+     *            {@link String }
+     *
      */
     public void setType(String value) {
         this.type = value;
@@ -250,11 +248,11 @@ public class Daoloc {
 
     /**
      * Obtient la valeur de la propriété href.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *         possible object is
+     *         {@link String }
+     *
      */
     public String getHref() {
         return href;
@@ -262,11 +260,11 @@ public class Daoloc {
 
     /**
      * Définit la valeur de la propriété href.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is
+     *            {@link String }
+     *
      */
     public void setHref(String value) {
         this.href = value;
@@ -274,11 +272,11 @@ public class Daoloc {
 
     /**
      * Obtient la valeur de la propriété role.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *         possible object is
+     *         {@link String }
+     *
      */
     public String getRole() {
         return role;
@@ -286,11 +284,11 @@ public class Daoloc {
 
     /**
      * Définit la valeur de la propriété role.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is
+     *            {@link String }
+     *
      */
     public void setRole(String value) {
         this.role = value;
@@ -298,11 +296,11 @@ public class Daoloc {
 
     /**
      * Obtient la valeur de la propriété title.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *         possible object is
+     *         {@link String }
+     *
      */
     public String getTitle() {
         return title;
@@ -310,11 +308,11 @@ public class Daoloc {
 
     /**
      * Définit la valeur de la propriété title.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is
+     *            {@link String }
+     *
      */
     public void setTitle(String value) {
         this.title = value;
@@ -322,11 +320,11 @@ public class Daoloc {
 
     /**
      * Obtient la valeur de la propriété label.
-     * 
+     *
      * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *         possible object is
+     *         {@link String }
+     *
      */
     public String getLabel() {
         return label;
@@ -334,11 +332,11 @@ public class Daoloc {
 
     /**
      * Définit la valeur de la propriété label.
-     * 
+     *
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is
+     *            {@link String }
+     *
      */
     public void setLabel(String value) {
         this.label = value;

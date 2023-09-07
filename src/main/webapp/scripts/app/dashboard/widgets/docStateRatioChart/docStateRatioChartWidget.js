@@ -1,33 +1,32 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp')
+    angular
+        .module('numaHopApp')
         .config(function (dashboardProvider, gettext) {
             dashboardProvider.widget('docStateRatioChart', {
                 /* Recopie de la clé dans le widget, necessaire car le support des catégories lors de l'ajout des widgets 
                 est mal fait : la fonction qui crée les catégories (createCategories) depuis les widgets "perd" la clé,
                 voir le template widget-add.html */
-                key: "docStateRatioChart",
+                key: 'docStateRatioChart',
                 title: gettext('UD par statut'),
                 category: gettext('Décomptes'),
-                description: gettext('Nombre d\'UD dans le statut par rapport au projet / lot'),
+                description: gettext("Nombre d'UD dans le statut par rapport au projet / lot"),
                 templateUrl: 'scripts/app/dashboard/widgets/docStateRatioChart/docStateRatioChartWidget.html',
                 controller: 'DocStateRatioChartWidgetCtrl',
                 controllerAs: 'mainCtrl',
                 edit: {
                     templateUrl: 'scripts/app/dashboard/widgets/docStateRatioChart/docStateRatioChartEditWidget.html',
                     controller: 'DocStateRatioChartEditWidgetCtrl',
-                    controllerAs: 'mainCtrl'
-                }
+                    controllerAs: 'mainCtrl',
+                },
             });
         })
         .controller('DocStateRatioChartWidgetCtrl', function ($q, codeSrvc, config, gettextCatalog, StatisticsSrvc) {
-
             var mainCtrl = this;
             mainCtrl.isConfigured = isConfigured;
             mainCtrl.config = config;
             mainCtrl.getStateLabel = getStateLabel;
-
 
             init();
 
@@ -40,27 +39,28 @@
                         // données du graphique
                         mainCtrl.chartData = chartData;
                         mainCtrl.data = [chartData.nbDocOnState, chartData.nbDoc - chartData.nbDocOnState];
-                        mainCtrl.labels = [getStateLabel(), gettextCatalog.getString("Autre")];
+                        mainCtrl.labels = [getStateLabel(), gettextCatalog.getString('Autre')];
 
-                        if (mainCtrl.config.format.identifier === "doughnut" || mainCtrl.config.format.identifier === "pie") {
+                        if (mainCtrl.config.format.identifier === 'doughnut' || mainCtrl.config.format.identifier === 'pie') {
                             mainCtrl.options = {
                                 responsive: true,
                                 legend: {
                                     display: true,
-                                    position: "bottom"
-                                }
+                                    position: 'bottom',
+                                },
                             };
-                        }
-                        else if (mainCtrl.config.format.identifier === "hbar") {
+                        } else if (mainCtrl.config.format.identifier === 'hbar') {
                             mainCtrl.options = {
                                 responsive: true,
                                 scales: {
-                                    xAxes: [{
-                                        ticks: {
-                                            beginAtZero: true
-                                        }
-                                    }]
-                                }
+                                    xAxes: [
+                                        {
+                                            ticks: {
+                                                beginAtZero: true,
+                                            },
+                                        },
+                                    ],
+                                },
                             };
                         }
                     });
@@ -68,7 +68,7 @@
             }
 
             function getStateLabel() {
-                return codeSrvc["workflow." + mainCtrl.chartData.state] || mainCtrl.chartData.state;
+                return codeSrvc['workflow.' + mainCtrl.chartData.state] || mainCtrl.chartData.state;
             }
 
             /**
@@ -95,8 +95,7 @@
                 }
                 if (params.state && (params.project || params.lot)) {
                     return StatisticsSrvc.getDocUnitStatusRatio(params).$promise;
-                }
-                else {
+                } else {
                     return $q.when([]);
                 }
             }

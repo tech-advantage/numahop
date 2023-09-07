@@ -3,12 +3,16 @@
         <div class="panel-heading">
             <h5 translate>Fiche</h5>
         </div>
-        <div class="panel-body" ng-show="loaded" id="deliveryDetails">
-            <div>
+        <div class="panel-body" id="deliveryDetails">
+            <div class="well well-sm text-center" ng-if="loading">
+                <span class="fa fa-spinner fa-spin"></span>
+                {{ ::"Initialisation de la livraison en cours, merci de patienter..." | translate }}
+            </div>
+            <div ng-show="loaded">
                 <div ng-if="predelivery.errors.length > 0 || emptyDocs.length > 0">
-                    <div class="formBlock ng-scope" aria-hidden="false" style="margin-bottom: 20px;">
+                    <div class="formBlock ng-scope" aria-hidden="false" style="margin-bottom: 20px">
                         <div class="formBlockTitle">
-                            <span ><span class="warn" translate>Attention</span></span>
+                            <span><span class="warn" translate>Attention</span></span>
                         </div>
                         <div class="formBlockContent">
                             <div class="row ng-scope">
@@ -31,119 +35,122 @@
                     </div>
                 </div>
 
-                <div uib-accordion>
+                <uib-accordion>
                     <div uib-accordion-group is-open="accordions.lockedDoc">
                         <uib-accordion-heading>
-                            <span class="pull-left glyphicon-halflings" ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordions.lockedDoc]"/>
+                            <i ng-class="{false: 'fa fa-chevron-right rotate-icon-up', true: 'fa fa-chevron-right rotate-icon-down'}[accordions.lockedDoc]"></i>
                             <span>{{::'Documents qui ne peuvent pas être livrés' | translate}}</span>
                         </uib-accordion-heading>
-                        <div class="pull-left">
-                        </div>
+                        <div class="pull-left"></div>
                         <table class="table table-condensed table-hover">
                             <thead>
-                            <tr>
-                                <th translate>Document</th>
-                                <th translate>Statut</th>
-                                <th translate>Commentaire</th>
-                            </tr>
+                                <tr>
+                                    <th translate>Document</th>
+                                    <th translate>Statut</th>
+                                    <th translate>Commentaire</th>
+                                </tr>
                             </thead>
                             <tbody>
-                            <tr ng-repeat="doc in predelivery.lockedDigitalDocuments">
-                                <td>{{doc.digitalId}}</td>
-                                <td>{{semCodes['digitalDocument.' + doc.status]}}</td>
-                                <td>{{getCommentForStatus(doc.status)}}</td>
-                            </tr>
-                            <tr ng-repeat="doc in predelivery.undeliveredDocuments">
-                                <td>{{doc.identifier}}</td>
-                                <td>{{semCodes['physicalDocument.' + doc.status]}}</td>
-                                <td>{{doc.commentaire}}</td>
-                            </tr>
+                                <tr ng-repeat="doc in predelivery.lockedDigitalDocuments">
+                                    <td>{{doc.digitalId}}</td>
+                                    <td>{{semCodes['digitalDocument.' + doc.status]}}</td>
+                                    <td>{{getCommentForStatus(doc.status)}}</td>
+                                </tr>
+                                <tr ng-repeat="doc in predelivery.undeliveredDocuments">
+                                    <td>{{doc.identifier}}</td>
+                                    <td>{{semCodes['physicalDocument.' + doc.status]}}</td>
+                                    <td>{{doc.commentaire}}</td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
-                 </div>
-                 <div uib-accordion>
+                </uib-accordion>
+                <uib-accordion>
                     <div uib-accordion-group is-open="accordions.digitalDoc">
                         <uib-accordion-heading>
-                            <span class="pull-left glyphicon-halflings" ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordions.digitalDoc]"/>
+                            <i ng-class="{false: 'fa fa-chevron-right rotate-icon-up', true: 'fa fa-chevron-right rotate-icon-down'}[accordions.digitalDoc]"></i>
                             <span>{{::'Documents numériques trouvés pour la livraison' | translate}}</span>
                         </uib-accordion-heading>
-                        <div class="pull-left">
-                        </div>
+                        <div class="pull-left"></div>
                         <table class="table table-condensed table-hover">
                             <thead>
-                            <tr>
-                                <th translate>Document</th>
-                                <th style="text-align: center;" translate>Pages</th>
-                                <th style="text-align: center;" translate>Pièces</th>
-                                <th translate>Fichiers autres (métadonnées, dérivés, ..)</th>
-                            </tr>
+                                <tr>
+                                    <th translate>Document</th>
+                                    <th style="text-align: center" translate>Pages</th>
+                                    <th style="text-align: center" translate>Pièces</th>
+                                    <th translate>Fichiers autres (métadonnées, dérivés, ..)</th>
+                                </tr>
                             </thead>
                             <tbody>
-                            <tr ng-repeat="doc in predelivery.documents">
-                                <td>{{::doc.digitalId}}
-                                    <br/>
-                                    <div class="padding-t20 text-center">
-                                        <div class="btn-group btn-group-sm">
-                                            <input bs-switch
-                                                   ng-model="doc.includeDoc"
-                                                   type="checkbox"
-                                                   ng-change="updateIncludeDoc(doc)"
-                                                   switch-on-text="{{ onLabelActiv | translate }}"
-                                                   switch-off-text="{{ offLabelActiv | translate }}"
-                                                   switch-label-width="0px"/>
+                                <tr ng-repeat="doc in predelivery.documents | limitTo:pagination.size:(pagination.page-1)*pagination.size">
+                                    <td>
+                                        {{::doc.digitalId}}
+                                        <br />
+                                        <div class="padding-t20 text-center">
+                                            <div class="btn-group btn-group-sm">
+                                                <input
+                                                    bs-switch
+                                                    ng-model="doc.includeDoc"
+                                                    type="checkbox"
+                                                    ng-change="updateIncludeDoc(doc)"
+                                                    switch-on-text="{{ onLabelActiv | translate }}"
+                                                    switch-off-text="{{ offLabelActiv | translate }}"
+                                                    switch-label-width="0px"
+                                                />
+                                            </div>
                                         </div>
-                                    </div>
-                                </td>
-                                <td style="text-align: center;">{{::doc.pageNumber}}</td>
-                                <td style="text-align: center;" uib-tooltip="{{::doc.pieces}}">
-                                    {{::doc.pieces.length}}
-                                </td>
-                                <td>
-                                    <table class="table table-condensed">
-                                        <thead>
-                                        <tr>
-                                            <th translate>Nom du fichier</th>
-                                            <th translate>Rôle</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr ng-repeat="file in doc.metaDataFiles">
-                                            <td>
-                                                <div>
-                                                    <span>{{file.name}}</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div>
-                                                    <select name="selectType" id="selectType" ng-model="file.role" class="form-control input-sm full-width">
-                                                        <option ng-repeat="(key, option) in fileType" value="{{key}}">{{option}}</option>
-                                                    </select>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </td>
-                            </tr>
+                                    </td>
+                                    <td style="text-align: center">{{::doc.pageNumber}}</td>
+                                    <td style="text-align: center" uib-tooltip="{{::doc.pieces}}">{{::doc.pieces.length}}</td>
+                                    <td>
+                                        <table class="table table-condensed">
+                                            <thead>
+                                                <tr>
+                                                    <th translate>Nom du fichier</th>
+                                                    <th translate>Rôle</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="file in doc.metaDataFiles">
+                                                    <td>
+                                                        <div>
+                                                            <span>{{file.name}}</span>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div>
+                                                            <select name="selectType" id="selectType" ng-model="file.role" class="form-control input-sm full-width">
+                                                                <option ng-repeat="(key, option) in fileType" value="{{key}}">{{option}}</option>
+                                                            </select>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
+                        <div class="row" ng-show="predelivery.documents.length > pagination.size">
+                            <div class="col-sm-12">
+                                <div class="text-center">
+                                    <ul uib-pagination total-items="predelivery.documents.length" items-per-page="pagination.size" ng-model="pagination.page" class="pagination-sm"></ul>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="text-center column-bottom" style="margin-top: 10px;">
+                </uib-accordion>
+                <div class="text-center column-bottom" style="margin-top: 10px">
                     <div class="column-bottom-button">
                         <!-- Création / Modification -->
                         <div class="btn-group">
-                            <button type="button" class="btn btn-sem4" ng-click="cancel()">
-                                <span class="glyphicon-regular unshare"></span> {{::'Annuler' | translate}}
-                            </button>
+                            <button type="button" class="btn btn-sem4" ng-click="cancel()"><span class="glyphicon-regular unshare"></span> {{::'Annuler' | translate}}</button>
                             <button type="button" class="btn btn-sem2" ng-click="save()" ng-disabled="!authorizedDelivery || !availableSpaceOnDisk || prefixToExclude.length===predelivery.documents.length">
                                 <span class="glyphicon-regular upload"></span> {{::'Livrer' | translate}}
                             </button>
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>

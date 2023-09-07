@@ -1,27 +1,23 @@
 /**
- * 
+ *
  */
 package fr.progilone.pgcn.domain.document.sample;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-
 import com.fasterxml.jackson.annotation.JsonSubTypes;
-
 import fr.progilone.pgcn.domain.AbstractDomainObject;
 import fr.progilone.pgcn.domain.delivery.Delivery;
 import fr.progilone.pgcn.domain.document.DigitalDocument;
 import fr.progilone.pgcn.domain.document.DocPage;
-
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Emmanuel RIZET
@@ -31,7 +27,7 @@ import fr.progilone.pgcn.domain.document.DocPage;
 @Table(name = Sample.TABLE_NAME)
 @JsonSubTypes({@JsonSubTypes.Type(name = "doc_sample", value = Sample.class)})
 public class Sample extends AbstractDomainObject {
-    
+
     public static final String TABLE_NAME = "doc_sample";
 
     /**
@@ -40,7 +36,7 @@ public class Sample extends AbstractDomainObject {
     @ManyToOne(optional = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "delivery")
     private Delivery delivery;
-    
+
     /**
      * Lien vers le DigitalDocument
      */
@@ -48,17 +44,15 @@ public class Sample extends AbstractDomainObject {
     @JoinColumn(name = "digital_document")
     private DigitalDocument digitalDocument;
 
-
     /**
      * Liste des pages echantillonnees.
      */
     @OneToMany(mappedBy = "sample", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private final Set<DocPage> pages = new HashSet<>();
-    
+
     @Column(name = "sampling_mode")
     private String samplingMode;
-    
-    
+
     /**
      * @return the delivery
      */
@@ -67,7 +61,8 @@ public class Sample extends AbstractDomainObject {
     }
 
     /**
-     * @param delivery the delivery to set
+     * @param delivery
+     *            the delivery to set
      */
     public void setDelivery(Delivery delivery) {
         this.delivery = delivery;
@@ -81,7 +76,8 @@ public class Sample extends AbstractDomainObject {
     }
 
     /**
-     * @param digitalDocument the digitalDocument to set
+     * @param digitalDocument
+     *            the digitalDocument to set
      */
     public void setDigitalDocument(DigitalDocument digitalDocument) {
         this.digitalDocument = digitalDocument;
@@ -95,7 +91,8 @@ public class Sample extends AbstractDomainObject {
     }
 
     /**
-     * @param samplingMode the samplingMode to set
+     * @param samplingMode
+     *            the samplingMode to set
      */
     public void setSamplingMode(String samplingMode) {
         this.samplingMode = samplingMode;
@@ -107,5 +104,5 @@ public class Sample extends AbstractDomainObject {
     public Set<DocPage> getPages() {
         return pages;
     }
-    
+
 }

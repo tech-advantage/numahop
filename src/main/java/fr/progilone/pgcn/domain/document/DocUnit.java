@@ -1,27 +1,25 @@
 package fr.progilone.pgcn.domain.document;
 
-import static fr.progilone.pgcn.service.es.EsConstant.*;
-
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import fr.progilone.pgcn.domain.AbstractDomainObject;
+import fr.progilone.pgcn.domain.administration.CinesPAC;
+import fr.progilone.pgcn.domain.administration.InternetArchiveCollection;
+import fr.progilone.pgcn.domain.administration.omeka.OmekaList;
+import fr.progilone.pgcn.domain.check.AutomaticCheckResult;
+import fr.progilone.pgcn.domain.exchange.cines.CinesReport;
+import fr.progilone.pgcn.domain.exchange.internetarchive.InternetArchiveReport;
+import fr.progilone.pgcn.domain.library.Library;
+import fr.progilone.pgcn.domain.lot.Lot;
+import fr.progilone.pgcn.domain.ocrlangconfiguration.OcrLanguage;
+import fr.progilone.pgcn.domain.project.Project;
+import fr.progilone.pgcn.domain.workflow.DocUnitWorkflow;
+import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
 import org.hibernate.Hibernate;
 import org.hibernate.LazyInitializationException;
 import org.hibernate.envers.AuditTable;
@@ -29,28 +27,6 @@ import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldIndex;
-import org.springframework.data.elasticsearch.annotations.FieldType;
-import org.springframework.data.elasticsearch.annotations.InnerField;
-import org.springframework.data.elasticsearch.annotations.Mapping;
-import org.springframework.data.elasticsearch.annotations.MultiField;
-
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-
-import fr.progilone.pgcn.domain.AbstractDomainObject;
-import fr.progilone.pgcn.domain.CompletionContext;
-import fr.progilone.pgcn.domain.administration.CinesPAC;
-import fr.progilone.pgcn.domain.administration.InternetArchiveCollection;
-import fr.progilone.pgcn.domain.administration.omeka.OmekaList;
-import fr.progilone.pgcn.domain.check.AutomaticCheckResult;
-import fr.progilone.pgcn.domain.library.Library;
-import fr.progilone.pgcn.domain.lot.Lot;
-import fr.progilone.pgcn.domain.ocrlangconfiguration.OcrLanguage;
-import fr.progilone.pgcn.domain.project.Project;
-import fr.progilone.pgcn.domain.workflow.DocUnitWorkflow;
-import fr.progilone.pgcn.domain.workflow.WorkflowStateKey;
 
 /**
  * Classe représentant une unité documentaire
@@ -64,14 +40,11 @@ import fr.progilone.pgcn.domain.workflow.WorkflowStateKey;
 @JsonSubTypes({@JsonSubTypes.Type(name = "doc_unit", value = DocUnit.class)})
 // Audit
 @AuditTable(value = DocUnit.AUDIT_TABLE_NAME)
-// Elasticsearch
-@Document(indexName = "#{elasticsearchIndexName}", type = DocUnit.ES_TYPE, createIndex = false)
 public class DocUnit extends AbstractDomainObject {
 
     private static final Logger LOG = LoggerFactory.getLogger(DocUnit.class);
 
     public static final String TABLE_NAME = "doc_unit";
-    public static final String ES_TYPE = "doc_unit";
     public static final String AUDIT_TABLE_NAME = "aud_doc_unit";
 
     /**
@@ -79,7 +52,6 @@ public class DocUnit extends AbstractDomainObject {
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "library")
-    @Field(type = FieldType.Object)
     private Library library;
 
     /**
@@ -89,10 +61,6 @@ public class DocUnit extends AbstractDomainObject {
     @JoinColumn(name = "project")
     private Project project;
 
-    @Column(name = "project", insertable = false, updatable = false)
-    @Field(type = FieldType.String, index = FieldIndex.not_analyzed)
-    private String projectId;
-
     /**
      * Lot de rattachement
      */
@@ -100,10 +68,6 @@ public class DocUnit extends AbstractDomainObject {
     @JoinColumn(name = "lot")
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED) // l'id du lot (champ de docunit) est audité, mais pas le lot lui-même
     private Lot lot;
-
-    @Column(name = "lot", insertable = false, updatable = false)
-    @Field(type = FieldType.String, index = FieldIndex.not_analyzed)
-    private String lotId;
 
     /**
      * Liste des propriétés de l'unité documentaire regroupés dans une notice (DC, DCq, Custom)
@@ -121,7 +85,6 @@ public class DocUnit extends AbstractDomainObject {
      * Liste des documents physiques rattachés
      */
     @OneToMany(mappedBy = "docUnit", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    @Field(type = FieldType.Object)
     private final Set<PhysicalDocument> physicalDocuments = new HashSet<>();
 
     /**
@@ -140,47 +103,18 @@ public class DocUnit extends AbstractDomainObject {
      * identifiant PGCN
      */
     @Column(name = "pgcn_id", unique = true)
-    @MultiField(mainField = @Field(type = FieldType.String),
-                otherFields = {@InnerField(type = FieldType.String, suffix = SUBFIELD_RAW, index = FieldIndex.not_analyzed),
-                               @InnerField(type = FieldType.String,
-                                           suffix = SUBFIELD_CI_AI,
-                                           indexAnalyzer = ANALYZER_CI_AI,
-                                           searchAnalyzer = ANALYZER_CI_AI),
-                               @InnerField(type = FieldType.String,
-                                           suffix = SUBFIELD_CI_AS,
-                                           indexAnalyzer = ANALYZER_CI_AS,
-                                           searchAnalyzer = ANALYZER_CI_AS),
-                               @InnerField(type = FieldType.String,
-                                           suffix = SUBFIELD_PHRASE,
-                                           indexAnalyzer = ANALYZER_PHRASE,
-                                           searchAnalyzer = ANALYZER_PHRASE)})
     private String pgcnId;
 
     /**
      * Label
      */
     @Column(name = "label")
-    @MultiField(mainField = @Field(type = FieldType.String),
-                otherFields = {@InnerField(type = FieldType.String, suffix = SUBFIELD_RAW, index = FieldIndex.not_analyzed),
-                               @InnerField(type = FieldType.String,
-                                           suffix = SUBFIELD_CI_AI,
-                                           indexAnalyzer = ANALYZER_CI_AI,
-                                           searchAnalyzer = ANALYZER_CI_AI),
-                               @InnerField(type = FieldType.String,
-                                           suffix = SUBFIELD_CI_AS,
-                                           indexAnalyzer = ANALYZER_CI_AS,
-                                           searchAnalyzer = ANALYZER_CI_AS),
-                               @InnerField(type = FieldType.String,
-                                           suffix = SUBFIELD_PHRASE,
-                                           indexAnalyzer = ANALYZER_PHRASE,
-                                           searchAnalyzer = ANALYZER_PHRASE)})
     private String label;
 
     /**
      * Type (monographie, etc...)
      */
     @Column(name = "type")
-    @Field(type = FieldType.String, analyzer = ANALYZER_KEYWORD)
     private String type;
 
     /**
@@ -188,7 +122,6 @@ public class DocUnit extends AbstractDomainObject {
      */
     @ManyToOne
     @JoinColumn(name = "collection_ia")
-    @Field(type = FieldType.Object)
     private InternetArchiveCollection collectionIA;
 
     /**
@@ -203,13 +136,12 @@ public class DocUnit extends AbstractDomainObject {
      */
     @ManyToOne
     @JoinColumn(name = "items_omeka")
-    private OmekaList omekaItem;   
+    private OmekaList omekaItem;
 
     /**
      * Identifiant ARK
      */
     @Column(name = "ark_url")
-    @Field(type = FieldType.String, analyzer = ANALYZER_KEYWORD)
     private String arkUrl;
 
     /**
@@ -217,7 +149,6 @@ public class DocUnit extends AbstractDomainObject {
      */
     @ManyToOne
     @JoinColumn(name = "classement_pac")
-    @Field(type = FieldType.Object)
     private CinesPAC planClassementPAC;
 
     /**
@@ -230,14 +161,12 @@ public class DocUnit extends AbstractDomainObject {
      * Possibilité d'archivage
      */
     @Column(name = "archivable")
-    @Field(type = FieldType.Boolean)
     private boolean archivable;
 
     /**
      * Possibilité de diffusion
      */
     @Column(name = "distributable")
-    @Field(type = FieldType.Boolean)
     private boolean distributable;
 
     /**
@@ -245,28 +174,24 @@ public class DocUnit extends AbstractDomainObject {
      */
     @Column
     @Enumerated(EnumType.STRING)
-    @Field(type = FieldType.String, analyzer = ANALYZER_KEYWORD)
     private RightsEnum rights;
 
     /**
      * Date d'embargo
      */
     @Column
-    @Field(type = FieldType.Date)
     private LocalDate embargo;
 
     /**
      * Délai de contrôle après livraison (en jours)
      */
     @Column(name = "check_delay")
-    @Field(type = FieldType.Integer)
     private Integer checkDelay;
 
     /**
      * Date de fin de contrôle prévue
      */
     @Column(name = "check_end_time")
-    @Field(type = FieldType.Date)
     private LocalDate checkEndTime;
 
     /**
@@ -281,22 +206,21 @@ public class DocUnit extends AbstractDomainObject {
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent")
-    @Field(type = FieldType.Object, ignoreFields = {"parent", "children"})
     private DocUnit parent;
 
     /**
      * Liste des unités documentaires enfants
      */
     @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY)
-    @Field(type = FieldType.Object, ignoreFields = {"parent", "children"})
     private final List<DocUnit> children = new ArrayList<>();
 
     /**
      * Unités documentaires soeurs
      */
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToOne(fetch = FetchType.LAZY,
+               cascade = {CascadeType.MERGE,
+                          CascadeType.PERSIST})
     @JoinColumn(name = "sibling")
-    @Field(type = FieldType.String, analyzer = ANALYZER_KEYWORD)
     private DocSibling sibling;
 
     /**
@@ -323,7 +247,6 @@ public class DocUnit extends AbstractDomainObject {
      * Reference de l'auteur ou ayant-droits trouvee: oui/non.
      */
     @Column(name = "found_ref_author")
-    @Field(type = FieldType.Boolean)
     private boolean foundRefAuthor;
 
     /**
@@ -331,40 +254,37 @@ public class DocUnit extends AbstractDomainObject {
      */
     @Column(name = "progress_request_status", nullable = false)
     @Enumerated(EnumType.STRING)
-    @Field(type = FieldType.String, analyzer = ANALYZER_KEYWORD)
     private ProgressStatus progressStatus = ProgressStatus.NOT_AVAILABLE;
 
     /**
      * Date de la demande.
      */
     @Column(name = "request_date")
-    @Field(type = FieldType.Date)
     private LocalDate requestDate;
 
     /**
      * Date de la réponse.
      */
     @Column(name = "answer_date")
-    @Field(type = FieldType.Date)
     private LocalDate answerDate;
-    
+
     /**
-     *  Infos export Omeka
+     * Infos export Omeka
      */
     @Column(name = "omeka_exp_status")
     @Enumerated(EnumType.STRING)
     private ExportStatus omekaExportStatus;
-    
+
     @Column(name = "omeka_exp_date")
     private LocalDateTime omekaExportDate;
-    
+
     /**
-     *  Infos export local
+     * Infos export local
      */
     @Column(name = "local_exp_status")
     @Enumerated(EnumType.STRING)
     private ExportStatus localExportStatus;
-    
+
     @Column(name = "local_exp_date")
     private LocalDateTime localExportDate;
 
@@ -377,36 +297,23 @@ public class DocUnit extends AbstractDomainObject {
 
     @Column(name = "dig_lib_export_date")
     private LocalDateTime digLibExportDate;
-    
-    
+
     /** langage selectionné pour ocr */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "active_ocr_lang")
     private OcrLanguage activeOcrLanguage;
 
-    /**
-     * Champ de suggestion du moteur de recherche, pas géré par hibernate
-     */
-    @Transient
-    @Mapping(mappingPath = "/config/elasticsearch/mapping_doc_unit_suggestion.json")
-    private CompletionContext suggest;
+    @OneToMany(mappedBy = "docUnit", fetch = FetchType.LAZY)
+    private Set<CinesReport> cinesReports;
 
-    @Transient
-    @Field(type = FieldType.Integer)
-    private final int nbDigitalDocuments = 0;
+    @OneToMany(mappedBy = "docUnit", fetch = FetchType.LAZY)
+    private Set<InternetArchiveReport> iaReports;
 
-    @Transient
-    @Field(type = FieldType.String, analyzer = ANALYZER_KEYWORD)
-    private List<WorkflowStateKey> workflowStateKeys;
+    @Column(name = "image_height")
+    private Integer imageHeight;
 
-    @Transient
-    @Field(type = FieldType.Date)
-    private LocalDate latestDeliveryDate;
-
-    @Transient
-    @Field(type = FieldType.Long)
-    private Long masterSize;
-    
+    @Column(name = "image_width")
+    private Integer imageWidth;
 
     public Library getLibrary() {
         return library;
@@ -516,7 +423,7 @@ public class DocUnit extends AbstractDomainObject {
                 return null;
             }
             return getLot().getPlanClassementPAC();
-        } catch (final LazyInitializationException e) { //NOSONAR pour pas pourrir les logs car c'est qd mm souvent que ....
+        } catch (final LazyInitializationException e) { // NOSONAR pour pas pourrir les logs car c'est qd mm souvent que ....
             LOG.warn("Problème d'initialisation: {}", e.getMessage());
             return null;
         }
@@ -695,14 +602,6 @@ public class DocUnit extends AbstractDomainObject {
         this.arkUrl = arkUrl;
     }
 
-    public CompletionContext getSuggest() {
-        return suggest;
-    }
-
-    public void setSuggest(final CompletionContext suggest) {
-        this.suggest = suggest;
-    }
-
     public Integer getCinesVersion() {
         return cinesVersion;
     }
@@ -736,7 +635,7 @@ public class DocUnit extends AbstractDomainObject {
 
     /**
      * @param digitizingNotes
-     *         the digitizingNotes to set
+     *            the digitizingNotes to set
      */
     public void setDigitizingNotes(final String digitizingNotes) {
         this.digitizingNotes = digitizingNotes;
@@ -822,50 +721,6 @@ public class DocUnit extends AbstractDomainObject {
         this.digLibExportDate = digLibExportDate;
     }
 
-    public String getProjectId() {
-        return projectId;
-    }
-
-    public void setProjectId(final String projectId) {
-        this.projectId = projectId;
-    }
-
-    public String getLotId() {
-        return lotId;
-    }
-
-    public void setLotId(final String lotId) {
-        this.lotId = lotId;
-    }
-
-    public int getNbDigitalDocuments() {
-        return this.digitalDocuments.size();
-    }
-
-    public List<WorkflowStateKey> getWorkflowStateKeys() {
-        return workflowStateKeys;
-    }
-
-    public void setWorkflowStateKeys(final List<WorkflowStateKey> workflowStateKeys) {
-        this.workflowStateKeys = workflowStateKeys;
-    }
-
-    public LocalDate getLatestDeliveryDate() {
-        return latestDeliveryDate;
-    }
-
-    public void setLatestDeliveryDate(final LocalDate latestDeliveryDate) {
-        this.latestDeliveryDate = latestDeliveryDate;
-    }
-
-    public Long getMasterSize() {
-        return masterSize;
-    }
-
-    public void setMasterSize(final Long masterSize) {
-        this.masterSize = masterSize;
-    }
-
     public OmekaList getOmekaCollection() {
         if (omekaCollection != null) {
             return omekaCollection;
@@ -912,7 +767,6 @@ public class DocUnit extends AbstractDomainObject {
         this.omekaItem = omekaItem;
     }
 
-
     public enum CondReportType {
         /**
          * Mono-feuillet
@@ -950,34 +804,35 @@ public class DocUnit extends AbstractDomainObject {
      * Statuts d'import de cette unité documentaire
      */
     public enum State {
-        AVAILABLE,
         // l'unité documentaire est visible dans l'application
-        NOT_AVAILABLE,
+        AVAILABLE,
         // l'unité documentaire n'est pas disponible dans l'application (import en cours, ...)
-        DELETED,
+        NOT_AVAILABLE,
         // l'unité documentaire a été supprimée (utilisé pour les recherches d'ud importées)
-        CANCELED,       
+        DELETED,
         // l'unite documentaire est annulée ou rattachée à un projet annulé
-        CLOSED        
+        CANCELED,
         // UD archivée suite cloture lot|projet.
+        CLOSED
     }
 
     /**
      * Etat de la demande de diffusion.
      */
     public enum ProgressStatus {
-        NOT_AVAILABLE,
         // Non disponible
-        REQUESTED,
+        NOT_AVAILABLE,
         // Demandé
-        VALIDATED,
+        REQUESTED,
         // Validé
-        REFUSED        // Refusé
+        VALIDATED,
+        // Refusé
+        REFUSED
     }
-    
+
     public enum ExportStatus {
         NONE,
-        IN_PROGRESS,  
+        IN_PROGRESS,
         SENT,
         FAILED
     }
@@ -988,5 +843,37 @@ public class DocUnit extends AbstractDomainObject {
 
     public void setActiveOcrLanguage(final OcrLanguage activeOcrLanguage) {
         this.activeOcrLanguage = activeOcrLanguage;
+    }
+
+    public Set<CinesReport> getCinesReports() {
+        return cinesReports;
+    }
+
+    public void setCinesReports(final Set<CinesReport> cinesReports) {
+        this.cinesReports = cinesReports;
+    }
+
+    public Set<InternetArchiveReport> getIaReports() {
+        return iaReports;
+    }
+
+    public void setIaReports(final Set<InternetArchiveReport> iaReports) {
+        this.iaReports = iaReports;
+    }
+
+    public Integer getImageHeight() {
+        return imageHeight;
+    }
+
+    public void setImageHeight(Integer imageHeight) {
+        this.imageHeight = imageHeight;
+    }
+
+    public Integer getImageWidth() {
+        return imageWidth;
+    }
+
+    public void setImageWidth(Integer imageWidth) {
+        this.imageWidth = imageWidth;
     }
 }

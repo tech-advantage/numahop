@@ -5,28 +5,23 @@
             <numa-filter data-class="pull-left btn-filter">
                 <!-- Nom du projet -->
                 <numa-filter-field data-title="{{ ::'Projet' | translate }}">
-                    <sem-field sem-type="text" sem-model="statProjectCtrl.filters.search"
-                               sem-onchange="statProjectCtrl.searchValue('search', value)"
-                               sem-model-options="{ debounce: 300 }"></sem-field>
+                    <sem-field sem-type="text" sem-model="statProjectCtrl.filters.search" sem-onchange="statProjectCtrl.searchValue('search', value)" sem-model-options="{ debounce: 300 }"></sem-field>
                 </numa-filter-field>
                 <!-- Date d'import du projet -->
                 <numa-filter-field data-title="{{ ::'Date d\'import' | translate }}">
                     <div class="form-inline text-right margin-b10">
                         <label translate>entre le</label>
-                        <sem-datepicker ng-model="statProjectCtrl.filters.from" sem-model-options="{ debounce: 300 }"
-                                        ng-change="statProjectCtrl.searchValue('from', $data)"></sem-datepicker>
+                        <sem-datepicker ng-model="statProjectCtrl.filters.from" sem-model-options="{ debounce: 300 }" ng-change="statProjectCtrl.searchValue('from', $data)"></sem-datepicker>
                     </div>
                     <div class="form-inline text-right">
                         <label translate>et le</label>
-                        <sem-datepicker ng-model="statProjectCtrl.filters.to" sem-model-options="{ debounce: 300 }"
-                                        ng-change="statProjectCtrl.searchValue('to', $data)"></sem-datepicker>
+                        <sem-datepicker ng-model="statProjectCtrl.filters.to" sem-model-options="{ debounce: 300 }" ng-change="statProjectCtrl.searchValue('to', $data)"></sem-datepicker>
                     </div>
                 </numa-filter-field>
             </numa-filter>
             <div class="panel-heading">
                 <div class="pull-right">
-                    <button type="button" class="btn btn-sem2 btn-xs"
-                            ng-click="statProjectCtrl.reinitFilters()" uib-tooltip="{{::'Réinitialiser les filtres de la recherche' | translate}}">
+                    <button type="button" class="btn btn-sem2 btn-xs" ng-click="statProjectCtrl.reinitFilters()" uib-tooltip="{{::'Réinitialiser les filtres de la recherche' | translate}}" tooltip-append-to-body="true">
                         <span class="glyphicon-halflings glyphicon-refresh"></span>
                     </button>
                 </div>
@@ -34,56 +29,63 @@
             <div class="panel-body">
                 <div class="row" ng-if="statProjectCtrl.loaded">
                     <div class="col-xs-12 col-lg-8 col-lg-offset-2">
-                        <div class="well" ng-show="statProjectCtrl.pagination.items.length === 0" translate>
-                            Aucun projet trouvé
-                        </div>
-                        <div ng-show="statProjectCtrl.pagination.items.length > 0 && !statProjectCtrl.pagination.busy" class="well well-sm" translate
+                        <div class="well" ng-show="statProjectCtrl.pagination.items.length === 0" translate>Aucun projet trouvé</div>
+                        <div
+                            ng-show="statProjectCtrl.pagination.items.length > 0 && !statProjectCtrl.pagination.busy"
+                            class="well well-sm"
+                            translate
                             translate-n="statProjectCtrl.pagination.totalItems"
-                            translate-plural="{{$count}} projets trouvés">
+                            translate-plural="{{$count}} projets trouvés"
+                        >
                             1 projet trouvé
                         </div>
                         <div>
-                            <select ng-hide="statProjectCtrl.pagination.items.length === 0" ng-options="size.value as size.label for size in statProjectCtrl.sizeOptions" id="pageSize" name="pageSize"
-                            ng-model="statProjectCtrl.pageSize" ng-change="statProjectCtrl.changePageSize()">
-                            </select>
+                            <select
+                                ng-hide="statProjectCtrl.pagination.items.length === 0"
+                                ng-options="size.value as size.label for size in statProjectCtrl.sizeOptions"
+                                id="pageSize"
+                                name="pageSize"
+                                ng-model="statProjectCtrl.pageSize"
+                                ng-change="statProjectCtrl.changePageSize()"
+                            ></select>
                         </div>
                         <!-- Liste des entités  -->
                         <div class="table-responsive" ng-show="statProjectCtrl.pagination.items.length > 0 && !statProjectCtrl.pagination.busy">
                             <table class="table table-hover sem-list" sem-table="statProjectCtrl.sortModel" sem-table-onsort="statProjectCtrl.search(statProjectCtrl.sortModel)">
                                 <thead>
-                                <tr>
-                                    <th class="text-right" sem-table-sorton="name">{{::"Nom du projet" | translate }}</th>
-                                    <th></th>
-                                    <th class="text-right" sem-table-sorton="status">{{::"Statut" | translate }}</th>
-                                    <th class="text-right" sem-table-sorton="total">{{::"Nombre de documents" | translate }}</th>
-                                </tr>
+                                    <tr>
+                                        <th class="text-right" sem-table-sorton="name">{{::"Nom du projet" | translate }}</th>
+                                        <th></th>
+                                        <th class="text-right" sem-table-sorton="status">{{::"Statut" | translate }}</th>
+                                        <th class="text-right" sem-table-sorton="total">{{::"Nombre de documents" | translate }}</th>
+                                    </tr>
                                 </thead>
                                 <tbody>
-                                <tr ng-repeat="item in statProjectCtrl.pagination.items | orderBy:orderBy">
-                                    <td class="text-right">
-                                        <span uib-tooltip="{{::item.name}}">
-                                            {{ ::item.name | characters:30 }}
-                                        </span>
-                                    </td>
-                                    <td class="text-left">
-                                        <numa-custom-link numa-link-type="project" numa-link-parameters="{id: item.identifier}"></numa-custom-link>
-                                    </td>
-                                    <td class="text-right">
-                                        {{::statProjectCtrl.codes['project.' + item.status]}}
-                                    </td>
-                                    <td class="text-right">
-                                        {{::item.nbDocUnits}}
-                                    </td>
-                                </tr>
+                                    <tr ng-repeat="item in statProjectCtrl.pagination.items | orderBy:orderBy">
+                                        <td class="text-right">
+                                            <span uib-tooltip="{{::item.name}}"> {{ ::item.name | characters:30 }} </span>
+                                        </td>
+                                        <td class="text-left">
+                                            <numa-custom-link numa-link-type="project" numa-link-parameters="{id: item.identifier}"></numa-custom-link>
+                                        </td>
+                                        <td class="text-right">{{::statProjectCtrl.codes['project.' + item.status]}}</td>
+                                        <td class="text-right">{{::item.nbDocUnits}}</td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
                         <div class="row" ng-show="statProjectCtrl.pagination.size && statProjectCtrl.pagination.totalItems > statProjectCtrl.pagination.size">
                             <div class="col-sm-12">
                                 <div class="text-center">
-                                    <ul uib-pagination num-pages="statProjectCtrl.pagination.totalPages" total-items="statProjectCtrl.pagination.totalItems"
-                                        items-per-page="statProjectCtrl.pagination.size" ng-change="statProjectCtrl.getPage()" ng-model="statProjectCtrl.pagination.page"
-                                        class="pagination-sm"></ul>
+                                    <ul
+                                        uib-pagination
+                                        num-pages="statProjectCtrl.pagination.totalPages"
+                                        total-items="statProjectCtrl.pagination.totalItems"
+                                        items-per-page="statProjectCtrl.pagination.size"
+                                        ng-change="statProjectCtrl.getPage()"
+                                        ng-model="statProjectCtrl.pagination.page"
+                                        class="pagination-sm"
+                                    ></ul>
                                 </div>
                             </div>
                         </div>

@@ -1,11 +1,6 @@
 package fr.progilone.pgcn.service.exchange.marc.mapping;
 
 import fr.progilone.pgcn.service.exchange.marc.script.CustomScript;
-import org.marc4j.converter.CharConverter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.script.CompiledScript;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -14,6 +9,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.script.CompiledScript;
+import org.marc4j.converter.CharConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Représente le script lié à une condition ou une expression
@@ -98,10 +97,10 @@ public class CompiledStatement {
             // Ajout des customScripts
             CustomScript.getScripts().forEach((scriptName, fmtClass) -> {
                 // le script peut être multilignes: (?s).* matche tous les caractères, y compris les sauts de ligne
-                if (this.userScript.matches("^(?s).*\\b" + scriptName + "\\((?s).*$")) {
+                if (this.userScript.matches("^(?s).*\\b" + scriptName
+                                            + "\\((?s).*$")) {
                     try {
-                        final CustomScript customScript =
-                            fmtClass.getConstructor(String.class, CharConverter.class).newInstance(scriptName.toLowerCase(), charConverter);
+                        final CustomScript customScript = fmtClass.getConstructor(String.class, CharConverter.class).newInstance(scriptName.toLowerCase(), charConverter);
                         scriptsImports.addAll(Arrays.asList(customScript.getScriptImport()));
                         initScripts.add(customScript.getInitScript());
                         this.customScripts.add(customScript);
@@ -136,7 +135,8 @@ public class CompiledStatement {
         while (matcher.find()) {
             final String tag = matcher.group("tag");
             final String code = matcher.group("code");
-            innerMarcKeys.add(code != null ? new MarcKey(tag, code.charAt(0)) : new MarcKey(tag));
+            innerMarcKeys.add(code != null ? new MarcKey(tag, code.charAt(0))
+                                           : new MarcKey(tag));
         }
         return innerMarcKeys;
     }

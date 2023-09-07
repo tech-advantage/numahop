@@ -7,14 +7,13 @@ import fr.progilone.pgcn.domain.help.HelpPage;
 import fr.progilone.pgcn.domain.help.HelpPageType;
 import fr.progilone.pgcn.service.help.HelpPageService;
 import fr.progilone.pgcn.web.rest.AbstractRestController;
+import jakarta.annotation.security.PermitAll;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.annotation.security.PermitAll;
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/rest/help")

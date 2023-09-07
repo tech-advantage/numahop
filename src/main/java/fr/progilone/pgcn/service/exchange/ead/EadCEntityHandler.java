@@ -3,6 +3,16 @@ package fr.progilone.pgcn.service.exchange.ead;
 import fr.progilone.pgcn.domain.jaxb.ead.C;
 import fr.progilone.pgcn.domain.jaxb.ead.Eadheader;
 import fr.progilone.pgcn.domain.jaxb.ead.ObjectFactory;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Unmarshaller;
+import jakarta.xml.bind.UnmarshallerHandler;
+import java.io.File;
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.function.BiConsumer;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParserFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,17 +24,6 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.NamespaceSupport;
 import org.xml.sax.helpers.XMLFilterImpl;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.UnmarshallerHandler;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParserFactory;
-import java.io.File;
-import java.io.IOException;
-import java.util.Enumeration;
-import java.util.function.BiConsumer;
 
 /**
  * Handler traitant les éléments "c" de niveau supérieur d'un fichier EAD
@@ -68,8 +67,8 @@ public class EadCEntityHandler {
         filter.setContentHandler(new CSplitter(context));
 
         // Sécurisation du fichier d'entrée contre attaques XXE
-        //        filter.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-        //        filter.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+        // filter.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+        // filter.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
         filter.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
         filter.setFeature("http://xml.org/sax/features/validation", false);
 

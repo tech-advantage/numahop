@@ -3,8 +3,7 @@
         <div class="panel panel-column-1">
             <div class="panel-heading">
                 <div class="pull-right">
-                    <button type="button" class="btn btn-sem2 btn-xs" ng-click="reinitFilters(true)" 
-                            uib-tooltip="{{::'Réinitialiser les filtres de la recherche' | translate}}">
+                    <button type="button" class="btn btn-sem2 btn-xs" ng-click="reinitFilters(true)" uib-tooltip="{{::'Réinitialiser les filtres de la recherche' | translate}}" tooltip-append-to-body="true">
                         <span class="glyphicon-halflings glyphicon-refresh"></span>
                     </button>
                 </div>
@@ -30,26 +29,28 @@
         <div class="panel panel-column-2">
             <div class="panel-heading">
                 <div class="btn-group pull-right" sem-roles-allowed="CHECK_HAB1">
-                    <button type="button" class="btn btn-sem2 btn-xs"
-                            uib-tooltip="{{::'Créer' | translate}}"
-                            ng-click="create()">
+                    <button type="button" class="btn btn-sem2 btn-xs" uib-tooltip="{{::'Créer' | translate}}" tooltip-append-to-body="true" ng-click="create()">
                         <span class="glyphicon-halflings glyphicon-plus"></span>
                     </button>
                 </div>
                 <div class="input-group padding-r20">
-                    <input class="form-control sem-input-xs" type="text" id="nameSearchInput"
-                           ng-model="filterWith" ng-keypress="applyFilter(filterWith, $event)"/>
+                    <input class="form-control sem-input-xs" type="text" id="nameSearchInput" ng-model="filterWith" ng-keypress="applyFilter(filterWith, $event)" />
                     <span class="input-group-btn">
-                        <button type="button" class="btn btn-sem2 btn-xs" ng-click="doFilter()" uib-tooltip="{{::'Rechercher' | translate}}">
+                        <button type="button" class="btn btn-sem2 btn-xs" ng-click="doFilter()" uib-tooltip="{{::'Rechercher' | translate}}" tooltip-append-to-body="true">
                             <span class="glyphicon syrtis-icon-loupe"></span>
                         </button>
                     </span>
                 </div>
             </div>
             <div class="panel-body" when-scrolled="nextPage()">
-
-                <div ng-show="pagination.totalItems + newConfigurations.length > 0 && !pagination.busy" class="well well-sm" translate
-                     translate-n="pagination.totalItems + newConfigurations.length" translate-plural="{{$count}} configurations trouvées">1 configuration trouvée
+                <div
+                    ng-show="pagination.totalItems + newConfigurations.length > 0 && !pagination.busy"
+                    class="well well-sm"
+                    translate
+                    translate-n="pagination.totalItems + newConfigurations.length"
+                    translate-plural="{{$count}} configurations trouvées"
+                >
+                    1 configuration trouvée
                 </div>
 
                 <!-- Bibliothèques récemment créés -->
@@ -64,15 +65,11 @@
                     </div>
                 </div>
 
-                <div class="well" ng-show="pagination.totalItems === 0 && newConfigurations.length === 0 && !pagination.busy"
-                     translate>Aucune configuration n'a été trouvée
-                </div>
+                <div class="well" ng-show="pagination.totalItems === 0 && newConfigurations.length === 0 && !pagination.busy" translate>Aucune configuration n'a été trouvée</div>
 
                 <div>
                     <div ng-repeat="configuration in pagination.items" class="col-infinite-scroll">
-                        <div ng-show="$index === 0 || getFirstLetter(configuration) != getFirstLetter(pagination.items[$index-1])"
-                             class="pagination-break">{{configuration.label|initial:'OTHER'}}
-                        </div>
+                        <div ng-show="$index === 0 || getFirstLetter(configuration) != getFirstLetter(pagination.items[$index-1])" class="pagination-break">{{configuration.label|initial:'OTHER'}}</div>
                         <div class="list" ng-class="{active: configuration._selected}">
                             <a ng-click="edit(configuration)">
                                 <span class="principal">{{configuration.label}}</span>

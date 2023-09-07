@@ -1,10 +1,14 @@
 package fr.progilone.pgcn.service.exchange;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.*;
-
-import static org.junit.Assert.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.junit.jupiter.api.Test;
 
 /**
  * Created by Sebastien on 24/11/2016.

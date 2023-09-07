@@ -20,12 +20,6 @@ import fr.progilone.pgcn.service.delivery.DeliveryService;
 import fr.progilone.pgcn.service.exchange.cines.CinesReportService;
 import fr.progilone.pgcn.service.exchange.internetarchive.InternetArchiveReportService;
 import fr.progilone.pgcn.service.project.ProjectService;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
@@ -35,6 +29,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class StatisticsProgressService {
@@ -63,14 +62,6 @@ public class StatisticsProgressService {
     /**
      * #186: Tableau de bord des bibliothèques et institutions
      * par projet
-     *
-     * @param libraries
-     * @param projects
-     * @param fromDate
-     * @param toDate
-     * @param page
-     * @param size
-     * @return
      */
     @Transactional(readOnly = true)
     public Page<StatisticsProgressDTO> getProjectProgress(final List<String> libraries,
@@ -105,14 +96,6 @@ public class StatisticsProgressService {
     /**
      * #186: Tableau de bord des bibliothèques et institutions
      * par lot
-     *
-     * @param libraries
-     * @param projects
-     * @param fromDate
-     * @param toDate
-     * @param page
-     * @param size
-     * @return
      */
     @Transactional(readOnly = true)
     public Page<StatisticsProgressDTO> getLotProgress(final List<String> libraries,
@@ -122,9 +105,8 @@ public class StatisticsProgressService {
                                                       final Integer page,
                                                       final Integer size) {
         // Lots
-        final Page<Lot> pageOfLots =
-            lotRepository.search(new LotSearchBuilder().setLibraries(libraries).setProjects(projects).setLastDlvFrom(fromDate).setLastDlvTo(toDate),
-                                 new PageRequest(page, size));
+        final Page<Lot> pageOfLots = lotRepository.search(new LotSearchBuilder().setLibraries(libraries).setProjects(projects).setLastDlvFrom(fromDate).setLastDlvTo(toDate),
+                                                          PageRequest.of(page, size));
         final Page<StatisticsProgressDTO> pageOfDtos = pageOfLots.map(this::initDto);
 
         final List<String> lotIds = pageOfLots.getContent().stream().map(AbstractDomainObject::getIdentifier).collect(Collectors.toList());
@@ -217,8 +199,7 @@ public class StatisticsProgressService {
 
         final double avgDocDlv = docUnits.stream()
                                          .flatMap(ud -> ud.getDigitalDocuments().stream())
-                                         .collect(Collectors.groupingBy(AbstractDomainObject::getIdentifier,
-                                                                        Collectors.collectingAndThen(Collectors.toList(), List::size)))
+                                         .collect(Collectors.groupingBy(AbstractDomainObject::getIdentifier, Collectors.collectingAndThen(Collectors.toList(), List::size)))
                                          .values()
                                          .stream()
                                          .mapToInt(i -> i)
@@ -240,15 +221,12 @@ public class StatisticsProgressService {
                                                                           // Dernière livraison
                                                                           .map(digitalDocument -> digitalDocument.getDeliveries()
                                                                                                                  .stream()
-                                                                                                                 .min(Collections.reverseOrder(
-                                                                                                                     Comparator.nullsLast(Comparator.comparing(
-                                                                                                                         DeliveredDocument::getCreatedDate)))))
+                                                                                                                 .min(Collections.reverseOrder(Comparator.nullsLast(Comparator.comparing(DeliveredDocument::getCreatedDate)))))
                                                                           .filter(Optional::isPresent)
                                                                           .map(Optional::get)
                                                                           // Regroupement du nombre de documents livrés par statut de la livraison
                                                                           .collect(Collectors.groupingBy(DeliveredDocument::getStatus,
-                                                                                                         Collectors.collectingAndThen(Collectors.toList(),
-                                                                                                                                      List::size)));
+                                                                                                         Collectors.collectingAndThen(Collectors.toList(), List::size)));
 
         final int nbDlv = countByStatus.values().stream().mapToInt(i -> i).sum();
         final int nbDlvControlled = Arrays.stream(DigitalDocumentStatus.values())
@@ -256,8 +234,7 @@ public class StatisticsProgressService {
                                           .filter(countByStatus::containsKey)
                                           .mapToInt(countByStatus::get)
                                           .sum();
-        final int nbDlvRejected =
-            countByStatus.getOrDefault(DigitalDocumentStatus.PRE_REJECTED, 0) + countByStatus.getOrDefault(DigitalDocumentStatus.REJECTED, 0);
+        final int nbDlvRejected = countByStatus.getOrDefault(DigitalDocumentStatus.PRE_REJECTED, 0) + countByStatus.getOrDefault(DigitalDocumentStatus.REJECTED, 0);
         final int nbDlvValidated = countByStatus.getOrDefault(DigitalDocumentStatus.VALIDATED, 0);
 
         dto.setNbDigitalDocs(nbDlv);
@@ -283,7 +260,7 @@ public class StatisticsProgressService {
         final List<Delivery> deliveries = deliveryService.findByProjectsAndLots(projects, lotIds);
 
         pageOfDtos.forEach(dto -> {
-            final long nbDlv = deliveries.stream().filter(d -> match(dto, d.getLotId(), d.getLot().getProjectId())).count();
+            final long nbDlv = deliveries.stream().filter(d -> match(dto, d.getLot().getIdentifier(), d.getLot().getProject().getIdentifier())).count();
             dto.setNbDlv(nbDlv);
         });
     }
@@ -296,17 +273,17 @@ public class StatisticsProgressService {
      * @param projects
      * @param lotIds
      */
-    private void setWorkflowCounts(final Page<StatisticsProgressDTO> pageOfDtos,
-                                   final List<String> libraries,
-                                   final List<String> projects,
-                                   final List<String> lotIds) {
-        final List<DocUnitWorkflow> validatedUdw =
-            docUnitWorkflowRepository.findDocUnitWorkflows(new DocUnitWorkflowSearchBuilder().setLibraries(libraries)
-                                                                                             .setProjects(projects)
-                                                                                             .setLots(lotIds));
+    private void setWorkflowCounts(final Page<StatisticsProgressDTO> pageOfDtos, final List<String> libraries, final List<String> projects, final List<String> lotIds) {
+        final List<DocUnitWorkflow> validatedUdw = docUnitWorkflowRepository.findDocUnitWorkflows(new DocUnitWorkflowSearchBuilder().setLibraries(libraries)
+                                                                                                                                    .setProjects(projects)
+                                                                                                                                    .setLots(lotIds));
         pageOfDtos.forEach(dto -> {
             final long nbWorkflowValidated = validatedUdw.stream()
-                                                         .filter(d -> match(dto, d.getDocUnit().getLotId(), d.getDocUnit().getProjectId()))
+                                                         .filter(d -> match(dto,
+                                                                            d.getDocUnit().getLot() != null ? d.getDocUnit().getLot().getIdentifier()
+                                                                                                            : null,
+                                                                            d.getDocUnit().getProject() != null ? d.getDocUnit().getProject().getIdentifier()
+                                                                                                                : null))
                                                          .map(d -> d.getDocUnit().getIdentifier())
                                                          .distinct()
                                                          .count();
@@ -325,7 +302,7 @@ public class StatisticsProgressService {
 
         pageOfDtos.forEach(dto -> {
             final long nbDocArchived = cinesReports.stream()
-                                                   .filter(report -> match(dto, report.getDocUnit().getLotId(), report.getDocUnit().getProjectId()))
+                                                   .filter(report -> match(dto, report.getDocUnit().getLot().getIdentifier(), report.getDocUnit().getProject().getIdentifier()))
                                                    .map(d -> d.getDocUnit().getIdentifier())
                                                    .distinct()
                                                    .count();
@@ -344,7 +321,7 @@ public class StatisticsProgressService {
 
         pageOfDtos.forEach(dto -> {
             final long nbDocDistributed = iaReports.stream()
-                                                   .filter(report -> match(dto, report.getDocUnit().getLotId(), report.getDocUnit().getProjectId()))
+                                                   .filter(report -> match(dto, report.getDocUnit().getLot().getIdentifier(), report.getDocUnit().getProject().getIdentifier()))
                                                    .map(d -> d.getDocUnit().getIdentifier())
                                                    .distinct()
                                                    .count();
@@ -365,7 +342,7 @@ public class StatisticsProgressService {
                 dto.setPctDocArchivable((double) dto.getNbDocArchivable() / (double) dto.getNbDocUnits());
 
                 final long nbDocUnitsDigitalized = docUnits.stream()
-                                                           .filter(ud -> match(dto, ud.getLotId(), ud.getProjectId()))
+                                                           .filter(ud -> match(dto, ud.getLot().getIdentifier(), ud.getProject().getIdentifier()))
                                                            .filter(ud -> !ud.getDigitalDocuments().isEmpty())
                                                            .count();
                 dto.setPctDigitalDocs((double) nbDocUnitsDigitalized / (double) dto.getNbDocUnits());

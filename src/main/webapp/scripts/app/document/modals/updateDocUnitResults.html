@@ -4,40 +4,46 @@
 <div class="modal-body">
     <!-- Item  -->
     <div ng-if="mainCtrl.loaded">
-	    <form name="updateForm">
+        <form name="updateForm">
             <div class="row">
                 <div class="col-md-12 text-center margin-t10">
                     <span translate>Archivable :</span>
-                    <input bs-switch
-                           ng-model="mainCtrl.values.archivable"
-                           type="checkbox"
-                           ng-change="updateArchivable()"
-                           switch-readonly=""
-                           switch-on-text="{{ 'OUI' | translate }}"
-                           switch-off-text="{{ 'NON' | translate }}"
-                           switch-label-width="0px"/>
+                    <input
+                        bs-switch
+                        ng-model="mainCtrl.values.archivable"
+                        type="checkbox"
+                        ng-change="updateArchivable()"
+                        switch-readonly=""
+                        switch-on-text="{{ 'OUI' | translate }}"
+                        switch-off-text="{{ 'NON' | translate }}"
+                        switch-label-width="0px"
+                    />
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-12 text-center margin-t10 margin-b10">
-                <span translate>Diffusable :</span>
-                <input bs-switch
-                       ng-model="mainCtrl.values.distributable"
-                       type="checkbox"
-                       ng-change="updateDistributable()"
-                       switch-readonly=""
-                       switch-on-text="{{ 'OUI' | translate }}"
-                       switch-off-text="{{ 'NON' | translate }}"
-                       switch-label-width="0px"/>
+                    <span translate>Diffusable :</span>
+                    <input
+                        bs-switch
+                        ng-model="mainCtrl.values.distributable"
+                        type="checkbox"
+                        ng-change="updateDistributable()"
+                        switch-readonly=""
+                        switch-on-text="{{ 'OUI' | translate }}"
+                        switch-off-text="{{ 'NON' | translate }}"
+                        switch-label-width="0px"
+                    />
                 </div>
             </div>
 
-            <sem-field sem-type="select" sem-label="{{::'Type de constat d\'état' | translate}}"
-                    sem-model="mainCtrl.values.reportType"
-                    sem-select-options="option.label for option in optionData track by option.identifier"
-                    sem-option-data="mainCtrl.options.condreportTypes"></sem-field>
-
-	    </form>
+            <sem-field
+                sem-type="select"
+                sem-label="{{::'Type de constat d\'état' | translate}}"
+                sem-model="mainCtrl.values.reportType"
+                sem-select-options="option.label for option in optionData track by option.identifier"
+                sem-option-data="mainCtrl.options.condreportTypes"
+            ></sem-field>
+        </form>
     </div>
 </div>
 <div class="modal-footer">
@@ -46,4 +52,3 @@
         <span class="glyphicon-regular floppy-save"></span> {{::'Modifier la sélection' | translate}}
     </button>
 </div>
-

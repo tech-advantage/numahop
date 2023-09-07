@@ -4,7 +4,7 @@ import fr.progilone.pgcn.domain.dto.AbstractVersionedDTO;
 import fr.progilone.pgcn.domain.dto.library.SimpleLibraryDTO;
 
 public class ViewsFormatConfigurationDTO extends AbstractVersionedDTO {
-    
+
     private String identifier;
     private String label;
     private Long thumbWidth;
@@ -13,13 +13,12 @@ public class ViewsFormatConfigurationDTO extends AbstractVersionedDTO {
     private Long viewHeight;
     private Long printWidth;
     private Long printHeight;
-    
+
     private String thumbDefaultValue;
     private String viewDefaultValue;
     private String printDefaultValue;
 
     private SimpleLibraryDTO library;
- 
 
     public String getIdentifier() {
         return identifier;
@@ -115,6 +114,6 @@ public class ViewsFormatConfigurationDTO extends AbstractVersionedDTO {
 
     public void setLibrary(final SimpleLibraryDTO library) {
         this.library = library;
-    }    
-    
+    }
+
 }

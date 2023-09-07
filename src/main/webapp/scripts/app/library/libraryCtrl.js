@@ -1,12 +1,9 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('LibraryCtrl', LibraryCtrl);
+    angular.module('numaHopApp.controller').controller('LibraryCtrl', LibraryCtrl);
 
-    function LibraryCtrl($location, $scope, $timeout, LibrarySrvc, gettextCatalog, HistorySrvc,
-        NumahopStorageService, NumahopEditService) {
-
+    function LibraryCtrl($location, $scope, $timeout, LibrarySrvc, gettextCatalog, HistorySrvc, NumahopStorageService, NumahopEditService) {
         $scope.applyFilter = applyFilter;
         $scope.clearSelection = clearSelection;
         $scope.create = create;
@@ -24,35 +21,35 @@
         $scope.selectedIndex = null;
         $scope.selectedInNew = false;
 
-        $scope.libraryInclude = "scripts/app/library/libraryEdit.html";
+        $scope.libraryInclude = 'scripts/app/library/libraryEdit.html';
         $scope.library = null;
 
-        var FILTER_STORAGE_SERVICE_KEY = "libraries";
+        var FILTER_STORAGE_SERVICE_KEY = 'libraries';
 
         $scope.filters = {
             institutions: [],
-            inactive: false
+            inactive: false,
         };
         $scope.listFilters = {
             initial_filter: true,
-            inactive_filter: true
+            inactive_filter: true,
         };
         $scope.filterLabels = {
-            inactive: "Voir les bibliothèques inactives"
+            inactive: 'Voir les bibliothèques inactives',
         };
 
         /**
          * Liste des options pour les listes déroulantes
          */
         $scope.options = {
-            institutions: []
+            institutions: [],
         };
         $scope.pagination = {
             items: [],
             totalItems: 0,
             busy: false,
             last: false,
-            page: 0
+            page: 0,
         };
         $scope.newLibraries = []; // liste des bibliothèques récemment créés
 
@@ -60,20 +57,18 @@
 
         /** Initialisation */
         function init() {
-            HistorySrvc.add(gettextCatalog.getString("Bibliothèques"));
+            HistorySrvc.add(gettextCatalog.getString('Bibliothèques'));
             reinitFilters(false);
             loadFilters();
             nextPage();
 
-            $scope.$on("$routeUpdate",
-                function ($currentRoute, $previousRoute) {
-                    $timeout(function () {
-                        $scope.libraryInclude = null;
-                        $scope.$apply();
-                        $scope.libraryInclude = "scripts/app/library/libraryEdit.html";
-                    });
-                }
-            );
+            $scope.$on('$routeUpdate', function ($currentRoute, $previousRoute) {
+                $timeout(function () {
+                    $scope.libraryInclude = null;
+                    $scope.$apply();
+                    $scope.libraryInclude = 'scripts/app/library/libraryEdit.html';
+                });
+            });
         }
 
         // CRUD
@@ -82,7 +77,7 @@
                 $scope.library._selected = false;
                 $scope.library = null;
             }
-            $location.path("/library/library").search({ new: true });
+            $location.path('/library/library').search({ new: true });
         }
         function edit(library, index, selectedInNew) {
             clearSelection();
@@ -97,7 +92,7 @@
                 search = { id: library.identifier };
             }
 
-            $location.path("/library/library").search(search);
+            $location.path('/library/library').search(search);
         }
 
         function filterLibraries() {
@@ -105,17 +100,17 @@
 
             var searchParams = {
                 page: $scope.pagination.page,
-                search: $scope.filterWith || "",
-                isActive: !$scope.filters.inactive
+                search: $scope.filterWith || '',
+                isActive: !$scope.filters.inactive,
             };
 
             if ($scope.filters.initiale) {
-                searchParams["initiale"] = $scope.filters.initiale;
+                searchParams['initiale'] = $scope.filters.initiale;
             }
 
             if ($scope.filters.institutions) {
-                var institutionsIds = _.pluck($scope.filters.institutions, "identifier");
-                searchParams["institutions"] = institutionsIds;
+                var institutionsIds = _.pluck($scope.filters.institutions, 'identifier');
+                searchParams['institutions'] = institutionsIds;
             }
 
             return LibrarySrvc.search(searchParams).$promise;
@@ -131,7 +126,7 @@
             doFilter();
         }
         function applyFilter(filterWith, event) {
-            if (event.type === "keypress" && event.keyCode === 13) {
+            if (event.type === 'keypress' && event.keyCode === 13) {
                 doFilter();
             }
         }
@@ -155,8 +150,7 @@
                         } else {
                             $scope.pagination.items.push(value.content[i]);
                         }
-                    }
-                    else {
+                    } else {
                         // On ne compte pas 2 fois les nouvelles bibliothèques rechargées
                         $scope.pagination.totalItems--;
                     }
@@ -197,7 +191,7 @@
 
         function reinitFilters(reload) {
             $scope.filters = {
-                inactive: false
+                inactive: false,
             };
             if (reload) {
                 doFilter();
@@ -205,7 +199,9 @@
         }
         // liste
         function nextPage() {
-            if ($scope.pagination.busy || $scope.pagination.last) { return; }
+            if ($scope.pagination.busy || $scope.pagination.last) {
+                return;
+            }
             $scope.pagination.busy = true;
 
             filterLibraries().then(function (value, responseHeaders) {
@@ -229,10 +225,9 @@
             }
         }
         function clearSelection() {
-            _.union($scope.pagination.items, $scope.newLibraries)
-                .forEach(function (elt, i) {
-                    elt._selected = false;
-                });
+            _.union($scope.pagination.items, $scope.newLibraries).forEach(function (elt, i) {
+                elt._selected = false;
+            });
         }
         function moveUp() {
             var index;

@@ -5,36 +5,36 @@
 // Généré le : 2017.12.08 à 03:23:15 PM CET
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.ppdi;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
-
 
 /**
  *
  *
  * <pre>
- * &lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;description xmlns="http://www.cines.fr/pac/ppdi" xmlns:ISO-639-3="urn:un:unece:uncefact:codelist:draft:DAF:languageCode:2011-10-07" xmlns:RA="urn:un:unece:uncefact:codelist:draft:DAF:accessRestrictionCode:2009-08-18" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;Pr�sentation du fonds � archiver&lt;/description&gt;
+ * &lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;description xmlns="http://www.cines.fr/pac/ppdi" xmlns:ISO-639-3="urn:un:unece:uncefact:codelist:draft:DAF:languageCode:2011-10-07" xmlns:RA="urn:un:unece:uncefact:codelist:draft:DAF:accessRestrictionCode:2009-08-18" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;Présentation du fonds é archiver&lt;/description&gt;
  * </pre>
  *
  *
  * <pre>
  * &lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;commentaires xmlns="http://www.cines.fr/pac/ppdi" xmlns:ISO-639-3="urn:un:unece:uncefact:codelist:draft:DAF:languageCode:2011-10-07" xmlns:RA="urn:un:unece:uncefact:codelist:draft:DAF:accessRestrictionCode:2009-08-18" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
- * On entend par fonds, un ensemble de documents � archiver dont le regroupement a un sens intellectuel. On peut �galement parler de corpus.
+ * On entend par fonds, un ensemble de documents é archiver dont le regroupement a un sens intellectuel. On peut également parler de corpus.
  * &lt;/commentaires&gt;
  * </pre>
  *
  *
  *
- * <p>Classe Java pour FondsType complex type.
+ * <p>
+ * Classe Java pour FondsType complex type.
  *
- * <p>Le fragment de sch�ma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="FondsType">
@@ -61,19 +61,18 @@ import javax.xml.bind.annotation.XmlType;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "FondsType", propOrder = {
-    "intitule",
-    "contenu",
-    "langue",
-    "structure",
-    "quantite",
-    "sortFinal",
-    "original",
-    "communauteCible",
-    "sourcesComplementaires",
-    "relationFdsProd",
-    "notesFonds"
-})
+@XmlType(name = "FondsType",
+         propOrder = {"intitule",
+                      "contenu",
+                      "langue",
+                      "structure",
+                      "quantite",
+                      "sortFinal",
+                      "original",
+                      "communauteCible",
+                      "sourcesComplementaires",
+                      "relationFdsProd",
+                      "notesFonds"})
 public class FondsType {
 
     @XmlElement(required = true)
@@ -95,11 +94,11 @@ public class FondsType {
     protected List<String> notesFonds;
 
     /**
-     * Obtient la valeur de la propri�t� intitule.
+     * Obtient la valeur de la propriété intitule.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getIntitule() {
@@ -107,11 +106,11 @@ public class FondsType {
     }
 
     /**
-     * D�finit la valeur de la propri�t� intitule.
+     * Définit la valeur de la propriété intitule.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setIntitule(String value) {
@@ -119,11 +118,11 @@ public class FondsType {
     }
 
     /**
-     * Obtient la valeur de la propri�t� contenu.
+     * Obtient la valeur de la propriété contenu.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getContenu() {
@@ -131,11 +130,11 @@ public class FondsType {
     }
 
     /**
-     * D�finit la valeur de la propri�t� contenu.
+     * Définit la valeur de la propriété contenu.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setContenu(String value) {
@@ -153,8 +152,9 @@ public class FondsType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getLangue().add(newItem);
+     * getLangue().add(newItem);
      * </pre>
      *
      *
@@ -182,8 +182,9 @@ public class FondsType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getStructure().add(newItem);
+     * getStructure().add(newItem);
      * </pre>
      *
      *
@@ -211,8 +212,9 @@ public class FondsType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getQuantite().add(newItem);
+     * getQuantite().add(newItem);
      * </pre>
      *
      *
@@ -240,8 +242,9 @@ public class FondsType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getSortFinal().add(newItem);
+     * getSortFinal().add(newItem);
      * </pre>
      *
      *
@@ -269,8 +272,9 @@ public class FondsType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getOriginal().add(newItem);
+     * getOriginal().add(newItem);
      * </pre>
      *
      *
@@ -298,8 +302,9 @@ public class FondsType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getCommunauteCible().add(newItem);
+     * getCommunauteCible().add(newItem);
      * </pre>
      *
      *
@@ -327,8 +332,9 @@ public class FondsType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getSourcesComplementaires().add(newItem);
+     * getSourcesComplementaires().add(newItem);
      * </pre>
      *
      *
@@ -356,8 +362,9 @@ public class FondsType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getRelationFdsProd().add(newItem);
+     * getRelationFdsProd().add(newItem);
      * </pre>
      *
      *
@@ -385,8 +392,9 @@ public class FondsType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getNotesFonds().add(newItem);
+     * getNotesFonds().add(newItem);
      * </pre>
      *
      *

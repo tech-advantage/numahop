@@ -2,8 +2,7 @@ package fr.progilone.pgcn.domain.library;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import fr.progilone.pgcn.domain.AbstractDomainObject;
-
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 /**
  * Valeur pour un paramètre système

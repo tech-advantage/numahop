@@ -1,12 +1,9 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('WorkflowModelCtrl', WorkflowModelCtrl);
+    angular.module('numaHopApp.controller').controller('WorkflowModelCtrl', WorkflowModelCtrl);
 
-    function WorkflowModelCtrl($location, $scope, $timeout, NumaHopInitializationSrvc, $q,
-        WorkflowModelSrvc, gettextCatalog, HistorySrvc, StringTools, NumahopStorageService) {
-
+    function WorkflowModelCtrl($location, $scope, $timeout, NumaHopInitializationSrvc, $q, WorkflowModelSrvc, gettextCatalog, HistorySrvc, StringTools, NumahopStorageService) {
         $scope.applyFilter = applyFilter;
         $scope.changeFuzzySearch = changeFuzzySearch;
         $scope.clearSelection = clearSelection;
@@ -20,30 +17,30 @@
         $scope.nextPage = nextPage;
         $scope.unfilterInitial = unfilterInitial;
 
-        $scope.detail = "scripts/app/workflow/modelEdit.html";
+        $scope.detail = 'scripts/app/workflow/modelEdit.html';
         $scope.model = null;
 
-        var FILTER_STORAGE_SERVICE_KEY = "workflow_model";
+        var FILTER_STORAGE_SERVICE_KEY = 'workflow_model';
 
         $scope.filters = {
-            libraries: []
+            libraries: [],
         };
         $scope.listFilters = {
             library_filter: true,
-            initial_filter: true
+            initial_filter: true,
         };
 
         /**
          * Liste des options pour les listes déroulantes
          */
         $scope.options = {
-            libraries: []
+            libraries: [],
         };
         $scope.pagination = {
             items: [],
             totalItems: 0,
             busy: false,
-            page: 0
+            page: 0,
         };
         $scope.newEntities = [];
 
@@ -51,27 +48,24 @@
 
         /** Initialisation */
         function init() {
-            HistorySrvc.add(gettextCatalog.getString("Modèles de workflow"));
+            HistorySrvc.add(gettextCatalog.getString('Modèles de workflow'));
             reinitFilters(false);
             loadOptionsAndFilters();
 
-            $scope.$on("$routeUpdate",
-                function ($currentRoute, $previousRoute) {
-                    $timeout(function () {
-                        $scope.detail = null;
-                        $scope.$apply();
-                        $scope.detail = "scripts/app/workflow/modelEdit.html";
-                    });
-                }
-            );
+            $scope.$on('$routeUpdate', function ($currentRoute, $previousRoute) {
+                $timeout(function () {
+                    $scope.detail = null;
+                    $scope.$apply();
+                    $scope.detail = 'scripts/app/workflow/modelEdit.html';
+                });
+            });
         }
         function loadOptionsAndFilters() {
-            $q.all([NumaHopInitializationSrvc.loadLibraries()])
-                .then(function (data) {
-                    $scope.options.libraries = data[0];
-                    loadFilters();
-                    nextPage();
-                });
+            $q.all([NumaHopInitializationSrvc.loadLibraries()]).then(function (data) {
+                $scope.options.libraries = data[0];
+                loadFilters();
+                nextPage();
+            });
         }
 
         // CRUD
@@ -80,7 +74,7 @@
                 $scope.model._selected = false;
                 $scope.model = null;
             }
-            $location.path("/workflow/model").search({ new: true });
+            $location.path('/workflow/model').search({ new: true });
         }
         function edit(entity) {
             clearSelection();
@@ -93,7 +87,7 @@
                 search = { id: entity.identifier };
             }
 
-            $location.path("/workflow/model").search(search);
+            $location.path('/workflow/model').search(search);
         }
 
         function filterGroups() {
@@ -101,16 +95,16 @@
 
             var searchParams = {
                 page: $scope.pagination.page,
-                search: $scope.filterWith || "",
-                fuzzySearch: $scope.fuzzySearch
+                search: $scope.filterWith || '',
+                fuzzySearch: $scope.fuzzySearch,
             };
 
             if ($scope.filters.initiale) {
-                searchParams["initiale"] = $scope.filters.initiale;
+                searchParams['initiale'] = $scope.filters.initiale;
             }
             if ($scope.filters.libraries) {
-                var librariesIds = _.pluck($scope.filters.libraries, "identifier");
-                searchParams["libraries"] = librariesIds;
+                var librariesIds = _.pluck($scope.filters.libraries, 'identifier');
+                searchParams['libraries'] = librariesIds;
             }
             return WorkflowModelSrvc.search(searchParams).$promise;
         }
@@ -123,10 +117,9 @@
                 delete $scope.filters.initiale;
                 doFilter();
             }
-
         }
         function applyFilter(filterWith, event) {
-            if (event.type === "keypress" && event.keyCode === 13) {
+            if (event.type === 'keypress' && event.keyCode === 13) {
                 doFilter();
             }
         }
@@ -150,7 +143,6 @@
                             $scope.pagination.items.push(value.content[i]);
                         }
                     }
-
                 }
                 $scope.pagination.busy = false;
 
@@ -164,8 +156,6 @@
                     // réinitialisation de la fiche de droite
                     edit();
                 }
-
-
             });
         }
         function loadFilters() {
@@ -193,7 +183,9 @@
         }
         // liste
         function nextPage() {
-            if ($scope.pagination.busy) { return; }
+            if ($scope.pagination.busy) {
+                return;
+            }
             $scope.pagination.busy = true;
 
             filterGroups().then(function (value, responseHeaders) {
@@ -204,13 +196,12 @@
             });
         }
         function clearSelection() {
-            _.union($scope.pagination.items, $scope.newEntities)
-                .forEach(function (elt, i) {
-                    elt._selected = false;
-                });
+            _.union($scope.pagination.items, $scope.newEntities).forEach(function (elt, i) {
+                elt._selected = false;
+            });
         }
         function getFirstLetter(entity) {
-            return StringTools.getFirstLetter(entity.name, "OTHER");
+            return StringTools.getFirstLetter(entity.name, 'OTHER');
         }
         function changeFuzzySearch() {
             $scope.fuzzySearch = !$scope.fuzzySearch;

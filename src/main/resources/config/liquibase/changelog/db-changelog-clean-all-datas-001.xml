@@ -1,51 +1,55 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <!-- Nettoyage de ttes les données liées à un docUnit -->
     <changeSet id="pgcn-clean-all-datas-doc" author="progilone">
-        <sql dbms="mysql">
-            SET FOREIGN_KEY_CHECKS=0
+        <sql>
+            SET
+            FOREIGN_KEY_CHECKS=0
         </sql>
- 
-        <sql dbms="mysql">truncate table check_automatic_result</sql>
-        <sql dbms="mysql">truncate table doc_bibliographic_record</sql>
-        <sql dbms="mysql">truncate table doc_check</sql>
-        <sql dbms="mysql">truncate table doc_global_check</sql>
-        <sql dbms="mysql">truncate table doc_condreport_attachment</sql>
-        <sql dbms="mysql">truncate table doc_condreport</sql>
-        <sql dbms="mysql">truncate table doc_workflow_state</sql>
-        <sql dbms="mysql">truncate table doc_workflow</sql>
-        <sql dbms="mysql">truncate table exc_cines_report</sql>
-        <sql dbms="mysql">truncate table exc_doc_unit</sql>
-        
-        <sql dbms="mysql">truncate table exc_internet_archive_report</sql>
-        <sql dbms="mysql">truncate table check_slip_line</sql>
-        <sql dbms="mysql">truncate table check_slip</sql>
-        <sql dbms="mysql">truncate table del_slip_line</sql>
-        <sql dbms="mysql">truncate table del_slip</sql>
-        <sql dbms="mysql">truncate table del_delivered_document</sql>
-        <sql dbms="mysql">truncate table doc_physical_document_digital</sql>
-        <sql dbms="mysql">truncate table doc_sample</sql>
-        <sql dbms="mysql">truncate table del_delivery</sql>
-        <sql dbms="mysql">truncate table doc_digital_document</sql>
-        <sql dbms="mysql">truncate table doc_physical_document</sql>
-        <sql dbms="mysql">truncate table doc_page</sql>
-        <sql dbms="mysql">truncate table doc_unit</sql>
-        <sql dbms="mysql">truncate table doc_unit_sibling</sql>
-        <sql dbms="mysql">truncate table train_train</sql>
-        <sql dbms="mysql">truncate table lot_lot</sql>
-        <sql dbms="mysql">truncate table proj_project</sql>
-        <sql dbms="mysql">truncate table proj_project_library</sql>
-        <sql dbms="mysql">truncate table proj_project_lot</sql>
-        <sql dbms="mysql">truncate table proj_project_platform</sql>
-        <sql dbms="mysql">truncate table proj_project_user</sql>
-        <sql dbms="mysql">truncate table sto_stored_file</sql>
- 
-        <sql dbms="mysql">
-            SET FOREIGN_KEY_CHECKS=1
+
+        <sql>truncate table check_automatic_result</sql>
+        <sql>truncate table doc_bibliographic_record</sql>
+        <sql>truncate table doc_check</sql>
+        <sql>truncate table doc_global_check</sql>
+        <sql>truncate table doc_condreport_attachment</sql>
+        <sql>truncate table doc_condreport</sql>
+        <sql>truncate table doc_workflow_state</sql>
+        <sql>truncate table doc_workflow</sql>
+        <sql>truncate table exc_cines_report</sql>
+        <sql>truncate table exc_doc_unit</sql>
+
+        <sql>truncate table exc_internet_archive_report</sql>
+        <sql>truncate table check_slip_line</sql>
+        <sql>truncate table check_slip</sql>
+        <sql>truncate table del_slip_line</sql>
+        <sql>truncate table del_slip</sql>
+        <sql>truncate table del_delivered_document</sql>
+        <sql>truncate table doc_physical_document_digital</sql>
+        <sql>truncate table doc_sample</sql>
+        <sql>truncate table del_delivery</sql>
+        <sql>truncate table doc_digital_document</sql>
+        <sql>truncate table doc_physical_document</sql>
+        <sql>truncate table doc_page</sql>
+        <sql>truncate table doc_unit</sql>
+        <sql>truncate table doc_unit_sibling</sql>
+        <sql>truncate table train_train</sql>
+        <sql>truncate table lot_lot</sql>
+        <sql>truncate table proj_project</sql>
+        <sql>truncate table proj_project_library</sql>
+        <sql>truncate table proj_project_lot</sql>
+        <sql>truncate table proj_project_platform</sql>
+        <sql>truncate table proj_project_user</sql>
+        <sql>truncate table sto_stored_file</sql>
+
+        <sql>
+            SET
+            FOREIGN_KEY_CHECKS=1
         </sql>
     </changeSet>
-    
+
 </databaseChangeLog>

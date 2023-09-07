@@ -1,21 +1,31 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <!-- Changeset du module Automatic Check -->
     <changeSet id="pgcn-check-003" author="progilone">
         <addColumn tableName="check_automatic_result">
-            <column name="delivery" type="varchar(191)"/>
-            <column name="physical_document" type="varchar(191)"/>
+            <column name="delivery" type="varchar(191)" />
+            <column name="physical_document" type="varchar(191)" />
         </addColumn>
 
-        <addForeignKeyConstraint constraintName="fk_check_automatic_result_delivery"
-                                 baseTableName="check_automatic_result" baseColumnNames="delivery"
-                                 referencedTableName="del_delivery" referencedColumnNames="identifier"/>
+        <addForeignKeyConstraint
+            constraintName="fk_check_automatic_result_delivery"
+            baseTableName="check_automatic_result"
+            baseColumnNames="delivery"
+            referencedTableName="del_delivery"
+            referencedColumnNames="identifier"
+        />
                                  
-        <addForeignKeyConstraint constraintName="fk_check_automatic_result_physical_document"
-                                 baseTableName="check_automatic_result" baseColumnNames="physical_document"
-                                 referencedTableName="doc_physical_document" referencedColumnNames="identifier"/>
+        <addForeignKeyConstraint
+            constraintName="fk_check_automatic_result_physical_document"
+            baseTableName="check_automatic_result"
+            baseColumnNames="physical_document"
+            referencedTableName="doc_physical_document"
+            referencedColumnNames="identifier"
+        />
     </changeSet>
 </databaseChangeLog>

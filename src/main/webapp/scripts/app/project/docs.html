@@ -3,24 +3,30 @@
         <div class="row margin-lr0">
             <div class="col-xs-12">
                 <div class="pull-right">
-                    <button type="button" class="btn btn-sem2 btn-xs"
-                            uib-tooltip="{{::'Ajouter des Unités Documentaires au projet' | translate}}"
-                            sem-roles-allowed="DOC_UNIT_HAB2" ng-click="docCtrl.addDocUnits()">
+                    <button
+                        type="button"
+                        class="btn btn-sem2 btn-xs"
+                        uib-tooltip="{{::'Ajouter des Unités Documentaires au projet' | translate}}"
+                        tooltip-append-to-body="true"
+                        sem-roles-allowed="DOC_UNIT_HAB2"
+                        ng-click="docCtrl.addDocUnits()"
+                    >
                         <span class="glyphicon-halflings glyphicon-plus"></span>
                     </button>
-                    <button type="button" class="btn btn-sem2 btn-xs"
-                            uib-tooltip="{{::'Retirer les unités documentaires sélectionnés du projet' | translate}}"
-                            ng-disabled="docCtrl.selectedIds.length === 0 && docCtrl.isDocUnitLocked()" sem-roles-allowed="DOC_UNIT_HAB3"
-                            ng-click="docCtrl.removeMultipleItems()">
+                    <button
+                        type="button"
+                        class="btn btn-sem2 btn-xs"
+                        uib-tooltip="{{::'Retirer les unités documentaires sélectionnés du projet' | translate}}"
+                        tooltip-append-to-body="true"
+                        ng-disabled="docCtrl.selectedIds.length === 0 && docCtrl.isDocUnitLocked()"
+                        sem-roles-allowed="DOC_UNIT_HAB3"
+                        ng-click="docCtrl.removeMultipleItems()"
+                    >
                         <span class="glyphicon-halflings glyphicon-trash"></span>
                     </button>
                 </div>
-                <button type="button" class="btn btn-sem2 btn-xs" ng-click="docCtrl.checkAll()" ng-disabled="docCtrl.docUnits.length === 0">
-                    {{::"Tout cocher" | translate}}
-                </button>
-                <button type="button" class="btn btn-sem2 btn-xs" ng-click="docCtrl.uncheckAll()" ng-disabled="docCtrl.selectedIds.length === 0">
-                    {{::"Tout décocher" | translate}}
-                </button>
+                <button type="button" class="btn btn-sem2 btn-xs" ng-click="docCtrl.checkAll()" ng-disabled="docCtrl.docUnits.length === 0">{{::"Tout cocher" | translate}}</button>
+                <button type="button" class="btn btn-sem2 btn-xs" ng-click="docCtrl.uncheckAll()" ng-disabled="docCtrl.selectedIds.length === 0">{{::"Tout décocher" | translate}}</button>
             </div>
         </div>
     </div>
@@ -28,53 +34,61 @@
         <div class="table-responsive col-sm-12">
             <table class="table table-condensed table-hover" sem-table>
                 <thead>
-                <tr>
-                    <th></th>
-                    <th sem-table-sorton="pgcnId"><span translate>Identifiant PGCN</span></th>
-                    <th sem-table-sorton="label"><span translate>Libellé</span></th>
-                    <th sem-table-sorton="archivable"><span translate>Archivable</span></th>
-                    <th sem-table-sorton="distributable"><span translate>Diffusable</span></th>
-                    <th sem-table-sorton="library.name"><span translate>Bibliothèque</span></th>
-                    <th style="width: 70px" translate>Actions</th>
-                </tr>
+                    <tr>
+                        <th></th>
+                        <th sem-table-sorton="pgcnId"><span translate>Identifiant PGCN</span></th>
+                        <th sem-table-sorton="label"><span translate>Libellé</span></th>
+                        <th sem-table-sorton="archivable"><span translate>Archivable</span></th>
+                        <th sem-table-sorton="distributable"><span translate>Diffusable</span></th>
+                        <th sem-table-sorton="library.name"><span translate>Bibliothèque</span></th>
+                        <th style="width: 70px" translate>Actions</th>
+                    </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="item in docCtrl.pagination.items | orderBy:orderBy">
-                    <td class="select-col">
-                        <div class="checkbox checkbox-sid-main no-margin">
-                            <input type="checkbox" ng-model="item.checked" ng-change="docCtrl.changeItem(item)"/>
-                            <label></label>
-                        </div>
-                    </td>
-                    <td>{{ ::item.pgcnId }}</td>
-                    <td>
-                        <span uib-tooltip="{{::item.label}}" tooltip-enable="item.label.length > 50">
-                        {{ ::item.label | characters:50 }}
-                        </span>
-                    </td>
-                    <td>{{ ::translate.boolean[item.archivable] }}</td>
-                    <td>{{ ::translate.boolean[item.distributable] }}</td>
-                    <td>{{ ::item.library.name }}</td>
-                    <td class="text-right">
-                        <a class="btn btn-sem2 btn-xs" uib-tooltip="{{ ::'Voir' | translate }}" ng-href="/#/document/all_operations/{{::item.identifier}}">
-                            <span class="glyphicon-halflings glyphicon-share"></span>
-                        </a>
-                        <button type="button" class="btn btn-sem2 btn-xs"
+                    <tr ng-repeat="item in docCtrl.pagination.items | orderBy:orderBy">
+                        <td class="select-col">
+                            <div class="checkbox checkbox-sid-main no-margin">
+                                <input type="checkbox" ng-model="item.checked" ng-change="docCtrl.changeItem(item)" />
+                                <label></label>
+                            </div>
+                        </td>
+                        <td>{{ ::item.pgcnId }}</td>
+                        <td>
+                            <span uib-tooltip="{{::item.label}}" tooltip-enable="item.label.length > 50"> {{ ::item.label | characters:50 }} </span>
+                        </td>
+                        <td>{{ ::translate.boolean[item.archivable] }}</td>
+                        <td>{{ ::translate.boolean[item.distributable] }}</td>
+                        <td>{{ ::item.library.name }}</td>
+                        <td class="text-right">
+                            <a class="btn btn-sem2 btn-xs" uib-tooltip="{{ ::'Voir' | translate }}" ng-href="/#/document/all_operations/{{::item.identifier}}">
+                                <span class="glyphicon-halflings glyphicon-share"></span>
+                            </a>
+                            <button
+                                type="button"
+                                class="btn btn-sem2 btn-xs"
                                 ng-show="docCtrl.canRemoveFromProject(item)"
                                 uib-tooltip="{{::'Retirer l\'unité documentaire du projet' | translate}}"
                                 sem-roles-allowed="DOC_UNIT_HAB3"
-                                ng-click="docCtrl.removeItem(item)">
-                            <span class="glyphicon-halflings glyphicon-trash"></span>
-                        </button>
-                    </td>
-                </tr>
+                                ng-click="docCtrl.removeItem(item)"
+                            >
+                                <span class="glyphicon-halflings glyphicon-trash"></span>
+                            </button>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <div class="row" ng-show="docCtrl.pagination.size && docCtrl.pagination.totalItems > docCtrl.pagination.size">
                 <div class="col-sm-12">
                     <div class="text-center">
-                        <ul uib-pagination num-pages="docCtrl.pagination.totalPages" total-items="docCtrl.pagination.totalItems" items-per-page="docCtrl.pagination.size"
-                            ng-change="docCtrl.getPage()" ng-model="docCtrl.pagination.page" class="pagination-sm"></ul>
+                        <ul
+                            uib-pagination
+                            num-pages="docCtrl.pagination.totalPages"
+                            total-items="docCtrl.pagination.totalItems"
+                            items-per-page="docCtrl.pagination.size"
+                            ng-change="docCtrl.getPage()"
+                            ng-model="docCtrl.pagination.page"
+                            class="pagination-sm"
+                        ></ul>
                     </div>
                 </div>
             </div>

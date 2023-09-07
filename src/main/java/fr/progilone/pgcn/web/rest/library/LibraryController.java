@@ -1,5 +1,8 @@
 package fr.progilone.pgcn.web.rest.library;
 
+import static fr.progilone.pgcn.domain.user.User.Category.*;
+import static fr.progilone.pgcn.web.rest.library.security.AuthorizationConstants.*;
+
 import com.codahale.metrics.annotation.Timed;
 import fr.progilone.pgcn.domain.dto.library.LibraryDTO;
 import fr.progilone.pgcn.domain.dto.library.SimpleLibraryDTO;
@@ -15,6 +18,13 @@ import fr.progilone.pgcn.service.user.ui.UIUserService;
 import fr.progilone.pgcn.web.rest.AbstractRestController;
 import fr.progilone.pgcn.web.rest.administration.security.AuthorizationConstants;
 import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,17 +40,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
-
-import static fr.progilone.pgcn.domain.user.User.Category.*;
-import static fr.progilone.pgcn.web.rest.library.security.AuthorizationConstants.*;
 
 @RestController
 @RequestMapping(value = "/api/rest/library")
@@ -89,7 +88,9 @@ public class LibraryController extends AbstractRestController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, params = {"dto"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    @RolesAllowed({LIB_HAB5, LIB_HAB6, LIB_HAB7})
+    @RolesAllowed({LIB_HAB5,
+                   LIB_HAB6,
+                   LIB_HAB7})
     public ResponseEntity<LibraryDTO> getDtoById(final HttpServletRequest request, @PathVariable final String id) {
         if (!libraryAccesssHelper.checkLibrary(request, id)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
@@ -108,13 +109,14 @@ public class LibraryController extends AbstractRestController {
 
     @RequestMapping(method = RequestMethod.GET, params = {"search"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    @RolesAllowed({LIB_HAB5, LIB_HAB6, LIB_HAB7})
+    @RolesAllowed({LIB_HAB5,
+                   LIB_HAB6,
+                   LIB_HAB7})
     public ResponseEntity<Page<SimpleLibraryDTO>> search(final HttpServletRequest request,
                                                          @RequestParam(value = "search", required = false) final String search,
                                                          @RequestParam(value = "initiale", required = false) final String initiale,
                                                          @RequestParam(value = "institutions", required = false) final List<String> institutions,
-                                                         @RequestParam(value = "isActive", required = false, defaultValue = "true")
-                                                         final boolean isActive,
+                                                         @RequestParam(value = "isActive", required = false, defaultValue = "true") final boolean isActive,
                                                          @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
                                                          @RequestParam(value = "size", required = false, defaultValue = "10") final Integer size) {
         final List<String> libraries = libraryAccesssHelper.getLibraryFilter(request, null);
@@ -123,7 +125,9 @@ public class LibraryController extends AbstractRestController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    @RolesAllowed({LIB_HAB5, LIB_HAB6, LIB_HAB7})
+    @RolesAllowed({LIB_HAB5,
+                   LIB_HAB6,
+                   LIB_HAB7})
     public ResponseEntity<LibraryDTO> getById(final HttpServletRequest request, @PathVariable final String id) {
         if (!libraryAccesssHelper.checkLibrary(request, id)) {
             return createResponseEntity(new LibraryDTO());
@@ -134,7 +138,9 @@ public class LibraryController extends AbstractRestController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, params = {"providers"})
     @Timed
-    @RolesAllowed({LIB_HAB5, LIB_HAB6, LIB_HAB7})
+    @RolesAllowed({LIB_HAB5,
+                   LIB_HAB6,
+                   LIB_HAB7})
     public ResponseEntity<Collection<SimpleUserDTO>> getProviders(final HttpServletRequest request, @PathVariable final String id) {
         if (!libraryAccesssHelper.checkLibrary(request, id)) {
             return createResponseEntity(new ArrayList<>());
@@ -152,15 +158,16 @@ public class LibraryController extends AbstractRestController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, params = {"users"})
     @Timed
-    @RolesAllowed({LIB_HAB5, LIB_HAB6, LIB_HAB7})
+    @RolesAllowed({LIB_HAB5,
+                   LIB_HAB6,
+                   LIB_HAB7})
     public ResponseEntity<Collection<SimpleUserDTO>> getUsers(final HttpServletRequest request, @PathVariable final String id) {
         if (!libraryAccesssHelper.checkLibrary(request, id)) {
-             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         final Collection<SimpleUserDTO> users = uiLibraryService.findUsers(id);
         return createResponseEntity(users);
     }
-
 
     @RequestMapping(value = "/{id}", method = RequestMethod.POST)
     @Timed
@@ -184,9 +191,10 @@ public class LibraryController extends AbstractRestController {
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, params = {"logo"}, produces = MediaType.IMAGE_PNG_VALUE)
     @Timed
-    @RolesAllowed({LIB_HAB5, LIB_HAB6, LIB_HAB7})
-    public void downloadLogo(final HttpServletRequest request, final HttpServletResponse response, @PathVariable("id") final String libraryId) throws
-                                                                                                                                               PgcnTechnicalException {
+    @RolesAllowed({LIB_HAB5,
+                   LIB_HAB6,
+                   LIB_HAB7})
+    public void downloadLogo(final HttpServletRequest request, final HttpServletResponse response, @PathVariable("id") final String libraryId) throws PgcnTechnicalException {
         final Library library = libraryService.findOne(libraryId);
         if (library == null) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -219,10 +227,10 @@ public class LibraryController extends AbstractRestController {
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, params = {"thumbnail"}, produces = MediaType.IMAGE_PNG_VALUE)
     @Timed
-    @RolesAllowed({LIB_HAB5, LIB_HAB6, LIB_HAB7})
-    public void downloadThumbnail(final HttpServletRequest request,
-                                  final HttpServletResponse response,
-                                  @PathVariable("id") final String libraryId) throws PgcnTechnicalException {
+    @RolesAllowed({LIB_HAB5,
+                   LIB_HAB6,
+                   LIB_HAB7})
+    public void downloadThumbnail(final HttpServletRequest request, final HttpServletResponse response, @PathVariable("id") final String libraryId) throws PgcnTechnicalException {
         final Library library = libraryService.findOne(libraryId);
         if (library == null) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -260,9 +268,10 @@ public class LibraryController extends AbstractRestController {
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, params = {"logoexists"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    @RolesAllowed({LIB_HAB5, LIB_HAB6, LIB_HAB7})
-    public ResponseEntity<Map<?, ?>> hasLogo(final HttpServletRequest request, @PathVariable("id") final String libraryId) throws
-                                                                                                                           PgcnTechnicalException {
+    @RolesAllowed({LIB_HAB5,
+                   LIB_HAB6,
+                   LIB_HAB7})
+    public ResponseEntity<Map<?, ?>> hasLogo(final HttpServletRequest request, @PathVariable("id") final String libraryId) throws PgcnTechnicalException {
         final Library library = libraryService.findOne(libraryId);
         if (library == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

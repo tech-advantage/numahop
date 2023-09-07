@@ -16,8 +16,7 @@
                     <div class="filter-block">
                         <div class="filter-title">{{::'Projet' | translate}}</div>
                         <div class="filter-element">
-                            <ui-select multiple ng-model="mainCtrl.filters.projects" theme="select2" on-select="mainCtrl.search()" on-remove="mainCtrl.search()"
-                            class="form-control">
+                            <ui-select multiple ng-model="mainCtrl.filters.projects" theme="select2" on-select="mainCtrl.search()" on-remove="mainCtrl.search()" class="form-control">
                                 <ui-select-match placeholder="{{::'Projet' | translate}}">{{$item.name}}</ui-select-match>
                                 <ui-select-choices repeat="option in mainCtrl.options.projects | filter: $select.search track by option.identifier">
                                     <div ng-bind-html="option.name | highlight: $select.search"></div>
@@ -34,42 +33,39 @@
             <div class="panel-heading" style="margin-left: 0px" ng-if="mainCtrl.isFilteredByIds"></div>
             <div class="panel-heading" ng-if="!mainCtrl.isFilteredByIds">
                 <!-- Barre de recherche -->
-                <button type="button" class="btn btn-sem2 btn-xs pull-right" ng-click="mainCtrl.reinitFilters()" uib-tooltip="{{::'Réinitialiser les filtres de la recherche' | translate}}">
+                <button type="button" class="btn btn-sem2 btn-xs pull-right" ng-click="mainCtrl.reinitFilters()" uib-tooltip="{{::'Réinitialiser les filtres de la recherche' | translate}}" tooltip-append-to-body="true">
                     <span class="glyphicon-halflings glyphicon-refresh"></span>
                 </button>
                 <div class="input-group padding-r20">
-                    <input class="form-control sem-input-xs" type="text" id="searchInput" ng-model="mainCtrl.searchRequest" sem-enter-key="mainCtrl.search()"
-                    />
+                    <input class="form-control sem-input-xs" type="text" id="searchInput" ng-model="mainCtrl.searchRequest" sem-enter-key="mainCtrl.search()" />
                     <span class="input-group-btn">
-                        <button type="button" class="btn btn-sem2 btn-xs" ng-click="mainCtrl.search()" uib-tooltip="{{::'Rechercher' | translate}}">
+                        <button type="button" class="btn btn-sem2 btn-xs" ng-click="mainCtrl.search()" uib-tooltip="{{::'Rechercher' | translate}}" tooltip-append-to-body="true">
                             <span class="glyphicon syrtis-icon-loupe"></span>
                         </button>
                     </span>
                 </div>
             </div>
             <div class="panel-body">
-                <div class="well well-sm" ng-show="mainCtrl.loaded && mainCtrl.pagination.items.length == 0" translate>
-                    Aucun lot trouvé
-                </div>
-                <div class="well well-sm" ng-show="mainCtrl.loaded && mainCtrl.pagination.items.length > 0" translate translate-n="mainCtrl.pagination.totalItems"
-                    translate-plural="{{$count}} lots trouvés">
+                <div class="well well-sm" ng-show="mainCtrl.loaded && mainCtrl.pagination.items.length == 0" translate>Aucun lot trouvé</div>
+                <div class="well well-sm" ng-show="mainCtrl.loaded && mainCtrl.pagination.items.length > 0" translate translate-n="mainCtrl.pagination.totalItems" translate-plural="{{$count}} lots trouvés">
                     1 lot trouvé
                 </div>
                 <div class="form-inline">
-                    <button type="button" ng-hide="mainCtrl.pagination.items.length == 0" class="btn btn-sem2 btn-xs" ng-click="mainCtrl.checkAll()">
-                        {{::"Tout cocher" | translate}}
-                    </button>
-                    <button type="button" ng-hide="mainCtrl.pagination.items.length == 0" class="btn btn-sem2 btn-xs" ng-disabled="mainCtrl.selectedLength === 0"
-                        ng-click="mainCtrl.uncheckAll()">
+                    <button type="button" ng-hide="mainCtrl.pagination.items.length == 0" class="btn btn-sem2 btn-xs" ng-click="mainCtrl.checkAll()">{{::"Tout cocher" | translate}}</button>
+                    <button type="button" ng-hide="mainCtrl.pagination.items.length == 0" class="btn btn-sem2 btn-xs" ng-disabled="mainCtrl.selectedLength === 0" ng-click="mainCtrl.uncheckAll()">
                         {{::"Tout décocher" | translate}}
                     </button>
-                    <select id="pageSize" name="pageSize" class="form-control input-sm" ng-hide="mainCtrl.pagination.items.length == 0" ng-options="size.value as size.label for size in mainCtrl.sizeOptions"
-                        ng-model="mainCtrl.pageSize" ng-change="mainCtrl.changePageSize()">
-                    </select>
+                    <select
+                        id="pageSize"
+                        name="pageSize"
+                        class="form-control input-sm"
+                        ng-hide="mainCtrl.pagination.items.length == 0"
+                        ng-options="size.value as size.label for size in mainCtrl.sizeOptions"
+                        ng-model="mainCtrl.pageSize"
+                        ng-change="mainCtrl.changePageSize()"
+                    ></select>
                     <div class="btn-group pull-right" style="display: inline" uib-dropdown ng-if="!mainCtrl.action">
-                        <button type="button" class="btn btn-sem2 btn-xs" ng-disabled="mainCtrl.selectedLength === 0" uib-dropdown-toggle>
-                            <b class="caret"></b>&nbsp;{{ ::'Actions sur la sélection' | translate }}
-                        </button>
+                        <button type="button" class="btn btn-sem2 btn-xs" ng-disabled="mainCtrl.selectedLength === 0" uib-dropdown-toggle><b class="caret"></b>&nbsp;{{ ::'Actions sur la sélection' | translate }}</button>
                         <ul class="dropdown-menu dropdown-menu-right" uib-dropdown-menu role="menu">
                             <!-- Ajouter la sélection à un nouveau projet -->
                             <li role="menuitem">
@@ -90,9 +86,7 @@
                     </div>
                     <!-- Callback -->
                     <div class="pull-right" style="display: inline" ng-if="mainCtrl.action">
-                        <button type="button" class="btn btn-sem3 btn-xs" ng-click="mainCtrl.action.cancel()">
-                            <span class="glyphicon-regular unshare"></span>&nbsp;{{ mainCtrl.action.cancelLabel }}
-                        </button>
+                        <button type="button" class="btn btn-sem3 btn-xs" ng-click="mainCtrl.action.cancel()"><span class="glyphicon-regular unshare"></span>&nbsp;{{ mainCtrl.action.cancelLabel }}</button>
                         <button type="button" class="btn btn-sem2 btn-xs" ng-disabled="mainCtrl.selectedLength === 0" ng-click="mainCtrl.action.callback()">
                             <span class="glyphicon-halflings glyphicon-plus"></span>&nbsp;{{ mainCtrl.action.label }}
                         </button>
@@ -120,26 +114,18 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <a ng-href="{{ ::mainCtrl.getUrlLot(item.identifier) }}" uib-tooltip="{{::item.label}}" tooltip-enable="item.label.length > 30">
-                                        {{ ::item.label | characters:50 }}
-                                    </a>
+                                    <a ng-href="{{ ::mainCtrl.getUrlLot(item.identifier) }}" uib-tooltip="{{::item.label}}" tooltip-enable="item.label.length > 30"> {{ ::item.label | characters:50 }} </a>
                                 </td>
                                 <td class="text-center">
                                     <div ng-if="item.project">
-                                        <a ng-href="{{ ::mainCtrl.getUrlProject(item.project.identifier) }}">
-                                            {{::item.project.name | characters:50 }}
-                                        </a>
+                                        <a ng-href="{{ ::mainCtrl.getUrlProject(item.project.identifier) }}"> {{::item.project.name | characters:50 }} </a>
                                     </div>
                                 </td>
                                 <td class="text-center">
-                                    <div>
-                                            {{::mainCtrl.displayStatus(item.status)}}
-                                    </div>
+                                    <div>{{::mainCtrl.displayStatus(item.status)}}</div>
                                 </td>
                                 <td class="text-center">
-                                    <div>
-                                            {{::mainCtrl.displayType(item.type)}}
-                                    </div>
+                                    <div>{{::mainCtrl.displayType(item.type)}}</div>
                                 </td>
                             </tr>
                         </tbody>
@@ -148,8 +134,15 @@
                 <div class="row" ng-show="mainCtrl.pagination.size && mainCtrl.pagination.totalItems > mainCtrl.pagination.size">
                     <div class="col-sm-12">
                         <div class="text-center">
-                            <ul uib-pagination num-pages="mainCtrl.pagination.totalPages" total-items="mainCtrl.pagination.totalItems" items-per-page="mainCtrl.pagination.size"
-                                ng-change="mainCtrl.getPage()" ng-model="mainCtrl.pagination.page" class="pagination-sm"></ul>
+                            <ul
+                                uib-pagination
+                                num-pages="mainCtrl.pagination.totalPages"
+                                total-items="mainCtrl.pagination.totalItems"
+                                items-per-page="mainCtrl.pagination.size"
+                                ng-change="mainCtrl.getPage()"
+                                ng-model="mainCtrl.pagination.page"
+                                class="pagination-sm"
+                            ></ul>
                         </div>
                     </div>
                 </div>

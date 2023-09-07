@@ -1,27 +1,5 @@
 package fr.progilone.pgcn.service.exchange.template;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.function.Function;
-
-import javax.annotation.PostConstruct;
-
-import org.apache.commons.collections.MapUtils;
-import org.apache.velocity.exception.ResourceNotFoundException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import fr.opensagres.odfdom.converter.pdf.PdfOptions;
 import fr.opensagres.xdocreport.converter.ConverterTypeTo;
 import fr.opensagres.xdocreport.converter.ConverterTypeVia;
@@ -43,6 +21,25 @@ import fr.progilone.pgcn.service.exchange.template.loader.DefaultResourceLoader;
 import fr.progilone.pgcn.service.exchange.template.loader.ResourceLoader;
 import fr.progilone.pgcn.service.exchange.template.loader.ResourceName;
 import fr.progilone.pgcn.service.exchange.template.loader.TemplateResourceLoader;
+import jakarta.annotation.PostConstruct;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
+import org.apache.commons.collections.MapUtils;
+import org.apache.velocity.exception.ResourceNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * Service gérant la génération de documents ODT avec le moteur de templates XDocReport
@@ -76,9 +73,9 @@ public class OdtEngineService {
      * Le résultat est un {@link Reader}
      *
      * @param templateName
-     *         nom du template
+     *            nom du template
      * @param library
-     *         bibliothèque
+     *            bibliothèque
      * @param parameters
      * @param imageParams
      * @return
@@ -89,10 +86,7 @@ public class OdtEngineService {
                                     final Map<String, IImageProvider> imageParams,
                                     final OutputStream out,
                                     final FieldsMetadata fieldsMetadata) throws PgcnTechnicalException {
-        LOG.debug("Génération du document {}, bibliothèque {} avec les paramètres {}",
-                  templateName,
-                  library.getIdentifier(),
-                  parameters.keySet());
+        LOG.debug("Génération du document {}, bibliothèque {} avec les paramètres {}", templateName, library.getIdentifier(), parameters.keySet());
         try {
             // Recherche du template
             final InputStream templateStream = getResourceStream(new ResourceName(templateName, library.getIdentifier()));
@@ -104,10 +98,10 @@ public class OdtEngineService {
             // Gestion des images en 2 passes (pour traiter le cas d'images nommées dynamiquement, qui ne fonctionne pas en une seule passe)
             else {
                 final ByteArrayOutputStream tempOut = new ByteArrayOutputStream();
-                generateDocumentODT(templateStream, parameters, null, tempOut, fieldsMetadata); //NOSONAR
+                generateDocumentODT(templateStream, parameters, null, tempOut, fieldsMetadata); // NOSONAR
 
                 final ByteArrayInputStream in = new ByteArrayInputStream(tempOut.toByteArray());
-                generateDocumentPDF(in, null, imageParams, out, null); //NOSONAR
+                generateDocumentPDF(in, null, imageParams, out, null); // NOSONAR
             }
         } catch (final IOException e) {
             throw new PgcnTechnicalException(e);
@@ -119,9 +113,9 @@ public class OdtEngineService {
      * Le résultat est un {@link Reader}
      *
      * @param templateName
-     *         nom du template
+     *            nom du template
      * @param library
-     *         bibliothèque
+     *            bibliothèque
      * @param parameters
      * @param imageParams
      * @return
@@ -132,10 +126,7 @@ public class OdtEngineService {
                                     final Map<String, IImageProvider> imageParams,
                                     final OutputStream out) throws PgcnTechnicalException {
         try {
-            LOG.debug("Génération du document {}, bibliothèque {} avec les paramètres {}",
-                      templateName,
-                      library.getIdentifier(),
-                      parameters.keySet());
+            LOG.debug("Génération du document {}, bibliothèque {} avec les paramètres {}", templateName, library.getIdentifier(), parameters.keySet());
 
             // Recherche du template
             final InputStream templateStream = getResourceStream(new ResourceName(templateName, library.getIdentifier()));
@@ -147,10 +138,10 @@ public class OdtEngineService {
             // Gestion des images en 2 passes (pour traiter le cas d'images nommées dynamiquement, qui ne fonctionne pas en une seule passe)
             else {
                 final ByteArrayOutputStream tempOut = new ByteArrayOutputStream();
-                generateDocumentODT(templateStream, parameters, null, tempOut, null); //NOSONAR
+                generateDocumentODT(templateStream, parameters, null, tempOut, null); // NOSONAR
 
                 final ByteArrayInputStream in = new ByteArrayInputStream(tempOut.toByteArray());
-                generateDocumentODT(in, null, imageParams, out, null); //NOSONAR
+                generateDocumentODT(in, null, imageParams, out, null); // NOSONAR
             }
         } catch (final IOException e) {
             throw new PgcnTechnicalException(e);
@@ -206,6 +197,7 @@ public class OdtEngineService {
             final Options options = Options.getTo(ConverterTypeTo.PDF).via(ConverterTypeVia.ODFDOM);
             final PdfOptions pdfOptions = PdfOptions.create();
             pdfOptions.fontProvider(new ITextFontRegistry() {
+
                 @Override
                 protected String resolveFamilyName(final String familyName, final int style) {
                     if (isItalic(style) && isBold(style)) {
@@ -295,7 +287,11 @@ public class OdtEngineService {
             } catch (final ResourceNotFoundException e) {
                 return null;
             }
-        }).filter(Objects::nonNull).findFirst().orElseThrow(() -> new IOException("Le template " + name + " n'a pas été trouvé"));
+        })
+                              .filter(Objects::nonNull)
+                              .findFirst()
+                              .orElseThrow(() -> new IOException("Le template " + name
+                                                                 + " n'a pas été trouvé"));
     }
 
     /**

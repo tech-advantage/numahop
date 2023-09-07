@@ -1,19 +1,18 @@
 package fr.progilone.pgcn.service.exchange.ead.script.format;
 
+import static fr.progilone.pgcn.service.exchange.ead.EadCParser.*;
+
 import fr.progilone.pgcn.domain.jaxb.ead.P;
 import fr.progilone.pgcn.service.exchange.ead.EadCParser;
 import fr.progilone.pgcn.service.exchange.ead.script.CustomScript;
-import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
-import static fr.progilone.pgcn.service.exchange.ead.EadCParser.*;
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Ce formatter extrait les données textuelles d'un objet, en supprimant les données de mise en forme
@@ -41,20 +40,19 @@ public class TextFormatter extends CustomScript {
      */
     public String format(final Object o) {
         try {
-            final List<Object> nextValues =
-                EadCParser.getNextValues(o).stream().map(EadCParser::unwrapJAXBElement).filter(Objects::nonNull).collect(Collectors.toList());
+            final List<Object> nextValues = EadCParser.getNextValues(o).stream().map(EadCParser::unwrapJAXBElement).filter(Objects::nonNull).collect(Collectors.toList());
             final StringBuilder formattedValue = new StringBuilder();
             Object lastValue = null;
 
             for (final Object val : nextValues) {
                 if (lastValue != null) {
                     final String sep =
-                        // entre 2 paragraphes: tiret
-                        lastValue instanceof P && val instanceof P ? " - "
-                        // entre un élément texte et un objet: rien du tout
-                                                                   : (lastValue instanceof String ^ val instanceof String) ? ""
-                                                                     // sinon un espace
-                                                                                                                           : " ";
+                    // entre 2 paragraphes: tiret
+                                     lastValue instanceof P && val instanceof P ? " - "
+                                               // entre un élément texte et un objet: rien du tout
+                                               : (lastValue instanceof String ^ val instanceof String) ? ""
+                                               // sinon un espace
+                                               : " ";
                     formattedValue.append(sep);
                 }
                 lastValue = val;
@@ -91,17 +89,31 @@ public class TextFormatter extends CustomScript {
      * @return
      */
     public String format(final List<?> list) {
-        return list.stream().map(this::format).reduce((a, b) -> a + "\n" + b).orElse("");
+        return list.stream()
+                   .map(this::format)
+                   .reduce((a, b) -> a + "\n"
+                                     + b)
+                   .orElse("");
     }
 
     @Override
     public String getConfigScript() {
-        return "def " + SCRIPT_NAME + "SetNormal = {\n" + "      boolean normal -> script." + getCode() + ".setNormal(normal)\n" + "}\n";
+        return "def " + SCRIPT_NAME
+               + "SetNormal = {\n"
+               + "      boolean normal -> script."
+               + getCode()
+               + ".setNormal(normal)\n"
+               + "}\n";
     }
 
     @Override
     public String getInitScript() {
-        return "def " + SCRIPT_NAME + " = {\n" + "      Object o -> script." + getCode() + ".format(o)\n" + "}\n";
+        return "def " + SCRIPT_NAME
+               + " = {\n"
+               + "      Object o -> script."
+               + getCode()
+               + ".format(o)\n"
+               + "}\n";
     }
 
     /**

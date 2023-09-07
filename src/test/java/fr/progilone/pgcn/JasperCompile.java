@@ -1,14 +1,13 @@
 package fr.progilone.pgcn;
 
-import net.sf.jasperreports.engine.JasperCompileManager;
-import org.apache.commons.lang3.StringUtils;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.File;
 import java.util.stream.Stream;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import org.apache.commons.lang3.StringUtils;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Compilation des rapports jrxml
@@ -26,7 +25,7 @@ public class JasperCompile {
      * Cette méthode génère les fichiers jasper compilés dans le répertoire REPORT_JASPER_PATH
      * à partir des sources jrxml présentes dans le répertoire REPORT_SRC_PATH
      */
-    @Ignore
+    @Disabled
     @Test
     public void compileAllReports() {
         LOG.info("Compilation des rapports à partir du répertoire {}", REPORT_SRC_PATH);
@@ -49,6 +48,7 @@ public class JasperCompile {
     private File[] getReportSources(final String path) {
         final File f = new File(path);
         final File[] reports = f.listFiles(f1 -> f1.getName().endsWith(".jrxml"));
-        return reports != null ? reports : new File[] {};
+        return reports != null ? reports
+                               : new File[] {};
     }
 }

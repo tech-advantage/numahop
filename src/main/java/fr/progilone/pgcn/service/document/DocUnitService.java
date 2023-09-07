@@ -1,5 +1,36 @@
 package fr.progilone.pgcn.service.document;
 
+import fr.progilone.pgcn.domain.document.BibliographicRecord;
+import fr.progilone.pgcn.domain.document.DocSibling;
+import fr.progilone.pgcn.domain.document.DocUnit;
+import fr.progilone.pgcn.domain.document.DocUnit.State;
+import fr.progilone.pgcn.domain.document.DocUnit_;
+import fr.progilone.pgcn.domain.document.PhysicalDocument;
+import fr.progilone.pgcn.domain.dto.document.DocUnitDeletedReportDTO;
+import fr.progilone.pgcn.domain.dto.document.SummaryDocUnitDTO;
+import fr.progilone.pgcn.domain.lot.Lot;
+import fr.progilone.pgcn.domain.lot.Lot.LotStatus;
+import fr.progilone.pgcn.domain.ocrlangconfiguration.OcrLanguage;
+import fr.progilone.pgcn.domain.project.Project;
+import fr.progilone.pgcn.domain.train.Train;
+import fr.progilone.pgcn.exception.PgcnValidationException;
+import fr.progilone.pgcn.exception.message.PgcnError;
+import fr.progilone.pgcn.exception.message.PgcnErrorCode;
+import fr.progilone.pgcn.repository.document.BibliographicRecordRepository;
+import fr.progilone.pgcn.repository.document.DocSiblingRepository;
+import fr.progilone.pgcn.repository.document.DocUnitRepository;
+import fr.progilone.pgcn.repository.exchange.ImportedDocUnitRepository;
+import fr.progilone.pgcn.repository.exchange.cines.CinesReportRepository;
+import fr.progilone.pgcn.repository.exchange.internetarchive.InternetArchiveReportRepository;
+import fr.progilone.pgcn.repository.imagemetadata.ImageMetadataValuesRepository;
+import fr.progilone.pgcn.repository.lot.LotRepository;
+import fr.progilone.pgcn.repository.project.ProjectRepository;
+import fr.progilone.pgcn.repository.train.TrainRepository;
+import fr.progilone.pgcn.service.delivery.DeliveryService;
+import fr.progilone.pgcn.service.document.conditionreport.ConditionReportService;
+import fr.progilone.pgcn.service.es.EsDocUnitService;
+import fr.progilone.pgcn.service.exchange.internetarchive.ui.UIInternetArchiveReportService;
+import fr.progilone.pgcn.service.util.SortUtils;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -9,9 +40,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import fr.progilone.pgcn.domain.dto.document.SummaryDocUnitDTO;
-import fr.progilone.pgcn.domain.dto.document.SummaryDocUnitWithLotDTO;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -27,36 +55,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import fr.progilone.pgcn.domain.document.BibliographicRecord;
-import fr.progilone.pgcn.domain.document.DocSibling;
-import fr.progilone.pgcn.domain.document.DocUnit;
-import fr.progilone.pgcn.domain.document.DocUnit.State;
-import fr.progilone.pgcn.domain.document.DocUnit_;
-import fr.progilone.pgcn.domain.document.PhysicalDocument;
-import fr.progilone.pgcn.domain.dto.document.DocUnitDeletedReportDTO;
-import fr.progilone.pgcn.domain.lot.Lot;
-import fr.progilone.pgcn.domain.lot.Lot.LotStatus;
-import fr.progilone.pgcn.domain.ocrlangconfiguration.OcrLanguage;
-import fr.progilone.pgcn.domain.project.Project;
-import fr.progilone.pgcn.domain.train.Train;
-import fr.progilone.pgcn.exception.PgcnValidationException;
-import fr.progilone.pgcn.exception.message.PgcnError;
-import fr.progilone.pgcn.exception.message.PgcnErrorCode;
-import fr.progilone.pgcn.repository.document.BibliographicRecordRepository;
-import fr.progilone.pgcn.repository.document.DocSiblingRepository;
-import fr.progilone.pgcn.repository.document.DocUnitRepository;
-import fr.progilone.pgcn.repository.exchange.ImportedDocUnitRepository;
-import fr.progilone.pgcn.repository.exchange.cines.CinesReportRepository;
-import fr.progilone.pgcn.repository.exchange.internetarchive.InternetArchiveReportRepository;
-import fr.progilone.pgcn.repository.lot.LotRepository;
-import fr.progilone.pgcn.repository.project.ProjectRepository;
-import fr.progilone.pgcn.repository.train.TrainRepository;
-import fr.progilone.pgcn.service.delivery.DeliveryService;
-import fr.progilone.pgcn.service.document.conditionreport.ConditionReportService;
-import fr.progilone.pgcn.service.es.EsDocUnitService;
-import fr.progilone.pgcn.service.exchange.internetarchive.ui.UIInternetArchiveReportService;
-import fr.progilone.pgcn.service.util.SortUtils;
 
 @Service
 public class DocUnitService {
@@ -76,7 +74,7 @@ public class DocUnitService {
     private final PhysicalDocumentService physicalDocumentService;
     private final ProjectRepository projectRepository;
     private final TrainRepository trainRepository;
-    
+    private final ImageMetadataValuesRepository imageMetadataValuesRepository;
 
     @Autowired
     public DocUnitService(final BibliographicRecordRepository bibliographicRecordRepository,
@@ -93,7 +91,8 @@ public class DocUnitService {
                           final LotRepository lotRepository,
                           final TrainRepository trainRepository,
                           final DeliveryService deliveryService,
-                          final UIInternetArchiveReportService uiIAReportService) {
+                          final UIInternetArchiveReportService uiIAReportService,
+                          final ImageMetadataValuesRepository imageMetadataValuesRepository) {
         this.bibliographicRecordRepository = bibliographicRecordRepository;
         this.cinesReportRepository = cinesReportRepository;
         this.conditionReportService = conditionReportService;
@@ -107,6 +106,7 @@ public class DocUnitService {
         this.projectRepository = projectRepository;
         this.trainRepository = trainRepository;
         this.uiIAReportService = uiIAReportService;
+        this.imageMetadataValuesRepository = imageMetadataValuesRepository;
     }
 
     /**
@@ -191,7 +191,7 @@ public class DocUnitService {
      */
     @Transactional
     public List<DocUnit> saveWithoutValidation(final Iterable<DocUnit> docUnits) {
-        return docUnitRepository.save(docUnits);
+        return docUnitRepository.saveAll(docUnits);
     }
 
     @Transactional(readOnly = true)
@@ -201,16 +201,13 @@ public class DocUnitService {
 
     @Transactional(readOnly = true)
     public DocUnit findOne(final String identifier) {
-        return docUnitRepository.findOne(identifier);
+        return docUnitRepository.findById(identifier).orElse(null);
     }
 
     /**
      * Retourne une unité doc avec toutes les dépendences sauf les StoredFilesF:
      * (StoredFile, Page, DigitalDoc, PhysicalDoc, Project, Records..)
      * ne pas utiliser dans une boucle, à utiliser unitairement
-     *
-     * @param identifier
-     * @return
      */
     @Transactional(readOnly = true)
     public DocUnit findOneWithAllDependencies(final String identifier) {
@@ -221,20 +218,14 @@ public class DocUnitService {
      * Retourne une unité doc avec toutes les dépendences y-compris storedFiles si initFiles == true:
      * (StoredFile (ou pas), Page, DigitalDoc, PhysicalDoc, Project, Records..)
      * ne pas utiliser dans une boucle, à utiliser unitairement
-     *
-     * @param identifier
-     * @return
      */
     @Transactional(readOnly = true)
     public DocUnit findOneWithAllDependencies(final String identifier, final boolean initFiles) {
         return docUnitRepository.findOneWithAllDependencies(identifier, initFiles);
     }
-    
+
     /**
      * Retrouve une unité documentaire avec les dépendances liées au workflow
-     *
-     * @param identifier
-     * @return
      */
     @Transactional(readOnly = true)
     public DocUnit findOneWithAllDependenciesForWorkflow(final String identifier) {
@@ -244,9 +235,6 @@ public class DocUnitService {
     /**
      * Retourne une unité doc avec seulement les dépendences nécessaires
      * pour l'affichage (Pas de pages)
-     *
-     * @param identifier
-     * @return
      */
     @Transactional(readOnly = true)
     public DocUnit findOneForDisplay(final String identifier) {
@@ -255,9 +243,6 @@ public class DocUnitService {
 
     /**
      * Retourne les enfants de l'unité documentaire parentId
-     *
-     * @param parentId
-     * @return
      */
     @Transactional(readOnly = true)
     public List<DocUnit> getChildren(final String parentId) {
@@ -266,9 +251,6 @@ public class DocUnitService {
 
     /**
      * Retourne les soeurs de l'unité documentaire id
-     *
-     * @param id
-     * @return
      */
     @Transactional(readOnly = true)
     public List<DocUnit> getSiblings(final String id) {
@@ -279,7 +261,7 @@ public class DocUnitService {
      * Détermine si une liste d'unité documentaire peuvent être supprimées
      *
      * @param identifiers
-     *         une liste des identifiants des unité doc
+     *            une liste des identifiants des unité doc
      * @return une liste des entités en erreurs
      */
     @Transactional(readOnly = true)
@@ -287,8 +269,8 @@ public class DocUnitService {
         final Collection<DocUnitDeletedReportDTO> entityDeletedReports = new ArrayList<>();
         if (!identifiers.isEmpty()) {
             final Map<String, DocUnitDeletedReportDTO> entityDeletedReportsMap = new HashMap<>();
-            //Vérification présence dans un projet
-            final Collection<DocUnit> docs = docUnitRepository.findAll(identifiers);
+            // Vérification présence dans un projet
+            final Collection<DocUnit> docs = docUnitRepository.findAllById(identifiers);
             final PgcnError.Builder builder = new PgcnError.Builder();
             docs.forEach(doc -> {
                 if (doc.getProject() != null) {
@@ -306,7 +288,6 @@ public class DocUnitService {
     /**
      * Verifie si les UD peuvent etre detachees des projet/lot/train.
      *
-     * @param identifiers
      * @return une liste des entités en erreurs
      */
     @Transactional(readOnly = true)
@@ -342,8 +323,8 @@ public class DocUnitService {
         final Collection<DocUnitDeletedReportDTO> entityDeletedReports = new ArrayList<>();
         if (!Ids.isEmpty()) {
             final Map<String, DocUnitDeletedReportDTO> entityDeletedReportsMap = new HashMap<>();
-            //Vérification présence dans un projet
-            final Collection<DocUnit> docs = docUnitRepository.findAll(Ids);
+            // Vérification présence dans un projet
+            final Collection<DocUnit> docs = docUnitRepository.findAllById(Ids);
             final PgcnError.Builder builder = new PgcnError.Builder();
             docs.forEach(doc -> {
                 if (doc.getProject() == null) {
@@ -360,7 +341,7 @@ public class DocUnitService {
 
     @Transactional(readOnly = true)
     public List<DocUnit> canDocUnitsBeAdded(final List<String> idDocs) {
-        final List<DocUnit> docUnits = docUnitRepository.findAll(idDocs);
+        final List<DocUnit> docUnits = docUnitRepository.findAllById(idDocs);
         final List<DocUnit> docUnitList = new ArrayList<>();
         docUnits.forEach(docUnit -> {
             if (docUnit.getProject() == null) {
@@ -375,18 +356,15 @@ public class DocUnitService {
      * Si le rapport d'erreur existe déjà, l'erreur sera simplement rajoutée au rapport
      *
      * @param error
-     *         l'erreur pour laquelle on souhaite construire le rapport
+     *            l'erreur pour laquelle on souhaite construire le rapport
      * @param entityDeletedReportsMap
-     *         une map contenant des rappports d'erreurs
+     *            une map contenant des rappports d'erreurs
      * @param entityId
-     *         l'entité pour laquelle on souhaite construire le rapport
+     *            l'entité pour laquelle on souhaite construire le rapport
      * @param label
-     *         la template expression de l'entité
+     *            la template expression de l'entité
      */
-    private void buildAndAddReportFromError(final PgcnError error,
-                                            final Map<String, DocUnitDeletedReportDTO> entityDeletedReportsMap,
-                                            final String entityId,
-                                            final String label) {
+    private void buildAndAddReportFromError(final PgcnError error, final Map<String, DocUnitDeletedReportDTO> entityDeletedReportsMap, final String entityId, final String label) {
         final DocUnitDeletedReportDTO entityDeletedReport;
 
         if (entityDeletedReportsMap.containsKey(entityId)) {
@@ -438,9 +416,9 @@ public class DocUnitService {
                                 final List<String> sorts) {
         Sort sort = SortUtils.getSort(sorts);
         if (sort == null) {
-            sort = new Sort(DocUnit_.pgcnId.getName());
+            sort = Sort.by(DocUnit_.pgcnId.getName());
         }
-        final Pageable pageRequest = new PageRequest(page, size, sort);        
+        final Pageable pageRequest = PageRequest.of(page, size, sort);
         return docUnitRepository.search(search,
                                         hasDigitalDocuments,
                                         active,
@@ -464,28 +442,23 @@ public class DocUnitService {
                                         identifiers,
                                         pageRequest);
     }
-    
+
     @Transactional(readOnly = true)
     public List<DocUnit> searchMinList(final String search,
-                                final List<String> libraries,
-                                final List<String> projects,
-                                final List<String> lots,
-                                final List<String> trains,
-                                final List<String> statuses) {
-       
-        return docUnitRepository.minSearch(search,
-                                        libraries,
-                                        projects,
-                                        lots,
-                                        trains,
-                                        statuses);
+                                       final List<String> libraries,
+                                       final List<String> projects,
+                                       final List<String> lots,
+                                       final List<String> trains,
+                                       final List<String> statuses) {
+
+        return docUnitRepository.minSearch(search, libraries, projects, lots, trains, statuses);
     }
 
     @Transactional(readOnly = true)
-    public Page<DocUnit> searchAllForProject(final String projectId, final Integer page, final Integer size){
-        Sort sort = new Sort(DocUnit_.pgcnId.getName());
-        
-        final Pageable pageRequest = new PageRequest(page, size, sort);
+    public Page<DocUnit> searchAllForProject(final String projectId, final Integer page, final Integer size) {
+        final Sort sort = Sort.by(DocUnit_.pgcnId.getName());
+
+        final Pageable pageRequest = PageRequest.of(page, size, sort);
         return docUnitRepository.searchAllForProject(projectId, pageRequest);
     }
 
@@ -496,44 +469,48 @@ public class DocUnitService {
 
     @Transactional
     public void delete(final String identifier, final boolean deleteImpDocUnits) {
-        final DocUnit docUnit = docUnitRepository.findOne(identifier);
+        docUnitRepository.findById(identifier).ifPresent(docUnit -> {
+            // Suppression des références à l'unité documentaire dans les tables d'import
+            if (deleteImpDocUnits) {
+                importedDocUnitRepository.deleteByDocUnitIdentifier(identifier);
+                importedDocUnitRepository.deleteDuplicatedUnitsByDocUnitIdentifier(identifier);
 
-        // Suppression des références à l'unité documentaire dans les tables d'import
-        if (deleteImpDocUnits) {
-            importedDocUnitRepository.deleteByDocUnitIdentifier(identifier);
-            importedDocUnitRepository.deleteDuplicatedUnitsByDocUnitIdentifier(identifier);
-
-            // internet archive
-            internetArchiveReportRepository.deleteByDocUnitIdentifier(identifier);
-        }
-        // Sinon on casse juste le lien entre DocUnit et ImportedDocUnit, en conservant ce dernier
-        else {
-            importedDocUnitRepository.setDocUnitNullByDocUnitIdIn(Collections.singletonList(identifier));
-            importedDocUnitRepository.deleteDuplicatedUnitsByDocUnitIdentifier(identifier);
-
-            // internet archive
-            internetArchiveReportRepository.deleteByDocUnitIdentifier(identifier);
-        }
-
-        // CinesReport
-        cinesReportRepository.deleteByDocUnitIdentifier(identifier);
-        // Constats d'état (db + elasticsearch)
-        conditionReportService.deleteByDocUnitIdentifier(identifier);
-        // Lien vers les UD filles
-        docUnitRepository.setParentNullByParentIdIn(Collections.singletonList(identifier));
-
-        final DocSibling sib = docSiblingRepository.findByDocUnitsIdentifier(identifier);
-        // Suppression UD
-        docUnitRepository.delete(identifier);
-        // Liens vers les UD soeurs
-        if (sib != null) {
-            Hibernate.initialize(sib.getDocUnits());
-            if (sib.getDocUnits().size() == 1) {
-                docSiblingRepository.delete(sib);
+                // internet archive
+                internetArchiveReportRepository.deleteByDocUnitIdentifier(identifier);
             }
-        }
-        // Moteur de recherche
-        esDocUnitService.deleteAsync(docUnit);
+            // Sinon on casse juste le lien entre DocUnit et ImportedDocUnit, en conservant ce dernier
+            else {
+                importedDocUnitRepository.setDocUnitNullByDocUnitIdIn(Collections.singletonList(identifier));
+                importedDocUnitRepository.deleteDuplicatedUnitsByDocUnitIdentifier(identifier);
+
+                // internet archive
+                internetArchiveReportRepository.deleteByDocUnitIdentifier(identifier);
+            }
+
+            // CinesReport
+            cinesReportRepository.deleteByDocUnitIdentifier(identifier);
+            // Constats d'état (db + elasticsearch)
+            conditionReportService.deleteByDocUnitIdentifier(identifier);
+            // Lien vers les UD filles
+            docUnitRepository.setParentNullByParentIdIn(Collections.singletonList(identifier));
+
+            final DocSibling sib = docSiblingRepository.findByDocUnitsIdentifier(identifier);
+            // Suppression UD
+            docUnitRepository.deleteById(identifier);
+            // Liens vers les UD soeurs
+            if (sib != null) {
+                Hibernate.initialize(sib.getDocUnits());
+                if (sib.getDocUnits().size() == 1) {
+                    docSiblingRepository.delete(sib);
+                }
+            }
+
+            // remove metadata
+            imageMetadataValuesRepository.deleteByDocUnitIdentifier(docUnit.getIdentifier());
+
+            // Moteur de recherche
+            esDocUnitService.deleteAsync(docUnit.getIdentifier());
+        });
     }
 
     @Transactional
@@ -551,7 +528,7 @@ public class DocUnitService {
 
     @Transactional
     public void deleteFromProject(final Collection<String> identifiers) {
-        final Collection<DocUnit> docs = docUnitRepository.findAll(identifiers);
+        final Collection<DocUnit> docs = docUnitRepository.findAllById(identifiers);
         docs.forEach(doc -> {
             doc.setProject(null);
             doc.setLot(null);
@@ -561,9 +538,6 @@ public class DocUnitService {
 
     /**
      * Retourne les {@link DocUnit} de type {@link State#AVAILABLE} en fonction de leur PGCN ID
-     *
-     * @param pgcnId
-     * @return
      */
     @Transactional(readOnly = true)
     public DocUnit findOneByPgcnIdAndState(final String pgcnId) {
@@ -572,12 +546,9 @@ public class DocUnitService {
         }
         return docUnitRepository.getOneByPgcnIdAndState(pgcnId, State.AVAILABLE);
     }
-    
+
     /**
      * Retourne les {@link DocUnit} de type {@link State#AVAILABLE} en fonction de leur PGCN ID
-     *
-     * @param pgcnId
-     * @return
      */
     @Transactional(readOnly = true)
     public DocUnit findOneByPgcnId(final String pgcnId) {
@@ -590,11 +561,10 @@ public class DocUnitService {
     /**
      * Retourne les {@link DocUnit} en fonction de leur PGCN ID et de leur type parmi :
      * <br/>
-     * <ul><li>{@link State#AVAILABLE}</li><li>{@link State#NOT_AVAILABLE}</li></ul>
-     *
-     * @param pgcnId
-     * @param state
-     * @return
+     * <ul>
+     * <li>{@link State#AVAILABLE}</li>
+     * <li>{@link State#NOT_AVAILABLE}</li>
+     * </ul>
      */
     @Transactional(readOnly = true)
     public DocUnit findOneByPgcnIdAndState(final String pgcnId, final State state) {
@@ -603,7 +573,7 @@ public class DocUnitService {
         }
         return docUnitRepository.getOneByPgcnIdAndState(pgcnId, state);
     }
-    
+
     @Transactional(readOnly = true)
     public DocUnit findOneWithLibrary(final String docUnitId) {
         return docUnitRepository.findOneWithLibrary(docUnitId);
@@ -611,14 +581,15 @@ public class DocUnitService {
 
     @Transactional
     public void setProjectAndLot(final Set<DocUnit> dus, final String project, final Lot l, final String train) {
-        
-        final Project p = projectRepository.findOne(project);
-        final Train t = train != null ? trainRepository.findOne(train) : null;
-        
+
+        final Project p = projectRepository.findById(project).orElse(null);
+        final Train t = train != null ? trainRepository.findById(train).orElse(null)
+                                      : null;
+
         for (final DocUnit du : dus) {
             du.setProject(p);
 
-            if(l != null){
+            if (l != null) {
                 du.setLot(l);
             }
 
@@ -628,15 +599,16 @@ public class DocUnitService {
             docUnitRepository.save(du);
         }
     }
-    
+
     @Transactional(readOnly = true)
     public Set<DocUnit> findByIdentifierInWithDocs(final List<String> docs) {
         return docUnitRepository.findByIdentifierInWithDocs(docs);
     }
-    
+
     @Transactional
     public void setTrain(final List<String> docs, final String train) {
-        final Train t = train != null ? trainRepository.findOne(train) : null;
+        final Train t = train != null ? trainRepository.findById(train).orElse(null)
+                                      : null;
         final Set<DocUnit> dus = docUnitRepository.findByIdentifierInWithDocs(docs);
 
         for (final DocUnit du : dus) {
@@ -649,9 +621,6 @@ public class DocUnitService {
 
     /**
      * Retourne l'addresse mail du prestataire en charge du document
-     *
-     * @param identifier
-     * @return
      */
     @Transactional(readOnly = true)
     public String getProviderMail(final String identifier) {
@@ -666,9 +635,6 @@ public class DocUnitService {
 
     /**
      * Retourne l'addresse mail du chef de projet en charge du document
-     *
-     * @param identifier
-     * @return
      */
     @Transactional(readOnly = true)
     public String getResponsibleMail(final String identifier) {
@@ -680,16 +646,16 @@ public class DocUnitService {
         }
         return null;
     }
-    
+
     /**
      * Récupération du langage OCR dans le docUnit, ou dans le lot.
      *
-     * @param doc DocUnit
-     * @return
+     * @param doc
+     *            DocUnit
      */
     @Transactional(readOnly = true)
     public OcrLanguage getActiveOcrLanguage(final DocUnit doc) {
-        
+
         final DocUnit docWithOcrLang = docUnitRepository.findOneWithOcrLanguage(doc.getIdentifier());
         OcrLanguage activeOcrLanguage = null;
         if (docWithOcrLang != null) {
@@ -705,23 +671,23 @@ public class DocUnitService {
     /**
      * Retrait d'un {@link DocUnit} d'un {@link Project} et d'un {@link Lot} au besoin.
      * TODO : condition de possibilité de retrait (dépendant du workflow)
-     *
-     * @param identifier
      */
     @Transactional
     public void removeFromProject(final String identifier) {
-        final DocUnit du = docUnitRepository.findOne(identifier);
-        du.setProject(null);
-        du.setLot(null);
-        saveWithoutValidation(du);
-        removeTrain(identifier);
+        docUnitRepository.findById(identifier).ifPresent(du -> {
+            du.setProject(null);
+            du.setLot(null);
+            saveWithoutValidation(du);
+            removeTrain(identifier);
+        });
     }
 
     @Transactional
     public void removeLot(final String identifier) {
-        final DocUnit du = docUnitRepository.findOne(identifier);
-        du.setLot(null);
-        saveWithoutValidation(du);
+        docUnitRepository.findById(identifier).ifPresent(du -> {
+            du.setLot(null);
+            saveWithoutValidation(du);
+        });
     }
 
     @Transactional
@@ -754,12 +720,12 @@ public class DocUnitService {
     public List<DocUnit> findByLibraryWithCinesExportDep(final String libraryId) {
         return docUnitRepository.findByLibraryWithCinesExportDep(libraryId);
     }
-    
+
     @Transactional(readOnly = true)
     public List<DocUnit> findByLibraryWithOmekaExportDep(final String libraryId) {
         return docUnitRepository.findByLibraryWithOmekaExportDep(libraryId);
     }
-    
+
     @Transactional(readOnly = true)
     public List<DocUnit> findDocUnitWithArchiveExportDepIn(final List<String> archivableDocIds) {
         return docUnitRepository.findByLibraryWithArchiveExportDep(archivableDocIds);
@@ -769,7 +735,7 @@ public class DocUnitService {
     public List<DocUnit> findAllByLotId(final String lotId) {
         return docUnitRepository.findAllByLotIdentifier(lotId);
     }
-    
+
     @Transactional(readOnly = true)
     public List<SummaryDocUnitDTO> findAllSummaryByLotId(final String lotId) {
         return docUnitRepository.findAllSummaryByLotId(lotId);
@@ -825,9 +791,6 @@ public class DocUnitService {
 
     /**
      * Permet de s'assurer que les données d'archivage (Cines) sont déjà existantes
-     *
-     * @param identifier
-     * @return
      */
     @Transactional(readOnly = true)
     public boolean isDocumentReadyForArchivage(final String identifier) {
@@ -837,29 +800,26 @@ public class DocUnitService {
 
     /**
      * Permet de s'assurer que les données d'export vers Omeka sont déjà existantes
-     *
-     * @param identifier
-     * @return
      */
     @Transactional(readOnly = true)
     public boolean isDocumentReadyForDiffusionOmeka(final String identifier) {
-        final DocUnit doc = docUnitRepository.findOne(identifier);
+        final DocUnit doc = docUnitRepository.findById(identifier).orElseThrow();
         return doc.getOmekaCollection() != null && doc.getOmekaItem() != null;
     }
 
     @Transactional(readOnly = true)
     public Page<String> getDistinctTypes(final String search, final Integer page, final Integer size) {
         if (StringUtils.isEmpty(search)) {
-            return docUnitRepository.findDistinctTypes(new PageRequest(page, size));
+            return docUnitRepository.findDistinctTypes(PageRequest.of(page, size));
         } else {
-            return docUnitRepository.findDistinctTypes(search, new PageRequest(page, size));
+            return docUnitRepository.findDistinctTypes(search, PageRequest.of(page, size));
         }
     }
 
     /**
-     * tentative de fix pb saut de ligne 
+     * tentative de fix pb saut de ligne
      * notamment pour qq caracteres arabes entre crochets !!
-     * 
+     *
      * @param value
      * @return
      */

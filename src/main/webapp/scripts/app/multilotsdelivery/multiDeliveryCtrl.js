@@ -1,13 +1,9 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('MultiDeliveryCtrl', MultiDeliveryCtrl);
+    angular.module('numaHopApp.controller').controller('MultiDeliveryCtrl', MultiDeliveryCtrl);
 
-    function MultiDeliveryCtrl($location, $scope, $timeout, $q, $routeParams, gettextCatalog, HistorySrvc,
-        StringTools, NumahopStorageService, NumaHopInitializationSrvc,
-        MultiDeliverySrvc, DeliverySrvc) {
-
+    function MultiDeliveryCtrl($location, $scope, $timeout, $q, $routeParams, gettextCatalog, HistorySrvc, StringTools, NumahopStorageService, NumaHopInitializationSrvc, MultiDeliverySrvc, DeliverySrvc) {
         $scope.applyFilter = applyFilter;
         $scope.clearSelection = clearSelection;
         $scope.create = create;
@@ -25,10 +21,10 @@
         $scope.selectedIndex = null;
         $scope.selectedInNew = false;
 
-        $scope.deliveryInclude = "scripts/app/multilotsdelivery/multiDeliveryEdit.html";
+        $scope.deliveryInclude = 'scripts/app/multilotsdelivery/multiDeliveryEdit.html';
         $scope.multiDelivery = null;
 
-        var FILTER_STORAGE_SERVICE_KEY = "multi_deliveries";
+        var FILTER_STORAGE_SERVICE_KEY = 'multi_deliveries';
 
         $scope.open1 = function () {
             $scope.date1.opened = true;
@@ -39,11 +35,11 @@
         };
 
         $scope.date1 = {
-            opened: false
+            opened: false,
         };
 
         $scope.date2 = {
-            opened: false
+            opened: false,
         };
 
         $scope.listFilters = {
@@ -51,14 +47,14 @@
             project_filter: true,
             status_filter: true,
             delivery_date_filter: true,
-            provider_filter: true
+            provider_filter: true,
         };
 
         /**
          * Liste des options pour les listes déroulantes
          */
         $scope.options = {
-            statuses: DeliverySrvc.config.status
+            statuses: DeliverySrvc.config.status,
         };
 
         $scope.pagination = {
@@ -66,35 +62,31 @@
             totalItems: 0,
             busy: false,
             last: false,
-            page: 0
+            page: 0,
         };
         $scope.newDeliveries = []; // liste des livraisons récemment créées
 
         init();
 
-
         /** Initialisation */
         function init() {
-            HistorySrvc.add(gettextCatalog.getString("Livraisons multi-lots"));
+            HistorySrvc.add(gettextCatalog.getString('Livraisons multi-lots'));
             reinitFilters(false);
             loadOptionsAndFilters();
 
-            $scope.$on("$routeUpdate",
-                function ($currentRoute, $previousRoute) {
-                    $timeout(function () {
-                        $scope.deliveryInclude = null;
-                        $scope.$apply();
-                        $scope.deliveryInclude = "scripts/app/multilotsdelivery/multiDeliveryEdit.html";
-                    });
-                }
-            );
-            $scope.$on("predeliver", function (event, params) {
-                $scope.deliveryInclude = "scripts/app/multilotsdelivery/multiDeliveryPrevalidate.html";
-
+            $scope.$on('$routeUpdate', function ($currentRoute, $previousRoute) {
+                $timeout(function () {
+                    $scope.deliveryInclude = null;
+                    $scope.$apply();
+                    $scope.deliveryInclude = 'scripts/app/multilotsdelivery/multiDeliveryEdit.html';
+                });
             });
-            $scope.$on("backToEdit", function (event, delivering) {
+            $scope.$on('predeliver', function (event, params) {
+                $scope.deliveryInclude = 'scripts/app/multilotsdelivery/multiDeliveryPrevalidate.html';
+            });
+            $scope.$on('backToEdit', function (event, delivering) {
                 $scope.delivering = delivering;
-                $scope.deliveryInclude = "scripts/app/multilotsdelivery/multiDeliveryEdit.html";
+                $scope.deliveryInclude = 'scripts/app/multilotsdelivery/multiDeliveryEdit.html';
             });
         }
 
@@ -113,15 +105,13 @@
         /** Options *****************************************************/
         /****************************************************************/
         function loadOptionsAndFilters() {
-            $q.all([
-                NumaHopInitializationSrvc.loadProjects(), NumaHopInitializationSrvc.loadProviders(), NumaHopInitializationSrvc.loadLibraries()])
-                .then(function (data) {
-                    $scope.options.projects = data[0];
-                    $scope.options.providers = data[1];
-                    $scope.options.libraries = data[2];
-                    handleRedirect();
-                    nextPage();
-                });
+            $q.all([NumaHopInitializationSrvc.loadProjects(), NumaHopInitializationSrvc.loadProviders(), NumaHopInitializationSrvc.loadLibraries()]).then(function (data) {
+                $scope.options.projects = data[0];
+                $scope.options.providers = data[1];
+                $scope.options.libraries = data[2];
+                handleRedirect();
+                nextPage();
+            });
         }
 
         // CRUD
@@ -130,7 +120,7 @@
                 $scope.multiDelivery._selected = false;
                 $scope.multiDelivery = null;
             }
-            $location.path("/multilotsdelivery/multidelivery").search({ new: true });
+            $location.path('/multilotsdelivery/multidelivery').search({ new: true });
         }
         function edit(multiDelivery, index, selectedInNew) {
             clearSelection();
@@ -145,7 +135,7 @@
                 search = { id: multiDelivery.identifier };
             }
 
-            $location.path("/multilotsdelivery/multidelivery").search(search);
+            $location.path('/multilotsdelivery/multidelivery').search(search);
         }
 
         function filterDeliveries(newValue, field) {
@@ -153,41 +143,41 @@
 
             var searchParams = {
                 page: $scope.pagination.page,
-                search: $scope.filterWith || "",
-                active: !$scope.filters.inactive
+                search: $scope.filterWith || '',
+                active: !$scope.filters.inactive,
             };
 
             if ($scope.filters.libraries) {
-                var librariesIds = _.pluck($scope.filters.libraries, "identifier");
-                searchParams["libraries"] = librariesIds;
+                var librariesIds = _.pluck($scope.filters.libraries, 'identifier');
+                searchParams['libraries'] = librariesIds;
             }
 
             if ($scope.filters.projects) {
-                var projectsIds = _.pluck($scope.filters.projects, "identifier");
-                searchParams["projects"] = projectsIds;
+                var projectsIds = _.pluck($scope.filters.projects, 'identifier');
+                searchParams['projects'] = projectsIds;
             }
 
             if ($scope.filters.providers) {
-                var providersIds = _.pluck($scope.filters.providers, "identifier");
-                searchParams["providers"] = providersIds;
+                var providersIds = _.pluck($scope.filters.providers, 'identifier');
+                searchParams['providers'] = providersIds;
             }
 
             if ($scope.filters.statuses) {
-                var statusesIds = _.pluck($scope.filters.statuses, "identifier");
-                searchParams["status"] = statusesIds;
+                var statusesIds = _.pluck($scope.filters.statuses, 'identifier');
+                searchParams['status'] = statusesIds;
             }
 
             if ($scope.filters.categories) {
-                var categoriesIds = _.pluck($scope.filters.categories, "identifier");
-                searchParams["categories"] = categoriesIds;
+                var categoriesIds = _.pluck($scope.filters.categories, 'identifier');
+                searchParams['categories'] = categoriesIds;
             }
 
             if ($scope.filters.deliveryDateFrom) {
-                searchParams["deliveryDateFrom"] = $scope.filters.deliveryDateFrom;
+                searchParams['deliveryDateFrom'] = $scope.filters.deliveryDateFrom;
             }
 
             if ($scope.filters.deliveryDateTo) {
-                searchParams["deliveryDateTo"] = $scope.filters.deliveryDateTo;
+                searchParams['deliveryDateTo'] = $scope.filters.deliveryDateTo;
             }
             if (field) {
                 if (newValue) {
@@ -200,7 +190,7 @@
         }
 
         function applyFilter(filterWith, event) {
-            if (event.type === "keypress" && event.keyCode === 13) {
+            if (event.type === 'keypress' && event.keyCode === 13) {
                 doFilter();
             }
         }
@@ -224,8 +214,7 @@
                         } else {
                             $scope.pagination.items.push(value.content[i]);
                         }
-                    }
-                    else {
+                    } else {
                         // On ne compte pas 2 fois les nouvelles livraisons rechargées
                         $scope.pagination.totalItems--;
                     }
@@ -245,8 +234,6 @@
                     edit();
                     $scope.selectedIndex = null;
                 }
-
-
             });
         }
         function loadFilters() {
@@ -280,7 +267,7 @@
                 docUnits: [],
                 statuses: [],
                 categories: [],
-                inactive: false
+                inactive: false,
             };
             if (reload) {
                 doFilter();
@@ -289,7 +276,9 @@
 
         // liste
         function nextPage() {
-            if ($scope.pagination.busy || $scope.pagination.last) { return; }
+            if ($scope.pagination.busy || $scope.pagination.last) {
+                return;
+            }
             $scope.pagination.busy = true;
 
             filterDeliveries().then(function (value, responseHeaders) {
@@ -313,13 +302,12 @@
             }
         }
         function clearSelection() {
-            _.union($scope.pagination.items, $scope.newDeliveries)
-                .forEach(function (elt, i) {
-                    elt._selected = false;
-                });
+            _.union($scope.pagination.items, $scope.newDeliveries).forEach(function (elt, i) {
+                elt._selected = false;
+            });
         }
         function getFirstLetter(multiDelivery) {
-            return StringTools.getFirstLetter(multiDelivery.label, "OTHER");
+            return StringTools.getFirstLetter(multiDelivery.label, 'OTHER');
         }
         function moveUp() {
             var index;

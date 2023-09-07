@@ -1,13 +1,12 @@
 package fr.progilone.pgcn.service.exchange.marc.mapping;
 
 import fr.progilone.pgcn.domain.exchange.MappingRule;
-import org.apache.commons.lang3.StringUtils;
-import org.marc4j.converter.CharConverter;
-
-import javax.script.CompiledScript;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import javax.script.CompiledScript;
+import org.apache.commons.lang3.StringUtils;
+import org.marc4j.converter.CharConverter;
 
 /**
  * Created by Sebastien on 24/11/2016.
@@ -115,16 +114,16 @@ public final class CompiledMappingRule {
         if (hasCondition()) {
             conditionStatement.getMarcKeys()
                               .stream()
-                              .filter(key -> expressionStatement == null || expressionStatement.getMarcKeys().stream()
+                              .filter(key -> expressionStatement == null || expressionStatement.getMarcKeys()
+                                                                                               .stream()
                                                                                                // les tags sont identiques
-                                                                                               .noneMatch(exprKey -> Objects.equals(exprKey,
-                                                                                                                                    key)
-                                                                                                                     // le tag de l'expression est plus générique que celui de la condition
-                                                                                                                     || (exprKey.isXX()
-                                                                                                                         && exprKey.getTag()
-                                                                                                                                   .charAt(0)
-                                                                                                                            == key.getTag()
-                                                                                                                                  .charAt(0))))
+                                                                                               .noneMatch(exprKey -> Objects.equals(exprKey, key)
+                                                                                                                     // le tag de l'expression est
+                                                                                                                     // plus générique que celui de la
+                                                                                                                     // condition
+                                                                                                                     || (exprKey.isXX() && exprKey.getTag().charAt(0) == key
+                                                                                                                                                                            .getTag()
+                                                                                                                                                                            .charAt(0))))
                               .forEach(marcKeys::add);
         }
         return marcKeys;
@@ -136,8 +135,7 @@ public final class CompiledMappingRule {
      * @return
      */
     public boolean isConstant() {
-        return (conditionStatement == null || conditionStatement.getMarcKeys().isEmpty()) && (expressionStatement == null
-                                                                                              || expressionStatement.getMarcKeys().isEmpty());
+        return (conditionStatement == null || conditionStatement.getMarcKeys().isEmpty()) && (expressionStatement == null || expressionStatement.getMarcKeys().isEmpty());
     }
 
     /**
@@ -165,6 +163,8 @@ public final class CompiledMappingRule {
 
     @Override
     public String toString() {
-        return "CompiledMappingRule{" + "rule=" + rule + '}';
+        return "CompiledMappingRule{" + "rule="
+               + rule
+               + '}';
     }
 }

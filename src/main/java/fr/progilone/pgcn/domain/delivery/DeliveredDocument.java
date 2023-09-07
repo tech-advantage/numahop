@@ -1,21 +1,18 @@
 package fr.progilone.pgcn.domain.delivery;
 
-import java.time.LocalDate;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-
 import com.fasterxml.jackson.annotation.JsonSubTypes;
-
 import fr.progilone.pgcn.domain.AbstractDomainObject;
 import fr.progilone.pgcn.domain.document.CheckSlip;
 import fr.progilone.pgcn.domain.document.DigitalDocument;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import java.time.LocalDate;
 
 /**
  * Gestion de la livraison d'un document.
@@ -58,11 +55,10 @@ public class DeliveredDocument extends AbstractDomainObject {
 
     @Column(name = "total_length")
     private Long totalLength;
-    
+
     @ManyToOne(optional = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "check_slip")
     private CheckSlip checkSlip;
-    
 
     public Delivery getDelivery() {
         return delivery;

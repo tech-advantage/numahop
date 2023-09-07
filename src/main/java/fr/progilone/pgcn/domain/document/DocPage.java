@@ -1,30 +1,26 @@
 package fr.progilone.pgcn.domain.document;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.fasterxml.jackson.annotation.JsonSubTypes;
-
 import fr.progilone.pgcn.domain.AbstractDomainObject;
 import fr.progilone.pgcn.domain.administration.viewsformat.ViewsFormatConfiguration;
 import fr.progilone.pgcn.domain.check.AutomaticCheckResult;
 import fr.progilone.pgcn.domain.document.sample.Sample;
 import fr.progilone.pgcn.domain.storage.StoredFile;
 import fr.progilone.pgcn.domain.storage.StoredFile.StoredFileType;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Classe représentant une page d'un document numérique
@@ -56,13 +52,13 @@ public class DocPage extends AbstractDomainObject {
      */
     @OneToMany(mappedBy = "page", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Check> checks = new HashSet<>();
-    
+
     /**
      * Liste des résultats de contrôles automatiques associés
      */
     @OneToMany(mappedBy = "page", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private final Set<AutomaticCheckResult> automaticCheckResults = new HashSet<>();
-    
+
     @ManyToOne(optional = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "sample")
     private Sample sample;
@@ -170,11 +166,11 @@ public class DocPage extends AbstractDomainObject {
     public Set<Check> getChecks() {
         return checks;
     }
-    
+
     public Set<AutomaticCheckResult> getAutomaticCheckResults() {
         return automaticCheckResults;
     }
-    
+
     public void setAutomaticCheckResults(final Set<AutomaticCheckResult> results) {
         this.automaticCheckResults.clear();
         if (results != null) {
@@ -239,17 +235,16 @@ public class DocPage extends AbstractDomainObject {
 
     /**
      * Récupère le dérivé au format spécifié (si existant)
-     * 
+     *
      * @param format
      * @return
      */
     public Optional<StoredFile> getDerivedForFormat(final ViewsFormatConfiguration.FileFormat format) {
-        if(format == null || format.identifier() == null) {
+        if (format == null || format.identifier() == null) {
             return Optional.empty();
         }
         return this.files.stream()
-                .filter(file -> StoredFileType.DERIVED.equals(file.getType()) 
-                        && StringUtils.equalsIgnoreCase(format.identifier(), file.getFileFormat().identifier()))
-                .findFirst();
+                         .filter(file -> StoredFileType.DERIVED.equals(file.getType()) && StringUtils.equalsIgnoreCase(format.identifier(), file.getFileFormat().identifier()))
+                         .findFirst();
     }
 }

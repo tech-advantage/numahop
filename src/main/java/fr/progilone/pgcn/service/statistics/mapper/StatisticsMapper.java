@@ -4,11 +4,10 @@ import fr.progilone.pgcn.domain.dto.statistics.WorkflowDeliveryProgressDTO;
 import fr.progilone.pgcn.domain.dto.statistics.WorkflowDocUnitProgressDTO;
 import fr.progilone.pgcn.domain.dto.statistics.csv.WorkflowDeliveryProgressCsvDTO;
 import fr.progilone.pgcn.domain.dto.statistics.csv.WorkflowDocUnitProgressCsvDTO;
-import org.apache.commons.collections4.CollectionUtils;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.apache.commons.collections4.CollectionUtils;
 
 public class StatisticsMapper {
 

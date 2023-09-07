@@ -1,16 +1,5 @@
 package fr.progilone.pgcn.service.train.ui;
 
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.document.PhysicalDocument;
 import fr.progilone.pgcn.domain.document.conditionreport.ConditionReport;
@@ -31,6 +20,15 @@ import fr.progilone.pgcn.service.train.mapper.SimpleTrainMapper;
 import fr.progilone.pgcn.service.train.mapper.TrainMapper;
 import fr.progilone.pgcn.service.train.mapper.UITrainMapper;
 import fr.progilone.pgcn.service.util.transaction.VersionValidationService;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UITrainService {
@@ -87,18 +85,16 @@ public class UITrainService {
         setDefaultValues(train);
 
         final Train savedTrain = trainService.save(train);
-        
+
         // Creation train renum à partir de docs rejetes
-        if (! trainDTO.getPhysicalDocuments().isEmpty()) {
-            trainDTO.getPhysicalDocuments().stream()
-                                    .filter(doc -> doc.getIdentifier() != null)
-                                    .forEach(doc -> {
-                                        final PhysicalDocument phDoc = physicalDocumentService.findByIdentifier(doc.getIdentifier());
-                                        phDoc.setTrain(savedTrain);
-                                        physicalDocumentService.save(phDoc);
-                                    });
+        if (!trainDTO.getPhysicalDocuments().isEmpty()) {
+            trainDTO.getPhysicalDocuments().stream().filter(doc -> doc.getIdentifier() != null).forEach(doc -> {
+                final PhysicalDocument phDoc = physicalDocumentService.findByIdentifier(doc.getIdentifier());
+                phDoc.setTrain(savedTrain);
+                physicalDocumentService.save(phDoc);
+            });
         }
-       
+
         return TrainMapper.INSTANCE.trainToTrainDTO(savedTrain);
     }
 
@@ -107,7 +103,7 @@ public class UITrainService {
         final List<Train> trains = trainService.findAllByActive(true);
         return trains.stream().map(TrainMapper.INSTANCE::trainToTrainDTO).collect(Collectors.toList());
     }
-    
+
     @Transactional(readOnly = true)
     public List<TrainDTO> findAllDTO() {
         final List<Train> trains = trainService.findAll();
@@ -138,63 +134,57 @@ public class UITrainService {
                                                                   final Double insuranceFrom,
                                                                   final Double insuranceTo) {
 
-        return trainService.findAll(libraries, projects, trains, status, sendFrom, sendTo, returnFrom, returnTo, insuranceFrom, insuranceTo)
-                           .stream()
-                           .map(train -> {
-                               final StatisticsProviderTrainDTO dto = new StatisticsProviderTrainDTO();
+        return trainService.findAll(libraries, projects, trains, status, sendFrom, sendTo, returnFrom, returnTo, insuranceFrom, insuranceTo).stream().map(train -> {
+            final StatisticsProviderTrainDTO dto = new StatisticsProviderTrainDTO();
 
-                               // Train
-                               dto.setTrainIdentifier(train.getIdentifier());
-                               dto.setTrainLabel(train.getLabel());
-                               dto.setStatus(train.getStatus());
-                               dto.setSendingDate(train.getProviderSendingDate());
-                               dto.setReturnDate(train.getReturnDate());
+            // Train
+            dto.setTrainIdentifier(train.getIdentifier());
+            dto.setTrainLabel(train.getLabel());
+            dto.setStatus(train.getStatus());
+            dto.setSendingDate(train.getProviderSendingDate());
+            dto.setReturnDate(train.getReturnDate());
 
-                               // Durée
-                               if (train.getProviderSendingDate() != null && train.getReturnDate() != null) {
-                                   final long duration = train.getProviderSendingDate().until(train.getReturnDate(), ChronoUnit.DAYS);
-                                   dto.setDuration(duration);
-                               }
+            // Durée
+            if (train.getProviderSendingDate() != null && train.getReturnDate() != null) {
+                final long duration = train.getProviderSendingDate().until(train.getReturnDate(), ChronoUnit.DAYS);
+                dto.setDuration(duration);
+            }
 
-                               final Set<PhysicalDocument> physicalDocuments = train.getPhysicalDocuments();
-                               dto.setNbDoc(physicalDocuments != null ? physicalDocuments.size() : 0);
+            final Set<PhysicalDocument> physicalDocuments = train.getPhysicalDocuments();
+            dto.setNbDoc(physicalDocuments != null ? physicalDocuments.size()
+                                                   : 0);
 
-                               // Projet
-                               final Project project = train.getProject();
-                               if (project != null) {
-                                   dto.setProjectIdentifier(project.getIdentifier());
-                                   dto.setProjectName(project.getName());
+            // Projet
+            final Project project = train.getProject();
+            if (project != null) {
+                dto.setProjectIdentifier(project.getIdentifier());
+                dto.setProjectName(project.getName());
 
-                                   // Bibliothèque
-                                   final Library library = project.getLibrary();
-                                   if (library != null) {
-                                       dto.setLibraryIdentifier(library.getIdentifier());
-                                       dto.setLibraryName(library.getName());
-                                   }
-                               }
+                // Bibliothèque
+                final Library library = project.getLibrary();
+                if (library != null) {
+                    dto.setLibraryIdentifier(library.getIdentifier());
+                    dto.setLibraryName(library.getName());
+                }
+            }
 
-                               // Valeur d'assurance
-                               // ud du train
-                               final List<String> docUnitIds = train.getPhysicalDocuments()
-                                                                    .stream()
-                                                                    .map(PhysicalDocument::getDocUnit)
-                                                                    .map(DocUnit::getIdentifier)
-                                                                    .collect(Collectors.toList());
-                               // constats d'état
-                               final List<ConditionReport> condReports = conditionReportService.findDocUnitByIdentifierIn(docUnitIds);
-                               // somme des valeurs d'assurance
-                               final double totalInsurance = condReports.stream()
-                                                                        .map(conditionReportDetailService::getLatest)
-                                                                        .filter(Optional::isPresent)
-                                                                        .map(Optional::get)
-                                                                        .filter(detail -> detail.getInsurance() != null)
-                                                                        .mapToDouble(ConditionReportDetail::getInsurance)
-                                                                        .sum();
-                               dto.setInsurance(totalInsurance);
+            // Valeur d'assurance
+            // ud du train
+            final List<String> docUnitIds = train.getPhysicalDocuments().stream().map(PhysicalDocument::getDocUnit).map(DocUnit::getIdentifier).collect(Collectors.toList());
+            // constats d'état
+            final List<ConditionReport> condReports = conditionReportService.findDocUnitByIdentifierIn(docUnitIds);
+            // somme des valeurs d'assurance
+            final double totalInsurance = condReports.stream()
+                                                     .map(conditionReportDetailService::getLatest)
+                                                     .filter(Optional::isPresent)
+                                                     .map(Optional::get)
+                                                     .filter(detail -> detail.getInsurance() != null)
+                                                     .mapToDouble(ConditionReportDetail::getInsurance)
+                                                     .sum();
+            dto.setInsurance(totalInsurance);
 
-                               return dto;
-                           })
-                           .collect(Collectors.toList());
+            return dto;
+        }).collect(Collectors.toList());
     }
 
     private void setDefaultValues(final Train train) {

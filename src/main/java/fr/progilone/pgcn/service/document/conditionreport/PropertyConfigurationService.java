@@ -6,13 +6,12 @@ import fr.progilone.pgcn.domain.document.conditionreport.PropertyConfiguration;
 import fr.progilone.pgcn.domain.library.Library;
 import fr.progilone.pgcn.repository.document.conditionreport.DescriptionPropertyRepository;
 import fr.progilone.pgcn.repository.document.conditionreport.PropertyConfigurationRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PropertyConfigurationService {
@@ -21,8 +20,7 @@ public class PropertyConfigurationService {
     private final PropertyConfigurationRepository propertyConfigurationRepository;
 
     @Autowired
-    public PropertyConfigurationService(final DescriptionPropertyRepository descriptionPropertyRepository,
-                                        final PropertyConfigurationRepository propertyConfigurationRepository) {
+    public PropertyConfigurationService(final DescriptionPropertyRepository descriptionPropertyRepository, final PropertyConfigurationRepository propertyConfigurationRepository) {
         this.descriptionPropertyRepository = descriptionPropertyRepository;
         this.propertyConfigurationRepository = propertyConfigurationRepository;
     }
@@ -38,7 +36,7 @@ public class PropertyConfigurationService {
 
         final PropertyConfiguration configuration;
         if (confs.isEmpty()) {
-            final DescriptionProperty dbProperty = descriptionPropertyRepository.findOne(property.getIdentifier());
+            final DescriptionProperty dbProperty = descriptionPropertyRepository.findById(property.getIdentifier()).orElseThrow();
             configuration = new PropertyConfiguration();
             configuration.setDescProperty(property);
             configuration.setLibrary(library);
@@ -70,7 +68,7 @@ public class PropertyConfigurationService {
 
     @Transactional
     public void delete(final String identifier) {
-        propertyConfigurationRepository.delete(identifier);
+        propertyConfigurationRepository.deleteById(identifier);
     }
 
     @Transactional

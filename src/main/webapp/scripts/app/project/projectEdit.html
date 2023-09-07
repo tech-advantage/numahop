@@ -2,40 +2,62 @@
     <div class="panel panel-column-3">
         <div class="panel-heading">
             <div class="pull-right">
-                <button type="button" class="btn btn-sem2 btn-xs" ng-click="projectForm.$show()" ng-disabled="!project || !project.identifier"
-                    uib-tooltip="{{::'Modifier' | translate}}" ng-show="!projectForm.$visible && loaded" sem-roles-allowed="PROJ_HAB1">
+                <button
+                    type="button"
+                    class="btn btn-sem2 btn-xs"
+                    ng-click="projectForm.$show()"
+                    ng-disabled="!project || !project.identifier"
+                    uib-tooltip="{{::'Modifier' | translate}}"
+                    tooltip-append-to-body="true"
+                    ng-show="!projectForm.$visible && loaded"
+                    sem-roles-allowed="PROJ_HAB1"
+                >
                     <span class="glyphicon-regular edit"></span>
                 </button>
-                <button type="button" class="btn btn-sem2 btn-xs" ng-click="cancel()" ng-disabled="!project || !project.identifier || !loaded"
-                    uib-tooltip="{{::'Annuler' | translate}}" ng-show="projectForm.$visible">
+                <button
+                    type="button"
+                    class="btn btn-sem2 btn-xs"
+                    ng-click="cancel()"
+                    ng-disabled="!project || !project.identifier || !loaded"
+                    uib-tooltip="{{::'Annuler' | translate}}"
+                    tooltip-append-to-body="true"
+                    ng-show="projectForm.$visible"
+                >
                     <span class="glyphicon-regular unshare"></span>
                 </button>
-                <button type="button" class="btn btn-sem2 btn-xs" ng-click="showDetailUnitDoc()" uib-tooltip="{{::'Détails' | translate}}"
-                    ng-disabled="!project || !project.identifier" ng-show="!projectForm.$visible && loaded" sem-roles-allowed="PROJ_HAB7">
+                <button
+                    type="button"
+                    class="btn btn-sem2 btn-xs"
+                    ng-click="showDetailUnitDoc()"
+                    uib-tooltip="{{::'Détails' | translate}}"
+                    tooltip-append-to-body="true"
+                    ng-disabled="!project || !project.identifier"
+                    ng-show="!projectForm.$visible && loaded"
+                    sem-roles-allowed="PROJ_HAB7"
+                >
                     <span class="glyphicon-regular list-alt"></span>
                 </button>
 
-                <div class="btn-group" sem-roles-allowed="PROJ_HAB0,PROJ_HAB1,PROJ_HAB4" ng-show="!projectForm.$visible && loaded" uib-dropdown
-                    dropdown-append-to-body>
-                    <button type="button" class="btn btn-sem2 btn-xs dropdown-toggle pull-right" ng-disabled="!project || !project.identifier"
-                        uib-tooltip="{{::'Autres actions' | translate}}" uib-dropdown-toggle sem-roles-allowed="PROJ_HAB1">
+                <div class="btn-group" sem-roles-allowed="PROJ_HAB0,PROJ_HAB1,PROJ_HAB4" ng-show="!projectForm.$visible && loaded" uib-dropdown dropdown-append-to-body>
+                    <button
+                        type="button"
+                        class="btn btn-sem2 btn-xs dropdown-toggle pull-right"
+                        ng-disabled="!project || !project.identifier"
+                        uib-tooltip="{{::'Autres actions' | translate}}"
+                        tooltip-append-to-body="true"
+                        uib-dropdown-toggle
+                        sem-roles-allowed="PROJ_HAB1"
+                    >
                         <span class="glyphicon-halflings glyphicon-align-justify"></span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-right" role="menu" uib-dropdown-menu>
-                        <li ng-class="{ 'disabled': !loaded || !project || !project.identifier || !canDisableProj }"
-                            ng-show="!projectForm.$visible && project.status !== 'PENDING'" sem-roles-allowed="PROJ_HAB5">
-                            <a ng-click="(loaded && project && project.identifier) && suspendProject(project)">
-                                <span class="glyphicon-halflings glyphicon-pause"></span> {{ ::'Mettre en attente' | translate }}
-                            </a>
+                        <li ng-class="{ 'disabled': !loaded || !project || !project.identifier || !canDisableProj }" ng-show="!projectForm.$visible && project.status !== 'PENDING'" sem-roles-allowed="PROJ_HAB5">
+                            <a ng-click="(loaded && project && project.identifier) && suspendProject(project)"> <span class="glyphicon-halflings glyphicon-pause"></span> {{ ::'Mettre en attente' | translate }} </a>
                         </li>
-                        <li ng-class="{ 'disabled': !loaded || !project || !project.identifier}"
-                            ng-show="!projectForm.$visible && project.status ==='PENDING'" sem-roles-allowed="PROJ_HAB5">
-                            <a ng-click="(loaded && project && project.identifier) && reactivateProject(project)">
-                                <span class="glyphicon-halflings glyphicon-pause"></span> {{ ::'Reprendre le projet' | translate }}
-                            </a>
+                        <li ng-class="{ 'disabled': !loaded || !project || !project.identifier}" ng-show="!projectForm.$visible && project.status ==='PENDING'" sem-roles-allowed="PROJ_HAB5">
+                            <a ng-click="(loaded && project && project.identifier) && reactivateProject(project)"> <span class="glyphicon-halflings glyphicon-pause"></span> {{ ::'Reprendre le projet' | translate }} </a>
                         </li>
-                        <li ng-class="{ 'disabled': !loaded || !project || !project.identifier || !canCancelProj }"
-                            ng-show="!projectForm.$visible" sem-roles-allowed="PROJ_HAB6">
+                        <li ng-class="{ 'disabled': !loaded || !project || !project.identifier || !canCancelProj }" ng-show="!projectForm.$visible" sem-roles-allowed="PROJ_HAB6">
                             <a ng-click="(loaded && project && project.identifier && project.status !== 'CANCELED' && canCancelProj) && cancelProject(project)">
                                 <span class="glyphicon-halflings glyphicon-remove"></span> {{ ::'Annuler le projet' | translate }}
                             </a>
@@ -53,55 +75,114 @@
         </div>
         <div class="panel-body" ng-show="loaded" id="projectDetails">
             <div>
-                <form editable-form name="projectForm" onaftersave="saveProject(project)" ng-init="formRO = !isAuthorized([userRoles.PROJ_HAB0, userRoles.PROJ_HAB1])"
-                    ng-show="loaded">
+                <form editable-form name="projectForm" onaftersave="saveProject(project)" ng-init="formRO = !isAuthorized([userRoles.PROJ_HAB0, userRoles.PROJ_HAB1])" ng-show="loaded">
                     <uib-accordion close-others="false">
                         <!-- Détail du projet -->
                         <div uib-accordion-group is-open="accordions.project">
                             <uib-accordion-heading>
-                                <span class="pull-left glyphicon-halflings" ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordions.project]">&nbsp;</span>
-                                <h4 translate>Projet</h4>
+                                <i ng-class="{false: 'fa fa-chevron-right rotate-icon-up', true: 'fa fa-chevron-right rotate-icon-down'}[accordions.project]"></i>
+                                <span translate>Projet</span>
                             </uib-accordion-heading>
 
-                            <numa-editable-field title="{{::'Nom' | translate}}" placeholder="{{::'Nom' | translate}}" form="projectForm" model="project.name"
-                                numa-readonly="formRO" errors="{{ errors.name }}" onbeforesave="validation.required($data)" mandatory="true">
+                            <numa-editable-field
+                                title="{{::'Nom' | translate}}"
+                                placeholder="{{::'Nom' | translate}}"
+                                form="projectForm"
+                                model="project.name"
+                                numa-readonly="formRO"
+                                errors="{{ errors.name }}"
+                                onbeforesave="validation.required($data)"
+                                mandatory="true"
+                            >
                             </numa-editable-field>
 
-                            <numa-editable-field title="{{::'Description' | translate}}" placeholder="{{::'Description' | translate}}" form="projectForm" type="textarea"
-                                model="project.description" numa-readonly="formRO" errors="{{ errors.description }}"> </numa-editable-field>
-
-                            <numa-editable-field title="{{::'Date de commencement' | translate}}" placeholder="{{::'Date de commencement' | translate}}"
-                                type="datepicker" form="projectForm" model="project.startDate" numa-readonly="formRO" errors="{{ errors.startDate }}">
+                            <numa-editable-field
+                                title="{{::'Description' | translate}}"
+                                placeholder="{{::'Description' | translate}}"
+                                form="projectForm"
+                                type="textarea"
+                                model="project.description"
+                                numa-readonly="formRO"
+                                errors="{{ errors.description }}"
+                            >
                             </numa-editable-field>
 
-                            <numa-editable-field title="{{::'Date de fin prévue' | translate}}" placeholder="{{::'Date de fin prévue' | translate}}"
-                                type="datepicker" form="projectForm" model="project.forecastEndDate" numa-readonly="formRO" errors="{{ errors.forecastEndDate }}">
+                            <numa-editable-field
+                                title="{{::'Date de commencement' | translate}}"
+                                placeholder="{{::'Date de commencement' | translate}}"
+                                type="datepicker"
+                                form="projectForm"
+                                model="project.startDate"
+                                numa-readonly="formRO"
+                                errors="{{ errors.startDate }}"
+                            >
                             </numa-editable-field>
 
-                            <numa-editable-field title="{{::'Date de fin réelle' | translate}}" placeholder="{{::'Date de fin réelle' | translate}}"
-                                type="datepicker" form="projectForm" model="project.realEndDate" numa-readonly="formRO" errors="{{ errors.realEndDate }}">
+                            <numa-editable-field
+                                title="{{::'Date de fin prévue' | translate}}"
+                                placeholder="{{::'Date de fin prévue' | translate}}"
+                                type="datepicker"
+                                form="projectForm"
+                                model="project.forecastEndDate"
+                                numa-readonly="formRO"
+                                errors="{{ errors.forecastEndDate }}"
+                            >
                             </numa-editable-field>
 
-	                        <numa-editable-field title="{{::'Statut' | translate}}" form="projectForm" numa-readonly="true"
-                                model="semCodes['project.' + project.status]"> </numa-editable-field>
+                            <numa-editable-field
+                                title="{{::'Date de fin réelle' | translate}}"
+                                placeholder="{{::'Date de fin réelle' | translate}}"
+                                type="datepicker"
+                                form="projectForm"
+                                model="project.realEndDate"
+                                numa-readonly="formRO"
+                                errors="{{ errors.realEndDate }}"
+                            >
+                            </numa-editable-field>
 
-                            <numa-editable-field title="{{::'Actif' | translate}}" type="radiolist" form="projectForm" model="project.active" numa-readonly="formRO"
-                                errors="{{ errors.active }}" config="{ data: options.boolean, displayFn: displayBoolean,
-                            query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }"> </numa-editable-field>
+                            <numa-editable-field title="{{::'Statut' | translate}}" form="projectForm" numa-readonly="true" model="semCodes['project.' + project.status]"> </numa-editable-field>
 
-                            <numa-editable-field title="{{::'Bibliothèque principale' | translate}}" type="select" form="projectForm" model="project.library"
-                                numa-readonly="formRO" errors="{{ errors.library }}" onbeforesave="validation.required($data)" mandatory="true"
+                            <numa-editable-field
+                                title="{{::'Actif' | translate}}"
+                                type="radiolist"
+                                form="projectForm"
+                                model="project.active"
+                                numa-readonly="formRO"
+                                errors="{{ errors.active }}"
+                                config="{ data: options.boolean, displayFn: displayBoolean,
+                            query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }"
+                            >
+                            </numa-editable-field>
+
+                            <numa-editable-field
+                                title="{{::'Bibliothèque principale' | translate}}"
+                                type="select"
+                                form="projectForm"
+                                model="project.library"
+                                numa-readonly="formRO"
+                                errors="{{ errors.library }}"
+                                onbeforesave="validation.required($data)"
+                                mandatory="true"
                                 config="{ data: options.sel2Libraries,
                             display: 'name',
                             query: 'o.name disable when $ctrl.config.data.disable(o) for o in $ctrl.config.data.data track by o.identifier'}"
-                                link="{ type: 'library', parameters: {'id': project.library.identifier} }" numa-onchange="onChangeLibrary($data)">
+                                link="{ type: 'library', parameters: {'id': project.library.identifier} }"
+                                numa-onchange="onChangeLibrary($data)"
+                            >
                             </numa-editable-field>
                             <div ng-if="currentUser.category !== 'PROVIDER'">
-                                <numa-editable-field title="{{::'Prestataire' | translate}}" type="select" form="projectForm" model="project.provider"
-                                    numa-readonly="formRO" errors="{{ errors.provider }}"
+                                <numa-editable-field
+                                    title="{{::'Prestataire' | translate}}"
+                                    type="select"
+                                    form="projectForm"
+                                    model="project.provider"
+                                    numa-readonly="formRO"
+                                    errors="{{ errors.provider }}"
                                     config="{ data: [{fullName: ''}].concat(options.providers),
                                 display: 'fullName',
-                                query: 'o.fullName for o in $ctrl.config.data track by o.identifier'}" link="{ type: 'user', parameters: {'id': project.provider.identifier} }">
+                                query: 'o.fullName for o in $ctrl.config.data track by o.identifier'}"
+                                    link="{ type: 'user', parameters: {'id': project.provider.identifier} }"
+                                >
                                 </numa-editable-field>
 
                                 <div class="row vertical-align" ng-if="project.otherProviders.length">
@@ -110,41 +191,67 @@
                                     </div>
                                     <div ng-class="fieldclass || 'col-xs-8'">
                                         <span main-field>
-                                        <span>{{listOtherProviders()}}</span>
+                                            <span>{{listOtherProviders()}}</span>
                                         </span>
                                     </div>
                                 </div>
                             </div>
 
-                            <numa-editable-field title="{{::'Workflow' | translate}}" type="select" form="projectForm" model="project.workflowModel"
-                                numa-readonly="formRO || options.workflowModels.length == 0" errors="{{ errors.workflowModel }}"
+                            <numa-editable-field
+                                title="{{::'Workflow' | translate}}"
+                                type="select"
+                                form="projectForm"
+                                model="project.workflowModel"
+                                numa-readonly="formRO || options.workflowModels.length == 0"
+                                errors="{{ errors.workflowModel }}"
                                 config="{ data: [{name: ''}].concat(options.workflowModels),
                             display: 'name',
-                            query: 'o.name for o in $ctrl.config.data track by o.identifier'}" link="{ type: 'workflowModel', parameters: {'id': project.workflowModel.identifier} }">
+                            query: 'o.name for o in $ctrl.config.data track by o.identifier'}"
+                                link="{ type: 'workflowModel', parameters: {'id': project.workflowModel.identifier} }"
+                            >
                             </numa-editable-field>
 
-                            <numa-editable-field title="{{::'Configuration FTP' | translate}}" type="select" form="projectForm" model="project.activeFTPConfiguration"
-                                numa-readonly="formRO" errors="{{ errors.activeFTPConfiguration }}"
+                            <numa-editable-field
+                                title="{{::'Configuration FTP' | translate}}"
+                                type="select"
+                                form="projectForm"
+                                model="project.activeFTPConfiguration"
+                                numa-readonly="formRO"
+                                errors="{{ errors.activeFTPConfiguration }}"
                                 config="{ data: [{label: ''}].concat(options.ftp),
                             display: 'label',
-                            query: 'o.label for o in $ctrl.config.data track by o.identifier'}" link="{ type: 'ftpConfiguration', parameters: {'id': project.activeFTPConfiguration.identifier} }">
+                            query: 'o.label for o in $ctrl.config.data track by o.identifier'}"
+                                link="{ type: 'ftpConfiguration', parameters: {'id': project.activeFTPConfiguration.identifier} }"
+                            >
                             </numa-editable-field>
 
-                            <numa-editable-field title="{{::'Configuration contrôles' | translate}}" type="select" form="projectForm" model="project.activeCheckConfiguration"
-                                numa-readonly="formRO" errors="{{ errors.activeCheckConfiguration }}"
+                            <numa-editable-field
+                                title="{{::'Configuration contrôles' | translate}}"
+                                type="select"
+                                form="projectForm"
+                                model="project.activeCheckConfiguration"
+                                numa-readonly="formRO"
+                                errors="{{ errors.activeCheckConfiguration }}"
                                 config="{ data: [{label: ''}].concat(options.check),
                             display: 'label',
-                            query: 'o.label for o in $ctrl.config.data track by o.identifier'}" link="{ type: 'checkConfiguration', parameters: {'id': project.activeCheckConfiguration.identifier} }">
+                            query: 'o.label for o in $ctrl.config.data track by o.identifier'}"
+                                link="{ type: 'checkConfiguration', parameters: {'id': project.activeCheckConfiguration.identifier} }"
+                            >
                             </numa-editable-field>
 
-                            <numa-editable-field title="{{::'Configuration format images' | translate}}" type="select" form="projectForm" model="project.activeFormatConfiguration"
-                                                 numa-readonly="formRO" errors="{{ errors.activeFormatConfiguration }}"
-                                                 config="{ data: [{label: ''}].concat(options.format),
+                            <numa-editable-field
+                                title="{{::'Configuration format images' | translate}}"
+                                type="select"
+                                form="projectForm"
+                                model="project.activeFormatConfiguration"
+                                numa-readonly="formRO"
+                                errors="{{ errors.activeFormatConfiguration }}"
+                                config="{ data: [{label: ''}].concat(options.format),
                             display: 'label',
                             query: 'o.label for o in $ctrl.config.data track by o.identifier'}"
-                                                 link="{ type: 'formatConfiguration', parameters: {'id': project.activeFormatConfiguration.identifier} }">
+                                link="{ type: 'formatConfiguration', parameters: {'id': project.activeFormatConfiguration.identifier} }"
+                            >
                             </numa-editable-field>
-
                         </div>
 
                         <!-- Export FTP configuration -->
@@ -155,21 +262,34 @@
                             <div class="formBlockContent">
                                 <div class="row">
                                     <div class="col-sm-8">
-                                        <numa-editable-field title="{{::'Configuration export FTP' | translate}}" type="select" form="projectForm" model="project.activeExportFTPConfiguration"
-                                                             numa-readonly="formRO" errors="{{ errors.activeExportFTPConfiguration }}"
-                                                             config="{ data: [{label: ''}].concat(options.exportftp),
+                                        <numa-editable-field
+                                            title="{{::'Configuration export FTP' | translate}}"
+                                            type="select"
+                                            form="projectForm"
+                                            model="project.activeExportFTPConfiguration"
+                                            numa-readonly="formRO"
+                                            errors="{{ errors.activeExportFTPConfiguration }}"
+                                            config="{ data: [{label: ''}].concat(options.exportftp),
                                                             display: 'label',
-                                                            query: 'o.label for o in $ctrl.config.data track by o.identifier'}" link="{ type: 'exportftpConfiguration', parameters: {'id': project.activeExportFTPConfiguration.identifier} }"
-                                                             numa-onchange="confExportFtpChanged($data)">
+                                                            query: 'o.label for o in $ctrl.config.data track by o.identifier'}"
+                                            link="{ type: 'exportftpConfiguration', parameters: {'id': project.activeExportFTPConfiguration.identifier} }"
+                                            numa-onchange="confExportFtpChanged($data)"
+                                        >
                                         </numa-editable-field>
                                     </div>
                                     <div class="col-sm-8">
-                                        <numa-editable-field title="{{::'Dossier de livraison' | translate}}" type="select" form="projectForm" model="project.activeExportFTPDeliveryFolder"
-                                                             numa-readonly="formRO" errors="{{ errors.activeExportFTPDeliveryFolder }}"
-                                                             config="{ data: [{name: ''}].concat(project.activeExportFTPConfiguration.deliveryFolders),
+                                        <numa-editable-field
+                                            title="{{::'Dossier de livraison' | translate}}"
+                                            type="select"
+                                            form="projectForm"
+                                            model="project.activeExportFTPDeliveryFolder"
+                                            numa-readonly="formRO"
+                                            errors="{{ errors.activeExportFTPDeliveryFolder }}"
+                                            config="{ data: [{name: ''}].concat(project.activeExportFTPConfiguration.deliveryFolders),
                                                             display: 'name',
                                                             query: 'o.name for o in $ctrl.config.data track by o.identifier'}"
-                                                             ng-show="isDeliveryFolderDisplayed()">
+                                            ng-show="isDeliveryFolderDisplayed()"
+                                        >
                                         </numa-editable-field>
                                     </div>
                                 </div>
@@ -184,11 +304,17 @@
                             <div class="formBlockContent">
                                 <div class="row">
                                     <div class="col-sm-8">
-                                        <numa-editable-field title="{{::'Plan de classement PAC' | translate}}" type="select" form="projectForm"
-                                                             model="project.planClassementPAC" numa-readonly="formRO" errors="{{ errors.planClassementPAC }}"
-                                                             config="{ data: [{name: ''}].concat(options.pacs),
+                                        <numa-editable-field
+                                            title="{{::'Plan de classement PAC' | translate}}"
+                                            type="select"
+                                            form="projectForm"
+                                            model="project.planClassementPAC"
+                                            numa-readonly="formRO"
+                                            errors="{{ errors.planClassementPAC }}"
+                                            config="{ data: [{name: ''}].concat(options.pacs),
                             display: 'name',
-                            query: 'o.name for o in $ctrl.config.data track by o.identifier'}"></numa-editable-field>
+                            query: 'o.name for o in $ctrl.config.data track by o.identifier'}"
+                                        ></numa-editable-field>
                                     </div>
                                 </div>
                             </div>
@@ -202,13 +328,25 @@
                             <div class="formBlockContent">
                                 <div class="row">
                                     <div class="col-sm-8">
-                                        <numa-editable-field title="{{::'Collection Internet Archive' | translate}}" type="select" form="projectForm"
-                                                             model="project.collectionIA" numa-readonly="formRO" errors="{{ errors.collectionIA }}"
-                                                             config="{ data: [{name: ''}].concat(options.collections),
+                                        <numa-editable-field
+                                            title="{{::'Collection Internet Archive' | translate}}"
+                                            type="select"
+                                            form="projectForm"
+                                            model="project.collectionIA"
+                                            numa-readonly="formRO"
+                                            errors="{{ errors.collectionIA }}"
+                                            config="{ data: [{name: ''}].concat(options.collections),
                                                                     display: 'name',
-                                                                    query: 'o.name for o in $ctrl.config.data track by o.identifier'}"></numa-editable-field>
-                                        <numa-editable-field title="{{::'URL de la licence' | translate}}" placeholder="{{::'URL de la licence pour Internet Archive' | translate}}" form="projectForm"
-                                                             model="project.licenseUrl" numa-readonly="formRO" errors="{{ errors.licenseUrl }}"></numa-editable-field>
+                                                                    query: 'o.name for o in $ctrl.config.data track by o.identifier'}"
+                                        ></numa-editable-field>
+                                        <numa-editable-field
+                                            title="{{::'URL de la licence' | translate}}"
+                                            placeholder="{{::'URL de la licence pour Internet Archive' | translate}}"
+                                            form="projectForm"
+                                            model="project.licenseUrl"
+                                            numa-readonly="formRO"
+                                            errors="{{ errors.licenseUrl }}"
+                                        ></numa-editable-field>
                                     </div>
                                 </div>
                             </div>
@@ -222,24 +360,42 @@
                             <div class="formBlockContent">
                                 <div class="row">
                                     <div class="col-sm-8">
-                                        <numa-editable-field title="{{::'Configuration Omeka' | translate}}" type="select" form="projectForm"
-                                                             model="project.omekaConfiguration" numa-readonly="formRO" errors="{{ errors.omekaConfiguration }}"
-                                                             numa-onchange="onChangeOmekaConf($data)"
-                                                             config="{ data: [{label: ''}].concat(options.omekaConfigurations),
+                                        <numa-editable-field
+                                            title="{{::'Configuration Omeka' | translate}}"
+                                            type="select"
+                                            form="projectForm"
+                                            model="project.omekaConfiguration"
+                                            numa-readonly="formRO"
+                                            errors="{{ errors.omekaConfiguration }}"
+                                            numa-onchange="onChangeOmekaConf($data)"
+                                            config="{ data: [{label: ''}].concat(options.omekaConfigurations),
                                                                 display: 'label',
-                                                                query: 'o.label for o in $ctrl.config.data track by o.identifier'}"></numa-editable-field>
+                                                                query: 'o.label for o in $ctrl.config.data track by o.identifier'}"
+                                        ></numa-editable-field>
 
-                                        <numa-editable-field title="{{::'Collection Omeka' | translate}}" type="select" form="projectForm"
-                                                             model="project.omekaCollection" numa-readonly="formRO" errors="{{ errors.omekaCollection }}"
-                                                             config="{ data: [{name: ''}].concat(options.omekaCollections),
+                                        <numa-editable-field
+                                            title="{{::'Collection Omeka' | translate}}"
+                                            type="select"
+                                            form="projectForm"
+                                            model="project.omekaCollection"
+                                            numa-readonly="formRO"
+                                            errors="{{ errors.omekaCollection }}"
+                                            config="{ data: [{name: ''}].concat(options.omekaCollections),
                                                                 display: 'name',
-                                                                query: 'o.name for o in $ctrl.config.data track by o.identifier'}"></numa-editable-field>
+                                                                query: 'o.name for o in $ctrl.config.data track by o.identifier'}"
+                                        ></numa-editable-field>
 
-                                        <numa-editable-field title="{{::'Type d\'item Omeka' | translate}}" type="select" form="projectForm"
-                                                             model="project.omekaItem" numa-readonly="formRO" errors="{{ errors.omekaItem }}"
-                                                             config="{ data: [{name: ''}].concat(options.omekaItems),
+                                        <numa-editable-field
+                                            title="{{::'Type d\'item Omeka' | translate}}"
+                                            type="select"
+                                            form="projectForm"
+                                            model="project.omekaItem"
+                                            numa-readonly="formRO"
+                                            errors="{{ errors.omekaItem }}"
+                                            config="{ data: [{name: ''}].concat(options.omekaItems),
                                                                 display: 'name',
-                                                                query: 'o.name for o in $ctrl.config.data track by o.identifier'}"></numa-editable-field>
+                                                                query: 'o.name for o in $ctrl.config.data track by o.identifier'}"
+                                        ></numa-editable-field>
                                     </div>
                                 </div>
                             </div>
@@ -253,12 +409,30 @@
                             <div class="formBlockContent">
                                 <div class="row">
                                     <div class="col-sm-8">
-                                        <numa-editable-field title="{{::'Nom' | translate}}" placeholder="{{::'Nom' | translate}}"
-                                                             form="projectForm" model="project.libRespName" numa-readonly="formRO" errors="{{ errors.libRespName }}"></numa-editable-field>
-                                        <numa-editable-field title="{{::'Tél' | translate}}" placeholder="{{::'Tél' | translate}}"
-                                                             form="projectForm" model="project.libRespPhone" numa-readonly="formRO" errors="{{ errors.libRespPhone }}"></numa-editable-field>
-                                        <numa-editable-field title="{{::'Email' | translate}}" placeholder="{{::'Email' | translate}}"
-                                                             form="projectForm" model="project.libRespEmail" numa-readonly="formRO" errors="{{ errors.libRespEmail }}"></numa-editable-field>
+                                        <numa-editable-field
+                                            title="{{::'Nom' | translate}}"
+                                            placeholder="{{::'Nom' | translate}}"
+                                            form="projectForm"
+                                            model="project.libRespName"
+                                            numa-readonly="formRO"
+                                            errors="{{ errors.libRespName }}"
+                                        ></numa-editable-field>
+                                        <numa-editable-field
+                                            title="{{::'Tél' | translate}}"
+                                            placeholder="{{::'Tél' | translate}}"
+                                            form="projectForm"
+                                            model="project.libRespPhone"
+                                            numa-readonly="formRO"
+                                            errors="{{ errors.libRespPhone }}"
+                                        ></numa-editable-field>
+                                        <numa-editable-field
+                                            title="{{::'Email' | translate}}"
+                                            placeholder="{{::'Email' | translate}}"
+                                            form="projectForm"
+                                            model="project.libRespEmail"
+                                            numa-readonly="formRO"
+                                            errors="{{ errors.libRespEmail }}"
+                                        ></numa-editable-field>
                                     </div>
                                 </div>
                             </div>
@@ -270,7 +444,8 @@
                                 <div uib-accordion-group is-open="accordions.library">
                                     <uib-accordion-heading>
                                         <span class="pull-left glyphicon-halflings" ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordions.library]">&nbsp;</span>
-                                        <h4>{{ 'Bibliothèques partenaires' | translate }}
+                                        <h4>
+                                            {{ 'Bibliothèques partenaires' | translate }}
                                             <span class="badge btn-sem2">{{ project.associatedLibraries.length }}</span>
                                         </h4>
                                     </uib-accordion-heading>
@@ -287,9 +462,14 @@
                                                 <td>
                                                     <div class="btn-group-xs">
                                                         <numa-custom-link numa-link-type="library" numa-link-parameters='{"id": library.identifier}'></numa-custom-link>
-                                                        <button ng-if="projectForm.$visible" type="button" class="btn btn-sem2"
-                                                                uib-tooltip="{{::'Supprimer la bibliothèque des partenaires' | translate}}"
-                                                                ng-click="deleteLibrary(project, library)" sem-roles-allowed="PROJ_HAB1">
+                                                        <button
+                                                            ng-if="projectForm.$visible"
+                                                            type="button"
+                                                            class="btn btn-sem2"
+                                                            uib-tooltip="{{::'Supprimer la bibliothèque des partenaires' | translate}}"
+                                                            ng-click="deleteLibrary(project, library)"
+                                                            sem-roles-allowed="PROJ_HAB1"
+                                                        >
                                                             <span class="glyphicon-halflings glyphicon-trash"></span>
                                                         </button>
                                                     </div>
@@ -300,8 +480,7 @@
                                     <div class="row margin-b20" ng-if="projectForm.$visible && isAuthorized(userRoles.PROJ_HAB1)">
                                         <div class="col-sm-7">
                                             <ui-select class="form-control" ng-model="options.libraryAdded" multiple theme="select2" append-to-body="true" on-select="addLibrary(); options.libraryAdded=null;">
-                                                <ui-select-match placeholder="{{::'Commencez à taper...' | translate}}">{{$item.name}}
-                                                </ui-select-match>
+                                                <ui-select-match placeholder="{{::'Commencez à taper...' | translate}}">{{$item.name}} </ui-select-match>
                                                 <ui-select-choices repeat="library in options.sel2AssociatedLibraries | filter:filterAssociatedLibraries | filter:$select.search track by library.identifier">
                                                     <div ng-bind-html="library.name | highlight: $select.search"></div>
                                                 </ui-select-choices>
@@ -318,7 +497,8 @@
                                 <div uib-accordion-group is-open="accordions.users">
                                     <uib-accordion-heading>
                                         <span class="pull-left glyphicon-halflings" ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordions.users]">&nbsp;</span>
-                                        <h4>{{ 'Intervenants' | translate }}
+                                        <h4>
+                                            {{ 'Intervenants' | translate }}
                                             <span class="badge btn-sem2">{{ project.associatedUsers.length }}</span>
                                         </h4>
                                     </uib-accordion-heading>
@@ -335,11 +515,16 @@
                                                 <td>
                                                     <div class="btn-group-xs">
                                                         <numa-custom-link numa-link-type="user" numa-link-parameters='{"id": user.identifier}'></numa-custom-link>
-                                                        <button ng-if="projectForm.$visible" type="button" class="btn btn-sem2"
-                                                                uib-tooltip="{{::'Supprimer l\'utilisateur de la liste des intervenants' | translate}}"
-                                                                ng-click="deleteUser(project, user)" sem-roles-allowed="PROJ_HAB1">
-                                                        <span class="glyphicon-halflings glyphicon-trash"></span>
-                                                    </button>
+                                                        <button
+                                                            ng-if="projectForm.$visible"
+                                                            type="button"
+                                                            class="btn btn-sem2"
+                                                            uib-tooltip="{{::'Supprimer l\'utilisateur de la liste des intervenants' | translate}}"
+                                                            ng-click="deleteUser(project, user)"
+                                                            sem-roles-allowed="PROJ_HAB1"
+                                                        >
+                                                            <span class="glyphicon-halflings glyphicon-trash"></span>
+                                                        </button>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -348,10 +533,12 @@
                                     <div class="row margin-b20" ng-if="projectForm.$visible && isAuthorized(userRoles.PROJ_HAB1)">
                                         <div class="col-sm-7">
                                             <ui-select class="form-control" ng-model="options.userAdded" multiple theme="select2" append-to-body="true" on-select="addUser(); options.userAdded=null;">
-                                                <ui-select-match placeholder="{{::'Commencez à taper...' | translate}}">{{$item.fullName}}
-                                                </ui-select-match>
-                                                <ui-select-choices repeat="user in options.sel2AssociatedUsers.data | filter:filterAssociatedUsers | filter:$select.search track by user.identifier"
-                                                    refresh="options.sel2AssociatedUsers.refresh($select)" refresh-delay="options.sel2AssociatedUsers['refresh-delay']">
+                                                <ui-select-match placeholder="{{::'Commencez à taper...' | translate}}">{{$item.fullName}} </ui-select-match>
+                                                <ui-select-choices
+                                                    repeat="user in options.sel2AssociatedUsers.data | filter:filterAssociatedUsers | filter:$select.search track by user.identifier"
+                                                    refresh="options.sel2AssociatedUsers.refresh($select)"
+                                                    refresh-delay="options.sel2AssociatedUsers['refresh-delay']"
+                                                >
                                                     <div ng-bind-html="user.fullName | highlight: $select.search"></div>
                                                 </ui-select-choices>
                                             </ui-select>
@@ -367,13 +554,17 @@
                                 <div uib-accordion-group is-open="accordions.lot">
                                     <uib-accordion-heading>
                                         <span class="pull-left glyphicon-halflings" ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordions.lot]">&nbsp;</span>
-                                        <h4>{{ 'Lots' | translate }}
+                                        <h4>
+                                            {{ 'Lots' | translate }}
                                             <span class="badge btn-sem2">{{ lots.length }}</span>
 
-                                            <button type="button" class="btn btn-sem2 btn-xs pull-right"
-                                                    uib-tooltip="{{::'Créer un lot' | translate}}"
-                                                    ng-click="createLot(project.identifier)"
-                                                    sem-roles-allowed="LOT_HAB0">
+                                            <button
+                                                type="button"
+                                                class="btn btn-sem2 btn-xs pull-right"
+                                                uib-tooltip="{{::'Créer un lot' | translate}}"
+                                                ng-click="createLot(project.identifier)"
+                                                sem-roles-allowed="LOT_HAB0"
+                                            >
                                                 <span class="glyphicon-halflings glyphicon-plus"></span>
                                             </button>
                                         </h4>
@@ -410,7 +601,8 @@
                                 <div uib-accordion-group is-open="accordions.train">
                                     <uib-accordion-heading>
                                         <span class="pull-left glyphicon-halflings" ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordions.train]">&nbsp;</span>
-                                        <h4>{{ 'Trains' | translate }}
+                                        <h4>
+                                            {{ 'Trains' | translate }}
                                             <span class="badge btn-sem2">{{ trains.length }}</span>
                                         </h4>
                                     </uib-accordion-heading>
@@ -445,7 +637,8 @@
                                 <div uib-accordion-group is-open="accordions.delivery">
                                     <uib-accordion-heading>
                                         <span class="pull-left glyphicon-halflings" ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordions.delivery]">&nbsp;</span>
-                                        <h4>{{ 'Livraisons' | translate }}
+                                        <h4>
+                                            {{ 'Livraisons' | translate }}
                                             <span class="badge btn-sem2">{{ deliveries.length }}</span>
                                         </h4>
                                     </uib-accordion-heading>
@@ -475,12 +668,8 @@
                         <div class="column-bottom-button">
                             <!-- Création / Modification -->
                             <div class="btn-group">
-                                <button type="button" ng-disabled="projectForm.$waiting" class="btn btn-sem4" ng-click="cancel()">
-                                <span class="glyphicon-regular unshare"></span> {{::'Annuler' | translate}}
-                            </button>
-                                <button type="submit" class="btn btn-sem2" sem-roles-allowed="PROJ_HAB0, PROJ_HAB1">
-                                <span class="glyphicon-regular floppy-save"></span> {{::'Enregistrer' | translate}}
-                            </button>
+                                <button type="button" ng-disabled="projectForm.$waiting" class="btn btn-sem4" ng-click="cancel()"><span class="glyphicon-regular unshare"></span> {{::'Annuler' | translate}}</button>
+                                <button type="submit" class="btn btn-sem2" sem-roles-allowed="PROJ_HAB0, PROJ_HAB1"><span class="glyphicon-regular floppy-save"></span> {{::'Enregistrer' | translate}}</button>
                             </div>
                         </div>
                     </div>

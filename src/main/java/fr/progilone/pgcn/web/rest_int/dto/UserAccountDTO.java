@@ -1,11 +1,9 @@
 package fr.progilone.pgcn.web.rest_int.dto;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import java.util.List;
-
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
-
 import org.hibernate.validator.constraints.Email;
 
 public class UserAccountDTO {
@@ -41,12 +39,12 @@ public class UserAccountDTO {
     }
 
     public UserAccountDTO(final String login,
-                   final String password,
-                   final String firstName,
-                   final String lastName,
-                   final String email,
-                   final String langKey,
-                   final List<String> roles) {
+                          final String password,
+                          final String firstName,
+                          final String lastName,
+                          final String email,
+                          final String langKey,
+                          final List<String> roles) {
         this.login = login;
         this.password = password;
         this.firstName = firstName;

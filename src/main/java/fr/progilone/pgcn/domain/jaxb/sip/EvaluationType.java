@@ -5,16 +5,15 @@
 // Généré le : 2016.12.29 à 11:53:40 AM CET
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.sip;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.datatype.Duration;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlType;
 import java.time.LocalDateTime;
+import javax.xml.datatype.Duration;
 
 /**
  *
@@ -25,9 +24,11 @@ import java.time.LocalDateTime;
  *
  *
  *
- * <p>Classe Java pour evaluationType complex type.
+ * <p>
+ * Classe Java pour evaluationType complex type.
  *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="evaluationType"&gt;
@@ -46,11 +47,10 @@ import java.time.LocalDateTime;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "evaluationType", propOrder = {
-    "dua",
-    "traitement",
-    "dateDebut"
-})
+@XmlType(name = "evaluationType",
+         propOrder = {"dua",
+                      "traitement",
+                      "dateDebut"})
 public class EvaluationType {
 
     @XmlElement(name = "DUA", required = true)
@@ -65,8 +65,8 @@ public class EvaluationType {
      * Obtient la valeur de la propriété dua.
      *
      * @return
-     *     possible object is
-     *     {@link Duration }
+     *         possible object is
+     *         {@link Duration }
      *
      */
     public Duration getDUA() {
@@ -77,8 +77,8 @@ public class EvaluationType {
      * Définit la valeur de la propriété dua.
      *
      * @param value
-     *     allowed object is
-     *     {@link Duration }
+     *            allowed object is
+     *            {@link Duration }
      *
      */
     public void setDUA(Duration value) {
@@ -89,8 +89,8 @@ public class EvaluationType {
      * Obtient la valeur de la propriété traitement.
      *
      * @return
-     *     possible object is
-     *     {@link TraitementType }
+     *         possible object is
+     *         {@link TraitementType }
      *
      */
     public TraitementType getTraitement() {
@@ -101,8 +101,8 @@ public class EvaluationType {
      * Définit la valeur de la propriété traitement.
      *
      * @param value
-     *     allowed object is
-     *     {@link TraitementType }
+     *            allowed object is
+     *            {@link TraitementType }
      *
      */
     public void setTraitement(TraitementType value) {
@@ -113,8 +113,8 @@ public class EvaluationType {
      * Obtient la valeur de la propriété dateDebut.
      *
      * @return
-     *     possible object is
-     *     {@link LocalDateTime }
+     *         possible object is
+     *         {@link LocalDateTime }
      *
      */
     public LocalDateTime getDateDebut() {
@@ -125,8 +125,8 @@ public class EvaluationType {
      * Définit la valeur de la propriété dateDebut.
      *
      * @param value
-     *     allowed object is
-     *     {@link LocalDateTime }
+     *            allowed object is
+     *            {@link LocalDateTime }
      *
      */
     public void setDateDebut(LocalDateTime value) {

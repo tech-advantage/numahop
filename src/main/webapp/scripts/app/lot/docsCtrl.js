@@ -1,13 +1,9 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('LotDocsCtrl', LotDocsCtrl);
+    angular.module('numaHopApp.controller').controller('LotDocsCtrl', LotDocsCtrl);
 
-    function LotDocsCtrl($http, $httpParamSerializer, $location, codeSrvc, DocUnitBaseService,
-        DocUnitSrvc, WorkflowLotHandleSrvc, FileSaver, gettext, gettextCatalog, MessageSrvc, 
-        ModalSrvc) {
-
+    function LotDocsCtrl($http, $httpParamSerializer, $location, codeSrvc, DocUnitBaseService, DocUnitSrvc, WorkflowLotHandleSrvc, FileSaver, gettext, gettextCatalog, MessageSrvc, ModalSrvc) {
         var docCtrl = this;
         docCtrl.addDocUnits = addDocUnits;
         docCtrl.changeItem = changeItem;
@@ -21,13 +17,13 @@
 
         docCtrl.selectedIds = [];
         docCtrl.options = DocUnitBaseService.options;
-        
+
         docCtrl.isLotLocked = WorkflowLotHandleSrvc.isLotLocked;
 
         /**
          * Chargement de la liste des unités documentaires appartenant à ce lot
-         * 
-         * @param {any} lotId 
+         *
+         * @param {any} lotId
          */
         function loadDocUnits(lotId, lot) {
             docCtrl.lotId = lotId;
@@ -57,30 +53,28 @@
 
         function addDocUnits() {
             var params = {
-                callback: "/lot/all_operations?id=" + docCtrl.lotId,
-                action: "add_to_lot",
-                toLot: docCtrl.lotId
+                callback: '/lot/all_operations?id=' + docCtrl.lotId,
+                action: 'add_to_lot',
+                toLot: docCtrl.lotId,
             };
             if (docCtrl.lot.project) {
                 params.toProject = docCtrl.lot.project.identifier;
             }
-            $location.path("/document/docunit_list").search(params);
+            $location.path('/document/docunit_list').search(params);
         }
 
         function exportCSV() {
-            ModalSrvc.configureCsvExport()
-                .then(function (params) {
-                    params.docUnit = docCtrl.selectedIds;
-                    var url = 'api/rest/export/csv?' + $httpParamSerializer(params);
+            ModalSrvc.configureCsvExport().then(function (params) {
+                params.docUnit = docCtrl.selectedIds;
+                var url = 'api/rest/export/csv?' + $httpParamSerializer(params);
 
-                    // on met la réponse dans un arraybuffer pour conserver l'encodage original dans le fichier sauvegardé
-                    $http.get(url, { responseType: 'arraybuffer' })
-                        .then(function (response) {
-                            var filename = "lot-" + docCtrl.lot.label.replace(/\W+/g, "_") + ".csv";
-                            var blob = new Blob([response.data], { type: response.headers("content-type") });
-                            FileSaver.saveAs(blob, filename);
-                        });
+                // on met la réponse dans un arraybuffer pour conserver l'encodage original dans le fichier sauvegardé
+                $http.get(url, { responseType: 'arraybuffer' }).then(function (response) {
+                    var filename = 'lot-' + docCtrl.lot.label.replace(/\W+/g, '_') + '.csv';
+                    var blob = new Blob([response.data], { type: response.headers('content-type') });
+                    FileSaver.saveAs(blob, filename);
                 });
+            });
         }
 
         /**
@@ -94,16 +88,13 @@
 
         function deleteAllItemFromArray(itemArray) {
             MessageSrvc.clearMessages();
-            ModalSrvc.confirmDeletion(gettextCatalog.getPlural(itemArray.length,
-                "l'unité documentaire sélectionnée", "les {{n}} unités documentaires sélectionnées",
-                { n: itemArray.length }))
-                .then(function () {
-                    DocUnitSrvc.removeAllFromLot({}, itemArray, function () {
-                        MessageSrvc.addSuccess(gettext("Les unités documentaires ont bien été retirées du lot"));
-                        loadDocUnits(docCtrl.lotId, docCtrl.lot);
-                    });
-                    uncheckAll();
+            ModalSrvc.confirmDeletion(gettextCatalog.getPlural(itemArray.length, "l'unité documentaire sélectionnée", 'les {{n}} unités documentaires sélectionnées', { n: itemArray.length })).then(function () {
+                DocUnitSrvc.removeAllFromLot({}, itemArray, function () {
+                    MessageSrvc.addSuccess(gettext('Les unités documentaires ont bien été retirées du lot'));
+                    loadDocUnits(docCtrl.lotId, docCtrl.lot);
                 });
+                uncheckAll();
+            });
         }
 
         function checkAll() {

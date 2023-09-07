@@ -7,9 +7,18 @@ import static fr.progilone.pgcn.web.rest.library.security.AuthorizationConstants
 import static fr.progilone.pgcn.web.rest.library.security.AuthorizationConstants.LIB_HAB6;
 import static fr.progilone.pgcn.web.rest.library.security.AuthorizationConstants.LIB_HAB7;
 
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletRequest;
-
+import com.codahale.metrics.annotation.Timed;
+import fr.progilone.pgcn.domain.administration.SftpConfiguration;
+import fr.progilone.pgcn.domain.dto.library.LibraryParameterDTO;
+import fr.progilone.pgcn.domain.dto.library.LibraryParameterValuedDTO;
+import fr.progilone.pgcn.domain.library.LibraryParameter;
+import fr.progilone.pgcn.exception.PgcnException;
+import fr.progilone.pgcn.service.administration.SftpConfigurationService;
+import fr.progilone.pgcn.service.library.LibraryParameterService;
+import fr.progilone.pgcn.service.library.ui.UILibraryParameterService;
+import fr.progilone.pgcn.web.rest.AbstractRestController;
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,18 +30,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.codahale.metrics.annotation.Timed;
-
-import fr.progilone.pgcn.domain.administration.SftpConfiguration;
-import fr.progilone.pgcn.domain.dto.library.LibraryParameterDTO;
-import fr.progilone.pgcn.domain.dto.library.LibraryParameterValuedDTO;
-import fr.progilone.pgcn.domain.library.LibraryParameter;
-import fr.progilone.pgcn.exception.PgcnException;
-import fr.progilone.pgcn.service.administration.SftpConfigurationService;
-import fr.progilone.pgcn.service.library.LibraryParameterService;
-import fr.progilone.pgcn.service.library.ui.UILibraryParameterService;
-import fr.progilone.pgcn.web.rest.AbstractRestController;
-
 @RestController
 @RequestMapping(value = "/api/rest/libraryparameter")
 public class LibraryParameterController extends AbstractRestController {
@@ -43,8 +40,8 @@ public class LibraryParameterController extends AbstractRestController {
 
     @Autowired
     public LibraryParameterController(final LibraryParameterService libraryParameterService,
-    						final UILibraryParameterService uiLibraryParameterService,
-    						final SftpConfigurationService sftpConfigurationService) {
+                                      final UILibraryParameterService uiLibraryParameterService,
+                                      final SftpConfigurationService sftpConfigurationService) {
         super();
         this.libraryParameterService = libraryParameterService;
         this.uiLibraryParameterService = uiLibraryParameterService;
@@ -69,28 +66,30 @@ public class LibraryParameterController extends AbstractRestController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    @RolesAllowed({LIB_HAB5, LIB_HAB6, LIB_HAB7})
+    @RolesAllowed({LIB_HAB5,
+                   LIB_HAB6,
+                   LIB_HAB7})
     public ResponseEntity<LibraryParameterDTO> getById(final HttpServletRequest request, @PathVariable final String id) {
-    	final LibraryParameterDTO libraryParameter = uiLibraryParameterService.getOneDTO(id);
+        final LibraryParameterDTO libraryParameter = uiLibraryParameterService.getOneDTO(id);
         return createResponseEntity(libraryParameter);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.POST)
     @Timed
     @RolesAllowed({LIB_HAB2})
-    public ResponseEntity<LibraryParameterValuedDTO> update(final HttpServletRequest request, 
-    		@RequestBody final LibraryParameterValuedDTO param) throws PgcnException {
+    public ResponseEntity<LibraryParameterValuedDTO> update(final HttpServletRequest request, @RequestBody final LibraryParameterValuedDTO param) throws PgcnException {
         final LibraryParameterValuedDTO savedLibraryParam = uiLibraryParameterService.update(param);
         return new ResponseEntity<>(savedLibraryParam, HttpStatus.OK);
     }
-    
-    
+
     @RequestMapping(params = {"cinesdefaultvalues"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    @RolesAllowed({LIB_HAB5, LIB_HAB6, LIB_HAB7})
+    @RolesAllowed({LIB_HAB5,
+                   LIB_HAB6,
+                   LIB_HAB7})
     public ResponseEntity<LibraryParameterValuedDTO> getCinesDefaultValuesByLibrary(@RequestParam(name = "sftpConfig", required = false) final String confId) {
-        
-        final SftpConfiguration conf = sftpConfigurationService.findOne(confId); 
+
+        final SftpConfiguration conf = sftpConfigurationService.findOne(confId);
         final LibraryParameterValuedDTO libraryParameter = uiLibraryParameterService.getCinesDefaultValues(conf.getLibrary());
         return createResponseEntity(libraryParameter);
     }

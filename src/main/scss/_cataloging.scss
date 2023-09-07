@@ -1,12 +1,12 @@
 .cat-panel-body {
-    background-image: url("../images/cat-syrtis-background.svg");
+    background-image: url('../images/cat-syrtis-background.svg');
     background-attachment: fixed;
     background-repeat: no-repeat;
     background-size: 85%;
 }
 
 .clickable-row {
-	cursor:pointer;
+    cursor: pointer;
 }
 
 .cat-work {
@@ -16,16 +16,17 @@
 }
 
 .cat-work-info {
-    background: rgba(255,0,0,.7);
+    background: rgba(255, 0, 0, 0.7);
     color: #fff;
 
-    .cat-work-detail, .cat-work-image {
+    .cat-work-detail,
+    .cat-work-image {
         background-color: transparent;
     }
 }
 
 .cat-work-image {
-    background-color: rgba(255,0,0,0.7);
+    background-color: rgba(255, 0, 0, 0.7);
     display: table-cell;
     width: 30%;
     vertical-align: top;
@@ -38,7 +39,7 @@
         vertical-align: top;
         padding: 2px;
         border: 1px solid white;
-        background-color: rgb(0,0,0);
+        background-color: rgb(0, 0, 0);
     }
 }
 
@@ -46,11 +47,11 @@
     padding: 15px;
     padding-top: 10px;
     display: table-cell;
-    background-color: rgba(255,0,0,0.7);
+    background-color: rgba(255, 0, 0, 0.7);
     color: $sid-text-light;
 
     a {
-        color: inherit
+        color: inherit;
     }
 }
 
@@ -66,27 +67,28 @@
 .cat-detail-line-value {
     font-weight: bold;
     a {
-        color: inherit
+        color: inherit;
     }
 }
 
 .cat-detail-line-value-without-label {
     a {
-        color: inherit
+        color: inherit;
     }
 }
 
 .cat-abstract {
     max-height: 310px;
     overflow: auto;
-    background-color: rgba(0,0,0,0.05);
+    background-color: rgba(0, 0, 0, 0.05);
 
     .cat-abstract-image {
         padding: 0;
         padding-top: 15px;
     }
 
-    .cat-abstract-detail, .cat-abstract-wiki {
+    .cat-abstract-detail,
+    .cat-abstract-wiki {
         columns: 2;
         column-gap: 25px;
         padding-top: 15px;
@@ -110,9 +112,8 @@
 }
 
 .relations {
-
     .panel {
-        background-color: rgba(255,255,255,0.5);
+        background-color: rgba(255, 255, 255, 0.5);
     }
 
     .panel-group {
@@ -172,13 +173,13 @@
     }
 
     .relations-detail {
-        @media (min-width : $screen-sm-min) {
+        @media (min-width: $screen-sm-min) {
             columns: 2;
         }
-        @media (min-width : $screen-md-min) {
+        @media (min-width: $screen-md-min) {
             columns: 3;
         }
-        @media (min-width : $screen-lg-min) {
+        @media (min-width: $screen-lg-min) {
             columns: 5;
         }
         column-rule: 2px solid $sid-sec-color;
@@ -198,14 +199,14 @@
         }
     }
 
-     .relations-detail-2 {
-        @media (min-width : $screen-sm-min) {
+    .relations-detail-2 {
+        @media (min-width: $screen-sm-min) {
             columns: 1;
         }
-        @media (min-width : $screen-md-min) {
+        @media (min-width: $screen-md-min) {
             columns: 2;
         }
-        @media (min-width : $screen-lg-min) {
+        @media (min-width: $screen-lg-min) {
             columns: 2;
         }
         column-rule: 2px solid $sid-sec-color;
@@ -218,7 +219,8 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            padding: 5px;        }
+            padding: 5px;
+        }
 
         a {
             color: $sid-text;
@@ -261,12 +263,12 @@
 
     .cat-document-title-left {
         float: left;
-        max-width:60%
+        max-width: 60%;
     }
 
     .cat-document-title-right {
         float: right;
-        max-width:40%
+        max-width: 40%;
     }
 
     .cat-document-title-title {
@@ -347,7 +349,7 @@
 
     .cat-document-items {
         position: relative;
-        background-color: rgba(0,0,0,0.57);
+        background-color: rgba(0, 0, 0, 0.57);
         color: $sid-text-light;
         overflow: auto;
         padding: 0;
@@ -382,7 +384,8 @@
                 display: inline-block;
                 width: calc(100% - 35px);
 
-                .cat-document-items-detail-1, .cat-document-items-detail-2 {
+                .cat-document-items-detail-1,
+                .cat-document-items-detail-2 {
                     width: 49%;
                     height: 100%;
                     vertical-align: top;
@@ -394,10 +397,8 @@
                 .cat-document-items-detail-1 {
                     border-right: 1px solid $sid-text-light;
                 }
-
             }
         }
-
     }
 
     .cat-document-footer {
@@ -407,8 +408,6 @@
         text-align: center;
         cursor: pointer;
     }
-
-
 }
 
 .cat-document-alone {
@@ -439,25 +438,24 @@
 }
 
 div.truncThumb {
-  height: 110px;
-  width: 110px;
-  margin: 0px 5px 0px -62px;
-  padding-left: 50px;
-  border-radius: 50%;
-  overflow: hidden;
+    height: 110px;
+    width: 110px;
+    margin: 0px 5px 0px -62px;
+    padding-left: 50px;
+    border-radius: 50%;
+    overflow: hidden;
 }
 
 .cat-document-aside {
-	color : $sid-main-color;
+    color: $sid-main-color;
 }
 
 li.cat-reserve-line {
-	cursor : all-scroll;
+    cursor: all-scroll;
 }
 
-
-.external-ressource  {
-	color : $sid-text;
+.external-ressource {
+    color: $sid-text;
 }
 
 .work-title {

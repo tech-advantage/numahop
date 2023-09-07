@@ -1,9 +1,8 @@
 package fr.progilone.pgcn.exception.message;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.*;
 import java.util.stream.Stream;
+import org.apache.commons.lang3.StringUtils;
 
 public class PgcnList<T> implements Iterable<T> {
 

@@ -1,7 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <!-- Chargement des données du module Usager -->
     <changeSet id="pgcn-superuser" author="progilone">
@@ -9,25 +11,21 @@
         <validCheckSum>7:c0ffbaecc999bb5c69d0ad493b0caa80</validCheckSum>
 
         <addColumn tableName="user_user">
-            <column name="superuser" type="boolean"></column>
+            <column name="superuser" type="boolean" />
         </addColumn>
 
 
         <addColumn tableName="user_role">
-            <column name="superuser" type="boolean"></column>
+            <column name="superuser" type="boolean" />
         </addColumn>
 
 
-        <loadData encoding="UTF-8" separator=";"
-                  file="config/liquibase/numahop/user/superrole.csv"
-                  tableName="user_role">
-            <column name="superuser" type="BOOLEAN"/>
+        <loadData encoding="UTF-8" separator=";" file="config/liquibase/numahop/user/superrole.csv" tableName="user_role">
+            <column name="superuser" type="BOOLEAN" />
         </loadData>
-        <loadData encoding="UTF-8" separator=";"
-                  file="config/liquibase/numahop/user/superuser.csv"
-                  tableName="user_user">
-            <column name="superuser" type="BOOLEAN"/>
-            <column name="active" type="BOOLEAN"/>
+        <loadData encoding="UTF-8" separator=";" file="config/liquibase/numahop/user/superuser.csv" tableName="user_user">
+            <column name="superuser" type="BOOLEAN" />
+            <column name="active" type="BOOLEAN" />
         </loadData>
     </changeSet>
 </databaseChangeLog>

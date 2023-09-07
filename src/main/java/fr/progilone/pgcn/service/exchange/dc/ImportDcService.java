@@ -9,7 +9,6 @@ import fr.progilone.pgcn.domain.library.Library;
 import fr.progilone.pgcn.exception.PgcnTechnicalException;
 import fr.progilone.pgcn.service.document.DocPropertyTypeService;
 import fr.progilone.pgcn.service.document.DocUnitService;
-import fr.progilone.pgcn.service.es.EsBibliographicRecordService;
 import fr.progilone.pgcn.service.es.EsDocUnitService;
 import fr.progilone.pgcn.service.exchange.AbstractImportService;
 import fr.progilone.pgcn.service.exchange.DeduplicationService;
@@ -18,14 +17,13 @@ import fr.progilone.pgcn.service.exchange.ImportReportService;
 import fr.progilone.pgcn.service.library.LibraryService;
 import fr.progilone.pgcn.service.util.transaction.TransactionService;
 import fr.progilone.pgcn.web.websocket.WebsocketService;
+import java.io.File;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-
-import java.io.File;
-import java.util.List;
 
 /**
  * Created by Sébastien on 23/12/2016.
@@ -49,7 +47,6 @@ public class ImportDcService extends AbstractImportService {
     public ImportDcService(final DeduplicationService deduplicationService,
                            final DocUnitService docUnitService,
                            final EsDocUnitService esDocUnitService,
-                           final EsBibliographicRecordService esBibliographicRecordService,
                            final ImportDocUnitService importDocUnitService,
                            final ImportReportService importReportService,
                            final TransactionService transactionService,
@@ -57,14 +54,7 @@ public class ImportDcService extends AbstractImportService {
                            final DcToDocUnitConvertService convertService,
                            final DocPropertyTypeService docPropertyTypeService,
                            final LibraryService libraryService) {
-        super(deduplicationService,
-              docUnitService,
-              esDocUnitService,
-              esBibliographicRecordService,
-              importDocUnitService,
-              importReportService,
-              transactionService,
-              websocketService);
+        super(deduplicationService, docUnitService, esDocUnitService, importDocUnitService, importReportService, transactionService, websocketService);
         this.convertService = convertService;
         this.docPropertyTypeService = docPropertyTypeService;
         this.importDocUnitService = importDocUnitService;
@@ -77,21 +67,19 @@ public class ImportDcService extends AbstractImportService {
      * Import asynchrone d'un flux de notices Dublin Core.
      *
      * @param importFile
-     *         Fichier de notices à importer
+     *            Fichier de notices à importer
      * @param fileFormat
-     *         Format du fichier (DC)
+     *            Format du fichier (DC)
      * @param mappingId
-     *         Identifiant du mapping
+     *            Identifiant du mapping
      * @param report
-     *         Rapport d'exécution de cet import
+     *            Rapport d'exécution de cet import
      * @param stepValidation
-     *         Étape de validation par l'utilisateur
+     *            Étape de validation par l'utilisateur
      * @param stepDeduplication
-     *         Étape de dédoublonnage
+     *            Étape de dédoublonnage
      * @param defaultDedupProcess
-     *         Gestion de l'import des doublons, dans le cas où l'import se fait directement sans validation par l'utilisateur
-     * @param archivable
-     * @param distributable         
+     *            Gestion de l'import des doublons, dans le cas où l'import se fait directement sans validation par l'utilisateur
      */
     @Async
     public void importDcAsync(final File importFile,
@@ -115,13 +103,12 @@ public class ImportDcService extends AbstractImportService {
                 });
             }
             // DCQ
-            //            else if (fileFormat == FileFormat.DCQ) {
-            //                report = importDcRecords(importFile, mappingId, report);
-            //            }
+            // else if (fileFormat == FileFormat.DCQ) {
+            // report = importDcRecords(importFile, mappingId, report);
+            // }
             // Non géré
             else {
-                throw new PgcnTechnicalException("Le format de fichier "
-                                                 + fileFormat
+                throw new PgcnTechnicalException("Le format de fichier " + fileFormat
                                                  + " n'est pas supporté (fichier "
                                                  + importFile.getAbsolutePath()
                                                  + ")"
@@ -149,12 +136,12 @@ public class ImportDcService extends AbstractImportService {
      * @throws PgcnTechnicalException
      * @see fr.progilone.pgcn.domain.jaxb.rdf.RDF
      */
-    private ImportReport importDcRecords(final File importFile, 
-    									 final String libraryId, 
-    									 String mappingId, 
-    									 ImportReport report, 
-    									 final boolean archivable,
-    									 final boolean distributable) throws PgcnTechnicalException {
+    private ImportReport importDcRecords(final File importFile,
+                                         final String libraryId,
+                                         final String mappingId,
+                                         final ImportReport report,
+                                         final boolean archivable,
+                                         final boolean distributable) throws PgcnTechnicalException {
         try {
             // vérification bibliothèque
             final Library library = libraryService.findOne(libraryId);
@@ -166,7 +153,7 @@ public class ImportDcService extends AbstractImportService {
             final List<DocPropertyType> propertyTypes = docPropertyTypeService.findAll();
 
             // Résumé d'exécution
-            // report.setMapping(mapping);   // lien avec le mapping qui vient d'être chargé
+            // report.setMapping(mapping); // lien avec le mapping qui vient d'être chargé
             final ImportReport runningReport = importReportService.startReport(report);
 
             // Vérification du type de mapping OAI_DC / RDF
@@ -188,12 +175,12 @@ public class ImportDcService extends AbstractImportService {
                             synchronized (runningReport) {
                                 runningReport.incrementNbImp(1);
                             }
-                        } catch (Exception e) {
+                        } catch (final Exception e) {
                             LOG.error(e.getMessage(), e);
                         }
                     }).parse(importFile);
                 }
-                break;
+                    break;
 
                 case MAPPING_DC_RDF:
                 default: {
@@ -214,12 +201,12 @@ public class ImportDcService extends AbstractImportService {
                             synchronized (runningReport) {
                                 runningReport.incrementNbImp(1);
                             }
-                        } catch (Exception e) {
+                        } catch (final Exception e) {
                             LOG.error(e.getMessage(), e);
                         }
                     }).parse(importFile);
                 }
-                break;
+                    break;
             }
             return runningReport;
 

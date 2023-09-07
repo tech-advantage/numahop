@@ -2,21 +2,20 @@
     <div class="table-responsive col-sm-12">
         <table class="table table-condensed table-hover" sem-table>
             <thead>
-            <tr>
-                <th sem-table-sorton="label"><span translate>Libellé</span></th>
-                <th sem-table-sorton="status"><span translate>Statut</span></th>
-                <th class="text-left" style="width: 70px" translate>Action</th>
-            </tr>
+                <tr>
+                    <th sem-table-sorton="label"><span translate>Libellé</span></th>
+                    <th sem-table-sorton="status"><span translate>Statut</span></th>
+                    <th class="text-left" style="width: 70px" translate>Action</th>
+                </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="delivery in dCtrl.deliveries | orderBy:orderBy">
-                <td>{{::delivery.label}}</td>
-                <td>{{::dCtrl.semCodes['delivery.' + delivery.status] || delivery.status}}</td>
-                <td>
-                    <numa-custom-link numa-link-type="delivery"
-                                      numa-link-parameters='{"id": delivery.identifier}'></numa-custom-link>
-                </td>
-            </tr>
+                <tr ng-repeat="delivery in dCtrl.deliveries | orderBy:orderBy">
+                    <td>{{::delivery.label}}</td>
+                    <td>{{::dCtrl.semCodes['delivery.' + delivery.status] || delivery.status}}</td>
+                    <td>
+                        <numa-custom-link numa-link-type="delivery" numa-link-parameters='{"id": delivery.identifier}'></numa-custom-link>
+                    </td>
+                </tr>
             </tbody>
         </table>
     </div>

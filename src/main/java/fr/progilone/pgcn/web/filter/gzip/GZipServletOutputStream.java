@@ -1,12 +1,12 @@
 package fr.progilone.pgcn.web.filter.gzip;
 
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.WriteListener;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.WriteListener;
-
 class GZipServletOutputStream extends ServletOutputStream {
+
     private final OutputStream stream;
 
     public GZipServletOutputStream(final OutputStream output) throws IOException {

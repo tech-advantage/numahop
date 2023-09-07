@@ -1,11 +1,10 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('UserRoleCtrl', function ($location, $scope, $timeout, UserRoleSrvc, gettextCatalog,
-            HistorySrvc, NumaHopInitializationSrvc, NumahopStorageService, StringTools, $q) {
-
-            $scope.roleInclude = "scripts/app/user/roleEdit.html";
+    angular
+        .module('numaHopApp.controller')
+        .controller('UserRoleCtrl', function ($location, $scope, $timeout, UserRoleSrvc, gettextCatalog, HistorySrvc, NumaHopInitializationSrvc, NumahopStorageService, StringTools, $q) {
+            $scope.roleInclude = 'scripts/app/user/roleEdit.html';
 
             $scope.newRoles = [];
 
@@ -21,28 +20,27 @@
             $scope.navigate = navigate;
 
             $scope.filters = {
-                authorizations: null
+                authorizations: null,
             };
 
             $scope.options = {
-                authorizations: []
+                authorizations: [],
             };
 
-            var FILTER_STORAGE_SERVICE_KEY = "user_role";
+            var FILTER_STORAGE_SERVICE_KEY = 'user_role';
 
-            $scope.$on("$routeUpdate",
-                function ($currentRoute, $previousRoute) {
-                    $timeout(function () {
-                        $scope.roleInclude = null;
-                        $scope.$apply();
-                        $scope.roleInclude = "scripts/app/user/roleEdit.html";
-                    });
+            $scope.$on('$routeUpdate', function ($currentRoute, $previousRoute) {
+                $timeout(function () {
+                    $scope.roleInclude = null;
+                    $scope.$apply();
+                    $scope.roleInclude = 'scripts/app/user/roleEdit.html';
                 });
+            });
 
             init();
 
             function init() {
-                HistorySrvc.add(gettextCatalog.getString("Rôles"));
+                HistorySrvc.add(gettextCatalog.getString('Rôles'));
                 reinitFilters(false);
                 loadOptionsAndFilters();
             }
@@ -54,7 +52,7 @@
                     $scope.role._selected = false;
                     $scope.role = null;
                 }
-                $location.path("/user/role").search({ new: true });
+                $location.path('/user/role').search({ new: true });
             }
             function edit(role, index, selectedInNew) {
                 $scope.selectedIndex = index;
@@ -71,7 +69,7 @@
                     search = { id: role.identifier };
                 }
 
-                $location.path("/user/role").search(search);
+                $location.path('/user/role').search(search);
             }
 
             /**
@@ -111,13 +109,13 @@
                 saveFilters();
 
                 var searchParams = {
-                    search: $scope.filterWith || "",
-                    sorts: "label"
+                    search: $scope.filterWith || '',
+                    sorts: 'label',
                 };
 
                 if ($scope.filters.authorizations) {
-                    var authorizationsIds = _.pluck($scope.filters.authorizations, "identifier");
-                    searchParams["authorizations"] = authorizationsIds;
+                    var authorizationsIds = _.pluck($scope.filters.authorizations, 'identifier');
+                    searchParams['authorizations'] = authorizationsIds;
                 }
 
                 return UserRoleSrvc.search(searchParams).$promise;
@@ -150,9 +148,9 @@
              */
             function reinitFilters(reload) {
                 $scope.filters = {
-                    authorizations: []
+                    authorizations: [],
                 };
-                $scope.filterWith = "";
+                $scope.filterWith = '';
                 if (reload) {
                     doFilter();
                 }
@@ -162,7 +160,7 @@
              * Handler pour le champ de recherche par libellé de rôle
              */
             function applyFilter(event) {
-                if (event.type === "keypress" && event.keyCode === 13) {
+                if (event.type === 'keypress' && event.keyCode === 13) {
                     doFilter();
                 }
             }
@@ -171,18 +169,17 @@
              * Chargement de la liste des autorisations pour les filtres, puis des filtres enregistrés dans le local storage
              */
             function loadOptionsAndFilters() {
-                $q.all([NumaHopInitializationSrvc.loadAuthorizations()])
-                    .then(function (data) {
-                        $scope.options.authorizations = data[0];
-                        loadFilters();
-                    });
+                $q.all([NumaHopInitializationSrvc.loadAuthorizations()]).then(function (data) {
+                    $scope.options.authorizations = data[0];
+                    loadFilters();
+                });
             }
 
             /**
              * Récupération de l'initiale pour l'affichage dans la liste
              */
             function getFirstLetter(role) {
-                return StringTools.getFirstLetter(role.label, "OTHER");
+                return StringTools.getFirstLetter(role.label, 'OTHER');
             }
             function moveUp() {
                 var index;
@@ -225,6 +222,5 @@
                     moveDown();
                 }
             }
-
         });
 })();

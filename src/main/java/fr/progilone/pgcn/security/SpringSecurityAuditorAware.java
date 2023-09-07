@@ -1,10 +1,9 @@
 package fr.progilone.pgcn.security;
 
+import fr.progilone.pgcn.config.Constants;
+import java.util.Optional;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.stereotype.Component;
-
-import fr.progilone.pgcn.config.Constants;
-
 
 /**
  * Implementation of AuditorAware based on Spring Security.
@@ -13,8 +12,9 @@ import fr.progilone.pgcn.config.Constants;
 public class SpringSecurityAuditorAware implements AuditorAware<String> {
 
     @Override
-    public String getCurrentAuditor() {
+    public Optional<String> getCurrentAuditor() {
         final String userName = SecurityUtils.getCurrentLogin();
-        return (userName != null ? userName : Constants.SYSTEM_ACCOUNT);
+        return Optional.of(userName != null ? userName
+                                            : Constants.SYSTEM_ACCOUNT);
     }
 }

@@ -1,12 +1,9 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('TrainCtrl', TrainCtrl);
+    angular.module('numaHopApp.controller').controller('TrainCtrl', TrainCtrl);
 
-    function TrainCtrl($location, $scope, $timeout, $q, codeSrvc, gettextCatalog, HistorySrvc,
-        StringTools, NumahopStorageService, NumaHopInitializationSrvc, TrainSrvc) {
-
+    function TrainCtrl($location, $scope, $timeout, $q, codeSrvc, gettextCatalog, HistorySrvc, StringTools, NumahopStorageService, NumaHopInitializationSrvc, TrainSrvc) {
         $scope.applyFilter = applyFilter;
         $scope.clearSelection = clearSelection;
         $scope.create = create;
@@ -25,15 +22,15 @@
         $scope.selectedIndex = null;
         $scope.selectedInNew = false;
 
-        $scope.trainInclude = "scripts/app/train/trainEdit.html";
+        $scope.trainInclude = 'scripts/app/train/trainEdit.html';
         $scope.train = null;
 
-        var FILTER_STORAGE_SERVICE_KEY = "trains";
+        var FILTER_STORAGE_SERVICE_KEY = 'trains';
 
         $scope.filters = {
             libraries: [],
             projects: [],
-            inactive: false
+            inactive: false,
         };
         $scope.listFilters = {
             inactive_filter: true,
@@ -42,10 +39,10 @@
             status_filter: true,
             doc_number_filter: true,
             provider_sending_date_filter: true,
-            return_date_filter: true
+            return_date_filter: true,
         };
         $scope.filterLabels = {
-            inactive: "Voir les trains inactifs"
+            inactive: 'Voir les trains inactifs',
         };
         $scope.loaded = false;
 
@@ -54,19 +51,19 @@
          */
         $scope.options = {
             categories: [
-                { identifier: "PROVIDER", label: gettextCatalog.getString("Prestataire") },
-                { identifier: "OTHER", label: gettextCatalog.getString("Autre") }
+                { identifier: 'PROVIDER', label: gettextCatalog.getString('Prestataire') },
+                { identifier: 'OTHER', label: gettextCatalog.getString('Autre') },
             ],
             projects: [],
             users: [],
             statuses: [
-                { identifier: "CREATED", label: codeSrvc["train.status.CREATED"] },
-                { identifier: "IN_PREPARATION", label: codeSrvc["train.status.IN_PREPARATION"] },
-                { identifier: "IN_DIGITIZATION", label: codeSrvc["train.status.IN_DIGITIZATION"] },
-                { identifier: "RECEIVING_PHYSICAL_DOCUMENTS", label: codeSrvc["train.status.RECEIVING_PHYSICAL_DOCUMENTS"] },
-                { identifier: "CLOSED", label: codeSrvc["train.status.CLOSED"] },
-                { identifier: "CANCELED", label: codeSrvc["train.status.CANCELED"] }
-            ]
+                { identifier: 'CREATED', label: codeSrvc['train.status.CREATED'] },
+                { identifier: 'IN_PREPARATION', label: codeSrvc['train.status.IN_PREPARATION'] },
+                { identifier: 'IN_DIGITIZATION', label: codeSrvc['train.status.IN_DIGITIZATION'] },
+                { identifier: 'RECEIVING_PHYSICAL_DOCUMENTS', label: codeSrvc['train.status.RECEIVING_PHYSICAL_DOCUMENTS'] },
+                { identifier: 'CLOSED', label: codeSrvc['train.status.CLOSED'] },
+                { identifier: 'CANCELED', label: codeSrvc['train.status.CANCELED'] },
+            ],
         };
 
         $scope.pagination = {
@@ -74,46 +71,40 @@
             totalItems: 0,
             busy: false,
             last: false,
-            page: 0
+            page: 0,
         };
         $scope.newTrains = []; // liste des trains récemment créés
 
         init();
 
-
         /** Initialisation */
         function init() {
-            HistorySrvc.add(gettextCatalog.getString("Trains"));
+            HistorySrvc.add(gettextCatalog.getString('Trains'));
             reinitFilters(false);
             loadOptionsAndFilters();
 
-            $scope.$on("$routeUpdate",
-                function ($currentRoute, $previousRoute) {
-                    $timeout(function () {
-                        $scope.trainInclude = null;
-                        $scope.$apply();
-                        $scope.trainInclude = "scripts/app/train/trainEdit.html";
-                    });
-                }
-            );
+            $scope.$on('$routeUpdate', function ($currentRoute, $previousRoute) {
+                $timeout(function () {
+                    $scope.trainInclude = null;
+                    $scope.$apply();
+                    $scope.trainInclude = 'scripts/app/train/trainEdit.html';
+                });
+            });
         }
 
         /****************************************************************/
         /** Options *****************************************************/
         /****************************************************************/
         function loadOptionsAndFilters() {
-            $q.all([
-                NumaHopInitializationSrvc.loadProjects(),
-                NumaHopInitializationSrvc.loadLibraries()])
-                .then(function (data) {
-                    $scope.options.projects = data[0];
-                    $scope.options.libraries = data[1];
-                    loadFilters();
+            $q.all([NumaHopInitializationSrvc.loadProjects(), NumaHopInitializationSrvc.loadLibraries()]).then(function (data) {
+                $scope.options.projects = data[0];
+                $scope.options.libraries = data[1];
+                loadFilters();
 
-                    nextPage().then(function () {
-                        $scope.loaded = false;
-                    });
+                nextPage().then(function () {
+                    $scope.loaded = false;
                 });
+            });
         }
 
         // CRUD
@@ -122,7 +113,7 @@
                 $scope.train._selected = false;
                 $scope.train = null;
             }
-            $location.path("/train/train").search({ new: 'true' });
+            $location.path('/train/train').search({ new: 'true' });
         }
         function edit(train, index, selectedInNew) {
             clearSelection();
@@ -137,7 +128,7 @@
                 search = { id: train.identifier };
             }
 
-            $location.path("/train/train").search(search);
+            $location.path('/train/train').search(search);
         }
 
         function filterTrains(newValue, field) {
@@ -145,16 +136,16 @@
 
             var searchParams = {
                 page: $scope.pagination.page,
-                search: $scope.filterWith || "",
-                active: !$scope.filters.inactive
+                search: $scope.filterWith || '',
+                active: !$scope.filters.inactive,
             };
 
             if ($scope.filters.libraries) {
-                searchParams["libraries"] = _.pluck($scope.filters.libraries, "identifier");
+                searchParams['libraries'] = _.pluck($scope.filters.libraries, 'identifier');
             }
             if ($scope.filters.projects) {
-                var projectsIds = _.pluck($scope.filters.projects, "identifier");
-                searchParams["projects"] = projectsIds;
+                var projectsIds = _.pluck($scope.filters.projects, 'identifier');
+                searchParams['projects'] = projectsIds;
             }
             //
             //            if ($scope.filters.docUnits) {
@@ -163,23 +154,23 @@
             //            }
 
             if ($scope.filters.statuses) {
-                var statusesIds = _.pluck($scope.filters.statuses, "identifier");
-                searchParams["statuses"] = statusesIds;
+                var statusesIds = _.pluck($scope.filters.statuses, 'identifier');
+                searchParams['statuses'] = statusesIds;
             }
             if ($scope.filters.providerSendingDateFrom) {
-                searchParams["providerSendingDateFrom"] = $scope.filters.providerSendingDateFrom;
+                searchParams['providerSendingDateFrom'] = $scope.filters.providerSendingDateFrom;
             }
             if ($scope.filters.providerSendingDateTo) {
-                searchParams["providerSendingDateTo"] = $scope.filters.providerSendingDateTo;
+                searchParams['providerSendingDateTo'] = $scope.filters.providerSendingDateTo;
             }
             if ($scope.filters.returnDateFrom) {
-                searchParams["returnDateFrom"] = $scope.filters.returnDateFrom;
+                searchParams['returnDateFrom'] = $scope.filters.returnDateFrom;
             }
             if ($scope.filters.returnDateTo) {
-                searchParams["returnDateTo"] = $scope.filters.returnDateTo;
+                searchParams['returnDateTo'] = $scope.filters.returnDateTo;
             }
             if ($scope.filters.docNumber !== null) {
-                searchParams["docNumber"] = $scope.filters.docNumber;
+                searchParams['docNumber'] = $scope.filters.docNumber;
             }
             if (field) {
                 if (newValue) {
@@ -203,7 +194,7 @@
         }
 
         function applyFilter(filterWith, event) {
-            if (event.type === "keypress" && event.keyCode === 13) {
+            if (event.type === 'keypress' && event.keyCode === 13) {
                 doFilter();
             }
         }
@@ -227,8 +218,7 @@
                         } else {
                             $scope.pagination.items.push(value.content[i]);
                         }
-                    }
-                    else {
+                    } else {
                         // On ne compte pas 2 fois les nouveaux trains rechargés
                         $scope.pagination.totalItems--;
                     }
@@ -274,7 +264,7 @@
                 docUnits: [],
                 statuses: [],
                 categories: [],
-                inactive: false
+                inactive: false,
             };
             if (reload) {
                 doFilter();
@@ -283,7 +273,9 @@
 
         // liste
         function nextPage() {
-            if ($scope.pagination.busy || $scope.pagination.last) { return; }
+            if ($scope.pagination.busy || $scope.pagination.last) {
+                return;
+            }
             $scope.pagination.busy = true;
 
             return filterTrains().then(function (value, responseHeaders) {
@@ -307,13 +299,12 @@
             }
         }
         function clearSelection() {
-            _.union($scope.pagination.items, $scope.newTrains)
-                .forEach(function (elt, i) {
-                    elt._selected = false;
-                });
+            _.union($scope.pagination.items, $scope.newTrains).forEach(function (elt, i) {
+                elt._selected = false;
+            });
         }
         function getFirstLetter(train) {
-            return StringTools.getFirstLetter(train.label, "OTHER");
+            return StringTools.getFirstLetter(train.label, 'OTHER');
         }
         function moveUp() {
             var index;

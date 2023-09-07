@@ -7,23 +7,22 @@ import fr.progilone.pgcn.service.exchange.ead.mapping.CompiledMappingRule;
 import fr.progilone.pgcn.service.exchange.ead.mapping.CompiledStatement;
 import fr.progilone.pgcn.service.exchange.ead.mapping.RuleKey;
 import fr.progilone.pgcn.service.exchange.ead.script.CustomScript;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import javax.script.Bindings;
+import javax.script.Compilable;
+import javax.script.CompiledScript;
+import javax.script.ScriptEngine;
+import javax.script.ScriptException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-
-import javax.script.Bindings;
-import javax.script.Compilable;
-import javax.script.CompiledScript;
-import javax.script.ScriptEngine;
-import javax.script.ScriptException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Service
 public class EadMappingEvaluationService {
@@ -74,8 +73,8 @@ public class EadMappingEvaluationService {
      * @param rule
      * @param bindings
      * @return un boolean résultat de l'évaluation de la condition,
-     * true si pas de condition définie,
-     * false si pb de compilation ou d'évaluation
+     *         true si pas de condition définie,
+     *         false si pb de compilation ou d'évaluation
      * @throws ScriptException
      */
     public boolean evalCondition(CompiledMappingRule rule, Map<String, Object> bindings) {
@@ -94,7 +93,7 @@ public class EadMappingEvaluationService {
                 bindings.put(BINDING_FN_TRANSLITERATE, transliterationService);
 
                 final Object test = eval(condition.getCompiledScript(), bindings);
-                // Le test ne retourne rien => condition  = false
+                // Le test ne retourne rien => condition = false
                 if (test == null) {
                     return false;
                 }
@@ -131,7 +130,7 @@ public class EadMappingEvaluationService {
      * @param rule
      * @param bindings
      * @return un objet résultat de l'évaluation de l'expression,
-     * ou null si pas d'expression ou si une erreur s'est produite
+     *         ou null si pas d'expression ou si une erreur s'est produite
      * @throws ScriptException
      */
     public Object evalExpression(CompiledMappingRule rule, Map<String, Object> bindings) {

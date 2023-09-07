@@ -5,23 +5,22 @@
 // Généré le : 2017.01.03 à 11:16:35 AM CET
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.aip;
 
 import fr.progilone.pgcn.domain.jaxb.urn.AccessRestrictionCodeType;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.XmlValue;
-
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlValue;
 
 /**
- * <p>Classe Java pour codeType complex type.
+ * <p>
+ * Classe Java pour codeType complex type.
  *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="codeType"&gt;
@@ -36,9 +35,7 @@ import javax.xml.bind.annotation.XmlValue;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "codeType", propOrder = {
-    "value"
-})
+@XmlType(name = "codeType", propOrder = {"value"})
 public class CodeType {
 
     @XmlValue
@@ -62,8 +59,8 @@ public class CodeType {
      *
      *
      * @return
-     *     possible object is
-     *     {@link AccessRestrictionCodeType }
+     *         possible object is
+     *         {@link AccessRestrictionCodeType }
      *
      */
     public AccessRestrictionCodeType getValue() {
@@ -74,8 +71,8 @@ public class CodeType {
      * Définit la valeur de la propriété value.
      *
      * @param value
-     *     allowed object is
-     *     {@link AccessRestrictionCodeType }
+     *            allowed object is
+     *            {@link AccessRestrictionCodeType }
      *
      */
     public void setValue(AccessRestrictionCodeType value) {
@@ -86,8 +83,8 @@ public class CodeType {
      * Obtient la valeur de la propriété type.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getType() {
@@ -102,8 +99,8 @@ public class CodeType {
      * Définit la valeur de la propriété type.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setType(String value) {

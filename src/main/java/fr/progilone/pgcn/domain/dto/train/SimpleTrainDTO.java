@@ -1,9 +1,9 @@
 package fr.progilone.pgcn.domain.dto.train;
 
-import java.time.LocalDate;
-
+import com.querydsl.core.annotations.QueryProjection;
 import fr.progilone.pgcn.domain.dto.AbstractDTO;
 import fr.progilone.pgcn.domain.train.Train;
+import java.time.LocalDate;
 
 public class SimpleTrainDTO extends AbstractDTO {
 
@@ -15,6 +15,12 @@ public class SimpleTrainDTO extends AbstractDTO {
     private LocalDate returnDate;
 
     public SimpleTrainDTO() {
+    }
+
+    @QueryProjection
+    public SimpleTrainDTO(final String identifier, final String label) {
+        this.identifier = identifier;
+        this.label = label;
     }
 
     public SimpleTrainDTO(final String identifier,
@@ -35,7 +41,7 @@ public class SimpleTrainDTO extends AbstractDTO {
         return label;
     }
 
-    public void setLabel(String label) {
+    public void setLabel(final String label) {
         this.label = label;
     }
 
@@ -43,7 +49,7 @@ public class SimpleTrainDTO extends AbstractDTO {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(final String description) {
         this.description = description;
     }
 
@@ -51,7 +57,7 @@ public class SimpleTrainDTO extends AbstractDTO {
         return identifier;
     }
 
-    public void setIdentifier(String identifier) {
+    public void setIdentifier(final String identifier) {
         this.identifier = identifier;
     }
 
@@ -59,7 +65,7 @@ public class SimpleTrainDTO extends AbstractDTO {
         return status;
     }
 
-    public void setStatus(Train.TrainStatus status) {
+    public void setStatus(final Train.TrainStatus status) {
         this.status = status;
     }
 
@@ -78,7 +84,7 @@ public class SimpleTrainDTO extends AbstractDTO {
     public void setReturnDate(final LocalDate returnDate) {
         this.returnDate = returnDate;
     }
-    
+
     /**
      * Builder pour la classe SimpleTrainDTO
      *
@@ -117,7 +123,7 @@ public class SimpleTrainDTO extends AbstractDTO {
             return this;
         }
 
-        public Builder setStatus(Train.TrainStatus status) {
+        public Builder setStatus(final Train.TrainStatus status) {
             this.status = status;
             return this;
         }
@@ -134,5 +140,5 @@ public class SimpleTrainDTO extends AbstractDTO {
             return new SimpleTrainDTO(identifier, label, description, status, providerSendingDate, returnDate);
         }
     }
-    
+
 }

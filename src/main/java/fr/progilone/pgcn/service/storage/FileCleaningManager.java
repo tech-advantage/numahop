@@ -1,46 +1,7 @@
 package fr.progilone.pgcn.service.storage;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.file.FileVisitOption;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import java.util.zip.Deflater;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-
-import javax.xml.bind.JAXBException;
-
-import fr.progilone.pgcn.domain.administration.ExportFTPDeliveryFolder;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.xml.sax.SAXException;
-
 import fr.progilone.pgcn.domain.AbstractDomainObject;
+import fr.progilone.pgcn.domain.administration.ExportFTPDeliveryFolder;
 import fr.progilone.pgcn.domain.administration.SftpConfiguration;
 import fr.progilone.pgcn.domain.administration.viewsformat.ViewsFormatConfiguration;
 import fr.progilone.pgcn.domain.document.BibliographicRecord;
@@ -72,6 +33,41 @@ import fr.progilone.pgcn.service.project.ProjectService;
 import fr.progilone.pgcn.service.util.CryptoService;
 import fr.progilone.pgcn.service.util.ImageUtils;
 import fr.progilone.pgcn.service.util.transaction.TransactionService;
+import jakarta.xml.bind.JAXBException;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.FileVisitOption;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.zip.Deflater;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.xml.sax.SAXException;
 
 @Service
 public class FileCleaningManager {
@@ -92,7 +88,6 @@ public class FileCleaningManager {
 
     @Value("${services.ftpexport.cache}")
     private String ftpexportCacheDir;
-
 
     private final DeliveryService deliveryService;
     private final BinaryStorageManager binaryStorageManager;
@@ -161,7 +156,7 @@ public class FileCleaningManager {
 
         LOG.info("Lancement du cronjob cleanDeliveryFilesCron...");
         // recup les rep de livraison des documents valides
-        //  de livraisons validees des 5 derniers jours (trt à 1h du mat)
+        // de livraisons validees des 5 derniers jours (trt à 1h du mat)
         final LocalDate dateFrom = LocalDate.now().minusDays(5L);
         final Set<ValidatedDeliveredDocumentDTO> dtos = deliveryService.getValidatedDeliveredDocs(dateFrom);
         dtos.forEach(dto -> {
@@ -185,7 +180,7 @@ public class FileCleaningManager {
     public void cleanTemporaryFilesCron() {
 
         LOG.info("Lancement du Job cleanTemporaryFilesCron...");
-        // nettoie repertoires et fichiers temporaires dates de  + de 24h (trt à 2h du mat / defaut)
+        // nettoie repertoires et fichiers temporaires dates de + de 24h (trt à 2h du mat / defaut)
         final long limit = System.currentTimeMillis() - (24 * 3600000L);
 
         // 1 disk space per library
@@ -195,7 +190,6 @@ public class FileCleaningManager {
         });
     }
 
-
     /**
      * Purge des fichiers temporaires.
      */
@@ -203,7 +197,7 @@ public class FileCleaningManager {
     public void cleanCacheDirsCron() {
 
         LOG.info("Lancement du Job cleanCacheDirsCron ...");
-        // nettoie repertoires de cache d'export dates de  + de 24h
+        // nettoie repertoires de cache d'export dates de + de 24h
         final long limit = System.currentTimeMillis() - (24 * 3600000L);
 
         // 1 disk space per library
@@ -215,24 +209,18 @@ public class FileCleaningManager {
         });
     }
 
-
     /**
      * Purge directory.
      */
     private void purgeDirectory(final Path dirRoot, final long timeLimit) {
 
         try (final Stream<Path> balad = Files.walk(dirRoot, FileVisitOption.FOLLOW_LINKS)) {
-            balad.sorted(Comparator.reverseOrder())
-                 .filter(p -> !p.equals(dirRoot))
-                 .map(Path::toFile)
-                 .filter(f -> f.lastModified() < timeLimit)
-                 .forEach(File::delete);
+            balad.sorted(Comparator.reverseOrder()).filter(p -> !p.equals(dirRoot)).map(Path::toFile).filter(f -> f.lastModified() < timeLimit).forEach(File::delete);
             balad.close();
         } catch (final IOException e) {
-            LOG.error("Erreur lors de la purge du dossier {} ", dirRoot.getFileName(),  e);
+            LOG.error("Erreur lors de la purge du dossier {} ", dirRoot.getFileName(), e);
         }
     }
-
 
     /**
      * Purge / sauvegarde des fichiers apres archivage.
@@ -253,7 +241,8 @@ public class FileCleaningManager {
                     projets.forEach(p -> {
                         LOG.debug("Suppression / sauvegarde des fichiers après clôture du projet {}", p.getName());
                         final Map<String, List<DocPage>> pages = docPageService.getPagesByProjectId(p.getIdentifier());
-                        final String proj = StringUtils.isNotBlank(p.getName()) ? p.getName() : p.getIdentifier();
+                        final String proj = StringUtils.isNotBlank(p.getName()) ? p.getName()
+                                                                                : p.getIdentifier();
 
                         if (processProjectFiles(conf, pages, proj)) {
                             projectService.setFilesProjectArchived(p.getIdentifier());
@@ -274,7 +263,9 @@ public class FileCleaningManager {
                         } else {
                             proj = l.getProject().getName();
                         }
-                        proj = proj.concat("_").concat(StringUtils.isBlank(l.getLabel()) ? l.getIdentifier() : l.getLabel());
+                        proj = proj.concat("_")
+                                   .concat(StringUtils.isBlank(l.getLabel()) ? l.getIdentifier()
+                                                                             : l.getLabel());
                         if (processProjectFiles(conf, pages, proj)) {
                             lotService.setFilesLotArchived(l.getIdentifier());
                             cleanTempFiles(conf, proj);
@@ -296,31 +287,27 @@ public class FileCleaningManager {
         boolean processed = true;
         for (final String pgcnId : pages.keySet()) {
 
-            final List<String> pagesId =
-                    pages.get(pgcnId).stream().filter(pg -> pg.getNumber() != null).map(AbstractDomainObject::getIdentifier).collect(Collectors.toList());
-                final String pdfPageId =
-                    pages.get(pgcnId).stream().filter(pg -> pg.getNumber() == null).map(AbstractDomainObject::getIdentifier).findAny().orElse(null);
+            final List<String> pagesId = pages.get(pgcnId).stream().filter(pg -> pg.getNumber() != null).map(AbstractDomainObject::getIdentifier).collect(Collectors.toList());
+            final String pdfPageId = pages.get(pgcnId).stream().filter(pg -> pg.getNumber() == null).map(AbstractDomainObject::getIdentifier).findAny().orElse(null);
 
-                final List<StoredFile> zooms = binaryRepository.getAllByPageIdentifiersAndFileFormat(pagesId, ViewsFormatConfiguration.FileFormat.ZOOM);
-                suppressFiles(zooms, libraryId);
-                final List<StoredFile> xtras =
-                    binaryRepository.getAllByPageIdentifiersAndFileFormat(pagesId, ViewsFormatConfiguration.FileFormat.XTRAZOOM);
-                suppressFiles(xtras, libraryId);
+            final List<StoredFile> zooms = binaryRepository.getAllByPageIdentifiersAndFileFormat(pagesId, ViewsFormatConfiguration.FileFormat.ZOOM);
+            suppressFiles(zooms, libraryId);
+            final List<StoredFile> xtras = binaryRepository.getAllByPageIdentifiersAndFileFormat(pagesId, ViewsFormatConfiguration.FileFormat.XTRAZOOM);
+            suppressFiles(xtras, libraryId);
 
-                try {
-                    prepareSaving(conf, project, pgcnId, pagesId, pdfPageId);
-                } catch(final IOException e) {
-                    LOG.error("Error in prepare saving for document {}", pgcnId, e);
-                    // let's continue....
-                }
+            try {
+                prepareSaving(conf, project, pgcnId, pagesId, pdfPageId);
+            } catch (final IOException e) {
+                LOG.error("Error in prepare saving for document {}", pgcnId, e);
+                // let's continue....
+            }
 
-                processed = processed
-                        && compressSavedFiles(conf, project, pgcnId);
+            processed = processed && compressSavedFiles(conf, project, pgcnId);
 
-                if (processed && !conf.isDeleteMaster()) {
-                    // si on conserve les masters, on nettoie l'ocr ds les storedFiles.
-                    cleanOcr(pgcnId, pagesId);
-                }
+            if (processed && !conf.isDeleteMaster()) {
+                // si on conserve les masters, on nettoie l'ocr ds les storedFiles.
+                cleanOcr(pgcnId, pagesId);
+            }
         }
         return processed;
     }
@@ -332,14 +319,12 @@ public class FileCleaningManager {
 
         transactionService.executeInNewTransaction(() -> {
 
-                // on nettoie au moins l'ocr devenu inutile qui peut etre tres lourd...
-                final List<StoredFile> masters =
-                        binaryRepository.getAllByPageIdentifiersAndFileFormat(pagesId, ViewsFormatConfiguration.FileFormat.MASTER);
-                final List<StoredFile> cleanedSfs = masters.stream().map(StoredFile::getWithoutOcrText).collect(Collectors.toList());
-                storedFileRepository.save(cleanedSfs);
+            // on nettoie au moins l'ocr devenu inutile qui peut etre tres lourd...
+            final List<StoredFile> masters = binaryRepository.getAllByPageIdentifiersAndFileFormat(pagesId, ViewsFormatConfiguration.FileFormat.MASTER);
+            final List<StoredFile> cleanedSfs = masters.stream().map(StoredFile::getWithoutOcrText).collect(Collectors.toList());
+            storedFileRepository.saveAll(cleanedSfs);
         });
     }
-
 
     /**
      * Etape de preparation à la sauvegarde.
@@ -349,20 +334,20 @@ public class FileCleaningManager {
      * @param pgcnId
      * @param pagesId
      * @param pdfPageId
-     *         identifiant du master pdf si present
+     *            identifiant du master pdf si present
      */
-    public void prepareSaving(final FilesGestionConfig conf,
-                              final String project,
-                              final String pgcnId,
-                              final List<String> pagesId,
-                              final String pdfPageId) throws IOException {
+    public void prepareSaving(final FilesGestionConfig conf, final String project, final String pgcnId, final List<String> pagesId, final String pdfPageId) throws IOException {
 
         if (!conf.isSaveMaster() && !conf.isDeleteMaster()
-                && !conf.isSavePdf() && !conf.isDeletePdf()
-                && !conf.isSavePrint() && !conf.isDeletePrint()
-                && !conf.isSaveView() && !conf.isDeleteView()
-                && !conf.isSaveThumb() && !conf.isDeleteThumb()
-                && !conf.isSaveAipSip()) {
+            && !conf.isSavePdf()
+            && !conf.isDeletePdf()
+            && !conf.isSavePrint()
+            && !conf.isDeletePrint()
+            && !conf.isSaveView()
+            && !conf.isDeleteView()
+            && !conf.isSaveThumb()
+            && !conf.isDeleteThumb()
+            && !conf.isSaveAipSip()) {
             // Aucune sauvegarde programmée, on quitte..
             return;
         }
@@ -382,15 +367,15 @@ public class FileCleaningManager {
             }
         }
 
-        if (!dest.toFile().mkdirs()) {
+        final File fDest = dest.toFile();
+        if (!fDest.exists() && !fDest.mkdirs()) {
             // Pb de droits d'ecriture
             LOG.error("Creation du repertoire impossible dans {} - Probleme de permissions ? ", dest.toAbsolutePath());
             LOG.trace("Sauvegarde de {}/{} annulée", project, pgcnId);
             return;
         }
 
-        final List<StoredFile> masters =
-                binaryRepository.getAllByPageIdentifiersAndFileFormat(pagesId, ViewsFormatConfiguration.FileFormat.MASTER);
+        final List<StoredFile> masters = binaryRepository.getAllByPageIdentifiersAndFileFormat(pagesId, ViewsFormatConfiguration.FileFormat.MASTER);
 
         if (conf.isSaveMaster() || conf.isDeleteMaster()) {
             if (conf.isSaveMaster()) {
@@ -432,8 +417,7 @@ public class FileCleaningManager {
             }
         }
         if (conf.isSaveThumb() || conf.isDeleteThumb()) {
-            final List<StoredFile> thumbnails =
-                binaryRepository.getAllByPageIdentifiersAndFileFormat(pagesId, ViewsFormatConfiguration.FileFormat.THUMB);
+            final List<StoredFile> thumbnails = binaryRepository.getAllByPageIdentifiersAndFileFormat(pagesId, ViewsFormatConfiguration.FileFormat.THUMB);
             if (conf.isSaveThumb()) {
                 saveFiles(thumbnails, conf.isSaveThumb(), dest, ViewsFormatConfiguration.FileFormat.THUMB, libraryId);
             }
@@ -446,10 +430,10 @@ public class FileCleaningManager {
         if (docUnit != null) {
 
             if (conf.isSaveAipSip()) {
-                    final List<File> files = new ArrayList<>();
-                    files.add(cinesRequestHandlerService.retrieveAip(docUnit.getIdentifier()));
-                    files.add(cinesRequestHandlerService.retrieveSip(docUnit.getIdentifier(), false));
-                    saveFiles(files, dest, "aip_sip");
+                final List<File> files = new ArrayList<>();
+                files.add(cinesRequestHandlerService.retrieveAip(docUnit.getIdentifier()));
+                files.add(cinesRequestHandlerService.retrieveSip(docUnit.getIdentifier(), false));
+                saveFiles(files, dest, "aip_sip");
             }
 
             // mets
@@ -459,17 +443,15 @@ public class FileCleaningManager {
             final Path metsPath = Files.createFile(dest.resolve(MetaDatasCheckService.METS_XML_FILE));
 
             final List<CheckSummedStoredFile> checkSums = new ArrayList<>();
-            masters.stream()
-                .filter(sf -> sf.getPage().getNumber() != null)
-                .forEach(sf -> {
-                    final File sourceFile = bm.getFileForStoredFile(sf, libraryId);
-                    // On remplit la map pour optimiser le traitement ultérieur des métadonnées
-                    try {
-                        checkSums.add(exportMetsService.getCheckSummedStoredFile(sf, sourceFile));
-                    } catch(final IOException e) {
+            masters.stream().filter(sf -> sf.getPage().getNumber() != null).forEach(sf -> {
+                final File sourceFile = bm.getFileForStoredFile(sf, libraryId);
+                // On remplit la map pour optimiser le traitement ultérieur des métadonnées
+                try {
+                    checkSums.add(exportMetsService.getCheckSummedStoredFile(sf, sourceFile));
+                } catch (final IOException e) {
 
-                    }
-                });
+                }
+            });
 
             try (final OutputStream out = new FileOutputStream(metsPath.toFile()); final OutputStream bufOut = new BufferedOutputStream(out)) {
                 exportMetsService.writeMetadata(bufOut, docUnit, noticeDto, false, checkSums);
@@ -488,8 +470,7 @@ public class FileCleaningManager {
      * @param formatToSave
      * @param dest
      */
-    public void saveFiles(final List<StoredFile> sfs, final boolean formatToSave, final Path dest,
-                          final ViewsFormatConfiguration.FileFormat format, final String libraryId) {
+    public void saveFiles(final List<StoredFile> sfs, final boolean formatToSave, final Path dest, final ViewsFormatConfiguration.FileFormat format, final String libraryId) {
 
         if (formatToSave) {
             // on cree un ss-repertoire par format sauvegardé
@@ -502,8 +483,7 @@ public class FileCleaningManager {
                     if (ViewsFormatConfiguration.FileFormat.MASTER == format) {
                         files.put(sf.getFilename(), bm.getFileForStoredFile(sf, libraryId));
                     } else {
-                        final String fileName = sf.getFilename().substring(0, sf.getFilename().lastIndexOf(".")+1)
-                                        + ImageUtils.FORMAT_JPG;
+                        final String fileName = sf.getFilename().substring(0, sf.getFilename().lastIndexOf(".") + 1) + ImageUtils.FORMAT_JPG;
                         files.put(fileName, bm.getFileForStoredFile(sf, libraryId));
                     }
 
@@ -566,7 +546,6 @@ public class FileCleaningManager {
      */
     public boolean compressSavedFiles(final FilesGestionConfig conf, final String project, final String pgcnId) {
 
-
         final String libraryId = conf.getLibrary().getIdentifier();
         final Path dest;
         if (conf.isUseExportFtp()) {
@@ -583,12 +562,13 @@ public class FileCleaningManager {
         }
 
         // Création du fichier
-        final String zipName = project + "_" + pgcnId + ".zip";
-        final File zipFile =
-            new File(dest.toFile().getParentFile().getPath().concat(System.getProperty("file.separator")).concat(zipName));
+        final String zipName = project + "_"
+                               + pgcnId
+                               + ".zip";
+        final File zipFile = new File(dest.toFile().getParentFile().getPath().concat(System.getProperty("file.separator")).concat(zipName));
         try {
             if (!zipFile.createNewFile()) {
-                LOG.warn("Probleme à la creation du zip : le fichier {} existe deja!", project+".zip");
+                LOG.warn("Probleme à la creation du zip : le fichier {} existe deja!", project + ".zip");
             }
         } catch (final IOException e) {
             LOG.error(e.getMessage(), e);
@@ -616,16 +596,16 @@ public class FileCleaningManager {
         if (zipped) {
             // export
             if (conf.isUseExportFtp()) {
-                 exported = ftpExport(conf, zipFile.toPath());
+                exported = ftpExport(conf, zipFile.toPath());
             }
             // Cleaning zip
-            if (exported && zipFile.exists() && zipFile.canWrite()) {
+            if (exported && zipFile.exists()
+                && zipFile.canWrite()) {
                 FileUtils.deleteQuietly(zipFile);
             }
         }
         return zipped;
     }
-
 
     private void cleanTempFiles(final FilesGestionConfig conf, final String project) {
 
@@ -648,27 +628,26 @@ public class FileCleaningManager {
         }
     }
 
-
     private boolean ftpExport(final FilesGestionConfig conf, final Path zipPath) {
-        ExportFTPConfiguration confExport = conf.getActiveExportFTPConfiguration();
-        ExportFTPDeliveryFolder deliveryFolder = conf.getActiveExportFTPDeliveryFolder();
+        final ExportFTPConfiguration confExport = conf.getActiveExportFTPConfiguration();
+        final ExportFTPDeliveryFolder deliveryFolder = conf.getActiveExportFTPDeliveryFolder();
 
         if (confExport != null && deliveryFolder != null) {
-                final SftpConfiguration sftpConf = new SftpConfiguration();
-                sftpConf.setActive(true);
-                sftpConf.setHost(confExport.getStorageServer());
-                sftpConf.setPort(Integer.valueOf(confExport.getPort()));
-                sftpConf.setUsername(confExport.getLogin());
-                sftpConf.setTargetDir(confExport.getAddress().concat(deliveryFolder.getName()));
+            final SftpConfiguration sftpConf = new SftpConfiguration();
+            sftpConf.setActive(true);
+            sftpConf.setHost(confExport.getStorageServer());
+            sftpConf.setPort(Integer.valueOf(confExport.getPort()));
+            sftpConf.setUsername(confExport.getLogin());
+            sftpConf.setTargetDir(confExport.getAddress().concat(deliveryFolder.getName()));
 
-                try {
-                    sftpConf.setPassword(cryptoService.encrypt(confExport.getPassword()));
-                    sftpService.sftpPut(sftpConf, zipPath);
-                } catch (final PgcnTechnicalException e) {
-                    LOG.error("Erreur Export FTP du fichier {}", zipPath.getFileName(), e);
-                    return false;
-                }
-                return true;
+            try {
+                sftpConf.setPassword(cryptoService.encrypt(confExport.getPassword()));
+                sftpService.sftpPut(sftpConf, zipPath);
+            } catch (final PgcnTechnicalException e) {
+                LOG.error("Erreur Export FTP du fichier {}", zipPath.getFileName(), e);
+                return false;
+            }
+            return true;
         } else {
             return false;
         }
@@ -681,7 +660,7 @@ public class FileCleaningManager {
      */
     public void suppressFiles(final List<StoredFile> storedFiles, final String libraryId) {
         storedFiles.forEach(sf -> bm.deleteFileFromStoredFile(sf, libraryId));
-        storedFileRepository.delete(storedFiles);
+        storedFileRepository.deleteAll(storedFiles);
     }
 
     /**
@@ -701,7 +680,10 @@ public class FileCleaningManager {
             final File[] children = fileToZip.listFiles();
             if (children != null) {
                 for (final File childFile : children) {
-                    zip(childFile, fileName + "/" + childFile.getName(), zipOut);
+                    zip(childFile,
+                        fileName + "/"
+                                   + childFile.getName(),
+                        zipOut);
                 }
             }
             return;
@@ -720,7 +702,6 @@ public class FileCleaningManager {
             }
         }
     }
-
 
     /**
      * Delete files with no line in DB storedFile.

@@ -1,28 +1,12 @@
 package fr.progilone.pgcn.repository.delivery;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
-import fr.progilone.pgcn.domain.user.QUser;
-import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-
-import com.mysema.query.BooleanBuilder;
-import com.mysema.query.Tuple;
-import com.mysema.query.jpa.JPASubQuery;
-import com.mysema.query.jpa.JPQLQuery;
-import com.mysema.query.jpa.impl.JPAQuery;
-import com.mysema.query.types.Predicate;
-import com.mysema.query.types.expr.BooleanExpression;
-
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import fr.progilone.pgcn.domain.delivery.Delivery;
 import fr.progilone.pgcn.domain.delivery.Delivery.DeliveryStatus;
 import fr.progilone.pgcn.domain.delivery.QDeliveredDocument;
@@ -33,16 +17,29 @@ import fr.progilone.pgcn.domain.document.sample.QSample;
 import fr.progilone.pgcn.domain.library.QLibrary;
 import fr.progilone.pgcn.domain.lot.QLot;
 import fr.progilone.pgcn.domain.project.QProject;
+import fr.progilone.pgcn.domain.user.QUser;
 import fr.progilone.pgcn.domain.workflow.QDocUnitState;
 import fr.progilone.pgcn.domain.workflow.QDocUnitWorkflow;
 import fr.progilone.pgcn.domain.workflow.QWorkflowModelState;
 import fr.progilone.pgcn.repository.delivery.helper.DeliverySearchBuilder;
 import fr.progilone.pgcn.repository.util.QueryDSLBuilderUtils;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 public class DeliveryRepositoryImpl implements DeliveryRepositoryCustom {
 
-    @PersistenceContext
-    private EntityManager em;
+    private final JPAQueryFactory queryFactory;
+
+    public DeliveryRepositoryImpl(final JPAQueryFactory queryFactory) {
+        this.queryFactory = queryFactory;
+    }
 
     @Override
     public List<Object[]> getDeliveryGroupByStatus(final List<String> libraries, final List<String> projects, final List<String> lots) {
@@ -71,18 +68,18 @@ public class DeliveryRepositoryImpl implements DeliveryRepositoryCustom {
         }
 
         // query
-        return new JPAQuery(em).from(qDelivery)
-                               .leftJoin(qDelivery.lot, qLot)
-                               .leftJoin(qLot.project, qProject)
-                               .leftJoin(qProject.associatedLibraries, qAssociatedLibrary)
-                               .leftJoin(qProject.associatedUsers, qAssociatedUser)
-                               .leftJoin(qProject.library)
-                               .where(builder)
-                               .groupBy(qDelivery.status)
-                               .list(qDelivery.status, qDelivery.identifier.countDistinct())
-                               .stream()
-                               .map(Tuple::toArray)
-                               .collect(Collectors.toList());
+        return queryFactory.select(qDelivery.status, qDelivery.identifier.countDistinct())
+                           .from(qDelivery)
+                           .leftJoin(qDelivery.lot, qLot)
+                           .leftJoin(qLot.project, qProject)
+                           .leftJoin(qProject.associatedLibraries, qAssociatedLibrary)
+                           .leftJoin(qProject.associatedUsers, qAssociatedUser)
+                           .leftJoin(qProject.library)
+                           .where(builder)
+                           .groupBy(qDelivery.status)
+                           .stream()
+                           .map(Tuple::toArray)
+                           .collect(Collectors.toList());
     }
 
     @Override
@@ -142,25 +139,23 @@ public class DeliveryRepositoryImpl implements DeliveryRepositoryCustom {
         // UD
         appendDocUnitFilter(searchBuilder, qDelivery).ifPresent(builder::and);
 
-        final JPQLQuery baseQuery = new JPAQuery(em);
-
-        baseQuery.from(qDelivery)
-                 .innerJoin(qDelivery.lot, qLot)
-                 .innerJoin(qLot.project, qProject)
-                 .leftJoin(qProject.associatedLibraries, qAssociatedLibrary)
-                 .leftJoin(qProject.associatedUsers, qAssociatedUser)
-                 .innerJoin(qProject.library)
-                 .where(builder.getValue())
-                 .distinct();
+        final JPAQuery<Delivery> baseQuery = queryFactory.selectDistinct(qDelivery)
+                                                         .from(qDelivery)
+                                                         .innerJoin(qDelivery.lot, qLot)
+                                                         .innerJoin(qLot.project, qProject)
+                                                         .leftJoin(qProject.associatedLibraries, qAssociatedLibrary)
+                                                         .leftJoin(qProject.associatedUsers, qAssociatedUser)
+                                                         .innerJoin(qProject.library)
+                                                         .where(builder.getValue());
 
         // Décompte
-        final long total = baseQuery.count();
+        final long total = baseQuery.clone().select(qDelivery.countDistinct()).fetchOne();
 
         if (pageable != null) {
             baseQuery.offset(pageable.getOffset()).limit(pageable.getPageSize());
         }
         // Résultats
-        final List<Delivery> result = baseQuery.orderBy(qDelivery.label.asc()).list(qDelivery);
+        final List<Delivery> result = baseQuery.orderBy(qDelivery.label.asc()).fetch();
 
         return new PageImpl<>(result, pageable, total);
     }
@@ -189,7 +184,8 @@ public class DeliveryRepositoryImpl implements DeliveryRepositoryCustom {
             subBuilder.and(qDocUnit.isNotNull());
 
             searchBuilder.getDocUnitPgcnId().ifPresent(docUnitPgcnId -> {
-                subBuilder.and(qDocUnit.pgcnId.like('%' + docUnitPgcnId + '%'));
+                subBuilder.and(qDocUnit.pgcnId.like('%' + docUnitPgcnId
+                                                    + '%'));
             });
             // Étape de workflow en cours au moment de l'exécution de la requête
             searchBuilder.getDocUnitStates().ifPresent(docUnitStates -> {
@@ -199,14 +195,14 @@ public class DeliveryRepositoryImpl implements DeliveryRepositoryCustom {
             // Livraison
             subBuilder.and(qDeliveredDocument.delivery.identifier.eq(qDelivery.identifier));
 
-            existsFilter = new JPASubQuery().from(qDocUnitWorkflow)
-                                            .innerJoin(qDocUnitWorkflow.docUnit, qDocUnit)
-                                            .innerJoin(qDocUnit.digitalDocuments, qDigitalDocument)
-                                            .innerJoin(qDigitalDocument.deliveries, qDeliveredDocument)
-                                            .leftJoin(qDocUnitWorkflow.states, qDocUnitState)
-                                            .leftJoin(qDocUnitState.modelState, qWorkflowModelState)
-                                            .where(subBuilder.getValue())
-                                            .exists();
+            existsFilter = JPAExpressions.select(qDocUnitWorkflow)
+                                         .innerJoin(qDocUnitWorkflow.docUnit, qDocUnit)
+                                         .innerJoin(qDocUnit.digitalDocuments, qDigitalDocument)
+                                         .innerJoin(qDigitalDocument.deliveries, qDeliveredDocument)
+                                         .leftJoin(qDocUnitWorkflow.states, qDocUnitState)
+                                         .leftJoin(qDocUnitState.modelState, qWorkflowModelState)
+                                         .where(subBuilder.getValue())
+                                         .exists();
         }
         return Optional.ofNullable(existsFilter);
     }
@@ -220,7 +216,7 @@ public class DeliveryRepositoryImpl implements DeliveryRepositoryCustom {
         final boolean filterProj = CollectionUtils.isNotEmpty(projectIds);
         final boolean filterLot = CollectionUtils.isNotEmpty(lotIds);
 
-        final JPQLQuery baseQuery = new JPAQuery(em).from(qDelivery);
+        final JPAQuery<Delivery> baseQuery = queryFactory.select(qDelivery).from(qDelivery);
 
         if (filterProj || filterLot) {
             baseQuery.innerJoin(qDelivery.lot, qLot);
@@ -233,7 +229,7 @@ public class DeliveryRepositoryImpl implements DeliveryRepositoryCustom {
             baseQuery.where(qLot.identifier.in(lotIds));
         }
 
-        return baseQuery.list(qDelivery);
+        return baseQuery.fetch();
     }
 
     @Override
@@ -274,23 +270,23 @@ public class DeliveryRepositoryImpl implements DeliveryRepositoryCustom {
         if (sampled) {
             builder.and(qSample.isNotNull());
 
-            final List<Delivery> test = new JPAQuery(em).from(qSample)
-                                                        .leftJoin(qSample.delivery, qDelivery)
-                                                        .leftJoin(qDelivery.lot, qLot)
-                                                        .fetch()
-                                                        .leftJoin(qLot.project, qProject)
-                                                        .leftJoin(qProject.library, qLibrary)
-                                                        .where(builder.getValue())
-                                                        .list(qDelivery);
+            final List<Delivery> test = queryFactory.select(qDelivery)
+                                                    .from(qSample)
+                                                    .leftJoin(qSample.delivery, qDelivery)
+                                                    .leftJoin(qDelivery.lot, qLot)
+                                                    .leftJoin(qLot.project, qProject)
+                                                    .leftJoin(qProject.library, qLibrary)
+                                                    .where(builder.getValue())
+                                                    .fetch();
             return test;
         } else {
-            return new JPAQuery(em).from(qDelivery)
-                                   .leftJoin(qDelivery.lot, qLot)
-                                   .fetch()
-                                   .leftJoin(qLot.project, qProject)
-                                   .leftJoin(qProject.library, qLibrary)
-                                   .where(builder.getValue())
-                                   .list(qDelivery);
+            return queryFactory.select(qDelivery)
+                               .from(qDelivery)
+                               .leftJoin(qDelivery.lot, qLot)
+                               .leftJoin(qLot.project, qProject)
+                               .leftJoin(qProject.library, qLibrary)
+                               .where(builder.getValue())
+                               .fetch();
         }
     }
 
@@ -313,7 +309,7 @@ public class DeliveryRepositoryImpl implements DeliveryRepositoryCustom {
         }
         // Providers
         if (CollectionUtils.isNotEmpty(providers)) {
-            builder.and(qLot.provider.identifier.coalesce(qProject.provider.identifier).getValue().in(providers));
+            builder.and(qLot.provider.identifier.coalesce(qProject.provider.identifier).in(providers));
         }
         // Statuts
         if (CollectionUtils.isNotEmpty(statuses)) {
@@ -327,12 +323,12 @@ public class DeliveryRepositoryImpl implements DeliveryRepositoryCustom {
             builder.and(new BooleanBuilder().or(qDelivery.receptionDate.isNull()).or(qDelivery.receptionDate.before(toDate)));
         }
         // Requête
-        return new JPAQuery(em).from(qDelivery)
-                               .leftJoin(qDelivery.lot, qLot)
-                               .leftJoin(qLot.project, qProject)
-                               .leftJoin(qProject.library, qLibrary)
-                               .fetchAll()
-                               .where(builder.getValue())
-                               .list(qDelivery);
+        return queryFactory.select(qDelivery)
+                           .from(qDelivery)
+                           .leftJoin(qDelivery.lot, qLot)
+                           .leftJoin(qLot.project, qProject)
+                           .leftJoin(qProject.library, qLibrary)
+                           .where(builder.getValue())
+                           .fetch();
     }
 }

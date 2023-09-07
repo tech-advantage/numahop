@@ -1,14 +1,5 @@
 package fr.progilone.pgcn.service.checkconfiguration;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import fr.progilone.pgcn.domain.check.AutomaticCheckType;
 import fr.progilone.pgcn.domain.checkconfiguration.AutomaticCheckRule;
 import fr.progilone.pgcn.domain.checkconfiguration.CheckConfiguration;
@@ -21,6 +12,13 @@ import fr.progilone.pgcn.repository.checkconfiguration.CheckConfigurationReposit
 import fr.progilone.pgcn.repository.library.LibraryRepository;
 import fr.progilone.pgcn.repository.lot.LotRepository;
 import fr.progilone.pgcn.repository.project.ProjectRepository;
+import java.util.ArrayList;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by lebouchp on 03/02/2017.
@@ -53,7 +51,7 @@ public class CheckConfigurationService {
         validateDelete(conf);
 
         // Suppression
-        checkConfigurationRepository.delete(id);
+        checkConfigurationRepository.deleteById(id);
     }
 
     private void validateDelete(final CheckConfiguration conf) throws PgcnValidationException {
@@ -90,7 +88,7 @@ public class CheckConfigurationService {
      */
     @Transactional
     public CheckConfiguration save(final CheckConfiguration checkConfiguration) {
-        return checkConfigurationRepository.save(checkConfiguration);
+        return checkConfigurationRepository.saveAndFlush(checkConfiguration);
     }
 
     /**
@@ -131,10 +129,12 @@ public class CheckConfigurationService {
         destination.setLibrary(source.getLibrary());
         destination.setMajorErrorRate(source.getMajorErrorRate());
         destination.setMinorErrorRate(source.getMinorErrorRate());
+        destination.setDefinitionErrorRate(source.getDefinitionErrorRate());
+        destination.setSampleMode(source.getSampleMode());
         destination.setSampleRate(source.getSampleRate());
         destination.setSeparators(source.getSeparators());
         destination.setAutomaticCheckRules(new ArrayList<>());
-        for(final AutomaticCheckRule acr : source.getAutomaticCheckRules()) {
+        for (final AutomaticCheckRule acr : source.getAutomaticCheckRules()) {
             destination.getAutomaticCheckRules().add(automaticCheckRuleService.duplicateAutomaticCheckRule(acr));
         }
     }
@@ -160,9 +160,32 @@ public class CheckConfigurationService {
                 final AutomaticCheckRule newFileRadicalRule = new AutomaticCheckRule();
                 newFileRadicalRule.setActive(true);
                 newFileRadicalRule.setBlocking(true);
-                newFileRadicalRule.setAutomaticCheckType(checkTypeRepository.findOne("automatic_file_radical"));
+                newFileRadicalRule.setAutomaticCheckType(checkTypeRepository.findById("automatic_file_radical").orElse(null));
                 checkConfiguration.addAutomaticCheckRule(newFileRadicalRule);
             }
         });
+    }
+
+    /**
+     * Renvoie la configuration de contrôle complétée avec les éventuelles étapes manquante
+     */
+    @Transactional(readOnly = true)
+    public CheckConfiguration findAndEnrich(final String identifier) {
+        final CheckConfiguration checkConfiguration = findOne(identifier);
+        if (checkConfiguration != null) {
+            checkTypeRepository.findAllConfigurable().forEach(t -> {
+                // pas de controle auto facile pour le moment..
+                if (t.getType() != AutomaticCheckType.AutoCheckType.FACILE && checkConfiguration.getAutomaticCheckRules()
+                                                                                                .stream()
+                                                                                                .noneMatch(rule -> rule.getAutomaticCheckType().getType() == t.getType())) {
+                    final AutomaticCheckRule newRule = new AutomaticCheckRule();
+                    newRule.setActive(false);
+                    newRule.setBlocking(false);
+                    newRule.setAutomaticCheckType(t);
+                    checkConfiguration.addAutomaticCheckRule(newRule);
+                }
+            });
+        }
+        return checkConfiguration;
     }
 }

@@ -5,25 +5,25 @@
 // Généré le : 2017.12.08 à 03:23:15 PM CET
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.ppdi;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
-
 
 /**
  *
  * Informations de description du contexte du projet d'archives au CINES
  *
  *
- * <p>Classe Java pour ContexteType complex type.
+ * <p>
+ * Classe Java pour ContexteType complex type.
  *
- * <p>Le fragment de sch�ma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="ContexteType">
@@ -44,13 +44,12 @@ import javax.xml.bind.annotation.XmlType;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ContexteType", propOrder = {
-    "fonds",
-    "producteur",
-    "serviceVersant",
-    "circuitProduction",
-    "archivage"
-})
+@XmlType(name = "ContexteType",
+         propOrder = {"fonds",
+                      "producteur",
+                      "serviceVersant",
+                      "circuitProduction",
+                      "archivage"})
 public class ContexteType {
 
     @XmlElement(name = "Fonds", required = true)
@@ -75,8 +74,9 @@ public class ContexteType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getFonds().add(newItem);
+     * getFonds().add(newItem);
      * </pre>
      *
      *
@@ -104,8 +104,9 @@ public class ContexteType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getProducteur().add(newItem);
+     * getProducteur().add(newItem);
      * </pre>
      *
      *
@@ -133,8 +134,9 @@ public class ContexteType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getServiceVersant().add(newItem);
+     * getServiceVersant().add(newItem);
      * </pre>
      *
      *
@@ -162,8 +164,9 @@ public class ContexteType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getCircuitProduction().add(newItem);
+     * getCircuitProduction().add(newItem);
      * </pre>
      *
      *
@@ -191,8 +194,9 @@ public class ContexteType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getArchivage().add(newItem);
+     * getArchivage().add(newItem);
      * </pre>
      *
      *

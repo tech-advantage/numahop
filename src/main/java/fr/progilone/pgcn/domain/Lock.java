@@ -1,16 +1,13 @@
 package fr.progilone.pgcn.domain;
 
+import com.google.common.base.MoreObjects;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.Objects;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
 import org.hibernate.annotations.Immutable;
-
-import com.google.common.base.MoreObjects;
 
 @Entity
 @Table(name = Lock.TABLE_NAME)
@@ -42,17 +39,20 @@ public class Lock {
      */
     @Column(name = "locked_date", updatable = false, nullable = false)
     private LocalDateTime lockedDate = LocalDateTime.now();
-    
+
     /**
      * Constructeur pour JPA
      */
-    private Lock() {}
-    
+    private Lock() {
+    }
+
     /**
      * Constructeur
      *
-     * @param entity identifiant de l'entité
-     * @param lockedBy login de l'usager
+     * @param entity
+     *            identifiant de l'entité
+     * @param lockedBy
+     *            login de l'usager
      */
     public Lock(final String entity, final String lockedBy, final String clazz) {
         this(entity, lockedBy, LocalDateTime.now(), clazz);
@@ -61,33 +61,36 @@ public class Lock {
     public Lock(final String entity, final String lockedBy) {
         this(entity, lockedBy, LocalDateTime.now(), null);
     }
-    
+
     /**
      * Constructeur
      *
-     * @param entity identifiant de l'entité
-     * @param lockedBy login de l'usager
-     * @param lockedDate Date du lock
+     * @param entity
+     *            identifiant de l'entité
+     * @param lockedBy
+     *            login de l'usager
+     * @param lockedDate
+     *            Date du lock
      */
     public Lock(final String entity, final String lockedBy, final LocalDateTime lockedDate, final String clazz) {
         this.identifier = entity;
         this.lockedBy = lockedBy;
-        //LocalDateTime est immuable pas besoin de faire de copie défensive
+        // LocalDateTime est immuable pas besoin de faire de copie défensive
         this.lockedDate = lockedDate;
         this.clazz = clazz;
     }
-    
+
     /**
      * Constructeur !! TEST ONLY !!
      *
-     * @param entity identifiant de l'entité
-     * @param lockedBy login de l'usager
+     * @param entity
+     *            identifiant de l'entité
+     * @param lockedBy
+     *            login de l'usager
      */
     public Lock(final String entity, final String lockedBy, final LocalDateTime lockedDate) {
         this(entity, lockedBy, lockedDate, null);
     }
-    
-    
 
     public String getIdentifier() {
         return identifier;
@@ -109,8 +112,6 @@ public class Lock {
         return lockedDate;
     }
 
-
-
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
@@ -130,11 +131,6 @@ public class Lock {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
-                          .add("identifier", identifier)
-                          .add("clazz", clazz)
-                          .add("lockedBy", lockedBy)
-                          .add("lockedDate", lockedDate)
-                          .toString();
+        return MoreObjects.toStringHelper(this).add("identifier", identifier).add("clazz", clazz).add("lockedBy", lockedBy).add("lockedDate", lockedDate).toString();
     }
 }

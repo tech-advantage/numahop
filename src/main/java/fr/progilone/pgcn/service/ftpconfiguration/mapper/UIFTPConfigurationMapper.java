@@ -23,7 +23,7 @@ public class UIFTPConfigurationMapper {
         ftpConfiguration.setPassword(ftpConfigurationDTO.getPassword());
         ftpConfiguration.setDeliveryFolder(ftpConfigurationDTO.getDeliveryFolder());
 
-        if(ftpConfigurationDTO.getLibrary() != null) {
+        if (ftpConfigurationDTO.getLibrary() != null) {
             Library library = libraryRepository.getOne(ftpConfigurationDTO.getLibrary().getIdentifier());
             ftpConfiguration.setLibrary(library);
         }

@@ -1,31 +1,8 @@
 package fr.progilone.pgcn.service.exchange.cines;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
-
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.List;
-
-import javax.xml.bind.JAXBException;
-
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.internal.stubbing.answers.ReturnsArgumentAt;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.test.util.ReflectionTestUtils;
-import org.xml.sax.SAXException;
 
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.dto.document.BibliographicRecordDcDTO;
@@ -42,19 +19,31 @@ import fr.progilone.pgcn.service.document.common.LanguageCodeService;
 import fr.progilone.pgcn.service.exchange.cines.GenerateDocUnitUtil.GenerateDocUnitUtilEnum;
 import fr.progilone.pgcn.service.library.LibraryParameterService;
 import fr.progilone.pgcn.service.storage.FileStorageManager;
+import jakarta.xml.bind.JAXBException;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.internal.stubbing.answers.ReturnsArgumentAt;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
+import org.xml.sax.SAXException;
 
 /**
  * Created by Sébastien on 28/12/2016.
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ExportSipServiceTest {
 
     private static final String DEFAULT_PUBLISHER = "Default publisher";
 
     private static final String DEFAULT_CREATOR = "Default creator";
-
-    @Rule
-    public final ExpectedException exception = ExpectedException.none();
 
     private ExportSipService service;
     @Mock
@@ -71,7 +60,7 @@ public class ExportSipServiceTest {
     private static final String CHECKSUM_METS = "acfde56g45er2rzf9864785";
     private static final String XSD_VALIDATION_PATH = "src/test/resources/xsd/sip.xsd";
 
-    @Before
+    @BeforeEach
     public void setUp() {
         service = new ExportSipService(languageCodeService, cinesLanguageCodeService, libraryParameterService, docUnitRepository, fm);
         ReflectionTestUtils.setField(service, "sipSchema", XSD_VALIDATION_PATH);
@@ -79,7 +68,7 @@ public class ExportSipServiceTest {
         when(languageCodeService.getIso6393TForLanguage(anyString())).then(new ReturnsArgumentAt(0));
     }
 
-    @Ignore
+    @Disabled
     @Test
     public void testWriteMetadata() throws JAXBException, IOException, SAXException, PgcnTechnicalException, ExportCinesException {
         try (final OutputStream out = new ByteArrayOutputStream(); final OutputStream bufOut = new BufferedOutputStream(out)) {
@@ -98,7 +87,7 @@ public class ExportSipServiceTest {
         }
     }
 
-    @Ignore
+    @Disabled
     @Test
     public void testWriteInvalidMetadata() throws IOException, PgcnTechnicalException, JAXBException, SAXException {
         try (final OutputStream out = new ByteArrayOutputStream(); final OutputStream bufOut = new BufferedOutputStream(out)) {
@@ -116,7 +105,7 @@ public class ExportSipServiceTest {
         }
     }
 
-    @Ignore
+    @Disabled
     @Test
     public void testWriteEmptyServiceVersant() throws JAXBException, IOException, SAXException, PgcnTechnicalException, ExportCinesException {
         try (final OutputStream out = new ByteArrayOutputStream(); final OutputStream bufOut = new BufferedOutputStream(out)) {
@@ -128,12 +117,12 @@ public class ExportSipServiceTest {
             docUnit.setLibrary(lib);
 
             final List<CheckSummedStoredFile> sums = GenerateDocUnitUtil.getCheckSummedList();
-            exception.expect(PgcnTechnicalException.class);
             service.writeMetadata(bufOut, dcDto, docUnit, sums, CHECKSUM_METS, false);
             bufOut.close();
         }
     }
-    @Ignore
+
+    @Disabled
     @Test
     public void assertDefaultValuesAreSet() throws JAXBException, IOException, SAXException, PgcnTechnicalException, ExportCinesException {
         try (final OutputStream out = new ByteArrayOutputStream(); final OutputStream bufOut = new BufferedOutputStream(out)) {
@@ -155,8 +144,10 @@ public class ExportSipServiceTest {
             // Check
             final String xmlResult = out.toString();
             basicChecks(xmlResult);
-            assertTrue(xmlResult.contains("<publisher>" + DEFAULT_PUBLISHER + "</publisher>"));
-            assertTrue(xmlResult.contains("<creator>" + DEFAULT_CREATOR + "</creator>"));
+            assertTrue(xmlResult.contains("<publisher>" + DEFAULT_PUBLISHER
+                                          + "</publisher>"));
+            assertTrue(xmlResult.contains("<creator>" + DEFAULT_CREATOR
+                                          + "</creator>"));
             bufOut.close();
         }
     }

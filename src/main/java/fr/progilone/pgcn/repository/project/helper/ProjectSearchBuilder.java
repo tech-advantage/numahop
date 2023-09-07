@@ -1,11 +1,10 @@
 package fr.progilone.pgcn.repository.project.helper;
 
 import fr.progilone.pgcn.domain.project.Project;
-import org.apache.commons.collections4.CollectionUtils;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import org.apache.commons.collections4.CollectionUtils;
 
 public class ProjectSearchBuilder {
 
@@ -101,6 +100,7 @@ public class ProjectSearchBuilder {
     }
 
     private static <T> Optional<List<T>> ofEmptiable(final List<T> list) {
-        return CollectionUtils.isEmpty(list) ? Optional.empty() : Optional.ofNullable(list);
+        return CollectionUtils.isEmpty(list) ? Optional.empty()
+                                             : Optional.ofNullable(list);
     }
 }

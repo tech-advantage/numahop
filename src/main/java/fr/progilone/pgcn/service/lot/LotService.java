@@ -1,30 +1,5 @@
 package fr.progilone.pgcn.service.lot;
 
-import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.servlet.ServletOutputStream;
-
-import org.apache.commons.collections4.IterableUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import fr.progilone.pgcn.domain.AbstractDomainObject;
 import fr.progilone.pgcn.domain.administration.viewsformat.ViewsFormatConfiguration;
 import fr.progilone.pgcn.domain.checkconfiguration.CheckConfiguration;
@@ -62,18 +37,40 @@ import fr.progilone.pgcn.service.exchange.ImportReportService;
 import fr.progilone.pgcn.service.multilotsdelivery.MultiLotsDeliveryService;
 import fr.progilone.pgcn.service.project.ProjectService;
 import fr.progilone.pgcn.service.util.SortUtils;
+import jakarta.servlet.ServletOutputStream;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import org.apache.commons.collections4.IterableUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Service de gestion des lots
  *
  * @author jbrunet
- * Créé le 10 juil. 2017
+ *         Créé le 10 juil. 2017
  */
 @Service
 public class LotService {
 
     private static final Logger LOG = LoggerFactory.getLogger(LotService.class);
-    
+
     private final DeliveryRepository deliveryRepository;
     private final DocUnitRepository docUnitRepository;
     private final EsLotService esLotService;
@@ -83,7 +80,6 @@ public class LotService {
     private final ProjectService projectService;
     private final ConditionReportService conditionReportService;
     private final MultiLotsDeliveryService multiLotsDeliveryService;
-    
 
     @Autowired
     public LotService(final DeliveryRepository deliveryRepository,
@@ -110,14 +106,14 @@ public class LotService {
      * Suppression d'un lot depuis son identifiant
      *
      * @param identifier
-     *         l'identifiant de l'usager
+     *            l'identifiant de l'usager
      * @throws PgcnBusinessException
-     *         si la suppression de l'usager échoue
+     *             si la suppression de l'usager échoue
      */
     @Transactional
     public void delete(final String identifier) throws PgcnValidationException {
         // Validation de la suppression
-        final Lot lot = lotRepository.findOne(identifier);
+        final Lot lot = lotRepository.findById(identifier).orElseThrow();
         final PgcnList<PgcnError> errors = validateDelete(lot);
         if (!errors.isEmpty()) {
             throw new PgcnValidationException(lot, errors);
@@ -125,15 +121,13 @@ public class LotService {
         // Clean Imports
         importReportService.setLotNull(Collections.singletonList(identifier));
         // Suppression
-        lotRepository.delete(identifier);
+        lotRepository.deleteById(identifier);
         // Moteur de recherche
-        esLotService.deleteAsync(lot);
+        esLotService.deleteAsync(lot.getIdentifier());
     }
 
     /**
      * Suppression d'une liste de lots
-     *
-     * @param lots
      */
     @Transactional
     public void delete(final Collection<Lot> lots) throws PgcnListValidationException {
@@ -179,7 +173,7 @@ public class LotService {
     public List<Lot> findAllByActiveForDelivery(final boolean active) {
         return lotRepository.findAllByActiveForDelivery(active);
     }
-    
+
     @Transactional(readOnly = true)
     public List<Lot> findAllActiveForMultiLotsDelivery(final boolean active) {
         return lotRepository.findAllActiveForMultiLotsDelivery(active);
@@ -212,7 +206,7 @@ public class LotService {
 
     @Transactional(readOnly = true)
     public Lot findByIdentifier(final String id) {
-        return lotRepository.findOne(id);
+        return lotRepository.findById(id).orElse(null);
     }
 
     @Transactional(readOnly = true)
@@ -229,7 +223,7 @@ public class LotService {
     public Lot getOne(final String identifier) {
         return lotRepository.findOneWithDependencies(identifier);
     }
-    
+
     @Transactional(readOnly = true)
     public Lot findOneWithDocsAndWorkflows(final String lotId) {
         return lotRepository.findOneWithDocsAndWorkflows(lotId);
@@ -277,9 +271,6 @@ public class LotService {
 
     /**
      * Retrait du projet d'un lot
-     * ?
-     *
-     * @param id
      */
     @Transactional
     public void unlinkProject(final String id) {
@@ -304,9 +295,9 @@ public class LotService {
 
         Sort sort = SortUtils.getSort(sorts);
         if (sort == null) {
-            sort = new Sort("label");
+            sort = Sort.by("label");
         }
-        final Pageable pageRequest = new PageRequest(page, size, sort);
+        final Pageable pageRequest = PageRequest.of(page, size, sort);
 
         return lotRepository.search(new LotSearchBuilder().setSearch(search)
                                                           .setLibraries(libraries)
@@ -328,7 +319,7 @@ public class LotService {
     public List<Lot> findAllActiveByProjectIn(final List<String> projects) {
         return lotRepository.findAllByActiveAndProjectIdentifierIn(true, projects);
     }
-    
+
     @Transactional(readOnly = true)
     public List<Lot> findAllByLibraryIn(final List<String> libraries) {
         return lotRepository.findAllByProjectLibraryIdentifierIn(libraries);
@@ -341,9 +332,6 @@ public class LotService {
 
     /**
      * Récupération de la première configuration FTP active définie dans le lot, dans le projet, et dans la librarie du projet
-     *
-     * @param lot
-     * @return
      */
     @Transactional(readOnly = true)
     public FTPConfiguration getActiveFTPConfiguration(final Lot lot) {
@@ -366,9 +354,6 @@ public class LotService {
 
     /**
      * Récupération de la première configuration de contrôle active définie dans le lot, dans le projet, et dans la librarie du projet
-     *
-     * @param lot
-     * @return
      */
     @Transactional(readOnly = true)
     public CheckConfiguration getActiveCheckConfiguration(final Lot lot) {
@@ -391,9 +376,6 @@ public class LotService {
 
     /**
      * Récupération du model au niveau du lot ou du projet
-     *
-     * @param lot
-     * @return
      */
     @Transactional(readOnly = true)
     public WorkflowModel getWorkflowModel(final Lot lot) {
@@ -421,10 +403,7 @@ public class LotService {
     }
 
     @Transactional(readOnly = true)
-    public List<Lot> findLotsForWidget(final LocalDate fromDate,
-                                       final List<String> libraries,
-                                       final List<String> projects,
-                                       final List<Lot.LotStatus> status) {
+    public List<Lot> findLotsForWidget(final LocalDate fromDate, final List<String> libraries, final List<String> projects, final List<Lot.LotStatus> status) {
 
         return lotRepository.findLotsForWidget(fromDate, libraries, projects, status);
     }
@@ -432,8 +411,6 @@ public class LotService {
     /**
      * Recherche les lots par bibliothèque, groupés par statut
      *
-     * @param libraries
-     * @param projects
      * @return liste de map avec 2 clés: statut et décompte
      */
     @Transactional(readOnly = true)
@@ -452,8 +429,6 @@ public class LotService {
      * Valide un lot.
      * le status passe à {@link LotStatus#ONGOING}
      * le status du project passe à {@link ProjectStatus#ONGOING}
-     *
-     * @param id
      */
     @Transactional
     public Lot validate(final String id) {
@@ -471,31 +446,27 @@ public class LotService {
     }
 
     @Transactional(readOnly = true)
-    public void writeCondReportSlip(final ServletOutputStream outputStream, final String id, final String encoding, final char separator) throws
-                                                                                                                                          IOException {
+    public void writeCondReportSlip(final ServletOutputStream outputStream, final String id, final String encoding, final char separator) throws IOException {
         final Lot lot = getOne(id);
         final Set<DocUnit> docUnits = lot.getDocUnits();
         conditionReportService.writeSlipDocUnitsCSV(outputStream, docUnits, encoding, separator);
     }
-    
+
     /**
      * Cloture le lot et ses sous-éléments.
-     *  
-     * @param lot
-     * @param endDate
      */
     @Transactional
     public ResultAdminLotDTO clotureLotAndCie(final Lot lot, final LocalDateTime endDate) {
-        
+
         final ResultAdminLotDTO ral;
-        
+
         lot.setRealEndDate(endDate.toLocalDate());
         lot.setStatus(LotStatus.CLOSED);
         lot.setActive(false);
         final Lot saved = save(lot);
         LOG.info("Workflow : Mise a jour du lot {} => lot status : CLOSED", lot.getLabel());
-        
-        lot.getDocUnits().forEach(du -> {    
+
+        lot.getDocUnits().forEach(du -> {
             // cloture les docUnits associées
             du.setState(DocUnit.State.CLOSED);
             docUnitRepository.save(du);
@@ -509,46 +480,43 @@ public class LotService {
                 }
             }));
         });
-        
-        if (saved != null && !saved.isActive()) {
+
+        if (!saved.isActive()) {
             ral = new ResultAdminLotDTO(saved.getIdentifier(), "Lot clôturé", true);
         } else {
-            ral = new ResultAdminLotDTO(saved.getIdentifier(), "Lot non clôturé", false); 
+            ral = new ResultAdminLotDTO(saved.getIdentifier(), "Lot non clôturé", false);
         }
         return ral;
     }
-    
+
     /**
      * Verifie si le lot peut etre cloturé.
-     * 
-     * @param lotId
      */
     @Transactional
     public ResultAdminLotDTO preClotureLot(final String lotId) {
-        
+
         final ResultAdminLotDTO ral;
         final Lot lot = findOneWithDocsAndWorkflows(lotId);
         if (lot.getStatus() == LotStatus.CLOSED || countUncompletedWorkflowsLot(lot) > 0) {
-            
+
             if (lot.getStatus() == LotStatus.CLOSED) {
                 ral = new ResultAdminLotDTO(lotId, "Lot déjà cloturé", false);
             } else {
-                ral = new ResultAdminLotDTO(lotId, "Workflows non terminés", false); 
+                ral = new ResultAdminLotDTO(lotId, "Workflows non terminés", false);
             }
             return ral;
         }
-        // Tous les documents du lots sont finis et validés au sens workflow, 
+        // Tous les documents du lots sont finis et validés au sens workflow,
         // ==> on peut cloturer le lot
-        ral = clotureLotAndCie(lot, LocalDateTime.now()); 
-        
+        ral = clotureLotAndCie(lot, LocalDateTime.now());
+
         // Gestion du projet : cloture projet / trains si conditions reunies
         final Project project = projectService.findByLotId(lot.getIdentifier());
         project.setLots(new HashSet<>(findAllByProjectId(project.getIdentifier())));
         projectService.checkAndCloseProject(project);
         return ral;
     }
-    
-    
+
     @Transactional
     public ResultAdminLotDTO declotureLot(final String lotId) {
         final ResultAdminLotDTO ral;
@@ -556,74 +524,59 @@ public class LotService {
         if (lot.getStatus() != LotStatus.CLOSED) {
             return new ResultAdminLotDTO(lotId, "Lot non clôturé", false);
         }
-        
+
         lot.setRealEndDate(null);
         lot.setStatus(LotStatus.ONGOING);
         lot.setActive(true);
         final Lot saved = save(lot);
         LOG.info("DECLOTURE LOT : Mise a jour du lot {} => lot status : ON GOING", lot.getLabel());
-        
-        lot.getDocUnits().forEach(du -> {    
+
+        lot.getDocUnits().forEach(du -> {
             // cloture les docUnits associées
             du.setState(DocUnit.State.AVAILABLE);
             docUnitRepository.save(du);
             // cloture les livraisons associées
             final DigitalDocument dig = du.getDigitalDocuments().stream().findFirst().orElse(null);
             dig.getDeliveries().stream().forEach(delivered -> {
-                final Delivery delivToArchive = delivered.getDelivery(); 
+                final Delivery delivToArchive = delivered.getDelivery();
                 delivToArchive.setStatus(DeliveryStatus.VALIDATED);
                 deliveryRepository.save(delivToArchive);
             });
         });
-        
+
         // Gestion du projet : on doit ré-ouvrir le projet
         final Project project = projectService.findByLotId(lot.getIdentifier());
         projectService.declotureProject(project);
-        
-        if (saved != null && saved.isActive()) {
+
+        if (saved.isActive()) {
             ral = new ResultAdminLotDTO(saved.getIdentifier(), "Lot déclôturé", true);
         } else {
-            ral = new ResultAdminLotDTO(saved.getIdentifier(), "Lot toujours clôturé!", false); 
+            ral = new ResultAdminLotDTO(saved.getIdentifier(), "Lot toujours clôturé!", false);
         }
         return ral;
     }
-        
-    /**
-     * 
-     * @param lot
-     * @return
-     */
+
     public long countUncompletedWorkflowsLot(final Lot lot) {
-        
-        return lot.getDocUnits().stream()
-                .filter(du -> du.getState() == State.AVAILABLE)
-                .filter(du -> du.getWorkflow() == null 
-                            || !du.getWorkflow().isDone()
-                            || isCheckFailed(du.getWorkflow()))
-                .count();
+
+        return lot.getDocUnits()
+                  .stream()
+                  .filter(du -> du.getState() == State.AVAILABLE)
+                  .filter(du -> du.getWorkflow() == null || !du.getWorkflow().isDone()
+                                || isCheckFailed(du.getWorkflow()))
+                  .count();
     }
-    
+
     /**
      * Retourne vrai si le controle qualité est en échec.
-     * 
-     * @param wkf
-     * @return
      */
     public boolean isCheckFailed(final DocUnitWorkflow wkf) {
-        
-        final DocUnitState state = wkf.getStates()
-                                .stream()
-                                      .filter(st -> WorkflowStateKey.VALIDATION_DOCUMENT == st.getKey())
-                                .findFirst().orElse(null);
+
+        final DocUnitState state = wkf.getStates().stream().filter(st -> WorkflowStateKey.VALIDATION_DOCUMENT == st.getKey()).findFirst().orElse(null);
         return state != null && WorkflowStateStatus.FAILED == state.getStatus();
     }
- 
 
     /**
      * Recherche les lots clôtures par librairie depuis un delai en jours.
-     *
-     * @param libraryIdentifier
-     * @param delay
      */
     @Transactional(readOnly = true)
     public List<Lot> getClosedLotsByLibrary(final String libraryIdentifier, final int delay) {
@@ -635,8 +588,6 @@ public class LotService {
 
     /**
      * Toppe 1 lot signifiant que l'archivage des fichiers a été effectué.
-     * 
-     * @param lotId
      */
     @Transactional
     public void setFilesLotArchived(final String lotId) {

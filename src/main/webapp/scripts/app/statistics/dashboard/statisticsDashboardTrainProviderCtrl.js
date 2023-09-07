@@ -1,12 +1,9 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('StatisticsDashboardTrainProviderCtrl', StatisticsDashboardTrainProviderCtrl);
+    angular.module('numaHopApp.controller').controller('StatisticsDashboardTrainProviderCtrl', StatisticsDashboardTrainProviderCtrl);
 
-    function StatisticsDashboardTrainProviderCtrl($q, codeSrvc, gettextCatalog, HistorySrvc, LibrarySrvc, TrainSrvc,
-        NumahopStorageService, Principal, ProjectSrvc, StatisticsSrvc, USER_ROLES) {
-
+    function StatisticsDashboardTrainProviderCtrl($q, codeSrvc, gettextCatalog, HistorySrvc, LibrarySrvc, TrainSrvc, NumahopStorageService, Principal, ProjectSrvc, StatisticsSrvc, USER_ROLES) {
         var statCtrl = this;
 
         statCtrl.code = codeSrvc;
@@ -15,39 +12,37 @@
         statCtrl.search = search;
         statCtrl.searchValue = searchValue;
 
-        var FILTER_STORAGE_SERVICE_KEY = "stat_dashboard_train_provider";
+        var FILTER_STORAGE_SERVICE_KEY = 'stat_dashboard_train_provider';
 
         /**
          * Listes déroulantes
          */
         statCtrl.config = {
             libraries: {
-                text: "name",
-                placeholder: gettextCatalog.getString("Bibliothèque"),
-                trackby: "identifier",
+                text: 'name',
+                placeholder: gettextCatalog.getString('Bibliothèque'),
+                trackby: 'identifier',
                 // Chargement avec mise en cache du résultat
                 refresh: function () {
                     if (!statCtrl.config.libraries.data) {
                         statCtrl.config.libraries.data = LibrarySrvc.query({ dto: true });
-                        return statCtrl.config.libraries.data.$promise
-                            .then(function (lib) {
-                                return _.map(lib, function (l) {
-                                    return _.pick(l, "identifier", "name");
-                                });
+                        return statCtrl.config.libraries.data.$promise.then(function (lib) {
+                            return _.map(lib, function (l) {
+                                return _.pick(l, 'identifier', 'name');
                             });
-                    }
-                    else {
+                        });
+                    } else {
                         return $q.when(statCtrl.config.libraries.data);
                     }
                 },
                 'refresh-delay': 0, // pas de refresh-delay, car on lit les données en cache après le 1er chargement
                 'allow-clear': true,
-                multiple: true
+                multiple: true,
             },
             trains: {
-                text: "label",
-                placeholder: gettextCatalog.getString("Train"),
-                trackby: "identifier",
+                text: 'label',
+                placeholder: gettextCatalog.getString('Train'),
+                trackby: 'identifier',
                 refresh: function ($select) {
                     // Gestion du cas où la liste est réinitialisée manuellement (search est indéfini)
                     if (angular.isUndefined($select.search)) {
@@ -56,62 +51,59 @@
                     var searchParams = {
                         page: 0,
                         search: $select.search,
-                        active: true
+                        active: true,
                     };
                     if (statCtrl.filters.project) {
-                        searchParams["projects"] = _.pluck(statCtrl.filters.project, "identifier");
+                        searchParams['projects'] = _.pluck(statCtrl.filters.project, 'identifier');
                     }
-                    return TrainSrvc.search(searchParams).$promise
-                        .then(function (lots) {
-                            return _.map(lots.content, function (lot) {
-                                return _.pick(lot, "identifier", "label");
-                            });
+                    return TrainSrvc.search(searchParams).$promise.then(function (lots) {
+                        return _.map(lots.content, function (lot) {
+                            return _.pick(lot, 'identifier', 'label');
                         });
+                    });
                 },
                 'refresh-delay': 300,
                 'allow-clear': true,
-                multiple: true
+                multiple: true,
             },
             projects: {
-                text: "name",
-                placeholder: gettextCatalog.getString("Projet"),
-                trackby: "identifier",
+                text: 'name',
+                placeholder: gettextCatalog.getString('Projet'),
+                trackby: 'identifier',
                 refresh: function ($select) {
                     var searchParams = {
                         page: 0,
                         search: $select.search,
-                        active: true
+                        active: true,
                     };
-                    return ProjectSrvc.search(searchParams).$promise
-                        .then(function (projects) {
-                            return _.map(projects.content, function (project) {
-                                return _.pick(project, "identifier", "name");
-                            });
+                    return ProjectSrvc.search(searchParams).$promise.then(function (projects) {
+                        return _.map(projects.content, function (project) {
+                            return _.pick(project, 'identifier', 'name');
                         });
+                    });
                 },
                 'refresh-delay': 300,
                 multiple: true,
-                'allow-clear': true
+                'allow-clear': true,
             },
             status: {
-                text: "label",
-                placeholder: gettextCatalog.getString("Statut"),
-                trackby: "identifier",
+                text: 'label',
+                placeholder: gettextCatalog.getString('Statut'),
+                trackby: 'identifier',
                 data: getStatus(),
                 multiple: true,
-                'allow-clear': true
-            }
+                'allow-clear': true,
+            },
         };
 
         init();
-
 
         /**
          * Initialisation du controleur
          * @return {[type]} [description]
          */
         function init() {
-            HistorySrvc.add(gettextCatalog.getString("Statistiques des trains"));
+            HistorySrvc.add(gettextCatalog.getString('Statistiques des trains'));
             statCtrl.loaded = false;
             statCtrl.showLib = Principal.isInRole(USER_ROLES.SUPER_ADMIN) || Principal.isInRole(USER_ROLES.ADMINISTRATION_LIB);
 
@@ -141,8 +133,8 @@
 
         /**
          * Recherche  d'entités sur un changement de période
-         * @param {*} from 
-         * @param {*} to 
+         * @param {*} from
+         * @param {*} to
          */
         function searchValue(updatedField, updatedValue) {
             statCtrl.filters[updatedField] = updatedValue;
@@ -175,10 +167,10 @@
          */
         function getSearchParams() {
             var params = {
-                library: _.pluck(statCtrl.filters.library, "identifier"),
-                project: _.pluck(statCtrl.filters.project, "identifier"),
-                train: _.pluck(statCtrl.filters.train, "identifier"),
-                status: _.pluck(statCtrl.filters.status, "identifier")
+                library: _.pluck(statCtrl.filters.library, 'identifier'),
+                project: _.pluck(statCtrl.filters.project, 'identifier'),
+                train: _.pluck(statCtrl.filters.train, 'identifier'),
+                status: _.pluck(statCtrl.filters.status, 'identifier'),
             };
             if (statCtrl.filters.sendFrom) {
                 params.sendFrom = statCtrl.filters.sendFrom;
@@ -224,7 +216,7 @@
                 .map(function (p) {
                     return {
                         identifier: p[0],
-                        label: p[1]
+                        label: p[1],
                     };
                 })
                 .value();

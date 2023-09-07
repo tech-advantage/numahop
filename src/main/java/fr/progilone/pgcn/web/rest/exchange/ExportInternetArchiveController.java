@@ -1,14 +1,25 @@
 package fr.progilone.pgcn.web.rest.exchange;
 
-import static fr.progilone.pgcn.web.rest.exchange.security.AuthorizationConstants.EXPORT_INTERNET_ARCHIVE_HAB0;
+import static fr.progilone.pgcn.web.rest.exchange.security.AuthorizationConstants.*;
 
+import com.codahale.metrics.annotation.Timed;
+import fr.progilone.pgcn.domain.document.DocUnit;
+import fr.progilone.pgcn.domain.exchange.internetarchive.InternetArchiveReport;
+import fr.progilone.pgcn.exception.PgcnTechnicalException;
+import fr.progilone.pgcn.security.SecurityUtils;
+import fr.progilone.pgcn.service.document.DocUnitService;
+import fr.progilone.pgcn.service.es.EsDocUnitService;
+import fr.progilone.pgcn.service.exchange.internetarchive.InternetArchiveItemDTO;
+import fr.progilone.pgcn.service.exchange.internetarchive.InternetArchiveService;
+import fr.progilone.pgcn.service.exchange.internetarchive.InternetArchiveServiceAsync;
+import fr.progilone.pgcn.web.rest.AbstractRestController;
+import fr.progilone.pgcn.web.util.AccessHelper;
+import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,33 +31,18 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.codahale.metrics.annotation.Timed;
-
-import fr.progilone.pgcn.domain.document.DocUnit;
-import fr.progilone.pgcn.domain.exchange.internetarchive.InternetArchiveReport;
-import fr.progilone.pgcn.exception.PgcnTechnicalException;
-import fr.progilone.pgcn.security.SecurityUtils;
-import fr.progilone.pgcn.service.document.DocUnitService;
-import fr.progilone.pgcn.service.es.EsInternetArchiveReportService;
-import fr.progilone.pgcn.service.exchange.internetarchive.InternetArchiveItemDTO;
-import fr.progilone.pgcn.service.exchange.internetarchive.InternetArchiveService;
-import fr.progilone.pgcn.service.exchange.internetarchive.InternetArchiveServiceAsync;
-import fr.progilone.pgcn.web.rest.AbstractRestController;
-import fr.progilone.pgcn.web.util.AccessHelper;
-import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
-
 /**
  * Export vers Internet Archive
  *
  * @author jbrunet
- * Créé le 24 avr. 2017
+ *         Créé le 24 avr. 2017
  */
 @RestController
 @RequestMapping(value = "/api/rest/internet_archive")
 public class ExportInternetArchiveController extends AbstractRestController {
 
     private final DocUnitService docUnitService;
-    private final EsInternetArchiveReportService esIaReportService;
+    private final EsDocUnitService esDocUnitService;
     private final InternetArchiveService iaService;
     private final InternetArchiveServiceAsync iaServiceAsync;
     private final AccessHelper accessHelper;
@@ -55,13 +51,13 @@ public class ExportInternetArchiveController extends AbstractRestController {
     @Autowired
     public ExportInternetArchiveController(final InternetArchiveService iaService,
                                            final DocUnitService docUnitService,
-                                           final EsInternetArchiveReportService esIaReportService,
+                                           final EsDocUnitService esDocUnitService,
                                            final InternetArchiveServiceAsync iaServiceAsync,
                                            final AccessHelper accessHelper,
                                            final LibraryAccesssHelper libraryAccesssHelper) {
         this.iaService = iaService;
         this.docUnitService = docUnitService;
-        this.esIaReportService = esIaReportService;
+        this.esDocUnitService = esDocUnitService;
         this.iaServiceAsync = iaServiceAsync;
         this.accessHelper = accessHelper;
         this.libraryAccesssHelper = libraryAccesssHelper;
@@ -70,8 +66,7 @@ public class ExportInternetArchiveController extends AbstractRestController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, params = {"prepare_item"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed({EXPORT_INTERNET_ARCHIVE_HAB0})
-    public ResponseEntity<InternetArchiveItemDTO> prepare(final HttpServletRequest request, @PathVariable("id") final String identifier) throws
-                                                                                                                                         PgcnTechnicalException {
+    public ResponseEntity<InternetArchiveItemDTO> prepare(final HttpServletRequest request, @PathVariable("id") final String identifier) throws PgcnTechnicalException {
         final DocUnit docUnit = docUnitService.findOneWithLibrary(identifier);
         if (docUnit == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -88,9 +83,8 @@ public class ExportInternetArchiveController extends AbstractRestController {
     @RequestMapping(value = "/{id}", method = RequestMethod.POST, params = {"create"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed({EXPORT_INTERNET_ARCHIVE_HAB0})
-    public ResponseEntity<?> create(final HttpServletRequest request,
-                                    @PathVariable("id") final String identifier,
-                                    @RequestBody final InternetArchiveItemDTO item) throws PgcnTechnicalException {
+    public ResponseEntity<?> create(final HttpServletRequest request, @PathVariable("id") final String identifier, @RequestBody final InternetArchiveItemDTO item)
+                                                                                                                                                                   throws PgcnTechnicalException {
 
         final DocUnit docUnit = docUnitService.findOneWithAllDependencies(identifier);
         if (docUnit == null) {
@@ -107,19 +101,12 @@ public class ExportInternetArchiveController extends AbstractRestController {
 
     /**
      * Sauvegarde l'objet de diffusion IA pour un usage ultérieur.
-     *
-     * @param request
-     * @param identifier
-     * @param item
-     * @return
-     * @throws PgcnTechnicalException
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.POST, params = {"save"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed({EXPORT_INTERNET_ARCHIVE_HAB0})
-    public ResponseEntity<?> save(final HttpServletRequest request,
-                                  @PathVariable("id") final String identifier,
-                                  @RequestBody final InternetArchiveItemDTO item) throws PgcnTechnicalException {
+    public ResponseEntity<?> save(final HttpServletRequest request, @PathVariable("id") final String identifier, @RequestBody final InternetArchiveItemDTO item)
+                                                                                                                                                                 throws PgcnTechnicalException {
 
         final DocUnit docUnit = docUnitService.findOneWithAllDependencies(identifier);
         if (docUnit == null) {
@@ -135,8 +122,6 @@ public class ExportInternetArchiveController extends AbstractRestController {
 
     /**
      * Déclenche l'export IA de la liste de documents spécifiés.
-     *
-     * @throws PgcnTechnicalException
      */
     @RequestMapping(method = RequestMethod.GET, params = {"mass_export"})
     @Timed
@@ -147,12 +132,12 @@ public class ExportInternetArchiveController extends AbstractRestController {
         if (filteredDocUnits.isEmpty()) {
             return;
         }
-        final List<String> reports = new ArrayList<>();
+        final List<String> docUnits = new ArrayList<>();
         for (final DocUnit docUnit : filteredDocUnits) {
             final InternetArchiveReport report = iaService.createItem(docUnit.getIdentifier(), true);
-            reports.add(report.getIdentifier());
+            docUnits.add(report.getDocUnit().getIdentifier());
         }
         // Indexation
-        esIaReportService.indexAsync(reports);
+        esDocUnitService.indexAsync(docUnits);
     }
 }

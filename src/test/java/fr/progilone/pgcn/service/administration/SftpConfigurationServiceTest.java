@@ -1,25 +1,9 @@
 package fr.progilone.pgcn.service.administration;
 
-import static fr.progilone.pgcn.exception.message.PgcnErrorCode.CONF_SFTP_LABEL_MANDATORY;
-import static fr.progilone.pgcn.exception.message.PgcnErrorCode.CONF_SFTP_LIBRARY_MANDATORY;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.HashSet;
-import java.util.Set;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.internal.stubbing.answers.ReturnsArgumentAt;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.test.util.ReflectionTestUtils;
+import static fr.progilone.pgcn.exception.message.PgcnErrorCode.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 import fr.progilone.pgcn.domain.administration.SftpConfiguration;
 import fr.progilone.pgcn.domain.dto.administration.SftpConfigurationDTO;
@@ -31,11 +15,20 @@ import fr.progilone.pgcn.service.administration.mapper.SftpConfigurationMapper;
 import fr.progilone.pgcn.service.library.mapper.SimpleLibraryMapper;
 import fr.progilone.pgcn.service.util.CryptoService;
 import fr.progilone.pgcn.util.TestUtil;
+import java.util.HashSet;
+import java.util.Set;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.internal.stubbing.answers.ReturnsArgumentAt;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 /**
  * Created by Sebastien on 30/12/2016.
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class SftpConfigurationServiceTest {
 
     @Mock
@@ -45,7 +38,7 @@ public class SftpConfigurationServiceTest {
 
     private SftpConfigurationService service;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         final SftpConfigurationMapper mapper = SftpConfigurationMapper.INSTANCE;
         ReflectionTestUtils.setField(mapper, "simpleLibraryMapper", SimpleLibraryMapper.INSTANCE);
@@ -94,7 +87,7 @@ public class SftpConfigurationServiceTest {
     public void testDelete() {
         final String id = "ConfigurationSftp-001";
         service.delete(id);
-        verify(sftpConfigurationRepository).delete(id);
+        verify(sftpConfigurationRepository).deleteById(id);
     }
 
     @Test

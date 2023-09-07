@@ -5,24 +5,24 @@
 // Généré le : 2017.01.03 à 11:16:35 AM CET
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.aip;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
 import javax.xml.datatype.Duration;
-
 
 /**
  * Métadonnées de gestion du document
  *
- * <p>Classe Java pour DocMetaType complex type.
+ * <p>
+ * Classe Java pour DocMetaType complex type.
  *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="DocMetaType"&gt;
@@ -55,25 +55,24 @@ import javax.xml.datatype.Duration;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "DocMetaType", propOrder = {
-    "authenticite",
-    "dateArchivage",
-    "dureeConservation",
-    "identifiantDocPac",
-    "identifiantDocProducteur",
-    "docRelation",
-    "evaluation",
-    "communicabilite",
-    "noteDocument",
-    "serviceVersant",
-    "planClassement",
-    "identifiantVersement",
-    "projet",
-    "sortFinal",
-    "structureDocument",
-    "version",
-    "versionPrecedente"
-})
+@XmlType(name = "DocMetaType",
+         propOrder = {"authenticite",
+                      "dateArchivage",
+                      "dureeConservation",
+                      "identifiantDocPac",
+                      "identifiantDocProducteur",
+                      "docRelation",
+                      "evaluation",
+                      "communicabilite",
+                      "noteDocument",
+                      "serviceVersant",
+                      "planClassement",
+                      "identifiantVersement",
+                      "projet",
+                      "sortFinal",
+                      "structureDocument",
+                      "version",
+                      "versionPrecedente"})
 public class DocMetaType {
 
     protected String authenticite;
@@ -103,8 +102,8 @@ public class DocMetaType {
      * Obtient la valeur de la propriété authenticite.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getAuthenticite() {
@@ -115,8 +114,8 @@ public class DocMetaType {
      * Définit la valeur de la propriété authenticite.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setAuthenticite(String value) {
@@ -127,8 +126,8 @@ public class DocMetaType {
      * Obtient la valeur de la propriété dateArchivage.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getDateArchivage() {
@@ -139,8 +138,8 @@ public class DocMetaType {
      * Définit la valeur de la propriété dateArchivage.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setDateArchivage(String value) {
@@ -151,8 +150,8 @@ public class DocMetaType {
      * Obtient la valeur de la propriété dureeConservation.
      *
      * @return
-     *     possible object is
-     *     {@link Duration }
+     *         possible object is
+     *         {@link Duration }
      *
      */
     public Duration getDureeConservation() {
@@ -163,8 +162,8 @@ public class DocMetaType {
      * Définit la valeur de la propriété dureeConservation.
      *
      * @param value
-     *     allowed object is
-     *     {@link Duration }
+     *            allowed object is
+     *            {@link Duration }
      *
      */
     public void setDureeConservation(Duration value) {
@@ -175,8 +174,8 @@ public class DocMetaType {
      * Obtient la valeur de la propriété identifiantDocPac.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getIdentifiantDocPac() {
@@ -187,8 +186,8 @@ public class DocMetaType {
      * Définit la valeur de la propriété identifiantDocPac.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setIdentifiantDocPac(String value) {
@@ -199,8 +198,8 @@ public class DocMetaType {
      * Obtient la valeur de la propriété identifiantDocProducteur.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getIdentifiantDocProducteur() {
@@ -211,8 +210,8 @@ public class DocMetaType {
      * Définit la valeur de la propriété identifiantDocProducteur.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setIdentifiantDocProducteur(String value) {
@@ -230,8 +229,9 @@ public class DocMetaType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getDocRelation().add(newItem);
+     * getDocRelation().add(newItem);
      * </pre>
      *
      *
@@ -252,8 +252,8 @@ public class DocMetaType {
      * Obtient la valeur de la propriété evaluation.
      *
      * @return
-     *     possible object is
-     *     {@link EvaluationType }
+     *         possible object is
+     *         {@link EvaluationType }
      *
      */
     public EvaluationType getEvaluation() {
@@ -264,8 +264,8 @@ public class DocMetaType {
      * Définit la valeur de la propriété evaluation.
      *
      * @param value
-     *     allowed object is
-     *     {@link EvaluationType }
+     *            allowed object is
+     *            {@link EvaluationType }
      *
      */
     public void setEvaluation(EvaluationType value) {
@@ -276,8 +276,8 @@ public class DocMetaType {
      * Obtient la valeur de la propriété communicabilite.
      *
      * @return
-     *     possible object is
-     *     {@link CommunicabiliteType }
+     *         possible object is
+     *         {@link CommunicabiliteType }
      *
      */
     public CommunicabiliteType getCommunicabilite() {
@@ -288,8 +288,8 @@ public class DocMetaType {
      * Définit la valeur de la propriété communicabilite.
      *
      * @param value
-     *     allowed object is
-     *     {@link CommunicabiliteType }
+     *            allowed object is
+     *            {@link CommunicabiliteType }
      *
      */
     public void setCommunicabilite(CommunicabiliteType value) {
@@ -300,8 +300,8 @@ public class DocMetaType {
      * Obtient la valeur de la propriété noteDocument.
      *
      * @return
-     *     possible object is
-     *     {@link StringNotNULLtext }
+     *         possible object is
+     *         {@link StringNotNULLtext }
      *
      */
     public StringNotNULLtext getNoteDocument() {
@@ -312,8 +312,8 @@ public class DocMetaType {
      * Définit la valeur de la propriété noteDocument.
      *
      * @param value
-     *     allowed object is
-     *     {@link StringNotNULLtext }
+     *            allowed object is
+     *            {@link StringNotNULLtext }
      *
      */
     public void setNoteDocument(StringNotNULLtext value) {
@@ -324,8 +324,8 @@ public class DocMetaType {
      * Obtient la valeur de la propriété serviceVersant.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getServiceVersant() {
@@ -336,8 +336,8 @@ public class DocMetaType {
      * Définit la valeur de la propriété serviceVersant.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setServiceVersant(String value) {
@@ -348,8 +348,8 @@ public class DocMetaType {
      * Obtient la valeur de la propriété planClassement.
      *
      * @return
-     *     possible object is
-     *     {@link StringNotNULLtext }
+     *         possible object is
+     *         {@link StringNotNULLtext }
      *
      */
     public StringNotNULLtext getPlanClassement() {
@@ -360,8 +360,8 @@ public class DocMetaType {
      * Définit la valeur de la propriété planClassement.
      *
      * @param value
-     *     allowed object is
-     *     {@link StringNotNULLtext }
+     *            allowed object is
+     *            {@link StringNotNULLtext }
      *
      */
     public void setPlanClassement(StringNotNULLtext value) {
@@ -372,8 +372,8 @@ public class DocMetaType {
      * Obtient la valeur de la propriété identifiantVersement.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getIdentifiantVersement() {
@@ -384,8 +384,8 @@ public class DocMetaType {
      * Définit la valeur de la propriété identifiantVersement.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setIdentifiantVersement(String value) {
@@ -396,8 +396,8 @@ public class DocMetaType {
      * Obtient la valeur de la propriété projet.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getProjet() {
@@ -408,8 +408,8 @@ public class DocMetaType {
      * Définit la valeur de la propriété projet.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setProjet(String value) {
@@ -420,8 +420,8 @@ public class DocMetaType {
      * Obtient la valeur de la propriété sortFinal.
      *
      * @return
-     *     possible object is
-     *     {@link StringNotNULLtext }
+     *         possible object is
+     *         {@link StringNotNULLtext }
      *
      */
     public StringNotNULLtext getSortFinal() {
@@ -432,8 +432,8 @@ public class DocMetaType {
      * Définit la valeur de la propriété sortFinal.
      *
      * @param value
-     *     allowed object is
-     *     {@link StringNotNULLtext }
+     *            allowed object is
+     *            {@link StringNotNULLtext }
      *
      */
     public void setSortFinal(StringNotNULLtext value) {
@@ -451,8 +451,9 @@ public class DocMetaType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getStructureDocument().add(newItem);
+     * getStructureDocument().add(newItem);
      * </pre>
      *
      *
@@ -473,8 +474,8 @@ public class DocMetaType {
      * Obtient la valeur de la propriété version.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getVersion() {
@@ -485,8 +486,8 @@ public class DocMetaType {
      * Définit la valeur de la propriété version.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setVersion(String value) {
@@ -497,8 +498,8 @@ public class DocMetaType {
      * Obtient la valeur de la propriété versionPrecedente.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getVersionPrecedente() {
@@ -509,8 +510,8 @@ public class DocMetaType {
      * Définit la valeur de la propriété versionPrecedente.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setVersionPrecedente(String value) {

@@ -1,29 +1,5 @@
 package fr.progilone.pgcn.service.check;
 
-import java.io.File;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
-import org.mapstruct.factory.Mappers;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import fr.progilone.pgcn.domain.check.AutomaticCheckResult;
 import fr.progilone.pgcn.domain.check.AutomaticCheckResult.AutoCheckResult;
 import fr.progilone.pgcn.domain.check.AutomaticCheckType;
@@ -36,6 +12,7 @@ import fr.progilone.pgcn.domain.dto.check.AutomaticCheckTypeDTO;
 import fr.progilone.pgcn.domain.dto.check.SplitFilename;
 import fr.progilone.pgcn.domain.dto.document.PreDeliveryDocumentFileDTO;
 import fr.progilone.pgcn.domain.dto.document.PreDeliveryDocumentFileDTO.FileRoleEnum;
+import fr.progilone.pgcn.domain.imagemetadata.ImageMetadataValue;
 import fr.progilone.pgcn.domain.jaxb.mets.MdSecType;
 import fr.progilone.pgcn.domain.lot.Lot;
 import fr.progilone.pgcn.exception.PgcnTechnicalException;
@@ -45,18 +22,35 @@ import fr.progilone.pgcn.exception.message.PgcnErrorCode;
 import fr.progilone.pgcn.exception.message.PgcnList;
 import fr.progilone.pgcn.repository.check.AutomaticCheckResultRepository;
 import fr.progilone.pgcn.repository.check.AutomaticCheckTypeRepository;
+import fr.progilone.pgcn.repository.imagemetadata.ImageMetadataValuesRepository;
 import fr.progilone.pgcn.service.check.mapper.AutomaticCheckTypeMapper;
 import fr.progilone.pgcn.service.delivery.PrefixedDocuments;
 import fr.progilone.pgcn.service.document.DigitalDocumentService;
 import fr.progilone.pgcn.service.storage.BinaryStorageManager;
+import fr.progilone.pgcn.service.storage.BinaryStorageManager.Metadatas;
 import fr.progilone.pgcn.service.util.AutomaticCheckResultConvertUtil;
 import fr.progilone.pgcn.web.websocket.WebsocketService;
+import java.io.File;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
+import org.mapstruct.factory.Mappers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Service de gestion des contrôles automatisés sur les entités
  *
  * @author jbrunet
- * Créé le 9 mars 2017
+ *         Créé le 9 mars 2017
  */
 @Service
 public class AutomaticCheckService {
@@ -77,6 +71,7 @@ public class AutomaticCheckService {
 
     // Services automatisés
     private final FacileCinesService facileService;
+    private final ImageMetadataValuesRepository imageMetadataValuesRepository;
 
     @Autowired
     public AutomaticCheckService(final AutomaticCheckTypeRepository checkTypeRepository,
@@ -85,7 +80,8 @@ public class AutomaticCheckService {
                                  final MetaDatasCheckService metaCheckService,
                                  final DigitalDocumentService digitalDocumentService,
                                  final BinaryStorageManager bm,
-                                 final WebsocketService websocketService) {
+                                 final WebsocketService websocketService,
+                                 final ImageMetadataValuesRepository imageMetadataValuesRepository) {
         this.checkTypeRepository = checkTypeRepository;
         this.checkResultRepository = checkResultRepository;
         this.facileService = facileService;
@@ -93,6 +89,7 @@ public class AutomaticCheckService {
         this.digitalDocumentService = digitalDocumentService;
         this.bm = bm;
         this.websocketService = websocketService;
+        this.imageMetadataValuesRepository = imageMetadataValuesRepository;
     }
 
     @Transactional
@@ -111,7 +108,7 @@ public class AutomaticCheckService {
         if (results == null) {
             return new ArrayList<>();
         }
-        return checkResultRepository.save(results);
+        return checkResultRepository.saveAll(results);
     }
 
     @Transactional
@@ -129,31 +126,29 @@ public class AutomaticCheckService {
         final Map<String, AutomaticCheckResult> oldRes = findByDocUnitAndDigitalDocument(doc.getIdentifier(), digDocId);
         if (CollectionUtils.isNotEmpty(oldRes.keySet())) {
 
-            results.stream()
-                    .filter(res -> res.getPage() != null)
-                    .forEach(res -> {
+            results.stream().filter(res -> res.getPage() != null).forEach(res -> {
 
-                        if (oldRes.get(res.getPage().getIdentifier()) != null) {
-                            final AutomaticCheckResult old = oldRes.get(res.getPage().getIdentifier());
-                            BeanUtils.copyProperties(res, old, "identifier", "createdBy", "createdDate", "lastModifiedBy", "version", "lastModifiedDate" );
-                            //res.setVersion(old.getVersion()+1);
-                            old.setLastModifiedDate(LocalDateTime.now());
-                            resToPersist.add(old);
-                        } else {
-                            resToPersist.add(res);
-                        }
+                if (oldRes.get(res.getPage().getIdentifier()) != null) {
+                    final AutomaticCheckResult old = oldRes.get(res.getPage().getIdentifier());
+                    BeanUtils.copyProperties(res, old, "identifier", "createdBy", "createdDate", "lastModifiedBy", "version", "lastModifiedDate");
+                    // res.setVersion(old.getVersion()+1);
+                    old.setLastModifiedDate(LocalDateTime.now());
+                    resToPersist.add(old);
+                } else {
+                    resToPersist.add(res);
+                }
             });
 
         } else {
             resToPersist.addAll(results);
         }
 
-        return checkResultRepository.save(resToPersist);
+        return checkResultRepository.saveAll(resToPersist);
     }
 
     @Transactional
     public void delete(final Set<AutomaticCheckResult> results) {
-        checkResultRepository.delete(results);
+        checkResultRepository.deleteAll(results);
     }
 
     @Transactional
@@ -176,9 +171,8 @@ public class AutomaticCheckService {
 
     public Map<String, AutomaticCheckResult> findByDocUnitAndDigitalDocument(final String docUnit, final String digitalDocument) {
 
-        final List<AutomaticCheckResult>  results =  checkResultRepository.findAllByDocUnitAndDigitalDocumentAndCheckType(docUnit, digitalDocument, AutoCheckType.FACILE);
-        return results.stream().map(r -> Pair.of(r.getPage().getIdentifier(), r))
-                                   .collect(Collectors.toMap(Pair::getLeft, Pair::getRight));
+        final List<AutomaticCheckResult> results = checkResultRepository.findAllByDocUnitAndDigitalDocumentAndCheckType(docUnit, digitalDocument, AutoCheckType.FACILE);
+        return results.stream().map(r -> Pair.of(r.getPage().getIdentifier(), r)).collect(Collectors.toMap(Pair::getLeft, Pair::getRight));
     }
 
     /**
@@ -235,35 +229,35 @@ public class AutomaticCheckService {
      * @param results
      * @param doc
      */
-    private void checkFacile(final AutomaticCheckType checkType, final List<AutomaticCheckResult> results,
-                                                                 final DocUnit doc, final String libraryId) {
+    private void checkFacile(final AutomaticCheckType checkType, final List<AutomaticCheckResult> results, final DocUnit doc, final String libraryId) {
         final Set<DigitalDocument> digitalDocs = doc.getDigitalDocuments();
         final List<AutomaticCheckResult> batchResults = new ArrayList<>();
 
         digitalDocs.forEach(digitalDoc -> {
 
-            digitalDoc.getOrderedPages().stream()
-                            .filter(page -> page.getNumber() != null) // elimine le pdf eventuel
-                            .forEach(page -> {
-                page.getMaster().ifPresent(master -> {
-                    final File file = bm.getFileForStoredFile(master, libraryId);
-                    final AutomaticCheckResult result = AutomaticCheckResultConvertUtil.convert(facileService.checkFileAgainstFacile(file));
+            digitalDoc.getOrderedPages()
+                      .stream()
+                      .filter(page -> page.getNumber() != null) // elimine le pdf eventuel
+                      .forEach(page -> {
+                          page.getMaster().ifPresent(master -> {
+                              final File file = bm.getFileForStoredFile(master, libraryId);
+                              final AutomaticCheckResult result = AutomaticCheckResultConvertUtil.convert(facileService.checkFileAgainstFacile(file));
 
-                    result.setCheck(checkType);
-                    result.setDigitalDocument(digitalDoc);
-                    result.setDocUnit(doc);
-                    result.setPage(page);
-                    batchResults.add(result);
-                    results.add(result);
+                              result.setCheck(checkType);
+                              result.setDigitalDocument(digitalDoc);
+                              result.setDocUnit(doc);
+                              result.setPage(page);
+                              batchResults.add(result);
+                              results.add(result);
 
-                    LOG.info("Page traitée : {}", page.getNumber());
-                    if (batchResults.size() == BATCH_SIZE) {
-                        saveFacileResults(batchResults, doc);
-                        sendFacileDoneMessage(doc, batchResults);
-                        batchResults.clear();
-                    }
-                });
-            });
+                              LOG.info("Page traitée : {}", page.getNumber());
+                              if (batchResults.size() == BATCH_SIZE) {
+                                  saveFacileResults(batchResults, doc);
+                                  sendFacileDoneMessage(doc, batchResults);
+                                  batchResults.clear();
+                              }
+                          });
+                      });
         });
         // Sauvegarde des reliquats
         if (!batchResults.isEmpty()) {
@@ -275,16 +269,12 @@ public class AutomaticCheckService {
     private void sendFacileDoneMessage(final DocUnit doc, final List<AutomaticCheckResult> results) {
 
         final Map<String, Object> statusMap = new HashMap<>();
-        final List<AutomaticCheckResult> koRes = results.stream()
-                                                        .filter(res -> AutoCheckResult.KO == res.getResult())
-                                                        .collect(Collectors.toList());
+        final List<AutomaticCheckResult> koRes = results.stream().filter(res -> AutoCheckResult.KO == res.getResult()).collect(Collectors.toList());
         statusMap.put("processed", results.size());
         statusMap.put("success", koRes.isEmpty());
         statusMap.put("nbErrors", koRes.size());
         websocketService.sendObject(doc.getIdentifier(), statusMap);
     }
-
-
 
     /**
      * Vérification automatique du format de fichier
@@ -294,7 +284,7 @@ public class AutomaticCheckService {
      * @param files
      * @param format
      * @param fileNames
-     *         la liste à remplir des fichiers qui correspondent
+     *            la liste à remplir des fichiers qui correspondent
      * @param fileFormatRule
      * @return
      */
@@ -308,12 +298,14 @@ public class AutomaticCheckService {
         if (!files.isEmpty()) {
             fileNames.addAll(findMastersOnly(files, format));
             if (fileFormatRule.isActive() && fileNames.isEmpty()) {
-                result.setResult(fileFormatRule.isBlocking() ? AutoCheckResult.KO : AutoCheckResult.OTHER);
+                result.setResult(fileFormatRule.isBlocking() ? AutoCheckResult.KO
+                                                             : AutoCheckResult.OTHER);
                 result.setMessage("Aucun fichier ne correspond au format attendu : " + format);
             }
         } else {
             if (fileFormatRule.isActive()) {
-                result.setResult(fileFormatRule.isBlocking() ? AutoCheckResult.KO : AutoCheckResult.OTHER);
+                result.setResult(fileFormatRule.isBlocking() ? AutoCheckResult.KO
+                                                             : AutoCheckResult.OTHER);
                 result.setMessage("Aucun fichier trouvé pour contrôler le format");
             }
         }
@@ -344,7 +336,8 @@ public class AutomaticCheckService {
             fileNames.stream().filter(name -> !StringUtils.startsWithIgnoreCase(name, bibPrefix.concat(seqSeparator))).forEach(result::addErrorFile);
         }
         if (CollectionUtils.isNotEmpty(result.getErrorFiles())) {
-            result.setResult(bibPrefixRule.isBlocking() ? AutoCheckResult.KO : AutoCheckResult.OTHER);
+            result.setResult(bibPrefixRule.isBlocking() ? AutoCheckResult.KO
+                                                        : AutoCheckResult.OTHER);
             result.setMessage("Le préfixe de bibliothèque est absent [".concat(bibPrefix).concat("]"));
         }
         return save(result);
@@ -372,22 +365,17 @@ public class AutomaticCheckService {
         result.setResult(AutoCheckResult.OK);
         if (caseRule.isActive()) {
 
-            splitNames.keySet().stream()
-                                .filter(name -> StringUtils.containsIgnoreCase(name, prefix))
-                                .forEach((name) -> {
+            splitNames.keySet().stream().filter(name -> StringUtils.containsIgnoreCase(name, prefix)).forEach((name) -> {
 
                 if (splitNames.get(name).isPresent()) { // à priori toujours vrai....
 
                     final SplitFilename split = splitNames.get(name).get();
-                    final String toTest = prefix.startsWith(bibPrefix) ?
-                                                         split.getLibrary().concat(seqSeparator).concat(split.getPrefix())
-                                                             :
-                                                         split.getPrefix();
+                    final String toTest = prefix.startsWith(bibPrefix) ? split.getLibrary().concat(seqSeparator).concat(split.getPrefix())
+                                                                       : split.getPrefix();
 
-                    if (bibPrefixRule.isActive()
-                            && (!bibPrefix.equals(split.getLibrary()) || !toTest.contains(prefix)) ) {
+                    if (bibPrefixRule.isActive() && (!bibPrefix.equals(split.getLibrary()) || !toTest.contains(prefix))) {
 
-                        LOG.debug("ERREUR DE CASSE DETECTEE : prefix={} - chaine testee:{}", bibPrefix,  toTest);
+                        LOG.debug("ERREUR DE CASSE DETECTEE : prefix={} - chaine testee:{}", bibPrefix, toTest);
                         result.addErrorFile(name);
                     }
                 }
@@ -396,7 +384,8 @@ public class AutomaticCheckService {
 
         }
         if (CollectionUtils.isNotEmpty(result.getErrorFiles())) {
-            result.setResult(caseRule.isBlocking() ? AutoCheckResult.KO : AutoCheckResult.OTHER);
+            result.setResult(caseRule.isBlocking() ? AutoCheckResult.KO
+                                                   : AutoCheckResult.OTHER);
             result.setMessage("La casse n'est pas respectée [".concat(prefix).concat("]"));
         }
         return save(result);
@@ -413,21 +402,22 @@ public class AutomaticCheckService {
      * @param checkingRules
      * @param files
      * @param format
-     * @param lot
      * @return
      */
     public List<AutomaticCheckResult> checkMetadataOfFiles(final Map<AutoCheckType, AutomaticCheckResult> results,
                                                            final Map<AutoCheckType, AutomaticCheckRule> checkingRules,
                                                            final Collection<File> files,
                                                            final String format,
-                                                           final Lot lot,
-                                                           final Map<File, Optional<Map<String, String>>> fileMetadatasForCheck) {
+                                                           final Delivery delivery,
+                                                           final Map<File, Optional<Metadatas>> fileMetadatasForCheck) {
 
         final List<AutomaticCheckResult> allResults = new ArrayList<>();
+        final Lot lot = delivery.getLot();
 
         final String seqSeparator = lot.getActiveCheckConfiguration().getSeparators();
         final String compType = lot.getRequiredTypeCompression();
-        final Integer compRate = lot.getRequiredTauxCompression() != null ? lot.getRequiredTauxCompression() : 0;
+        final Integer compRate = lot.getRequiredTauxCompression() != null ? lot.getRequiredTauxCompression()
+                                                                          : 0;
         int res = 0;
         if (StringUtils.isNotBlank(lot.getRequiredResolution())) {
             try {
@@ -445,35 +435,40 @@ public class AutomaticCheckService {
         final AutomaticCheckResult resultResolution = results.get(AutoCheckType.FILE_RESOLUTION);
         final AutomaticCheckResult resultColorspace = results.get(AutoCheckType.FILE_COLORSPACE);
         final AutomaticCheckResult resultIntegrity = results.get(AutoCheckType.FILE_INTEGRITY);
+        final AutomaticCheckResult resultDefinition = results.get(AutoCheckType.FILE_DEFINITION);
+        final AutomaticCheckResult resultImageMetadata = results.get(AutoCheckType.FILE_IMAGE_METADATA);
 
         resultCompType.setResult(AutoCheckResult.OK);
         resultCompRate.setResult(AutoCheckResult.OK);
         resultResolution.setResult(AutoCheckResult.OK);
         resultColorspace.setResult(AutoCheckResult.OK);
         resultIntegrity.setResult(AutoCheckResult.OK);
+        resultDefinition.setResult(AutoCheckResult.OK);
+        resultImageMetadata.setResult(AutoCheckResult.OK);
         final String HEADER_LIST_FILES = LINE_SEP.concat("Fichiers concernés : ");
         final String ERR_TYPE_COMP_MSG = "Détection de types de compression ne correspondant pas au prérequis [".concat(compType).concat("]");
         final StringBuilder sbCompType = new StringBuilder(ERR_TYPE_COMP_MSG);
         final StringBuilder sbCompRate = new StringBuilder();
         final StringBuilder sbResolution = new StringBuilder();
-        final String ERR_COLORSPACE_MSG =
-            "Détection de profils colorimétriques différents du prérequis [".concat(colorspace != null ? colorspace : "Non renseigné").concat("]");
+        final StringBuilder sbDefinition = new StringBuilder();
+        final String ERR_COLORSPACE_MSG = "Détection de profils colorimétriques différents du prérequis [".concat(colorspace != null ? colorspace
+                                                                                                                                     : "Non renseigné").concat("]");
         final StringBuilder sbColorspace = new StringBuilder(ERR_COLORSPACE_MSG);
+        final StringBuilder sbMetadatas = new StringBuilder("Détection de métadonnées différentes de celles attendues");
         final String corruptDetected = "Détection de fichiers probablement corrompus";
         final String emptyDetected = "Détection de fichiers vides";
         final StringBuilder sbIntegrity = new StringBuilder();
 
         /* Lourdingue, mais permet de n'effectuer qu'une seule passe ImageMagick */
-
+        final Map<String, List<ImageMetadataValue>> cacheMetadataValuesByDocUnit = Collections.synchronizedMap(new HashMap<>());
         fileMetadatasForCheck.forEach((file, metasOpt) -> {
 
             // Integrity : metas present && File size control
-            if (!metasOpt.isPresent() || (!StringUtils.equalsIgnoreCase(format, "PDF") && checkFileSizeError(metasOpt.get().get("Filesize"),
-                                                                                                             file.length()))) {
+            if (!metasOpt.isPresent() || (!StringUtils.equalsIgnoreCase(format, "PDF") && checkFileSizeError(metasOpt.get().getFilesize(), file.length()))) {
                 LOG.info("{} is probably empty or corrupted", file.getName());
                 if (AutoCheckResult.OK.equals(resultIntegrity.getResult())) {
                     resultIntegrity.setResult(AutoCheckResult.KO);
-                    if (file.length()==0L) {
+                    if (file.length() == 0L) {
                         sbIntegrity.append(emptyDetected);
                     } else {
                         sbIntegrity.append(corruptDetected);
@@ -482,18 +477,19 @@ public class AutomaticCheckService {
                 }
                 resultIntegrity.addErrorFile(file.getName());
 
-                DigitalDocument dd = resultIntegrity.getDigitalDocument();
-                dd.setStatus(DigitalDocument.DigitalDocumentStatus.REJECTED); //Trying to reject the document
+                final DigitalDocument dd = resultIntegrity.getDigitalDocument();
+                dd.setStatus(DigitalDocument.DigitalDocumentStatus.REJECTED); // Trying to reject the document
                 digitalDocumentService.save(dd);
             }
             // Type de compression
             final AutomaticCheckRule ruleTypeComp = checkingRules.get(AutoCheckType.FILE_TYPE_COMPR);
             if (ruleTypeComp != null && ruleTypeComp.isActive()) {
                 metasOpt.ifPresent(metas -> {
-                    final String compress = metas.get("Compression");
+                    final String compress = metas.getCompression();
                     if (checkCompressionTypeError(format, compress, compType)) {
                         if (AutoCheckResult.OK.equals(resultCompType.getResult())) {
-                            resultCompType.setResult(ruleTypeComp.isBlocking() ? AutoCheckResult.KO : AutoCheckResult.OTHER);
+                            resultCompType.setResult(ruleTypeComp.isBlocking() ? AutoCheckResult.KO
+                                                                               : AutoCheckResult.OTHER);
                             sbCompType.append(HEADER_LIST_FILES);
                         }
                         resultCompType.addErrorFile(file.getName());
@@ -504,9 +500,9 @@ public class AutomaticCheckService {
             final AutomaticCheckRule ruleTauxComp = checkingRules.get(AutoCheckType.FILE_TAUX_COMPR);
             if (ruleTauxComp != null && ruleTauxComp.isActive()) {
                 final Integer qual = metasOpt.map(metas -> {
-                    if (StringUtils.isNotBlank(metas.get("Quality"))) {
+                    if (StringUtils.isNotBlank(metas.getQuality())) {
                         try {
-                            return Integer.valueOf(metas.get("Quality"));
+                            return Integer.valueOf(metas.getQuality());
                         } catch (final NumberFormatException e) {
                             LOG.error("Invalid compression rate for {}", file.getName());
                         }
@@ -514,9 +510,11 @@ public class AutomaticCheckService {
                     return 0;
                 }).orElse(0);
 
-                if (compRate == 0 || qual == 0 || qual > compRate) {
+                if (compRate == 0 || qual == 0
+                    || qual > compRate) {
                     if (AutoCheckResult.OK.equals(resultCompRate.getResult())) {
-                        resultCompRate.setResult(ruleTauxComp.isBlocking() ? AutoCheckResult.KO : AutoCheckResult.OTHER);
+                        resultCompRate.setResult(ruleTauxComp.isBlocking() ? AutoCheckResult.KO
+                                                                           : AutoCheckResult.OTHER);
                         if (compRate == 0) {
                             sbCompRate.append("Le taux de compression demandé n'est pas correctement renseigné.");
                         } else if (qual == 0) {
@@ -532,10 +530,11 @@ public class AutomaticCheckService {
             // Resolution
             final AutomaticCheckRule ruleResolution = checkingRules.get(AutoCheckType.FILE_RESOLUTION);
             if (ruleResolution != null && ruleResolution.isActive()) {
-                final String[] vals = metasOpt.map(metas -> StringUtils.split(StringUtils.trimToEmpty(metas.get("Resolution")), "x", 2)).orElse(null);
+                final String[] vals = metasOpt.map(metas -> StringUtils.split(StringUtils.trimToEmpty(metas.getResolution()), "x", 2)).orElse(null);
 
                 long fileRes = 0L;
-                if (vals != null && vals.length > 0 && StringUtils.isNotBlank(vals[0])) {
+                if (vals != null && vals.length > 0
+                    && StringUtils.isNotBlank(vals[0])) {
                     try {
                         fileRes = Math.round(Double.valueOf(vals[0]));
                     } catch (final NumberFormatException e) {
@@ -543,42 +542,111 @@ public class AutomaticCheckService {
                         fileRes = 0;
                     }
                 }
-                if (resolution == 0 || fileRes == 0 || resolution > fileRes) {
+                if (resolution == 0 || fileRes == 0
+                    || resolution > fileRes) {
                     if (AutoCheckResult.OK.equals(resultResolution.getResult())) {
-                        resultResolution.setResult(ruleResolution.isBlocking() ? AutoCheckResult.KO : AutoCheckResult.OTHER);
+                        resultResolution.setResult(ruleResolution.isBlocking() ? AutoCheckResult.KO
+                                                                               : AutoCheckResult.OTHER);
                         if (resolution == 0) {
                             sbResolution.append("La résolution demandée n'est pas correctement renseignée.");
                         } else if (fileRes == 0) {
                             sbResolution.append("La résolution du master n'est pas renseignée.");
                         } else {
-                            sbResolution.append("Détection de valeurs de résolution inférieures au prérequis [")
-                                        .append(String.valueOf(resolution))
-                                        .append("]");
+                            sbResolution.append("Détection de valeurs de résolution inférieures au prérequis [").append(String.valueOf(resolution)).append("]");
                         }
                         sbResolution.append(HEADER_LIST_FILES);
                     }
                     resultResolution.addErrorFile(file.getName());
                 }
             }
+            // Définition
+            final AutomaticCheckRule ruleDefinition = checkingRules.get(AutoCheckType.FILE_DEFINITION);
+            if (ruleDefinition != null && ruleDefinition.isActive()) {
+
+                final DigitalDocument dd = resultDefinition.getDigitalDocument();
+                final DocUnit docUnit = dd.getDocUnit();
+
+                metasOpt.ifPresent(metas -> {
+                    if (docUnit.getImageHeight() != null && docUnit.getImageWidth() != null) {
+                        final int height = Integer.parseInt(metas.getHeight());
+                        final int width = Integer.parseInt(metas.getWidth());
+
+                        final double defErrorRate = ruleDefinition.getCheckConfiguration().getDefinitionErrorRate();
+                        final int threshold = height > width ? docUnit.getImageHeight()
+                                                             : docUnit.getImageWidth();
+
+                        if (!checkDefinitionError(defErrorRate, Math.max(height, width), threshold)) {
+                            if (AutoCheckResult.OK.equals(resultDefinition.getResult())) {
+                                resultDefinition.setResult(ruleDefinition.isBlocking() ? AutoCheckResult.KO
+                                                                                       : AutoCheckResult.OTHER);
+                                sbDefinition.append(HEADER_LIST_FILES);
+                            }
+                            resultDefinition.addErrorFile(file.getName());
+                        }
+                    } else {
+                        LOG.error(docUnit.getPgcnId() + " n'a pas de definition attendue.");
+                        if (AutoCheckResult.OK.equals(resultDefinition.getResult())) {
+                            resultDefinition.setResult(ruleDefinition.isBlocking() ? AutoCheckResult.KO
+                                                                                   : AutoCheckResult.OTHER);
+                            sbDefinition.append("Valeurs de définition différentes de celles attendues");
+                            sbDefinition.append(HEADER_LIST_FILES);
+                        }
+                        resultDefinition.addErrorFile(file.getName());
+                    }
+                });
+            }
             // Colorspace
             final AutomaticCheckRule ruleColor = checkingRules.get(AutoCheckType.FILE_COLORSPACE);
-            if (ruleColor != null && ruleColor.isActive()) {
-                if (StringUtils.isBlank(colorspace) || (metasOpt.isPresent() && !StringUtils.equals(colorspace, metasOpt.get().get("Colorspace")))) {
-                    if (AutoCheckResult.OK.equals(resultColorspace.getResult())) {
-                        resultColorspace.setResult(ruleColor.isBlocking() ? AutoCheckResult.KO : AutoCheckResult.OTHER);
-                        sbColorspace.append(HEADER_LIST_FILES);
+            if (ruleColor != null && ruleColor.isActive()
+                && (StringUtils.isBlank(colorspace) || (metasOpt.isPresent() && !StringUtils.equals(colorspace, metasOpt.get().getColorSpace())))) {
+                if (AutoCheckResult.OK.equals(resultColorspace.getResult())) {
+                    resultColorspace.setResult(ruleColor.isBlocking() ? AutoCheckResult.KO
+                                                                      : AutoCheckResult.OTHER);
+                    sbColorspace.append(HEADER_LIST_FILES);
+                }
+                resultColorspace.addErrorFile(file.getName());
+            }
+            // Métadonnées
+            final AutomaticCheckRule ruleImageMetadata = checkingRules.get(AutoCheckType.FILE_IMAGE_METADATA);
+            if (ruleImageMetadata != null && ruleImageMetadata.isActive()) {
+                final List<ImageMetadataValue> metadataValues = cacheMetadataValuesByDocUnit.computeIfAbsent(resultImageMetadata.getDigitalDocument().getDocUnit().getIdentifier(),
+                                                                                                             imageMetadataValuesRepository::findAllByDocUnitIdentifierWithDependencies);
+                final boolean ok = (!metasOpt.isPresent() && metadataValues.isEmpty()) || (metasOpt.isPresent() && metadataValues.stream()
+                                                                                                                                 .collect(Collectors.groupingBy(ImageMetadataValue::getMetadata))
+                                                                                                                                 .entrySet()
+                                                                                                                                 .stream()
+                                                                                                                                 .allMatch(e -> isTagValuesValid(e.getKey()
+                                                                                                                                                                  .getIptcTag(),
+                                                                                                                                                                 e.getValue(),
+                                                                                                                                                                 metasOpt.get())
+                                                                                                                                                || isTagValuesValid(e.getKey()
+                                                                                                                                                                     .getXmpTag(),
+                                                                                                                                                                    e.getValue(),
+                                                                                                                                                                    metasOpt.get())));
+                if (!ok) {
+                    if (AutoCheckResult.OK.equals(resultImageMetadata.getResult())) {
+                        resultImageMetadata.setResult(ruleImageMetadata.isBlocking() ? AutoCheckResult.KO
+                                                                                     : AutoCheckResult.OTHER);
+                        sbMetadatas.append(HEADER_LIST_FILES);
                     }
-                    resultColorspace.addErrorFile(file.getName());
+                    resultImageMetadata.addErrorFile(file.getName());
                 }
             }
-
         });
         allResults.add(finalizeResult(resultCompType, sbCompType, seqSeparator, format));
         allResults.add(finalizeResult(resultCompRate, sbCompRate, seqSeparator, format));
         allResults.add(finalizeResult(resultResolution, sbResolution, seqSeparator, format));
         allResults.add(finalizeResult(resultColorspace, sbColorspace, seqSeparator, format));
         allResults.add(finalizeResult(resultIntegrity, sbIntegrity, seqSeparator, format));
+        allResults.add(finalizeResult(resultDefinition, sbDefinition, seqSeparator, format));
+        allResults.add(finalizeResult(resultImageMetadata, sbMetadatas, seqSeparator, format));
         return allResults;
+    }
+
+    private boolean isTagValuesValid(final String tag, final List<ImageMetadataValue> values, final Metadatas metas) {
+        return StringUtils.isNotBlank(tag) && metas.getTags().containsKey(tag)
+               && metas.getTags().get(tag).size() == values.size()
+               && metas.getTags().get(tag).stream().allMatch(t -> values.stream().map(ImageMetadataValue::getValue).anyMatch(value -> value.equalsIgnoreCase(t)));
     }
 
     /**
@@ -635,14 +703,15 @@ public class AutomaticCheckService {
                 calcSize = Double.valueOf(StringUtils.removeEnd(metadataSize, "MiB")) * multFactor;
             } else if (StringUtils.endsWithIgnoreCase(metadataSize, "GiB")) {
                 // GibiBytes => 1024*1024*1024 Bytes
-                multFactor = 1024L * 1024 * 1024;
+                multFactor = 1024L * 1024
+                             * 1024;
                 calcSize = Double.valueOf(StringUtils.removeEnd(metadataSize, "GiB")) * multFactor;
             } else if (StringUtils.endsWithIgnoreCase(metadataSize, "KB")) {
                 multFactor = 1000L;
                 calcSize = Double.valueOf(StringUtils.removeEnd(metadataSize, "KB")) * multFactor;
             } else if (StringUtils.endsWithIgnoreCase(metadataSize, "K")) {
-                    multFactor = 1000L;
-                    calcSize = Double.valueOf(StringUtils.removeEnd(metadataSize, "K")) * multFactor;
+                multFactor = 1000L;
+                calcSize = Double.valueOf(StringUtils.removeEnd(metadataSize, "K")) * multFactor;
             } else if (StringUtils.endsWithIgnoreCase(metadataSize, "MB")) {
                 multFactor = 1000L * 1000;
                 calcSize = Double.valueOf(StringUtils.removeEnd(metadataSize, "MB")) * multFactor;
@@ -650,7 +719,8 @@ public class AutomaticCheckService {
                 multFactor = 1000L * 1000;
                 calcSize = Double.valueOf(StringUtils.removeEnd(metadataSize, "M")) * multFactor;
             } else if (StringUtils.endsWithIgnoreCase(metadataSize, "GB")) {
-                multFactor = 1000L * 1000 * 1000;
+                multFactor = 1000L * 1000
+                             * 1000;
                 calcSize = Double.valueOf(StringUtils.removeEnd(metadataSize, "GB")) * multFactor;
             } else if (StringUtils.endsWithIgnoreCase(metadataSize, "B")) {
                 calcSize = Double.valueOf(StringUtils.removeEnd(metadataSize, "B"));
@@ -664,14 +734,34 @@ public class AutomaticCheckService {
         }
 
         final long longCalc = Math.round(calcSize);
-        final long margin = longCalc * 20/100;  //20% de marge à tester...
+        final long margin = longCalc * 20
+                            / 100;  // 20% de marge à tester...
 
-        if (fileSize == longCalc || Math.abs(fileSize - longCalc) < margin || longCalc == 0) {
+        if (fileSize == longCalc || Math.abs(fileSize - longCalc) < margin
+            || longCalc == 0) {
             // on se laisse une bonne marge car les ecarts sont consequents sur les gros fichiers...
             // taille 0 => controle impossible.
             return false;
         }
         return true;
+    }
+
+    /**
+     * Vérifie que la hauteur ou largeur soit dans l'interval d'erreur renseigné.
+     *
+     * @param errorRate
+     * @param value
+     *            : height or width
+     * @param threshold
+     *            : threshold defined by the rule
+     * @return
+     */
+    private boolean checkDefinitionError(final double errorRate, final int value, final int threshold) {
+        final int percentValue = (int) (threshold * errorRate);
+        final int minValue = threshold - percentValue;
+        final int maxValue = threshold + percentValue;
+
+        return minValue < value && value < maxValue;
     }
 
     /**
@@ -683,9 +773,9 @@ public class AutomaticCheckService {
         if (!AutoCheckResult.OK.equals(result.getResult())) {
             final String digitalId = result.getDigitalDocument().getDigitalId();
             // Nom du fichier à rechercher dans les fichiers en erreur
-            final String searchFile = StringUtils.equalsIgnoreCase(format, "PDF") ? digitalId : digitalId.concat(seqSeparator);
-            final int concernedFiles =
-                result.getErrorFiles().stream().filter(f -> StringUtils.contains(f, searchFile)).collect(Collectors.toList()).size();
+            final String searchFile = StringUtils.equalsIgnoreCase(format, "PDF") ? digitalId
+                                                                                  : digitalId.concat(seqSeparator);
+            final int concernedFiles = result.getErrorFiles().stream().filter(f -> StringUtils.contains(f, searchFile)).collect(Collectors.toList()).size();
             if (concernedFiles > 0) {
                 result.setMessage(msg.append(String.valueOf(concernedFiles)).toString());
             } else {
@@ -727,13 +817,12 @@ public class AutomaticCheckService {
         handleLinkResultMetaDatas(pdfResult, delivery, digitalIdDoc);
         pdfResult.setResult(AutoCheckResult.OK);
 
-        if(!metaDatasDTO.isEmpty()){
-            for(PreDeliveryDocumentFileDTO dto : metaDatasDTO) {
+        if (!metaDatasDTO.isEmpty()) {
+            for (final PreDeliveryDocumentFileDTO dto : metaDatasDTO) {
                 switch (dto.getRole()) {
                     case METS:
                         // validation xml METS
-                        final Optional<File> metsToCheck =
-                                files.stream().filter(file -> StringUtils.equalsIgnoreCase(file.getName(), dto.getName())).findFirst();
+                        final Optional<File> metsToCheck = files.stream().filter(file -> StringUtils.equalsIgnoreCase(file.getName(), dto.getName())).findFirst();
                         tocResult = metaCheckService.checkMetaDataFileFormat(tocResult,
                                                                              metsToCheck,
                                                                              MetaDatasCheckService.METS_FILE_FORMAT,
@@ -744,8 +833,7 @@ public class AutomaticCheckService {
                         break;
                     case EXCEL:
                         // validation table des matieres excel.
-                        final Optional<File> excelToCheck =
-                                files.stream().filter(file -> StringUtils.equalsIgnoreCase(file.getName(), dto.getName())).findFirst();
+                        final Optional<File> excelToCheck = files.stream().filter(file -> StringUtils.equalsIgnoreCase(file.getName(), dto.getName())).findFirst();
 
                         if (excelToCheck.isPresent()) {
                             if (excelToCheck.get().getName().endsWith(".xlsx")) {
@@ -768,8 +856,7 @@ public class AutomaticCheckService {
                         break;
                     case PDF_MULTI:
                         // Validation pdf/A ocr.
-                        final Optional<File> pdfToCheck =
-                                files.stream().filter(file -> StringUtils.equalsIgnoreCase(file.getName(), dto.getName())).findFirst();
+                        final Optional<File> pdfToCheck = files.stream().filter(file -> StringUtils.equalsIgnoreCase(file.getName(), dto.getName())).findFirst();
                         pdfResult = metaCheckService.checkMetaDataFileFormat(pdfResult,
                                                                              pdfToCheck,
                                                                              MetaDatasCheckService.PDF_FILE_FORMAT,
@@ -855,7 +942,7 @@ public class AutomaticCheckService {
      * @param result
      * @param fileNames
      * @param splitNames
-     *         la map à remplir à l'aide de split
+     *            la map à remplir à l'aide de split
      * @param fileSeqRule
      * @param bibPrefixMandatory
      * @param seqSeparator
@@ -893,7 +980,7 @@ public class AutomaticCheckService {
             handledNames.add(name);
         }
         // par contre, on ne verifie la sequence que si le controle est actif et que ce n'est pas 1 estampe unique non sequencée.
-        if (fileSeqRule.isActive() && !isJustOneEstampe ) {
+        if (fileSeqRule.isActive() && !isJustOneEstampe) {
             // vérification numéros en séquence
             for (final Map.Entry<String, List<Integer>> entry : filePiecesNumbers.entrySet()) {
                 final List<Integer> fileNumbers = entry.getValue();
@@ -901,9 +988,9 @@ public class AutomaticCheckService {
                 if (!fileNumbers.isEmpty()) {
                     // On vérifie que la séquence commence par 0 ou 1
                     if (fileNumbers.get(0) != 0 && fileNumbers.get(0) != 1) {
-                        result.setResult(fileSeqRule.isBlocking() ? AutoCheckResult.KO : AutoCheckResult.OTHER);
-                        result.setMessage("Séquence erronée : elle doit commencer par 0 ou 1"
-                                          + " pour la pièce "
+                        result.setResult(fileSeqRule.isBlocking() ? AutoCheckResult.KO
+                                                                  : AutoCheckResult.OTHER);
+                        result.setMessage("Séquence erronée : elle doit commencer par 0 ou 1" + " pour la pièce "
                                           + entry.getKey());
                     } else {
                         // Remise en ordre de la pagination au besoin
@@ -916,7 +1003,8 @@ public class AutomaticCheckService {
                         }
                         for (int i = 1; i < fileNumbers.size(); i++) {
                             if (fileNumbers.get(i) != fileNumbers.get(i - 1) + 1) {
-                                result.setResult(fileSeqRule.isBlocking() ? AutoCheckResult.KO : AutoCheckResult.OTHER);
+                                result.setResult(fileSeqRule.isBlocking() ? AutoCheckResult.KO
+                                                                          : AutoCheckResult.OTHER);
                                 result.setMessage("Séquence erronée entre " + fileNumbers.get(i - 1)
                                                   + " et "
                                                   + fileNumbers.get(i)
@@ -927,9 +1015,9 @@ public class AutomaticCheckService {
                         }
                     }
                 } else {
-                    result.setResult(fileSeqRule.isBlocking() ? AutoCheckResult.KO : AutoCheckResult.OTHER);
-                    result.setMessage("Contrôle de séquence impossible : aucune séquence trouvée"
-                                      + " pour la pièce "
+                    result.setResult(fileSeqRule.isBlocking() ? AutoCheckResult.KO
+                                                              : AutoCheckResult.OTHER);
+                    result.setMessage("Contrôle de séquence impossible : aucune séquence trouvée" + " pour la pièce "
                                       + entry.getKey());
                 }
             }
@@ -947,13 +1035,15 @@ public class AutomaticCheckService {
                                                      final PrefixedDocuments prefixedDoc,
                                                      final AutomaticCheckRule nbFilesRule) {
         result.setResult(AutoCheckResult.OK);
-        if (prefixedDoc == null || prefixedDoc.getPhysicalDocuments().isEmpty() || prefixedDoc.getPhysicalDocuments().get(0).getTotalPage() == null) {
+        if (prefixedDoc == null || prefixedDoc.getPhysicalDocuments().isEmpty()
+            || prefixedDoc.getPhysicalDocuments().get(0).getTotalPage() == null) {
             result.setResult(AutoCheckResult.OTHER);
             result.setMessage("Nombre de pages manquant : impossible d'effectuer les contrôles automatiques");
         }
         // Il manque des pages (FIXME : cas du pdf qui contient toutes les pages ?)
         else if (Integer.valueOf(fileNames.size()).compareTo(prefixedDoc.getPhysicalDocuments().get(0).getTotalPage()) < 0) {
-            result.setResult(nbFilesRule.isBlocking() ? AutoCheckResult.KO : AutoCheckResult.OTHER);
+            result.setResult(nbFilesRule.isBlocking() ? AutoCheckResult.KO
+                                                      : AutoCheckResult.OTHER);
             result.setMessage("Nombre de fichiers erroné : nombre de pages livrées inférieur au nombre attendu");
             // Il y a plus de pages livrées : acceptable
         } else if (Integer.valueOf(fileNames.size()).compareTo(prefixedDoc.getPhysicalDocuments().get(0).getTotalPage()) > 0) {
@@ -962,10 +1052,7 @@ public class AutomaticCheckService {
         return save(result);
     }
 
-    public AutomaticCheckResult checkRadicalFile(final AutomaticCheckResult result,
-                                                final Collection<File> files,
-                                                 final AutomaticCheckRule radicalRule,
-                                                 final String prefix) {
+    public AutomaticCheckResult checkRadicalFile(final AutomaticCheckResult result, final Collection<File> files, final AutomaticCheckRule radicalRule, final String prefix) {
         result.setResult(AutoCheckResult.OK);
         if (radicalRule != null && radicalRule.isActive()) {
             if (files.isEmpty()) {
@@ -991,6 +1078,9 @@ public class AutomaticCheckService {
     public AutomaticCheckResult initializeAutomaticCheckResult(final AutoCheckType type) {
         final AutomaticCheckResult result = new AutomaticCheckResult();
         final AutomaticCheckType formatCheck = checkTypeRepository.getOneByType(type);
+        if (formatCheck == null) {
+            LOG.error("Impossible de trouver un contrôle auto de type {}", type);
+        }
         result.setCheck(formatCheck);
         return result;
     }

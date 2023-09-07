@@ -1,32 +1,26 @@
 package fr.progilone.pgcn.service.exchange;
 
-import static fr.progilone.pgcn.domain.document.DocUnit.RightsEnum.*;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import static fr.progilone.pgcn.domain.document.DocUnit.RightsEnum.TO_CHECK;
 
 import fr.progilone.pgcn.domain.administration.CinesPAC;
 import fr.progilone.pgcn.domain.administration.InternetArchiveCollection;
 import fr.progilone.pgcn.domain.administration.omeka.OmekaList;
-import fr.progilone.pgcn.domain.document.BibliographicRecord;
+import fr.progilone.pgcn.domain.document.*;
 import fr.progilone.pgcn.domain.document.BibliographicRecord.PropertyOrder;
-import fr.progilone.pgcn.domain.document.DocProperty;
-import fr.progilone.pgcn.domain.document.DocPropertyType;
-import fr.progilone.pgcn.domain.document.DocUnit;
-import fr.progilone.pgcn.domain.document.PhysicalDocument;
 import fr.progilone.pgcn.domain.library.Library;
 import fr.progilone.pgcn.service.administration.CinesPACService;
 import fr.progilone.pgcn.service.administration.InternetArchiveCollectionService;
 import fr.progilone.pgcn.service.administration.omeka.OmekaListService;
 import fr.progilone.pgcn.service.document.DocUnitService;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Méthodes générales pour l'import d'unités documentaires
@@ -101,16 +95,17 @@ public abstract class AbstractImportConvertService {
                      .findAny()
                      .ifPresent(docUnit::setType);
             // Copie des droits
-            final DocUnit.RightsEnum rights =
-                bibRecord.getProperties().stream().filter(p -> StringUtils.equals("rights", p.getType().getIdentifier())).map(p -> {
-                    try {
-                        return DocUnit.RightsEnum.valueOf(p.getValue());
-                    } catch (final IllegalArgumentException e) {
-                        return null;
-                    }
-                }).filter(Objects::nonNull).findAny()
-                         // par défaut
-                         .orElse(TO_CHECK);
+            final DocUnit.RightsEnum rights = bibRecord.getProperties().stream().filter(p -> StringUtils.equals("rights", p.getType().getIdentifier())).map(p -> {
+                try {
+                    return DocUnit.RightsEnum.valueOf(p.getValue());
+                } catch (final IllegalArgumentException e) {
+                    return null;
+                }
+            })
+                                                       .filter(Objects::nonNull)
+                                                       .findAny()
+                                                       // par défaut
+                                                       .orElse(TO_CHECK);
             docUnit.setRights(rights);
         }
     }
@@ -123,7 +118,8 @@ public abstract class AbstractImportConvertService {
     protected void setRanks(final BibliographicRecord bibRecord) {
         if (bibRecord.getPropertyOrder() == PropertyOrder.BY_PROPERTY_TYPE) {
             bibRecord.getProperties().stream().collect(Collectors.groupingBy(DocProperty::getType)).forEach((type, properties) -> {
-                final int typeRank = type.getRank() != null ? type.getRank() : 0;
+                final int typeRank = type.getRank() != null ? type.getRank()
+                                                            : 0;
                 for (int i = 0; i < properties.size(); i++) {
                     properties.get(i).setRank(typeRank * 10000 + i);
                 }
@@ -154,17 +150,13 @@ public abstract class AbstractImportConvertService {
         }
     }
 
-    protected void setDocProperty(final BibliographicRecord bibRecord,
-                                  final DocPropertyType propertyType,
-                                  final List<String> values,
-                                  final Integer baseRank) {
+    protected void setDocProperty(final BibliographicRecord bibRecord, final DocPropertyType propertyType, final List<String> values, final Integer baseRank) {
         int rank = 0;
         if (bibRecord.getPropertyOrder() == PropertyOrder.BY_PROPERTY_TYPE) {
             if (baseRank != null) {
                 rank = baseRank * 10000;
             }
-            rank +=
-                bibRecord.getProperties().stream().filter(p -> StringUtils.equals(p.getType().getIdentifier(), propertyType.getIdentifier())).count();
+            rank += bibRecord.getProperties().stream().filter(p -> StringUtils.equals(p.getType().getIdentifier(), propertyType.getIdentifier())).count();
 
         } else if (bibRecord.getPropertyOrder() == PropertyOrder.BY_CREATION) {
             rank += bibRecord.getProperties().size();
@@ -179,11 +171,11 @@ public abstract class AbstractImportConvertService {
             bibRecord.addProperty(property);
         }
     }
-    
+
     /**
-     * tentative de fix pb saut de ligne 
+     * tentative de fix pb saut de ligne
      * notamment pour qq caracteres arabes entre crochets !!
-     * 
+     *
      * @param value
      * @return
      */
@@ -206,17 +198,12 @@ public abstract class AbstractImportConvertService {
             // Vérification de la valeur actuelle (si la valeur est un type primitif, elle n'est jamais null...)
             final Object current = PropertyUtils.getSimpleProperty(object, fieldName);
             if (current != null && !PropertyUtils.getPropertyDescriptor(object, fieldName).getPropertyType().isPrimitive()) {
-                LOG.debug("Le champ {} est déjà défini avec la valeur {} pour l'objet {}",
-                          fieldName,
-                          String.valueOf(current),
-                          object.getClass().getName());
+                LOG.debug("Le champ {} est déjà défini avec la valeur {} pour l'objet {}", fieldName, String.valueOf(current), object.getClass().getName());
                 return;
             }
             // Vérification des valeurs ignorées
             if (values.size() > 1) {
-                LOG.debug("Il y a plus d'une valeur trouvée pour le champ {} ({}); seule la première sera récupérée.",
-                          fieldName,
-                          StringUtils.join(values, ", "));
+                LOG.debug("Il y a plus d'une valeur trouvée pour le champ {} ({}); seule la première sera récupérée.", fieldName, StringUtils.join(values, ", "));
             }
             final String firstValue = values.get(0);
             LOG.trace("{}.{} = {}", object.getClass().getName(), fieldName, firstValue);
@@ -283,6 +270,8 @@ public abstract class AbstractImportConvertService {
             // Boolean
             else if (Objects.equals(Boolean.TYPE, fieldType) || Boolean.class.isAssignableFrom(fieldType)) {
                 PropertyUtils.setSimpleProperty(object, fieldName, Boolean.parseBoolean(firstValue));
+            } else if (Objects.equals(Integer.TYPE, fieldType) || Integer.class.isAssignableFrom(fieldType)) {
+                PropertyUtils.setSimpleProperty(object, fieldName, Integer.parseInt(firstValue));
             }
             // Non géré
             else {

@@ -2,7 +2,6 @@ package fr.progilone.pgcn.service.exchange.ead.script;
 
 import fr.progilone.pgcn.service.exchange.ead.script.format.NormalFormatter;
 import fr.progilone.pgcn.service.exchange.ead.script.format.TextFormatter;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;

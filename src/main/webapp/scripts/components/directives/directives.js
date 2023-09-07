@@ -1,20 +1,21 @@
 (function () {
-    "use strict";
+    'use strict';
 
-    angular.module('numaHopApp.directive')
+    angular
+        .module('numaHopApp.directive')
         .directive('semDefinition', function (CatalogingUtils) {
             var setIcons = function (values, authName) {
-                if (authName === "language" || authName === "originalLanguage") {
+                if (authName === 'language' || authName === 'originalLanguage') {
                     for (var i = 0; i < values.length; i++) {
                         switch (values[i].code.toLowerCase()) {
-                            case "eng":
-                                values[i].icon = "famfamfam-flag-gb";
+                            case 'eng':
+                                values[i].icon = 'famfamfam-flag-gb';
                                 break;
-                            case "fre":
-                                values[i].icon = "famfamfam-flag-fr";
+                            case 'fre':
+                                values[i].icon = 'famfamfam-flag-fr';
                                 break;
-                            case "ita":
-                                values[i].icon = "famfamfam-flag-it";
+                            case 'ita':
+                                values[i].icon = 'famfamfam-flag-it';
                                 break;
                         }
                     }
@@ -25,10 +26,11 @@
                 scope: {
                     term: '@',
                     description: '=',
-                    authvalue: "&",
-                    dyndescription: '&'
+                    authvalue: '&',
+                    dyndescription: '&',
                 },
-                template: '<dt ng-if="value.length > 0 && term">{{::term}}</dt>\n\
+                template:
+                    '<dt ng-if="value.length > 0 && term">{{::term}}</dt>\n\
 <dd ng-if="value.length > 0" ng-repeat="(index, desc) in value track by index">\n\
     <span ng-if="desc.icon" class="{{::desc.icon}}" style="margin-right: 5px;"></span><span>{{::desc.value || desc}}</span>\n\
 </dd>',
@@ -50,23 +52,21 @@
                             scope.$watch('authvalue', function (authvalueFn) {
                                 var authvalue = authvalueFn();
                                 if (angular.isDefined(authvalue)) {
-                                    scope.value = CatalogingUtils.getAuthorisedValue(authvalue.element,
-                                        authvalue.field,
-                                        authvalue.reference);
+                                    scope.value = CatalogingUtils.getAuthorisedValue(authvalue.element, authvalue.field, authvalue.reference);
                                     setIcons(scope.value, authvalue.field);
                                 }
                             });
                         }
-                    }
-                }
+                    },
+                },
             };
         })
         .directive('semEditDefinition', function () {
             var getElement = function (argComponent) {
-                var component = angular.isDefined(argComponent) ? argComponent : "text";
+                var component = angular.isDefined(argComponent) ? argComponent : 'text';
                 switch (component) {
-                    case "textarea":
-                        component = "textarea";
+                    case 'textarea':
+                        component = 'textarea';
                         break;
                     default:
                         component = "input type='" + component + "'";
@@ -81,9 +81,10 @@
                     term: '@',
                     model: '=',
                     component: '@',
-                    multiple: '@'
+                    multiple: '@',
                 },
-                template: '<dt>{{term}}</dt>\n\
+                template:
+                    '<dt>{{term}}</dt>\n\
 <dd ng-if="!isMultiple" ng-init="index=0">\n\
     <div class="input-group">\n\
         <span class="input-group-btn">\n\
@@ -108,12 +109,12 @@
     </a>\n\
 </dd>',
                 compile: function compile(tElement, tAttrs, transclude) {
-                    tElement.find("dd>div.input-group").prepend(getElement(tAttrs.component));
+                    tElement.find('dd>div.input-group').prepend(getElement(tAttrs.component));
 
                     return {
                         pre: function preLink(scope, iElement, iAttrs, controller) {
                             scope.isMultiple = angular.isDefined(iAttrs.multiple);
-                            scope.$watch("model", function (model) {
+                            scope.$watch('model', function (model) {
                                 if (angular.isUndefined(model)) {
                                     scope.model = [];
                                 } else if (!angular.isArray(model)) {
@@ -121,10 +122,9 @@
                                 }
                             });
                         },
-                        post: function postLink(scope, iElement, iAttrs, controller) {
-                        }
+                        post: function postLink(scope, iElement, iAttrs, controller) {},
                     };
-                }
+                },
             };
         });
 })();

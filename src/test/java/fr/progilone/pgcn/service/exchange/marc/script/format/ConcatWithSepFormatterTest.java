@@ -1,15 +1,14 @@
 package fr.progilone.pgcn.service.exchange.marc.script.format;
 
-import fr.progilone.pgcn.service.exchange.marc.script.AbstractScriptTest;
-import org.junit.Test;
-import org.marc4j.marc.DataField;
-import org.marc4j.marc.MarcFactory;
+import static org.junit.jupiter.api.Assertions.*;
 
-import javax.script.ScriptException;
+import fr.progilone.pgcn.service.exchange.marc.script.AbstractScriptTest;
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.junit.Assert.*;
+import javax.script.ScriptException;
+import org.junit.jupiter.api.Test;
+import org.marc4j.marc.DataField;
+import org.marc4j.marc.MarcFactory;
 
 /**
  * Created by Sébastien on 29/06/2017.
@@ -31,7 +30,9 @@ public class ConcatWithSepFormatterTest extends AbstractScriptTest {
         fld600.addSubfield(MARC_FACTORY.newSubfield('a', "a"));
 
         final ConcatWithSepFormatter fmt = new ConcatWithSepFormatter("test", null);
-        fmt.setCodes(new char[]{'x', 'y', 'z'});
+        fmt.setCodes(new char[] {'x',
+                                 'y',
+                                 'z'});
 
         final String actual = fmt.format(fld600);
         assertEquals("", actual);
@@ -48,7 +49,9 @@ public class ConcatWithSepFormatterTest extends AbstractScriptTest {
         fld600.addSubfield(MARC_FACTORY.newSubfield('z', "z3"));
 
         final ConcatWithSepFormatter fmt = new ConcatWithSepFormatter("test", null);
-        fmt.setCodes(new char[]{'x', 'y', 'z'});
+        fmt.setCodes(new char[] {'x',
+                                 'y',
+                                 'z'});
 
         final String actual = fmt.format(fld600);
         assertEquals("x1 -- x2 - y1 - z1 -- z2 -- z3", actual);
@@ -64,7 +67,9 @@ public class ConcatWithSepFormatterTest extends AbstractScriptTest {
         fld600.addSubfield(MARC_FACTORY.newSubfield('z', "z3_2"));
 
         final ConcatWithSepFormatter fmt = new ConcatWithSepFormatter("test", null);
-        fmt.setCodes(new char[]{'x', 'y', 'z'});
+        fmt.setCodes(new char[] {'x',
+                                 'y',
+                                 'z'});
 
         final String actual = fmt.format(fld600);
         assertEquals("x1_2 -- x2_2 - z1_2 -- z2_2 -- z3_2", actual);
@@ -83,7 +88,9 @@ public class ConcatWithSepFormatterTest extends AbstractScriptTest {
         bindings.put("marc_602", fld602);
 
         final ConcatWithSepFormatter fmt = new ConcatWithSepFormatter("test", null);
-        fmt.setCodes(new char[]{'x', 'y', 'z'});
+        fmt.setCodes(new char[] {'x',
+                                 'y',
+                                 'z'});
 
         final Object actual = evalUserScript(expression, bindings, fmt);
 
@@ -105,7 +112,9 @@ public class ConcatWithSepFormatterTest extends AbstractScriptTest {
         bindings.put("marc_602", fld602);
 
         final ConcatWithSepFormatter fmt = new ConcatWithSepFormatter("test", null);
-        fmt.setCodes(new char[]{'x', 'y', 'z'});
+        fmt.setCodes(new char[] {'x',
+                                 'y',
+                                 'z'});
 
         final Object actual = evalUserScript(expression, bindings, fmt);
 

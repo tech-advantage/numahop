@@ -1,13 +1,12 @@
 package fr.progilone.pgcn.domain.dto.library;
 
-import java.time.LocalDateTime;
-import java.util.Set;
-
 import fr.progilone.pgcn.domain.dto.administration.viewsFormat.SimpleViewsFormatConfigurationDTO;
 import fr.progilone.pgcn.domain.dto.checkconfiguration.SimpleCheckConfigurationDTO;
 import fr.progilone.pgcn.domain.dto.ftpconfiguration.SimpleFTPConfigurationDTO;
 import fr.progilone.pgcn.domain.dto.ocrlangconfiguration.SimpleOcrLangConfigDTO;
 import fr.progilone.pgcn.domain.dto.user.AddressDTO;
+import java.time.LocalDateTime;
+import java.util.Set;
 
 /**
  * DTO représentant une bibliothèque
@@ -31,7 +30,7 @@ public class LibraryDTO extends SimpleLibraryDTO {
     private SimpleViewsFormatConfigurationDTO activeFormatConfiguration;
     private Set<SimpleOcrLangConfigDTO> ocrLangConfigurations;
     private SimpleOcrLangConfigDTO activeOcrLangConfiguration;
-    
+
     /**
      * Ajout des infos de création
      */

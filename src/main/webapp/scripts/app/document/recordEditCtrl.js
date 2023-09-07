@@ -1,13 +1,29 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('RecordEditCtrl', RecordEditCtrl);
+    angular.module('numaHopApp.controller').controller('RecordEditCtrl', RecordEditCtrl);
 
-    function RecordEditCtrl($location, $q, $routeParams, $scope, $timeout, codeSrvc,
-        gettext, gettextCatalog, HistorySrvc, ListTools, LockSrvc, Principal, NumahopEditService,
-        MessageSrvc, ModalSrvc, ValidationSrvc, RecordSrvc, NumaHopInitializationSrvc, WorkflowSrvc) {
-
+    function RecordEditCtrl(
+        $location,
+        $q,
+        $routeParams,
+        $scope,
+        $timeout,
+        codeSrvc,
+        gettext,
+        gettextCatalog,
+        HistorySrvc,
+        ListTools,
+        LockSrvc,
+        Principal,
+        NumahopEditService,
+        MessageSrvc,
+        ModalSrvc,
+        ValidationSrvc,
+        RecordSrvc,
+        NumaHopInitializationSrvc,
+        WorkflowSrvc
+    ) {
         $scope.addProperty = addProperty;
         $scope.backToList = backToList;
         $scope.cancel = cancel;
@@ -25,7 +41,7 @@
 
         // Définition des listes déroulantes
         $scope.options = {
-            propertyType: {}
+            propertyType: {},
         };
 
         /**
@@ -37,7 +53,7 @@
             custom: true,
             custom_cines: true,
             custom_archive: true,
-            custom_omeka: true
+            custom_omeka: true,
         };
 
         $scope.loaded = false;
@@ -45,12 +61,11 @@
 
         init();
 
-
         /****************************************************************/
         /** Initialisation **********************************************/
         /****************************************************************/
         function init() {
-            LockSrvc.applyOnScope($scope, "entityForm", gettext("La notice est verrouillée par {{name}} jusqu'à {{date}}"));
+            LockSrvc.applyOnScope($scope, 'entityForm', gettext("La notice est verrouillée par {{name}} jusqu'à {{date}}"));
 
             loadOptions();
         }
@@ -59,15 +74,18 @@
             // Édition
             if (angular.isDefined($routeParams.id)) {
                 /** Chargement de l'entité **/
-                $scope.entity = RecordSrvc.get({
-                    id: $routeParams.id
-                }, function (entity) {
-                    afterLoadingEntity(entity);
-                });
+                $scope.entity = RecordSrvc.get(
+                    {
+                        id: $routeParams.id,
+                    },
+                    function (entity) {
+                        afterLoadingEntity(entity);
+                    }
+                );
             }
             // Création d'une nouvelle entité
             else if ($routeParams.new) {
-                HistorySrvc.add(gettext("Nouvelle notice"));
+                HistorySrvc.add(gettext('Nouvelle notice'));
                 $scope.entity = new RecordSrvc();
                 $scope.entity.properties = [];
 
@@ -85,66 +103,68 @@
         }
 
         function loadOptions() {
-            $q.all([NumaHopInitializationSrvc.loadDocPropertyTypes(), NumaHopInitializationSrvc.loadLibraries()])
-                .then(function (data) {
-                    var propertyTypes = data[0];
-                    $scope.sel2Libraries = data[1];
-                    $scope.options.propertyType.list = {};
-                    _.each(propertyTypes, function (type) {
-                        $scope.options.propertyType.list[type.identifier] = type.label;
-                    });
-                    $scope.options.propertyType.dc = [];
-                    $scope.options.propertyType.dcq = [];
-                    $scope.options.propertyType.custom = [];
-                    $scope.options.propertyType.custom_cines = [];
-                    $scope.options.propertyType.custom_archive = [];
-                    $scope.options.propertyType.custom_omeka = [];
-
-                    _.each(propertyTypes, function (type) {
-                        switch (type.superType) {
-                            case "DC": NumahopEditService.insertBasedOnRank($scope.options.propertyType.dc, type);
-                                break;
-                            case "DCQ": NumahopEditService.insertBasedOnRank($scope.options.propertyType.dcq, type);
-                                break;
-                            case "CUSTOM_CINES": NumahopEditService.insertBasedOnRank($scope.options.propertyType.custom_cines, type);
-                                break;
-                            case "CUSTOM_ARCHIVE": NumahopEditService.insertBasedOnRank($scope.options.propertyType.custom_archive, type);
-                                break;
-                            case "CUSTOM_OMEKA": NumahopEditService.insertBasedOnRank($scope.options.propertyType.custom_omeka, type);
-                                break;
-                            default: NumahopEditService.insertBasedOnRank($scope.options.propertyType.custom, type);
-                        }
-                    });
-                    loadEntity();
+            $q.all([NumaHopInitializationSrvc.loadDocPropertyTypes(), NumaHopInitializationSrvc.loadLibraries()]).then(function (data) {
+                var propertyTypes = data[0];
+                $scope.sel2Libraries = data[1];
+                $scope.options.propertyType.list = {};
+                _.each(propertyTypes, function (type) {
+                    $scope.options.propertyType.list[type.identifier] = type.label;
                 });
+                $scope.options.propertyType.dc = [];
+                $scope.options.propertyType.dcq = [];
+                $scope.options.propertyType.custom = [];
+                $scope.options.propertyType.custom_cines = [];
+                $scope.options.propertyType.custom_archive = [];
+                $scope.options.propertyType.custom_omeka = [];
+
+                _.each(propertyTypes, function (type) {
+                    switch (type.superType) {
+                        case 'DC':
+                            NumahopEditService.insertBasedOnRank($scope.options.propertyType.dc, type);
+                            break;
+                        case 'DCQ':
+                            NumahopEditService.insertBasedOnRank($scope.options.propertyType.dcq, type);
+                            break;
+                        case 'CUSTOM_CINES':
+                            NumahopEditService.insertBasedOnRank($scope.options.propertyType.custom_cines, type);
+                            break;
+                        case 'CUSTOM_ARCHIVE':
+                            NumahopEditService.insertBasedOnRank($scope.options.propertyType.custom_archive, type);
+                            break;
+                        case 'CUSTOM_OMEKA':
+                            NumahopEditService.insertBasedOnRank($scope.options.propertyType.custom_omeka, type);
+                            break;
+                        default:
+                            NumahopEditService.insertBasedOnRank($scope.options.propertyType.custom, type);
+                    }
+                });
+                loadEntity();
+            });
         }
 
         /****************************************************************/
         /** Actions *****************************************************/
         /****************************************************************/
         function deleteEntity(entity) {
-            ModalSrvc.confirmDeletion(gettextCatalog.getString("la notice {{title}}", entity))
-                .then(function () {
+            ModalSrvc.confirmDeletion(gettextCatalog.getString('la notice {{title}}', entity)).then(function () {
+                entity.$delete(function (value) {
+                    MessageSrvc.addSuccess(gettext('La notice {{title}} a été supprimée'), value);
 
-                    entity.$delete(function (value) {
-                        MessageSrvc.addSuccess(gettext("La notice {{title}} a été supprimée"), value);
-
-                        var removed = ListTools.findAndRemoveItemFromList(entity, $scope.pagination.items);
-                        if (removed) {
-                            $scope.pagination.totalItems--;
-                        }
-                        else {
-                            ListTools.findAndRemoveItemFromList(entity, $scope.newEntities);
-                        }
-                        $scope.backToList();
-                    });
+                    var removed = ListTools.findAndRemoveItemFromList(entity, $scope.pagination.items);
+                    if (removed) {
+                        $scope.pagination.totalItems--;
+                    } else {
+                        ListTools.findAndRemoveItemFromList(entity, $scope.newEntities);
+                    }
+                    $scope.backToList();
                 });
+            });
         }
         function backToList() {
             $scope.loaded = false;
             // supprimer tous les paramètres
             $location.search({});
-            $location.path("/document/record");
+            $location.path('/document/record');
         }
         /****************************************************************/
         /** Propriétés **************************************************/
@@ -155,50 +175,50 @@
             }
             var property;
             switch (type) {
-                case "dc":
+                case 'dc':
                     property = {
-                        "_name": "propertyFormDC" + $scope.indices[type]++,
-                        "type": undefined,
-                        "record": { identifier: entity.identifier }
+                        _name: 'propertyFormDC' + $scope.indices[type]++,
+                        type: undefined,
+                        record: { identifier: entity.identifier },
                     };
                     break;
-                case "dcq":
+                case 'dcq':
                     property = {
-                        "_name": "propertyFormDCQ" + $scope.indices[type]++,
-                        "type": undefined,
-                        "record": { identifier: entity.identifier }
+                        _name: 'propertyFormDCQ' + $scope.indices[type]++,
+                        type: undefined,
+                        record: { identifier: entity.identifier },
                     };
                     break;
-                case "custom":
+                case 'custom':
                     property = {
-                        "_name": "propertyFormCUSTOM" + $scope.indices[type]++,
-                        "type": undefined,
-                        "record": { identifier: entity.identifier },
-                        "rank": getCustomMaxRank(entity, "CUSTOM") + $scope.indices[type]++
+                        _name: 'propertyFormCUSTOM' + $scope.indices[type]++,
+                        type: undefined,
+                        record: { identifier: entity.identifier },
+                        rank: getCustomMaxRank(entity, 'CUSTOM') + $scope.indices[type]++,
                     };
                     break;
-                case "custom_cines":
+                case 'custom_cines':
                     property = {
-                        "_name": "propertyFormCUSTOMCines" + $scope.indices[type]++,
-                        "type": undefined,
-                        "record": { identifier: entity.identifier },
-                        "rank": getCustomMaxRank(entity, "CUSTOM_CINES") + $scope.indices[type]++
+                        _name: 'propertyFormCUSTOMCines' + $scope.indices[type]++,
+                        type: undefined,
+                        record: { identifier: entity.identifier },
+                        rank: getCustomMaxRank(entity, 'CUSTOM_CINES') + $scope.indices[type]++,
                     };
                     break;
-                case "custom_archive":
+                case 'custom_archive':
                     property = {
-                        "_name": "propertyFormCUSTOMArchive" + $scope.indices[type]++,
-                        "type": undefined,
-                        "record": { identifier: entity.identifier },
-                        "rank": getCustomMaxRank(entity, "CUSTOM_ARCHIVE") + $scope.indices[type]++
+                        _name: 'propertyFormCUSTOMArchive' + $scope.indices[type]++,
+                        type: undefined,
+                        record: { identifier: entity.identifier },
+                        rank: getCustomMaxRank(entity, 'CUSTOM_ARCHIVE') + $scope.indices[type]++,
                     };
                     break;
-                case "custom_omeka":
+                case 'custom_omeka':
                     property = {
-                        "_name": "propertyFormCUSTOMOmeka" + $scope.indices[type]++,
-                        "type": undefined,
-                        "record": { identifier: entity.identifier },
-                        "rank": getCustomMaxRank(entity, "CUSTOM_OMEKA") + $scope.indices[type]++
+                        _name: 'propertyFormCUSTOMOmeka' + $scope.indices[type]++,
+                        type: undefined,
+                        record: { identifier: entity.identifier },
+                        rank: getCustomMaxRank(entity, 'CUSTOM_OMEKA') + $scope.indices[type]++,
                     };
                     break;
             }
@@ -218,7 +238,7 @@
         }
         function getPropertyType(property) {
             if (angular.isUndefined(property.identifier)) {
-                return gettext("Nouvelle propriété");
+                return gettext('Nouvelle propriété');
             } else {
                 return gettext(property.type.label);
             }
@@ -233,22 +253,26 @@
          */
         function getCustomMaxRank(entity, type) {
             var maxRank = 0;
-            var filtered = _.filter(entity.properties, function(elt) {return elt.type && elt.type.superType === type});
+            var filtered = _.filter(entity.properties, function (elt) {
+                return elt.type && elt.type.superType === type;
+            });
             if (filtered && filtered.length > 0) {
-               var obj = _.max(filtered, function(elt) {return elt.rank});
-               maxRank = obj.rank;
+                var obj = _.max(filtered, function (elt) {
+                    return elt.rank;
+                });
+                maxRank = obj.rank;
             } else {
                 switch (type) {
-                    case "CUSTOM":
+                    case 'CUSTOM':
                         maxRank = 1000;
                         break;
-                    case "CUSTOM_CINES":
+                    case 'CUSTOM_CINES':
                         maxRank = 2000;
                         break;
-                    case "CUSTOM_ARCHIVE":
+                    case 'CUSTOM_ARCHIVE':
                         maxRank = 3000;
                         break;
-                    case "CUSTOM_OMEKA":
+                    case 'CUSTOM_OMEKA':
                         maxRank = 3000;
                         break;
                     default:
@@ -266,12 +290,11 @@
             if ($scope.entity.library) {
                 params.library = $scope.entity.library.identifier;
             }
-            ModalSrvc.selectDocUnit(params)
-                .then(function (selection) {
-                    if (selection.length > 0) {
-                        $scope.entity.docUnit = selection[0];
-                    }
-                });
+            ModalSrvc.selectDocUnit(params).then(function (selection) {
+                if (selection.length > 0) {
+                    $scope.entity.docUnit = selection[0];
+                }
+            });
         }
 
         /****************************************************************/
@@ -292,41 +315,41 @@
                 var creation = angular.isUndefined(entity.identifier) || entity.identifier === null;
                 mergePropertiesBeforeSave(entity);
 
-                entity.$save({},
+                entity.$save(
+                    {},
                     function (value) {
-
                         // warning language pour export cines.
                         if (value.errors && value.errors[0] && value.errors[0].code === 'RECORD_LANGUAGE_UNKNOWN') {
-                            MessageSrvc.addWarn("{{msge}} ", { msge: value.errors[0].message }, false, 10000);
+                            MessageSrvc.addWarn('{{msge}} ', { msge: value.errors[0].message }, false, 10000);
                             value.errors = [];
                         }
-                        MessageSrvc.addSuccess(gettext("La notice {{name}} a été sauvegardée"), { name: value.title });
+                        MessageSrvc.addSuccess(gettext('La notice {{name}} a été sauvegardée'), { name: value.title });
                         initPropertiesBasedOnTypeAndRank(value);
                         onSuccess(value);
 
                         // si création, on ajoute à la liste, sinon, on essaye de MAJ les infos dans la colonne du milieu
                         if (creation) {
                             $scope.clearSelection();
-                            NumahopEditService.addNewEntityToList(value, $scope.newEntities, $scope.pagination.items, ["title"]);
+                            NumahopEditService.addNewEntityToList(value, $scope.newEntities, $scope.pagination.items, ['title']);
                             $location.search({ id: value.identifier });
                         } else {
                             $scope.unlock(entity);
-                            NumahopEditService.updateMiddleColumn($scope.entity, ["title"],
-                                $scope.pagination.items, $scope.newEntities);
+                            NumahopEditService.updateMiddleColumn($scope.entity, ['title'], $scope.pagination.items, $scope.newEntities);
                         }
                     },
                     function (response) {
-                        if (response.data.type !== "PgcnLockException") {
+                        if (response.data.type !== 'PgcnLockException') {
                             $scope.errors = _.chain(response.data.errors)
-                                .groupBy("field")
+                                .groupBy('field')
                                 .mapObject(function (list) {
-                                    return _.pluck(list, "code");
+                                    return _.pluck(list, 'code');
                                 })
                                 .value();
 
                             openForm();
                         }
-                    });
+                    }
+                );
             });
         }
 
@@ -335,11 +358,10 @@
          */
         function validateRecord() {
             if (angular.isDefined($scope.entity.docUnit)) {
-                WorkflowSrvc.process({ docUnitId: $scope.entity.docUnit.identifier, key: 'VALIDATION_NOTICES' }).$promise
-                    .then(function () {
-                        MessageSrvc.addSuccess(gettextCatalog.getString("L'étape {{name}} a été validée"), { name: $scope.semCodes['workflow.VALIDATION_NOTICES'] });
-                        $scope.canRecordBeValidated = false;
-                    });
+                WorkflowSrvc.process({ docUnitId: $scope.entity.docUnit.identifier, key: 'VALIDATION_NOTICES' }).$promise.then(function () {
+                    MessageSrvc.addSuccess(gettextCatalog.getString("L'étape {{name}} a été validée"), { name: $scope.semCodes['workflow.VALIDATION_NOTICES'] });
+                    $scope.canRecordBeValidated = false;
+                });
             }
         }
 
@@ -349,19 +371,18 @@
          * @param {any} entity
          */
         function duplicate(entity) {
-            entity.$duplicate()
-                .then(function (dupl) {
-                    $scope.clearSelection();
-                    NumahopEditService.addNewEntityToList(dupl, $scope.newEntities, $scope.pagination.items, ["title"]);
-                    $location.search({ id: dupl.identifier });
-                });
+            entity.$duplicate().then(function (dupl) {
+                $scope.clearSelection();
+                NumahopEditService.addNewEntityToList(dupl, $scope.newEntities, $scope.pagination.items, ['title']);
+                $location.search({ id: dupl.identifier });
+            });
         }
 
         // Gestion de l'entité renvoyée par le serveur
         function onSuccess(value) {
             $scope.entity = value;
 
-            HistorySrvc.add(gettextCatalog.getString("Notice {{value}}", $scope.entity));
+            HistorySrvc.add(gettextCatalog.getString('Notice {{value}}', $scope.entity));
 
             displayMessages($scope.entity);
             initForms();
@@ -376,12 +397,12 @@
         }
         function initForms() {
             $scope.indices = {};
-            initForm($scope.entity.record.dc, "propertyFormDC", "dc");
-            initForm($scope.entity.record.dcq, "propertyFormDCQ", "dcq");
-            initForm($scope.entity.record.custom, "propertyFormCUSTOM", "custom");
-            initForm($scope.entity.record.custom_cines, "propertyFormCUSTOMCines", "custom_cines");
-            initForm($scope.entity.record.custom_archive, "propertyFormCUSTOMArchive", "custom_archive");
-            initForm($scope.entity.record.custom_omeka, "propertyFormCUSTOMOmeka", "custom_omeka");
+            initForm($scope.entity.record.dc, 'propertyFormDC', 'dc');
+            initForm($scope.entity.record.dcq, 'propertyFormDCQ', 'dcq');
+            initForm($scope.entity.record.custom, 'propertyFormCUSTOM', 'custom');
+            initForm($scope.entity.record.custom_cines, 'propertyFormCUSTOMCines', 'custom_cines');
+            initForm($scope.entity.record.custom_archive, 'propertyFormCUSTOMArchive', 'custom_archive');
+            initForm($scope.entity.record.custom_omeka, 'propertyFormCUSTOMOmeka', 'custom_omeka');
         }
         function initForm(elements, formPrefix, indexName) {
             _.each(elements, function (element, idx) {
@@ -395,14 +416,12 @@
             // ... puis on affiche les infos de modification ...
             if (angular.isDefined(entity.lastModifiedDate)) {
                 var dateModif = new Date(entity.lastModifiedDate);
-                MessageSrvc.addInfo(gettext("Dernière modification le {{date}} par {{author}}"),
-                    { date: dateModif.toLocaleString(), author: entity.lastModifiedBy }, true);
+                MessageSrvc.addInfo(gettext('Dernière modification le {{date}} par {{author}}'), { date: dateModif.toLocaleString(), author: entity.lastModifiedBy }, true);
             }
             // ... puis on affiche les infos de création ...
             if (angular.isDefined(entity.createdDate)) {
                 var dateCreated = new Date(entity.createdDate);
-                MessageSrvc.addInfo(gettext("Créé le {{date}}"),
-                    { date: dateCreated.toLocaleString() }, true);
+                MessageSrvc.addInfo(gettext('Créé le {{date}}'), { date: dateCreated.toLocaleString() }, true);
             }
             // Affichage pour un temps limité à l'ouverture
             MessageSrvc.initPanel();
@@ -413,14 +432,12 @@
             onSuccess(value);
             $scope.loaded = true;
             if (angular.isDefined(value.docUnit) && value.docUnit) {
-                WorkflowSrvc.canProcess({ docUnit: value.docUnit.identifier, key: 'VALIDATION_NOTICES' }).$promise
-                    .then(function (result) {
-                        if (result.value) {
-                            $scope.canRecordBeValidated = true;
-                        }
-                    });
+                WorkflowSrvc.canProcess({ docUnit: value.docUnit.identifier, key: 'VALIDATION_NOTICES' }).$promise.then(function (result) {
+                    if (result.value) {
+                        $scope.canRecordBeValidated = true;
+                    }
+                });
             }
-
         }
 
         function afterLoadingEntity(entity) {
@@ -439,17 +456,23 @@
 
             _.each(entity.properties, function (property) {
                 switch (property.type.superType) {
-                    case "DC": NumahopEditService.insertBasedOnRank(entity.record.dc, property, "weightedRank");
+                    case 'DC':
+                        NumahopEditService.insertBasedOnRank(entity.record.dc, property, 'weightedRank');
                         break;
-                    case "DCQ": NumahopEditService.insertBasedOnRank(entity.record.dcq, property, "weightedRank");
+                    case 'DCQ':
+                        NumahopEditService.insertBasedOnRank(entity.record.dcq, property, 'weightedRank');
                         break;
-                    case "CUSTOM_CINES": NumahopEditService.insertBasedOnRank(entity.record.custom_cines, property, "weightedRank");
+                    case 'CUSTOM_CINES':
+                        NumahopEditService.insertBasedOnRank(entity.record.custom_cines, property, 'weightedRank');
                         break;
-                    case "CUSTOM_ARCHIVE": NumahopEditService.insertBasedOnRank(entity.record.custom_archive, property, "weightedRank");
+                    case 'CUSTOM_ARCHIVE':
+                        NumahopEditService.insertBasedOnRank(entity.record.custom_archive, property, 'weightedRank');
                         break;
-                    case "CUSTOM_OMEKA": NumahopEditService.insertBasedOnRank(entity.record.custom_omeka, property, "weightedRank");
+                    case 'CUSTOM_OMEKA':
+                        NumahopEditService.insertBasedOnRank(entity.record.custom_omeka, property, 'weightedRank');
                         break;
-                    default: NumahopEditService.insertBasedOnRank(entity.record.custom, property, "weightedRank");
+                    default:
+                        NumahopEditService.insertBasedOnRank(entity.record.custom, property, 'weightedRank');
                 }
             });
         }
@@ -492,10 +515,10 @@
         }
 
         function setPropertyFieldType(type, property) {
-            if (type.identifier === "description") {
-                property._size = "textarea";
+            if (type.identifier === 'description') {
+                property._size = 'textarea';
             } else {
-                property._size = "";
+                property._size = '';
             }
         }
     }

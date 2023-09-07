@@ -1,5 +1,7 @@
 package fr.progilone.pgcn.web.rest.exchange;
 
+import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.*;
+
 import fr.progilone.pgcn.domain.document.DocPropertyType;
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.exception.PgcnTechnicalException;
@@ -10,6 +12,14 @@ import fr.progilone.pgcn.service.exchange.ead.ExportEadService;
 import fr.progilone.pgcn.web.rest.AbstractRestController;
 import fr.progilone.pgcn.web.util.AccessHelper;
 import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,17 +29,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.*;
 
 /**
  * Contrôleur gérant l'export d'unités documentaires
@@ -121,14 +120,7 @@ public class ExportController extends AbstractRestController {
         else {
             try {
                 writeResponseHeaderForDownload(response, "text/csv; charset=" + encoding, null, "export_lot.csv");
-                docUnitToCSVService.convertLotFromList(response.getOutputStream(),
-                                                       lotId,
-                                                       fields,
-                                                       docUnitFields,
-                                                       bibFields,
-                                                       physFields,
-                                                       encoding,
-                                                       separator);
+                docUnitToCSVService.convertLotFromList(response.getOutputStream(), lotId, fields, docUnitFields, bibFields, physFields, encoding, separator);
 
             } catch (IOException e) {
                 LOG.error(e.getMessage(), e);
@@ -141,8 +133,7 @@ public class ExportController extends AbstractRestController {
     @RolesAllowed({DOC_UNIT_HAB4})
     public void exportDocUnitToRdfxml(final HttpServletRequest request,
                                       final HttpServletResponse response,
-                                      @RequestParam(value = "type", required = false, defaultValue = "DC")
-                                      final DocPropertyType.DocPropertySuperType superType,
+                                      @RequestParam(value = "type", required = false, defaultValue = "DC") final DocPropertyType.DocPropertySuperType superType,
                                       @RequestParam(value = "docUnit") final String docUnitId) throws PgcnTechnicalException {
 
         final DocUnit docUnit = docUnitService.findOneWithAllDependencies(docUnitId);
@@ -181,6 +172,9 @@ public class ExportController extends AbstractRestController {
     }
 
     private String getExportName(final DocUnit docUnit, final String type) {
-        return "docunit-" + type.toLowerCase() + "-" + docUnit.getPgcnId().replaceAll("[\\W+]", "_") + ".xml";
+        return "docunit-" + type.toLowerCase()
+               + "-"
+               + docUnit.getPgcnId().replaceAll("[\\W+]", "_")
+               + ".xml";
     }
 }

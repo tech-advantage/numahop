@@ -5,27 +5,27 @@
 // Généré le : 2016.12.29 à 11:54:07 AM CET
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.dc;
 
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElementRef;
+import jakarta.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElementRef;
-import javax.xml.bind.annotation.XmlType;
-
 
 /**
  *
- *     		This complexType is included as a convenience for schema authors who need to define a root
- *     		or container element for all of the DC elements.
+ * This complexType is included as a convenience for schema authors who need to define a root
+ * or container element for all of the DC elements.
  *
  *
- * <p>Classe Java pour elementContainer complex type.
+ * <p>
+ * Classe Java pour elementContainer complex type.
  *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="elementContainer"&gt;
@@ -42,9 +42,7 @@ import javax.xml.bind.annotation.XmlType;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "elementContainer", propOrder = {
-    "any"
-})
+@XmlType(name = "elementContainer", propOrder = {"any"})
 public class ElementContainer {
 
     @XmlElementRef(name = "any", namespace = "http://purl.org/dc/elements/1.1/", type = JAXBElement.class, required = false)
@@ -61,8 +59,9 @@ public class ElementContainer {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getAny().add(newItem);
+     * getAny().add(newItem);
      * </pre>
      *
      *

@@ -1,10 +1,9 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('RecordAllOperationsCtrl', function ($location, $q, $routeParams, $scope, $timeout, gettext,
-            LockSrvc, MessageSrvc, ModalSrvc, NumahopEditService, NumaHopInitializationSrvc, RecordSrvc) {
-
+    angular
+        .module('numaHopApp.controller')
+        .controller('RecordAllOperationsCtrl', function ($location, $q, $routeParams, $scope, $timeout, gettext, LockSrvc, MessageSrvc, ModalSrvc, NumahopEditService, NumaHopInitializationSrvc, RecordSrvc) {
             var self = this;
             self.addProperty = addProperty;
             self.browseRecord = browseRecord;
@@ -32,9 +31,9 @@
 
             /**
              * Chargement des notice de l'unité documentaire courante
-             * 
-             * @param {any} parentCtrl 
-             * @returns 
+             *
+             * @param {any} parentCtrl
+             * @returns
              */
             function loadRecord(parentCtrl) {
                 self.parentCtrl = parentCtrl;
@@ -50,71 +49,73 @@
                     self.records = [self.entity];
                     afterLoadingEntity(self.entity);
                     openForm();
-                }
-                else {
+                } else {
                     self.records = RecordSrvc.allOperations({ identifier: parentCtrl.docUnitId });
-                    self.records.$promise
-                        .then(function (records) {
-                            // Chargement de la notice passée en paramètre
-                            if ($routeParams.record) {
-                                var found = _.find(records, function (r) {
-                                    return r.identifier === $routeParams.record;
-                                });
-                                if (angular.isDefined(found)) {
-                                    selectRecord(found.identifier);
-                                    return;
-                                }
+                    self.records.$promise.then(function (records) {
+                        // Chargement de la notice passée en paramètre
+                        if ($routeParams.record) {
+                            var found = _.find(records, function (r) {
+                                return r.identifier === $routeParams.record;
+                            });
+                            if (angular.isDefined(found)) {
+                                selectRecord(found.identifier);
+                                return;
                             }
-                            // Chargement de la 1e notice
-                            if (records.length >= 1) {
-                                selectRecord(records[0].identifier);
-                            }
-                            else {
-                                self.loaded = true;
-                            }
-                        });
+                        }
+                        // Chargement de la 1e notice
+                        if (records.length >= 1) {
+                            selectRecord(records[0].identifier);
+                        } else {
+                            self.loaded = true;
+                        }
+                    });
                 }
             }
 
             function loadOptions() {
-                LockSrvc.applyOnCtrl(self, $scope, "entityForm", gettext("La notice est verrouillée par {{name}} jusqu'à {{date}}"));
+                LockSrvc.applyOnCtrl(self, $scope, 'entityForm', gettext("La notice est verrouillée par {{name}} jusqu'à {{date}}"));
 
-                NumaHopInitializationSrvc.loadDocPropertyTypes()
-                    .then(function (data) {
-                        self.sel2DocProperties = data;
-                        self.sel2DocProperties.list = {};
-                        _.each(self.sel2DocProperties, function (type) {
-                            self.sel2DocProperties.list[type.identifier] = type.label;
-                        });
-                        self.sel2DocProperties.dc = [];
-                        self.sel2DocProperties.dcq = [];
-                        self.sel2DocProperties.custom = [];
-                        self.sel2DocProperties.custom_cines = [];
-                        self.sel2DocProperties.custom_archive = [];
-                        self.sel2DocProperties.custom_omeka = [];
-                        
-                        _.each(self.sel2DocProperties, function (type) {
-                            switch (type.superType) {
-                                case "DC": NumahopEditService.insertBasedOnRank(self.sel2DocProperties.dc, type);
-                                    break;
-                                case "DCQ": NumahopEditService.insertBasedOnRank(self.sel2DocProperties.dcq, type);
-                                    break;
-                                case "CUSTOM_CINES": NumahopEditService.insertBasedOnRank(self.sel2DocProperties.custom_cines, type);
-                                    break;
-                                case "CUSTOM_ARCHIVE": NumahopEditService.insertBasedOnRank(self.sel2DocProperties.custom_archive, type);
-                                    break;
-                                case "CUSTOM_OMEKA": NumahopEditService.insertBasedOnRank(self.sel2DocProperties.custom_omeka, type);
-                                    break;
-                                default: NumahopEditService.insertBasedOnRank(self.sel2DocProperties.custom, type);
-                            }
-                        });
+                NumaHopInitializationSrvc.loadDocPropertyTypes().then(function (data) {
+                    self.sel2DocProperties = data;
+                    self.sel2DocProperties.list = {};
+                    _.each(self.sel2DocProperties, function (type) {
+                        self.sel2DocProperties.list[type.identifier] = type.label;
                     });
+                    self.sel2DocProperties.dc = [];
+                    self.sel2DocProperties.dcq = [];
+                    self.sel2DocProperties.custom = [];
+                    self.sel2DocProperties.custom_cines = [];
+                    self.sel2DocProperties.custom_archive = [];
+                    self.sel2DocProperties.custom_omeka = [];
+
+                    _.each(self.sel2DocProperties, function (type) {
+                        switch (type.superType) {
+                            case 'DC':
+                                NumahopEditService.insertBasedOnRank(self.sel2DocProperties.dc, type);
+                                break;
+                            case 'DCQ':
+                                NumahopEditService.insertBasedOnRank(self.sel2DocProperties.dcq, type);
+                                break;
+                            case 'CUSTOM_CINES':
+                                NumahopEditService.insertBasedOnRank(self.sel2DocProperties.custom_cines, type);
+                                break;
+                            case 'CUSTOM_ARCHIVE':
+                                NumahopEditService.insertBasedOnRank(self.sel2DocProperties.custom_archive, type);
+                                break;
+                            case 'CUSTOM_OMEKA':
+                                NumahopEditService.insertBasedOnRank(self.sel2DocProperties.custom_omeka, type);
+                                break;
+                            default:
+                                NumahopEditService.insertBasedOnRank(self.sel2DocProperties.custom, type);
+                        }
+                    });
+                });
             }
 
             /**
              * Chargement d'une notice
-             * 
-             * @param {any} recordId 
+             *
+             * @param {any} recordId
              */
             function selectRecord(recordId) {
                 self.entity = RecordSrvc.get({ id: recordId });
@@ -123,7 +124,7 @@
 
             /**
              * Annulation du formulaire d'édition de la notice
-             * 
+             *
              */
             function cancelRecord() {
                 self.unlock(self.entity);
@@ -160,8 +161,7 @@
                         if (selection.length > 0) {
                             self.records = [selection[0]];
                             return selectRecord(selection[0].identifier);
-                        }
-                        else {
+                        } else {
                             return $q.reject();
                         }
                     })
@@ -181,50 +181,50 @@
                 var property;
 
                 switch (type) {
-                    case "dc":
+                    case 'dc':
                         property = {
-                            "_name": "propertyFormDC" + self.indices[type]++,
-                            "type": undefined,
-                            "record": { identifier: entity.identifier }
+                            _name: 'propertyFormDC' + self.indices[type]++,
+                            type: undefined,
+                            record: { identifier: entity.identifier },
                         };
                         break;
-                    case "dcq":
+                    case 'dcq':
                         property = {
-                            "_name": "propertyFormDCQ" + self.indices[type]++,
-                            "type": undefined,
-                            "record": { identifier: entity.identifier }
+                            _name: 'propertyFormDCQ' + self.indices[type]++,
+                            type: undefined,
+                            record: { identifier: entity.identifier },
                         };
                         break;
-                    case "custom":
+                    case 'custom':
                         property = {
-                            "_name": "propertyFormCUSTOM" + self.indices[type]++,
-                            "type": undefined,
-                            "record": { identifier: entity.identifier },
-                            "rank": getCustomMaxRank(entity, "CUSTOM") + self.indices[type]++
+                            _name: 'propertyFormCUSTOM' + self.indices[type]++,
+                            type: undefined,
+                            record: { identifier: entity.identifier },
+                            rank: getCustomMaxRank(entity, 'CUSTOM') + self.indices[type]++,
                         };
                         break;
-                    case "custom_cines":
+                    case 'custom_cines':
                         property = {
-                            "_name": "propertyFormCUSTOMCines" +self.indices[type]++,
-                            "type": undefined,
-                            "record": { identifier: entity.identifier },
-                            "rank": getCustomMaxRank(entity, "CUSTOM_CINES") + self.indices[type]++
+                            _name: 'propertyFormCUSTOMCines' + self.indices[type]++,
+                            type: undefined,
+                            record: { identifier: entity.identifier },
+                            rank: getCustomMaxRank(entity, 'CUSTOM_CINES') + self.indices[type]++,
                         };
                         break;
-                    case "custom_archive":
+                    case 'custom_archive':
                         property = {
-                            "_name": "propertyFormCUSTOMArchive" + self.indices[type]++,
-                            "type": undefined,
-                            "record": { identifier: entity.identifier },
-                            "rank": getCustomMaxRank(entity, "CUSTOM_ARCHIVE") + self.indices[type]++
+                            _name: 'propertyFormCUSTOMArchive' + self.indices[type]++,
+                            type: undefined,
+                            record: { identifier: entity.identifier },
+                            rank: getCustomMaxRank(entity, 'CUSTOM_ARCHIVE') + self.indices[type]++,
                         };
                         break;
-                    case "custom_omeka":
+                    case 'custom_omeka':
                         property = {
-                            "_name": "propertyFormCUSTOMOmeka" + self.indices[type]++,
-                            "type": undefined,
-                            "record": { identifier: entity.identifier },
-                            "rank": getCustomMaxRank(entity, "CUSTOM_OMEKA") + self.indices[type]++
+                            _name: 'propertyFormCUSTOMOmeka' + self.indices[type]++,
+                            type: undefined,
+                            record: { identifier: entity.identifier },
+                            rank: getCustomMaxRank(entity, 'CUSTOM_OMEKA') + self.indices[type]++,
                         };
                         break;
                 }
@@ -247,37 +247,41 @@
 
             function getPropertyType(property) {
                 if (angular.isUndefined(property.identifier)) {
-                    return gettext("Nouvelle propriété");
+                    return gettext('Nouvelle propriété');
                 } else {
                     return gettext(property.type.label);
                 }
             }
-            
+
             /**
              * Pour conserver l'ordre de saisie des champs de type custom.
-             * 
+             *
              * @param entity
              * @param type
              * @returns
              */
             function getCustomMaxRank(entity, type) {
                 var maxRank = 0;
-                var filtered = _.filter(entity.properties, function(elt) {return elt.type && elt.type.superType === type});
+                var filtered = _.filter(entity.properties, function (elt) {
+                    return elt.type && elt.type.superType === type;
+                });
                 if (filtered && filtered.length > 0) {
-                   var obj = _.max(filtered, function(elt) {return elt.rank});
-                   maxRank = obj.rank;
+                    var obj = _.max(filtered, function (elt) {
+                        return elt.rank;
+                    });
+                    maxRank = obj.rank;
                 } else {
                     switch (type) {
-                        case "CUSTOM":
+                        case 'CUSTOM':
                             maxRank = 1000;
                             break;
-                        case "CUSTOM_CINES":
+                        case 'CUSTOM_CINES':
                             maxRank = 2000;
                             break;
-                        case "CUSTOM_ARCHIVE":
+                        case 'CUSTOM_ARCHIVE':
                             maxRank = 3000;
                             break;
-                        case "CUSTOM_OMEKA":
+                        case 'CUSTOM_OMEKA':
                             maxRank = 3000;
                             break;
                         default:
@@ -333,31 +337,33 @@
                 $timeout(function () {
                     mergePropertiesBeforeSave(entity);
 
-                    entity.$save({},
+                    entity.$save(
+                        {},
                         function (value) {
                             // warning language pour export cines.
                             if (value.errors && value.errors[0] && value.errors[0].code === 'RECORD_LANGUAGE_UNKNOWN') {
-                                MessageSrvc.addWarn("{{msg}}", { msg: value.errors[0].message }, false, 10000);
+                                MessageSrvc.addWarn('{{msg}}', { msg: value.errors[0].message }, false, 10000);
                                 value.errors = [];
                             }
-                            MessageSrvc.addSuccess(gettext("La notice {{name}} a été sauvegardée"), { name: value.title });
+                            MessageSrvc.addSuccess(gettext('La notice {{name}} a été sauvegardée'), { name: value.title });
                             self.unlock(self.entity);
                             initPropertiesBasedOnTypeAndRank(value);
                             onSuccess(value);
                             $location.search({ tab: self.currentTab.code });
                         },
                         function (response) {
-                            if (response.data.type !== "PgcnLockException") {
+                            if (response.data.type !== 'PgcnLockException') {
                                 self.errors = _.chain(response.data.errors)
-                                    .groupBy("field")
+                                    .groupBy('field')
                                     .mapObject(function (list) {
-                                        return _.pluck(list, "code");
+                                        return _.pluck(list, 'code');
                                     })
                                     .value();
 
                                 openForm();
                             }
-                        });
+                        }
+                    );
                 });
             }
 
@@ -381,12 +387,12 @@
             }
             function initForms() {
                 self.indices = {};
-                initForm(self.entity.record.dc, "propertyFormDC", "dc");
-                initForm(self.entity.record.dcq, "propertyFormDCQ", "dcq");
-                initForm(self.entity.record.custom, "propertyFormCUSTOM", "custom");
-                initForm(self.entity.record.custom, "propertyFormCUSTOMCines", "custom_cines");
-                initForm(self.entity.record.custom, "propertyFormCUSTOMArchive", "custom_archive");
-                initForm(self.entity.record.custom, "propertyFormCUSTOMOmeka", "custom_omeka");
+                initForm(self.entity.record.dc, 'propertyFormDC', 'dc');
+                initForm(self.entity.record.dcq, 'propertyFormDCQ', 'dcq');
+                initForm(self.entity.record.custom, 'propertyFormCUSTOM', 'custom');
+                initForm(self.entity.record.custom, 'propertyFormCUSTOMCines', 'custom_cines');
+                initForm(self.entity.record.custom, 'propertyFormCUSTOMArchive', 'custom_archive');
+                initForm(self.entity.record.custom, 'propertyFormCUSTOMOmeka', 'custom_omeka');
             }
             function initForm(elements, formPrefix, indexName) {
                 _.each(elements, function (element, idx) {
@@ -421,20 +427,26 @@
                 entity.record.custom_cines = [];
                 entity.record.custom_archive = [];
                 entity.record.custom_omeka = [];
-                
+
                 _.each(entity.properties, function (property) {
                     switch (property.type.superType) {
-                        case "DC": NumahopEditService.insertBasedOnRank(entity.record.dc, property, "weightedRank");
+                        case 'DC':
+                            NumahopEditService.insertBasedOnRank(entity.record.dc, property, 'weightedRank');
                             break;
-                        case "DCQ": NumahopEditService.insertBasedOnRank(entity.record.dcq, property, "weightedRank");
+                        case 'DCQ':
+                            NumahopEditService.insertBasedOnRank(entity.record.dcq, property, 'weightedRank');
                             break;
-                        case "CUSTOM_CINES": NumahopEditService.insertBasedOnRank(entity.record.custom_cines, property, "weightedRank");
+                        case 'CUSTOM_CINES':
+                            NumahopEditService.insertBasedOnRank(entity.record.custom_cines, property, 'weightedRank');
                             break;
-                        case "CUSTOM_ARCHIVE": NumahopEditService.insertBasedOnRank(entity.record.custom_archive, property, "weightedRank");
+                        case 'CUSTOM_ARCHIVE':
+                            NumahopEditService.insertBasedOnRank(entity.record.custom_archive, property, 'weightedRank');
                             break;
-                        case "CUSTOM_OMEKA": NumahopEditService.insertBasedOnRank(entity.record.custom_omeka, property, "weightedRank");
+                        case 'CUSTOM_OMEKA':
+                            NumahopEditService.insertBasedOnRank(entity.record.custom_omeka, property, 'weightedRank');
                             break;
-                        default: NumahopEditService.insertBasedOnRank(entity.record.custom, property, property, "weightedRank");
+                        default:
+                            NumahopEditService.insertBasedOnRank(entity.record.custom, property, property, 'weightedRank');
                     }
                 });
             }

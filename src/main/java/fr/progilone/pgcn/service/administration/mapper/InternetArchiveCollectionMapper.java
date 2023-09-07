@@ -2,15 +2,14 @@ package fr.progilone.pgcn.service.administration.mapper;
 
 import fr.progilone.pgcn.domain.administration.InternetArchiveCollection;
 import fr.progilone.pgcn.domain.dto.administration.InternetArchiveCollectionDTO;
+import java.util.Set;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
-
-import java.util.Set;
 
 /**
  *
  * @author jbrunet
- * Créé le 19 avr. 2017
+ *         Créé le 19 avr. 2017
  */
 @Mapper()
 public interface InternetArchiveCollectionMapper {

@@ -1,17 +1,19 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <changeSet id="pgcn-create-exchange-012" author="progilone">
 
         <addColumn tableName="aud_exc_mapping_rule">
-            <column name="default_rule" type="boolean"/>
+            <column name="default_rule" type="boolean" />
         </addColumn>
 
         <addColumn tableName="exc_mapping_rule">
             <column name="default_rule" type="boolean" defaultValueBoolean="false">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </addColumn>
 

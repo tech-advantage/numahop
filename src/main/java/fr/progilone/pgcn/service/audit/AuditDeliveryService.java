@@ -7,16 +7,15 @@ import fr.progilone.pgcn.domain.lot.Lot;
 import fr.progilone.pgcn.domain.project.Project;
 import fr.progilone.pgcn.repository.audit.AuditDeliveryRepository;
 import fr.progilone.pgcn.repository.delivery.DeliveryRepository;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class AuditDeliveryService {
@@ -65,7 +64,7 @@ public class AuditDeliveryService {
                                                            final List<String> lots) {
         final List<AuditDeliveryRevisionDTO> updatedRevs = new ArrayList<>();
         final List<String> deliveryIds = revisions.stream().map(AuditDeliveryRevisionDTO::getIdentifier).collect(Collectors.toList());
-        final List<Delivery> deliverys = deliveryRepository.findAll(deliveryIds);
+        final List<Delivery> deliverys = deliveryRepository.findAllById(deliveryIds);
 
         for (final AuditDeliveryRevisionDTO revision : revisions) {
             deliverys.stream()
@@ -74,8 +73,10 @@ public class AuditDeliveryService {
                      // Filtrage par bibliothèque, par projet et par lot
                      .filter(delivery -> {
                          final Lot lot = delivery.getLot();
-                         final Project project = lot != null ? lot.getProject() : null;
-                         final Library library = project != null ? project.getLibrary() : null;
+                         final Project project = lot != null ? lot.getProject()
+                                                             : null;
+                         final Library library = project != null ? project.getLibrary()
+                                                                 : null;
 
                          // Lot
                          if (CollectionUtils.isNotEmpty(lots) && (lot == null || !lots.contains(lot.getIdentifier()))) {
@@ -90,7 +91,8 @@ public class AuditDeliveryService {
                              return false;
                          }
                          return true;
-                     }).findAny()
+                     })
+                     .findAny()
                      // alimentation liste résultats
                      .ifPresent(delivery -> {
                          revision.setLabel(delivery.getLabel());

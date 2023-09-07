@@ -2,7 +2,6 @@ package fr.progilone.pgcn.domain.dto.administration;
 
 import fr.progilone.pgcn.domain.administration.MailboxConfiguration;
 import fr.progilone.pgcn.domain.dto.library.SimpleLibraryDTO;
-
 import java.util.Objects;
 import java.util.Set;
 

@@ -27,18 +27,22 @@ public class ExportFTPConfigurationDTO extends AbstractVersionedDTO {
     private List<ExportFTPConfigurationDeliveryFolderDTO> deliveryFolders;
 
     public ExportFTPConfigurationDTO(final String identifier,
-                               final String label,
-                               final SimpleLibraryDTO library,
-                               final String address,
-                               final String login,
-                               final String password,
-                               final String storageServer,
-                               final String port,
-                               final boolean active,
-                               final boolean exportAipSip, final boolean exportMets,
-                               final boolean exportMaster, final boolean exportView,
-                               final boolean exportThumb, final boolean exportPdf,
-                                final boolean exportAlto, final List<ExportFTPConfigurationDeliveryFolderDTO> deliveryFolders) {
+                                     final String label,
+                                     final SimpleLibraryDTO library,
+                                     final String address,
+                                     final String login,
+                                     final String password,
+                                     final String storageServer,
+                                     final String port,
+                                     final boolean active,
+                                     final boolean exportAipSip,
+                                     final boolean exportMets,
+                                     final boolean exportMaster,
+                                     final boolean exportView,
+                                     final boolean exportThumb,
+                                     final boolean exportPdf,
+                                     final boolean exportAlto,
+                                     final List<ExportFTPConfigurationDeliveryFolderDTO> deliveryFolders) {
         this.identifier = identifier;
         this.label = label;
         this.library = library;
@@ -182,11 +186,19 @@ public class ExportFTPConfigurationDTO extends AbstractVersionedDTO {
         this.exportAipSip = exportAipSip;
     }
 
-    public boolean isExportAlto() { return exportAlto; }
+    public boolean isExportAlto() {
+        return exportAlto;
+    }
 
-    public void setExportAlto(boolean exportAlto) { this.exportAlto = exportAlto; }
+    public void setExportAlto(boolean exportAlto) {
+        this.exportAlto = exportAlto;
+    }
 
-    public List<ExportFTPConfigurationDeliveryFolderDTO> getDeliveryFolders() { return deliveryFolders; }
+    public List<ExportFTPConfigurationDeliveryFolderDTO> getDeliveryFolders() {
+        return deliveryFolders;
+    }
 
-    public void setDeliveryFolders(List<ExportFTPConfigurationDeliveryFolderDTO> deliveryFolders) { this.deliveryFolders = deliveryFolders; }
+    public void setDeliveryFolders(List<ExportFTPConfigurationDeliveryFolderDTO> deliveryFolders) {
+        this.deliveryFolders = deliveryFolders;
+    }
 }

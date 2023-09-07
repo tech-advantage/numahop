@@ -2,9 +2,13 @@ package fr.progilone.pgcn.web.rest.check;
 
 import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.*;
 
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletRequest;
-
+import fr.progilone.pgcn.domain.check.AutomaticCheckType.AutoCheckType;
+import fr.progilone.pgcn.domain.document.DocUnit;
+import fr.progilone.pgcn.service.check.AutomaticCheckService;
+import fr.progilone.pgcn.service.document.DocUnitService;
+import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,17 +18,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import fr.progilone.pgcn.domain.check.AutomaticCheckType.AutoCheckType;
-import fr.progilone.pgcn.domain.document.DocUnit;
-import fr.progilone.pgcn.service.check.AutomaticCheckService;
-import fr.progilone.pgcn.service.document.DocUnitService;
-import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
-
 /**
  * Contrôleur gérant les contrôles automatiques
  *
  * @author jbrunet
- * Créé le 14 févr. 2017
+ *         Créé le 14 févr. 2017
  */
 @RestController
 @RequestMapping(value = "/api/rest/check/auto")
@@ -35,9 +33,7 @@ public class AutomaticCheckController {
     private final LibraryAccesssHelper libraryAccesssHelper;
 
     @Autowired
-    public AutomaticCheckController(final AutomaticCheckService autoCheckService,
-                                    final DocUnitService docUnitService,
-                                    final LibraryAccesssHelper libraryAccesssHelper) {
+    public AutomaticCheckController(final AutomaticCheckService autoCheckService, final DocUnitService docUnitService, final LibraryAccesssHelper libraryAccesssHelper) {
         this.autoCheckService = autoCheckService;
         this.docUnitService = docUnitService;
         this.libraryAccesssHelper = libraryAccesssHelper;

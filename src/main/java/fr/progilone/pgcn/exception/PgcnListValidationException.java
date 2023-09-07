@@ -1,8 +1,7 @@
 package fr.progilone.pgcn.exception;
 
-import java.util.List;
-
 import fr.progilone.pgcn.domain.AbstractDomainObject;
+import java.util.List;
 
 public class PgcnListValidationException extends PgcnException {
 

@@ -1,17 +1,17 @@
 package fr.progilone.pgcn.service;
 
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.HashMap;
-
 import org.apache.commons.io.FileUtils;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -29,13 +29,13 @@ public class JasperReportsServiceTest {
 
     private JasperReportsService service;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         service = new JasperReportsService();
         ReflectionTestUtils.setField(service, "imagePath", IMAGE_PATH);
     }
 
-    @Ignore
+    @Disabled
     @Test
     public void generateTestReport() {
         final File exportFile = getExportFile(JasperReportsService.REPORT_TEST, "pdf");
@@ -53,12 +53,15 @@ public class JasperReportsServiceTest {
                                          out,
                                          "fakeLibraryId");
         } catch (final IOException e) {
-            Assert.fail("generateBudgetReport s'est terminé sur l'erreur: " + e.getMessage());
+            fail("generateBudgetReport s'est terminé sur l'erreur: " + e.getMessage());
         }
     }
 
     private File getExportFile(final String prefix, final String extension) {
-        final String fileName = prefix + "_" + System.currentTimeMillis() + "." + extension;
+        final String fileName = prefix + "_"
+                                + System.currentTimeMillis()
+                                + "."
+                                + extension;
         return FileUtils.getFile(FileUtils.getTempDirectory(), fileName);
     }
 

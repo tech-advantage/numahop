@@ -8,13 +8,12 @@ import fr.progilone.pgcn.exception.message.PgcnErrorCode;
 import fr.progilone.pgcn.exception.message.PgcnList;
 import fr.progilone.pgcn.repository.administration.z3950.Z3950ServerRepository;
 import fr.progilone.pgcn.service.administration.mapper.Z3950ServerMapper;
+import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 /**
  * Service permettant d'administrer les serveurs Z39.50
@@ -34,12 +33,13 @@ public class Z3950ServerService {
     /**
      * Récupération d'un serveur Z39.50 en fonction de son identifiant.
      *
-     * @param id identifiant du serveur
+     * @param id
+     *            identifiant du serveur
      * @return un objet <code>Z3950Server</code> correspondant à l'identifiant.
      */
     @Transactional(readOnly = true)
     public Z3950Server findOne(final String id) {
-        return z3950ServerRepository.findOne(id);
+        return z3950ServerRepository.findById(id).orElse(null);
     }
 
     /**
@@ -59,16 +59,18 @@ public class Z3950ServerService {
      */
     @Transactional(readOnly = true)
     public List<Z3950ServerDTO> findAllDTO() {
-        final List<Z3950Server> servers = z3950ServerRepository.findAll(new Sort("name"));
+        final List<Z3950Server> servers = z3950ServerRepository.findAll(Sort.by("name"));
         return Z3950ServerMapper.INSTANCE.z3950ServerToDtos(servers);
     }
 
     /**
      * Modification d'un serveur Z 39.50 en fonction de l'objet passé en paramètre.
      *
-     * @param z3950Server serveur à modifier.
+     * @param z3950Server
+     *            serveur à modifier.
      * @return l'objet <code>Z3950Server</code> modifié.
-     * @throws PgcnValidationException si le nom est déjà pris
+     * @throws PgcnValidationException
+     *             si le nom est déjà pris
      */
     @Transactional
     public Z3950Server save(final Z3950Server z3950Server) throws PgcnValidationException {
@@ -78,7 +80,7 @@ public class Z3950ServerService {
             for (final Z3950Server activeServer : activeServers) {
                 activeServer.setActive(false);
             }
-            z3950ServerRepository.save(activeServers);
+            z3950ServerRepository.saveAll(activeServers);
         }
         return z3950ServerRepository.save(z3950Server);
     }
@@ -86,11 +88,12 @@ public class Z3950ServerService {
     /**
      * Suppression d'une serveur Z39.50 en fonction de son identifiant.
      *
-     * @param id identifiant du serveur à supprimer.
+     * @param id
+     *            identifiant du serveur à supprimer.
      */
     @Transactional
     public void delete(final String id) {
-        z3950ServerRepository.delete(id);
+        z3950ServerRepository.deleteById(id);
     }
 
     /**
@@ -111,9 +114,8 @@ public class Z3950ServerService {
         }
         // le nom est unique
         else {
-            final Z3950Server dup = id != null
-                                    ? z3950ServerRepository.findOneByNameAndIdentifierNot(name, id)
-                                    : z3950ServerRepository.findOneByName(name);
+            final Z3950Server dup = id != null ? z3950ServerRepository.findOneByNameAndIdentifierNot(name, id)
+                                               : z3950ServerRepository.findOneByName(name);
             if (dup != null) {
                 errors.add(builder.reinit().setCode(PgcnErrorCode.Z3950SERVER_UNIQUE_NAME_VIOLATION).setField("name").build());
             }

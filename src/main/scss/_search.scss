@@ -1,19 +1,19 @@
 .advsearch {
-   	padding: 25px 25px 50px 25px;
+    padding: 25px 25px 50px 25px;
 
-   	.form-control {
-   		color: $sid-sec-color;
-   	}
-   	.search-input-group {
-   		@extend .input-group;
-   		margin-bottom: 15px;
+    .form-control {
+        color: $sid-sec-color;
+    }
+    .search-input-group {
+        @extend .input-group;
+        margin-bottom: 15px;
         padding-left: 5px;
 
-   		&+a {
-   			margin-bottom: 30px;
-   		}
+        & + a {
+            margin-bottom: 30px;
+        }
 
-   		.clear-text {
+        .clear-text {
             display: inline-block;
             width: 18px;
             height: 100%;
@@ -23,7 +23,7 @@
             color: $sid-sec-color;
             z-index: 10;
             cursor: pointer;
-   		}
+        }
 
         .form-inline .form-control {
             float: none;
@@ -31,76 +31,78 @@
             border-bottom-left-radius: 4px;
             border-top-left-radius: 4px;
         }
-   	}
-   	.search-menu {
-   		background-color: $sid-main-color;
-   		border-bottom-left-radius: 10px;
-   		border-bottom-right-radius: 10px;
-   		border-top-left-radius: 0px;
-   		border-top-right-radius: 0px;
-   		color: $sid-fourth-color;
-   		margin: 0px;
-   		min-width: 0px;
-   		padding-bottom: 5px;
+    }
+    .search-menu {
+        background-color: $sid-main-color;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+        border-top-left-radius: 0px;
+        border-top-right-radius: 0px;
+        color: $sid-fourth-color;
+        margin: 0px;
+        min-width: 0px;
+        padding-bottom: 5px;
 
-   		.list-group {
-   			margin: 0;
-   			padding: 0;
-   		}
-   		.list-group-item {
-   			padding: 2px 10px;
-   			border: none;
-   			cursor: pointer;
-   			background: none;
+        .list-group {
+            margin: 0;
+            padding: 0;
+        }
+        .list-group-item {
+            padding: 2px 10px;
+            border: none;
+            cursor: pointer;
+            background: none;
 
-   			&.active {
-   				color: $sid-menu-font-color;
-   				font-weight: bolder;
-   			}
-   		}
-   		.list-group.search-group {
-   			@extend .text-right;
-   			border-right: 1px solid #DDD;
-   		}
-   		> ul {
-   			display: inline-block;
-   			vertical-align: top;
-   		}
-   	}
-   	.filter-group {
-   		color: white;
-   		margin-bottom: 20px;
+            &.active {
+                color: $sid-menu-font-color;
+                font-weight: bolder;
+            }
+        }
+        .list-group.search-group {
+            @extend .text-right;
+            border-right: 1px solid #ddd;
+        }
+        > ul {
+            display: inline-block;
+            vertical-align: top;
+        }
+    }
+    .filter-group {
+        color: white;
+        margin-bottom: 20px;
 
-   		h5 {
-   			@extend .text-uppercase;
-   		}
-   		> label {
-   			cursor: pointer;
+        h5 {
+            @extend .text-uppercase;
+        }
+        > label {
+            cursor: pointer;
 
-    		&:not(:last-child) {
-    			margin-right: 10px;
-    		}
-    		&.label {
-	    		&.label-success, &.label-warning, &.label-danger {
-	    			padding-top: 0.5em;
-	    		}
-	    		&.active {
-	    			font-weight: bold;
-	    		}
-	    		&:not(.active) {
-	    			background-color: $btn-link-disabled-color;
-	    		}
-			}
-   		}
-   		img.negative {
-			filter: invert(1);
-			-webkit-filter: invert(1);
-			-moz-filter: invert(1);
-			-o-filter: invert(1);
-			-ms-filter: invert(1);
-		}
-		span[class^="syrtis-icon-"] {
-			font-size: 8px;
-		}
-   	}
+            &:not(:last-child) {
+                margin-right: 10px;
+            }
+            &.label {
+                &.label-success,
+                &.label-warning,
+                &.label-danger {
+                    padding-top: 0.5em;
+                }
+                &.active {
+                    font-weight: bold;
+                }
+                &:not(.active) {
+                    background-color: $btn-link-disabled-color;
+                }
+            }
+        }
+        img.negative {
+            filter: invert(1);
+            -webkit-filter: invert(1);
+            -moz-filter: invert(1);
+            -o-filter: invert(1);
+            -ms-filter: invert(1);
+        }
+        span[class^='syrtis-icon-'] {
+            font-size: 8px;
+        }
+    }
 }

@@ -5,39 +5,41 @@
 // Généré le : 2016.12.29 à 11:54:46 AM CET
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.mets;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAnyAttribute;
+import jakarta.xml.bind.annotation.XmlAnyElement;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlID;
+import jakarta.xml.bind.annotation.XmlIDREF;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAnyAttribute;
-import javax.xml.bind.annotation.XmlAnyElement;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlID;
-import javax.xml.bind.annotation.XmlIDREF;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 import org.w3c.dom.Element;
 
-
 /**
  * fileType: Complex Type for Files
- * 				The file element provides access to content files for a METS object.  A file element may contain one or more FLocat elements, which provide pointers to a content file, and/or an FContent element, which wraps an encoded version of the file. Note that ALL FLocat and FContent elements underneath a single file element should identify/contain identical copies of a single file.
+ * The file element provides access to content files for a METS object. A file element may contain one or more FLocat elements, which provide pointers
+ * to a content file, and/or an FContent element, which wraps an encoded version of the file. Note that ALL FLocat and FContent elements underneath a
+ * single file element should identify/contain identical copies of a single file.
  *
  *
- * <p>Classe Java pour fileType complex type.
+ * <p>
+ * Classe Java pour fileType complex type.
  *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="fileType"&gt;
@@ -151,13 +153,12 @@ import org.w3c.dom.Element;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "fileType", propOrder = {
-    "fLocat",
-    "fContent",
-    "stream",
-    "transformFile",
-    "file"
-})
+@XmlType(name = "fileType",
+         propOrder = {"fLocat",
+                      "fContent",
+                      "stream",
+                      "transformFile",
+                      "file"})
 public class FileType {
 
     @XmlElement(name = "FLocat")
@@ -219,8 +220,9 @@ public class FileType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getFLocat().add(newItem);
+     * getFLocat().add(newItem);
      * </pre>
      *
      *
@@ -241,8 +243,8 @@ public class FileType {
      * Obtient la valeur de la propriété fContent.
      *
      * @return
-     *     possible object is
-     *     {@link FContent }
+     *         possible object is
+     *         {@link FContent }
      *
      */
     public FContent getFContent() {
@@ -253,8 +255,8 @@ public class FileType {
      * Définit la valeur de la propriété fContent.
      *
      * @param value
-     *     allowed object is
-     *     {@link FContent }
+     *            allowed object is
+     *            {@link FContent }
      *
      */
     public void setFContent(FContent value) {
@@ -272,8 +274,9 @@ public class FileType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getStream().add(newItem);
+     * getStream().add(newItem);
      * </pre>
      *
      *
@@ -301,8 +304,9 @@ public class FileType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getTransformFile().add(newItem);
+     * getTransformFile().add(newItem);
      * </pre>
      *
      *
@@ -330,8 +334,9 @@ public class FileType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getFile().add(newItem);
+     * getFile().add(newItem);
      * </pre>
      *
      *
@@ -352,8 +357,8 @@ public class FileType {
      * Obtient la valeur de la propriété id.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getID() {
@@ -364,8 +369,8 @@ public class FileType {
      * Définit la valeur de la propriété id.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setID(String value) {
@@ -376,8 +381,8 @@ public class FileType {
      * Obtient la valeur de la propriété seq.
      *
      * @return
-     *     possible object is
-     *     {@link Integer }
+     *         possible object is
+     *         {@link Integer }
      *
      */
     public Integer getSEQ() {
@@ -388,8 +393,8 @@ public class FileType {
      * Définit la valeur de la propriété seq.
      *
      * @param value
-     *     allowed object is
-     *     {@link Integer }
+     *            allowed object is
+     *            {@link Integer }
      *
      */
     public void setSEQ(Integer value) {
@@ -400,8 +405,8 @@ public class FileType {
      * Obtient la valeur de la propriété ownerid.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getOWNERID() {
@@ -412,8 +417,8 @@ public class FileType {
      * Définit la valeur de la propriété ownerid.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setOWNERID(String value) {
@@ -431,8 +436,9 @@ public class FileType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getADMID().add(newItem);
+     * getADMID().add(newItem);
      * </pre>
      *
      *
@@ -460,8 +466,9 @@ public class FileType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getDMDID().add(newItem);
+     * getDMDID().add(newItem);
      * </pre>
      *
      *
@@ -482,8 +489,8 @@ public class FileType {
      * Obtient la valeur de la propriété groupid.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getGROUPID() {
@@ -494,8 +501,8 @@ public class FileType {
      * Définit la valeur de la propriété groupid.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setGROUPID(String value) {
@@ -506,8 +513,8 @@ public class FileType {
      * Obtient la valeur de la propriété use.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getUSE() {
@@ -518,8 +525,8 @@ public class FileType {
      * Définit la valeur de la propriété use.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setUSE(String value) {
@@ -530,8 +537,8 @@ public class FileType {
      * Obtient la valeur de la propriété begin.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getBEGIN() {
@@ -542,8 +549,8 @@ public class FileType {
      * Définit la valeur de la propriété begin.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setBEGIN(String value) {
@@ -554,8 +561,8 @@ public class FileType {
      * Obtient la valeur de la propriété end.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getEND() {
@@ -566,8 +573,8 @@ public class FileType {
      * Définit la valeur de la propriété end.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setEND(String value) {
@@ -578,8 +585,8 @@ public class FileType {
      * Obtient la valeur de la propriété betype.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getBETYPE() {
@@ -590,8 +597,8 @@ public class FileType {
      * Définit la valeur de la propriété betype.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setBETYPE(String value) {
@@ -602,8 +609,8 @@ public class FileType {
      * Obtient la valeur de la propriété mimetype.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getMIMETYPE() {
@@ -614,8 +621,8 @@ public class FileType {
      * Définit la valeur de la propriété mimetype.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setMIMETYPE(String value) {
@@ -626,8 +633,8 @@ public class FileType {
      * Obtient la valeur de la propriété size.
      *
      * @return
-     *     possible object is
-     *     {@link Long }
+     *         possible object is
+     *         {@link Long }
      *
      */
     public Long getSIZE() {
@@ -638,8 +645,8 @@ public class FileType {
      * Définit la valeur de la propriété size.
      *
      * @param value
-     *     allowed object is
-     *     {@link Long }
+     *            allowed object is
+     *            {@link Long }
      *
      */
     public void setSIZE(Long value) {
@@ -650,8 +657,8 @@ public class FileType {
      * Obtient la valeur de la propriété created.
      *
      * @return
-     *     possible object is
-     *     {@link LocalDateTime }
+     *         possible object is
+     *         {@link LocalDateTime }
      *
      */
     public LocalDateTime getCREATED() {
@@ -662,8 +669,8 @@ public class FileType {
      * Définit la valeur de la propriété created.
      *
      * @param value
-     *     allowed object is
-     *     {@link LocalDateTime }
+     *            allowed object is
+     *            {@link LocalDateTime }
      *
      */
     public void setCREATED(LocalDateTime value) {
@@ -674,8 +681,8 @@ public class FileType {
      * Obtient la valeur de la propriété checksum.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getCHECKSUM() {
@@ -686,8 +693,8 @@ public class FileType {
      * Définit la valeur de la propriété checksum.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setCHECKSUM(String value) {
@@ -698,8 +705,8 @@ public class FileType {
      * Obtient la valeur de la propriété checksumtype.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getCHECKSUMTYPE() {
@@ -710,8 +717,8 @@ public class FileType {
      * Définit la valeur de la propriété checksumtype.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setCHECKSUMTYPE(String value) {
@@ -730,17 +737,18 @@ public class FileType {
      *
      *
      * @return
-     *     always non-null
+     *         always non-null
      */
     public Map<QName, String> getOtherAttributes() {
         return otherAttributes;
     }
 
-
     /**
-     * <p>Classe Java pour anonymous complex type.
+     * <p>
+     * Classe Java pour anonymous complex type.
      *
-     * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+     * <p>
+     * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
      *
      * <pre>
      * &lt;complexType&gt;
@@ -770,10 +778,9 @@ public class FileType {
      *
      */
     @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "binData",
-        "xmlData"
-    })
+    @XmlType(name = "",
+             propOrder = {"binData",
+                          "xmlData"})
     public static class FContent {
 
         protected byte[] binData;
@@ -790,8 +797,8 @@ public class FileType {
          * Obtient la valeur de la propriété binData.
          *
          * @return
-         *     possible object is
-         *     byte[]
+         *         possible object is
+         *         byte[]
          */
         public byte[] getBinData() {
             return binData;
@@ -801,8 +808,8 @@ public class FileType {
          * Définit la valeur de la propriété binData.
          *
          * @param value
-         *     allowed object is
-         *     byte[]
+         *            allowed object is
+         *            byte[]
          */
         public void setBinData(byte[] value) {
             this.binData = value;
@@ -812,8 +819,8 @@ public class FileType {
          * Obtient la valeur de la propriété xmlData.
          *
          * @return
-         *     possible object is
-         *     {@link XmlData }
+         *         possible object is
+         *         {@link XmlData }
          *
          */
         public XmlData getXmlData() {
@@ -824,8 +831,8 @@ public class FileType {
          * Définit la valeur de la propriété xmlData.
          *
          * @param value
-         *     allowed object is
-         *     {@link XmlData }
+         *            allowed object is
+         *            {@link XmlData }
          *
          */
         public void setXmlData(XmlData value) {
@@ -836,8 +843,8 @@ public class FileType {
          * Obtient la valeur de la propriété id.
          *
          * @return
-         *     possible object is
-         *     {@link String }
+         *         possible object is
+         *         {@link String }
          *
          */
         public String getID() {
@@ -848,8 +855,8 @@ public class FileType {
          * Définit la valeur de la propriété id.
          *
          * @param value
-         *     allowed object is
-         *     {@link String }
+         *            allowed object is
+         *            {@link String }
          *
          */
         public void setID(String value) {
@@ -860,8 +867,8 @@ public class FileType {
          * Obtient la valeur de la propriété use.
          *
          * @return
-         *     possible object is
-         *     {@link String }
+         *         possible object is
+         *         {@link String }
          *
          */
         public String getUSE() {
@@ -872,19 +879,20 @@ public class FileType {
          * Définit la valeur de la propriété use.
          *
          * @param value
-         *     allowed object is
-         *     {@link String }
+         *            allowed object is
+         *            {@link String }
          *
          */
         public void setUSE(String value) {
             this.use = value;
         }
 
-
         /**
-         * <p>Classe Java pour anonymous complex type.
+         * <p>
+         * Classe Java pour anonymous complex type.
          *
-         * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+         * <p>
+         * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
          *
          * <pre>
          * &lt;complexType&gt;
@@ -901,9 +909,7 @@ public class FileType {
          *
          */
         @XmlAccessorType(XmlAccessType.FIELD)
-        @XmlType(name = "", propOrder = {
-            "any"
-        })
+        @XmlType(name = "", propOrder = {"any"})
         public static class XmlData {
 
             @XmlAnyElement(lax = true)
@@ -920,8 +926,9 @@ public class FileType {
              *
              * <p>
              * For example, to add a new item, do as follows:
+             *
              * <pre>
-             *    getAny().add(newItem);
+             * getAny().add(newItem);
              * </pre>
              *
              *
@@ -943,11 +950,12 @@ public class FileType {
 
     }
 
-
     /**
-     * <p>Classe Java pour anonymous complex type.
+     * <p>
+     * Classe Java pour anonymous complex type.
      *
-     * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+     * <p>
+     * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
      *
      * <pre>
      * &lt;complexType&gt;
@@ -999,8 +1007,8 @@ public class FileType {
          * Obtient la valeur de la propriété id.
          *
          * @return
-         *     possible object is
-         *     {@link String }
+         *         possible object is
+         *         {@link String }
          *
          */
         public String getID() {
@@ -1011,8 +1019,8 @@ public class FileType {
          * Définit la valeur de la propriété id.
          *
          * @param value
-         *     allowed object is
-         *     {@link String }
+         *            allowed object is
+         *            {@link String }
          *
          */
         public void setID(String value) {
@@ -1023,8 +1031,8 @@ public class FileType {
          * Obtient la valeur de la propriété use.
          *
          * @return
-         *     possible object is
-         *     {@link String }
+         *         possible object is
+         *         {@link String }
          *
          */
         public String getUSE() {
@@ -1035,8 +1043,8 @@ public class FileType {
          * Définit la valeur de la propriété use.
          *
          * @param value
-         *     allowed object is
-         *     {@link String }
+         *            allowed object is
+         *            {@link String }
          *
          */
         public void setUSE(String value) {
@@ -1047,8 +1055,8 @@ public class FileType {
          * Obtient la valeur de la propriété loctype.
          *
          * @return
-         *     possible object is
-         *     {@link String }
+         *         possible object is
+         *         {@link String }
          *
          */
         public String getLOCTYPE() {
@@ -1059,8 +1067,8 @@ public class FileType {
          * Définit la valeur de la propriété loctype.
          *
          * @param value
-         *     allowed object is
-         *     {@link String }
+         *            allowed object is
+         *            {@link String }
          *
          */
         public void setLOCTYPE(String value) {
@@ -1071,8 +1079,8 @@ public class FileType {
          * Obtient la valeur de la propriété otherloctype.
          *
          * @return
-         *     possible object is
-         *     {@link String }
+         *         possible object is
+         *         {@link String }
          *
          */
         public String getOTHERLOCTYPE() {
@@ -1083,8 +1091,8 @@ public class FileType {
          * Définit la valeur de la propriété otherloctype.
          *
          * @param value
-         *     allowed object is
-         *     {@link String }
+         *            allowed object is
+         *            {@link String }
          *
          */
         public void setOTHERLOCTYPE(String value) {
@@ -1095,8 +1103,8 @@ public class FileType {
          * Obtient la valeur de la propriété type.
          *
          * @return
-         *     possible object is
-         *     {@link String }
+         *         possible object is
+         *         {@link String }
          *
          */
         public String getType() {
@@ -1111,8 +1119,8 @@ public class FileType {
          * Définit la valeur de la propriété type.
          *
          * @param value
-         *     allowed object is
-         *     {@link String }
+         *            allowed object is
+         *            {@link String }
          *
          */
         public void setType(String value) {
@@ -1123,8 +1131,8 @@ public class FileType {
          * Obtient la valeur de la propriété href.
          *
          * @return
-         *     possible object is
-         *     {@link String }
+         *         possible object is
+         *         {@link String }
          *
          */
         public String getHref() {
@@ -1135,8 +1143,8 @@ public class FileType {
          * Définit la valeur de la propriété href.
          *
          * @param value
-         *     allowed object is
-         *     {@link String }
+         *            allowed object is
+         *            {@link String }
          *
          */
         public void setHref(String value) {
@@ -1147,8 +1155,8 @@ public class FileType {
          * Obtient la valeur de la propriété role.
          *
          * @return
-         *     possible object is
-         *     {@link String }
+         *         possible object is
+         *         {@link String }
          *
          */
         public String getRole() {
@@ -1159,8 +1167,8 @@ public class FileType {
          * Définit la valeur de la propriété role.
          *
          * @param value
-         *     allowed object is
-         *     {@link String }
+         *            allowed object is
+         *            {@link String }
          *
          */
         public void setRole(String value) {
@@ -1171,8 +1179,8 @@ public class FileType {
          * Obtient la valeur de la propriété arcrole.
          *
          * @return
-         *     possible object is
-         *     {@link String }
+         *         possible object is
+         *         {@link String }
          *
          */
         public String getArcrole() {
@@ -1183,8 +1191,8 @@ public class FileType {
          * Définit la valeur de la propriété arcrole.
          *
          * @param value
-         *     allowed object is
-         *     {@link String }
+         *            allowed object is
+         *            {@link String }
          *
          */
         public void setArcrole(String value) {
@@ -1195,8 +1203,8 @@ public class FileType {
          * Obtient la valeur de la propriété title.
          *
          * @return
-         *     possible object is
-         *     {@link String }
+         *         possible object is
+         *         {@link String }
          *
          */
         public String getTitle() {
@@ -1207,8 +1215,8 @@ public class FileType {
          * Définit la valeur de la propriété title.
          *
          * @param value
-         *     allowed object is
-         *     {@link String }
+         *            allowed object is
+         *            {@link String }
          *
          */
         public void setTitle(String value) {
@@ -1219,8 +1227,8 @@ public class FileType {
          * Obtient la valeur de la propriété show.
          *
          * @return
-         *     possible object is
-         *     {@link String }
+         *         possible object is
+         *         {@link String }
          *
          */
         public String getShow() {
@@ -1231,8 +1239,8 @@ public class FileType {
          * Définit la valeur de la propriété show.
          *
          * @param value
-         *     allowed object is
-         *     {@link String }
+         *            allowed object is
+         *            {@link String }
          *
          */
         public void setShow(String value) {
@@ -1243,8 +1251,8 @@ public class FileType {
          * Obtient la valeur de la propriété actuate.
          *
          * @return
-         *     possible object is
-         *     {@link String }
+         *         possible object is
+         *         {@link String }
          *
          */
         public String getActuate() {
@@ -1255,8 +1263,8 @@ public class FileType {
          * Définit la valeur de la propriété actuate.
          *
          * @param value
-         *     allowed object is
-         *     {@link String }
+         *            allowed object is
+         *            {@link String }
          *
          */
         public void setActuate(String value) {
@@ -1265,11 +1273,12 @@ public class FileType {
 
     }
 
-
     /**
-     * <p>Classe Java pour anonymous complex type.
+     * <p>
+     * Classe Java pour anonymous complex type.
      *
-     * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+     * <p>
+     * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
      *
      * <pre>
      * &lt;complexType&gt;
@@ -1328,8 +1337,8 @@ public class FileType {
          * Obtient la valeur de la propriété id.
          *
          * @return
-         *     possible object is
-         *     {@link String }
+         *         possible object is
+         *         {@link String }
          *
          */
         public String getID() {
@@ -1340,8 +1349,8 @@ public class FileType {
          * Définit la valeur de la propriété id.
          *
          * @param value
-         *     allowed object is
-         *     {@link String }
+         *            allowed object is
+         *            {@link String }
          *
          */
         public void setID(String value) {
@@ -1352,8 +1361,8 @@ public class FileType {
          * Obtient la valeur de la propriété streamType.
          *
          * @return
-         *     possible object is
-         *     {@link String }
+         *         possible object is
+         *         {@link String }
          *
          */
         public String getStreamType() {
@@ -1364,8 +1373,8 @@ public class FileType {
          * Définit la valeur de la propriété streamType.
          *
          * @param value
-         *     allowed object is
-         *     {@link String }
+         *            allowed object is
+         *            {@link String }
          *
          */
         public void setStreamType(String value) {
@@ -1376,8 +1385,8 @@ public class FileType {
          * Obtient la valeur de la propriété ownerid.
          *
          * @return
-         *     possible object is
-         *     {@link String }
+         *         possible object is
+         *         {@link String }
          *
          */
         public String getOWNERID() {
@@ -1388,8 +1397,8 @@ public class FileType {
          * Définit la valeur de la propriété ownerid.
          *
          * @param value
-         *     allowed object is
-         *     {@link String }
+         *            allowed object is
+         *            {@link String }
          *
          */
         public void setOWNERID(String value) {
@@ -1407,8 +1416,9 @@ public class FileType {
          *
          * <p>
          * For example, to add a new item, do as follows:
+         *
          * <pre>
-         *    getADMID().add(newItem);
+         * getADMID().add(newItem);
          * </pre>
          *
          *
@@ -1436,8 +1446,9 @@ public class FileType {
          *
          * <p>
          * For example, to add a new item, do as follows:
+         *
          * <pre>
-         *    getDMDID().add(newItem);
+         * getDMDID().add(newItem);
          * </pre>
          *
          *
@@ -1458,8 +1469,8 @@ public class FileType {
          * Obtient la valeur de la propriété begin.
          *
          * @return
-         *     possible object is
-         *     {@link String }
+         *         possible object is
+         *         {@link String }
          *
          */
         public String getBEGIN() {
@@ -1470,8 +1481,8 @@ public class FileType {
          * Définit la valeur de la propriété begin.
          *
          * @param value
-         *     allowed object is
-         *     {@link String }
+         *            allowed object is
+         *            {@link String }
          *
          */
         public void setBEGIN(String value) {
@@ -1482,8 +1493,8 @@ public class FileType {
          * Obtient la valeur de la propriété end.
          *
          * @return
-         *     possible object is
-         *     {@link String }
+         *         possible object is
+         *         {@link String }
          *
          */
         public String getEND() {
@@ -1494,8 +1505,8 @@ public class FileType {
          * Définit la valeur de la propriété end.
          *
          * @param value
-         *     allowed object is
-         *     {@link String }
+         *            allowed object is
+         *            {@link String }
          *
          */
         public void setEND(String value) {
@@ -1506,8 +1517,8 @@ public class FileType {
          * Obtient la valeur de la propriété betype.
          *
          * @return
-         *     possible object is
-         *     {@link String }
+         *         possible object is
+         *         {@link String }
          *
          */
         public String getBETYPE() {
@@ -1518,8 +1529,8 @@ public class FileType {
          * Définit la valeur de la propriété betype.
          *
          * @param value
-         *     allowed object is
-         *     {@link String }
+         *            allowed object is
+         *            {@link String }
          *
          */
         public void setBETYPE(String value) {
@@ -1528,11 +1539,12 @@ public class FileType {
 
     }
 
-
     /**
-     * <p>Classe Java pour anonymous complex type.
+     * <p>
+     * Classe Java pour anonymous complex type.
      *
-     * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+     * <p>
+     * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
      *
      * <pre>
      * &lt;complexType&gt;
@@ -1585,8 +1597,8 @@ public class FileType {
          * Obtient la valeur de la propriété id.
          *
          * @return
-         *     possible object is
-         *     {@link String }
+         *         possible object is
+         *         {@link String }
          *
          */
         public String getID() {
@@ -1597,8 +1609,8 @@ public class FileType {
          * Définit la valeur de la propriété id.
          *
          * @param value
-         *     allowed object is
-         *     {@link String }
+         *            allowed object is
+         *            {@link String }
          *
          */
         public void setID(String value) {
@@ -1609,8 +1621,8 @@ public class FileType {
          * Obtient la valeur de la propriété transformtype.
          *
          * @return
-         *     possible object is
-         *     {@link String }
+         *         possible object is
+         *         {@link String }
          *
          */
         public String getTRANSFORMTYPE() {
@@ -1621,8 +1633,8 @@ public class FileType {
          * Définit la valeur de la propriété transformtype.
          *
          * @param value
-         *     allowed object is
-         *     {@link String }
+         *            allowed object is
+         *            {@link String }
          *
          */
         public void setTRANSFORMTYPE(String value) {
@@ -1633,8 +1645,8 @@ public class FileType {
          * Obtient la valeur de la propriété transformalgorithm.
          *
          * @return
-         *     possible object is
-         *     {@link String }
+         *         possible object is
+         *         {@link String }
          *
          */
         public String getTRANSFORMALGORITHM() {
@@ -1645,8 +1657,8 @@ public class FileType {
          * Définit la valeur de la propriété transformalgorithm.
          *
          * @param value
-         *     allowed object is
-         *     {@link String }
+         *            allowed object is
+         *            {@link String }
          *
          */
         public void setTRANSFORMALGORITHM(String value) {
@@ -1657,8 +1669,8 @@ public class FileType {
          * Obtient la valeur de la propriété transformkey.
          *
          * @return
-         *     possible object is
-         *     {@link String }
+         *         possible object is
+         *         {@link String }
          *
          */
         public String getTRANSFORMKEY() {
@@ -1669,8 +1681,8 @@ public class FileType {
          * Définit la valeur de la propriété transformkey.
          *
          * @param value
-         *     allowed object is
-         *     {@link String }
+         *            allowed object is
+         *            {@link String }
          *
          */
         public void setTRANSFORMKEY(String value) {
@@ -1681,8 +1693,8 @@ public class FileType {
          * Obtient la valeur de la propriété transformbehavior.
          *
          * @return
-         *     possible object is
-         *     {@link Object }
+         *         possible object is
+         *         {@link Object }
          *
          */
         public Object getTRANSFORMBEHAVIOR() {
@@ -1693,8 +1705,8 @@ public class FileType {
          * Définit la valeur de la propriété transformbehavior.
          *
          * @param value
-         *     allowed object is
-         *     {@link Object }
+         *            allowed object is
+         *            {@link Object }
          *
          */
         public void setTRANSFORMBEHAVIOR(Object value) {
@@ -1705,8 +1717,8 @@ public class FileType {
          * Obtient la valeur de la propriété transformorder.
          *
          * @return
-         *     possible object is
-         *     {@link BigInteger }
+         *         possible object is
+         *         {@link BigInteger }
          *
          */
         public BigInteger getTRANSFORMORDER() {
@@ -1717,8 +1729,8 @@ public class FileType {
          * Définit la valeur de la propriété transformorder.
          *
          * @param value
-         *     allowed object is
-         *     {@link BigInteger }
+         *            allowed object is
+         *            {@link BigInteger }
          *
          */
         public void setTRANSFORMORDER(BigInteger value) {

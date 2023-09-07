@@ -7,21 +7,22 @@
 
 package fr.progilone.pgcn.domain.jaxb.ppdi;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlValue;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.XmlValue;
-
 
 /**
- * <p>Classe Java pour FichMetaDescriptionType complex type.
+ * <p>
+ * Classe Java pour FichMetaDescriptionType complex type.
  *
- * <p>Le fragment de sch�ma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="FichMetaDescriptionType">
@@ -52,15 +53,14 @@ import javax.xml.bind.annotation.XmlValue;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "FichMetaDescriptionType", propOrder = {
-    "compression",
-    "encodage",
-    "formatFichier",
-    "nomFichier",
-    "empreinteOri",
-    "noteFichier",
-    "structureFichier"
-})
+@XmlType(name = "FichMetaDescriptionType",
+         propOrder = {"compression",
+                      "encodage",
+                      "formatFichier",
+                      "nomFichier",
+                      "empreinteOri",
+                      "noteFichier",
+                      "structureFichier"})
 public class FichMetaDescriptionType {
 
     @XmlElement(required = true)
@@ -89,8 +89,9 @@ public class FichMetaDescriptionType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getCompression().add(newItem);
+     * getCompression().add(newItem);
      * </pre>
      *
      *
@@ -118,8 +119,9 @@ public class FichMetaDescriptionType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getEncodage().add(newItem);
+     * getEncodage().add(newItem);
      * </pre>
      *
      *
@@ -147,8 +149,9 @@ public class FichMetaDescriptionType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getFormatFichier().add(newItem);
+     * getFormatFichier().add(newItem);
      * </pre>
      *
      *
@@ -176,8 +179,9 @@ public class FichMetaDescriptionType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getNomFichier().add(newItem);
+     * getNomFichier().add(newItem);
      * </pre>
      *
      *
@@ -205,8 +209,9 @@ public class FichMetaDescriptionType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getEmpreinteOri().add(newItem);
+     * getEmpreinteOri().add(newItem);
      * </pre>
      *
      *
@@ -234,8 +239,9 @@ public class FichMetaDescriptionType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getNoteFichier().add(newItem);
+     * getNoteFichier().add(newItem);
      * </pre>
      *
      *
@@ -263,8 +269,9 @@ public class FichMetaDescriptionType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getStructureFichier().add(newItem);
+     * getStructureFichier().add(newItem);
      * </pre>
      *
      *
@@ -281,11 +288,12 @@ public class FichMetaDescriptionType {
         return this.structureFichier;
     }
 
-
     /**
-     * <p>Classe Java pour anonymous complex type.
+     * <p>
+     * Classe Java pour anonymous complex type.
      *
-     * <p>Le fragment de sch�ma suivant indique le contenu attendu figurant dans cette classe.
+     * <p>
+     * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
      *
      * <pre>
      * &lt;complexType>
@@ -300,9 +308,7 @@ public class FichMetaDescriptionType {
      *
      */
     @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "value"
-    })
+    @XmlType(name = "", propOrder = {"value"})
     public static class StructureFichier {
 
         @XmlValue
@@ -313,12 +319,12 @@ public class FichMetaDescriptionType {
 
         /**
          *
-         * Chaine de caract�res de type xsd:string et de longueur non nulle.
+         * Chaine de caractéres de type xsd:string et de longueur non nulle.
          *
          *
          * @return
-         *     possible object is
-         *     {@link String }
+         *         possible object is
+         *         {@link String }
          *
          */
         public String getValue() {
@@ -326,11 +332,11 @@ public class FichMetaDescriptionType {
         }
 
         /**
-         * D�finit la valeur de la propri�t� value.
+         * Définit la valeur de la propriété value.
          *
          * @param value
-         *     allowed object is
-         *     {@link String }
+         *            allowed object is
+         *            {@link String }
          *
          */
         public void setValue(String value) {
@@ -338,11 +344,11 @@ public class FichMetaDescriptionType {
         }
 
         /**
-         * Obtient la valeur de la propri�t� type.
+         * Obtient la valeur de la propriété type.
          *
          * @return
-         *     possible object is
-         *     {@link String }
+         *         possible object is
+         *         {@link String }
          *
          */
         public String getType() {
@@ -350,11 +356,11 @@ public class FichMetaDescriptionType {
         }
 
         /**
-         * D�finit la valeur de la propri�t� type.
+         * Définit la valeur de la propriété type.
          *
          * @param value
-         *     allowed object is
-         *     {@link String }
+         *            allowed object is
+         *            {@link String }
          *
          */
         public void setType(String value) {

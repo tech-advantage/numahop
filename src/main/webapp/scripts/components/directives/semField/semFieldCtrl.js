@@ -1,11 +1,9 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('SemFieldCtrl', SemFieldCtrl);
+    angular.module('numaHopApp.controller').controller('SemFieldCtrl', SemFieldCtrl);
 
     function SemFieldCtrl($scope, $parse, $q, ErreurSrvc, MessageSrvc) {
-
         $scope.beforesaveWrapper = beforesaveWrapper;
         $scope.onchangeWrapper = onchangeWrapper;
         $scope.getText = getText;
@@ -13,7 +11,6 @@
         $scope.refreshData = refreshData;
 
         init();
-
 
         /** Initialisation de la directive */
         function init() {
@@ -28,7 +25,7 @@
             }
 
             // erreurs du serveur
-            $scope.$watch("errors", function (value) {
+            $scope.$watch('errors', function (value) {
                 var errors = $parse(value)();
 
                 if (angular.isArray(errors) && errors.length > 0) {
@@ -37,9 +34,8 @@
                             err.message = ErreurSrvc.getMessage(err.code);
                         }
                         return err.message || err.code;
-                    }).join("<br/>");
-                }
-                else {
+                    }).join('<br/>');
+                } else {
                     delete $scope.errMsg;
                 }
             });
@@ -50,7 +46,7 @@
 
             // custom onbeforesave
             var validation = $scope.onbeforesave({
-                value: $scope.model
+                value: $scope.model,
             });
             $q.when(validation).then(function (message) {
                 $scope.errMsg = message || false;
@@ -60,28 +56,26 @@
         /** Wrapper pour le onchange */
         function onchangeWrapper(value) {
             // mise à jour du model manuelle pour le uiselect
-            if ($scope.type === "uiselect") {
+            if ($scope.type === 'uiselect') {
                 $scope.model = value;
             }
             // custom onchange
             return $scope.onchange({
-                value: value
+                value: value,
             });
         }
         /** Affichage d'un élément de la liste (UiSelect) */
         function getText(d) {
             if (!d) {
-                return "";
+                return '';
             }
             var optionData = $scope.optionData;
 
             if (angular.isString(optionData.text)) {
                 return d[optionData.text];
-            }
-            else if (angular.isFunction(optionData.text)) {
+            } else if (angular.isFunction(optionData.text)) {
                 return optionData.text(d);
-            }
-            else {
+            } else {
                 return d;
             }
         }

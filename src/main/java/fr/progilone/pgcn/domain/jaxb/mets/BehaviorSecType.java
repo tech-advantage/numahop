@@ -5,34 +5,36 @@
 // Généré le : 2016.12.29 à 11:54:46 AM CET
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.mets;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAnyAttribute;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlID;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAnyAttribute;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlID;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
-
 
 /**
  * behaviorSecType: Complex Type for Behavior Sections
- * 			Behaviors are executable code which can be associated with parts of a METS object.  The behaviorSec element is used to group individual behaviors within a hierarchical structure.  Such grouping can be useful to organize families of behaviors together or to indicate other relationships between particular behaviors.
+ * Behaviors are executable code which can be associated with parts of a METS object. The behaviorSec element is used to group individual behaviors
+ * within a hierarchical structure. Such grouping can be useful to organize families of behaviors together or to indicate other relationships between
+ * particular behaviors.
  *
  *
- * <p>Classe Java pour behaviorSecType complex type.
+ * <p>
+ * Classe Java pour behaviorSecType complex type.
  *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="behaviorSecType"&gt;
@@ -54,10 +56,9 @@ import javax.xml.namespace.QName;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "behaviorSecType", propOrder = {
-    "behaviorSec",
-    "behavior"
-})
+@XmlType(name = "behaviorSecType",
+         propOrder = {"behaviorSec",
+                      "behavior"})
 public class BehaviorSecType {
 
     protected List<BehaviorSecType> behaviorSec;
@@ -86,8 +87,9 @@ public class BehaviorSecType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getBehaviorSec().add(newItem);
+     * getBehaviorSec().add(newItem);
      * </pre>
      *
      *
@@ -115,8 +117,9 @@ public class BehaviorSecType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getBehavior().add(newItem);
+     * getBehavior().add(newItem);
      * </pre>
      *
      *
@@ -137,8 +140,8 @@ public class BehaviorSecType {
      * Obtient la valeur de la propriété id.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getID() {
@@ -149,8 +152,8 @@ public class BehaviorSecType {
      * Définit la valeur de la propriété id.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setID(String value) {
@@ -161,8 +164,8 @@ public class BehaviorSecType {
      * Obtient la valeur de la propriété created.
      *
      * @return
-     *     possible object is
-     *     {@link LocalDateTime }
+     *         possible object is
+     *         {@link LocalDateTime }
      *
      */
     public LocalDateTime getCREATED() {
@@ -173,8 +176,8 @@ public class BehaviorSecType {
      * Définit la valeur de la propriété created.
      *
      * @param value
-     *     allowed object is
-     *     {@link LocalDateTime }
+     *            allowed object is
+     *            {@link LocalDateTime }
      *
      */
     public void setCREATED(LocalDateTime value) {
@@ -185,8 +188,8 @@ public class BehaviorSecType {
      * Obtient la valeur de la propriété label.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getLABEL() {
@@ -197,8 +200,8 @@ public class BehaviorSecType {
      * Définit la valeur de la propriété label.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setLABEL(String value) {
@@ -217,7 +220,7 @@ public class BehaviorSecType {
      *
      *
      * @return
-     *     always non-null
+     *         always non-null
      */
     public Map<QName, String> getOtherAttributes() {
         return otherAttributes;

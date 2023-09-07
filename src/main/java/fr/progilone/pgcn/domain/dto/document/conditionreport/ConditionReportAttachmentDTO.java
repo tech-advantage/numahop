@@ -34,10 +34,6 @@ public class ConditionReportAttachmentDTO {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
-                          .add("identifier", identifier)
-                          .add("originalFilename", originalFilename)
-                          .add("fileSize", fileSize)
-                          .toString();
+        return MoreObjects.toStringHelper(this).add("identifier", identifier).add("originalFilename", originalFilename).add("fileSize", fileSize).toString();
     }
 }

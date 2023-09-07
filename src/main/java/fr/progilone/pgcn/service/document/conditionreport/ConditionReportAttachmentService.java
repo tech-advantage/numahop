@@ -1,13 +1,18 @@
 package fr.progilone.pgcn.service.document.conditionreport;
 
+import fr.progilone.pgcn.domain.administration.viewsformat.ViewsFormatConfiguration;
+import fr.progilone.pgcn.domain.document.DocUnit;
+import fr.progilone.pgcn.domain.document.conditionreport.ConditionReport;
+import fr.progilone.pgcn.domain.document.conditionreport.ConditionReportAttachment;
+import fr.progilone.pgcn.repository.document.conditionreport.ConditionReportAttachmentRepository;
+import fr.progilone.pgcn.repository.document.conditionreport.ConditionReportRepository;
+import fr.progilone.pgcn.service.storage.FileStorageManager;
+import jakarta.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.annotation.PostConstruct;
-
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,14 +21,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
-import fr.progilone.pgcn.domain.administration.viewsformat.ViewsFormatConfiguration;
-import fr.progilone.pgcn.domain.document.DocUnit;
-import fr.progilone.pgcn.domain.document.conditionreport.ConditionReport;
-import fr.progilone.pgcn.domain.document.conditionreport.ConditionReportAttachment;
-import fr.progilone.pgcn.repository.document.conditionreport.ConditionReportAttachmentRepository;
-import fr.progilone.pgcn.repository.document.conditionreport.ConditionReportRepository;
-import fr.progilone.pgcn.service.storage.FileStorageManager;
 
 @Service
 public class ConditionReportAttachmentService {
@@ -64,7 +61,7 @@ public class ConditionReportAttachmentService {
         if (thumbnailFile != null) {
             FileUtils.deleteQuietly(thumbnailFile);
         }
-        conditionReportAttachmentRepository.delete(attachmentId);
+        conditionReportAttachmentRepository.deleteById(attachmentId);
     }
 
     @Transactional(readOnly = true)
@@ -91,7 +88,7 @@ public class ConditionReportAttachmentService {
     @Transactional
     public List<ConditionReportAttachment> uploadAttachment(final List<MultipartFile> files, final String reportId) {
         final List<ConditionReportAttachment> attachments = new ArrayList<>();
-        final ConditionReport report = conditionReportRepository.findOne(reportId);
+        final ConditionReport report = conditionReportRepository.findById(reportId).orElse(null);
 
         for (final MultipartFile file : files) {
             if (file.getSize() == 0) {
@@ -119,9 +116,7 @@ public class ConditionReportAttachmentService {
                 attachmentFile = null;
             }
             if (attachmentFile == null) {
-                LOG.error("Une erreur s'est produite lors de la sauvegarde de la pièce jointe {} (ConditionReport {})",
-                          file.getOriginalFilename(),
-                          reportId);
+                LOG.error("Une erreur s'est produite lors de la sauvegarde de la pièce jointe {} (ConditionReport {})", file.getOriginalFilename(), reportId);
                 continue;
             }
             LOG.debug("Fichier {} créé", attachmentFile.getAbsolutePath());
@@ -132,7 +127,8 @@ public class ConditionReportAttachmentService {
                                                       ViewsFormatConfiguration.FileFormat.THUMB,
                                                       reportDir,
                                                       attachment.getReport(),
-                                                      ViewsFormatConfiguration.FileFormat.THUMB.label() + "." + attachment.getOriginalFilename());
+                                                      ViewsFormatConfiguration.FileFormat.THUMB.label() + "."
+                                                                              + attachment.getOriginalFilename());
             if (thumbnail != null) {
                 LOG.debug("Fichier aperçu {} créé", thumbnail.getAbsolutePath());
             }
@@ -159,9 +155,7 @@ public class ConditionReportAttachmentService {
      */
     @Transactional(readOnly = true)
     public File downloadAttachmentThumbnail(final ConditionReportAttachment attachment) {
-        return fm.retrieveFile(reportDir, attachment.getReport(), ViewsFormatConfiguration.FileFormat.THUMB.label()
-                                                                                   .concat(".")
-                                                                                   .concat(attachment.getOriginalFilename()));
+        return fm.retrieveFile(reportDir, attachment.getReport(), ViewsFormatConfiguration.FileFormat.THUMB.label().concat(".").concat(attachment.getOriginalFilename()));
     }
 
     /**

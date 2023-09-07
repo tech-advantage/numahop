@@ -1,12 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <changeSet id="pgcn-addcolumn-storage4" author="progilone">
 <!--         Modif type colonnes de metadonnees -->
-        <dropColumn tableName="sto_stored_file" columnName="compression_rate"/>
-        <dropColumn tableName="sto_stored_file" columnName="resolution"/>
+        <dropColumn tableName="sto_stored_file" columnName="compression_rate" />
+        <dropColumn tableName="sto_stored_file" columnName="resolution" />
         
         <addColumn tableName="sto_stored_file">
             <column name="compression_rate" type="integer" />

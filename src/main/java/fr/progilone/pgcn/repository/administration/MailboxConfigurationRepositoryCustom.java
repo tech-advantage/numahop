@@ -1,8 +1,7 @@
 package fr.progilone.pgcn.repository.administration;
 
-import java.util.List;
-
 import fr.progilone.pgcn.domain.administration.MailboxConfiguration;
+import java.util.List;
 
 public interface MailboxConfigurationRepositoryCustom {
 

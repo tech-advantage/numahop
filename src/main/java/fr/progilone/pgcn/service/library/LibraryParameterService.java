@@ -1,10 +1,5 @@
 package fr.progilone.pgcn.service.library;
 
-import javax.inject.Inject;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import fr.progilone.pgcn.domain.library.AbstractLibraryParameterValue;
 import fr.progilone.pgcn.domain.library.Library;
 import fr.progilone.pgcn.domain.library.LibraryParameter;
@@ -12,6 +7,8 @@ import fr.progilone.pgcn.domain.library.LibraryParameter.LibraryParameterType;
 import fr.progilone.pgcn.domain.library.LibraryParameterValueCines;
 import fr.progilone.pgcn.repository.library.LibraryParameterCinesRepository;
 import fr.progilone.pgcn.repository.library.LibraryParameterRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class LibraryParameterService {
@@ -20,16 +17,14 @@ public class LibraryParameterService {
     // Repository dédiés
     private final LibraryParameterCinesRepository cinesParameterRepository;
 
-    @Inject
-    public LibraryParameterService(final LibraryParameterRepository libraryParameterRepository,
-            final LibraryParameterCinesRepository cinesParameterRepository) {
+    public LibraryParameterService(final LibraryParameterRepository libraryParameterRepository, final LibraryParameterCinesRepository cinesParameterRepository) {
         this.libraryParameterRepository = libraryParameterRepository;
         this.cinesParameterRepository = cinesParameterRepository;
     }
 
     @Transactional(readOnly = true)
     public LibraryParameter findCinesParameterForLibrary(final Library lib) {
-        if(lib == null) {
+        if (lib == null) {
             return null;
         }
         return libraryParameterRepository.getOneByTypeAndLibrary(LibraryParameterType.CINES_EXPORT, lib);
@@ -42,18 +37,19 @@ public class LibraryParameterService {
 
     @Transactional
     public void delete(final String identifer) {
-        libraryParameterRepository.delete(identifer);
+        libraryParameterRepository.deleteById(identifer);
     }
 
     @Transactional
     public LibraryParameter save(final LibraryParameter param) {
         final LibraryParameter savedLibParam = libraryParameterRepository.save(param);
 
-        switch(savedLibParam.getType()) {
-        case CINES_EXPORT: saveCinesValueParameter(savedLibParam);
-            break;
-        default:
-            break;
+        switch (savedLibParam.getType()) {
+            case CINES_EXPORT:
+                saveCinesValueParameter(savedLibParam);
+                break;
+            default:
+                break;
         }
         return savedLibParam;
     }

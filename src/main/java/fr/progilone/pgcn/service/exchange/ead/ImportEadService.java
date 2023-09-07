@@ -1,21 +1,6 @@
 package fr.progilone.pgcn.service.exchange.ead;
 
-import static fr.progilone.pgcn.domain.document.BibliographicRecord.*;
-
-import java.io.File;
-import java.util.Map;
-import java.util.Objects;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-
+import fr.progilone.pgcn.domain.document.BibliographicRecord.PropertyOrder;
 import fr.progilone.pgcn.domain.document.DocPropertyType;
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.exchange.ImportReport;
@@ -25,7 +10,6 @@ import fr.progilone.pgcn.domain.jaxb.ead.C;
 import fr.progilone.pgcn.exception.PgcnTechnicalException;
 import fr.progilone.pgcn.service.document.DocPropertyTypeService;
 import fr.progilone.pgcn.service.document.DocUnitService;
-import fr.progilone.pgcn.service.es.EsBibliographicRecordService;
 import fr.progilone.pgcn.service.es.EsDocUnitService;
 import fr.progilone.pgcn.service.exchange.AbstractImportService;
 import fr.progilone.pgcn.service.exchange.DeduplicationService;
@@ -35,6 +19,18 @@ import fr.progilone.pgcn.service.exchange.MappingService;
 import fr.progilone.pgcn.service.exchange.ead.mapping.CompiledMapping;
 import fr.progilone.pgcn.service.util.transaction.TransactionService;
 import fr.progilone.pgcn.web.websocket.WebsocketService;
+import java.io.File;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
 
 /**
  * Created by Sébastien on 16/05/2017.
@@ -62,20 +58,12 @@ public class ImportEadService extends AbstractImportService {
                             final EadMappingEvaluationService mappingEvaluationService,
                             final ExportEadService exportEadService,
                             final EsDocUnitService esDocUnitService,
-                            final EsBibliographicRecordService esBibliographicRecordService,
                             final ImportDocUnitService importDocUnitService,
                             final ImportReportService importReportService,
                             final MappingService mappingService,
                             final TransactionService transactionService,
                             final WebsocketService websocketService) {
-        super(deduplicationService,
-              docUnitService,
-              esDocUnitService,
-              esBibliographicRecordService,
-              importDocUnitService,
-              importReportService,
-              transactionService,
-              websocketService);
+        super(deduplicationService, docUnitService, esDocUnitService, importDocUnitService, importReportService, transactionService, websocketService);
         this.convertService = convertService;
         this.docPropertyTypeService = docPropertyTypeService;
         this.mappingEvaluationService = mappingEvaluationService;
@@ -91,19 +79,17 @@ public class ImportEadService extends AbstractImportService {
      * Import asynchrone d'un flux de notices Dublin Core
      *
      * @param importFile
-     *         Fichier de notices à importer
+     *            Fichier de notices à importer
      * @param mappingId
-     *         Identifiant du mapping
+     *            Identifiant du mapping
      * @param mappingChildId
-     *         Identifiant du mapping enfant
+     *            Identifiant du mapping enfant
      * @param report
-     *         Rapport d'exécution de cet import
+     *            Rapport d'exécution de cet import
      * @param stepValidation
-     *         Étape de validation par l'utilisateur
+     *            Étape de validation par l'utilisateur
      * @param stepDeduplication
-     *         Étape de dédoublonnage
-     * @param defaultDedupProcess
-     * @param propertyOrder
+     *            Étape de dédoublonnage
      */
     @Async
     public void importEadAsync(final File importFile,
@@ -116,7 +102,7 @@ public class ImportEadService extends AbstractImportService {
                                final ImportedDocUnit.Process defaultDedupProcess,
                                final PropertyOrder propertyOrder,
                                final boolean archivable,
-							   final boolean distributable) {
+                               final boolean distributable) {
         try {
             /* Pré-import */
             LOG.info("Pré-import du fichier EAD {}", importFile.getAbsolutePath());
@@ -171,7 +157,8 @@ public class ImportEadService extends AbstractImportService {
                 // Chargement du mapping
                 mappingChild = mappingService.findOne(mappingChildId);
                 if (mappingChild == null) {
-                    throw new PgcnTechnicalException("Il n'existe pas de mapping avec l'identifiant " + mappingChildId + " (composants enfant)");
+                    throw new PgcnTechnicalException("Il n'existe pas de mapping avec l'identifiant " + mappingChildId
+                                                     + " (composants enfant)");
                 }
                 // Pré-compilation du mapping
                 compiledMappingChild = mappingEvaluationService.compileMapping(mappingChild);
@@ -182,8 +169,9 @@ public class ImportEadService extends AbstractImportService {
             }
 
             // Chargement des types de propriété
-            final Map<String, DocPropertyType> propertyTypes =
-                docPropertyTypeService.findAll().stream().collect(Collectors.toMap(DocPropertyType::getIdentifier, Function.identity()));
+            final Map<String, DocPropertyType> propertyTypes = docPropertyTypeService.findAll()
+                                                                                     .stream()
+                                                                                     .collect(Collectors.toMap(DocPropertyType::getIdentifier, Function.identity()));
 
             // Résumé d'exécution
             report.setMapping(mapping);   // lien avec le mapping qui vient d'être chargé
@@ -205,15 +193,20 @@ public class ImportEadService extends AbstractImportService {
             // SIMPLE: 1 composant EAD enfant = 1 notice dans PGCN
             if (mappingChild == null) {
                 getSimpleEadCEntityHandler(compiledMapping, propertyTypes, propertyOrder, runningReport, tMgr, archivable, distributable)
-                    // Lecture du fichier d'entrée
-                    .parse(importFile);
+                                                                                                                                         // Lecture du
+                                                                                                                                         // fichier
+                                                                                                                                         // d'entrée
+                                                                                                                                         .parse(importFile);
             }
             // SIMPLE_MULTI_NOTICE: 1 composant EAD parent + composants enfant = 1 notice dans PGCN
             else {
-                boolean simpleNotice = type.equals(ImportReport.Type.SIMPLE_MULTI_NOTICE);
+                final boolean simpleNotice = type.equals(ImportReport.Type.SIMPLE_MULTI_NOTICE);
                 getMultipleEadCEntityHandler(simpleNotice, compiledMapping, compiledMappingChild, propertyTypes, propertyOrder, runningReport, tMgr)
-                    // Lecture du fichier d'entrée
-                    .parse(importFile);
+                                                                                                                                                    // Lecture
+                                                                                                                                                    // du
+                                                                                                                                                    // fichier
+                                                                                                                                                    // d'entrée
+                                                                                                                                                    .parse(importFile);
             }
 
             // Fermeture finale de la transaction
@@ -253,7 +246,7 @@ public class ImportEadService extends AbstractImportService {
                     final DocUnit docUnit = convertService.convert(c, eadCParser, compiledMapping, propertyTypes, propertyOrder);
                     docUnit.setArchivable(archivable);
                     docUnit.setDistributable(distributable);
-                    
+
                     // Sauvegarde
                     final ImportedDocUnit imp = new ImportedDocUnit();
                     imp.initDocUnitFields(docUnit);
@@ -261,7 +254,6 @@ public class ImportEadService extends AbstractImportService {
                     final ImportedDocUnit savedUnit = importDocUnitService.create(imp);
 
                     // Sauvegarde du fichier EAD sur le serveur
-                    @SuppressWarnings("ConstantConditions")
                     final String docUnitId = savedUnit.getDocUnit().getIdentifier();
                     exportEadService.exportEad(docUnitId, eadheader, eadCParser.getBranch(c));
 
@@ -308,7 +300,8 @@ public class ImportEadService extends AbstractImportService {
                 imp.setReport(runningReport);
                 final ImportedDocUnit savedUnit = importDocUnitService.create(imp);
 
-                // Dans le cas SIMPLE_MULTI_NOTICE, on n'importe les pptés de l'élément C racine qu'une seule fois => on empêche le parser d'aller rechercher les pptés dans rootC
+                // Dans le cas SIMPLE_MULTI_NOTICE, on n'importe les pptés de l'élément C racine qu'une seule fois => on empêche le parser d'aller
+                // rechercher les pptés dans rootC
                 if (propertyOrder == PropertyOrder.BY_CREATION) {
                     eadCParser.getParentMap()
                               .entrySet()
@@ -322,7 +315,7 @@ public class ImportEadService extends AbstractImportService {
                 // Ajout des composants enfant, mappés avec le sous-mapping
                 for (final C c : eadCParser.getcLeaves()) {
                     if (!Objects.equals(c, rootC)) {
-                        if(simpleNotice){
+                        if (simpleNotice) {
                             convertService.convert(docUnit, c, eadCParser, compiledMappingChild, propertyTypes);
                         } else {
                             final DocUnit docUnitChild = convertService.convert(c, eadCParser, compiledMappingChild, propertyTypes, propertyOrder);
@@ -332,13 +325,12 @@ public class ImportEadService extends AbstractImportService {
                             impChild.initDocUnitFields(docUnitChild);
                             impChild.setReport(runningReport);
                             impChild.setParentDocUnit(savedUnit.getIdentifier());
-                            final ImportedDocUnit savedUnitChild = importDocUnitService.create(impChild);
+                            importDocUnitService.create(impChild);
                         }
                     }
                 }
 
                 // Sauvegarde du fichier EAD sur le serveur
-                @SuppressWarnings("ConstantConditions")
                 final String docUnitId = savedUnit.getDocUnit().getIdentifier();
                 exportEadService.exportEad(docUnitId, eadheader, rootC);
 
@@ -379,8 +371,6 @@ public class ImportEadService extends AbstractImportService {
 
         /**
          * {@link Consumer} de suivi de la progession de l'import
-         *
-         * @param progressJob
          */
         public void setProgressJob(final Consumer<Long> progressJob) {
             this.progressJob = progressJob;
@@ -388,8 +378,6 @@ public class ImportEadService extends AbstractImportService {
 
         /**
          * Commit de la transaction courante tous les COMMIT appels
-         *
-         * @return
          */
         public void update() {
             nbProcessed++;

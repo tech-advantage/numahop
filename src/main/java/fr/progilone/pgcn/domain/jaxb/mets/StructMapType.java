@@ -5,32 +5,32 @@
 // Généré le : 2016.12.29 à 11:54:46 AM CET
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.mets;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAnyAttribute;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlID;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.HashMap;
 import java.util.Map;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAnyAttribute;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlID;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
-
 
 /**
  * structMapType: Complex Type for Structural Maps
- * 			The structural map (structMap) outlines a hierarchical structure for the original object being encoded, using a series of nested div elements.
+ * The structural map (structMap) outlines a hierarchical structure for the original object being encoded, using a series of nested div elements.
  *
  *
- * <p>Classe Java pour structMapType complex type.
+ * <p>
+ * Classe Java pour structMapType complex type.
  *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="structMapType"&gt;
@@ -51,9 +51,7 @@ import javax.xml.namespace.QName;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "structMapType", propOrder = {
-    "div"
-})
+@XmlType(name = "structMapType", propOrder = {"div"})
 public class StructMapType {
 
     @XmlElement(required = true)
@@ -74,8 +72,8 @@ public class StructMapType {
      * Obtient la valeur de la propriété div.
      *
      * @return
-     *     possible object is
-     *     {@link DivType }
+     *         possible object is
+     *         {@link DivType }
      *
      */
     public DivType getDiv() {
@@ -86,8 +84,8 @@ public class StructMapType {
      * Définit la valeur de la propriété div.
      *
      * @param value
-     *     allowed object is
-     *     {@link DivType }
+     *            allowed object is
+     *            {@link DivType }
      *
      */
     public void setDiv(DivType value) {
@@ -98,8 +96,8 @@ public class StructMapType {
      * Obtient la valeur de la propriété id.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getID() {
@@ -110,8 +108,8 @@ public class StructMapType {
      * Définit la valeur de la propriété id.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setID(String value) {
@@ -122,8 +120,8 @@ public class StructMapType {
      * Obtient la valeur de la propriété type.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getTYPE() {
@@ -134,8 +132,8 @@ public class StructMapType {
      * Définit la valeur de la propriété type.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setTYPE(String value) {
@@ -146,8 +144,8 @@ public class StructMapType {
      * Obtient la valeur de la propriété label.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getLABEL() {
@@ -158,8 +156,8 @@ public class StructMapType {
      * Définit la valeur de la propriété label.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setLABEL(String value) {
@@ -178,7 +176,7 @@ public class StructMapType {
      *
      *
      * @return
-     *     always non-null
+     *         always non-null
      */
     public Map<QName, String> getOtherAttributes() {
         return otherAttributes;

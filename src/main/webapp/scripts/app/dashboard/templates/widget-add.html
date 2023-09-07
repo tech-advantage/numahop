@@ -4,12 +4,12 @@
 </div>
 <div class="modal-body">
     <table class="table table-condensed no-border">
-    <tbody>
-        <tr ng-repeat="(key, widget) in widgets">
-            <td class="nowrap"><a class="bold" ng-click="addWidget(key)">{{::widget.title}}</a></td>
-            <td><em>{{::widget.description}}</em></td>
-        </tr>
-    </tbody>
+        <tbody>
+            <tr ng-repeat="(key, widget) in widgets">
+                <td class="nowrap"><a class="bold" ng-click="addWidget(key)">{{::widget.title}}</a></td>
+                <td><em>{{::widget.description}}</em></td>
+            </tr>
+        </tbody>
     </table>
 </div>
 <div class="modal-footer">

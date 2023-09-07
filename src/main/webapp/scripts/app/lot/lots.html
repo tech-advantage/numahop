@@ -5,31 +5,31 @@
         <div class="panel panel-column-2 panel-column-first">
             <div class="panel-heading">
                 <div class="pull-right">
-                    <button type="button" class="btn btn-sem2 btn-xs" ng-click="reinitFilters(true)"
-                            uib-tooltip="{{::'Réinitialiser les filtres de la recherche' | translate}}">
+                    <button type="button" class="btn btn-sem2 btn-xs" ng-click="reinitFilters(true)" uib-tooltip="{{::'Réinitialiser les filtres de la recherche' | translate}}" tooltip-append-to-body="true">
                         <span class="glyphicon-halflings glyphicon-refresh"></span>
                     </button>
-                    <button type="button" class="btn btn-sem2 btn-xs"
-                            uib-tooltip="{{::'Créer' | translate}}"
-                            ng-click="create()"
-                            sem-roles-allowed="LOT_HAB0">
+                    <button type="button" class="btn btn-sem2 btn-xs" uib-tooltip="{{::'Créer' | translate}}" tooltip-append-to-body="true" ng-click="create()" sem-roles-allowed="LOT_HAB0">
                         <span class="glyphicon-halflings glyphicon-plus"></span>
                     </button>
                 </div>
                 <div class="input-group padding-r20">
-                    <input class="form-control sem-input-xs" type="text" id="nameSearchInput"
-                           ng-model="filterWith" ng-keypress="applyFilter(filterWith, $event)"/>
+                    <input class="form-control sem-input-xs" type="text" id="nameSearchInput" ng-model="filterWith" ng-keypress="applyFilter(filterWith, $event)" />
                     <span class="input-group-btn">
-                        <button type="button" class="btn btn-sem2 btn-xs" ng-click="doFilter()" uib-tooltip="{{::'Rechercher' | translate}}">
+                        <button type="button" class="btn btn-sem2 btn-xs" ng-click="doFilter()" uib-tooltip="{{::'Rechercher' | translate}}" tooltip-append-to-body="true">
                             <span class="glyphicon syrtis-icon-loupe"></span>
                         </button>
                     </span>
                 </div>
             </div>
             <div class="panel-body" when-scrolled="nextPage()">
-
-                <div ng-show="pagination.totalItems + newLots.length > 0 && !pagination.busy" class="well well-sm" translate
-                     translate-n="pagination.totalItems + newLots.length" translate-plural="{{$count}} lots trouvés">1 lot trouvé
+                <div
+                    ng-show="pagination.totalItems + newLots.length > 0 && !pagination.busy"
+                    class="well well-sm"
+                    translate
+                    translate-n="pagination.totalItems + newLots.length"
+                    translate-plural="{{$count}} lots trouvés"
+                >
+                    1 lot trouvé
                 </div>
 
                 <!-- Usagers récemment créés -->
@@ -44,15 +44,11 @@
                     </div>
                 </div>
 
-                <div class="well" ng-show="pagination.totalItems === 0 && newLots.length === 0 && loaded && !pagination.busy"
-                     translate>Aucun lot n'a été trouvé
-                </div>
+                <div class="well" ng-show="pagination.totalItems === 0 && newLots.length === 0 && loaded && !pagination.busy" translate>Aucun lot n'a été trouvé</div>
 
                 <div>
                     <div ng-repeat="lot in pagination.items" class="col-infinite-scroll">
-                        <div ng-show="$index === 0 || getFirstLetter(lot) != getFirstLetter(pagination.items[$index-1])"
-                             class="pagination-break">{{lot.label|initial:'OTHER'}}
-                        </div>
+                        <div ng-show="$index === 0 || getFirstLetter(lot) != getFirstLetter(pagination.items[$index-1])" class="pagination-break">{{lot.label|initial:'OTHER'}}</div>
                         <div class="list" ng-class="{active: lot._selected}">
                             <a ng-click="edit(lot, $index)">
                                 <span class="principal">{{lot.label}}</span>

@@ -1,14 +1,25 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('CheckConfigurationEditCtrl', CheckConfigurationEditCtrl);
+    angular.module('numaHopApp.controller').controller('CheckConfigurationEditCtrl', CheckConfigurationEditCtrl);
 
-    function CheckConfigurationEditCtrl($location, $routeParams, $scope, $timeout,
-        CheckConfigurationSrvc, DocUnitBaseService, gettext, gettextCatalog, HistorySrvc,
-        ListTools, MessageSrvc, ModalSrvc, NumahopEditService, NumaHopInitializationSrvc,
-        ValidationSrvc) {
-
+    function CheckConfigurationEditCtrl(
+        $location,
+        $routeParams,
+        $scope,
+        $timeout,
+        CheckConfigurationSrvc,
+        DocUnitBaseService,
+        gettext,
+        gettextCatalog,
+        HistorySrvc,
+        ListTools,
+        MessageSrvc,
+        ModalSrvc,
+        NumahopEditService,
+        NumaHopInitializationSrvc,
+        ValidationSrvc
+    ) {
         $scope.backToList = backToList;
         $scope.cancel = cancel;
         $scope.delete = deleteConf;
@@ -25,11 +36,11 @@
             boolean: DocUnitBaseService.options.booleanObj,
             libraries: [],
             sampleMode: {
-                "NO_SAMPLE": gettextCatalog.getString('Pas d\'échantillonnage'),
-                "SAMPLE_DOC_DELIV": gettextCatalog.getString('Documents dans la livraison'),
-                "SAMPLE_PAGE_ONE_DOC": gettextCatalog.getString('Pages dans chaque document'),
-                "SAMPLE_PAGE_ALL_DOC": gettextCatalog.getString('Pages dans tous les documents')
-            }
+                NO_SAMPLE: gettextCatalog.getString("Pas d'échantillonnage"),
+                SAMPLE_DOC_DELIV: gettextCatalog.getString('Documents dans la livraison'),
+                SAMPLE_PAGE_ONE_DOC: gettextCatalog.getString('Pages dans chaque document'),
+                SAMPLE_PAGE_ALL_DOC: gettextCatalog.getString('Pages dans tous les documents'),
+            },
         };
 
         function displaySampleMode(sampleMode) {
@@ -37,13 +48,12 @@
         }
 
         // toggle switch label ON/OFF
-        $scope.onLabelActiv = gettextCatalog.getString("Activé");
-        $scope.offLabelActiv = gettextCatalog.getString("Désactivé");
-        $scope.onLabelBlock = gettextCatalog.getString("Oui");
-        $scope.offLabelBlock = gettextCatalog.getString("Non");
+        $scope.onLabelActiv = gettextCatalog.getString('Activé');
+        $scope.offLabelActiv = gettextCatalog.getString('Désactivé');
+        $scope.onLabelBlock = gettextCatalog.getString('Oui');
+        $scope.offLabelBlock = gettextCatalog.getString('Non');
 
         init();
-
 
         /** Initialisation */
         function init() {
@@ -52,31 +62,28 @@
         }
 
         function loadLibrarySelect() {
-            return NumaHopInitializationSrvc.loadLibraries()
-                .then(function (libs) {
-                    $scope.options.libraries = libs;
-                });
+            return NumaHopInitializationSrvc.loadLibraries().then(function (libs) {
+                $scope.options.libraries = libs;
+            });
         }
 
         /****************************************************************/
         /** Actions *****************************************************/
         /****************************************************************/
         function deleteConf(configuration) {
-            ModalSrvc.confirmDeletion(gettextCatalog.getString("la configuration {{label}}", configuration))
-                .then(function () {
-                    configuration.$delete(function (value) {
-                        MessageSrvc.addSuccess(gettext("La configuration {{label}} a été supprimée"), value);
+            ModalSrvc.confirmDeletion(gettextCatalog.getString('la configuration {{label}}', configuration)).then(function () {
+                configuration.$delete(function (value) {
+                    MessageSrvc.addSuccess(gettext('La configuration {{label}} a été supprimée'), value);
 
-                        var removed = ListTools.findAndRemoveItemFromList(configuration, $scope.pagination.items);
-                        if (removed) {
-                            $scope.pagination.totalItems--;
-                        }
-                        else {
-                            ListTools.findAndRemoveItemFromList(configuration, $scope.newConfigurations);
-                        }
-                        $scope.backToList();
-                    });
+                    var removed = ListTools.findAndRemoveItemFromList(configuration, $scope.pagination.items);
+                    if (removed) {
+                        $scope.pagination.totalItems--;
+                    } else {
+                        ListTools.findAndRemoveItemFromList(configuration, $scope.newConfigurations);
+                    }
+                    $scope.backToList();
                 });
+            });
         }
 
         function duplicate() {
@@ -85,25 +92,33 @@
                 $scope.configuration._selected = false;
                 var identifier = $scope.configuration.identifier;
                 $scope.configuration = null;
-                $location.path("/checkconfiguration/checkconfiguration").search({ id: identifier, duplicate: true });
+                $location.path('/checkconfiguration/checkconfiguration').search({ id: identifier, duplicate: true });
             }
         }
 
         function cancel() {
             if ($routeParams.new || $routeParams.duplicate) {
                 backToList();
-            }
-            else {
+            } else {
+                init();
                 $scope.checkConfigurationForm.$cancel();
             }
         }
 
         function backToList() {
-            $location.path("/checkconfiguration/checkconfiguration").search({});
+            $location.path('/checkconfiguration/checkconfiguration').search({});
         }
 
         $scope.showForm = function () {
-            openForm();
+            $scope.configuration = CheckConfigurationSrvc.getForEdition(
+                {
+                    id: $routeParams.id,
+                },
+                function (configuration) {
+                    afterLoadingConfiguration(configuration);
+                    openForm();
+                }
+            );
         };
 
         $scope.updateActivRule = function (rule) {
@@ -147,7 +162,7 @@
          * Desactivation d'une regle.
          */
         function disableRule(ruleType) {
-            var rule = _.find($scope.configuration.automaticCheckRules, function(r) {
+            var rule = _.find($scope.configuration.automaticCheckRules, function (r) {
                 return r.automaticCheckType.type === ruleType;
             });
             rule.active = false;
@@ -158,10 +173,8 @@
          * Initialisation des regles au passage en modif.
          */
         function initStateRules() {
-            var withMasterRule = $scope.configuration.automaticCheckRules
-                .find(theMaster);
+            var withMasterRule = $scope.configuration.automaticCheckRules.find(theMaster);
             if (withMasterRule && !withMasterRule.active) {
-
                 withMasterRule.readOnly = false;
 
                 getAutoChecks().forEach(function (regle) {
@@ -177,18 +190,14 @@
             return rule.automaticCheckType.type === 'WITH_MASTER';
         }
 
-
         /**
          * Retourne les regles de controle auto.
          * (dépendant du controle Presence master)
          */
         function getAutoChecks() {
-            return $scope.configuration.automaticCheckRules
-                .filter(function (rule) {
-                    return rule.automaticCheckType.type !== 'WITH_MASTER'
-                        && rule.automaticCheckType.type !== 'FACILE'
-                        && rule.automaticCheckType.type !== 'METADATA_FILE';
-                });
+            return $scope.configuration.automaticCheckRules.filter(function (rule) {
+                return rule.automaticCheckType.type !== 'WITH_MASTER' && rule.automaticCheckType.type !== 'FACILE' && rule.automaticCheckType.type !== 'METADATA_FILE';
+            });
         }
 
         /****************************************************************/
@@ -201,35 +210,37 @@
             $timeout(function () {
                 var creation = !$scope.configuration.identifier;
 
-                $scope.configuration.$save({},
+                $scope.configuration.$save(
+                    {},
                     function (value) {
-                        MessageSrvc.addSuccess(gettext("La configuration {{name}} a été sauvegardée"), { name: value.name });
+                        MessageSrvc.addSuccess(gettext('La configuration {{name}} a été sauvegardée'), { name: value.name });
                         onSuccess(value);
 
                         // si création, on ajoute à la liste, sinon, on essaye de MAJ les infos dans la colonne du milieu
                         if (creation) {
                             $scope.clearSelection();
-                            NumahopEditService.addNewEntityToList(value, $scope.newConfigurations, $scope.pagination.items, ["label"]);
+                            NumahopEditService.addNewEntityToList(value, $scope.newConfigurations, $scope.pagination.items, ['label']);
                         } else {
-                            NumahopEditService.updateMiddleColumn($scope.configuration, ["label"], $scope.pagination.items, $scope.newConfigurations);
+                            NumahopEditService.updateMiddleColumn($scope.configuration, ['label'], $scope.pagination.items, $scope.newConfigurations);
                         }
                     },
                     function (response) {
                         $scope.errors = _.chain(response.data.errors)
-                            .groupBy("field")
+                            .groupBy('field')
                             .mapObject(function (list) {
-                                return _.pluck(list, "code");
+                                return _.pluck(list, 'code');
                             })
                             .value();
 
                         openForm();
-                    });
+                    }
+                );
             });
         }
 
         // Gestion de la configuration renvoyée par le serveur
         function onSuccess(value) {
-            HistorySrvc.add(gettextCatalog.getString("Configuration {{label}}", $scope.configuration));
+            HistorySrvc.add(gettextCatalog.getString('Configuration {{label}}', $scope.configuration));
             displayMessages($scope.configuration);
         }
 
@@ -269,36 +280,40 @@
         function loadConfiguration() {
             if ('duplicate' in $routeParams && angular.isDefined($routeParams.id)) {
                 // Duplication
-                $scope.configuration = CheckConfigurationSrvc.duplicate({
-                    id: $routeParams.id
-                }, function (checkConfiguration) {
-                    afterLoadingConfiguration(checkConfiguration);
-                    openForm();
-                });
+                $scope.configuration = CheckConfigurationSrvc.duplicate(
+                    {
+                        id: $routeParams.id,
+                    },
+                    function (checkConfiguration) {
+                        afterLoadingConfiguration(checkConfiguration);
+                        openForm();
+                    }
+                );
             } else if (angular.isDefined($routeParams.id)) {
                 // Chargement configuration
-                $scope.configuration = CheckConfigurationSrvc.get({
-                    id: $routeParams.id
-                }, function (configuration) {
-                    afterLoadingConfiguration(configuration);
-                });
+                $scope.configuration = CheckConfigurationSrvc.get(
+                    {
+                        id: $routeParams.id,
+                    },
+                    function (configuration) {
+                        afterLoadingConfiguration(configuration);
+                    }
+                );
             } else if (angular.isDefined($routeParams.new)) {
                 // Création d'une nouvelle configuration
-                HistorySrvc.add(gettext("Nouvelle configuration"));
+                HistorySrvc.add(gettext('Nouvelle configuration'));
                 $scope.configuration = new CheckConfigurationSrvc();
                 $scope.configuration.active = true;
                 loadCheckRules();
                 afterLoadingConfiguration($scope.configuration);
                 openForm();
             }
-
         }
 
         function loadCheckRules() {
             $scope.configuration.automaticCheckRules = CheckConfigurationSrvc.rules({
-                id: $routeParams.id
+                id: $routeParams.id,
             });
         }
-
     }
 })();

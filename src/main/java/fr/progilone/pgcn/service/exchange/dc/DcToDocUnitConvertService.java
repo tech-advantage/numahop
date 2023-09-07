@@ -1,24 +1,20 @@
 package fr.progilone.pgcn.service.exchange.dc;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.xml.bind.JAXBElement;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-
 import com.google.common.collect.Iterables;
-
 import fr.progilone.pgcn.domain.document.BibliographicRecord;
 import fr.progilone.pgcn.domain.document.DocPropertyType;
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.jaxb.dc.ElementContainer;
 import fr.progilone.pgcn.domain.library.Library;
 import fr.progilone.pgcn.service.exchange.AbstractImportConvertService;
+import jakarta.xml.bind.JAXBElement;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 /**
  * Service assurant la conversion de notices au format Dublin Core en unités documentaires
@@ -64,7 +60,8 @@ public class DcToDocUnitConvertService extends AbstractImportConvertService {
                        }
                        // identifier => docunit.pgcnId
                        else if (StringUtils.equals(FIELD_IDENTIFIER, property.getIdentifier())) {
-                           String value = library.getPrefix() + ", " + Iterables.getFirst(values, "");
+                           String value = library.getPrefix() + ", "
+                                          + Iterables.getFirst(values, "");
                            value = StringUtils.abbreviate(value, getColMaxWidth(FIELD_PGCN_ID));
                            docUnit.setPgcnId(value);
                        }
@@ -91,15 +88,14 @@ public class DcToDocUnitConvertService extends AbstractImportConvertService {
                 expectedType = DocPropertyType.DocPropertySuperType.DC;
                 break;
             default:
-                LOG.warn("L'espace de nommage {} ne correspond à aucun DocPropertyType.DocPropertySuperType; la propriété {} est ignorée",
-                         namespaceURI,
-                         localPart);
+                LOG.warn("L'espace de nommage {} ne correspond à aucun DocPropertyType.DocPropertySuperType; la propriété {} est ignorée", namespaceURI, localPart);
                 return Optional.empty();
         }
         return propertyTypes.stream()
                             // filtrage par espace de nommage / DocPropertySuperType
                             .filter(p -> p.getSuperType() == expectedType)
                             // filtrage par nom de la propriété
-                            .filter(p -> StringUtils.equalsIgnoreCase(p.getIdentifier(), localPart)).findAny();
+                            .filter(p -> StringUtils.equalsIgnoreCase(p.getIdentifier(), localPart))
+                            .findAny();
     }
 }

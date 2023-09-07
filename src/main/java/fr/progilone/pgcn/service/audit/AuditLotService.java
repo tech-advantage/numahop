@@ -6,16 +6,15 @@ import fr.progilone.pgcn.domain.lot.Lot;
 import fr.progilone.pgcn.domain.project.Project;
 import fr.progilone.pgcn.repository.audit.AuditLotRepository;
 import fr.progilone.pgcn.repository.lot.LotRepository;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class AuditLotService {
@@ -39,10 +38,7 @@ public class AuditLotService {
      * @return
      */
     @Transactional(readOnly = true)
-    public List<AuditLotRevisionDTO> getRevisions(final LocalDate fromDate,
-                                                  final List<String> libraries,
-                                                  final List<String> projects,
-                                                  final List<Lot.LotStatus> status) {
+    public List<AuditLotRevisionDTO> getRevisions(final LocalDate fromDate, final List<String> libraries, final List<String> projects, final List<Lot.LotStatus> status) {
         List<AuditLotRevisionDTO> revisions = auditLotRepository.getRevisions(fromDate, status);
         revisions = updateRevisions(revisions, libraries, projects);
         return revisions;
@@ -53,16 +49,14 @@ public class AuditLotService {
      *
      * @param revisions
      * @param libraries
-     *         filtrage par bibliothèque
+     *            filtrage par bibliothèque
      * @param projects
-     *         filtrage ar projet
+     *            filtrage ar projet
      */
-    private List<AuditLotRevisionDTO> updateRevisions(final List<AuditLotRevisionDTO> revisions,
-                                                      final List<String> libraries,
-                                                      final List<String> projects) {
+    private List<AuditLotRevisionDTO> updateRevisions(final List<AuditLotRevisionDTO> revisions, final List<String> libraries, final List<String> projects) {
         final List<AuditLotRevisionDTO> updatedRevs = new ArrayList<>();
         final List<String> lotIds = revisions.stream().map(AuditLotRevisionDTO::getIdentifier).collect(Collectors.toList());
-        final List<Lot> lots = lotRepository.findAll(lotIds);
+        final List<Lot> lots = lotRepository.findAllById(lotIds);
 
         for (final AuditLotRevisionDTO revision : revisions) {
             lots.stream()
@@ -71,7 +65,8 @@ public class AuditLotService {
                 // Filtrage par bibliothèque et par projet
                 .filter(lot -> {
                     final Project project = lot.getProject();
-                    final Library library = project != null ? project.getLibrary() : null;
+                    final Library library = project != null ? project.getLibrary()
+                                                            : null;
 
                     // Projet
                     if (CollectionUtils.isNotEmpty(projects) && (project == null || !projects.contains(project.getIdentifier()))) {
@@ -83,7 +78,8 @@ public class AuditLotService {
                     }
                     return true;
 
-                }).findAny()
+                })
+                .findAny()
                 // alimentation liste résultats
                 .ifPresent(lot -> {
                     revision.setLabel(lot.getLabel());

@@ -1,28 +1,41 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('UserRoleEditCtrl', UserRoleEditCtrl);
+    angular.module('numaHopApp.controller').controller('UserRoleEditCtrl', UserRoleEditCtrl);
 
-    function UserRoleEditCtrl($filter, $location, $q, $routeParams, $scope, $timeout, UserAuthorizationSrvc,
-        UserRoleSrvc, gettext, gettextCatalog, HistorySrvc, codeSrvc,
-        ListTools, MessageSrvc, ModalSrvc, ValidationSrvc) {
+    function UserRoleEditCtrl(
+        $filter,
+        $location,
+        $q,
+        $routeParams,
+        $scope,
+        $timeout,
+        UserAuthorizationSrvc,
+        UserRoleSrvc,
+        gettext,
+        gettextCatalog,
+        HistorySrvc,
+        codeSrvc,
+        ListTools,
+        MessageSrvc,
+        ModalSrvc,
+        ValidationSrvc
+    ) {
         $scope.validation = ValidationSrvc;
         $scope.code = codeSrvc;
 
         // Gestion des vues
 
         $scope.filterBy = {};
-        $scope.orderBy = ["module", "code"];
+        $scope.orderBy = ['module', 'code'];
 
         // toggle switch label ON/OFF
-        $scope.onLabel = gettextCatalog.getString("Activé");
-        $scope.offLabel = gettextCatalog.getString("Désactivé");
+        $scope.onLabel = gettextCatalog.getString('Activé');
+        $scope.offLabel = gettextCatalog.getString('Désactivé');
         $scope.openForm = openForm;
         $scope.saveRole = saveRole;
 
         init();
-
 
         /** Initialisation */
         function init() {
@@ -36,21 +49,23 @@
 
             // Chargement du rôle
             if (angular.isDefined($routeParams.id)) {
-                $scope.role = UserRoleSrvc.get({
-                    id: $routeParams.id
-
-                }, function (value, responseHeaders) {
-                    onSuccess(value, responseHeaders);
-                    $scope.loaded = true;
-                    deferRoles.resolve(value);
-
-                }, function (httpResponse) {
-                    deferRoles.reject(httpResponse);
-                });
+                $scope.role = UserRoleSrvc.get(
+                    {
+                        id: $routeParams.id,
+                    },
+                    function (value, responseHeaders) {
+                        onSuccess(value, responseHeaders);
+                        $scope.loaded = true;
+                        deferRoles.resolve(value);
+                    },
+                    function (httpResponse) {
+                        deferRoles.reject(httpResponse);
+                    }
+                );
             }
             // Création d'un nouveau rôle
             else if (angular.isDefined($routeParams.new)) {
-                HistorySrvc.add(gettextCatalog.getString("Nouveau profil"));
+                HistorySrvc.add(gettextCatalog.getString('Nouveau profil'));
 
                 $scope.role = new UserRoleSrvc();
                 $scope.role.authorizations = [];
@@ -67,35 +82,34 @@
                 });
                 // extraction des modules
                 $scope.modules = _.chain(values)
-                    .uniq(false, "module")
+                    .uniq(false, 'module')
                     .map(function (element) {
                         return { code: element.module, label: codeSrvc[element.module] };
-                    }).value();
+                    })
+                    .value();
             });
 
             // Initialisation des habilitations
-            $q.all([deferRoles.promise, $scope.authorizations.$promise])
-                .then(function () {
-                    // Activation / désactivation des autorisations
-                    _.each($scope.role.authorizations, function (roleAuth) {
-                        var matchingAuth =
-                            _.find($scope.authorizations, function (auth) {
-                                return auth.identifier === roleAuth.identifier;
-                            });
-                        if (angular.isDefined(matchingAuth)) {
-                            matchingAuth._activated = true;
-                        }
+            $q.all([deferRoles.promise, $scope.authorizations.$promise]).then(function () {
+                // Activation / désactivation des autorisations
+                _.each($scope.role.authorizations, function (roleAuth) {
+                    var matchingAuth = _.find($scope.authorizations, function (auth) {
+                        return auth.identifier === roleAuth.identifier;
                     });
-
-                    if (!$scope.roleForm.$visible) {
-                        $scope.displayedAuthorizations = $filter("filter")($scope.authorizations, { _activated: true });
-
-                        // Autorisations en lecture seule
-                        _.each($scope.authorizations, function (auth) {
-                            auth._readOnly = isReadOnly(auth);
-                        });
+                    if (angular.isDefined(matchingAuth)) {
+                        matchingAuth._activated = true;
                     }
                 });
+
+                if (!$scope.roleForm.$visible) {
+                    $scope.displayedAuthorizations = $filter('filter')($scope.authorizations, { _activated: true });
+
+                    // Autorisations en lecture seule
+                    _.each($scope.authorizations, function (auth) {
+                        auth._readOnly = isReadOnly(auth);
+                    });
+                }
+            });
         }
 
         function displayMessages(entity) {
@@ -104,21 +118,19 @@
             // ... puis on affiche les infos de modification ...
             if (angular.isDefined(entity.lastModifiedDate)) {
                 var dateModif = new Date(entity.lastModifiedDate);
-                MessageSrvc.addInfo(gettext("Dernière modification le {{date}} par {{author}}"),
-                    { date: dateModif.toLocaleString(), author: entity.lastModifiedBy }, true);
+                MessageSrvc.addInfo(gettext('Dernière modification le {{date}} par {{author}}'), { date: dateModif.toLocaleString(), author: entity.lastModifiedBy }, true);
             }
             // ... puis on affiche les infos de création ...
             if (angular.isDefined(entity.createdDate)) {
                 var dateCreated = new Date(entity.createdDate);
-                MessageSrvc.addInfo(gettext("Créé le {{date}}"),
-                    { date: dateCreated.toLocaleString() }, true);
+                MessageSrvc.addInfo(gettext('Créé le {{date}}'), { date: dateCreated.toLocaleString() }, true);
             }
             // Affichage pour un temps limité à l'ouverture
             MessageSrvc.initPanel();
         }
 
         $scope.updateAuthorizations = function () {
-            $scope.displayedAuthorizations = $filter("filter")($scope.authorizations, { _activated: true });
+            $scope.displayedAuthorizations = $filter('filter')($scope.authorizations, { _activated: true });
             _.each($scope.authorizations, function (auth) {
                 auth._readOnly = isReadOnly(auth);
             });
@@ -128,12 +140,14 @@
         function saveRole(role) {
             delete $scope.errors;
             $timeout(function () {
+                role.authorizations = _.filter($scope.authorizations, function (a) {
+                    return a._activated;
+                });
 
-                role.authorizations = _.filter($scope.authorizations, function (a) { return a._activated; });
-
-                role.$save({},
+                role.$save(
+                    {},
                     function (value, responseHeaders) {
-                        MessageSrvc.addSuccess(gettext("Le profil [{{code}}] {{label}} a été sauvegardé"), value);
+                        MessageSrvc.addSuccess(gettext('Le profil [{{code}}] {{label}} a été sauvegardé'), value);
                         addNewRoleToList(value, $scope.newRoles, $scope.displayedRoles);
                         onSuccess(value, responseHeaders);
                         $scope.updateRole(value.identifier, value);
@@ -142,26 +156,25 @@
                     },
                     function (response) {
                         $scope.errors = _.chain(response.data.errors)
-                            .groupBy("field")
+                            .groupBy('field')
                             .mapObject(function (list) {
-                                return _.pluck(list, "code");
+                                return _.pluck(list, 'code');
                             })
                             .value();
 
                         openForm();
-                    });
+                    }
+                );
             });
         }
         $scope.delete = function (role) {
-            ModalSrvc.confirmDeletion(gettextCatalog.getString("le profil {{label}}", role))
-                .then(function () {
-
-                    role.$delete(function (value, responseHeaders) {
-                        MessageSrvc.addSuccess(gettext("Le profil [{{code}}] {{label}} a été supprimé"), role);
-                        ListTools.findAndRemoveItemFromLists(role, $scope.newRoles, $scope.displayedRoles, $scope.roles);
-                        $scope.backToList();
-                    });
+            ModalSrvc.confirmDeletion(gettextCatalog.getString('le profil {{label}}', role)).then(function () {
+                role.$delete(function (value, responseHeaders) {
+                    MessageSrvc.addSuccess(gettext('Le profil [{{code}}] {{label}} a été supprimé'), role);
+                    ListTools.findAndRemoveItemFromLists(role, $scope.newRoles, $scope.displayedRoles, $scope.roles);
+                    $scope.backToList();
                 });
+            });
         };
 
         // Controls
@@ -175,15 +188,19 @@
             if ($scope.filterBy.module) {
                 params.module = $scope.filterBy.module;
             }
-            $location.path("/user/role").search(params);
+            $location.path('/user/role').search(params);
         };
 
         // Gestion du rôle renvoyée par le serveur
         function onSuccess(value, responseHeaders) {
-            var role = "";
-            if (value.code) {role += value.code + " / ";}
-            if (value.label) {role += value.label + " ";}
-            HistorySrvc.add(gettextCatalog.getString("Profil: {{role}}", { role: role.trim() }));
+            var role = '';
+            if (value.code) {
+                role += value.code + ' / ';
+            }
+            if (value.label) {
+                role += value.label + ' ';
+            }
+            HistorySrvc.add(gettextCatalog.getString('Profil: {{role}}', { role: role.trim() }));
             displayMessages($scope.role);
         }
         // Ouverture du formulaire et des sous formulaires
@@ -215,7 +232,7 @@
             var newRole = {
                 _selected: true,
                 identifier: role.identifier,
-                label: role.label
+                label: role.label,
             };
             var i = 0;
             for (i = 0; i < newRoles.length; i++) {
@@ -229,8 +246,9 @@
         function isReadOnly(auth) {
             // le droit est activé: tous les droits dépendants doivent être désactivés
             if (auth._activated) {
-                return auth.dependencies.length > 0
-                    && _.chain(auth.dependencies)
+                return (
+                    auth.dependencies.length > 0 &&
+                    _.chain(auth.dependencies)
                         .map(function (dep) {
                             return _.find($scope.authorizations, function (oth) {
                                 return oth.code === dep;
@@ -240,12 +258,14 @@
                         .some(function (dep) {
                             return dep._activated;
                         })
-                        .value();
+                        .value()
+                );
             }
             // le droit est désactivé: tous les droits requis doivent être activés
             else {
-                return auth.requirements.length > 0
-                    && _.chain(auth.requirements)
+                return (
+                    auth.requirements.length > 0 &&
+                    _.chain(auth.requirements)
                         .map(function (req) {
                             return _.find($scope.authorizations, function (oth) {
                                 return oth.code === req;
@@ -255,7 +275,8 @@
                         .some(function (req) {
                             return !req._activated;
                         })
-                        .value();
+                        .value()
+                );
             }
         }
         $scope.updateAuth = function (auth) {

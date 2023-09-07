@@ -1,12 +1,9 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('StatisticsWorkflowDeliveryCtrl', StatisticsWorkflowDeliveryCtrl);
+    angular.module('numaHopApp.controller').controller('StatisticsWorkflowDeliveryCtrl', StatisticsWorkflowDeliveryCtrl);
 
-    function StatisticsWorkflowDeliveryCtrl($q, codeSrvc, DeliverySrvc, gettextCatalog, HistorySrvc,
-        LibrarySrvc, LotSrvc, NumahopStorageService, ProjectSrvc, StatisticsSrvc, WorkflowSrvc) {
-
+    function StatisticsWorkflowDeliveryCtrl($q, codeSrvc, DeliverySrvc, gettextCatalog, HistorySrvc, LibrarySrvc, LotSrvc, NumahopStorageService, ProjectSrvc, StatisticsSrvc, WorkflowSrvc) {
         var statCtrl = this;
 
         statCtrl.changePageSize = changePageSize;
@@ -21,7 +18,7 @@
         statCtrl.setAndSearch = setAndSearch;
 
         var PAGE_START = 1;
-        var FILTER_STORAGE_SERVICE_KEY = "stat_workflow_delivery";
+        var FILTER_STORAGE_SERVICE_KEY = 'stat_workflow_delivery';
 
         /**
          * Objet de pagination
@@ -31,7 +28,7 @@
             items: [],
             totalItems: 0,
             busy: false,
-            page: PAGE_START
+            page: PAGE_START,
         };
 
         /**
@@ -39,11 +36,11 @@
          * @type {Object}
          */
         statCtrl.sizeOptions = [
-            { value: 10, label: "10" },
-            { value: 20, label: "20" },
-            { value: 50, label: "50" },
-            { value: 100, label: "100" },
-            { value: 5000, label: "Tout" }
+            { value: 10, label: '10' },
+            { value: 20, label: '20' },
+            { value: 50, label: '50' },
+            { value: 100, label: '100' },
+            { value: 5000, label: 'Tout' },
         ];
 
         /**
@@ -51,9 +48,9 @@
          */
         statCtrl.config = {
             deliveries: {
-                text: "label",
-                placeholder: gettextCatalog.getString("Livraison"),
-                trackby: "identifier",
+                text: 'label',
+                placeholder: gettextCatalog.getString('Livraison'),
+                trackby: 'identifier',
                 refresh: function ($select) {
                     statCtrl.delvSelect = $select;
                     // Gestion du cas où la liste est réinitialisée manuellement (search est indéfini)
@@ -62,47 +59,45 @@
                     }
                     var searchParams = {
                         page: 0,
-                        search: $select.search
+                        search: $select.search,
                     };
                     if (statCtrl.filters.project) {
-                        searchParams["projects"] = _.pluck(statCtrl.filters.project, "identifier");
+                        searchParams['projects'] = _.pluck(statCtrl.filters.project, 'identifier');
                     }
                     if (statCtrl.filters.lot) {
-                        searchParams["lots"] = _.pluck(statCtrl.filters.lot, "identifier");
+                        searchParams['lots'] = _.pluck(statCtrl.filters.lot, 'identifier');
                     }
                     return DeliverySrvc.search(searchParams).$promise;
                 },
                 'refresh-delay': 300,
                 'allow-clear': true,
-                multiple: true
+                multiple: true,
             },
             libraries: {
-                text: "name",
-                placeholder: gettextCatalog.getString("Bibliothèque"),
-                trackby: "identifier",
+                text: 'name',
+                placeholder: gettextCatalog.getString('Bibliothèque'),
+                trackby: 'identifier',
                 // Chargement avec mise en cache du résultat
                 refresh: function () {
                     if (!statCtrl.config.libraries.data) {
                         statCtrl.config.libraries.data = LibrarySrvc.query({ dto: true });
-                        return statCtrl.config.libraries.data.$promise
-                            .then(function (lib) {
-                                return _.map(lib, function (l) {
-                                    return _.pick(l, "identifier", "name");
-                                });
+                        return statCtrl.config.libraries.data.$promise.then(function (lib) {
+                            return _.map(lib, function (l) {
+                                return _.pick(l, 'identifier', 'name');
                             });
-                    }
-                    else {
+                        });
+                    } else {
                         return $q.when(statCtrl.config.libraries.data);
                     }
                 },
                 'refresh-delay': 0, // pas de refresh-delay, car on lit les données en cache après le 1er chargement
                 'allow-clear': true,
-                multiple: true
+                multiple: true,
             },
             lots: {
-                text: "label",
-                placeholder: gettextCatalog.getString("Lot"),
-                trackby: "identifier",
+                text: 'label',
+                placeholder: gettextCatalog.getString('Lot'),
+                trackby: 'identifier',
                 refresh: function ($select) {
                     statCtrl.lotsSelect = $select;
                     // Gestion du cas où la liste est réinitialisée manuellement (search est indéfini)
@@ -112,62 +107,59 @@
                     var searchParams = {
                         page: 0,
                         search: $select.search,
-                        active: true
+                        active: true,
                     };
                     if (statCtrl.filters.project) {
-                        searchParams["projects"] = _.pluck(statCtrl.filters.project, "identifier");
+                        searchParams['projects'] = _.pluck(statCtrl.filters.project, 'identifier');
                     }
-                    return LotSrvc.search(searchParams).$promise
-                        .then(function (lots) {
-                            return _.map(lots.content, function (lot) {
-                                return _.pick(lot, "identifier", "label");
-                            });
+                    return LotSrvc.search(searchParams).$promise.then(function (lots) {
+                        return _.map(lots.content, function (lot) {
+                            return _.pick(lot, 'identifier', 'label');
                         });
+                    });
                 },
                 'refresh-delay': 300,
                 'allow-clear': true,
-                multiple: true
+                multiple: true,
             },
             projects: {
-                text: "name",
-                placeholder: gettextCatalog.getString("Projet"),
-                trackby: "identifier",
+                text: 'name',
+                placeholder: gettextCatalog.getString('Projet'),
+                trackby: 'identifier',
                 refresh: function ($select) {
                     var searchParams = {
                         page: 0,
                         search: $select.search,
-                        active: true
+                        active: true,
                     };
-                    return ProjectSrvc.search(searchParams).$promise
-                        .then(function (projects) {
-                            return _.map(projects.content, function (project) {
-                                return _.pick(project, "identifier", "name");
-                            });
+                    return ProjectSrvc.search(searchParams).$promise.then(function (projects) {
+                        return _.map(projects.content, function (project) {
+                            return _.pick(project, 'identifier', 'name');
                         });
+                    });
                 },
                 'refresh-delay': 300,
                 multiple: true,
-                'allow-clear': true
+                'allow-clear': true,
             },
             states: {
                 data: WorkflowSrvc.getConfigWorkflow(),
-                text: "label",
-                placeholder: gettextCatalog.getString("État"),
-                trackby: "identifier",
+                text: 'label',
+                placeholder: gettextCatalog.getString('État'),
+                trackby: 'identifier',
                 multiple: true,
-                'allow-clear': true
-            }
+                'allow-clear': true,
+            },
         };
 
         init();
-
 
         /**
          * Initialisation du controleur
          * @return {[type]} [description]
          */
         function init() {
-            HistorySrvc.add(gettextCatalog.getString("Statistiques des workflows"));
+            HistorySrvc.add(gettextCatalog.getString('Statistiques des workflows'));
             statCtrl.loaded = false;
 
             loadColumns();
@@ -226,10 +218,10 @@
         }
 
         /**
-         * Met à jour le filtre de recherche field, et lance la recherche 
-         * 
-         * @param {*} field 
-         * @param {*} value 
+         * Met à jour le filtre de recherche field, et lance la recherche
+         *
+         * @param {*} field
+         * @param {*} value
          */
         function setAndSearch(field, value) {
             statCtrl.filters[field] = value;
@@ -244,14 +236,14 @@
             var params = {
                 page: statCtrl.pagination.page - 1,
                 size: statCtrl.pagination.size,
-                delivery: _.pluck(statCtrl.filters.delivery, "identifier"),
-                library: _.pluck(statCtrl.filters.library, "identifier"),
-                lot: _.pluck(statCtrl.filters.lot, "identifier"),
+                delivery: _.pluck(statCtrl.filters.delivery, 'identifier'),
+                library: _.pluck(statCtrl.filters.library, 'identifier'),
+                lot: _.pluck(statCtrl.filters.lot, 'identifier'),
                 pgcnid: statCtrl.filters.pgcnid,
-                project: _.pluck(statCtrl.filters.project, "identifier"),
-                state: _.pluck(statCtrl.columns, "identifier"),
+                project: _.pluck(statCtrl.filters.project, 'identifier'),
+                state: _.pluck(statCtrl.columns, 'identifier'),
                 from: statCtrl.filters.dlvFrom,
-                to: statCtrl.filters.dlvTo
+                to: statCtrl.filters.dlvTo,
             };
             return params;
         }
@@ -279,7 +271,7 @@
         function getExportUrl() {
             var params = getSearchParams();
             params.wdelivery = true;
-            return StatisticsSrvc.getExportUrl(params, "workflow");
+            return StatisticsSrvc.getExportUrl(params, 'workflow');
         }
 
         function getCount(item, state) {
@@ -287,11 +279,16 @@
                 return w.key === state;
             });
             if (found) {
-                var total = _.chain(item.workflow).pluck("count").reduce(function (a, b) { return a + b; }, 0).value();
+                var total = _.chain(item.workflow)
+                    .pluck('count')
+                    .reduce(function (a, b) {
+                        return a + b;
+                    }, 0)
+                    .value();
                 return {
                     count: found.count,
                     ratio: found.count / total,
-                    total: total
+                    total: total,
                 };
             }
         }
@@ -317,9 +314,12 @@
          * Visibilité d'une étape
          */
         function isVisible(value) {
-            return statCtrl.columns.length === 0 || _.some(statCtrl.columns, function (c) {
-                return c.identifier === value.identifier;
-            });
+            return (
+                statCtrl.columns.length === 0 ||
+                _.some(statCtrl.columns, function (c) {
+                    return c.identifier === value.identifier;
+                })
+            );
         }
     }
 })();

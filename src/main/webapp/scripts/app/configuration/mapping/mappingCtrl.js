@@ -1,12 +1,29 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('MappingCtrl', MappingCtrl);
+    angular.module('numaHopApp.controller').controller('MappingCtrl', MappingCtrl);
 
-    function MappingCtrl($filter, $http, $q, $location, $routeParams, $scope, AuditSrvc, CONFIGURATION, gettext, gettextCatalog,
-        HistorySrvc, LibrarySrvc, MappingRuleEadSrvc, MappingRuleMarcSrvc, MappingSrvc, MessageSrvc, ModalSrvc, Principal, USER_ROLES) {
-
+    function MappingCtrl(
+        $filter,
+        $http,
+        $q,
+        $location,
+        $routeParams,
+        $scope,
+        AuditSrvc,
+        CONFIGURATION,
+        gettext,
+        gettextCatalog,
+        HistorySrvc,
+        LibrarySrvc,
+        MappingRuleEadSrvc,
+        MappingRuleMarcSrvc,
+        MappingSrvc,
+        MessageSrvc,
+        ModalSrvc,
+        Principal,
+        USER_ROLES
+    ) {
         var mainCtrl = this;
         mainCtrl.mappingModified = mappingModified;
         /** Mapping */
@@ -36,33 +53,31 @@
         /* Listes ui-select */
         mainCtrl.uioptions = {
             libraries: {
-                text: "name",
-                placeholder: gettextCatalog.getString("Bibliothèque"),
-                trackby: "identifier",
+                text: 'name',
+                placeholder: gettextCatalog.getString('Bibliothèque'),
+                trackby: 'identifier',
                 // Chargement avec mise en cache du résultat
                 refresh: function () {
                     if (!mainCtrl.uioptions.libraries.data) {
                         mainCtrl.uioptions.libraries.data = LibrarySrvc.query({ dto: true });
                         return mainCtrl.uioptions.libraries.data.$promise;
-                    }
-                    else {
+                    } else {
                         return $q.when(mainCtrl.uioptions.libraries.data);
                     }
                 },
                 'refresh-delay': 0, // pas de refresh-delay, car on lit les données en cache après le 1er chargement
-                'allow-clear': true
-            }
+                'allow-clear': true,
+            },
         };
-
 
         init();
 
         /** Initialisation du contrôleur */
         function init() {
-            HistorySrvc.add(gettextCatalog.getString("Configuration des mappings"));
+            HistorySrvc.add(gettextCatalog.getString('Configuration des mappings'));
 
             mainCtrl.isSuperAdmin = Principal.isInRole(USER_ROLES.SUPER_ADMIN);
-            mainCtrl.rwCheckLib = Principal.isInRole(USER_ROLES.ADMINISTRATION_LIB);    // mapping des autres bib en lecture seule
+            mainCtrl.rwCheckLib = Principal.isInRole(USER_ROLES.ADMINISTRATION_LIB); // mapping des autres bib en lecture seule
             mainCtrl.library = Principal.library();
             mainCtrl.ruleFiltersTooltip = getRuleFiltersTooltip();
 
@@ -72,20 +87,19 @@
             }
 
             // Message d'avertissement si l'utilisateur quitte la page alors que des modifications sont en cours
-            $scope.$on("$locationChangeStart", checkModificationsOnLocationChange);
+            $scope.$on('$locationChangeStart', checkModificationsOnLocationChange);
         }
 
         /** Chargement des mappings existants */
         function loadMappings(type) {
             if (mainCtrl.type) {
                 mainCtrl.mappings = MappingSrvc.query({ type: type });
-                mainCtrl.mappings.$promise
-                    .then(updateMappingLibraries);
+                mainCtrl.mappings.$promise.then(updateMappingLibraries);
             }
         }
         function updateMappingLibraries(mappings) {
             mainCtrl.libraries = _.chain(mappings)
-                .pluck("library")
+                .pluck('library')
                 .uniq(false, function (l) {
                     return l.identifier;
                 })
@@ -104,15 +118,13 @@
         function checkModifications(ignoreLastRestore) {
             // on ne confirme pas lors du passage d'une restauration à une autre
             if (mainCtrl.modified || (!ignoreLastRestore && mainCtrl.restored)) {
-                return ModalSrvc.confirmAction(gettextCatalog.getString("continuer alors que vous avez des modifications non sauvegardées"))
-                    .then(function () {
-                        // Annulation des modifications en cours
-                        delete mainCtrl.activeRule;
-                        mainCtrl.modified = false;
-                        mainCtrl.restored = false;
-                    });
-            }
-            else {
+                return ModalSrvc.confirmAction(gettextCatalog.getString('continuer alors que vous avez des modifications non sauvegardées')).then(function () {
+                    // Annulation des modifications en cours
+                    delete mainCtrl.activeRule;
+                    mainCtrl.modified = false;
+                    mainCtrl.restored = false;
+                });
+            } else {
                 return $q.when();
             }
         }
@@ -130,16 +142,15 @@
                 // Annulation de l'action en cours, dans l'attente d'une confirmation de l'utilisateur
                 event.preventDefault();
 
-                ModalSrvc.confirmAction(gettextCatalog.getString("continuer alors que vous avez des modifications non sauvegardées"))
-                    .then(function () {
-                        // Annulation des modifications
-                        delete mainCtrl.activeRule;
-                        mainCtrl.modified = false;
-                        mainCtrl.restored = false;
+                ModalSrvc.confirmAction(gettextCatalog.getString('continuer alors que vous avez des modifications non sauvegardées')).then(function () {
+                    // Annulation des modifications
+                    delete mainCtrl.activeRule;
+                    mainCtrl.modified = false;
+                    mainCtrl.restored = false;
 
-                        // on force le changement de page
-                        $location.url(url);
-                    });
+                    // on force le changement de page
+                    $location.url(url);
+                });
             }
         }
         /** Création d'un mapping */
@@ -149,7 +160,9 @@
                 mainCtrl.editedMapping.type = mainCtrl.type;
                 mainCtrl.editedMapping.rules = [];
                 if (mainCtrl.library) {
-                    mainCtrl.editedMapping.library = _.find(mainCtrl.uioptions.libraries.data, function (lib) { return lib.identifier = mainCtrl.library; });
+                    mainCtrl.editedMapping.library = _.find(mainCtrl.uioptions.libraries.data, function (lib) {
+                        return (lib.identifier = mainCtrl.library);
+                    });
                 }
 
                 loadRevisions();
@@ -187,8 +200,7 @@
 
             if (angular.isDefined(mapping.identifier)) {
                 edit(mapping);
-            }
-            else {
+            } else {
                 create();
             }
         }
@@ -197,12 +209,12 @@
             if (!mapping) {
                 return;
             }
-            ModalSrvc.confirmDeletion(gettextCatalog.getString("Le mapping {{label}}", mapping))
+            ModalSrvc.confirmDeletion(gettextCatalog.getString('Le mapping {{label}}', mapping))
                 .then(function () {
                     return mapping.$delete();
                 })
                 .then(function () {
-                    MessageSrvc.addSuccess(gettext("Le mapping {{label}} a été supprimé"), mapping);
+                    MessageSrvc.addSuccess(gettext('Le mapping {{label}} a été supprimé'), mapping);
                     loadMappings(mainCtrl.type);
 
                     delete mainCtrl.activeRule;
@@ -236,7 +248,7 @@
             checkModifications(true)
                 .then(function () {
                     mainCtrl.loaded = false;
-                    return AuditSrvc.get({ type: "mapping", id: mapping.identifier, rev: rev.id }).$promise;
+                    return AuditSrvc.get({ type: 'mapping', id: mapping.identifier, rev: rev.id }).$promise;
                 })
                 .then(function (restoredMapping) {
                     copyRestoredMapping(restoredMapping, mainCtrl.editedMapping);
@@ -275,15 +287,14 @@
             var isCreation = !mapping.identifier;
 
             // Tri des règles de mapping
-            mapping.rules = $filter("orderBy")(mapping.rules, sortRule);
-            mapping.$save()
-                .then(function () {
-                    afterSave(mapping, isCreation);
-                });
+            mapping.rules = $filter('orderBy')(mapping.rules, sortRule);
+            mapping.$save().then(function () {
+                afterSave(mapping, isCreation);
+            });
         }
 
         function afterSave(mapping, isCreation) {
-            MessageSrvc.addSuccess(gettext("Le mapping {{label}} a été sauvegardé"), mapping);
+            MessageSrvc.addSuccess(gettext('Le mapping {{label}} a été sauvegardé'), mapping);
             delete mainCtrl.activeRule;
             mainCtrl.modified = false;
             mainCtrl.restored = false;
@@ -295,10 +306,9 @@
             var editedDto;
 
             if (isCreation) {
-                editedDto = _.pick(mapping, "identifier", "label", "library", "type");
+                editedDto = _.pick(mapping, 'identifier', 'label', 'library', 'type');
                 mainCtrl.mappings.push(editedDto);
-            }
-            else {
+            } else {
                 editedDto = _.find(mainCtrl.mappings, function (m) {
                     return m.identifier === mapping.identifier;
                 });
@@ -314,9 +324,8 @@
         /** Chargement de la liste des révisions */
         function loadRevisions(mapping) {
             if (mapping && (mainCtrl.isSuperAdmin || !mainCtrl.rwCheckLib || mapping.library.identifier === mainCtrl.library)) {
-                mainCtrl.revisions = AuditSrvc.query({ type: "mapping", id: mapping.identifier });
-            }
-            else {
+                mainCtrl.revisions = AuditSrvc.query({ type: 'mapping', id: mapping.identifier });
+            } else {
                 delete mainCtrl.revisions;
             }
         }
@@ -327,18 +336,15 @@
         }
         /** Copie d'une règle existante */
         function copyRule(rule, mapping) {
-            var copyOfRule = rule
-                ? _.pick(rule, "bibRecordField", "condition", "conditionConf", "docUnitField", "expression", "expressionConf", "property")
-                : {};
+            var copyOfRule = rule ? _.pick(rule, 'bibRecordField', 'condition', 'conditionConf', 'docUnitField', 'expression', 'expressionConf', 'property') : {};
             var options = { rule: copyOfRule, type: mainCtrl.type };
-            return ModalSrvc.open("scripts/app/configuration/mapping/modalEditRule.html", options, "lg", "ModalEditRuleCtrl")
-                .then(function (edRule) {
-                    edRule.position = 999999;
-                    mapping.rules.push(edRule);
-                    mainCtrl.activeRule = edRule;
-                    mainCtrl.modified = true;
-                    return edRule;
-                });
+            return ModalSrvc.open('scripts/app/configuration/mapping/modalEditRule.html', options, 'lg', 'ModalEditRuleCtrl').then(function (edRule) {
+                edRule.position = 999999;
+                mapping.rules.push(edRule);
+                mainCtrl.activeRule = edRule;
+                mainCtrl.modified = true;
+                return edRule;
+            });
         }
         /** Suppression d'une règle existante */
         function delRule(rule, mapping) {
@@ -352,17 +358,16 @@
         /** Suppression d'une règle existante */
         function editRule(rule, mapping) {
             var options = { rule: angular.copy(rule), type: mainCtrl.type };
-            return ModalSrvc.open("scripts/app/configuration/mapping/modalEditRule.html", options, "lg", "ModalEditRuleCtrl")
-                .then(function (edRule) {
-                    mainCtrl.activeRule = edRule;
-                    mainCtrl.modified = true;
+            return ModalSrvc.open('scripts/app/configuration/mapping/modalEditRule.html', options, 'lg', 'ModalEditRuleCtrl').then(function (edRule) {
+                mainCtrl.activeRule = edRule;
+                mainCtrl.modified = true;
 
-                    var idx = mapping.rules.indexOf(rule);
-                    if (idx >= 0) {
-                        mapping.rules.splice(idx, 1, edRule);   // remplacement de la règle originale par la règle éditée
-                    }
-                    return rule;
-                });
+                var idx = mapping.rules.indexOf(rule);
+                if (idx >= 0) {
+                    mapping.rules.splice(idx, 1, edRule); // remplacement de la règle originale par la règle éditée
+                }
+                return rule;
+            });
         }
 
         /**
@@ -372,24 +377,39 @@
          * @param {any} rules
          */
         function downRule(rule, rules) {
-            moveRule(rule, rules, "down");
+            moveRule(rule, rules, 'down');
         }
 
         function upRule(rule, rules) {
-            moveRule(rule, rules, "up");
+            moveRule(rule, rules, 'up');
         }
 
         function moveRule(rule, rules, direction) {
             var position = rule.position || 0;
-            var sortBy = direction === "up" ? function (r) { return -(r.position || 0); } : "position";
-            var find = direction === "up" ? function (r) { return r.position < position; } : function (r) { return r.position > position; };
+            var sortBy =
+                direction === 'up'
+                    ? function (r) {
+                          return -(r.position || 0);
+                      }
+                    : 'position';
+            var find =
+                direction === 'up'
+                    ? function (r) {
+                          return r.position < position;
+                      }
+                    : function (r) {
+                          return r.position > position;
+                      };
 
             var next = _.chain(rules)
                 .filter(function (r) {
-                    return rule.property ? r.property && rule.property.identifier === r.property.identifier
-                        : rule.docUnitField ? rule.docUnitField === r.docUnitField
-                            : rule.bibRecordField ? rule.bibRecordField === r.bibRecordField
-                                : false;
+                    return rule.property
+                        ? r.property && rule.property.identifier === r.property.identifier
+                        : rule.docUnitField
+                        ? rule.docUnitField === r.docUnitField
+                        : rule.bibRecordField
+                        ? rule.bibRecordField === r.bibRecordField
+                        : false;
                 })
                 .sortBy(sortBy)
                 .find(find)
@@ -411,13 +431,12 @@
          */
         function setRuleFilters() {
             ModalSrvc.getValueTextarea(
-                gettextCatalog.getString("Filtrage des règles de mapping"),
-                gettextCatalog.getString("Filtre"),
-                mainCtrl.ruleFilters && mainCtrl.ruleFilters.length ? mainCtrl.ruleFilters.join(", ") : ""
-
+                gettextCatalog.getString('Filtrage des règles de mapping'),
+                gettextCatalog.getString('Filtre'),
+                mainCtrl.ruleFilters && mainCtrl.ruleFilters.length ? mainCtrl.ruleFilters.join(', ') : ''
             ).then(function (filter) {
                 // Filtres
-                var getFields = mainCtrl.type === "MARC" ? MappingRuleMarcSrvc.getFields : mainCtrl.type === "EAD" ? MappingRuleEadSrvc.getFields : null;
+                var getFields = mainCtrl.type === 'MARC' ? MappingRuleMarcSrvc.getFields : mainCtrl.type === 'EAD' ? MappingRuleEadSrvc.getFields : null;
                 delete mainCtrl.ruleFilters;
 
                 if (getFields) {
@@ -446,7 +465,7 @@
         function filterRule(rule) {
             // Un filtrage est appliqué sur les règles de mapping
             if (mainCtrl.ruleFilters && mainCtrl.ruleFilters.length) {
-                var getFields = mainCtrl.type === "MARC" ? MappingRuleMarcSrvc.getFields : mainCtrl.type === "EAD" ? MappingRuleEadSrvc.getFields : null;
+                var getFields = mainCtrl.type === 'MARC' ? MappingRuleMarcSrvc.getFields : mainCtrl.type === 'EAD' ? MappingRuleEadSrvc.getFields : null;
 
                 if (getFields) {
                     var fields = [];
@@ -458,7 +477,7 @@
                     }
                     return _.some(fields, function (f) {
                         return _.some(mainCtrl.ruleFilters, function (r) {
-                            return f === r || (mainCtrl.type === "MARC" && f.substr(0, r.length) === r) || (mainCtrl.type === "EAD" && f.indexOf(r) >= 0);
+                            return f === r || (mainCtrl.type === 'MARC' && f.substr(0, r.length) === r) || (mainCtrl.type === 'EAD' && f.indexOf(r) >= 0);
                         });
                     });
                 }
@@ -474,10 +493,9 @@
          */
         function getRuleFiltersTooltip() {
             if (mainCtrl.ruleFilters && mainCtrl.ruleFilters.length > 0) {
-                return gettextCatalog.getString("Filtres: {{filters}}", { filters: mainCtrl.ruleFilters.join(", ") });
-            }
-            else {
-                return gettextCatalog.getString("Filtrer les mappings");
+                return gettextCatalog.getString('Filtres: {{filters}}', { filters: mainCtrl.ruleFilters.join(', ') });
+            } else {
+                return gettextCatalog.getString('Filtrer les mappings');
             }
         }
 
@@ -486,19 +504,16 @@
             var key;
             var ppty = rule.property;
             if (ppty) {
-                var rank = ppty.rank < 10 ? "0" + ppty.rank : ppty.rank;
-                key = (ppty.superType === "DC" ? '1' : ppty.superType === "DCQ" ? '2' : '3') + "#" + rank;
-            }
-            else if (rule.docUnitField) {
+                var rank = ppty.rank < 10 ? '0' + ppty.rank : ppty.rank;
+                key = (ppty.superType === 'DC' ? '1' : ppty.superType === 'DCQ' ? '2' : '3') + '#' + rank;
+            } else if (rule.docUnitField) {
                 key = '4#' + rule.docUnitField;
-            }
-            else if (rule.bibRecordField) {
+            } else if (rule.bibRecordField) {
                 key = '5#' + rule.bibRecordField;
+            } else {
+                key = '9#';
             }
-            else {
-                key = "9#";
-            }
-            key += "#" + (rule.defaultRule ? "9999" : rule.position || "0000");
+            key += '#' + (rule.defaultRule ? '9999' : rule.position || '0000');
             return key;
         }
 
@@ -514,7 +529,7 @@
             var found = _.find(MappingSrvc.bibRecordFields, function (f) {
                 return f.code === field;
             });
-            return found ? found.label : "";
+            return found ? found.label : '';
         }
 
         /**
@@ -529,7 +544,7 @@
             var found = _.find(MappingSrvc.docUnitFields, function (f) {
                 return f.code === field;
             });
-            return found ? found.label : "";
+            return found ? found.label : '';
         }
 
         /**
@@ -546,23 +561,21 @@
             if (!library && mainCtrl.uioptions.libraries.data.length > 0) {
                 library = mainCtrl.uioptions.libraries.data[0];
             }
-            uploadMapping(null, library)
-                .then(function (mapping) {
-                    mapping.library = library;
-                    afterSave(mapping, true);
-                    reload(mapping);
-                });
+            uploadMapping(null, library).then(function (mapping) {
+                mapping.library = library;
+                afterSave(mapping, true);
+                reload(mapping);
+            });
         }
 
         /**
          * Mise à jour d'un mapping à partir d'un fichier JSON
          */
         function importMapping(mapping) {
-            uploadMapping(mapping.identifier)
-                .then(function (mapping) {
-                    afterSave(mapping, false);
-                    reload(mapping);
-                });
+            uploadMapping(mapping.identifier).then(function (mapping) {
+                afterSave(mapping, false);
+                reload(mapping);
+            });
         }
 
         /**
@@ -573,36 +586,34 @@
          * @param {any} libraryId si renseigné => création d'un nouveau mapping
          */
         function uploadMapping(mappingId, libraryId) {
-            return ModalSrvc.selectFile({ accept: ".json" })
-                .then(function (files) {
-                    var url = CONFIGURATION.numahop.url + 'api/rest/mapping';
-                    if (mappingId) {
-                        url += "/" + mappingId;
-                    }
+            return ModalSrvc.selectFile({ accept: '.json' }).then(function (files) {
+                var url = CONFIGURATION.numahop.url + 'api/rest/mapping';
+                if (mappingId) {
+                    url += '/' + mappingId;
+                }
 
-                    var formData = new FormData();
-                    formData.append("import", true);
+                var formData = new FormData();
+                formData.append('import', true);
 
-                    if (libraryId) {
-                        formData.append("library", libraryId);
-                    }
+                if (libraryId) {
+                    formData.append('library', libraryId);
+                }
 
-                    // Emplacement du/des fichiers à importer
-                    _.each(files, function (file) {
-                        formData.append("file", file);
-                    });
-
-                    var config = {
-                        transformRequest: angular.identity,
-                        headers: {
-                            'Content-Type': undefined
-                        }
-                    };
-                    return $http.post(url, formData, config)
-                        .then(function (response) {
-                            return response.data;
-                        });
+                // Emplacement du/des fichiers à importer
+                _.each(files, function (file) {
+                    formData.append('file', file);
                 });
+
+                var config = {
+                    transformRequest: angular.identity,
+                    headers: {
+                        'Content-Type': undefined,
+                    },
+                };
+                return $http.post(url, formData, config).then(function (response) {
+                    return response.data;
+                });
+            });
         }
     }
 })();

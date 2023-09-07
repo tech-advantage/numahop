@@ -1,14 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <!-- Changeset du module Document - Ajout colonnes selected_by_train et train_id -->
     <changeSet id="pgcn-document-30" author="progilone">
         
         <addColumn tableName="del_multi_lots_delivery">
             <column name="train_id" type="varchar(191)" />
-            <column name="selected_by_train" type="BOOLEAN" defaultValueBoolean="false"/>
+            <column name="selected_by_train" type="BOOLEAN" defaultValueBoolean="false" />
         </addColumn>
         
     </changeSet>

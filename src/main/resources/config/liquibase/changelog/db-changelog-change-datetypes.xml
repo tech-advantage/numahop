@@ -1,16 +1,18 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <changeSet id="pgcn-change-datetypes" author="progilone">
-        <modifyDataType tableName="del_delivery" columnName="reception_date" newDataType="date"></modifyDataType>
-        <modifyDataType tableName="del_delivery" columnName="deposit_date" newDataType="date"></modifyDataType>
-        <modifyDataType tableName="proj_project" columnName="start_date" newDataType="date"></modifyDataType>
-        <modifyDataType tableName="proj_project" columnName="forecast_end_date" newDataType="date"></modifyDataType>
-        <modifyDataType tableName="proj_project" columnName="real_end_date" newDataType="date"></modifyDataType>
-        <modifyDataType tableName="train_train" columnName="provider_sending_date" newDataType="date"></modifyDataType>
-        <modifyDataType tableName="train_train" columnName="return_date" newDataType="date"></modifyDataType>
+        <modifyDataType tableName="del_delivery" columnName="reception_date" newDataType="date" />
+        <modifyDataType tableName="del_delivery" columnName="deposit_date" newDataType="date" />
+        <modifyDataType tableName="proj_project" columnName="start_date" newDataType="date" />
+        <modifyDataType tableName="proj_project" columnName="forecast_end_date" newDataType="date" />
+        <modifyDataType tableName="proj_project" columnName="real_end_date" newDataType="date" />
+        <modifyDataType tableName="train_train" columnName="provider_sending_date" newDataType="date" />
+        <modifyDataType tableName="train_train" columnName="return_date" newDataType="date" />
     </changeSet>
 
 </databaseChangeLog>

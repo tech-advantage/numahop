@@ -2,8 +2,7 @@
     <div ng-class="labelclass || 'col-xs-4'" class="text-right" ng-if="label">
         <label uib-tooltip="{{tooltip}}">{{::label}}</label>
         <!-- Mandatory -->
-        <span class="text-danger cursor-help" 
-              uib-tooltip="{{ ::'Ce champ est obligatoire' | translate }}" ng-if="mandatory">*</span>
+        <span class="text-danger cursor-help" uib-tooltip="{{ ::'Ce champ est obligatoire' | translate }}" ng-if="mandatory">*</span>
     </div>
     <div class="model-container" ng-class="{true: (fieldclass || defaultcolsm) + ' has-error', false: (fieldclass || defaultcolsm) }[!!errMsg]">
         <div main-field></div>

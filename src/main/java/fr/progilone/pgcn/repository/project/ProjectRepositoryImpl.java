@@ -1,11 +1,11 @@
 package fr.progilone.pgcn.repository.project;
 
-import com.mysema.query.BooleanBuilder;
-import com.mysema.query.jpa.JPQLQuery;
-import com.mysema.query.jpa.impl.JPAQuery;
-import com.mysema.query.types.Order;
-import com.mysema.query.types.OrderSpecifier;
-import com.mysema.query.types.expr.BooleanExpression;
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import fr.progilone.pgcn.domain.library.QLibrary;
 import fr.progilone.pgcn.domain.lot.QLot;
 import fr.progilone.pgcn.domain.project.Project;
@@ -16,22 +16,22 @@ import fr.progilone.pgcn.domain.util.CustomUserDetails;
 import fr.progilone.pgcn.repository.project.helper.ProjectSearchBuilder;
 import fr.progilone.pgcn.repository.util.QueryDSLBuilderUtils;
 import fr.progilone.pgcn.security.SecurityUtils;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
 public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
 
-    @PersistenceContext
-    private EntityManager em;
+    private final JPAQueryFactory queryFactory;
+
+    public ProjectRepositoryImpl(final JPAQueryFactory queryFactory) {
+        this.queryFactory = queryFactory;
+    }
 
     @Override
     public Page<Project> search(final ProjectSearchBuilder searchBuilder, final Pageable pageable) {
@@ -72,24 +72,24 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
             // Prestataires
             if (currentUser.getCategory() == User.Category.PROVIDER) {
                 final BooleanExpression providerFilter =
-                    // prestataire sur le projet
-                    qProject.provider.identifier.eq(currentUser.getIdentifier())
-                                                // prestataire sur un lot du projet
-                                                .or(qLot.provider.identifier.eq(currentUser.getIdentifier()));
+                // prestataire sur le projet
+                                                       qProject.provider.identifier.eq(currentUser.getIdentifier())
+                                                                                   // prestataire sur un lot du projet
+                                                                                   .or(qLot.provider.identifier.eq(currentUser.getIdentifier()));
                 builder.and(providerFilter);
             }
             // Bibliothèques & intervenants
             searchBuilder.getLibraries().ifPresent(libraries -> {
                 builder.and(
-                    // bibliothèque du projet
-                    qProject.library.identifier.in(libraries)
-                                               // bibliothèque partenaire
-                                               .or(qAssociatedLibrary.identifier.in(libraries)
-                                                                                // pas d'intervenant défini
-                                                                                .and(qAssociatedUser.isNull()
-                                                                                                    // l'utilisateur fait partie des intervenants
-                                                                                                    .or(qAssociatedUser.identifier.contains(
-                                                                                                        currentUser.getIdentifier())))));
+                            // bibliothèque du projet
+                            qProject.library.identifier.in(libraries)
+                                                       // bibliothèque partenaire
+                                                       .or(qAssociatedLibrary.identifier.in(libraries)
+                                                                                        // pas d'intervenant défini
+                                                                                        .and(qAssociatedUser.isNull()
+                                                                                                            // l'utilisateur fait partie des
+                                                                                                            // intervenants
+                                                                                                            .or(qAssociatedUser.identifier.contains(currentUser.getIdentifier())))));
             });
         }
         // Intervalle de dates
@@ -100,46 +100,41 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
             builder.and(new BooleanBuilder().or(qProject.startDate.isNull()).or(qProject.startDate.before(to)));
         });
 
-        final JPQLQuery baseQuery = new JPAQuery(em);
-        final JPQLQuery countQuery = new JPAQuery(em);
+        final JPAQuery<Project> baseQuery = queryFactory.selectDistinct(qProject)
+                                                        .from(qProject)
+                                                        .leftJoin(qProject.library)
+                                                        .fetchJoin()
+                                                        .leftJoin(qProject.lots, qLot)
+                                                        .leftJoin(qProject.associatedLibraries, qAssociatedLibrary)
+                                                        .leftJoin(qProject.associatedUsers, qAssociatedUser)
+                                                        .where(builder)
+                                                        .orderBy(qProject.name.asc());
 
         if (pageable != null) {
             baseQuery.offset(pageable.getOffset()).limit(pageable.getPageSize());
             applySorting(pageable.getSort(), baseQuery, qProject);
         }
 
-        final List<String> projectsIdentifiers = countQuery.from(qProject)
-                                                           .leftJoin(qProject.library)
-                                                           .leftJoin(qProject.lots, qLot)
-                                                           .leftJoin(qProject.associatedLibraries, qAssociatedLibrary)
-                                                           .leftJoin(qProject.associatedUsers, qAssociatedUser)
-                                                           .groupBy(qProject.identifier)
-                                                           .where(builder.getValue())
-                                                           .distinct()
-                                                           .list(qProject.identifier);
-        final List<Project> result = baseQuery.from(qProject)
-                                              .leftJoin(qProject.library)
-                                              .fetch()
-                                              .leftJoin(qProject.lots, qLot)
-                                              .leftJoin(qProject.associatedLibraries, qAssociatedLibrary)
-                                              .leftJoin(qProject.associatedUsers, qAssociatedUser)
-                                              .where(builder.getValue())
-                                              .orderBy(qProject.name.asc())
-                                              .distinct()
-                                              .list(qProject);
-
-        final long total = projectsIdentifiers.size();
-        return new PageImpl<>(result, pageable, total);
+        final long total = queryFactory.select(qProject.countDistinct())
+                                       .from(qProject)
+                                       .leftJoin(qProject.library)
+                                       .leftJoin(qProject.lots, qLot)
+                                       .leftJoin(qProject.associatedLibraries, qAssociatedLibrary)
+                                       .leftJoin(qProject.associatedUsers, qAssociatedUser)
+                                       .where(builder)
+                                       .fetchOne();
+        return new PageImpl<>(baseQuery.fetch(), pageable, total);
     }
 
-    protected JPQLQuery applySorting(final Sort sort, final JPQLQuery query, final QProject qProject) {
+    protected JPAQuery<Project> applySorting(final Sort sort, final JPAQuery<Project> query, final QProject qProject) {
         if (sort == null) {
             return query;
         }
-        final List<OrderSpecifier> orders = new ArrayList<>();
+        final List<OrderSpecifier<?>> orders = new ArrayList<>();
 
         for (final Sort.Order order : sort) {
-            final Order qOrder = order.isAscending() ? Order.ASC : Order.DESC;
+            final Order qOrder = order.isAscending() ? Order.ASC
+                                                     : Order.DESC;
             if ("name".equals(order.getProperty())) {
                 orders.add(new OrderSpecifier<>(qOrder, qProject.name));
             }
@@ -169,6 +164,6 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
             builder.and(qProject.startDate.after(fromDate));
         }
         // Requête
-        return new JPAQuery(em).from(qProject).leftJoin(qProject.library, qLibrary).where(builder.getValue()).list(qProject);
+        return queryFactory.select(qProject).from(qProject).leftJoin(qProject.library, qLibrary).where(builder).fetch();
     }
 }

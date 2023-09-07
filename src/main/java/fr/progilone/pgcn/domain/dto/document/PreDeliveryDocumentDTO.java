@@ -1,8 +1,7 @@
 package fr.progilone.pgcn.domain.dto.document;
 
-import java.util.Set;
-
 import fr.progilone.pgcn.domain.dto.AbstractDTO;
+import java.util.Set;
 
 /**
  * Created by lebouchp on 19/01/2017.
@@ -20,9 +19,9 @@ public class PreDeliveryDocumentDTO extends AbstractDTO {
         this.pieces = pieces;
         this.metaDataFiles = metaDataFiles;
     }
-    
+
     public PreDeliveryDocumentDTO() {
-        
+
     }
 
     public String getDigitalId() {

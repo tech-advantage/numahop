@@ -1,23 +1,23 @@
 <div class="button-toggle">
     <!--<a class="link-toggle">-->
-        <!--<span class="glyphicon-regular show-lines"></span>-->
+    <!--<span class="glyphicon-regular show-lines"></span>-->
     <!--</a>-->
 </div>
 <ul id="menuRoot" class="nav nav-pills nav-stacked">
     <li sem-roles-allowed="DOC_UNIT_HAB0">
         <a data-toggle="dropdown" data-parent="#menuRoot" href="#menucataloging" onclick="event.preventDefault();" data-active-link="document">
-            <span class="menu-label" translate>Documents</span> <span class="glyphicon syrtis-icon-books-02 " tooltip-placement="auto right" uib-tooltip="{{::'Documents' | translate}}"></span>
+            <span class="menu-label" translate>Documents</span> <span class="glyphicon syrtis-icon-books-02" tooltip-placement="auto right" uib-tooltip="{{::'Documents' | translate}}"></span>
         </a>
         <ul id="menucataloging" class="dropdown-menu dropright">
-            <li class="dropdown-header">Gestion unitaire</li>
+            <li class="dropdown-header" translate>Gestion unitaire</li>
             <li><a href="#/document/docunit" translate>Unités documentaires</a></li>
             <li><a href="#/document/record" translate>Notices</a></li>
-            <li class="divider" sem-roles-allowed="DOC_UNIT_HAB2,COND_REPORT_HAB0"/>
-            <li class="dropdown-header" sem-roles-allowed="DOC_UNIT_HAB2,COND_REPORT_HAB0">Opérations groupées</li>
+            <li class="divider" sem-roles-allowed="DOC_UNIT_HAB2,COND_REPORT_HAB0" />
+            <li class="dropdown-header" sem-roles-allowed="DOC_UNIT_HAB2,COND_REPORT_HAB0" translate>Opérations groupées</li>
             <li><a href="#/document/docunit_list" sem-roles-allowed="DOC_UNIT_HAB2" translate>Unités documentaires</a></li>
             <li><a href="#/document/record_list" sem-roles-allowed="DOC_UNIT_HAB2" translate>Notices</a></li>
             <li><a href="#/document/condreport_list" sem-roles-allowed="COND_REPORT_HAB0" translate>Constats d'état</a></li>
-            <li class="divider" sem-roles-allowed="EXC_HAB0"/>
+            <li class="divider" sem-roles-allowed="EXC_HAB0" />
             <li><a href="#/document/import" sem-roles-allowed="EXC_HAB0" translate>Imports</a></li>
         </ul>
     </li>
@@ -41,14 +41,14 @@
             <span class="menu-label" translate>Projets</span> <span class="glyphicon syrtis-icon-books-01" tooltip-placement="auto right" uib-tooltip="{{::'Projets' | translate}}"></span>
         </a>
         <ul id="menuProjets" class="dropdown-menu dropright">
-            <li class="dropdown-header">Gestion unitaire</li>
+            <li class="dropdown-header" translate>Gestion unitaire</li>
             <li sem-roles-allowed="PROJ_HAB7,PROJ_HAB0"><a href="#/project/project" translate>Projets</a></li>
             <li sem-roles-allowed="LOT_HAB3"><a href="#/lot/lot" translate>Lots</a></li>
             <li sem-roles-allowed="TRA_HAB3"><a href="#/train/train" translate>Trains</a></li>
             <li sem-roles-allowed="DEL_HAB0, DEL_HAB2"><a href="#/delivery/delivery" translate>Livraisons</a></li>
             <li sem-roles-allowed="DEL_HAB0, DEL_HAB2"><a href="#/multilotsdelivery/multidelivery" translate>Livraisons multi-lots</a></li>
-            <li class="divider" sem-roles-allowed="LOT_HAB1"/>
-            <li class="dropdown-header" sem-roles-allowed="LOT_HAB1">Opérations groupées</li>
+            <li class="divider" sem-roles-allowed="LOT_HAB1" />
+            <li class="dropdown-header" sem-roles-allowed="LOT_HAB1" translate>Opérations groupées</li>
             <li><a href="#/lot/lot_list" sem-roles-allowed="LOT_HAB1" translate>Lots</a></li>
         </ul>
     </li>

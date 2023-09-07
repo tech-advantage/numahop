@@ -2,6 +2,27 @@ package fr.progilone.pgcn.web.rest.document;
 
 import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.*;
 
+import com.codahale.metrics.annotation.Timed;
+import fr.progilone.pgcn.domain.document.BibliographicRecord;
+import fr.progilone.pgcn.domain.document.DocUnit;
+import fr.progilone.pgcn.domain.dto.document.BibliographicRecordDTO;
+import fr.progilone.pgcn.domain.dto.document.BibliographicRecordDcDTO;
+import fr.progilone.pgcn.domain.dto.document.BibliographicRecordMassUpdateDTO;
+import fr.progilone.pgcn.domain.dto.document.SimpleBibliographicRecordDTO;
+import fr.progilone.pgcn.domain.dto.document.SimpleListBibliographicRecordDTO;
+import fr.progilone.pgcn.exception.PgcnException;
+import fr.progilone.pgcn.exception.PgcnLockException;
+import fr.progilone.pgcn.service.LockService;
+import fr.progilone.pgcn.service.document.BibliographicRecordService;
+import fr.progilone.pgcn.service.document.ui.UIBibliographicRecordService;
+import fr.progilone.pgcn.service.es.EsDocUnitService;
+import fr.progilone.pgcn.web.rest.AbstractRestController;
+import fr.progilone.pgcn.web.util.AccessHelper;
+import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
+import fr.progilone.pgcn.web.util.WorkflowAccessHelper;
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -9,11 +30,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -29,26 +45,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.codahale.metrics.annotation.Timed;
-
-import fr.progilone.pgcn.domain.document.BibliographicRecord;
-import fr.progilone.pgcn.domain.document.DocUnit;
-import fr.progilone.pgcn.domain.dto.document.BibliographicRecordDTO;
-import fr.progilone.pgcn.domain.dto.document.BibliographicRecordDcDTO;
-import fr.progilone.pgcn.domain.dto.document.BibliographicRecordMassUpdateDTO;
-import fr.progilone.pgcn.domain.dto.document.SimpleBibliographicRecordDTO;
-import fr.progilone.pgcn.domain.dto.document.SimpleListBibliographicRecordDTO;
-import fr.progilone.pgcn.exception.PgcnException;
-import fr.progilone.pgcn.exception.PgcnLockException;
-import fr.progilone.pgcn.service.LockService;
-import fr.progilone.pgcn.service.document.BibliographicRecordService;
-import fr.progilone.pgcn.service.document.ui.UIBibliographicRecordService;
-import fr.progilone.pgcn.service.es.EsBibliographicRecordService;
-import fr.progilone.pgcn.web.rest.AbstractRestController;
-import fr.progilone.pgcn.web.util.AccessHelper;
-import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
-import fr.progilone.pgcn.web.util.WorkflowAccessHelper;
-
 @RestController
 @RequestMapping(value = "/api/rest/bibliographicrecord")
 public class BibliographicRecordController extends AbstractRestController {
@@ -57,7 +53,7 @@ public class BibliographicRecordController extends AbstractRestController {
     private final LibraryAccesssHelper libraryAccesssHelper;
     private final BibliographicRecordService bibliographicRecordService;
     private final UIBibliographicRecordService uiBibliographicRecordService;
-    private final EsBibliographicRecordService esBibliographicRecordService;
+    private final EsDocUnitService esDocUnitService;
     private final LockService lockService;
     private final WorkflowAccessHelper workflowAccessHelper;
 
@@ -66,14 +62,14 @@ public class BibliographicRecordController extends AbstractRestController {
                                          final LibraryAccesssHelper libraryAccesssHelper,
                                          final BibliographicRecordService bibliographicRecordService,
                                          final UIBibliographicRecordService uiBibliographicRecordService,
-                                         final EsBibliographicRecordService esBibliographicRecordService,
+                                         final EsDocUnitService esDocUnitService,
                                          final LockService lockService,
                                          final WorkflowAccessHelper workflowAccessHelper) {
         this.accessHelper = accessHelper;
         this.libraryAccesssHelper = libraryAccesssHelper;
         this.uiBibliographicRecordService = uiBibliographicRecordService;
         this.bibliographicRecordService = bibliographicRecordService;
-        this.esBibliographicRecordService = esBibliographicRecordService;
+        this.esDocUnitService = esDocUnitService;
         this.lockService = lockService;
         this.workflowAccessHelper = workflowAccessHelper;
     }
@@ -83,7 +79,9 @@ public class BibliographicRecordController extends AbstractRestController {
     @RolesAllowed(DOC_UNIT_HAB1)
     public ResponseEntity<BibliographicRecordDTO> create(@RequestBody final BibliographicRecordDTO record) throws PgcnException {
         final BibliographicRecordDTO savedRecord = uiBibliographicRecordService.create(record);
-        esBibliographicRecordService.indexAsync(savedRecord.getIdentifier());
+        if (savedRecord.getDocUnit() != null) {
+            esDocUnitService.indexAsync(savedRecord.getDocUnit().getIdentifier());
+        }
         return new ResponseEntity<>(savedRecord, HttpStatus.CREATED);
     }
 
@@ -96,7 +94,9 @@ public class BibliographicRecordController extends AbstractRestController {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         final BibliographicRecordDTO record = uiBibliographicRecordService.duplicate(id);
-        esBibliographicRecordService.indexAsync(record.getIdentifier());
+        if (record.getDocUnit() != null) {
+            esDocUnitService.indexAsync(record.getDocUnit().getIdentifier());
+        }
         return new ResponseEntity<>(record, HttpStatus.CREATED);
     }
 
@@ -140,28 +140,21 @@ public class BibliographicRecordController extends AbstractRestController {
     @RolesAllowed({DOC_UNIT_HAB0})
     public ResponseEntity<Page<SimpleBibliographicRecordDTO>> search(final HttpServletRequest request,
                                                                      @RequestParam(value = "search", required = false) final String search,
-                                                                     @RequestParam(value = "libraries", required = false)
-                                                                     final List<String> libraries,
+                                                                     @RequestParam(value = "libraries", required = false) final List<String> libraries,
                                                                      @RequestParam(value = "projects", required = false) final List<String> projects,
                                                                      @RequestParam(value = "lots", required = false) final List<String> lots,
                                                                      @RequestParam(value = "statuses", required = false) final List<String> statuses,
-                                                                     @DateTimeFormat(pattern = "yyyy-MM-dd")
-                                                                     @RequestParam(value = "lastModifiedDateFrom", required = false)
-                                                                     final LocalDate lastModifiedDateFrom,
-                                                                     @DateTimeFormat(pattern = "yyyy-MM-dd")
-                                                                     @RequestParam(value = "lastModifiedDateTo", required = false)
-                                                                     final LocalDate lastModifiedDateTo,
-                                                                     @DateTimeFormat(pattern = "yyyy-MM-dd")
-                                                                     @RequestParam(value = "createdDateFrom", required = false)
-                                                                     final LocalDate createdDateFrom,
-                                                                     @DateTimeFormat(pattern = "yyyy-MM-dd")
-                                                                     @RequestParam(value = "createdDateTo", required = false)
-                                                                     final LocalDate createdDateTo,
+                                                                     @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "lastModifiedDateFrom",
+                                                                                                                           required = false) final LocalDate lastModifiedDateFrom,
+                                                                     @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "lastModifiedDateTo",
+                                                                                                                           required = false) final LocalDate lastModifiedDateTo,
+                                                                     @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "createdDateFrom",
+                                                                                                                           required = false) final LocalDate createdDateFrom,
+                                                                     @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "createdDateTo",
+                                                                                                                           required = false) final LocalDate createdDateTo,
                                                                      @RequestParam(value = "orphan", required = false) final Boolean orphan,
-                                                                     @RequestParam(value = "page", required = false, defaultValue = "0")
-                                                                     final Integer page,
-                                                                     @RequestParam(value = "size", required = false, defaultValue = "10")
-                                                                     final Integer size,
+                                                                     @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
+                                                                     @RequestParam(value = "size", required = false, defaultValue = "10") final Integer size,
                                                                      @RequestParam(value = "sorts", required = false) final List<String> sorts) {
         // Droits d'accès
         final List<String> filteredLibraries = libraryAccesssHelper.getLibraryFilter(request, libraries);
@@ -184,39 +177,26 @@ public class BibliographicRecordController extends AbstractRestController {
     @Timed
     @RolesAllowed({DOC_UNIT_HAB0})
     public ResponseEntity<Page<SimpleListBibliographicRecordDTO>> searchAsList(final HttpServletRequest request,
-                                                                               @RequestParam(value = "searchAsList", required = false)
-                                                                               final String search,
-                                                                               @RequestParam(value = "libraries", required = false)
-                                                                               final List<String> libraries,
-                                                                               @RequestParam(value = "projects", required = false)
-                                                                               final List<String> projects,
-                                                                               @RequestParam(value = "lots", required = false)
-                                                                               final List<String> lots,
-                                                                               @RequestParam(value = "statuses", required = false)
-                                                                                   final List<String> statuses,
-                                                                               @RequestParam(value = "trains", required = false)
-                                                                               final List<String> trains,
-                                                                               @DateTimeFormat(pattern = "yyyy-MM-dd")
-                                                                               @RequestParam(value = "lastModifiedDateFrom", required = false)
-                                                                               final LocalDate lastModifiedDateFrom,
-                                                                               @DateTimeFormat(pattern = "yyyy-MM-dd")
-                                                                               @RequestParam(value = "lastModifiedDateTo", required = false)
-                                                                               final LocalDate lastModifiedDateTo,
-                                                                               @DateTimeFormat(pattern = "yyyy-MM-dd")
-                                                                               @RequestParam(value = "createdDateFrom", required = false)
-                                                                               final LocalDate createdDateFrom,
-                                                                               @DateTimeFormat(pattern = "yyyy-MM-dd")
-                                                                               @RequestParam(value = "createdDateTo", required = false)
-                                                                               final LocalDate createdDateTo,
+                                                                               @RequestParam(value = "searchAsList", required = false) final String search,
+                                                                               @RequestParam(value = "libraries", required = false) final List<String> libraries,
+                                                                               @RequestParam(value = "projects", required = false) final List<String> projects,
+                                                                               @RequestParam(value = "lots", required = false) final List<String> lots,
+                                                                               @RequestParam(value = "statuses", required = false) final List<String> statuses,
+                                                                               @RequestParam(value = "trains", required = false) final List<String> trains,
+                                                                               @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "lastModifiedDateFrom",
+                                                                                                                                     required = false) final LocalDate lastModifiedDateFrom,
+                                                                               @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "lastModifiedDateTo",
+                                                                                                                                     required = false) final LocalDate lastModifiedDateTo,
+                                                                               @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "createdDateFrom",
+                                                                                                                                     required = false) final LocalDate createdDateFrom,
+                                                                               @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "createdDateTo",
+                                                                                                                                     required = false) final LocalDate createdDateTo,
                                                                                @RequestParam(value = "orphan", required = false) final Boolean orphan,
-                                                                               @RequestParam(value = "page", required = false, defaultValue = "0")
-                                                                               final Integer page,
+                                                                               @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
                                                                                @RequestParam(value = "size",
                                                                                              required = false,
-                                                                                             defaultValue = "" + Integer.MAX_VALUE)
-                                                                               final Integer size,
-                                                                               @RequestParam(value = "sorts", required = false)
-                                                                               final List<String> sorts) {
+                                                                                             defaultValue = "" + Integer.MAX_VALUE) final Integer size,
+                                                                               @RequestParam(value = "sorts", required = false) final List<String> sorts) {
         // Droits d'accès
         final List<String> filteredLibraries = libraryAccesssHelper.getLibraryFilter(request, libraries);
         return new ResponseEntity<>(uiBibliographicRecordService.searchAsList(search,
@@ -280,12 +260,10 @@ public class BibliographicRecordController extends AbstractRestController {
     @ResponseStatus(HttpStatus.OK)
     @Timed
     @RolesAllowed(DOC_UNIT_HAB2)
-    public ResponseEntity<BibliographicRecordDTO> update(final HttpServletRequest request, @RequestBody final BibliographicRecordDTO recordDTO) throws
-                                                                                                                                                PgcnException,
+    public ResponseEntity<BibliographicRecordDTO> update(final HttpServletRequest request, @RequestBody final BibliographicRecordDTO recordDTO) throws PgcnException,
                                                                                                                                                 PgcnLockException {
         // Droits d'accès
-        if (!accessHelper.checkBibliographicRecord(recordDTO.getIdentifier()) 
-                || !libraryAccesssHelper.checkLibrary(request, recordDTO.getLibrary().getIdentifier())) {
+        if (!accessHelper.checkBibliographicRecord(recordDTO.getIdentifier()) || !libraryAccesssHelper.checkLibrary(request, recordDTO.getLibrary().getIdentifier())) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         final BibliographicRecord record = bibliographicRecordService.getOne(recordDTO.getIdentifier());
@@ -299,7 +277,9 @@ public class BibliographicRecordController extends AbstractRestController {
 
         // Mise à jour
         final BibliographicRecordDTO savedRecord = uiBibliographicRecordService.update(recordDTO);
-        esBibliographicRecordService.indexAsync(savedRecord.getIdentifier());
+        if (savedRecord.getDocUnit() != null) {
+            esDocUnitService.indexAsync(savedRecord.getDocUnit().getIdentifier());
+        }
         return new ResponseEntity<>(savedRecord, HttpStatus.OK);
     }
 
@@ -315,7 +295,7 @@ public class BibliographicRecordController extends AbstractRestController {
 
         updates.setRecordIds(filteredByWorkflow.stream().map(BibliographicRecord::getIdentifier).collect(Collectors.toList()));
         final List<BibliographicRecord> savedRecords = bibliographicRecordService.update(updates);
-        esBibliographicRecordService.indexAsync(savedRecords.stream().map(BibliographicRecord::getIdentifier).collect(Collectors.toList()));
+        esDocUnitService.indexAsync(savedRecords.stream().map(BibliographicRecord::getDocUnit).map(DocUnit::getIdentifier).collect(Collectors.toList()));
     }
 
     @RequestMapping(value = "/{identifier}", method = RequestMethod.GET, params = {"lock"})
@@ -353,7 +333,7 @@ public class BibliographicRecordController extends AbstractRestController {
         }
         lockService.releaseLock(record);
     }
-    
+
     /**
      * Filtrage d'une liste de LotDTO sur les droits d'accès de l'utilisateur.
      *

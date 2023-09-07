@@ -9,7 +9,9 @@ import fr.progilone.pgcn.service.train.mapper.SimpleTrainMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
-@Mapper(uses = {ProjectMapper.class, SimpleTrainMapper.class, SimpleDocUnitMapper.class})
+@Mapper(uses = {ProjectMapper.class,
+                SimpleTrainMapper.class,
+                SimpleDocUnitMapper.class})
 public interface PhysicalDocumentMapper {
 
     PhysicalDocumentMapper INSTANCE = Mappers.getMapper(PhysicalDocumentMapper.class);

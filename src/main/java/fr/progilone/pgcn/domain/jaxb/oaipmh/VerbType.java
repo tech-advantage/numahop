@@ -5,19 +5,20 @@
 // Généré le : 2018.08.13 à 01:08:19 PM CEST
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.oaipmh;
 
-import javax.xml.bind.annotation.XmlEnum;
-import javax.xml.bind.annotation.XmlEnumValue;
-import javax.xml.bind.annotation.XmlType;
-
+import jakarta.xml.bind.annotation.XmlEnum;
+import jakarta.xml.bind.annotation.XmlEnumValue;
+import jakarta.xml.bind.annotation.XmlType;
 
 /**
- * <p>Classe Java pour verbType.
- *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  * <p>
+ * Classe Java pour verbType.
+ *
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ *
  * <pre>
  * &lt;simpleType name="verbType">
  *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
@@ -48,6 +49,7 @@ public enum VerbType {
     LIST_IDENTIFIERS("ListIdentifiers"),
     @XmlEnumValue("ListRecords")
     LIST_RECORDS("ListRecords");
+
     private final String value;
 
     VerbType(String v) {
@@ -59,7 +61,7 @@ public enum VerbType {
     }
 
     public static VerbType fromValue(String v) {
-        for (VerbType c: VerbType.values()) {
+        for (VerbType c : VerbType.values()) {
             if (c.value.equals(v)) {
                 return c;
             }

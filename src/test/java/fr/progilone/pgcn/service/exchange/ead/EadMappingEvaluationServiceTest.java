@@ -1,40 +1,39 @@
 package fr.progilone.pgcn.service.exchange.ead;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
+
 import fr.progilone.pgcn.config.ScriptEngineConfiguration;
 import fr.progilone.pgcn.domain.exchange.Mapping;
 import fr.progilone.pgcn.domain.exchange.MappingRule;
 import fr.progilone.pgcn.domain.jaxb.ead.Unitid;
 import fr.progilone.pgcn.service.administration.TransliterationService;
 import fr.progilone.pgcn.service.exchange.ead.mapping.CompiledMapping;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
-
-import javax.script.ScriptEngine;
-import javax.script.ScriptException;
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.when;
+import javax.script.ScriptEngine;
+import javax.script.ScriptException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Created by Sébastien on 17/05/2017.
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class EadMappingEvaluationServiceTest {
 
     // on ne mock pas le moteur de script, on utilise sa configuration réelle dans l'application
     private static final ScriptEngine SCRIPT_ENGINE = new ScriptEngineConfiguration().getGroovyScriptEngine();
-    //    private static final ScriptEngine SCRIPT_ENGINE = new GroovyScriptEngineImpl();
+    // private static final ScriptEngine SCRIPT_ENGINE = new GroovyScriptEngineImpl();
 
     @Mock
     private TransliterationService transliterationService;
     private EadMappingEvaluationService service;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         service = new EadMappingEvaluationService(SCRIPT_ENGINE, transliterationService);
     }

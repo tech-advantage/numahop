@@ -2,8 +2,8 @@
     <div ng-class="labelclass || 'col-xs-4'" class="text-right" ng-if="label">
         <label uib-tooltip="{{tooltip}}">{{::label}}</label>
     </div>
-	<div class="model-container" ng-class="{true: (fieldclass || defaultcolsm) + ' has-error', false: (fieldclass || defaultcolsm) }[!!errMsg]">
-		<textarea main-field class="form-control" ng-model="model" ng-readonly="readonly" placeholder="{{placeholder}}"></textarea>
-		<div class="help-block" ng-show="errMsg" ng-bind-html="errMsg"></div>
-	</div>
+    <div class="model-container" ng-class="{true: (fieldclass || defaultcolsm) + ' has-error', false: (fieldclass || defaultcolsm) }[!!errMsg]">
+        <textarea main-field class="form-control" ng-model="model" ng-readonly="readonly" placeholder="{{placeholder}}"></textarea>
+        <div class="help-block" ng-show="errMsg" ng-bind-html="errMsg"></div>
+    </div>
 </div>

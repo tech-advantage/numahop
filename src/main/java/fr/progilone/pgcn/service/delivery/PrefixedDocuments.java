@@ -1,11 +1,10 @@
 package fr.progilone.pgcn.service.delivery;
 
+import fr.progilone.pgcn.domain.document.DigitalDocument;
+import fr.progilone.pgcn.domain.document.PhysicalDocument;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
-import fr.progilone.pgcn.domain.document.DigitalDocument;
-import fr.progilone.pgcn.domain.document.PhysicalDocument;
 
 /**
  * Liste des données associées à un préfixe pour une livraison :
@@ -14,8 +13,9 @@ import fr.progilone.pgcn.domain.document.PhysicalDocument;
  * <li>document physique associé (FIXME : un pour l'instant ?)</li>
  * <li>document numérique associé (FIXME : un pour l'instant ?)</li>
  * </ul>
+ *
  * @author jbrunet
- * Créé le 27 mars 2017
+ *         Créé le 27 mars 2017
  */
 public class PrefixedDocuments {
 
@@ -28,7 +28,9 @@ public class PrefixedDocuments {
         this.physicalDocuments = physicalDocuments;
         this.digitalDocuments = digitalDocuments;
     }
-    public PrefixedDocuments() {}
+
+    public PrefixedDocuments() {
+    }
 
     public List<File> getFiles() {
         return files;
@@ -36,13 +38,13 @@ public class PrefixedDocuments {
 
     public void setFiles(List<File> files) {
         this.files.clear();
-        if(files != null) {
+        if (files != null) {
             files.forEach(this::addFile);
         }
     }
-    
+
     public void addFile(File file) {
-        if(file != null) {
+        if (file != null) {
             files.add(file);
         }
     }
@@ -53,13 +55,13 @@ public class PrefixedDocuments {
 
     public void setPhysicalDocuments(List<PhysicalDocument> physicalDocuments) {
         this.physicalDocuments.clear();
-        if(physicalDocuments != null) {
+        if (physicalDocuments != null) {
             physicalDocuments.forEach(this::addPhysicalDocument);
         }
     }
-    
+
     public void addPhysicalDocument(PhysicalDocument doc) {
-        if(doc != null) {
+        if (doc != null) {
             physicalDocuments.add(doc);
         }
     }
@@ -70,15 +72,15 @@ public class PrefixedDocuments {
 
     public void setDigitalDocuments(List<DigitalDocument> digitalDocuments) {
         this.digitalDocuments.clear();
-        if(digitalDocuments != null) {
+        if (digitalDocuments != null) {
             digitalDocuments.forEach(this::addDigitalDocument);
         }
     }
-    
+
     public void addDigitalDocument(DigitalDocument doc) {
-        if(doc != null) {
+        if (doc != null) {
             digitalDocuments.add(doc);
         }
     }
-    
+
 }

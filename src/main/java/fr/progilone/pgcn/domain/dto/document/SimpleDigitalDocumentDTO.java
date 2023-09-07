@@ -1,13 +1,11 @@
 package fr.progilone.pgcn.domain.dto.document;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-
 import fr.progilone.pgcn.domain.document.DigitalDocument;
 import fr.progilone.pgcn.domain.dto.AbstractDTO;
 import fr.progilone.pgcn.domain.dto.check.AutomaticCheckResultDTO;
-
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 public class SimpleDigitalDocumentDTO extends AbstractDTO implements Comparable<SimpleDigitalDocumentDTO> {
 
@@ -74,8 +72,8 @@ public class SimpleDigitalDocumentDTO extends AbstractDTO implements Comparable<
     }
 
     public List<SimpleDeliveredDigitalDocDTO> getDeliveries() {
-       deliveries.sort(Collections.reverseOrder());
-       return deliveries;
+        deliveries.sort(Collections.reverseOrder());
+        return deliveries;
     }
 
     public void setDeliveries(final List<SimpleDeliveredDigitalDocDTO> deliveries) {

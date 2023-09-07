@@ -1,5 +1,7 @@
 package fr.progilone.pgcn.service.storage;
 
+import fr.progilone.pgcn.exception.PgcnTechnicalException;
+import jakarta.annotation.PostConstruct;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -11,15 +13,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-
-import javax.annotation.PostConstruct;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
-import fr.progilone.pgcn.exception.PgcnTechnicalException;
 
 @Service
 public class TesseractService {
@@ -54,9 +51,7 @@ public class TesseractService {
             builder.redirectErrorStream(true);
             final Process process = builder.start();
 
-            try (final InputStream is = process.getInputStream();
-                 final InputStreamReader isr = new InputStreamReader(is);
-                 final BufferedReader br = new BufferedReader(isr)) {
+            try (final InputStream is = process.getInputStream(); final InputStreamReader isr = new InputStreamReader(is); final BufferedReader br = new BufferedReader(isr)) {
 
                 String line;
                 final StringBuilder sb = new StringBuilder();
@@ -118,10 +113,17 @@ public class TesseractService {
 
             LOG.debug("Lancement de l'OCRisation pour le fichier {}", imgFile.getName());
 
-            final ProcessBuilder builder =
-                new ProcessBuilder(tessProcessPath, imgFile.getAbsolutePath(), outPath, "-l", language, "pdf", generateHocr ? "hocr" : "");
+            final ProcessBuilder builder = new ProcessBuilder(tessProcessPath,
+                                                              imgFile.getAbsolutePath(),
+                                                              outPath,
+                                                              "-l",
+                                                              language,
+                                                              "pdf",
+                                                              generateHocr ? "hocr"
+                                                                           : "");
 
-            final String outputName = parentDirectory + File.separatorChar + prefix;
+            final String outputName = parentDirectory + File.separatorChar
+                                      + prefix;
 
             builder.redirectError(Redirect.INHERIT);
             builder.redirectOutput(Redirect.INHERIT);
@@ -132,7 +134,8 @@ public class TesseractService {
                     // only if the size is not null
 
                     final File pdfFile = new File(outputName + ".pdf");
-                    if (pdfFile.exists() && pdfFile.canRead() && pdfFile.length() > 0L) {
+                    if (pdfFile.exists() && pdfFile.canRead()
+                        && pdfFile.length() > 0L) {
                         pdfs.add(pdfFile);
 
                         LOG.debug("fichier pdf genere : {}", pdfFile.getName());

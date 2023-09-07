@@ -1,48 +1,43 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('ProjectStateEditWidgetCtrl', ProjectStateEditWidgetCtrl);
+    angular.module('numaHopApp.controller').controller('ProjectStateEditWidgetCtrl', ProjectStateEditWidgetCtrl);
 
     function ProjectStateEditWidgetCtrl($q, config, gettextCatalog, LibrarySrvc, ProjectSrvc) {
-
         var mainCtrl = this;
         mainCtrl.isConfigured = isConfigured;
 
         mainCtrl.options = {
             libraries: {
-                text: "name",
-                placeholder: gettextCatalog.getString("Bibliothèque"),
-                trackby: "identifier",
+                text: 'name',
+                placeholder: gettextCatalog.getString('Bibliothèque'),
+                trackby: 'identifier',
                 // Chargement avec mise en cache du résultat
                 refresh: function ($select) {
                     if (!mainCtrl.options.libraries.data) {
                         mainCtrl.options.libraries.data = LibrarySrvc.query({ dto: true });
-                        return mainCtrl.options.libraries.data.$promise
-                            .then(function (lib) {
-                                return _.map(lib, function (l) {
-                                    return _.pick(l, "identifier", "name");
-                                });
+                        return mainCtrl.options.libraries.data.$promise.then(function (lib) {
+                            return _.map(lib, function (l) {
+                                return _.pick(l, 'identifier', 'name');
                             });
-                    }
-                    else {
+                        });
+                    } else {
                         return $q.when(mainCtrl.options.libraries.data);
                     }
                 },
                 'refresh-delay': 0, // pas de refresh-delay, car on lit les données en cache après le 1er chargement
                 'allow-clear': true,
-                multiple: true
+                multiple: true,
             },
             status: {
-                text: "label",
-                placeholder: gettextCatalog.getString("Statut"),
-                trackby: "identifier",
+                text: 'label',
+                placeholder: gettextCatalog.getString('Statut'),
+                trackby: 'identifier',
                 data: getStatus(),
                 multiple: true,
-                'allow-clear': true
-            }
+                'allow-clear': true,
+            },
         };
-
 
         init();
 
@@ -67,7 +62,7 @@
                 .map(function (p) {
                     return {
                         identifier: p[0],
-                        label: p[1]
+                        label: p[1],
                     };
                 })
                 .value();

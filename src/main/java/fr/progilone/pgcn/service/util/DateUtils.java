@@ -1,10 +1,6 @@
 package fr.progilone.pgcn.service.util;
 
 import com.fasterxml.jackson.databind.util.ISO8601Utils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
@@ -15,9 +11,13 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalUnit;
 import java.util.Date;
 import java.util.Objects;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Classe pour convertir des dates java.util.date en date java.time (java 8) et inversement
@@ -26,8 +26,11 @@ public final class DateUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(DateUtils.class);
 
-    private static final Separator[] dateSeparators =
-        {new Separator("/"), new Separator("-"), new Separator(".", "\\."), new Separator(" "), new Separator("")};
+    private static final Separator[] dateSeparators = {new Separator("/"),
+                                                       new Separator("-"),
+                                                       new Separator(".", "\\."),
+                                                       new Separator(" "),
+                                                       new Separator("")};
     private static final String DAY_PATTERN = "([0][1-9]|[1-2][0-9]|[3][0-1])";
     private static final String MONTH_PATTERN = "([0][1-9]|[1][0-2])";
 
@@ -36,7 +39,7 @@ public final class DateUtils {
 
     /**
      * @param date
-     *         une date de type java.time.LocalDate
+     *            une date de type java.time.LocalDate
      * @return Retourne une date de type java.util.Date
      */
     public static Date convertToDate(final LocalDate date) {
@@ -48,7 +51,7 @@ public final class DateUtils {
 
     /**
      * @param datetime
-     *         une date de type java.time.LocalDate
+     *            une date de type java.time.LocalDate
      * @return Retourne une date de type java.util.Date
      */
     public static Date convertToDate(final LocalDateTime datetime) {
@@ -60,7 +63,7 @@ public final class DateUtils {
 
     /**
      * @param date
-     *         une date de type java.util.Date
+     *            une date de type java.util.Date
      * @return Retourne une date de type java.time.LocalDate
      */
     public static LocalDate convertToLocalDate(final Date date) {
@@ -76,7 +79,7 @@ public final class DateUtils {
 
     /**
      * @param date
-     *         une date de type java.util.Date
+     *            une date de type java.util.Date
      * @return Retourne une date de type java.time.LocalDateTime
      */
     public static LocalDateTime convertToLocalDateTime(final Date date) {
@@ -93,7 +96,7 @@ public final class DateUtils {
      * @param start
      * @param end
      * @param unit
-     *         (valeur par défaut ChronoUnit.DAYS)
+     *            (valeur par défaut ChronoUnit.DAYS)
      * @return long
      */
     public static long getDuration(final Date start, final Date end, TemporalUnit unit) {
@@ -133,11 +136,11 @@ public final class DateUtils {
      * Vérifie si une date est contenue dans [start, end[
      *
      * @param date
-     *         la date
+     *            la date
      * @param start
-     *         borne inférieure, incluse
+     *            borne inférieure, incluse
      * @param end
-     *         borne supérieure, exclue
+     *            borne supérieure, exclue
      * @return boolean
      */
     public static boolean isBetween(final Date date, final Date start, final Date end, final boolean includeStart, final boolean includeEnd) {
@@ -147,10 +150,12 @@ public final class DateUtils {
             boolean check = true;
 
             if (start != null) {
-                check = includeStart ? !start.after(date) : start.before(date);
+                check = includeStart ? !start.after(date)
+                                     : start.before(date);
             }
             if (end != null) {
-                check = check && (includeEnd ? !end.before(date) : end.after(date));
+                check = check && (includeEnd ? !end.before(date)
+                                             : end.after(date));
             }
             return check;
         }
@@ -160,13 +165,13 @@ public final class DateUtils {
      * Vérifie si une date est contenue dans ]start, end[ ou dans [start, end]
      *
      * @param date
-     *         date, null retourne false
+     *            date, null retourne false
      * @param start
-     *         borne inférieure, peut être null, considéré comme -infini
+     *            borne inférieure, peut être null, considéré comme -infini
      * @param end
-     *         borne supérieure, peut être null, considéré comme +infini
+     *            borne supérieure, peut être null, considéré comme +infini
      * @param inclusive
-     *         si les bornes sont considérés comme valables, ie l'intervalle est [start, end] et non plus ]start, end[
+     *            si les bornes sont considérés comme valables, ie l'intervalle est [start, end] et non plus ]start, end[
      * @return
      */
     public static boolean isBetween(final LocalDate date, LocalDate start, LocalDate end, final boolean inclusive) {
@@ -179,20 +184,21 @@ public final class DateUtils {
         if (end == null) {
             end = LocalDate.MAX;
         }
-        return inclusive ? !date.isBefore(start) && !date.isAfter(end) : date.isAfter(start) && date.isBefore(end);
+        return inclusive ? !date.isBefore(start) && !date.isAfter(end)
+                         : date.isAfter(start) && date.isBefore(end);
     }
 
     /**
      * Vérifie si une datetime est contenue dans ]start, end[ ou dans [start, end]
      *
      * @param datetime
-     *         date, null retourne false
+     *            date, null retourne false
      * @param start
-     *         borne inférieure, peut être null, considéré comme -infini
+     *            borne inférieure, peut être null, considéré comme -infini
      * @param end
-     *         borne supérieure, peut être null, considéré comme +infini
+     *            borne supérieure, peut être null, considéré comme +infini
      * @param inclusive
-     *         si les bornes sont considérés comme valables, ie l'intervalle est [start, end] et non plus ]start, end[
+     *            si les bornes sont considérés comme valables, ie l'intervalle est [start, end] et non plus ]start, end[
      * @return
      */
     public static boolean isBetween(final LocalDateTime datetime, LocalDateTime start, LocalDateTime end, final boolean inclusive) {
@@ -205,7 +211,8 @@ public final class DateUtils {
         if (end == null) {
             end = LocalDateTime.MAX;
         }
-        return inclusive ? !datetime.isBefore(start) && !datetime.isAfter(end) : datetime.isAfter(start) && datetime.isBefore(end);
+        return inclusive ? !datetime.isBefore(start) && !datetime.isAfter(end)
+                         : datetime.isAfter(start) && datetime.isBefore(end);
     }
 
     /**
@@ -237,6 +244,17 @@ public final class DateUtils {
             return null;
         } else {
             return DateTimeFormatter.ofPattern(format).format(date);
+        }
+    }
+
+    /**
+     * Formattage d'une {@link LocalDate}
+     */
+    public static String formatDateToIsoString(final TemporalAccessor date) {
+        if (date == null) {
+            return null;
+        } else {
+            return DateTimeFormatter.ISO_DATE.format(date);
         }
     }
 
@@ -320,8 +338,7 @@ public final class DateUtils {
         for (final Separator sep : dateSeparators) {
             for (final DateFormat df : DateFormat.values()) {
                 if (date.matches(replaceSeparator(df.template, sep.regexSeparator))) {
-                    return new DateAndFormat(replaceSeparator(date + df.complement, sep.dateSeparator),
-                                             replaceSeparator(df.format, sep.dateSeparator));
+                    return new DateAndFormat(replaceSeparator(date + df.complement, sep.dateSeparator), replaceSeparator(df.format, sep.dateSeparator));
                 }
             }
         }
@@ -396,15 +413,27 @@ public final class DateUtils {
         /**
          * YYYY/MM/DD
          */
-        YMD("yyyy{sep}MM{sep}dd", "\\d{4}{sep}" + MONTH_PATTERN + "{sep}" + DAY_PATTERN, ""),
+        YMD("yyyy{sep}MM{sep}dd",
+            "\\d{4}{sep}" + MONTH_PATTERN
+                                  + "{sep}"
+                                  + DAY_PATTERN,
+            ""),
         /**
          * DD/MM/YYYY
          */
-        DMY("dd{sep}MM{sep}yyyy", DAY_PATTERN + "{sep}" + MONTH_PATTERN + "{sep}\\d{4}", ""),
+        DMY("dd{sep}MM{sep}yyyy",
+            DAY_PATTERN + "{sep}"
+                                  + MONTH_PATTERN
+                                  + "{sep}\\d{4}",
+            ""),
         /**
          * YYYY/DD/MM
          */
-        YDM("yyyy{sep}dd{sep}MM", "\\d{4}{sep}" + DAY_PATTERN + "{sep}" + MONTH_PATTERN, ""),
+        YDM("yyyy{sep}dd{sep}MM",
+            "\\d{4}{sep}" + DAY_PATTERN
+                                  + "{sep}"
+                                  + MONTH_PATTERN,
+            ""),
         /**
          * YYYY/MM
          */
@@ -430,6 +459,7 @@ public final class DateUtils {
     }
 
     private static final class DateAndFormat {
+
         private final String date;
         private final String format;
 
@@ -440,6 +470,7 @@ public final class DateUtils {
     }
 
     private static final class Separator {
+
         private final String dateSeparator;
         private final String regexSeparator;
 

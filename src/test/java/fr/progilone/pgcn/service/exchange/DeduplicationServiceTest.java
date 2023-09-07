@@ -1,24 +1,24 @@
 package fr.progilone.pgcn.service.exchange;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.when;
+
 import fr.progilone.pgcn.domain.document.BibliographicRecord;
 import fr.progilone.pgcn.domain.document.DocProperty;
 import fr.progilone.pgcn.domain.document.DocPropertyType;
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.repository.document.DocUnitRepository;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class DeduplicationServiceTest {
 
     @Mock
@@ -26,7 +26,7 @@ public class DeduplicationServiceTest {
 
     private DeduplicationService service;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         service = new DeduplicationService(docUnitRepository);
     }
@@ -51,11 +51,9 @@ public class DeduplicationServiceTest {
 
         final DocUnit duplDocUnit2 = new DocUnit();
         duplDocUnit2.setIdentifier("30e62d6b-cfd2-4c02-80e6-879a2aa1ad31");
-    
+
         when(docUnitRepository.getOneByPgcnIdAndState(docUnit.getPgcnId(), DocUnit.State.AVAILABLE)).thenReturn(duplDocUnit);
-        when(docUnitRepository.searchDuplicates(eq(docUnit),
-                                                anyListOf(String.class),
-                                                eq(DocUnit.State.AVAILABLE))).thenReturn(Collections.singletonList(duplDocUnit2));
+        when(docUnitRepository.searchDuplicates(eq(docUnit), any(), eq(DocUnit.State.AVAILABLE))).thenReturn(Collections.singletonList(duplDocUnit2));
 
         final Collection<DocUnit> actual = service.lookupDuplicates(docUnit);
 

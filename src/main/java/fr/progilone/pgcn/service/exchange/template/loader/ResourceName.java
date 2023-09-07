@@ -31,7 +31,8 @@ public class ResourceName {
                 this.libraryId = resourceName.substring(idx + 1);
             }
         } catch (IllegalArgumentException e) {
-            final String message = "Le nom " + resourceName + " ne correspond à aucun template.";
+            final String message = "Le nom " + resourceName
+                                   + " ne correspond à aucun template.";
             LOG.debug(message);
             throw new ResourceNotFoundException(message);
         }

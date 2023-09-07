@@ -1,5 +1,12 @@
 package fr.progilone.pgcn.web.rest.administration;
 
+import static fr.progilone.pgcn.util.SecurityRequestPostProcessors.roles;
+import static fr.progilone.pgcn.web.rest.administration.security.AuthorizationConstants.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 import fr.progilone.pgcn.domain.administration.MailboxConfiguration;
 import fr.progilone.pgcn.domain.dto.administration.MailboxConfigurationDTO;
 import fr.progilone.pgcn.domain.dto.library.SimpleLibraryDTO;
@@ -9,38 +16,26 @@ import fr.progilone.pgcn.util.TestConverterFactory;
 import fr.progilone.pgcn.util.TestUtil;
 import fr.progilone.pgcn.web.util.AccessHelper;
 import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import jakarta.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.internal.stubbing.answers.ReturnsArgumentAt;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.format.support.DefaultFormattingConversionService;
 import org.springframework.format.support.FormattingConversionService;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
-
-import static fr.progilone.pgcn.util.SecurityRequestPostProcessors.*;
-import static fr.progilone.pgcn.web.rest.administration.security.AuthorizationConstants.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyCollectionOf;
-import static org.mockito.Mockito.anyListOf;
-import static org.mockito.Mockito.anyVararg;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.isNull;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 /**
  * Created by Sebastien on 30/12/2016.
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class MailboxConfigurationControllerTest {
 
     @Mock
@@ -54,32 +49,27 @@ public class MailboxConfigurationControllerTest {
 
     private final RequestPostProcessor allPermissions = roles(SFTP_HAB0, SFTP_HAB1, SFTP_HAB2);
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
-        final MailboxConfigurationController controller =
-            new MailboxConfigurationController(mailboxConfigurationService, accessHelper, libraryAccesssHelper);
+        final MailboxConfigurationController controller = new MailboxConfigurationController(mailboxConfigurationService, accessHelper, libraryAccesssHelper);
 
         final FormattingConversionService convService = new DefaultFormattingConversionService();
         convService.addConverter(String.class, Library.class, TestConverterFactory.getConverter(Library.class));
         this.restMockMvc = MockMvcBuilders.standaloneSetup(controller).setConversionService(convService).build();
 
-        when(libraryAccesssHelper.checkLibrary(any(HttpServletRequest.class), any(), any(), anyVararg())).thenReturn(true);
-        when(libraryAccesssHelper.checkLibrary(any(HttpServletRequest.class), any(Library.class))).thenReturn(true);
-        when(libraryAccesssHelper.filterObjectsByLibrary(any(HttpServletRequest.class),
-                                                         anyCollectionOf(MailboxConfiguration.class),
-                                                         any())).thenAnswer(new ReturnsArgumentAt(1));
     }
 
     @Test
     public void testCreate() throws Exception {
         final MailboxConfiguration cConfigurationMail = getCConfigurationMail("ABCD-1234");
         when(mailboxConfigurationService.save(any(MailboxConfiguration.class))).thenReturn(cConfigurationMail);
+        when(libraryAccesssHelper.checkLibrary(any(HttpServletRequest.class), any(), any(), any())).thenReturn(true);
 
-        this.restMockMvc.perform(post("/api/rest/conf_mail").contentType(TestUtil.APPLICATION_JSON_UTF8)
+        this.restMockMvc.perform(post("/api/rest/conf_mail").contentType(MediaType.APPLICATION_JSON)
                                                             .content(TestUtil.convertObjectToJsonBytes(cConfigurationMail))
                                                             .with(allPermissions))
                         .andExpect(status().isCreated())
-                        .andExpect(content().contentType(TestUtil.APPLICATION_JSON_UTF8))
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andExpect(jsonPath("identifier").value(cConfigurationMail.getIdentifier()))
                         .andExpect(jsonPath("label").value(cConfigurationMail.getLabel()))
                         .andExpect(jsonPath("library.identifier").value(cConfigurationMail.getLibrary().getIdentifier()));
@@ -90,11 +80,12 @@ public class MailboxConfigurationControllerTest {
         final MailboxConfiguration cConfigurationMail = getCConfigurationMail("ABCD-1235");
         final String identifier = cConfigurationMail.getIdentifier();
 
+        when(libraryAccesssHelper.checkLibrary(any(HttpServletRequest.class), any(), any(), any())).thenReturn(true);
+
         when(mailboxConfigurationService.findOne(cConfigurationMail.getIdentifier())).thenReturn(cConfigurationMail);
 
         // test delete
-        this.restMockMvc.perform(delete("/api/rest/conf_mail/{id}", identifier).contentType(TestUtil.APPLICATION_JSON_UTF8).with(allPermissions))
-                        .andExpect(status().isOk());
+        this.restMockMvc.perform(delete("/api/rest/conf_mail/{id}", identifier).contentType(MediaType.APPLICATION_JSON).with(allPermissions)).andExpect(status().isOk());
 
         verify(mailboxConfigurationService).delete(identifier);
     }
@@ -105,11 +96,12 @@ public class MailboxConfigurationControllerTest {
         configurationMails.add(getSimpleMappingDto("ABCD-1236"));
 
         when(mailboxConfigurationService.search(null, null, true)).thenReturn(configurationMails);
+        when(libraryAccesssHelper.filterObjectsByLibrary(any(HttpServletRequest.class), any(), any())).thenAnswer(new ReturnsArgumentAt(1));
 
         // test findAllActive
-        this.restMockMvc.perform(get("/api/rest/conf_mail").accept(TestUtil.APPLICATION_JSON_UTF8).with(allPermissions))
+        this.restMockMvc.perform(get("/api/rest/conf_mail").accept(MediaType.APPLICATION_JSON).with(allPermissions))
                         .andExpect(status().isOk())
-                        .andExpect(content().contentType(TestUtil.APPLICATION_JSON_UTF8))
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andExpect(jsonPath("$[0].identifier").value(configurationMails.iterator().next().getIdentifier()));
     }
 
@@ -118,17 +110,18 @@ public class MailboxConfigurationControllerTest {
         final List<MailboxConfigurationDTO> configurationMails = new ArrayList<>();
         final MailboxConfigurationDTO cConfigurationMail = getSimpleMappingDto("ABCD-1237");
         configurationMails.add(cConfigurationMail);
-        Library library = new Library();
+        final Library library = new Library();
         library.setIdentifier(cConfigurationMail.getLibrary().getIdentifier());
 
-        when(mailboxConfigurationService.search(isNull(String.class), anyListOf(String.class), eq(true))).thenReturn(configurationMails);
+        when(mailboxConfigurationService.search(isNull(), any(), eq(true))).thenReturn(configurationMails);
+        when(libraryAccesssHelper.filterObjectsByLibrary(any(HttpServletRequest.class), any(), any())).thenAnswer(new ReturnsArgumentAt(1));
 
         // test findAllActive
         this.restMockMvc.perform(get("/api/rest/conf_mail").param("library", cConfigurationMail.getLibrary().getIdentifier())
-                                                           .accept(TestUtil.APPLICATION_JSON_UTF8)
+                                                           .accept(MediaType.APPLICATION_JSON)
                                                            .with(allPermissions))
                         .andExpect(status().isOk())
-                        .andExpect(content().contentType(TestUtil.APPLICATION_JSON_UTF8))
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andExpect(jsonPath("$[0].identifier").value(cConfigurationMail.getIdentifier()));
     }
 
@@ -137,17 +130,16 @@ public class MailboxConfigurationControllerTest {
         final MailboxConfiguration cConfigurationMail = getCConfigurationMail("ABCD-1238");
         when(mailboxConfigurationService.findOne(cConfigurationMail.getIdentifier())).thenReturn(cConfigurationMail) // ok
                                                                                      .thenReturn(null);             // ko
+        when(libraryAccesssHelper.checkLibrary(any(HttpServletRequest.class), any(), any(), any())).thenReturn(true);
 
         // test ok
-        this.restMockMvc.perform(get("/api/rest/conf_mail/{id}", cConfigurationMail.getIdentifier()).accept(TestUtil.APPLICATION_JSON_UTF8)
-                                                                                                    .with(allPermissions))
+        this.restMockMvc.perform(get("/api/rest/conf_mail/{id}", cConfigurationMail.getIdentifier()).accept(MediaType.APPLICATION_JSON).with(allPermissions))
                         .andExpect(status().isOk())
-                        .andExpect(content().contentType(TestUtil.APPLICATION_JSON_UTF8))
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andExpect(jsonPath("identifier").value(cConfigurationMail.getIdentifier()));
 
         // test ko
-        this.restMockMvc.perform(get("/api/rest/conf_mail/{identifier}", cConfigurationMail.getIdentifier()).accept(TestUtil.APPLICATION_JSON_UTF8)
-                                                                                                            .with(allPermissions))
+        this.restMockMvc.perform(get("/api/rest/conf_mail/{identifier}", cConfigurationMail.getIdentifier()).accept(MediaType.APPLICATION_JSON).with(allPermissions))
                         .andExpect(status().isNotFound());
     }
 
@@ -162,13 +154,14 @@ public class MailboxConfigurationControllerTest {
 
         when(mailboxConfigurationService.findOne(cConfigurationMail.getIdentifier())).thenReturn(cConfigurationMail);
         when(mailboxConfigurationService.save(cConfigurationMail)).thenReturn(savedStat);
+        when(libraryAccesssHelper.checkLibrary(any(HttpServletRequest.class), any(), any(), any())).thenReturn(true);
 
         // test update
-        this.restMockMvc.perform(post("/api/rest/conf_mail/" + identifier).contentType(TestUtil.APPLICATION_JSON_UTF8)
+        this.restMockMvc.perform(post("/api/rest/conf_mail/" + identifier).contentType(MediaType.APPLICATION_JSON)
                                                                           .content(TestUtil.convertObjectToJsonBytes(cConfigurationMail))
                                                                           .with(allPermissions))
                         .andExpect(status().isOk())
-                        .andExpect(content().contentType(TestUtil.APPLICATION_JSON_UTF8))
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andExpect(jsonPath("identifier").value(savedStat.getIdentifier()))
                         .andExpect(jsonPath("label").value(savedStat.getLabel()))
                         .andExpect(jsonPath("library.identifier").value(savedStat.getLibrary().getIdentifier()));

@@ -1,7 +1,6 @@
 package fr.progilone.pgcn.util;
 
 import fr.progilone.pgcn.domain.AbstractDomainObject;
-import fr.progilone.pgcn.domain.document.conditionreport.ConditionReport;
 import org.springframework.core.convert.converter.Converter;
 
 public class TestConverterFactory {

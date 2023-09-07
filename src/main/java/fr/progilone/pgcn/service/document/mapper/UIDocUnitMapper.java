@@ -1,13 +1,5 @@
 package fr.progilone.pgcn.service.document.mapper;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import fr.progilone.pgcn.domain.administration.CinesPAC;
 import fr.progilone.pgcn.domain.administration.InternetArchiveCollection;
 import fr.progilone.pgcn.domain.administration.omeka.OmekaList;
@@ -38,6 +30,13 @@ import fr.progilone.pgcn.service.lot.LotService;
 import fr.progilone.pgcn.service.ocrlangconfiguration.OcrLanguageService;
 import fr.progilone.pgcn.service.project.ProjectService;
 import fr.progilone.pgcn.service.train.TrainService;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UIDocUnitMapper {
@@ -94,6 +93,8 @@ public class UIDocUnitMapper {
         doc.setProgressStatus(docDTO.getProgressStatus());
         doc.setRequestDate(docDTO.getRequestDate());
         doc.setAnswerDate(docDTO.getAnswerDate());
+        doc.setImageHeight(docDTO.getImageHeight());
+        doc.setImageWidth(docDTO.getImageWidth());
 
         final InternetArchiveCollectionDTO iaCollection = docDTO.getCollectionIA();
         if (iaCollection != null && iaCollection.getIdentifier() != null) {
@@ -126,12 +127,14 @@ public class UIDocUnitMapper {
         } else {
             doc.setOmekaItem(null);
         }
-        
+
         // Biliographic Records
         final List<DocUnitBibliographicRecordDTO> recordsDTO = docDTO.getRecords();
         if (recordsDTO != null) {
             doc.setRecords(recordsDTO.stream()
-                                     .map(record -> bibliographicRecordRepository.findOne(record.getIdentifier()))
+                                     .map(record -> bibliographicRecordRepository.findById(record.getIdentifier()))
+                                     .filter(Optional::isPresent)
+                                     .map(Optional::get)
                                      .collect(Collectors.toSet()));
         }
 
@@ -160,20 +163,20 @@ public class UIDocUnitMapper {
         } else {
             doc.setProject(null);
         }
-        
+
         // Notes de controle => digital Document
         if (doc.getDigitalDocuments() != null && doc.getDigitalDocuments().size() == 1) {
             final DigitalDocument digDoc = doc.getDigitalDocuments().iterator().next();
             if (CollectionUtils.isNotEmpty(docDTO.getDigitalDocuments())) {
                 digDoc.setCheckNotes(docDTO.getDigitalDocuments().iterator().next().getCheckNotes());
-            } 
+            }
         }
 
         // PhysicalDocuments
         if (doc.getPhysicalDocuments() != null && doc.getPhysicalDocuments().size() == 1) {
             final PhysicalDocument physicalDocument = doc.getPhysicalDocuments().iterator().next();
             physicalDocument.setDigitalId(docDTO.getDigitalId());
-            if(docDTO.getPhysicalDocuments() != null && !docDTO.getPhysicalDocuments().isEmpty()) {
+            if (docDTO.getPhysicalDocuments() != null && !docDTO.getPhysicalDocuments().isEmpty()) {
                 final SimpleTrainDTO trainDTO = docDTO.getPhysicalDocuments().iterator().next().getTrain();
                 if (trainDTO != null && trainDTO.getIdentifier() != null) {
                     final Train train = trainService.getOne(trainDTO.getIdentifier());
@@ -183,7 +186,7 @@ public class UIDocUnitMapper {
                 }
             }
         }
-        
+
         // langage OCR
         final OcrLanguageDTO langOcr = docDTO.getActiveOcrLanguage();
         if (langOcr != null && langOcr.getIdentifier() != null) {
@@ -191,6 +194,6 @@ public class UIDocUnitMapper {
         } else if (lot != null && lot.getActiveOcrLanguage() != null) {
             doc.setActiveOcrLanguage(lot.getActiveOcrLanguage());
         }
-        
+
     }
 }

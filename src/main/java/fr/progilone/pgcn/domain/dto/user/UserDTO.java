@@ -6,7 +6,6 @@ import fr.progilone.pgcn.domain.dto.workflow.SimpleWorkflowGroupDTO;
 import fr.progilone.pgcn.domain.user.Lang;
 import fr.progilone.pgcn.domain.user.User;
 import fr.progilone.pgcn.domain.user.User.Category;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -47,7 +46,24 @@ public class UserDTO extends AbstractVersionedDTO {
     private String lastModifiedBy;
     private LocalDateTime lastModifiedDate;
 
-    public UserDTO(String identifier, String login, String firstname, String surname, Boolean active, String category, Lang lang, RoleDTO role, AddressDTO address, SimpleLibraryDTO library, String phoneNumber, String email, String companyName, String function, String createdBy, LocalDateTime createdDate, String lastModifiedBy, LocalDateTime lastModifiedDate) {
+    public UserDTO(String identifier,
+                   String login,
+                   String firstname,
+                   String surname,
+                   Boolean active,
+                   String category,
+                   Lang lang,
+                   RoleDTO role,
+                   AddressDTO address,
+                   SimpleLibraryDTO library,
+                   String phoneNumber,
+                   String email,
+                   String companyName,
+                   String function,
+                   String createdBy,
+                   LocalDateTime createdDate,
+                   String lastModifiedBy,
+                   LocalDateTime lastModifiedDate) {
         this.identifier = identifier;
         this.login = login;
         this.firstname = firstname;
@@ -76,14 +92,14 @@ public class UserDTO extends AbstractVersionedDTO {
     }
 
     public final Lang getLang() {
-		return lang;
-	}
+        return lang;
+    }
 
-	public final RoleDTO getRole() {
-		return role;
-	}
+    public final RoleDTO getRole() {
+        return role;
+    }
 
-	public String getLogin() {
+    public String getLogin() {
         return login;
     }
 
@@ -96,92 +112,92 @@ public class UserDTO extends AbstractVersionedDTO {
     }
 
     public final Boolean getActive() {
-		return active;
-	}
+        return active;
+    }
 
     public final String getCategory() {
-		return category;
-	}
+        return category;
+    }
 
-	public final AddressDTO getAddress() {
+    public final AddressDTO getAddress() {
         return address;
     }
 
-	public final String getPhoneNumber() {
-		return phoneNumber;
-	}
+    public final String getPhoneNumber() {
+        return phoneNumber;
+    }
 
-	public final String getCompanyName() {
-		return companyName;
-	}
+    public final String getCompanyName() {
+        return companyName;
+    }
 
-	public final String getEmail() {
-		return email;
-	}
+    public final String getEmail() {
+        return email;
+    }
 
-	public final String getFunction() {
-		return function;
-	}
+    public final String getFunction() {
+        return function;
+    }
 
     public final SimpleLibraryDTO getLibrary() {
-		return library;
-	}
+        return library;
+    }
 
-	public void setLibrary(SimpleLibraryDTO library) {
-		this.library = library;
-	}
+    public void setLibrary(SimpleLibraryDTO library) {
+        this.library = library;
+    }
 
-	public void setIdentifier(String identifier) {
-		this.identifier = identifier;
-	}
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
+    }
 
-	public void setLogin(String login) {
-		this.login = login;
-	}
+    public void setLogin(String login) {
+        this.login = login;
+    }
 
-	public void setFirstname(String firstname) {
-		this.firstname = firstname;
-	}
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
 
-	public void setSurname(String surname) {
-		this.surname = surname;
-	}
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
 
-	public void setActive(Boolean active) {
-		this.active = active;
-	}
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
 
-	public void setCategory(String category) {
-		this.category = category;
-	}
+    public void setCategory(String category) {
+        this.category = category;
+    }
 
-	public void setLang(Lang lang) {
-		this.lang = lang;
-	}
+    public void setLang(Lang lang) {
+        this.lang = lang;
+    }
 
-	public void setRole(RoleDTO role) {
-		this.role = role;
-	}
+    public void setRole(RoleDTO role) {
+        this.role = role;
+    }
 
-	public void setAddress(AddressDTO address) {
-		this.address = address;
-	}
+    public void setAddress(AddressDTO address) {
+        this.address = address;
+    }
 
-	public void setPhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
-	}
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-	public void setCompanyName(String companyName) {
-		this.companyName = companyName;
-	}
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
 
-	public void setFunction(String function) {
-		this.function = function;
-	}
+    public void setFunction(String function) {
+        this.function = function;
+    }
 
     public List<SimpleWorkflowGroupDTO> getGroups() {
         return groups;
@@ -317,8 +333,8 @@ public class UserDTO extends AbstractVersionedDTO {
         }
 
         public Builder setAddress(final AddressDTO address) {
-        	this.address = address;
-        	return this;
+            this.address = address;
+            return this;
         }
 
         public Builder setPhoneNumber(final String phoneNumber) {
@@ -363,24 +379,23 @@ public class UserDTO extends AbstractVersionedDTO {
 
         public UserDTO build() {
             return new UserDTO(identifier,
-                                   login,
-                                   firstname,
-                                   surname,
-                                   active,
-                                   category,
-                                   lang,
-                                   role,
-                                   address,
-                                   library,
-                                   phoneNumber,
-                                   email,
-                                   companyName,
-                                   function,
-                                    createdBy,
-                                    createdDate,
-                                    lastModifiedBy,
-                                    lastModifiedDate
-                                   );
+                               login,
+                               firstname,
+                               surname,
+                               active,
+                               category,
+                               lang,
+                               role,
+                               address,
+                               library,
+                               phoneNumber,
+                               email,
+                               companyName,
+                               function,
+                               createdBy,
+                               createdDate,
+                               lastModifiedBy,
+                               lastModifiedDate);
         }
     }
 }

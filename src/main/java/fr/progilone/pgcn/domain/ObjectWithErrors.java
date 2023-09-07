@@ -1,9 +1,8 @@
 package fr.progilone.pgcn.domain;
 
-import java.util.Collection;
-
 import fr.progilone.pgcn.exception.message.PgcnError;
 import fr.progilone.pgcn.exception.message.PgcnList;
+import java.util.Collection;
 
 public interface ObjectWithErrors {
 

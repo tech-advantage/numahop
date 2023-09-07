@@ -1,12 +1,9 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('StatisticsDocRejectedCtrl', StatisticsDocRejectedCtrl);
+    angular.module('numaHopApp.controller').controller('StatisticsDocRejectedCtrl', StatisticsDocRejectedCtrl);
 
-    function StatisticsDocRejectedCtrl($q, codeSrvc, HistorySrvc, gettextCatalog, LibrarySrvc,
-        NumahopStorageService, Principal, ProjectSrvc, StatisticsSrvc, USER_ROLES) {
-
+    function StatisticsDocRejectedCtrl($q, codeSrvc, HistorySrvc, gettextCatalog, LibrarySrvc, NumahopStorageService, Principal, ProjectSrvc, StatisticsSrvc, USER_ROLES) {
         var statCtrl = this;
 
         /** others actions **/
@@ -19,7 +16,7 @@
         statCtrl.search = search;
 
         var PAGE_START = 1;
-        var FILTER_STORAGE_SERVICE_KEY = "stat_doc_rejected";
+        var FILTER_STORAGE_SERVICE_KEY = 'stat_doc_rejected';
 
         /**
          * Objet de pagination
@@ -29,7 +26,7 @@
             items: [],
             totalItems: 0,
             busy: false,
-            page: PAGE_START
+            page: PAGE_START,
         };
 
         /**
@@ -37,11 +34,11 @@
          * @type {Object}
          */
         statCtrl.sizeOptions = [
-            { value: 10, label: "10" },
-            { value: 20, label: "20" },
-            { value: 50, label: "50" },
-            { value: 100, label: "100" },
-            { value: 5000, label: "Tout" }
+            { value: 10, label: '10' },
+            { value: 20, label: '20' },
+            { value: 50, label: '50' },
+            { value: 100, label: '100' },
+            { value: 5000, label: 'Tout' },
         ];
 
         /**
@@ -49,60 +46,56 @@
          */
         statCtrl.config = {
             libraries: {
-                text: "name",
-                placeholder: gettextCatalog.getString("Bibliothèque"),
-                trackby: "identifier",
+                text: 'name',
+                placeholder: gettextCatalog.getString('Bibliothèque'),
+                trackby: 'identifier',
                 // Chargement avec mise en cache du résultat
                 refresh: function () {
                     if (!statCtrl.config.libraries.data) {
                         statCtrl.config.libraries.data = LibrarySrvc.query({ dto: true });
-                        return statCtrl.config.libraries.data.$promise
-                            .then(function (lib) {
-                                return _.map(lib, function (l) {
-                                    return _.pick(l, "identifier", "name");
-                                });
+                        return statCtrl.config.libraries.data.$promise.then(function (lib) {
+                            return _.map(lib, function (l) {
+                                return _.pick(l, 'identifier', 'name');
                             });
-                    }
-                    else {
+                        });
+                    } else {
                         return $q.when(statCtrl.config.libraries.data);
                     }
                 },
                 'refresh-delay': 0, // pas de refresh-delay, car on lit les données en cache après le 1er chargement
                 'allow-clear': true,
-                multiple: true
+                multiple: true,
             },
             projects: {
-                text: "name",
-                placeholder: gettextCatalog.getString("Projet"),
-                trackby: "identifier",
+                text: 'name',
+                placeholder: gettextCatalog.getString('Projet'),
+                trackby: 'identifier',
                 refresh: function ($select) {
                     var searchParams = {
                         page: 0,
                         search: $select.search,
-                        active: false
+                        active: false,
                     };
-                    return ProjectSrvc.search(searchParams).$promise
-                        .then(function (projects) {
-                            return _.map(projects.content, function (project) {
-                                return _.pick(project, "identifier", "name");
-                            });
+                    return ProjectSrvc.search(searchParams).$promise.then(function (projects) {
+                        return _.map(projects.content, function (project) {
+                            return _.pick(project, 'identifier', 'name');
                         });
+                    });
                 },
                 'refresh-delay': 300,
                 multiple: true,
-                'allow-clear': true
-            }
+                'allow-clear': true,
+            },
         };
 
         init();
-
 
         /**
          * Initialisation du controleur
          * @return {[type]} [description]
          */
         function init() {
-            HistorySrvc.add(gettextCatalog.getString("Statistiques: documents rejetés"));
+            HistorySrvc.add(gettextCatalog.getString('Statistiques: documents rejetés'));
             statCtrl.loaded = false;
             statCtrl.showLib = Principal.isInRole(USER_ROLES.SUPER_ADMIN) || Principal.isInRole(USER_ROLES.ADMINISTRATION_LIB);
 
@@ -170,10 +163,10 @@
             var params = {
                 page: statCtrl.pagination.page - 1,
                 size: statCtrl.pagination.size,
-                library: _.pluck(statCtrl.filters.library, "identifier"),
-                project: _.pluck(statCtrl.filters.project, "identifier"),
+                library: _.pluck(statCtrl.filters.library, 'identifier'),
+                project: _.pluck(statCtrl.filters.project, 'identifier'),
                 from: statCtrl.filters.importedFrom,
-                to: statCtrl.filters.importedTo
+                to: statCtrl.filters.importedTo,
             };
             return params;
         }
@@ -213,7 +206,7 @@
         function getExportUrl() {
             var params = getSearchParams();
             params.doc_rejected = true;
-            return StatisticsSrvc.getExportUrl(params, "docunit");
+            return StatisticsSrvc.getExportUrl(params, 'docunit');
         }
     }
 })();

@@ -1,5 +1,7 @@
 package fr.progilone.pgcn.web.util;
 
+import static fr.progilone.pgcn.service.user.UserService.*;
+
 import fr.progilone.pgcn.domain.delivery.Delivery;
 import fr.progilone.pgcn.domain.document.BibliographicRecord;
 import fr.progilone.pgcn.domain.document.DigitalDocument;
@@ -22,17 +24,13 @@ import fr.progilone.pgcn.service.project.ProjectService;
 import fr.progilone.pgcn.service.train.TrainService;
 import fr.progilone.pgcn.service.user.UserService;
 import fr.progilone.pgcn.web.rest.administration.security.AuthorizationConstants;
+import java.util.*;
+import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static fr.progilone.pgcn.service.user.UserService.*;
 
 /**
  * Outils permettant de vérifier que l'utilisateur courant ait bien accès aux ressources qu'il demande
@@ -87,10 +85,9 @@ public class AccessHelper {
         final CustomUserDetails currentUser = SecurityUtils.getCurrentUser();
         final List<Project> projects = projectService.findAll(identifiers);
 
-        return checkCurrentUser(currentUser).map(check -> check ? projects : Collections.<Project>emptyList())
-                                            .orElseGet(() -> projects.stream()
-                                                                     .filter(project -> checkProject(project, currentUser))
-                                                                     .collect(Collectors.toList()));
+        return checkCurrentUser(currentUser).map(check -> check ? projects
+                                                                : Collections.<Project> emptyList())
+                                            .orElseGet(() -> projects.stream().filter(project -> checkProject(project, currentUser)).collect(Collectors.toList()));
     }
 
     @Transactional(readOnly = true)
@@ -107,7 +104,8 @@ public class AccessHelper {
         final CustomUserDetails currentUser = SecurityUtils.getCurrentUser();
         final List<Lot> lots = lotService.findAll(identifiers);
 
-        return checkCurrentUser(currentUser).map(check -> check ? lots : Collections.<Lot>emptyList())
+        return checkCurrentUser(currentUser).map(check -> check ? lots
+                                                                : Collections.<Lot> emptyList())
                                             .orElseGet(() -> lots.stream().filter(lot -> checkLot(lot, currentUser)).collect(Collectors.toList()));
     }
 
@@ -125,10 +123,9 @@ public class AccessHelper {
         final CustomUserDetails currentUser = SecurityUtils.getCurrentUser();
         final List<Train> trains = trainService.findAll(identifiers);
 
-        return checkCurrentUser(currentUser).map(check -> check ? trains : Collections.<Train>emptyList())
-                                            .orElseGet(() -> trains.stream()
-                                                                   .filter(train -> checkTrain(train, currentUser))
-                                                                   .collect(Collectors.toList()));
+        return checkCurrentUser(currentUser).map(check -> check ? trains
+                                                                : Collections.<Train> emptyList())
+                                            .orElseGet(() -> trains.stream().filter(train -> checkTrain(train, currentUser)).collect(Collectors.toList()));
     }
 
     @Transactional(readOnly = true)
@@ -143,12 +140,12 @@ public class AccessHelper {
     @Transactional(readOnly = true)
     public Collection<Delivery> filterDeliveries(final Iterable<String> identifiers) {
         final CustomUserDetails currentUser = SecurityUtils.getCurrentUser();
-        final List<Delivery> deliveries = identifiers != null ? deliveryService.findAll(identifiers) : deliveryService.findAll();
+        final List<Delivery> deliveries = identifiers != null ? deliveryService.findAll(identifiers)
+                                                              : deliveryService.findAll();
 
-        return checkCurrentUser(currentUser).map(check -> check ? deliveries : Collections.<Delivery>emptyList())
-                                            .orElseGet(() -> deliveries.stream()
-                                                                       .filter(delivery -> checkDelivery(delivery, currentUser))
-                                                                       .collect(Collectors.toList()));
+        return checkCurrentUser(currentUser).map(check -> check ? deliveries
+                                                                : Collections.<Delivery> emptyList())
+                                            .orElseGet(() -> deliveries.stream().filter(delivery -> checkDelivery(delivery, currentUser)).collect(Collectors.toList()));
     }
 
     @Transactional(readOnly = true)
@@ -165,10 +162,9 @@ public class AccessHelper {
         final CustomUserDetails currentUser = SecurityUtils.getCurrentUser();
         final Set<DocUnit> docUnits = docUnitService.findAllById(identifiers);
 
-        return checkCurrentUser(currentUser).map(check -> check ? docUnits : Collections.<DocUnit>emptyList())
-                                            .orElseGet(() -> docUnits.stream()
-                                                                     .filter(docUnit -> checkDocUnit(docUnit, currentUser))
-                                                                     .collect(Collectors.toList()));
+        return checkCurrentUser(currentUser).map(check -> check ? docUnits
+                                                                : Collections.<DocUnit> emptyList())
+                                            .orElseGet(() -> docUnits.stream().filter(docUnit -> checkDocUnit(docUnit, currentUser)).collect(Collectors.toList()));
     }
 
     @Transactional(readOnly = true)
@@ -185,10 +181,9 @@ public class AccessHelper {
         final CustomUserDetails currentUser = SecurityUtils.getCurrentUser();
         final List<BibliographicRecord> records = bibliographicRecordService.findAllByIdentifierIn(identifiers);
 
-        return checkCurrentUser(currentUser).map(check -> check ? records : Collections.<BibliographicRecord>emptyList())
-                                            .orElseGet(() -> records.stream()
-                                                                    .filter(record -> checkBibliographicRecord(record, currentUser))
-                                                                    .collect(Collectors.toList()));
+        return checkCurrentUser(currentUser).map(check -> check ? records
+                                                                : Collections.<BibliographicRecord> emptyList())
+                                            .orElseGet(() -> records.stream().filter(record -> checkBibliographicRecord(record, currentUser)).collect(Collectors.toList()));
     }
 
     @Transactional(readOnly = true)
@@ -205,7 +200,8 @@ public class AccessHelper {
         final CustomUserDetails currentUser = SecurityUtils.getCurrentUser();
         final List<ConditionReportDetail> conditionReportDetails = conditionReportDetailService.findByIdentifierIn(identifiers);
 
-        return checkCurrentUser(currentUser).map(check -> check ? conditionReportDetails : Collections.<ConditionReportDetail>emptyList())
+        return checkCurrentUser(currentUser).map(check -> check ? conditionReportDetails
+                                                                : Collections.<ConditionReportDetail> emptyList())
                                             .orElseGet(() -> conditionReportDetails.stream()
                                                                                    .filter(record -> checkConditionReportDetail(record, currentUser))
                                                                                    .collect(Collectors.toList()));
@@ -225,7 +221,8 @@ public class AccessHelper {
         final CustomUserDetails currentUser = SecurityUtils.getCurrentUser();
         final List<DigitalDocument> digitalDocs = digitalDocumentService.findAll(identifiers);
 
-        return checkCurrentUser(currentUser).map(check -> check ? digitalDocs : Collections.<DigitalDocument>emptyList())
+        return checkCurrentUser(currentUser).map(check -> check ? digitalDocs
+                                                                : Collections.<DigitalDocument> emptyList())
                                             .orElseGet(() -> digitalDocs.stream()
                                                                         .filter(digitalDocument -> checkDigitalDocument(digitalDocument, currentUser))
                                                                         .collect(Collectors.toList()));
@@ -250,10 +247,10 @@ public class AccessHelper {
         final CustomUserDetails currentUser = SecurityUtils.getCurrentUser();
         final List<User> users = userService.findAll(identifiers);
 
-        return checkCurrentUser(currentUser).map(check -> check ? users : Collections.<User>emptyList())
+        return checkCurrentUser(currentUser).map(check -> check ? users
+                                                                : Collections.<User> emptyList())
                                             .orElseGet(() -> users.stream()
-                                                                  .filter(user -> checkUserLib(user, currentUser) && checkUserCategory(user,
-                                                                                                                                       currentUser))
+                                                                  .filter(user -> checkUserLib(user, currentUser) && checkUserCategory(user, currentUser))
                                                                   .collect(Collectors.toList()));
     }
 
@@ -262,8 +259,8 @@ public class AccessHelper {
      *
      * @param currentUser
      * @return false si on n'a pas affaire à un user connecté,
-     * true si le user est super user,
-     * empty si une vérification plus poussée des droits est nécessaire
+     *         true si le user est super user,
+     *         empty si une vérification plus poussée des droits est nécessaire
      */
     @Transactional(readOnly = true)
     public Optional<Boolean> checkCurrentUser(final CustomUserDetails currentUser) {
@@ -288,11 +285,10 @@ public class AccessHelper {
      */
     private boolean checkProject(final Project project, final CustomUserDetails currentUser) {
         return project != null && (
-            // bib du projet + prestataire du projet (ou pas)
-            (checkCurrentLibrary(project.getLibrary(), currentUser) && checkProjectForProvider(project, currentUser))
-            // bib partenaire + intervenant
-            || (checkAssociatedLibraries(project.getAssociatedLibraries(), currentUser) && checkAssociatedUsers(project.getAssociatedUsers(),
-                                                                                                                currentUser)));
+        // bib du projet + prestataire du projet (ou pas)
+        (checkCurrentLibrary(project.getLibrary(), currentUser) && checkProjectForProvider(project, currentUser))
+                                   // bib partenaire + intervenant
+                                   || (checkAssociatedLibraries(project.getAssociatedLibraries(), currentUser) && checkAssociatedUsers(project.getAssociatedUsers(), currentUser)));
     }
 
     /**
@@ -307,11 +303,10 @@ public class AccessHelper {
      */
     private boolean checkProjectIgnoringPresta(final Project project, final CustomUserDetails currentUser) {
         return project != null && (
-            // bib du projet
-            checkCurrentLibrary(project.getLibrary(), currentUser)
-            // bib partenaire + intervenant
-            || (checkAssociatedLibraries(project.getAssociatedLibraries(), currentUser) && checkAssociatedUsers(project.getAssociatedUsers(),
-                                                                                                                currentUser)));
+        // bib du projet
+        checkCurrentLibrary(project.getLibrary(), currentUser)
+                                   // bib partenaire + intervenant
+                                   || (checkAssociatedLibraries(project.getAssociatedLibraries(), currentUser) && checkAssociatedUsers(project.getAssociatedUsers(), currentUser)));
     }
 
     /**
@@ -418,8 +413,7 @@ public class AccessHelper {
         if (currentUser.getCategory() != null) {
             switch (currentUser.getCategory()) {
                 case PROVIDER:
-                    return checkUser(lot.getProvider(), currentUser) || (lot.getProvider() == null
-                                                                         && lot.getProject() != null
+                    return checkUser(lot.getProvider(), currentUser) || (lot.getProvider() == null && lot.getProject() != null
                                                                          && checkUser(lot.getProject().getProvider(), currentUser));
                 case OTHER:
                     break;
@@ -437,9 +431,7 @@ public class AccessHelper {
      * @return
      */
     private boolean checkAssociatedLibraries(final Collection<Library> allowedLibraries, final CustomUserDetails currentUser) {
-        return CollectionUtils.isNotEmpty(allowedLibraries) && allowedLibraries.stream()
-                                                                               .anyMatch(lib -> StringUtils.equals(lib.getIdentifier(),
-                                                                                                                   currentUser.getLibraryId()));
+        return CollectionUtils.isNotEmpty(allowedLibraries) && allowedLibraries.stream().anyMatch(lib -> StringUtils.equals(lib.getIdentifier(), currentUser.getLibraryId()));
     }
 
     /**
@@ -450,8 +442,8 @@ public class AccessHelper {
      * @return
      */
     private boolean checkUserCategory(final User user, final CustomUserDetails currentUser) {
-        return user == null || !Objects.equals(currentUser.getCategory(), User.Category.PROVIDER) || !Objects.equals(user.getCategory(),
-                                                                                                                     User.Category.PROVIDER);
+        return user == null || !Objects.equals(currentUser.getCategory(), User.Category.PROVIDER)
+               || !Objects.equals(user.getCategory(), User.Category.PROVIDER);
     }
 
     @Transactional
@@ -492,9 +484,7 @@ public class AccessHelper {
      * @return
      */
     private boolean checkAssociatedUsers(final Collection<User> allowedUsers, final CustomUserDetails currentUser) {
-        return CollectionUtils.isEmpty(allowedUsers) || allowedUsers.stream()
-                                                                    .anyMatch(u -> StringUtils.equals(u.getIdentifier(),
-                                                                                                      currentUser.getIdentifier()));
+        return CollectionUtils.isEmpty(allowedUsers) || allowedUsers.stream().anyMatch(u -> StringUtils.equals(u.getIdentifier(), currentUser.getIdentifier()));
     }
 
     /**
@@ -505,6 +495,7 @@ public class AccessHelper {
      * @return
      */
     private boolean checkCurrentLibrary(final Library library, final CustomUserDetails currentUser) {
-        return library == null || StringUtils.equals(library.getIdentifier(), currentUser.getLibraryId()) || currentUser.isUserInRole(AuthorizationConstants.ADMINISTRATION_LIB);
+        return library == null || StringUtils.equals(library.getIdentifier(), currentUser.getLibraryId())
+               || currentUser.isUserInRole(AuthorizationConstants.ADMINISTRATION_LIB);
     }
 }

@@ -1,43 +1,42 @@
 package fr.progilone.pgcn.service.exchange.marc;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
+
 import fr.progilone.pgcn.config.ScriptEngineConfiguration;
 import fr.progilone.pgcn.domain.exchange.Mapping;
 import fr.progilone.pgcn.domain.exchange.MappingRule;
 import fr.progilone.pgcn.service.administration.TransliterationService;
 import fr.progilone.pgcn.service.exchange.marc.mapping.CompiledMapping;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import java.util.HashMap;
+import java.util.Map;
+import javax.script.ScriptEngine;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.marc4j.marc.DataField;
 import org.marc4j.marc.MarcFactory;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
-
-import javax.script.ScriptEngine;
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Created by Sebastien on 23/11/2016.
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class MarcMappingEvaluationServiceTest {
 
     private static final MarcFactory MARC_FACTORY = MarcFactory.newInstance();
     // on ne mock pas le moteur de script, on utilise sa configuration réelle dans l'application
     private static final ScriptEngine SCRIPT_ENGINE = new ScriptEngineConfiguration().getGroovyScriptEngine();
-    //    private static final ScriptEngine SCRIPT_ENGINE = new GroovyScriptEngineImpl();
+    // private static final ScriptEngine SCRIPT_ENGINE = new GroovyScriptEngineImpl();
 
     @Mock
     private TransliterationService transliterationService;
 
     private MarcMappingEvaluationService service;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         service = new MarcMappingEvaluationService(SCRIPT_ENGINE, transliterationService);
     }
@@ -45,7 +44,7 @@ public class MarcMappingEvaluationServiceTest {
     // Exécution d'un script groovy
     @Test
     public void testExprString() {
-        String expression = "rec702_4.toLowerCase() + ', ' + (rec702_c.length() >= 4 ? rec702_c.substring(2, 4) : 'null')";
+        final String expression = "rec702_4.toLowerCase() + ', ' + (rec702_c.length() >= 4 ? rec702_c.substring(2, 4) : 'null')";
         final CompiledMapping compiledMapping = getCompiledMapping(expression, null);
         assertEquals(1, compiledMapping.getCompiledRules().size());
 
@@ -123,7 +122,7 @@ public class MarcMappingEvaluationServiceTest {
 
     // Appel de code java à partir d'un script groovy
     // Désactivé car non autorisé avec les règles de sécurité du moteur de script
-    @Ignore
+    @Disabled
     @Test
     public void testExprJavaClass() {
         final DataField fld702 = MARC_FACTORY.newDataField("702", ' ', ' ');
@@ -265,8 +264,7 @@ public class MarcMappingEvaluationServiceTest {
         fld605.addSubfield(MARC_FACTORY.newSubfield('y', "Tartiflette"));
 
         final String expression = "[subfields(\\605), concatWithSep(\\605)].join(\" \")";
-        final String expressionConf = "subfieldsAdd('a')\n"
-                                      + "subfieldsAdd('i', '. ')\n"
+        final String expressionConf = "subfieldsAdd('a')\n" + "subfieldsAdd('i', '. ')\n"
                                       + "subfieldsAddGroup(' (', ')', ' ; ', 'n')\n"
                                       + "concatWithSepCodes('x', 'y', 'z')\n"
                                       + "concatWithSepInner(', ')\n"
@@ -307,30 +305,30 @@ public class MarcMappingEvaluationServiceTest {
         assertEquals(1, compiledMapping.getCompiledRules().size());
 
         final Map<String, Object> bindings = new HashMap<>();
-        //        bindings.put("missing_var", "test");
+        // bindings.put("missing_var", "test");
 
         final Object actual = service.evalCondition(compiledMapping.getCompiledRules().get(0), bindings);
 
         assertFalse((boolean) actual);
     }
 
-    private CompiledMapping getCompiledMapping(String expression, String condition) {
+    private CompiledMapping getCompiledMapping(final String expression, final String condition) {
         final MappingRule rule = new MappingRule();
         rule.setExpression(expression);
         rule.setCondition(condition);
 
-        Mapping mapping = new Mapping();
+        final Mapping mapping = new Mapping();
         mapping.addRule(rule);
 
         return service.compileMapping(mapping, null);
     }
 
-    private CompiledMapping getCompiledMappingExpression(String expression, String conf) {
+    private CompiledMapping getCompiledMappingExpression(final String expression, final String conf) {
         final MappingRule rule = new MappingRule();
         rule.setExpression(expression);
         rule.setExpressionConf(conf);
 
-        Mapping mapping = new Mapping();
+        final Mapping mapping = new Mapping();
         mapping.addRule(rule);
 
         return service.compileMapping(mapping, null);

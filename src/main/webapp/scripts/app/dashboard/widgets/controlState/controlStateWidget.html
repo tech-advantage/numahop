@@ -1,10 +1,10 @@
-<div class="alert alert-warning margin-10" ng-if="!mainCtrl.isConfigured()" translate>
-    Veuillez configurer le widget via le bouton de configuration à droite du titre de ce widget.
-</div>
-<numa-alert-audit-entity entity-type="docunit" 
-                         columns="mainCtrl.columns"
-                         filter="mainCtrl.config"
-                         status-prefix="digitalDocument"
-                         set-count="mainCtrl.setTitleBadge(value)"
-                         provider="mainCtrl.loadDocUnits(params)"
-                         ng-if="mainCtrl.isConfigured()"></numa-alert-audit-entity>
+<div class="alert alert-warning margin-10" ng-if="!mainCtrl.isConfigured()" translate>Veuillez configurer le widget via le bouton de configuration à droite du titre de ce widget.</div>
+<numa-alert-audit-entity
+    entity-type="docunit"
+    columns="mainCtrl.columns"
+    filter="mainCtrl.config"
+    status-prefix="digitalDocument"
+    set-count="mainCtrl.setTitleBadge(value)"
+    provider="mainCtrl.loadDocUnits(params)"
+    ng-if="mainCtrl.isConfigured()"
+></numa-alert-audit-entity>

@@ -1,0 +1,18 @@
+version: '3.8'
+services:
+    mariadb:
+        image: mariadb:10.5.15
+        volumes:
+            - mariadb-data:/var/lib/mysql
+            - ./mariadb-dump/:/docker-entrypoint-initdb.d/
+        environment:
+            - MARIADB_ROOT_PASSWORD=numahop
+            - MARIADB_DATABASE=pgcn
+            - MARIADB_USER=pgcn
+            - MARIADB_PASSWORD=pgcnpgcn
+            - TZ=Europe/Paris
+        ports:
+            - 127.0.0.1:3306:3306
+
+volumes:
+    mariadb-data:

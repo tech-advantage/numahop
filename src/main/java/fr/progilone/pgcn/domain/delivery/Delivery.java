@@ -2,36 +2,25 @@ package fr.progilone.pgcn.domain.delivery;
 
 import static fr.progilone.pgcn.service.es.EsConstant.*;
 
-import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-
-import org.hibernate.envers.AuditTable;
-import org.hibernate.envers.Audited;
-import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldIndex;
-import org.springframework.data.elasticsearch.annotations.FieldType;
-import org.springframework.data.elasticsearch.annotations.InnerField;
-import org.springframework.data.elasticsearch.annotations.MultiField;
-import org.springframework.data.elasticsearch.annotations.Parent;
-
 import com.fasterxml.jackson.annotation.JsonSubTypes;
-
 import fr.progilone.pgcn.domain.AbstractDomainObject;
 import fr.progilone.pgcn.domain.check.AutomaticCheckResult;
 import fr.progilone.pgcn.domain.lot.Lot;
 import fr.progilone.pgcn.domain.multilotsdelivery.MultiLotsDelivery;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
+import org.hibernate.envers.AuditTable;
+import org.hibernate.envers.Audited;
 
 /**
  * Classe métier permettant de gérer les livraisons.
@@ -42,68 +31,38 @@ import fr.progilone.pgcn.domain.multilotsdelivery.MultiLotsDelivery;
 @AuditTable(value = Delivery.AUDIT_TABLE_NAME)
 // Jackson
 @JsonSubTypes({@JsonSubTypes.Type(name = "delivery", value = Delivery.class)})
-// Elasticsearch
-@Document(indexName = "#{elasticsearchIndexName}", type = Delivery.ES_TYPE, createIndex = false)
 public class Delivery extends AbstractDomainObject {
 
     /**
      * Nom des tables dans la base de données.
      */
     public static final String TABLE_NAME = "del_delivery";
-    public static final String ES_TYPE = "delivery";
     public static final String AUDIT_TABLE_NAME = "aud_del_delivery";
 
     @ManyToOne
     @JoinColumn(name = "lot_identifier")
     private Lot lot;
 
-    /**
-     * Le champ "lot" est répété pour la config elasticsearch @Parent, qui doit être de type String
-     */
-    @Column(name = "lot_identifier", insertable = false, updatable = false)
-    @Parent(type = Lot.ES_TYPE)
-    @Field(type = FieldType.String, index = FieldIndex.not_analyzed)
-    private String lotId;
-
     @Column(name = "label", nullable = false)
-    @MultiField(mainField = @Field(type = FieldType.String),
-                otherFields = {@InnerField(type = FieldType.String, suffix = SUBFIELD_RAW, index = FieldIndex.not_analyzed),
-                               @InnerField(type = FieldType.String,
-                                           suffix = SUBFIELD_CI_AI,
-                                           indexAnalyzer = ANALYZER_CI_AI,
-                                           searchAnalyzer = ANALYZER_CI_AI),
-                               @InnerField(type = FieldType.String,
-                                           suffix = SUBFIELD_CI_AS,
-                                           indexAnalyzer = ANALYZER_CI_AS,
-                                           searchAnalyzer = ANALYZER_CI_AS),
-                               @InnerField(type = FieldType.String,
-                                           suffix = SUBFIELD_PHRASE,
-                                           indexAnalyzer = ANALYZER_PHRASE,
-                                           searchAnalyzer = ANALYZER_PHRASE)})
     private String label;
 
     @Column(name = "document_count")
-    @Field(type = FieldType.Integer)
     private Integer documentCount;
 
     @Column(name = "description")
     private String description;
 
     @Column(name = "delivery_payment")
-    @Field(type = FieldType.String, analyzer = ANALYZER_KEYWORD)
     private DeliveryPayment payment;
 
     @Column(name = "delivery_status")
-    @Field(type = FieldType.String, analyzer = ANALYZER_KEYWORD)
     @Audited
     private DeliveryStatus status;
 
     @Column(name = "delivery_method")
-    @Field(type = FieldType.String, analyzer = ANALYZER_KEYWORD)
     private DeliveryMethod method;
 
     @Column(name = "reception_date", nullable = false)
-    @Field(type = FieldType.Date)
     private LocalDate receptionDate;
 
     @Column(name = "deposit_date")
@@ -178,6 +137,12 @@ public class Delivery extends AbstractDomainObject {
     @Column(name = "file_radical_ok")
     private boolean fileRadicalOK;
 
+    @Column(name = "file_image_metadata_ok")
+    private boolean fileImageMetadataOK;
+
+    @Column(name = "file_definition_ok")
+    private boolean fileDefinitionOK;
+
     @OneToOne(mappedBy = "delivery", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private DeliverySlip deliverySlip;
 
@@ -203,14 +168,6 @@ public class Delivery extends AbstractDomainObject {
 
     public void setLot(final Lot lot) {
         this.lot = lot;
-    }
-
-    public String getLotId() {
-        return lotId;
-    }
-
-    public void setLotId(final String lotId) {
-        this.lotId = lotId;
     }
 
     public String getLabel() {
@@ -459,6 +416,22 @@ public class Delivery extends AbstractDomainObject {
 
     public void setFileRadicalOK(final boolean fileRadicalOK) {
         this.fileRadicalOK = fileRadicalOK;
+    }
+
+    public boolean isFileImageMetadataOK() {
+        return fileImageMetadataOK;
+    }
+
+    public void setFileImageMetadataOK(final boolean fileImageMetadataOK) {
+        this.fileImageMetadataOK = fileImageMetadataOK;
+    }
+
+    public boolean isFileDefinitionOK() {
+        return fileDefinitionOK;
+    }
+
+    public void setFileDefinitionOK(boolean fileDefinitionOK) {
+        this.fileDefinitionOK = fileDefinitionOK;
     }
 
     public Set<AutomaticCheckResult> getAutomaticCheckResults() {

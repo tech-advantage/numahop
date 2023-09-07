@@ -5,21 +5,21 @@
 // Généré le : 2018.08.13 à 01:08:19 PM CEST
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.oaipmh;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
-
 
 /**
- * <p>Classe Java pour ListRecordsType complex type.
+ * <p>
+ * Classe Java pour ListRecordsType complex type.
  *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="ListRecordsType">
@@ -37,10 +37,9 @@ import javax.xml.bind.annotation.XmlType;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ListRecordsType", propOrder = {
-    "record",
-    "resumptionToken"
-})
+@XmlType(name = "ListRecordsType",
+         propOrder = {"record",
+                      "resumptionToken"})
 public class ListRecordsType {
 
     @XmlElement(required = true)
@@ -58,8 +57,9 @@ public class ListRecordsType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getRecord().add(newItem);
+     * getRecord().add(newItem);
      * </pre>
      *
      *
@@ -80,8 +80,8 @@ public class ListRecordsType {
      * Obtient la valeur de la propriété resumptionToken.
      *
      * @return
-     *     possible object is
-     *     {@link ResumptionTokenType }
+     *         possible object is
+     *         {@link ResumptionTokenType }
      *
      */
     public ResumptionTokenType getResumptionToken() {
@@ -92,8 +92,8 @@ public class ListRecordsType {
      * Définit la valeur de la propriété resumptionToken.
      *
      * @param value
-     *     allowed object is
-     *     {@link ResumptionTokenType }
+     *            allowed object is
+     *            {@link ResumptionTokenType }
      *
      */
     public void setResumptionToken(ResumptionTokenType value) {

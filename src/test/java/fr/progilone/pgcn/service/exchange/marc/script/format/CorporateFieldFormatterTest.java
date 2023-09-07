@@ -1,16 +1,14 @@
 package fr.progilone.pgcn.service.exchange.marc.script.format;
 
-import fr.progilone.pgcn.service.exchange.marc.script.AbstractScriptTest;
-import org.junit.Test;
-import org.marc4j.marc.DataField;
-import org.marc4j.marc.MarcFactory;
+import static org.junit.jupiter.api.Assertions.*;
 
-import javax.script.ScriptException;
+import fr.progilone.pgcn.service.exchange.marc.script.AbstractScriptTest;
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import javax.script.ScriptException;
+import org.junit.jupiter.api.Test;
+import org.marc4j.marc.DataField;
+import org.marc4j.marc.MarcFactory;
 
 /**
  * Created by Sebastien on 02/12/2016.
@@ -22,7 +20,7 @@ public class CorporateFieldFormatterTest extends AbstractScriptTest {
     @Test
     public void testNull() {
         final CorporateFieldFormatter fmt = new CorporateFieldFormatter("test", null);
-        final String actual = fmt.format((DataField)null);
+        final String actual = fmt.format((DataField) null);
         assertNull(actual);
     }
 

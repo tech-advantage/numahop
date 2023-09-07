@@ -1,21 +1,19 @@
 package fr.progilone.pgcn.service.administration.omeka;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import fr.progilone.pgcn.domain.administration.InternetArchiveConfiguration;
 import fr.progilone.pgcn.domain.administration.omeka.OmekaList;
 import fr.progilone.pgcn.repository.administration.omeka.OmekaListRepository;
 import fr.progilone.pgcn.security.SecurityUtils;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Service de gestion des {@link InternetArchiveConfiguration}
  *
  * @author Progilone
- * Créé le 29 aout 2018
+ *         Créé le 29 aout 2018
  */
 @Service
 public class OmekaListService {
@@ -29,7 +27,7 @@ public class OmekaListService {
 
     @Transactional(readOnly = true)
     public OmekaList findOne(final String identifier) {
-        return omekaListRepository.findOne(identifier);
+        return omekaListRepository.findById(identifier).orElse(null);
     }
 
     @Transactional(readOnly = true)
@@ -44,7 +42,7 @@ public class OmekaListService {
 
     @Transactional
     public void delete(final List<OmekaList> ols) {
-        omekaListRepository.delete(ols);
+        omekaListRepository.deleteAll(ols);
     }
 
     @Transactional

@@ -1,12 +1,11 @@
 package fr.progilone.pgcn.service.document.mapper;
 
+import fr.progilone.pgcn.domain.document.conditionreport.Description;
+import fr.progilone.pgcn.domain.dto.document.conditionreport.ConditionReportValueDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
-
-import fr.progilone.pgcn.domain.document.conditionreport.Description;
-import fr.progilone.pgcn.domain.dto.document.conditionreport.ConditionReportValueDTO;
 
 @Mapper
 public interface ConditionReportValueMapper {

@@ -2,7 +2,6 @@ package fr.progilone.pgcn.domain.dto.statistics;
 
 import com.google.common.collect.Ordering;
 import com.opencsv.bean.CsvBindByName;
-
 import java.time.LocalDate;
 
 public class StatisticsDocRejectedDTO implements Comparable<StatisticsDocRejectedDTO> {

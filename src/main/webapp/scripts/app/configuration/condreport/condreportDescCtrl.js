@@ -1,20 +1,17 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('CondreportDescCtrl', CondreportDescCtrl);
+    angular.module('numaHopApp.controller').controller('CondreportDescCtrl', CondreportDescCtrl);
 
     function CondreportDescCtrl($routeParams, $location, $scope, $timeout, CondreportDescPropertySrvc, CondreportPropertyConfSrvc) {
-
         var mainCtrl = this;
         mainCtrl.create = create;
         mainCtrl.edit = edit;
 
-
         init();
 
         function init() {
-            var promise = CondreportDescPropertySrvc.queryAll();
+            var promise = CondreportDescPropertySrvc.queryAllWithoutFakes();
             mainCtrl.types = CondreportPropertyConfSrvc.types;
 
             promise.then(function (props) {
@@ -29,7 +26,7 @@
 
         /**
          * Création d'une nouvelle propriété
-         * 
+         *
          */
         function create(type) {
             mainCtrl.editedProp = new CondreportDescPropertySrvc();
@@ -41,8 +38,8 @@
 
         /**
          * Édition d'une liste de valeurs
-         * 
-         * @param {any} prop 
+         *
+         * @param {any} prop
          */
         function edit(prop) {
             mainCtrl.editedProp = prop;
@@ -54,14 +51,14 @@
             return $timeout(function () {
                 mainCtrl.configurationInclude = null;
                 $scope.$apply();
-                mainCtrl.configurationInclude = "scripts/app/configuration/condreport/condreportDescEdit.html";
+                mainCtrl.configurationInclude = 'scripts/app/configuration/condreport/condreportDescEdit.html';
             });
         }
 
         /**
          * Sélection d'une configuration à partir de son identifiant
-         * 
-         * @param {any} identifier 
+         *
+         * @param {any} identifier
          */
         function select(identifier) {
             if (identifier) {
@@ -71,8 +68,7 @@
                 if (angular.isDefined(found)) {
                     edit(found);
                 }
-            }
-            else {
+            } else {
                 delete mainCtrl.editedProp;
             }
         }

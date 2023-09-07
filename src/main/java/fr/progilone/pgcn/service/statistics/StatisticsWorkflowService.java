@@ -2,31 +2,6 @@ package fr.progilone.pgcn.service.statistics;
 
 import static fr.progilone.pgcn.domain.workflow.WorkflowStateKey.*;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import fr.progilone.pgcn.domain.dto.statistics.*;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import fr.progilone.pgcn.domain.delivery.Delivery;
 import fr.progilone.pgcn.domain.document.BibliographicRecord;
 import fr.progilone.pgcn.domain.document.DigitalDocument;
@@ -35,6 +10,7 @@ import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.document.PhysicalDocument;
 import fr.progilone.pgcn.domain.document.conditionreport.ConditionReport;
 import fr.progilone.pgcn.domain.document.conditionreport.ConditionReportDetail;
+import fr.progilone.pgcn.domain.dto.statistics.*;
 import fr.progilone.pgcn.domain.library.Library;
 import fr.progilone.pgcn.domain.lot.Lot;
 import fr.progilone.pgcn.domain.project.Project;
@@ -55,6 +31,28 @@ import fr.progilone.pgcn.service.document.conditionreport.ConditionReportService
 import fr.progilone.pgcn.service.statistics.mapper.StatisticsWorkflowMapper;
 import fr.progilone.pgcn.service.user.UserService;
 import fr.progilone.pgcn.service.workflow.WorkflowService;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class StatisticsWorkflowService {
@@ -99,7 +97,8 @@ public class StatisticsWorkflowService {
                                                                      final int page,
                                                                      final int size) {
 
-        final String userLogin = CollectionUtils.isEmpty(users) ? null : users.get(0);
+        final String userLogin = CollectionUtils.isEmpty(users) ? null
+                                                                : users.get(0);
 
         return docUnitWorkflowRepository.findDocUnitProgressStats(libraries,
                                                                   projects,
@@ -112,7 +111,7 @@ public class StatisticsWorkflowService {
                                                                   users,
                                                                   fromDate,
                                                                   toDate,
-                                                                  new PageRequest(page, size)).map(w -> getWorkflowDocUnitProgressDTO(w, null, userLogin));
+                                                                  PageRequest.of(page, size)).map(w -> getWorkflowDocUnitProgressDTO(w, null, userLogin));
     }
 
     @Transactional(readOnly = true)
@@ -128,23 +127,15 @@ public class StatisticsWorkflowService {
                                                                                    final LocalDate fromDate,
                                                                                    final LocalDate toDate) {
 
-        final String userLogin = CollectionUtils.isEmpty(users) ? null : users.get(0);
+        final String userLogin = CollectionUtils.isEmpty(users) ? null
+                                                                : users.get(0);
 
-        return docUnitWorkflowRepository.findDocUnitProgressStatsPending(libraries,
-            projects,
-            projetActive,
-            lots,
-            trains,
-            pgcnId,
-            states,
-            status,
-            users,
-            fromDate,
-            toDate).stream().map(w -> getWorkflowDocUnitProgressDTOLight(w, null, userLogin))  //transform to DTO
-                                                 .collect(Collectors.toList());
+        return docUnitWorkflowRepository.findDocUnitProgressStatsPending(libraries, projects, projetActive, lots, trains, pgcnId, states, status, users, fromDate, toDate)
+                                        .stream()
+                                        .map(w -> getWorkflowDocUnitProgressDTOLight(w, null, userLogin))  // transform to DTO
+                                        .collect(Collectors.toList());
 
     }
-
 
     @Transactional(readOnly = true)
     public List<WorkflowDocUnitProgressDTO> getDocUnitCurrentReport(final List<String> libraries,
@@ -160,27 +151,25 @@ public class StatisticsWorkflowService {
                                                                                                          .orElse(LocalDateTime.MAX));
 
         final List<WorkflowStateStatus> statusesToExclude = Arrays.stream(WorkflowStateStatus.values())
-                                                                  .filter(val -> val != WorkflowStateStatus.FINISHED
-                                                                                 && val != WorkflowStateStatus.FAILED
+                                                                  .filter(val -> val != WorkflowStateStatus.FINISHED && val != WorkflowStateStatus.FAILED
                                                                                  && val != WorkflowStateStatus.PENDING)
                                                                   .collect(Collectors.toList());
 
         final List<DocUnitWorkflow> pendingDocs = docUnitWorkflowRepository.findPendingDocUnitWorkflows(libraries, projects, lots, null, states, fromDate);
 
         return pendingDocs.stream()
-                   .map(w -> getWorkflowDocUnitProgressDTO(w, null, null))
-                   // on ne veut remonter que les étapes en cours ou terminées (#2107)
-                   .peek(dto -> dto.getWorkflow()
-                                   .removeIf(state -> (CollectionUtils.isEmpty(states) && WorkflowStateKey.INITIALISATION_DOCUMENT == state.getKey()
-                                                       || (WorkflowStateKey.NUMERISATION_EN_ATTENTE == state.getKey()
-                                                           && WorkflowStateStatus.FINISHED == state.getStatus())
-                                                       || statusesToExclude.contains(state.getStatus())
-                                                       || state.getStartDate() == null
-                                                       || (state.getEndDate() != null && state.getEndDate().isBefore(fromDate.atStartOfDay()))) || (
-                                                          CollectionUtils.isNotEmpty(states)
-                                                          && !states.contains(state.getKey()))))
-                   .sorted(workflowComparator.reversed())
-                   .collect(Collectors.toList());
+                          .map(w -> getWorkflowDocUnitProgressDTO(w, null, null))
+                          // on ne veut remonter que les étapes en cours ou terminées (#2107)
+                          .peek(dto -> dto.getWorkflow()
+                                          .removeIf(state -> (CollectionUtils.isEmpty(states) && WorkflowStateKey.INITIALISATION_DOCUMENT == state.getKey()
+                                                              || (WorkflowStateKey.NUMERISATION_EN_ATTENTE == state.getKey() && WorkflowStateStatus.FINISHED == state.getStatus())
+                                                              || statusesToExclude.contains(state.getStatus())
+                                                              || state.getStartDate() == null
+                                                              || (state.getEndDate() != null && state.getEndDate().isBefore(fromDate.atStartOfDay()))) || (CollectionUtils
+                                                                                                                                                                          .isNotEmpty(states)
+                                                                                                                                                           && !states.contains(state.getKey()))))
+                          .sorted(workflowComparator.reversed())
+                          .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
@@ -202,19 +191,17 @@ public class StatisticsWorkflowService {
                                                                     .setDocUnitPgcnId(pgcnId)
                                                                     .setDocUnitStates(states)
                                                                     .setDateFrom(fromDate)
-                                                                    .setDateTo(toDate), new PageRequest(page, size))
+                                                                    .setDateTo(toDate), PageRequest.of(page, size))
                                  // chargement des workflows pour chaque livraison
                                  .map(delivery -> {
                                      // UD
                                      final List<String> docUnits = delivery.getDocuments()
                                                                            .stream()
-                                                                           .map(deliveredDoc -> deliveredDoc.getDigitalDocument()
-                                                                                                            .getDocUnit()
-                                                                                                            .getIdentifier())
+                                                                           .map(deliveredDoc -> deliveredDoc.getDigitalDocument().getDocUnit().getIdentifier())
                                                                            .collect(Collectors.toList());
                                      // UD-Workflow
-                                     final List<DocUnitWorkflow> workflows =
-                                         docUnits.isEmpty() ? Collections.emptyList() : docUnitWorkflowRepository.findByDocUnitIdentifierIn(docUnits);
+                                     final List<DocUnitWorkflow> workflows = docUnits.isEmpty() ? Collections.emptyList()
+                                                                                                : docUnitWorkflowRepository.findByDocUnitIdentifierIn(docUnits);
 
                                      return getWorkflowDeliveryProgressDTO(delivery, workflows);
                                  });
@@ -232,8 +219,8 @@ public class StatisticsWorkflowService {
                                         .filter(w -> w.getDocUnit() != null)
                                         .map(w -> getWorkflowDocUnitProgressDTO(w, CONTROLE_QUALITE_EN_COURS, null))
                                         // on ne garde que le controle qualite
-                                        //.peek(dto -> dto.getWorkflow()
-                                        //.removeIf(st -> WorkflowStateKey.CONTROLE_QUALITE_EN_COURS != st.getKey()))
+                                        // .peek(dto -> dto.getWorkflow()
+                                        // .removeIf(st -> WorkflowStateKey.CONTROLE_QUALITE_EN_COURS != st.getKey()))
                                         .collect(Collectors.toList());
     }
 
@@ -280,7 +267,8 @@ public class StatisticsWorkflowService {
                                                                                                 .setFromDate(fromDate)
                                                                                                 .setToDate(toDate))
                                         .stream()
-                                        .filter(w -> w.getDocUnit() != null && w.getDocUnit().getLibrary() != null && w.getModel() != null)
+                                        .filter(w -> w.getDocUnit() != null && w.getDocUnit().getLibrary() != null
+                                                     && w.getModel() != null)
                                         // Regroupement des DocUnitWorkflow par bibliothèque + workflow
                                         .collect(Collectors.groupingBy(w -> Pair.of(w.getDocUnit().getLibrary(), w.getModel())))
                                         .entrySet()
@@ -299,10 +287,9 @@ public class StatisticsWorkflowService {
                                                                // Filtrage des étapes achevées
                                                                .filter(this::filterFinishedState)
                                                                .collect(Collectors.groupingBy(DocUnitState::getKey,
-                                                                                              // la valeur mappée est égale à la durée moyenne des étapes identiques, en secondes
-                                                                                              Collectors.mapping(st -> st.getStartDate()
-                                                                                                                         .until(st.getEndDate(),
-                                                                                                                                ChronoUnit.SECONDS),
+                                                                                              // la valeur mappée est égale à la durée moyenne des
+                                                                                              // étapes identiques, en secondes
+                                                                                              Collectors.mapping(st -> st.getStartDate().until(st.getEndDate(), ChronoUnit.SECONDS),
                                                                                                                  Collectors.averagingLong(Long::longValue))))
                                                                .entrySet()
                                                                .stream()
@@ -318,7 +305,8 @@ public class StatisticsWorkflowService {
                                                                    dto.setWorkflowModelIdentifier(workflow.getIdentifier());
                                                                    dto.setWorkflowModelName(workflow.getName());
                                                                    dto.setKey(state);
-                                                                   dto.setAvgDuration(avgDuration != null ? avgDuration.longValue() : 0);
+                                                                   dto.setAvgDuration(avgDuration != null ? avgDuration.longValue()
+                                                                                                          : 0);
 
                                                                    return dto;
                                                                });
@@ -356,31 +344,28 @@ public class StatisticsWorkflowService {
                                                     .map(st -> new WorkflowUserProgressRegroup(library.getIdentifier(), st.getUser(), w, st));
                                         })
                                         // regroupement par [library + user] identiques
-                                        .collect(Collectors.groupingBy(WorkflowUserProgressRegroup::getKey,
-                                                                       Collectors.collectingAndThen(Collectors.toList(), list -> {
-                                                                           final Library library =
-                                                                               list.get(0).getWorkflow().getDocUnit().getLibrary();
-                                                                           final String userLogin = list.get(0).getUser();
-                                                                           final User user = StringUtils.isNotBlank(userLogin) ?
-                                                                                             userService.findByLogin(userLogin) :
-                                                                                             null;
+                                        .collect(Collectors.groupingBy(WorkflowUserProgressRegroup::getKey, Collectors.collectingAndThen(Collectors.toList(), list -> {
+                                            final Library library = list.get(0).getWorkflow().getDocUnit().getLibrary();
+                                            final String userLogin = list.get(0).getUser();
+                                            final User user = StringUtils.isNotBlank(userLogin) ? userService.findByLogin(userLogin)
+                                                                                                : null;
 
-                                                                           // construction des DTOs
-                                                                           final WorkflowUserProgressDTO dto = new WorkflowUserProgressDTO();
-                                                                           // library
-                                                                           dto.setLibraryIdentifier(library.getIdentifier());
-                                                                           dto.setLibraryName(library.getName());
-                                                                           // user
-                                                                           dto.setUserLogin(userLogin);
-                                                                           if (user != null) {
-                                                                               dto.setUserIdentifier(user.getIdentifier());
-                                                                               dto.setUserFullName(user.getFullName());
-                                                                           }
-                                                                           // calcul des stats
-                                                                           setWorkflowStateProgressDTO(dto, list);
+                                            // construction des DTOs
+                                            final WorkflowUserProgressDTO dto = new WorkflowUserProgressDTO();
+                                            // library
+                                            dto.setLibraryIdentifier(library.getIdentifier());
+                                            dto.setLibraryName(library.getName());
+                                            // user
+                                            dto.setUserLogin(userLogin);
+                                            if (user != null) {
+                                                dto.setUserIdentifier(user.getIdentifier());
+                                                dto.setUserFullName(user.getFullName());
+                                            }
+                                            // calcul des stats
+                                            setWorkflowStateProgressDTO(dto, list);
 
-                                                                           return dto;
-                                                                       })))
+                                            return dto;
+                                        })))
                                         .values();
     }
 
@@ -393,14 +378,13 @@ public class StatisticsWorkflowService {
                                                                     final LocalDate fromDate,
                                                                     final LocalDate toDate) {
         // Chargement des DocUnitWorkflow
-        final List<DocUnitWorkflow> docUnitWorkflows =
-            docUnitWorkflowRepository.findDocUnitWorkflows(new DocUnitWorkflowSearchBuilder().setLibraries(libraries)
-                                                                                             .setProjects(projects)
-                                                                                             .setLots(lots)
-                                                                                             .setStates(states)
-                                                                                             .setRoles(roles)
-                                                                                             .setFromDate(fromDate)
-                                                                                             .setToDate(toDate));
+        final List<DocUnitWorkflow> docUnitWorkflows = docUnitWorkflowRepository.findDocUnitWorkflows(new DocUnitWorkflowSearchBuilder().setLibraries(libraries)
+                                                                                                                                        .setProjects(projects)
+                                                                                                                                        .setLots(lots)
+                                                                                                                                        .setStates(states)
+                                                                                                                                        .setRoles(roles)
+                                                                                                                                        .setFromDate(fromDate)
+                                                                                                                                        .setToDate(toDate));
         // Chargement des utilisateurs
         final List<String> logins = docUnitWorkflows.stream()
                                                     .flatMap(w -> w.getStates().stream())
@@ -414,61 +398,42 @@ public class StatisticsWorkflowService {
             users.removeIf(u -> !roles.contains(u.getRole().getIdentifier()));
         }
 
-        return docUnitWorkflows.stream()
-                               .filter(docUnitWorkflow -> docUnitWorkflow.getDocUnit() != null)
-                               .flatMap(docWorkflow ->
-                                            // Workflow d'une UD
-                                            docWorkflow.getStates()
-                                                       .stream()
-                                                       // filtrage des états, qui ont été tous chargés par hibernate
-                                                       .filter(state -> filterState(state,
-                                                                                    states))
-                                                       .filter(state -> filterPeriod(state,
-                                                                                     fromDate,
-                                                                                     toDate))
-                                                       // Étapes
-                                                       .map(state -> users.stream()
-                                                                          .filter(u -> StringUtils.equalsIgnoreCase(u.getLogin(),
-                                                                                                                    state.getUser()))
-                                                                          .findAny()
-                                                                          .map(user -> {
-                                                                              final WorkflowUserActivityDTO dto = new WorkflowUserActivityDTO();
-                                                                              // docunit
-                                                                              setWorkflowUserActivityDTO(dto,
-                                                                                                         docWorkflow.getDocUnit());
+        return docUnitWorkflows.stream().filter(docUnitWorkflow -> docUnitWorkflow.getDocUnit() != null).flatMap(docWorkflow ->
+        // Workflow d'une UD
+        docWorkflow.getStates()
+                   .stream()
+                   // filtrage des états, qui ont été tous chargés par hibernate
+                   .filter(state -> filterState(state, states))
+                   .filter(state -> filterPeriod(state, fromDate, toDate))
+                   // Étapes
+                   .map(state -> users.stream().filter(u -> StringUtils.equalsIgnoreCase(u.getLogin(), state.getUser())).findAny().map(user -> {
+                       final WorkflowUserActivityDTO dto = new WorkflowUserActivityDTO();
+                       // docunit
+                       setWorkflowUserActivityDTO(dto, docWorkflow.getDocUnit());
 
-                                                                              // user
-                                                                              dto.setUserIdentifier(user.getIdentifier());
-                                                                              dto.setUserLogin(user.getLogin());
-                                                                              dto.setUserFullName(user.getFullName());
+                       // user
+                       dto.setUserIdentifier(user.getIdentifier());
+                       dto.setUserLogin(user.getLogin());
+                       dto.setUserFullName(user.getFullName());
 
-                                                                              final Role role = user.getRole();
-                                                                              if (role
-                                                                                  != null) {
-                                                                                  dto.setRoleIdentifier(role.getIdentifier());
-                                                                                  dto.setRoleLabel(role.getLabel());
-                                                                              }
+                       final Role role = user.getRole();
+                       if (role != null) {
+                           dto.setRoleIdentifier(role.getIdentifier());
+                           dto.setRoleLabel(role.getLabel());
+                       }
 
-                                                                              // étape
-                                                                              dto.setState(state.getKey());
-                                                                              dto.setStartDate(state.getStartDate());
-                                                                              dto.setEndDate(state.getEndDate());
+                       // étape
+                       dto.setState(state.getKey());
+                       dto.setStartDate(state.getStartDate());
+                       dto.setEndDate(state.getEndDate());
 
-                                                                              // Durée
-                                                                              if (state.getStartDate()
-                                                                                  != null
-                                                                                  && state.getEndDate()
-                                                                                     != null) {
-                                                                                  final long duration = state.getStartDate()
-                                                                                                             .until(state.getEndDate(),
-                                                                                                                    ChronoUnit.SECONDS);
-                                                                                  dto.setDuration(duration);
-                                                                              }
-                                                                              return dto;
-                                                                          })))
-                               .filter(Optional::isPresent)
-                               .map(Optional::get)
-                               .collect(Collectors.toList());
+                       // Durée
+                       if (state.getStartDate() != null && state.getEndDate() != null) {
+                           final long duration = state.getStartDate().until(state.getEndDate(), ChronoUnit.SECONDS);
+                           dto.setDuration(duration);
+                       }
+                       return dto;
+                   }))).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
@@ -540,9 +505,10 @@ public class StatisticsWorkflowService {
             user = null;
         }
 
-        workflow.getStates().stream().filter(state -> stateToKeep == null || stateToKeep == state.getKey())
-                                    .filter(state -> user == null
-                                            || (user != null && workflowService.canUserProcessTask(user.getIdentifier(), state)))
+        workflow.getStates()
+                .stream()
+                .filter(state -> stateToKeep == null || stateToKeep == state.getKey())
+                .filter(state -> user == null || (user != null && workflowService.canUserProcessTask(user.getIdentifier(), state)))
                 // dto
                 .map(state -> {
                     final WorkflowDocUnitProgressDTO.WorkflowState workflowState = new WorkflowDocUnitProgressDTO.WorkflowState();
@@ -551,19 +517,21 @@ public class StatisticsWorkflowService {
                     workflowState.setStartDate(state.getStartDate());
                     workflowState.setEndDate(state.getEndDate());
                     return workflowState;
-                }).forEach(dto::addWorkflow);
+                })
+                .forEach(dto::addWorkflow);
 
         return setInfosAndNumberPageToDTO(dto, docUnit, physicalDocuments, lot, record);
     }
 
-    //FIXME: To factorise a lot of code, I need to use WorkflowDocUnitProgressDTO and transfer data to tu DTOPending
-    //FIXME: Maybe find something more efficient
+    // FIXME: To factorise a lot of code, I need to use WorkflowDocUnitProgressDTO and transfer data to tu DTOPending
+    // FIXME: Maybe find something more efficient
     private WorkflowDocUnitProgressDTOPending getWorkflowDocUnitProgressDTOLight(final DocUnitWorkflow workflow, final WorkflowStateKey stateToKeep, final String userLogin) {
         final WorkflowDocUnitProgressDTOPending pendingDTO = new WorkflowDocUnitProgressDTOPending();
         final DocUnit docUnit = workflow.getDocUnit();
         WorkflowDocUnitProgressDTO dto = new WorkflowDocUnitProgressDTO();
 
-        if (docUnit == null) return pendingDTO;
+        if (docUnit == null)
+            return pendingDTO;
 
         final Project project = docUnit.getProject();
         final Lot lot = docUnit.getLot();
@@ -589,16 +557,20 @@ public class StatisticsWorkflowService {
 
         if (userLogin != null) {
             user = userService.findByLogin(userLogin);
-        }
-        else {
+        } else {
             user = null;
         }
 
         dto = setInfosAndNumberPageToDTO(dto, docUnit, physicalDocuments, lot, record);
 
-        pendingDTO.setWorkflowStateKeys(workflow.getStates().stream().filter(state -> (stateToKeep == null || stateToKeep == state.getKey()) && (user != null && workflowService.canUserProcessTask(user.getIdentifier(), state)))
-                                     .filter(state -> state.getStatus().equals(WorkflowStateStatus.PENDING))
-                                     .map(state -> state.getKey().toString()).collect(Collectors.toList()));
+        pendingDTO.setWorkflowStateKeys(workflow.getStates()
+                                                .stream()
+                                                .filter(state -> (stateToKeep == null || stateToKeep == state.getKey()) && (user != null && workflowService.canUserProcessTask(user
+                                                                                                                                                                                   .getIdentifier(),
+                                                                                                                                                                               state)))
+                                                .filter(state -> state.getStatus().equals(WorkflowStateStatus.PENDING))
+                                                .map(state -> state.getKey().toString())
+                                                .collect(Collectors.toList()));
 
         pendingDTO.setTotalPage(dto.getTotalPage());
         pendingDTO.setDocStatus(dto.getDocStatus());
@@ -607,10 +579,13 @@ public class StatisticsWorkflowService {
         return pendingDTO;
     }
 
-    private WorkflowDocUnitProgressDTO setInfosAndNumberPageToDTO(WorkflowDocUnitProgressDTO dto, DocUnit docUnit, Set<PhysicalDocument> physicalDocuments, Lot lot, Optional<BibliographicRecord> record) {
+    private WorkflowDocUnitProgressDTO setInfosAndNumberPageToDTO(WorkflowDocUnitProgressDTO dto,
+                                                                  DocUnit docUnit,
+                                                                  Set<PhysicalDocument> physicalDocuments,
+                                                                  Lot lot,
+                                                                  Optional<BibliographicRecord> record) {
         final WorkflowDocUnitInfoDTO infos = new WorkflowDocUnitInfoDTO();
-        final Optional<DigitalDocument> digitalDoc =
-            docUnit.getDigitalDocuments().stream().filter(digDoc -> !StringUtils.isEmpty(digDoc.getDigitalId())).findFirst();
+        final Optional<DigitalDocument> digitalDoc = docUnit.getDigitalDocuments().stream().filter(digDoc -> !StringUtils.isEmpty(digDoc.getDigitalId())).findFirst();
         if (digitalDoc.isPresent()) {
             infos.setRadical(digitalDoc.get().getDigitalId());
             // nb pages du doc (celui du doc physique n'est pas fiable)
@@ -630,8 +605,7 @@ public class StatisticsWorkflowService {
             } else {
                 // et sinon nbpages du doc physique
                 if (CollectionUtils.isNotEmpty(physicalDocuments)) {
-                    final int totalPages =
-                        physicalDocuments.stream().filter(ph -> ph.getTotalPage() != null).mapToInt(PhysicalDocument::getTotalPage).sum();
+                    final int totalPages = physicalDocuments.stream().filter(ph -> ph.getTotalPage() != null).mapToInt(PhysicalDocument::getTotalPage).sum();
                     dto.setTotalPage(totalPages);
                 }
             }
@@ -646,7 +620,6 @@ public class StatisticsWorkflowService {
 
         return dto;
     }
-
 
     /**
      * Conversion des {@link DocUnitWorkflow} en {@link WorkflowDeliveryProgressDTO}
@@ -688,18 +661,20 @@ public class StatisticsWorkflowService {
             }
 
             // Workflow
-            final List<DocUnitState> docUnitStates = workflow.getStates().stream()
+            final List<DocUnitState> docUnitStates = workflow.getStates()
+                                                             .stream()
                                                              // étapes de workflow en cours
                                                              .filter(state -> state.getStartDate() != null && state.getEndDate() == null)
                                                              .collect(Collectors.toList());
 
             // Toutes les étapes sont terminées
-            if(docUnitStates.size() == 0) {
+            if (docUnitStates.size() == 0) {
                 // dernière étape terminée
                 // (souvent la diffusion et la cloture se termine en même temps, on trie par Key pour faire remonter la cloture avant)
-                final Optional<DocUnitState> docUnitState = workflow.getStates().stream()
+                final Optional<DocUnitState> docUnitState = workflow.getStates()
+                                                                    .stream()
                                                                     .filter(state -> state.getEndDate() != null)
-                                                                    .sorted((s1,s2)-> s2.getKey().compareTo(s1.getKey()))
+                                                                    .sorted((s1, s2) -> s2.getKey().compareTo(s1.getKey()))
                                                                     .max(Comparator.comparing(DocUnitState::getEndDate));
 
                 if (docUnitState.isPresent()) {
@@ -719,23 +694,27 @@ public class StatisticsWorkflowService {
 
     /**
      *
-     * @param dto WorkflowDeliveryProgressDTO
-     * @param state DocUnitState
+     * @param dto
+     *            WorkflowDeliveryProgressDTO
+     * @param state
+     *            DocUnitState
      */
     private void incrementWorkflowStepDto(final WorkflowDeliveryProgressDTO dto, final DocUnitState state) {
         final WorkflowDeliveryProgressDTO.WorkflowState dtoStep
-            // recherche / création de l'étape de workflow en cours, dans le dto
-            = dto.getWorkflow().stream()
-                 // étape du workflow dans le dto
-                 .filter(dtoWorkflow -> dtoWorkflow.getKey() == state.getKey()).findAny()
-                 // ou création d'une nouvelle étape dans le dto
-                 .orElseGet(() -> {
-                     final WorkflowDeliveryProgressDTO.WorkflowState workflowState = new WorkflowDeliveryProgressDTO.WorkflowState();
-                     workflowState.setKey(state.getKey());
-                     dto.addWorkflow(workflowState);
+                                                               // recherche / création de l'étape de workflow en cours, dans le dto
+                                                               = dto.getWorkflow()
+                                                                    .stream()
+                                                                    // étape du workflow dans le dto
+                                                                    .filter(dtoWorkflow -> dtoWorkflow.getKey() == state.getKey())
+                                                                    .findAny()
+                                                                    // ou création d'une nouvelle étape dans le dto
+                                                                    .orElseGet(() -> {
+                                                                        final WorkflowDeliveryProgressDTO.WorkflowState workflowState = new WorkflowDeliveryProgressDTO.WorkflowState();
+                                                                        workflowState.setKey(state.getKey());
+                                                                        dto.addWorkflow(workflowState);
 
-                     return workflowState;
-                 });
+                                                                        return workflowState;
+                                                                    });
 
         dtoStep.incrementCount();
     }
@@ -746,22 +725,19 @@ public class StatisticsWorkflowService {
 
         // rejetees / validees
         final long nbVal = list.stream()
-                                .filter(g -> WorkflowStateKey.CONTROLE_QUALITE_EN_COURS == g.getState().getKey())
-                                .filter(g -> WorkflowStateStatus.FINISHED == g.getState().getStatus())
-                                .map(g -> g.getWorkflow().getDocUnit())
-                                .distinct().count();
-        dto.setNbRejectedDocUnit(dto.getNbDocUnit()-nbVal);
+                               .filter(g -> WorkflowStateKey.CONTROLE_QUALITE_EN_COURS == g.getState().getKey())
+                               .filter(g -> WorkflowStateStatus.FINISHED == g.getState().getStatus())
+                               .map(g -> g.getWorkflow().getDocUnit())
+                               .distinct()
+                               .count();
+        dto.setNbRejectedDocUnit(dto.getNbDocUnit() - nbVal);
         dto.setNbValidatedDocUnit(nbVal);
 
         // Nombre moyen de pages
         list.stream()
             .map(g -> g.getWorkflow().getDocUnit())
             .distinct()
-            .mapToInt(doc -> doc.getPhysicalDocuments()
-                                .stream()
-                                .filter(ph -> ph.getTotalPage() != null)
-                                .mapToInt(PhysicalDocument::getTotalPage)
-                                .sum())
+            .mapToInt(doc -> doc.getPhysicalDocuments().stream().filter(ph -> ph.getTotalPage() != null).mapToInt(PhysicalDocument::getTotalPage).sum())
             .average()
             .ifPresent(avg -> dto.setAvgTotalPages((int) avg));
 
@@ -851,7 +827,8 @@ public class StatisticsWorkflowService {
         }
 
         public String getKey() {
-            return library + "#" + user;
+            return library + "#"
+                   + user;
         }
     }
 }

@@ -4,7 +4,7 @@ import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.dto.AbstractDTO;
 
 /**
- * DTO représentant une unité documentaire min 
+ * DTO représentant une unité documentaire min
  *
  * @author manu
  * @see DocUnit
@@ -14,20 +14,16 @@ public class MinimalListDocUnitDTO extends AbstractDTO {
     private String identifier;
     private String label;
     private String pgcnId;
-    
 
     public MinimalListDocUnitDTO() {
     }
 
-    public MinimalListDocUnitDTO(final String identifier,
-                                final String label,
-                                final String pgcnId) {
+    public MinimalListDocUnitDTO(final String identifier, final String label, final String pgcnId) {
         super();
         this.identifier = identifier;
         this.label = label;
         this.pgcnId = pgcnId;
     }
-
 
     public final String getIdentifier() {
         return identifier;

@@ -5,31 +5,32 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
-
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.compress.utils.IOUtils;
 
 /**
- * Utilitaire pour tarer (detarer) un dossier 
- * en conservant son arborescence ou non. 
- * 
+ * Utilitaire pour tarer (detarer) un dossier
+ * en conservant son arborescence ou non.
+ *
  * @author Emmanuel RIZET
  *
  */
 public class TarUtils {
-    
+
     public TarUtils() {
     }
-    
+
     /**
-     * Construction du tar en conservant la structure du repertoire racine. 
+     * Construction du tar en conservant la structure du repertoire racine.
      *
      * Pour tout archiver à plat, laisser basePath à null.
      *
-     * @param name tar name
-     * @param basePath root
+     * @param name
+     *            tar name
+     * @param basePath
+     *            root
      * @param files
      * @throws IOException
      */
@@ -38,10 +39,12 @@ public class TarUtils {
             for (final File file : files) {
                 final String entry;
                 if (basePath == null) {
-                    entry = "." + File.separator + file.getName();
+                    entry = "." + File.separator
+                            + file.getName();
                 } else {
                     final Path p = basePath.relativize(file.toPath());
-                    entry = p.getParent() == null ? null : p.getParent().toString();
+                    entry = p.getParent() == null ? null
+                                                  : p.getParent().toString();
                 }
                 addToArchiveCompression(out, file, entry);
             }
@@ -49,7 +52,7 @@ public class TarUtils {
     }
 
     public static void decompress(final String in, final File out) throws IOException {
-        try (TarArchiveInputStream fin = new TarArchiveInputStream(new FileInputStream(in))){
+        try (TarArchiveInputStream fin = new TarArchiveInputStream(new FileInputStream(in))) {
             TarArchiveEntry entry;
             while ((entry = fin.getNextTarEntry()) != null) {
                 if (entry.isDirectory()) {
@@ -76,15 +79,17 @@ public class TarUtils {
     }
 
     private static void addToArchiveCompression(final TarArchiveOutputStream out, final File file, final String dir) throws IOException {
-        
-        final String entry = dir==null? file.getName() : dir+File.separator+file.getName();
+
+        final String entry = dir == null ? file.getName()
+                                         : dir + File.separator
+                                           + file.getName();
         if (file.isFile()) {
             out.putArchiveEntry(new TarArchiveEntry(file, entry));
             try (FileInputStream in = new FileInputStream(file)) {
                 IOUtils.copy(in, out);
             }
             out.closeArchiveEntry();
-        } 
-    }  
+        }
+    }
 
 }

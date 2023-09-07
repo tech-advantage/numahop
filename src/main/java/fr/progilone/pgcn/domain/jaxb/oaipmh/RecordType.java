@@ -5,24 +5,24 @@
 // Généré le : 2018.08.13 à 01:08:19 PM CEST
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.oaipmh;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
-
 
 /**
  * A record has a header, a metadata part, and
- *         an optional about container
+ * an optional about container
  *
- * <p>Classe Java pour recordType complex type.
+ * <p>
+ * Classe Java pour recordType complex type.
  *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="recordType">
@@ -41,11 +41,10 @@ import javax.xml.bind.annotation.XmlType;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "recordType", propOrder = {
-    "header",
-    "metadata",
-    "about"
-})
+@XmlType(name = "recordType",
+         propOrder = {"header",
+                      "metadata",
+                      "about"})
 public class RecordType {
 
     @XmlElement(required = true)
@@ -57,8 +56,8 @@ public class RecordType {
      * Obtient la valeur de la propriété header.
      *
      * @return
-     *     possible object is
-     *     {@link HeaderType }
+     *         possible object is
+     *         {@link HeaderType }
      *
      */
     public HeaderType getHeader() {
@@ -69,8 +68,8 @@ public class RecordType {
      * Définit la valeur de la propriété header.
      *
      * @param value
-     *     allowed object is
-     *     {@link HeaderType }
+     *            allowed object is
+     *            {@link HeaderType }
      *
      */
     public void setHeader(HeaderType value) {
@@ -81,8 +80,8 @@ public class RecordType {
      * Obtient la valeur de la propriété metadata.
      *
      * @return
-     *     possible object is
-     *     {@link MetadataType }
+     *         possible object is
+     *         {@link MetadataType }
      *
      */
     public MetadataType getMetadata() {
@@ -93,8 +92,8 @@ public class RecordType {
      * Définit la valeur de la propriété metadata.
      *
      * @param value
-     *     allowed object is
-     *     {@link MetadataType }
+     *            allowed object is
+     *            {@link MetadataType }
      *
      */
     public void setMetadata(MetadataType value) {
@@ -112,8 +111,9 @@ public class RecordType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getAbout().add(newItem);
+     * getAbout().add(newItem);
      * </pre>
      *
      *

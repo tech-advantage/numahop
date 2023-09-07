@@ -1,5 +1,8 @@
 package fr.progilone.pgcn.web.rest.exchange;
 
+import static fr.progilone.pgcn.web.rest.administration.security.AuthorizationConstants.ADMINISTRATION_LIB;
+import static fr.progilone.pgcn.web.rest.exchange.security.AuthorizationConstants.*;
+
 import com.codahale.metrics.annotation.Timed;
 import fr.progilone.pgcn.domain.dto.exchange.CSVMappingDTO;
 import fr.progilone.pgcn.domain.exchange.CSVMapping;
@@ -7,24 +10,15 @@ import fr.progilone.pgcn.domain.library.Library;
 import fr.progilone.pgcn.service.exchange.CSVMappingService;
 import fr.progilone.pgcn.web.rest.AbstractRestController;
 import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.servlet.http.HttpServletRequest;
+import java.util.Collection;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletRequest;
-import java.util.Collection;
-import java.util.Set;
-
-import static fr.progilone.pgcn.web.rest.administration.security.AuthorizationConstants.*;
-import static fr.progilone.pgcn.web.rest.exchange.security.AuthorizationConstants.*;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Contrôleur gérant les mappings
@@ -99,11 +93,13 @@ public class CSVMappingController extends AbstractRestController {
         return new ResponseEntity<>(mappingService.findByLibrary(library), HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.GET, params = {"usable", "library"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.GET,
+                    params = {"usable",
+                              "library"},
+                    produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed({MAP_HAB0})
-    public ResponseEntity<Set<CSVMappingDTO>> findUsableByLibrary(final HttpServletRequest request,
-                                                                  @RequestParam(value = "library") Library library) {
+    public ResponseEntity<Set<CSVMappingDTO>> findUsableByLibrary(final HttpServletRequest request, @RequestParam(value = "library") Library library) {
         // Vérification des droits d'accès par rapport à la bibliothèque de l'utilisateur
         if (!libraryAccesssHelper.checkLibrary(request, library)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
@@ -156,12 +152,11 @@ public class CSVMappingController extends AbstractRestController {
         }
         // Vérification des droits d'accès par rapport à la bibliothèque de l'utilisateur, pour le mapping existant
         if (library == null ?
-            // la bib n'est pas renseignée: accès en lecture + écriture à la bib du mapping
-            !libraryAccesssHelper.checkLibrary(request, mapping, CSVMapping::getLibrary) :
-            // la bib est pas renseignée: accès en lecture à la bib du mapping + accès en écriture à la bib renseignée
-            !libraryAccesssHelper.checkLibrary(request, mapping, CSVMapping::getLibrary) || !libraryAccesssHelper.checkLibrary(
-                request,
-                library)) {
+        // la bib n'est pas renseignée: accès en lecture + écriture à la bib du mapping
+                            !libraryAccesssHelper.checkLibrary(request, mapping, CSVMapping::getLibrary)
+                            :
+                            // la bib est pas renseignée: accès en lecture à la bib du mapping + accès en écriture à la bib renseignée
+                            !libraryAccesssHelper.checkLibrary(request, mapping, CSVMapping::getLibrary) || !libraryAccesssHelper.checkLibrary(request, library)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         return new ResponseEntity<>(mappingService.duplicateMapping(id, library), HttpStatus.OK);

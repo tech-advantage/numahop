@@ -1,16 +1,18 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <changeSet id="pgcn-check-012" author="progilone">
-        
+
         <!-- Controle PDF multi => inactif par defaut -->
-        <sql dbms="mysql">
-            UPDATE check_automatic_type 
-            SET active = 0 
+        <sql>
+            UPDATE check_automatic_type
+            SET active = 0
             WHERE identifier = 'automatic_file_pdf_multi'
         </sql>
-        
+
     </changeSet>
 </databaseChangeLog>

@@ -1,13 +1,12 @@
 package fr.progilone.pgcn.domain.dto.document;
 
-import java.time.LocalDate;
-import java.util.List;
-
 import fr.progilone.pgcn.domain.document.DigitalDocument;
 import fr.progilone.pgcn.domain.dto.AbstractDTO;
 import fr.progilone.pgcn.domain.dto.document.conditionreport.LightCondReportDetailDTO;
 import fr.progilone.pgcn.domain.dto.lot.SimpleLotDTO;
 import fr.progilone.pgcn.domain.dto.project.SimpleProjectDTO;
+import java.time.LocalDate;
+import java.util.List;
 
 public class SimpleListDigitalDocumentDTO extends AbstractDTO {
 
@@ -24,7 +23,7 @@ public class SimpleListDigitalDocumentDTO extends AbstractDTO {
     private int pageNumber;
     private List<LightDeliveredDigitalDocDTO> deliveries;
     private LightCondReportDetailDTO reportDetail;
-    
+
     public SimpleListDigitalDocumentDTO() {
     }
 
@@ -45,7 +44,7 @@ public class SimpleListDigitalDocumentDTO extends AbstractDTO {
     }
 
     public String getReducedLabel() {
-        if (label==null || label.length()<25) {
+        if (label == null || label.length() < 25) {
             return label;
         } else {
             return label.substring(0, 24).concat("...");

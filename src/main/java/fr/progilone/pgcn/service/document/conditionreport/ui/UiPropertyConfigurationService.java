@@ -4,14 +4,14 @@ import fr.progilone.pgcn.domain.document.conditionreport.DescriptionProperty;
 import fr.progilone.pgcn.domain.document.conditionreport.PropertyConfiguration;
 import fr.progilone.pgcn.domain.dto.document.conditionreport.PropertyConfigurationDTO;
 import fr.progilone.pgcn.domain.library.Library;
+import fr.progilone.pgcn.repository.library.LibraryRepository;
 import fr.progilone.pgcn.service.document.conditionreport.PropertyConfigurationService;
 import fr.progilone.pgcn.service.document.mapper.PropertyConfigurationMapper;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class UiPropertyConfigurationService {
@@ -19,10 +19,12 @@ public class UiPropertyConfigurationService {
     private static final PropertyConfigurationMapper MAPPER = PropertyConfigurationMapper.INSTANCE;
 
     private final PropertyConfigurationService propertyConfigurationService;
+    private final LibraryRepository libraryRepository;
 
     @Autowired
-    public UiPropertyConfigurationService(final PropertyConfigurationService propertyConfigurationService) {
+    public UiPropertyConfigurationService(final PropertyConfigurationService propertyConfigurationService, final LibraryRepository libraryRepository) {
         this.propertyConfigurationService = propertyConfigurationService;
+        this.libraryRepository = libraryRepository;
     }
 
     @Transactional
@@ -41,6 +43,12 @@ public class UiPropertyConfigurationService {
     public List<PropertyConfigurationDTO> findByLibrary(final Library library) {
         final List<PropertyConfiguration> confs = propertyConfigurationService.findByLibrary(library);
         return confs.stream().map(MAPPER::confToDto).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<PropertyConfigurationDTO> findByLibraryAndNotShowOnCreation(final String libraryId) {
+        Library library = libraryRepository.findOneWithDependencies(libraryId);
+        return findByLibrary(library).stream().filter(prop -> !prop.isShowOnCreation()).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)

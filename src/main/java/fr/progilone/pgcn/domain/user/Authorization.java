@@ -4,19 +4,18 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.google.common.base.MoreObjects;
 import fr.progilone.pgcn.domain.AbstractDomainObject;
 import fr.progilone.pgcn.domain.administration.Module;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 /**
  * Habilitation
@@ -83,12 +82,6 @@ public class Authorization extends AbstractDomainObject {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
-                          .omitNullValues()
-                          .add("identifier", identifier)
-                          .add("code", code)
-                          .add("label", label)
-                          .add("module", module)
-                          .toString();
+        return MoreObjects.toStringHelper(this).omitNullValues().add("identifier", identifier).add("code", code).add("label", label).add("module", module).toString();
     }
 }

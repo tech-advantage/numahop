@@ -1,8 +1,8 @@
 package fr.progilone.pgcn.service.util;
 
-import org.apache.commons.text.RandomStringGenerator;
-
 import static org.apache.commons.text.CharacterPredicates.*;
+
+import org.apache.commons.text.RandomStringGenerator;
 
 /**
  * Utility class for generating random Strings.

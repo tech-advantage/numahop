@@ -1,5 +1,10 @@
 package fr.progilone.pgcn;
 
+import fr.progilone.pgcn.security.AjaxAuthenticationFailureHandler;
+import fr.progilone.pgcn.security.AjaxAuthenticationSuccessHandler;
+import fr.progilone.pgcn.security.AjaxLogoutSuccessHandler;
+import fr.progilone.pgcn.security.Http401UnauthorizedEntryPoint;
+import fr.progilone.pgcn.service.LockService;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.context.annotation.Bean;
@@ -8,12 +13,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.NullRememberMeServices;
 import org.springframework.security.web.authentication.RememberMeServices;
 
-import fr.progilone.pgcn.security.AjaxAuthenticationFailureHandler;
-import fr.progilone.pgcn.security.AjaxAuthenticationSuccessHandler;
-import fr.progilone.pgcn.security.AjaxLogoutSuccessHandler;
-import fr.progilone.pgcn.security.Http401UnauthorizedEntryPoint;
-import fr.progilone.pgcn.service.LockService;
-
 @Configuration
 public class ApplicationSecurityTest {
 
@@ -21,7 +20,7 @@ public class ApplicationSecurityTest {
     public UserDetailsService userDetailsService() {
         return Mockito.mock(UserDetailsService.class);
     }
-    
+
     @Mock
     public LockService lockService;
 

@@ -1,21 +1,30 @@
 package fr.progilone.pgcn.repository.document;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import fr.progilone.pgcn.domain.document.BibliographicRecord;
+import fr.progilone.pgcn.domain.document.DocUnit;
+import fr.progilone.pgcn.domain.document.QBibliographicRecord;
+import fr.progilone.pgcn.domain.document.QDocUnit;
+import fr.progilone.pgcn.domain.document.QPhysicalDocument;
 import fr.progilone.pgcn.domain.library.QLibrary;
+import fr.progilone.pgcn.domain.lot.QLot;
+import fr.progilone.pgcn.domain.project.QProject;
 import fr.progilone.pgcn.domain.user.QUser;
 import fr.progilone.pgcn.domain.workflow.QDocUnitState;
 import fr.progilone.pgcn.domain.workflow.QDocUnitWorkflow;
 import fr.progilone.pgcn.domain.workflow.WorkflowStateKey;
 import fr.progilone.pgcn.domain.workflow.WorkflowStateStatus;
 import fr.progilone.pgcn.repository.util.QueryDSLBuilderUtils;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -25,27 +34,15 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import com.mysema.query.BooleanBuilder;
-import com.mysema.query.jpa.JPQLQuery;
-import com.mysema.query.jpa.impl.JPAQuery;
-import com.mysema.query.types.Order;
-import com.mysema.query.types.OrderSpecifier;
-import com.mysema.query.types.expr.BooleanExpression;
-
-import fr.progilone.pgcn.domain.document.BibliographicRecord;
-import fr.progilone.pgcn.domain.document.DocUnit;
-import fr.progilone.pgcn.domain.document.QBibliographicRecord;
-import fr.progilone.pgcn.domain.document.QDocUnit;
-import fr.progilone.pgcn.domain.document.QPhysicalDocument;
-import fr.progilone.pgcn.domain.lot.QLot;
-import fr.progilone.pgcn.domain.project.QProject;
-
 public class BibliographicRecordRepositoryImpl implements BibliographicRecordRepositoryCustom {
 
     private static final Logger LOG = LoggerFactory.getLogger(BibliographicRecordRepositoryImpl.class);
 
-    @PersistenceContext
-    private EntityManager em;
+    private final JPAQueryFactory queryFactory;
+
+    public BibliographicRecordRepositoryImpl(final JPAQueryFactory queryFactory) {
+        this.queryFactory = queryFactory;
+    }
 
     @Override
     public Page<BibliographicRecord> search(final String search,
@@ -68,7 +65,7 @@ public class BibliographicRecordRepositoryImpl implements BibliographicRecordRep
         final QLot qLot = QLot.lot;
         final QDocUnitWorkflow qWorkflow = QDocUnitWorkflow.docUnitWorkflow;
         final QDocUnitState qState = QDocUnitState.docUnitState;
-        final QLibrary qAssociatedLibrary = QLibrary.library;
+        final QLibrary qAssociatedLibrary = new QLibrary("associatedLibrary");
         final QUser qAssociatedUser = QUser.user;
 
         final BooleanBuilder builder = new BooleanBuilder();
@@ -138,44 +135,43 @@ public class BibliographicRecordRepositoryImpl implements BibliographicRecordRep
             builder.and(qDocUnit.isNull());
         }
         // UD Disponibles ou notices non rattachées
-        builder.and(qDocUnit.state.isNull().or(qDocUnit.state.eq(DocUnit.State.AVAILABLE)));
+        builder.and(qDocUnit.isNull().or(qDocUnit.state.eq(DocUnit.State.AVAILABLE)));
 
         // provider
         QueryDSLBuilderUtils.addAccessFilters(builder, qLibrary, qLot, qProject, qAssociatedLibrary, qAssociatedUser, libraries, null);
 
-        final JPQLQuery baseQuery = new JPAQuery(em);
-        final JPQLQuery countQuery = new JPAQuery(em);
+        final long total = queryFactory.select(qRecord.identifier.countDistinct())
+                                       .from(qRecord)
+                                       .leftJoin(qRecord.docUnit, qDocUnit)
+                                       .leftJoin(qRecord.library, qLibrary)
+                                       .leftJoin(qDocUnit.project, qProject)
+                                       .leftJoin(qProject.associatedLibraries, qAssociatedLibrary)
+                                       .leftJoin(qProject.associatedUsers, qAssociatedUser)
+                                       .leftJoin(qDocUnit.lot, qLot)
+                                       .leftJoin(qDocUnit.workflow, qWorkflow)
+                                       .leftJoin(qWorkflow.states, qState)
+                                       .where(builder.getValue())
+                                       .fetchOne();
+
+        final JPAQuery<BibliographicRecord> baseQuery = queryFactory.selectDistinct(qRecord)
+                                                                    .from(qRecord)
+                                                                    .leftJoin(qRecord.docUnit, qDocUnit)
+                                                                    .fetchJoin()
+                                                                    .leftJoin(qRecord.library, qLibrary)
+                                                                    .leftJoin(qDocUnit.project, qProject)
+                                                                    .leftJoin(qProject.associatedLibraries, qAssociatedLibrary)
+                                                                    .leftJoin(qProject.associatedUsers, qAssociatedUser)
+                                                                    .leftJoin(qDocUnit.lot, qLot)
+                                                                    .leftJoin(qDocUnit.workflow, qWorkflow)
+                                                                    .leftJoin(qWorkflow.states, qState)
+                                                                    .where(builder.getValue());
 
         if (pageable != null) {
             baseQuery.offset(pageable.getOffset()).limit(pageable.getPageSize());
             applySorting(pageable.getSort(), baseQuery, qRecord, qDocUnit, qProject, qLot);
         }
 
-        final long total = countQuery.from(qRecord)
-                                     .leftJoin(qRecord.docUnit, qDocUnit)
-                                     .leftJoin(qDocUnit.library, qLibrary)
-                                     .leftJoin(qDocUnit.project, qProject)
-                                     .leftJoin(qProject.associatedLibraries, qAssociatedLibrary)
-                                     .leftJoin(qProject.associatedUsers, qAssociatedUser)
-                                     .leftJoin(qDocUnit.lot, qLot)
-                                     .leftJoin(qDocUnit.workflow, qWorkflow)
-                                     .leftJoin(qWorkflow.states, qState)
-                                     .where(builder.getValue()).distinct().count();
-
-        final List<BibliographicRecord> result = baseQuery.from(qRecord)
-                                                          .leftJoin(qRecord.docUnit, qDocUnit)
-                                                          .fetch()
-                                                          .leftJoin(qDocUnit.library, qLibrary)
-                                                          .leftJoin(qDocUnit.project, qProject)
-                                                          .leftJoin(qProject.associatedLibraries, qAssociatedLibrary)
-                                                          .leftJoin(qProject.associatedUsers, qAssociatedUser)
-                                                          .leftJoin(qDocUnit.lot, qLot)
-                                                          .leftJoin(qDocUnit.workflow, qWorkflow)
-                                                          .leftJoin(qWorkflow.states, qState)
-                                                          .where(builder.getValue())
-                                                          .distinct()
-                                                          .list(qRecord);
-        return new PageImpl<>(result, pageable, total);
+        return new PageImpl<>(baseQuery.fetch(), pageable, total);
     }
 
     /**
@@ -189,38 +185,44 @@ public class BibliographicRecordRepositoryImpl implements BibliographicRecordRep
      * @param lot
      * @return
      */
-    protected JPQLQuery applySorting(final Sort sort, final JPQLQuery query, final QBibliographicRecord bib, final QDocUnit doc, final QProject project, final QLot lot) {
+    protected JPAQuery<BibliographicRecord> applySorting(final Sort sort,
+                                                         final JPAQuery<BibliographicRecord> query,
+                                                         final QBibliographicRecord bib,
+                                                         final QDocUnit doc,
+                                                         final QProject project,
+                                                         final QLot lot) {
 
-        final List<OrderSpecifier> orders = new ArrayList<>();
+        final List<OrderSpecifier<?>> orders = new ArrayList<>();
         if (sort == null) {
             return query;
         }
 
         for (final Sort.Order order : sort) {
-            final Order qOrder = order.isAscending() ? Order.ASC : Order.DESC;
+            final Order qOrder = order.isAscending() ? Order.ASC
+                                                     : Order.DESC;
 
             switch (order.getProperty()) {
                 case "docUnit.pgcnId":
-                    orders.add(new OrderSpecifier(qOrder, doc.pgcnId));
+                    orders.add(new OrderSpecifier<>(qOrder, doc.pgcnId));
                     break;
                 case "docUnit.label":
-                    orders.add(new OrderSpecifier(qOrder, doc.label));
+                    orders.add(new OrderSpecifier<>(qOrder, doc.label));
                     break;
                 case "title":
-                    orders.add(new OrderSpecifier(qOrder, bib.title));
+                    orders.add(new OrderSpecifier<>(qOrder, bib.title));
                     break;
                 case "project.name":
-                    orders.add(new OrderSpecifier(qOrder, project.name));
+                    orders.add(new OrderSpecifier<>(qOrder, project.name));
                     break;
                 case "lot.label":
-                    orders.add(new OrderSpecifier(qOrder, lot.label));
+                    orders.add(new OrderSpecifier<>(qOrder, lot.label));
                     break;
                 default:
                     LOG.warn("Tri non implémenté: {}", order.getProperty());
                     break;
             }
         }
-        OrderSpecifier[] orderArray = new OrderSpecifier[orders.size()];
+        OrderSpecifier<?>[] orderArray = new OrderSpecifier[orders.size()];
         orderArray = orders.toArray(orderArray);
         return query.orderBy(orderArray);
     }

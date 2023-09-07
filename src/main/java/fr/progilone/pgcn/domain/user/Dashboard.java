@@ -1,8 +1,7 @@
 package fr.progilone.pgcn.domain.user;
 
-import javax.persistence.*;
-
 import fr.progilone.pgcn.domain.AbstractDomainObject;
+import jakarta.persistence.*;
 
 /**
  * Tableau de bord d'un usager
@@ -21,7 +20,6 @@ public class Dashboard extends AbstractDomainObject {
      */
     @Column(name = "dashboard", columnDefinition = "longtext")
     private String dashboard;
-
 
     public String getDashboard() {
         return dashboard;

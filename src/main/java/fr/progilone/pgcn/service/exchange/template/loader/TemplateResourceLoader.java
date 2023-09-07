@@ -2,13 +2,12 @@ package fr.progilone.pgcn.service.exchange.template.loader;
 
 import fr.progilone.pgcn.domain.exchange.template.Template;
 import fr.progilone.pgcn.service.exchange.template.TemplateService;
+import java.io.InputStream;
+import java.util.List;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.InputStream;
-import java.util.List;
 
 /**
  * Classe qui recherche une ressource dans la table exc_template
@@ -25,8 +24,7 @@ public class TemplateResourceLoader implements ResourceLoader {
         if (service == null) {
             message = "TemplateResourceLoader n'est pas initialisé correctement; aucun service n'est configuré.";
         } else if (!(service instanceof TemplateService)) {
-            message =
-                "TemplateResourceLoader n'est pas initialisé correctement; le service configuré n'est pas de type fr.progilone.pgcn.service.exchange.template.TemplateService";
+            message = "TemplateResourceLoader n'est pas initialisé correctement; le service configuré n'est pas de type fr.progilone.pgcn.service.exchange.template.TemplateService";
         }
 
         if (message != null) {
@@ -46,8 +44,7 @@ public class TemplateResourceLoader implements ResourceLoader {
         if (contentStream != null) {
             return contentStream;
         } else {
-            throw new ResourceNotFoundException("Le template "
-                                                + resourceName.getName()
+            throw new ResourceNotFoundException("Le template " + resourceName.getName()
                                                 + " pour la bibliothèque "
                                                 + resourceName.getLibraryId()
                                                 + " n'a pas pu être chargé");
@@ -71,8 +68,7 @@ public class TemplateResourceLoader implements ResourceLoader {
         final List<Template> templates = templateService.findTemplate(resourceName.getName(), resourceName.getLibraryId());
 
         if (CollectionUtils.isEmpty(templates)) {
-            throw new ResourceNotFoundException("TemplateResourceLoader: la ressource "
-                                                + resourceName.getName()
+            throw new ResourceNotFoundException("TemplateResourceLoader: la ressource " + resourceName.getName()
                                                 + " pour la bibliothèque "
                                                 + resourceName.getLibraryId()
                                                 + " n'existe pas.");

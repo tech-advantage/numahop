@@ -1,54 +1,53 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('SpaceChartEditWidgetCtrl', SpaceChartEditWidgetCtrl);
+    angular.module('numaHopApp.controller').controller('SpaceChartEditWidgetCtrl', SpaceChartEditWidgetCtrl);
 
     function SpaceChartEditWidgetCtrl($q, config, gettextCatalog, LibrarySrvc) {
-
         var mainCtrl = this;
         mainCtrl.isConfigured = isConfigured;
 
         // critères disponibles par type de graphique
         mainCtrl.controlConfig = {
-            getProjectGroupByStatus: {}
+            getProjectGroupByStatus: {},
         };
 
         mainCtrl.config = {
-            dataFormats: [{
-                identifier: "doughnut",
-                label: gettextCatalog.getString("Anneau")
-            }, {
-                identifier: "pie",
-                label: gettextCatalog.getString("Camembert")
-            }, {
-                identifier: "hbar",
-                label: gettextCatalog.getString("Histogramme")
-            }],
+            dataFormats: [
+                {
+                    identifier: 'doughnut',
+                    label: gettextCatalog.getString('Anneau'),
+                },
+                {
+                    identifier: 'pie',
+                    label: gettextCatalog.getString('Camembert'),
+                },
+                {
+                    identifier: 'hbar',
+                    label: gettextCatalog.getString('Histogramme'),
+                },
+            ],
             libraries: {
-                text: "name",
-                placeholder: gettextCatalog.getString("Bibliothèque"),
-                trackby: "identifier",
+                text: 'name',
+                placeholder: gettextCatalog.getString('Bibliothèque'),
+                trackby: 'identifier',
                 // Chargement avec mise en cache du résultat
                 refresh: function ($select) {
                     if (!mainCtrl.config.libraries.data) {
                         mainCtrl.config.libraries.data = LibrarySrvc.query({ dto: true });
-                        return mainCtrl.config.libraries.data.$promise
-                            .then(function (lib) {
-                                return _.map(lib, function (l) {
-                                    return _.pick(l, "identifier", "name");
-                                });
+                        return mainCtrl.config.libraries.data.$promise.then(function (lib) {
+                            return _.map(lib, function (l) {
+                                return _.pick(l, 'identifier', 'name');
                             });
-                    }
-                    else {
+                        });
+                    } else {
                         return $q.when(mainCtrl.config.libraries.data);
                     }
                 },
                 'refresh-delay': 0, // pas de refresh-delay, car on lit les données en cache après le 1er chargement
                 'allow-clear': true,
-                multiple: true
+                multiple: true,
             },
-
         };
 
         /**
@@ -58,6 +57,5 @@
         function isConfigured() {
             return angular.isDefined(config.format);
         }
-
     }
 })();

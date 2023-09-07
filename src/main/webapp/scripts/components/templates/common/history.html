@@ -1,9 +1,9 @@
 <div ng-controller="HistoryCtrl" role="navigation">
-	<ol class="breadcrumb">
-	    <li ng-repeat="page in history(5)">
-	        <a href="{{page.url}}" ng-if="!$last && page.url">{{page.label| translate}}</a>
-	        <span ng-if="$last || !page.url">{{page.label| translate}}</span>
-	        <span class="glyphicon-halflings glyphicon-chevron-right font10" ng-if="!$last"></span>
-	    </li>
-	</ol>
+    <ol class="breadcrumb">
+        <li ng-repeat="page in history(5)">
+            <a href="{{page.url}}" ng-if="!$last && page.url">{{page.label| translate}}</a>
+            <span ng-if="$last || !page.url">{{page.label| translate}}</span>
+            <span class="glyphicon-halflings glyphicon-chevron-right font10" ng-if="!$last"></span>
+        </li>
+    </ol>
 </div>

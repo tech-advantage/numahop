@@ -7,6 +7,8 @@ public interface EsConstant {
     String ANALYZER_CI_AS = "ci_as";
     String ANALYZER_PHRASE = "ci_ai_phr";
 
+    String FIELD_LIBRARY = "libraryId";
+
     String SUBFIELD_RAW = "raw";
     String SUBFIELD_CI_AI = "ci_ai";
     String SUBFIELD_CI_AS = "ci_as";

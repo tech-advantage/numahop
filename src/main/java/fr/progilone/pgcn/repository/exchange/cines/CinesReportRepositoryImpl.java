@@ -1,23 +1,22 @@
 package fr.progilone.pgcn.repository.exchange.cines;
 
-import com.mysema.query.BooleanBuilder;
-import com.mysema.query.jpa.JPQLQuery;
-import com.mysema.query.jpa.impl.JPAQuery;
-import com.mysema.query.types.expr.BooleanExpression;
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import fr.progilone.pgcn.domain.document.QDocUnit;
 import fr.progilone.pgcn.domain.exchange.cines.CinesReport;
 import fr.progilone.pgcn.domain.exchange.cines.QCinesReport;
-import org.apache.commons.collections4.CollectionUtils;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.time.LocalDate;
 import java.util.List;
+import org.apache.commons.collections4.CollectionUtils;
 
 public class CinesReportRepositoryImpl implements CinesReportRepositoryCustom {
 
-    @PersistenceContext
-    private EntityManager em;
+    private final JPAQueryFactory queryFactory;
+
+    public CinesReportRepositoryImpl(final JPAQueryFactory queryFactory) {
+        this.queryFactory = queryFactory;
+    }
 
     @Override
     public List<CinesReport> findAll(final List<String> libraries, final LocalDate fromDate, final boolean failures) {
@@ -34,16 +33,15 @@ public class CinesReportRepositoryImpl implements CinesReportRepositoryCustom {
         // Date
         builder.and(qCinesReport.dateSent.goe(fromDate.atStartOfDay()));
         // failures
-        builder.and(qCinesReport.status.eq(failures ? CinesReport.Status.FAILED : CinesReport.Status.ARCHIVED));
+        builder.and(qCinesReport.status.eq(failures ? CinesReport.Status.FAILED
+                                                    : CinesReport.Status.ARCHIVED));
 
-        // Query
-        final JPQLQuery query = new JPAQuery(em);
-
-        return query.from(qCinesReport)
-                    .innerJoin(qCinesReport.docUnit, qDocUnit)
-                    .fetch()
-                    .where(builder)
-                    .orderBy(qCinesReport.dateSent.desc())
-                    .list(qCinesReport);
+        return queryFactory.select(qCinesReport)
+                           .from(qCinesReport)
+                           .innerJoin(qCinesReport.docUnit, qDocUnit)
+                           .fetchJoin()
+                           .where(builder)
+                           .orderBy(qCinesReport.dateSent.desc())
+                           .fetch();
     }
 }

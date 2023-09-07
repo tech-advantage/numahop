@@ -1,18 +1,17 @@
 package fr.progilone.pgcn.service.exchange.marc.script;
 
-import fr.progilone.pgcn.config.ScriptEngineConfiguration;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static fr.progilone.pgcn.service.exchange.marc.MarcMappingEvaluationService.*;
 
-import javax.script.Bindings;
-import javax.script.ScriptEngine;
-import javax.script.ScriptException;
+import fr.progilone.pgcn.config.ScriptEngineConfiguration;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-
-import static fr.progilone.pgcn.service.exchange.marc.MarcMappingEvaluationService.*;
+import javax.script.Bindings;
+import javax.script.ScriptEngine;
+import javax.script.ScriptException;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by Sebastien on 06/12/2016.
@@ -30,8 +29,7 @@ public abstract class AbstractScriptTest {
      * @return
      * @throws ScriptException
      */
-    protected Object evalUserScript(final String statement, final Map<String, Object> userBindings, final CustomScript customScript) throws
-                                                                                                                                     ScriptException {
+    protected Object evalUserScript(final String statement, final Map<String, Object> userBindings, final CustomScript customScript) throws ScriptException {
         return evalUserScript(statement, null, userBindings, customScript);
     }
 
@@ -41,10 +39,8 @@ public abstract class AbstractScriptTest {
      * @return
      * @throws ScriptException
      */
-    protected Object evalUserScript(final String statement,
-                                    final String configStatement,
-                                    final Map<String, Object> userBindings,
-                                    final CustomScript customScript) throws ScriptException {
+    protected Object evalUserScript(final String statement, final String configStatement, final Map<String, Object> userBindings, final CustomScript customScript)
+                                                                                                                                                                   throws ScriptException {
 
         // Initialisation du script custom
         final Map<String, CustomScript> customScripts = new HashMap<>();

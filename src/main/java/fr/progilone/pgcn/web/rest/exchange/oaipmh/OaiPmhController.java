@@ -1,5 +1,7 @@
 package fr.progilone.pgcn.web.rest.exchange.oaipmh;
 
+import static fr.progilone.pgcn.web.rest.exchange.security.AuthorizationConstants.*;
+
 import com.codahale.metrics.annotation.Timed;
 import fr.progilone.pgcn.domain.exchange.DataEncoding;
 import fr.progilone.pgcn.domain.exchange.FileFormat;
@@ -14,6 +16,11 @@ import fr.progilone.pgcn.service.exchange.oaipmh.OaiPmhService;
 import fr.progilone.pgcn.web.rest.AbstractRestController;
 import fr.progilone.pgcn.web.rest.exchange.ImportController;
 import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,14 +31,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-
-import static fr.progilone.pgcn.web.rest.exchange.security.AuthorizationConstants.*;
 
 /**
  * Contrôleur gérant l'import OAI-PMH
@@ -94,8 +93,7 @@ public class OaiPmhController extends AbstractRestController {
                                                      @RequestParam(value = "lot", required = false) final String lotId,
                                                      @RequestParam(value = "validation", defaultValue = "false") final boolean stepValidation,
                                                      @RequestParam(value = "dedup", defaultValue = "false") final boolean stepDeduplication,
-                                                     @RequestParam(value = "dedupProcess", required = false)
-                                                     final ImportedDocUnit.Process defaultDedupProcess,
+                                                     @RequestParam(value = "dedupProcess", required = false) final ImportedDocUnit.Process defaultDedupProcess,
                                                      @RequestParam(value = "baseUrl") final String baseUrl,
                                                      @RequestParam(value = "from", required = false) final String from,
                                                      @RequestParam(value = "to", required = false) final String to,
@@ -123,7 +121,8 @@ public class OaiPmhController extends AbstractRestController {
                                                   new OaiPmhRequest(baseUrl, from, to, set),
                                                   stepValidation,
                                                   stepDeduplication,
-                                                  stepDeduplication ? defaultDedupProcess : null);
+                                                  stepDeduplication ? defaultDedupProcess
+                                                                    : null);
 
         } catch (final Exception e) {
             LOG.error(e.getMessage(), e);

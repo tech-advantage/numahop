@@ -4,8 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.progilone.pgcn.domain.AbstractDomainObject;
 import fr.progilone.pgcn.domain.library.Library;
-
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Objects;
@@ -155,13 +154,22 @@ public class MailboxConfiguration extends AbstractDomainObject {
 
     @Override
     public String toString() {
-        return "MailboxConfiguration{" +
-               "label='" + label + '\'' +
-               ", username='" + username + '\'' +
-               ", host='" + host + '\'' +
-               ", inbox='" + inbox + '\'' +
-               ", active='" + active + '\'' +
-               '}';
+        return "MailboxConfiguration{" + "label='"
+               + label
+               + '\''
+               + ", username='"
+               + username
+               + '\''
+               + ", host='"
+               + host
+               + '\''
+               + ", inbox='"
+               + inbox
+               + '\''
+               + ", active='"
+               + active
+               + '\''
+               + '}';
     }
 
     public Integer getPort() {
@@ -231,10 +239,12 @@ public class MailboxConfiguration extends AbstractDomainObject {
 
         @Override
         public String toString() {
-            return "Property{" +
-                   "name='" + name + '\'' +
-                   ", value=" + value +
-                   '}';
+            return "Property{" + "name='"
+                   + name
+                   + '\''
+                   + ", value="
+                   + value
+                   + '}';
         }
     }
 }

@@ -1,16 +1,14 @@
 package fr.progilone.pgcn.service.exchange.marc.script.format;
 
-import fr.progilone.pgcn.service.exchange.marc.script.AbstractScriptTest;
-import org.junit.Test;
-import org.marc4j.marc.DataField;
-import org.marc4j.marc.MarcFactory;
+import static org.junit.jupiter.api.Assertions.*;
 
-import javax.script.ScriptException;
+import fr.progilone.pgcn.service.exchange.marc.script.AbstractScriptTest;
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import javax.script.ScriptException;
+import org.junit.jupiter.api.Test;
+import org.marc4j.marc.DataField;
+import org.marc4j.marc.MarcFactory;
 
 /**
  * Created by Sebastien on 02/12/2016.
@@ -22,7 +20,7 @@ public class TitleFieldFormatterTest extends AbstractScriptTest {
     @Test
     public void testNull() {
         final TitleFieldFormatter fmt = new TitleFieldFormatter("test", null);
-        final String actual = fmt.format((DataField)null);
+        final String actual = fmt.format((DataField) null);
         assertNull(actual);
     }
 
@@ -54,8 +52,7 @@ public class TitleFieldFormatterTest extends AbstractScriptTest {
         fld200.addSubfield(MARC_FACTORY.newSubfield('a', "Les Arts bibliographiques"));
         fld200.addSubfield(MARC_FACTORY.newSubfield('b', "Texte imprimé"));
         fld200.addSubfield(MARC_FACTORY.newSubfield('e', "l'oeuvre et l'image"));
-        fld200.addSubfield(MARC_FACTORY.newSubfield('e',
-                                                    "revue trimestrielle consacrée à la littérature contemporaine, à la technique et aux arts du livre"));
+        fld200.addSubfield(MARC_FACTORY.newSubfield('e', "revue trimestrielle consacrée à la littérature contemporaine, à la technique et aux arts du livre"));
         final String expression = "title(marc_200)";
 
         final Map<String, Object> bindings = new HashMap<>();
@@ -63,9 +60,8 @@ public class TitleFieldFormatterTest extends AbstractScriptTest {
 
         final Object actual = evalUserScript(expression, bindings, new TitleFieldFormatter("test", null));
 
-        assertEquals(
-            "Les Arts bibliographiques [Texte imprimé] : l'oeuvre et l'image : revue trimestrielle consacrée à la littérature contemporaine, à la technique et aux arts du livre",
-            actual);
+        assertEquals("Les Arts bibliographiques [Texte imprimé] : l'oeuvre et l'image : revue trimestrielle consacrée à la littérature contemporaine, à la technique et aux arts du livre",
+                     actual);
     }
 
     @Test
@@ -74,8 +70,7 @@ public class TitleFieldFormatterTest extends AbstractScriptTest {
         fld200.addSubfield(MARC_FACTORY.newSubfield('a', "Les Arts bibliographiques"));
         fld200.addSubfield(MARC_FACTORY.newSubfield('b', "Texte imprimé"));
         fld200.addSubfield(MARC_FACTORY.newSubfield('e', "l'oeuvre et l'image"));
-        fld200.addSubfield(MARC_FACTORY.newSubfield('e',
-                                                    "revue trimestrielle consacrée à la littérature contemporaine, à la technique et aux arts du livre"));
+        fld200.addSubfield(MARC_FACTORY.newSubfield('e', "revue trimestrielle consacrée à la littérature contemporaine, à la technique et aux arts du livre"));
 
         final String configuration = "titleFilter('a', 'b')";
         final String expression = "title(marc_200)";

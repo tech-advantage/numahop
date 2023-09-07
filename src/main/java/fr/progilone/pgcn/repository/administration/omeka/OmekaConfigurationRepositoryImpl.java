@@ -1,27 +1,24 @@
 package fr.progilone.pgcn.repository.administration.omeka;
 
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import fr.progilone.pgcn.domain.administration.omeka.OmekaConfiguration;
+import fr.progilone.pgcn.domain.administration.omeka.QOmekaConfiguration;
 import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-import com.mysema.query.BooleanBuilder;
-import com.mysema.query.jpa.JPQLQuery;
-import com.mysema.query.jpa.impl.JPAQuery;
-import com.mysema.query.types.expr.BooleanExpression;
-
-import fr.progilone.pgcn.domain.administration.omeka.OmekaConfiguration;
-import fr.progilone.pgcn.domain.administration.omeka.QOmekaConfiguration;
-
 public class OmekaConfigurationRepositoryImpl implements OmekaConfigurationRepositoryCustom {
 
-    @PersistenceContext
-    private EntityManager em;
+    private final JPAQueryFactory queryFactory;
+
+    public OmekaConfigurationRepositoryImpl(final JPAQueryFactory queryFactory) {
+        this.queryFactory = queryFactory;
+    }
 
     @Override
     public Page<OmekaConfiguration> search(final String search, final List<String> libraries, final Boolean omekas, final Pageable pageable) {
@@ -43,25 +40,15 @@ public class OmekaConfigurationRepositoryImpl implements OmekaConfigurationRepos
             builder.and(omekasFilter);
         }
 
-        final JPQLQuery baseQuery = new JPAQuery(em);
-        final JPQLQuery countQuery = new JPAQuery(em);
+        final JPAQuery<OmekaConfiguration> baseQuery = queryFactory.selectDistinct(configuration).from(configuration).where(builder);
+
+        final long total = baseQuery.clone().select(configuration.identifier.countDistinct()).fetchOne();
 
         if (pageable != null) {
-            baseQuery.offset(pageable.getOffset())
-                     .limit(pageable.getPageSize());
+            baseQuery.offset(pageable.getOffset()).limit(pageable.getPageSize());
         }
 
-        final List<String> librariesIdentifiers = countQuery.from(configuration)
-                                                            .leftJoin(configuration.library)
-                                                            .groupBy(configuration.identifier)
-                                                            .where(builder.getValue()).distinct().list(configuration.identifier);
-        final long total = librariesIdentifiers.size();
-
-        final List<OmekaConfiguration> result = baseQuery.from(configuration)
-                                                 .leftJoin(configuration.library).fetch()
-                                                 .where(builder.getValue())
-                                                 .orderBy(configuration.label.asc())
-                                                 .distinct().list(configuration);
+        final List<OmekaConfiguration> result = baseQuery.leftJoin(configuration.library).fetchJoin().orderBy(configuration.label.asc()).fetch();
 
         return new PageImpl<>(result, pageable, total);
     }

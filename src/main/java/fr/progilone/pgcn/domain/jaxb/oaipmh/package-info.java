@@ -5,5 +5,7 @@
 // Généré le : 2018.08.13 à 01:08:19 PM CEST
 //
 
-@javax.xml.bind.annotation.XmlSchema(namespace = "http://www.openarchives.org/OAI/2.0/", elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
+@jakarta.xml.bind.annotation.XmlSchema(namespace = "http://www.openarchives.org/OAI/2.0/",
+                                       elementFormDefault = jakarta.xml.bind.annotation.XmlNsForm.QUALIFIED,
+                                       xmlns = {@jakarta.xml.bind.annotation.XmlNs(namespaceURI = "http://www.openarchives.org/OAI/2.0/", prefix = "")})
 package fr.progilone.pgcn.domain.jaxb.oaipmh;

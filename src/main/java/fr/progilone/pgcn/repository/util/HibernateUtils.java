@@ -9,7 +9,7 @@ public class HibernateUtils {
 
     /**
      * Conversion du proxy hibernate vers l'objet utilisé réellement
-     * 
+     *
      * @param entity
      * @return retourne l'objet réel
      */

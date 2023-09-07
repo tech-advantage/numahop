@@ -1,5 +1,3 @@
-<a class="list-group-item padding-t10 padding-b5" 
-   ng-repeat="item in $ctrl.pagination.items" 
-   ng-href="#/delivery/delivery?id={{::item.identifier}}" ng-click="$ctrl.clickItem($event)">
+<a class="list-group-item padding-t10 padding-b5" ng-repeat="item in $ctrl.pagination.items" ng-href="#/delivery/delivery?id={{::item.identifier}}" ng-click="$ctrl.clickItem($event)">
     <h5 class="list-group-item-heading" ng-bind-html="item.label"></h5>
 </a>

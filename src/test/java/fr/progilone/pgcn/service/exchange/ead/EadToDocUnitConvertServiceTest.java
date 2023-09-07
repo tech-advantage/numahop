@@ -1,26 +1,6 @@
 package fr.progilone.pgcn.service.exchange.ead;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import javax.script.ScriptEngine;
-import javax.xml.bind.JAXBException;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.apache.commons.lang3.tuple.Pair;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.xml.sax.SAXException;
+import static org.junit.jupiter.api.Assertions.*;
 
 import fr.progilone.pgcn.config.ScriptEngineConfiguration;
 import fr.progilone.pgcn.domain.document.BibliographicRecord;
@@ -35,11 +15,27 @@ import fr.progilone.pgcn.domain.library.Library;
 import fr.progilone.pgcn.service.administration.TransliterationService;
 import fr.progilone.pgcn.service.exchange.ead.mapping.CompiledMapping;
 import fr.progilone.pgcn.util.TestUtil;
+import jakarta.xml.bind.JAXBException;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.stream.Collectors;
+import javax.script.ScriptEngine;
+import javax.xml.parsers.ParserConfigurationException;
+import org.apache.commons.lang3.tuple.Pair;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.xml.sax.SAXException;
 
 /**
  * Created by Sébastien on 17/05/2017.
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class EadToDocUnitConvertServiceTest {
 
     @Mock
@@ -47,18 +43,17 @@ public class EadToDocUnitConvertServiceTest {
     private EadMappingEvaluationService mappingEvaluationService;
     private EadToDocUnitConvertService service;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         final ScriptEngine engine = // new GroovyScriptEngineImpl();
-            new ScriptEngineConfiguration().getGroovyScriptEngine();
+                                  new ScriptEngineConfiguration().getGroovyScriptEngine();
         mappingEvaluationService = new EadMappingEvaluationService(engine, transliterationService);
         service = new EadToDocUnitConvertService(mappingEvaluationService);
     }
 
     @Test
     public void testConvertExpression() throws ParserConfigurationException, JAXBException, SAXException, IOException {
-        final String xml = "<c id=\"toplevel-001\">"
-                           + "<did id=\"test-did\">"
+        final String xml = "<c id=\"toplevel-001\">" + "<did id=\"test-did\">"
                            + "<unitid type=\"division\">test top 001</unitid>"
                            + "<physdesc>Colonel Moutarde</physdesc>"
                            + "</did>"
@@ -121,8 +116,7 @@ public class EadToDocUnitConvertServiceTest {
 
     @Test
     public void testConvertFormatterNormal() throws ParserConfigurationException, JAXBException, SAXException, IOException {
-        final String xml = "<c id=\"toplevel-001\">"
-                           + "<scopecontent>\n"
+        final String xml = "<c id=\"toplevel-001\">" + "<scopecontent>\n"
                            + "<p>Sacramentaire écrit à <geogname role=\"lieu de production\" normal=\"Arras (Pas-de-Calais)\" source=\"Sudoc\" authfilenumber=\"027250121\">Arras</geogname>.\n"
                            + "A peut-être appartenu à la <corpname source=\"Sudoc\" authfilenumber=\"080490875\" role=\"390\">cathédrale d'Arras</corpname> avant de passer à celle de Senlis (cf. Gameson, 2007).</p>"
                            + "</scopecontent>\n"
@@ -133,8 +127,7 @@ public class EadToDocUnitConvertServiceTest {
         // Mapping
         final Mapping mapping = getMapping();
         final MappingRule rule = mapping.getRules().get(0);
-        rule.setExpression(
-            "normal(\\scopecontent.p.geogname) + ', ' + \\scopecontent.p.geogname.content + ' - ' + normal(\\{scopecontent.p.corpname})");
+        rule.setExpression("normal(\\scopecontent.p.geogname) + ', ' + \\scopecontent.p.geogname.content + ' - ' + normal(\\{scopecontent.p.corpname})");
 
         // Compilation du mapping
         final CompiledMapping compiledMapping = mappingEvaluationService.compileMapping(mapping);
@@ -181,15 +174,14 @@ public class EadToDocUnitConvertServiceTest {
 
         final Iterator<DocProperty> iterator = bibRecord.getProperties().iterator();
         final DocProperty property = iterator.next();
-        assertEquals(
-            "Sacramentaire écrit à Arras et adapté à l'usage de Senlis. - A peut-être appartenu à la cathédrale d'Arras avant de passer à celle de Senlis (cf. Gameson, 2007). "
-            + "- Calendrier pour toute l'année (fol. 3). — Oraisons ou collectes des messes de toute l'année : 1o. des fêtes du temps et de quelques saints : "
-            + "S. Étienne, S. Jean, évangéliste, S. Thomas de Canterbury, S. Rieul, S. Nazaire, S. Celse et S. Pantaléon, S. Germain d'Auxerre, Ste Prisce, S. Brice (fol. 9) ;"
-            + " — 2o. des Préfaces (fol. 99) ; — 3o. du Canon (fol. 102) ; — 4o. des fêtes des saints, 3 février-21 décembre (fol. 109) ; quelques feuillets manquent au commencement ;"
-            + " — 5o. des fêtes du Commun (fol. 168 vo). - Les deux feuillets liminaires du commencement du volume sont formés d'un fragment de jugement du prévôt de..... "
-            + "dans un procès entre une veuve Brullé et un nommé Pierre Guillot (1652). — Les deux feuillets liminaires de la fin sont formés d'un fragment de registre, "
-            + "contenant la copie d'actes relatifs à la fondation d'une église collégiale à Vic-le-Comte, au diocèse de Clermont (1530).",
-            property.getValue());
+        assertEquals("Sacramentaire écrit à Arras et adapté à l'usage de Senlis. - A peut-être appartenu à la cathédrale d'Arras avant de passer à celle de Senlis (cf. Gameson, 2007). "
+                     + "- Calendrier pour toute l'année (fol. 3). — Oraisons ou collectes des messes de toute l'année : 1o. des fêtes du temps et de quelques saints : "
+                     + "S. Étienne, S. Jean, évangéliste, S. Thomas de Canterbury, S. Rieul, S. Nazaire, S. Celse et S. Pantaléon, S. Germain d'Auxerre, Ste Prisce, S. Brice (fol. 9) ;"
+                     + " — 2o. des Préfaces (fol. 99) ; — 3o. du Canon (fol. 102) ; — 4o. des fêtes des saints, 3 février-21 décembre (fol. 109) ; quelques feuillets manquent au commencement ;"
+                     + " — 5o. des fêtes du Commun (fol. 168 vo). - Les deux feuillets liminaires du commencement du volume sont formés d'un fragment de jugement du prévôt de..... "
+                     + "dans un procès entre une veuve Brullé et un nommé Pierre Guillot (1652). — Les deux feuillets liminaires de la fin sont formés d'un fragment de registre, "
+                     + "contenant la copie d'actes relatifs à la fondation d'une église collégiale à Vic-le-Comte, au diocèse de Clermont (1530).",
+                     property.getValue());
     }
 
     @Test
@@ -223,8 +215,7 @@ public class EadToDocUnitConvertServiceTest {
 
     @Test
     public void testConvertFormatterTextWithChronlist() throws ParserConfigurationException, JAXBException, SAXException, IOException {
-        final String xml = "<c id=\"toplevel-001\">"
-                           + "<did id=\"test-did\">"
+        final String xml = "<c id=\"toplevel-001\">" + "<did id=\"test-did\">"
                            + "<unitid type=\"division\">test top 001</unitid>"
                            + "<physdesc>Colonel Moutarde</physdesc>"
                            + "</did>"
@@ -312,8 +303,7 @@ public class EadToDocUnitConvertServiceTest {
                                                                    "Priscille (sainte)",
                                                                    "Brice (saint)",
                                                                    "Brullé (veuve)",
-                                                                   "Guillot, Pierre"),
-                                                     bibRecord.getProperties().stream().map(DocProperty::getValue).collect(Collectors.toList()));
+                                                                   "Guillot, Pierre"), bibRecord.getProperties().stream().map(DocProperty::getValue).collect(Collectors.toList()));
 
     }
 
@@ -349,8 +339,7 @@ public class EadToDocUnitConvertServiceTest {
 
     @Test
     public void testConvertExpressionAbstract() throws ParserConfigurationException, JAXBException, SAXException, IOException {
-        final String xml = "<c id=\"toplevel-001\">"
-                           + "<did>"
+        final String xml = "<c id=\"toplevel-001\">" + "<did>"
                            + "<abstract label=\"Abstract\">Four manuscript survey maps and "
                            + "one plat map depicting areas of Orange County and "
                            + "attributed to the noted surveyor and judge Richard Egan. "
@@ -386,21 +375,20 @@ public class EadToDocUnitConvertServiceTest {
 
         final Iterator<DocProperty> iterator = bibRecord.getProperties().iterator();
         final DocProperty property = iterator.next();
-        assertEquals("Four manuscript survey maps and "
-                     + "one plat map depicting areas of Orange County and "
+        assertEquals("Four manuscript survey maps and " + "one plat map depicting areas of Orange County and "
                      + "attributed to the noted surveyor and judge Richard Egan. "
                      + "One map is dated 1878 and 1879 by Egan. The other maps "
                      + "are undated and unsigned but it is likely that he drew "
                      + "them during these years. These maps primarily depict "
                      + "subdivisions of non-rancho tracts of land occupying what "
                      + "is now Orange County, with the addition of some "
-                     + "topographical details.", property.getValue());
+                     + "topographical details.",
+                     property.getValue());
     }
 
     @Test
     public void testConvertExpressionArrangement() throws ParserConfigurationException, JAXBException, SAXException, IOException {
-        final String xml = "<c id=\"toplevel-001\">"
-                           + "<scopecontent>"
+        final String xml = "<c id=\"toplevel-001\">" + "<scopecontent>"
                            + "<p>This series consists of newspaper clippings and research "
                            + "notes of Fred Reed, pertaining to the Champlain "
                            + "Transportation Company, its vessels, and the vessels' crew "
@@ -450,15 +438,13 @@ public class EadToDocUnitConvertServiceTest {
 
         final Iterator<DocProperty> iterator = bibRecord.getProperties().iterator();
         final DocProperty property = iterator.next();
-        assertEquals(
-            "Organized into three subseries: Clippings--chronological Clippings--persons Notes - \"Clippings-persons\" is arranged alphabetically by surname, and \"Notes\" alphabetically by subject.",
-            property.getValue());
+        assertEquals("Organized into three subseries: Clippings--chronological Clippings--persons Notes - \"Clippings-persons\" is arranged alphabetically by surname, and \"Notes\" alphabetically by subject.",
+                     property.getValue());
     }
 
     @Test
     public void testConvertExpressionOdd() throws ParserConfigurationException, JAXBException, SAXException, IOException {
-        final String xml = "<c id=\"toplevel-001\">"
-                           + "<odd>"
+        final String xml = "<c id=\"toplevel-001\">" + "<odd>"
                            + "<list type=\"simple\">"
                            + "<item>Department of Economic Affairs: Industrial Policy "
                            + "Group: Registered Files (1-IG and 2-IG Series) <ref "
@@ -498,7 +484,8 @@ public class EadToDocUnitConvertServiceTest {
         final DocProperty property = iterator.next();
         assertEquals("Department of Economic Affairs: Industrial Policy Group: Registered Files (1-IG and 2-IG Series) "
                      + "EW 26 Department of Economic Affairs: Industrial Division and Industrial Policy Division: "
-                     + "Registered Files (IA Series) EW 27", property.getValue());
+                     + "Registered Files (IA Series) EW 27",
+                     property.getValue());
     }
 
     @Test
@@ -561,8 +548,7 @@ public class EadToDocUnitConvertServiceTest {
 
     @Test
     public void testConvertExpressionRelatedMaterial() throws ParserConfigurationException, JAXBException, SAXException, IOException {
-        final String xml = "<c id=\"toplevel-001\">"
-                           + "<relatedmaterial>"
+        final String xml = "<c id=\"toplevel-001\">" + "<relatedmaterial>"
                            + "<head>Related Correspondence</head>"
                            + "<p>Researchers should note that a significant amount of the "
                            + "correspondence between Franklin Wigglethorpe and Nellie "
@@ -603,15 +589,13 @@ public class EadToDocUnitConvertServiceTest {
 
         final Iterator<DocProperty> iterator = bibRecord.getProperties().iterator();
         final DocProperty property = iterator.next();
-        assertEquals(
-            "Researchers should note that a significant amount of the correspondence between Franklin Wigglethorpe and Nellie Forbush is extant. In addition to the incoming letters in this collection from Mr. Wigglethorpe to Miss Forbush, the letters written to Mr. Wigglethorpe by Miss Forbush are available to researchers at the Mainline University Special Collections Library. Wigglethorpe, Franklin. Franklin Wigglethorpe Papers, 1782-1809. MSS 00143 An online guide to the Wigglethorpe Papers is available.",
-            property.getValue());
+        assertEquals("Researchers should note that a significant amount of the correspondence between Franklin Wigglethorpe and Nellie Forbush is extant. In addition to the incoming letters in this collection from Mr. Wigglethorpe to Miss Forbush, the letters written to Mr. Wigglethorpe by Miss Forbush are available to researchers at the Mainline University Special Collections Library. Wigglethorpe, Franklin. Franklin Wigglethorpe Papers, 1782-1809. MSS 00143 An online guide to the Wigglethorpe Papers is available.",
+                     property.getValue());
     }
 
     @Test
     public void testConvertExpressionSeparatedMaterial() throws ParserConfigurationException, JAXBException, SAXException, IOException {
-        final String xml = "<c id=\"toplevel-001\">"
-                           + "<separatedmaterial>"
+        final String xml = "<c id=\"toplevel-001\">" + "<separatedmaterial>"
                            + "<head>Materials Cataloged Separately</head>"
                            + "<p>Photographs have been transferred to Pictorial Collections "
                            + "of The Bancroft Library.</p> "
@@ -645,8 +629,7 @@ public class EadToDocUnitConvertServiceTest {
 
     @Test
     public void testConvertExpressionGenreForm1() throws ParserConfigurationException, JAXBException, SAXException, IOException {
-        final String xml = "<c id=\"toplevel-001\">"
-                           + "<controlaccess>"
+        final String xml = "<c id=\"toplevel-001\">" + "<controlaccess>"
                            + "<head>Physical Characteristics of Materials in the Collection:</head>"
                            + "<genreform encodinganalog=\"655$a\" source=\"gmgpc\" type=\"type de document\" normal=\"ARCHI\">Architectural drawings</genreform>"
                            + "<genreform encodinganalog=\"655$a\" source=\"gmgpc\">Photographs</genreform>"
@@ -681,8 +664,7 @@ public class EadToDocUnitConvertServiceTest {
 
     @Test
     public void testConvertExpressionGenreForm2() throws ParserConfigurationException, JAXBException, SAXException, IOException {
-        final String xml = "<c id=\"toplevel-001\">"
-                           + "<did>"
+        final String xml = "<c id=\"toplevel-001\">" + "<did>"
                            + "<unittitle>Diaries, </unittitle>"
                            + "<unitdate type=\"inclusive\">1820-1864</unitdate>"
                            + "<physdesc><extent>14 </extent><genreform type=\"type de document\">diaries</genreform> "
@@ -730,11 +712,7 @@ public class EadToDocUnitConvertServiceTest {
 
         // #1 - pas de hiérarchie
         EadCParser eadCParser = new EadCParser(null, EadTestUtils.parseXml(EAD_SAMPLE).getRight());
-        DocUnit docUnit = service.convert(eadCParser.getcLeaves().get(0),
-                                          eadCParser,
-                                          compiledMapping,
-                                          getPropertyTypes(),
-                                          BibliographicRecord.PropertyOrder.BY_PROPERTY_TYPE);
+        DocUnit docUnit = service.convert(eadCParser.getcLeaves().get(0), eadCParser, compiledMapping, getPropertyTypes(), BibliographicRecord.PropertyOrder.BY_PROPERTY_TYPE);
 
         assertSame(mapping.getLibrary(), docUnit.getLibrary());
         assertEquals(1, docUnit.getRecords().size());
@@ -743,11 +721,7 @@ public class EadToDocUnitConvertServiceTest {
 
         // #2 - hiérarchie
         eadCParser = new EadCParser(null, EadTestUtils.parseXml(EAD_SAMPLE_2).getRight());
-        docUnit = service.convert(eadCParser.getcLeaves().get(0),
-                                  eadCParser,
-                                  compiledMapping,
-                                  getPropertyTypes(),
-                                  BibliographicRecord.PropertyOrder.BY_PROPERTY_TYPE);
+        docUnit = service.convert(eadCParser.getcLeaves().get(0), eadCParser, compiledMapping, getPropertyTypes(), BibliographicRecord.PropertyOrder.BY_PROPERTY_TYPE);
 
         assertSame(mapping.getLibrary(), docUnit.getLibrary());
         assertEquals(1, docUnit.getRecords().size());
@@ -781,8 +755,7 @@ public class EadToDocUnitConvertServiceTest {
         return propertyTypes;
     }
 
-    private static final String EAD_SAMPLE = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
-                                             + "<ead>\n"
+    private static final String EAD_SAMPLE = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" + "<ead>\n"
                                              + "    <eadheader langencoding=\"iso639-2b\" scriptencoding=\"iso15924\" countryencoding=\"iso3166-1\" repositoryencoding=\"iso15511\" dateencoding=\"iso8601\" relatedencoding=\"dc\" findaidstatus=\"provisoire\">\n"
                                              + "        <eadid countrycode=\"fr\" mainagencycode=\"341720001\" identifier=\"FRCGMBPF-751052116-01a\" encodinganalog=\"identifier\">FRCGMBPF-751052116-01a.xml</eadid>\n"
                                              + "        <filedesc>\n"
@@ -895,8 +868,7 @@ public class EadToDocUnitConvertServiceTest {
                                              + "    </archdesc>\n"
                                              + "</ead>";
 
-    private static final String EAD_SAMPLE_2 = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
-                                               + "<c id=\"Calames-2016441942142334\" level=\"\">\n"
+    private static final String EAD_SAMPLE_2 = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" + "<c id=\"Calames-2016441942142334\" level=\"\">\n"
                                                + "    <did>\n"
                                                + "        <unitid type=\"cote\">MS.ARA.15</unitid>\n"
                                                + "        <unitid type=\"ancienne_cote\">690</unitid>\n"

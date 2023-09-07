@@ -1,14 +1,13 @@
 package fr.progilone.pgcn.domain.dto.check;
 
-import java.time.LocalDateTime;
-
 import fr.progilone.pgcn.domain.dto.AbstractDTO;
+import java.time.LocalDateTime;
 
 /**
  * Résultats de contrôles automatiques
- * 
+ *
  * @author jbrunet
- * Créé le 2 mars 2017
+ *         Créé le 2 mars 2017
  */
 public class AutomaticCheckResultDTO extends AbstractDTO {
 

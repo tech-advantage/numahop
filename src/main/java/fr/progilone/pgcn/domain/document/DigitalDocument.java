@@ -3,31 +3,28 @@
  */
 package fr.progilone.pgcn.domain.document;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import fr.progilone.pgcn.domain.AbstractDomainObject;
+import fr.progilone.pgcn.domain.check.AutomaticCheckResult;
+import fr.progilone.pgcn.domain.delivery.DeliveredDocument;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-
-import fr.progilone.pgcn.domain.AbstractDomainObject;
-import fr.progilone.pgcn.domain.check.AutomaticCheckResult;
-import fr.progilone.pgcn.domain.delivery.DeliveredDocument;
 
 /**
  * @author jbrunet
@@ -88,7 +85,7 @@ public class DigitalDocument extends AbstractDomainObject {
 
     @Column(name = "total_length")
     private Long totalLength;
-    
+
     @Transient
     private int pageNumber;
 
@@ -143,9 +140,7 @@ public class DigitalDocument extends AbstractDomainObject {
     }
 
     public int getNbPages() {
-        return (int) pages.stream()
-                .filter(p -> p.getNumber() != null)
-                .count();
+        return (int) pages.stream().filter(p -> p.getNumber() != null).count();
     }
 
     public Integer getTotalDelivery() {
@@ -314,11 +309,11 @@ public class DigitalDocument extends AbstractDomainObject {
          */
         DELIVERING_ERROR,
         /**
-         *  Pré validé
+         * Pré validé
          */
         PRE_VALIDATED,
         /**
-         *  Annulé
+         * Annulé
          */
         CANCELED
     }
@@ -328,12 +323,13 @@ public class DigitalDocument extends AbstractDomainObject {
         result.sort(new ComparableComparator<>());
         return result;
     }
-    
+
     public int getPageNumber() {
         return (int) pages.stream().filter(docPage -> docPage.getNumber() != null).count();
     }
 
     public static final class ComparableComparator<T extends Comparable<DocPage>> implements Comparator<DocPage> {
+
         @Override
         public int compare(final DocPage page, final DocPage page2) {
             if (page == null && page2 == null) {

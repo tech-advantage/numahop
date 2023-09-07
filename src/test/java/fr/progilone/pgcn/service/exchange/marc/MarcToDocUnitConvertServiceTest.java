@@ -1,5 +1,7 @@
 package fr.progilone.pgcn.service.exchange.marc;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import fr.progilone.pgcn.config.ScriptEngineConfiguration;
 import fr.progilone.pgcn.domain.document.BibliographicRecord;
 import fr.progilone.pgcn.domain.document.DocProperty;
@@ -11,28 +13,25 @@ import fr.progilone.pgcn.domain.library.Library;
 import fr.progilone.pgcn.service.administration.TransliterationService;
 import fr.progilone.pgcn.service.exchange.marc.mapping.CompiledMapping;
 import fr.progilone.pgcn.service.exchange.marc.mapping.CompiledMappingRule;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import javax.script.ScriptEngine;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.marc4j.converter.impl.Iso5426ToUnicode;
 import org.marc4j.marc.DataField;
 import org.marc4j.marc.MarcFactory;
 import org.marc4j.marc.Record;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
-
-import javax.script.ScriptEngine;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.Assert.*;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Created by Sebastien on 24/11/2016.
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class MarcToDocUnitConvertServiceTest {
 
     private static final MarcFactory MARC_FACTORY = MarcFactory.newInstance();
@@ -43,7 +42,7 @@ public class MarcToDocUnitConvertServiceTest {
     private MarcMappingEvaluationService mappingEvaluationService;
     private MarcToDocUnitConvertService service;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         final ScriptEngine engine = new ScriptEngineConfiguration().getGroovyScriptEngine();
         mappingEvaluationService = new MarcMappingEvaluationService(engine, transliterationService);
@@ -71,8 +70,7 @@ public class MarcToDocUnitConvertServiceTest {
         final Mapping mapping = getMapping();
         mapping.getRules()
                .get(0)
-               .setExpression("'(' + \\001 + ') ' "
-                              + "+ \\702$a.toUpperCase() + ', ' + \\702$b.toLowerCase() + ' - ' "
+               .setExpression("'(' + \\001 + ') ' " + "+ \\702$a.toUpperCase() + ', ' + \\702$b.toLowerCase() + ' - ' "
                               + "+ (\\035$a.replaceFirst(/^ppn(.*)$/, '$1') ?: 'non renseigné')");
 
         // Compilation du mapping

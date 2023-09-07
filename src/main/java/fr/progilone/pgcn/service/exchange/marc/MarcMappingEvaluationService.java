@@ -7,19 +7,6 @@ import fr.progilone.pgcn.service.exchange.marc.mapping.CompiledMappingRule;
 import fr.progilone.pgcn.service.exchange.marc.mapping.CompiledStatement;
 import fr.progilone.pgcn.service.exchange.marc.mapping.MarcKey;
 import fr.progilone.pgcn.service.exchange.marc.script.CustomScript;
-import org.apache.commons.lang3.StringUtils;
-import org.marc4j.converter.CharConverter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
-
-import javax.script.Bindings;
-import javax.script.Compilable;
-import javax.script.CompiledScript;
-import javax.script.ScriptEngine;
-import javax.script.ScriptException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +14,18 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import javax.script.Bindings;
+import javax.script.Compilable;
+import javax.script.CompiledScript;
+import javax.script.ScriptEngine;
+import javax.script.ScriptException;
+import org.apache.commons.lang3.StringUtils;
+import org.marc4j.converter.CharConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 
 /**
  * Created by Sebastien on 23/11/2016.
@@ -104,8 +103,8 @@ public class MarcMappingEvaluationService {
      * @param rule
      * @param bindings
      * @return un boolean résultat de l'évaluation de la condition,
-     * true si pas de condition définie,
-     * false si pb de compilation ou d'évaluation
+     *         true si pas de condition définie,
+     *         false si pb de compilation ou d'évaluation
      * @throws ScriptException
      */
     public boolean evalCondition(CompiledMappingRule rule, Map<String, Object> bindings) {
@@ -124,7 +123,7 @@ public class MarcMappingEvaluationService {
                 bindings.put(BINDING_FN_TRANSLITERATE, transliterationService);
 
                 final Object test = eval(condition.getCompiledScript(), bindings);
-                // Le test ne retourne rien => condition  = false
+                // Le test ne retourne rien => condition = false
                 if (test == null) {
                     return false;
                 }
@@ -161,7 +160,7 @@ public class MarcMappingEvaluationService {
      * @param rule
      * @param bindings
      * @return un objet résultat de l'évaluation de l'expression,
-     * ou null si pas d'expression ou si une erreur s'est produite
+     *         ou null si pas d'expression ou si une erreur s'est produite
      * @throws ScriptException
      */
     public Object evalExpression(CompiledMappingRule rule, Map<String, Object> bindings) {
@@ -212,11 +211,7 @@ public class MarcMappingEvaluationService {
         bindings.put(BINDING_FN_TRANSLITERATE, transliterationService);
 
         if (compiledStatement.getConfigScript() != null) {
-            final List<String> scripts = compiledStatement.getCustomScripts()
-                                                          .stream()
-                                                          .map(CustomScript::getConfigScript)
-                                                          .filter(Objects::nonNull)
-                                                          .collect(Collectors.toList());
+            final List<String> scripts = compiledStatement.getCustomScripts().stream().map(CustomScript::getConfigScript).filter(Objects::nonNull).collect(Collectors.toList());
             scripts.add(compiledStatement.getConfigScript());
             eval(StringUtils.join(scripts, '\n'), bindings);
         }

@@ -1,23 +1,21 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('AccountCtrl', AccountCtrl);
+    angular.module('numaHopApp.controller').controller('AccountCtrl', AccountCtrl);
 
     function AccountCtrl($scope, $timeout, gettextCatalog, MessageSrvc, Principal, UserSrvc) {
-
         var mainCtrl = this;
         mainCtrl.getCategoryLabel = getCategoryLabel;
 
         mainCtrl.options = {
             boolean: {
                 true: gettextCatalog.getString('Oui'),
-                false: gettextCatalog.getString('Non')
+                false: gettextCatalog.getString('Non'),
             },
             category: {
-                "PROVIDER": gettextCatalog.getString('Prestataire'),
-                "OTHER": gettextCatalog.getString('Utilisateur')
-            }
+                PROVIDER: gettextCatalog.getString('Prestataire'),
+                OTHER: gettextCatalog.getString('Utilisateur'),
+            },
         };
 
         $timeout(init);

@@ -1,34 +1,32 @@
 <div class="modal-header">
-	<h3 class="modal-title"><span translate>Ajout d'une fermeture exceptionnelle</span></h3>
+    <h3 class="modal-title"><span translate>Ajout d'une fermeture exceptionnelle</span></h3>
 </div>
 <div class="modal-body">
-	<table class="table table-condensed table-hover">
-		<thead>
-		<tr>
-			<th translate>Libellé</th>
-			<th style="width:300px;" translate>Jour</th>
-		</tr>
-		</thead>
-		<tbody>
-			<tr class="layout-columns editable-controls">
-				<td>
-					<input type="text" ng-model="newClosingDate.label"
-								class="form-control" style="padding-left: 5px;"
-								onbeforesave="validation.required($data)">
-				</td>
-				<td>
-					<div class="vertical-align" style="min-height: 0">
-						<span translate>Du&nbsp;</span>
-						<sem-datepicker ng-model="newClosingDate.startDate"></sem-datepicker>
-					 	<span translate>&nbsp;au&nbsp;</span>
-						<sem-datepicker ng-model="newClosingDate.endDate"></sem-datepicker>
-					</div>
-			 	</td>
-			</tr>
-		</tbody>
-	</table>
+    <table class="table table-condensed table-hover">
+        <thead>
+            <tr>
+                <th translate>Libellé</th>
+                <th style="width: 300px" translate>Jour</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="layout-columns editable-controls">
+                <td>
+                    <input type="text" ng-model="newClosingDate.label" class="form-control" style="padding-left: 5px" onbeforesave="validation.required($data)" />
+                </td>
+                <td>
+                    <div class="vertical-align" style="min-height: 0">
+                        <span translate>Du&nbsp;</span>
+                        <sem-datepicker ng-model="newClosingDate.startDate"></sem-datepicker>
+                        <span translate>&nbsp;au&nbsp;</span>
+                        <sem-datepicker ng-model="newClosingDate.endDate"></sem-datepicker>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 </div>
 <div class="modal-footer">
-	<button type="button" class="btn btn-sem4" ng-click="cancel()" translate>Annuler</button>
-	<button type="button" class="btn btn-sem2" ng-click="saveDay(newClosingDate)" translate>Créer</button>
+    <button type="button" class="btn btn-sem4" ng-click="cancel()" translate>Annuler</button>
+    <button type="button" class="btn btn-sem2" ng-click="saveDay(newClosingDate)" translate>Créer</button>
 </div>

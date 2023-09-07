@@ -1,37 +1,9 @@
 package fr.progilone.pgcn.service.exchange.template;
 
-import static fr.progilone.pgcn.exception.message.PgcnErrorCode.TPL_DUPLICATE;
-import static fr.progilone.pgcn.exception.message.PgcnErrorCode.TPL_LIBRARY_MANDATORY;
-import static fr.progilone.pgcn.exception.message.PgcnErrorCode.TPL_NAME_MANDATORY;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.web.multipart.MultipartFile;
+import static fr.progilone.pgcn.exception.message.PgcnErrorCode.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 import fr.progilone.pgcn.domain.AbstractDomainObject;
 import fr.progilone.pgcn.domain.exchange.template.Engine;
@@ -42,8 +14,26 @@ import fr.progilone.pgcn.exception.PgcnValidationException;
 import fr.progilone.pgcn.repository.exchange.template.TemplateRepository;
 import fr.progilone.pgcn.service.storage.FileStorageManager;
 import fr.progilone.pgcn.util.TestUtil;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.multipart.MultipartFile;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class TemplateServiceTest {
 
     private static final String TPL_DIR = FileUtils.getTempDirectoryPath() + "/pgcn_test";
@@ -55,13 +45,13 @@ public class TemplateServiceTest {
 
     private TemplateService service;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         service = new TemplateService(fm, templateRepository);
         ReflectionTestUtils.setField(service, "templateDir", TPL_DIR);
     }
 
-    @AfterClass
+    @AfterAll
     public static void clean() {
         FileUtils.deleteQuietly(new File(TPL_DIR));
     }
@@ -117,7 +107,7 @@ public class TemplateServiceTest {
         final File file = new File(TPL_DIR, "testDelete");
         FileUtils.writeStringToFile(file, "testDelete", StandardCharsets.UTF_8);
 
-        when(templateRepository.findOne(template.getIdentifier())).thenReturn(template);
+        when(templateRepository.findById(template.getIdentifier())).thenReturn(Optional.of(template));
         when(fm.retrieveFile(anyString(), any(AbstractDomainObject.class))).thenReturn(file);
 
         service.delete(template.getIdentifier());
@@ -136,9 +126,7 @@ public class TemplateServiceTest {
 
         when(templateRepository.save(template)).thenReturn(template);
         when(templateRepository.countByNameAndLibraryIdentifier(Name.ReinitPassword, library.getIdentifier())).thenReturn(1L, 0L);
-        when(templateRepository.countByNameAndLibraryIdentifierAndIdentifierNot(Name.ReinitPassword, library.getIdentifier(), identifier)).thenReturn(
-            1L,
-            0L);
+        when(templateRepository.countByNameAndLibraryIdentifierAndIdentifierNot(Name.ReinitPassword, library.getIdentifier(), identifier)).thenReturn(1L, 0L);
 
         // Validation KO, création
         try {
@@ -213,9 +201,9 @@ public class TemplateServiceTest {
         final MultipartFile file = new MockMultipartFile("testUpload", "testUpload", "text/plain", data.getBytes(StandardCharsets.UTF_8));
         final File impFile = new File("testUpload");
 
-        when(templateRepository.findOne(template.getIdentifier())).thenReturn(template);
+        when(templateRepository.findById(template.getIdentifier())).thenReturn(Optional.of(template));
         when(templateRepository.save(template)).thenReturn(template);
-        when(fm.copyInputStreamToFile(any(InputStream.class), any(File.class), anyString(), anyBoolean(), anyBoolean())).thenReturn(impFile);
+        when(fm.copyInputStreamToFile(any(InputStream.class), anyString(), any())).thenReturn(impFile);
 
         // upload du fichier
         final Template actualUploaded = service.save(template, file);

@@ -1,5 +1,7 @@
 package fr.progilone.pgcn.web.rest.exchange.z3950;
 
+import static fr.progilone.pgcn.web.rest.exchange.security.AuthorizationConstants.*;
+
 import com.codahale.metrics.annotation.Timed;
 import fr.progilone.pgcn.domain.dto.exchange.Z3950RecordDTO;
 import fr.progilone.pgcn.domain.exchange.DataEncoding;
@@ -12,6 +14,15 @@ import fr.progilone.pgcn.service.exchange.marc.ImportMarcService;
 import fr.progilone.pgcn.service.exchange.z3950.Z3950Service;
 import fr.progilone.pgcn.web.rest.AbstractRestController;
 import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.servlet.http.HttpServletRequest;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,18 +35,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletRequest;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import static fr.progilone.pgcn.web.rest.exchange.security.AuthorizationConstants.*;
 
 /**
  * Contrôleur gérant l'import Z3950
@@ -66,9 +65,9 @@ public class Z3950Controller extends AbstractRestController {
      * Recherche de notices Z39.50
      *
      * @param fields
-     *         Champs pour la recherche
+     *            Champs pour la recherche
      * @param servers
-     *         Cibles de recherches
+     *            Cibles de recherches
      * @return
      * @throws fr.progilone.pgcn.exception.PgcnBusinessException
      */
@@ -78,8 +77,7 @@ public class Z3950Controller extends AbstractRestController {
     public ResponseEntity<Page<Z3950RecordDTO>> search(@RequestBody final Map<String, String> fields,
                                                        @RequestParam(value = "server") final List<String> servers,
                                                        @RequestParam(value = "page", defaultValue = "0") final int page,
-                                                       @RequestParam(value = "size", defaultValue = "10") final int size) throws
-                                                                                                                          PgcnBusinessException {
+                                                       @RequestParam(value = "size", defaultValue = "10") final int size) throws PgcnBusinessException {
         return new ResponseEntity<>(z3950Service.search(fields, servers, page, size), HttpStatus.OK);
     }
 
@@ -87,19 +85,19 @@ public class Z3950Controller extends AbstractRestController {
      * Import d'une notice issue d'une recherche Z39.50
      *
      * @param z3950ResultDTO
-     *         résultat de recherche Z39.50 à importer
+     *            résultat de recherche Z39.50 à importer
      * @param libraryId
-     *         identifiant de la bibliothèque pour laquelle s'effectue l'import
+     *            identifiant de la bibliothèque pour laquelle s'effectue l'import
      * @param mappingId
-     *         identifiant du mapping à utiliser pour importer le fichier
+     *            identifiant du mapping à utiliser pour importer le fichier
      * @param stepValidation
-     *         étape de validation par l'utilisateur;
-     *         si false: les unités documentaires sont disponibles dès la fin de l'import,
-     *         et les actions de dédoublonnages sont appliquées automatiquement
+     *            étape de validation par l'utilisateur;
+     *            si false: les unités documentaires sont disponibles dès la fin de l'import,
+     *            et les actions de dédoublonnages sont appliquées automatiquement
      * @param stepDeduplication
-     *         étape de recherche de doublons
+     *            étape de recherche de doublons
      * @param defaultDedupProcess
-     *         action à effectuer en cas de dédoublonnage
+     *            action à effectuer en cas de dédoublonnage
      * @return
      */
     @RequestMapping(method = RequestMethod.POST, params = "mapping", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -113,8 +111,7 @@ public class Z3950Controller extends AbstractRestController {
                                                    @RequestParam(value = "mapping") final String mappingId,
                                                    @RequestParam(value = "validation", defaultValue = "false") final boolean stepValidation,
                                                    @RequestParam(value = "dedup", defaultValue = "false") final boolean stepDeduplication,
-                                                   @RequestParam(value = "dedupProcess", required = false)
-                                                   final ImportedDocUnit.Process defaultDedupProcess) {
+                                                   @RequestParam(value = "dedupProcess", required = false) final ImportedDocUnit.Process defaultDedupProcess) {
         // Vérification des droits d'accès par rapport à la bibliothèque demandée
         if (!libraryAccesssHelper.checkLibrary(request, libraryId)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
@@ -142,7 +139,8 @@ public class Z3950Controller extends AbstractRestController {
                                                      importReport,
                                                      stepValidation,
                                                      stepDeduplication,
-                                                     stepDeduplication ? defaultDedupProcess : null,
+                                                     stepDeduplication ? defaultDedupProcess
+                                                                       : null,
                                                      false,
                                                      false);
                 return new ResponseEntity<>(importReport, HttpStatus.OK);
@@ -154,35 +152,21 @@ public class Z3950Controller extends AbstractRestController {
             }
 
         } else {
-            LOG.info("L'import depuis le serveur Z39.50 {} (format {}, encodage {}) est annulé car il est vide",
-                     z3950Name,
-                     FileFormat.MARCXML,
-                     importReport.getDataEncoding());
+            LOG.info("L'import depuis le serveur Z39.50 {} (format {}, encodage {}) est annulé car il est vide", z3950Name, FileFormat.MARCXML, importReport.getDataEncoding());
             importReportService.failReport(importReport,
-                                           "Aucun contenu reçu du serveur Z39.50 "
-                                           + z3950ResultDTO.getZ3950Server().getName()
-                                           + "("
-                                           + z3950ResultDTO.getZ3950Server().getIdentifier()
-                                           + ")");
+                                           "Aucun contenu reçu du serveur Z39.50 " + z3950ResultDTO.getZ3950Server().getName()
+                                                         + "("
+                                                         + z3950ResultDTO.getZ3950Server().getIdentifier()
+                                                         + ")");
             return new ResponseEntity<>(importReport, HttpStatus.NO_CONTENT);
         }
     }
 
-    private ImportReport createImportReport(final Z3950RecordDTO z3950RecordDTO,
-                                            final String libraryId,
-                                            final String projectId,
-                                            final String lotId,
-                                            final String mappingId) {
+    private ImportReport createImportReport(final Z3950RecordDTO z3950RecordDTO, final String libraryId, final String projectId, final String lotId, final String mappingId) {
 
-        final String fileName = "Z3950-" + z3950RecordDTO.getZ3950Server().getName() + ".marcxml";
+        final String fileName = "Z3950-" + z3950RecordDTO.getZ3950Server().getName()
+                                + ".marcxml";
         final Long fileSize = (long) z3950RecordDTO.getMarcXml().length();
-        return importReportService.createSimpleImportReport(fileName,
-                                                            fileSize,
-                                                            FileFormat.MARCXML,
-                                                            DataEncoding.UTF_8,
-                                                            libraryId,
-                                                            projectId,
-                                                            lotId,
-                                                            mappingId);
+        return importReportService.createSimpleImportReport(fileName, fileSize, FileFormat.MARCXML, DataEncoding.UTF_8, libraryId, projectId, lotId, mappingId);
     }
 }

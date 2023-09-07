@@ -1,13 +1,29 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('LibraryEditCtrl', LibraryEditCtrl);
+    angular.module('numaHopApp.controller').controller('LibraryEditCtrl', LibraryEditCtrl);
 
-    function LibraryEditCtrl($http, $location, $q, $routeParams, $scope, $timeout, codeSrvc, CONFIGURATION,
-        DocUnitBaseService, gettext, gettextCatalog, HistorySrvc, LibrarySrvc, ListTools, NumahopEditService,
-        MessageSrvc, ModalSrvc, NumaHopInitializationSrvc, ValidationSrvc) {
-
+    function LibraryEditCtrl(
+        $http,
+        $location,
+        $q,
+        $routeParams,
+        $scope,
+        $timeout,
+        codeSrvc,
+        CONFIGURATION,
+        DocUnitBaseService,
+        gettext,
+        gettextCatalog,
+        HistorySrvc,
+        LibrarySrvc,
+        ListTools,
+        NumahopEditService,
+        MessageSrvc,
+        ModalSrvc,
+        NumaHopInitializationSrvc,
+        ValidationSrvc
+    ) {
         $scope.semCodes = codeSrvc;
         $scope.deleteLogo = deleteLogo;
         $scope.setLogo = setLogo;
@@ -20,16 +36,15 @@
         // Définition des listes déroulantes
         $scope.options = {
             boolean: [
-                { value: true, text: "Oui" },
-                { value: false, text: "Non" }
-            ]
+                { value: true, text: 'Oui' },
+                { value: false, text: 'Non' },
+            ],
         };
 
-        $scope.binding = { resp: "" };
+        $scope.binding = { resp: '' };
         $scope.loaded = false;
 
         init();
-
 
         /** Initialisation */
         function init() {
@@ -42,19 +57,21 @@
             var deferred = $q.defer();
             $timeout(function () {
                 var promise = NumaHopInitializationSrvc.loadRoles();
-                promise.then(function (value) {
-                    deferred.resolve(value);
-                    $scope.options.role = value;
-                }).catch(function (value) {
-                    deferred.reject(value);
-                });
+                promise
+                    .then(function (value) {
+                        deferred.resolve(value);
+                        $scope.options.role = value;
+                    })
+                    .catch(function (value) {
+                        deferred.reject(value);
+                    });
             });
             return deferred.promise;
         }
 
         $scope.getAddressType = function (address) {
             if ($scope.viewMode === $scope.viewModes.EDIT) {
-                return gettext("Adresse") + " " + ($scope.borrower.addresses.indexOf(address) + 1);
+                return gettext('Adresse') + ' ' + ($scope.borrower.addresses.indexOf(address) + 1);
             }
             if (angular.isDefined(address.type) && angular.isDefined(address.identifier)) {
                 if (address.type === CONFIGURATION.semantecSid.valueOtherCode) {
@@ -65,11 +82,11 @@
             }
         };
         $scope.showAdd = function (index, collection) {
-            return index === (collection.length - 1) && ($scope.viewMode === $scope.viewModes.EDIT || index >= 0 && angular.isDefined(collection[collection.length - 1].identifier));
+            return index === collection.length - 1 && ($scope.viewMode === $scope.viewModes.EDIT || (index >= 0 && angular.isDefined(collection[collection.length - 1].identifier)));
         };
         $scope.registerLibrary = function (category) {
-            var search = { id: $scope.borrower.identifier, mode: "edit", category: category.identifier };
-            $location.path("/library/library").search(search);
+            var search = { id: $scope.borrower.identifier, mode: 'edit', category: category.identifier };
+            $location.path('/library/library').search(search);
         };
 
         /****************************************************************/
@@ -77,22 +94,19 @@
         /****************************************************************/
 
         $scope.delete = function (library) {
-            ModalSrvc.confirmDeletion(library.name)
-                .then(function () {
+            ModalSrvc.confirmDeletion(library.name).then(function () {
+                library.$delete(function (value) {
+                    MessageSrvc.addSuccess(gettext('La bibliothèque {{name}} a été supprimée'), { name: value.name });
 
-                    library.$delete(function (value) {
-                        MessageSrvc.addSuccess(gettext("La bibliothèque {{name}} a été supprimée"), { name: value.name });
-
-                        var removed = ListTools.findAndRemoveItemFromList(library, $scope.pagination.items);
-                        if (removed) {
-                            $scope.pagination.totalItems--;
-                        }
-                        else {
-                            ListTools.findAndRemoveItemFromList(library, $scope.newLibraries);
-                        }
-                        $scope.backToList();
-                    });
+                    var removed = ListTools.findAndRemoveItemFromList(library, $scope.pagination.items);
+                    if (removed) {
+                        $scope.pagination.totalItems--;
+                    } else {
+                        ListTools.findAndRemoveItemFromList(library, $scope.newLibraries);
+                    }
+                    $scope.backToList();
                 });
+            });
         };
         $scope.duplicate = function () {
             if ($scope.library) {
@@ -100,7 +114,7 @@
                 $scope.library._selected = false;
                 var identifier = $scope.library.identifier;
                 $scope.library = null;
-                $location.path("/library/library").search({ id: identifier, mode: "edit", duplicate: true });
+                $location.path('/library/library').search({ id: identifier, mode: 'edit', duplicate: true });
             }
         };
         $scope.cancel = function () {
@@ -111,13 +125,13 @@
             $scope.loaded = false;
             // supprimer tous les paramètres
             $location.search({});
-            $location.path("/library/library");
+            $location.path('/library/library');
         };
         $scope.goToAllUsers = function () {
-            $location.path("/user/user").search({ library: $scope.library.identifier });
+            $location.path('/user/user').search({ library: $scope.library.identifier });
         };
         $scope.goToAllProjects = function () {
-            $location.path("/project/project").search({ library: $scope.library.identifier });
+            $location.path('/project/project').search({ library: $scope.library.identifier });
         };
 
         /****************************************************************/
@@ -130,9 +144,10 @@
             $timeout(function () {
                 var creation = angular.isUndefined(library.identifier) || library.identifier === null;
 
-                library.$save({},
+                library.$save(
+                    {},
                     function (value) {
-                        MessageSrvc.addSuccess(gettext("La bibliothèque {{name}} a été sauvegardée"), { name: value.name });
+                        MessageSrvc.addSuccess(gettext('La bibliothèque {{name}} a été sauvegardée'), { name: value.name });
                         onSuccess(value);
                         // si création, on ajoute à la liste, sinon, on essaye de MAJ les infos dans la colonne du milieu
                         if (creation) {
@@ -145,14 +160,15 @@
                     },
                     function (response) {
                         $scope.errors = _.chain(response.data.errors)
-                            .groupBy("field")
+                            .groupBy('field')
                             .mapObject(function (list) {
-                                return _.pluck(list, "code");
+                                return _.pluck(list, 'code');
                             })
                             .value();
 
                         openForm();
-                    });
+                    }
+                );
             });
         }
         // Met à jour la liste avec la nouvelle bibliothèque
@@ -175,7 +191,7 @@
             var newLibrary = {
                 _selected: true,
                 identifier: library.identifier,
-                name: library.name
+                name: library.name,
             };
             var i = 0;
             for (i = 0; i < newLibraries.length; i++) {
@@ -189,7 +205,7 @@
         // Gestion de la bibliothèque renvoyée par le serveur
         function onSuccess(value) {
             $scope.library = value;
-            HistorySrvc.add(gettextCatalog.getString("Bibliothèque {{name}}", $scope.library));
+            HistorySrvc.add(gettextCatalog.getString('Bibliothèque {{name}}', $scope.library));
             displayMessages($scope.library);
         }
         // Ouverture du formulaire et des sous formulaires
@@ -206,14 +222,12 @@
             // ... puis on affiche les infos de modification ...
             if (angular.isDefined(entity.lastModifiedDate)) {
                 var dateModif = new Date(entity.lastModifiedDate);
-                MessageSrvc.addInfo(gettext("Dernière modification le {{date}} par {{author}}"),
-                    { date: dateModif.toLocaleString(), author: entity.lastModifiedBy }, true);
+                MessageSrvc.addInfo(gettext('Dernière modification le {{date}} par {{author}}'), { date: dateModif.toLocaleString(), author: entity.lastModifiedBy }, true);
             }
             // ... puis on affiche les infos de création ...
             if (angular.isDefined(entity.createdDate)) {
                 var dateCreated = new Date(entity.createdDate);
-                MessageSrvc.addInfo(gettext("Créé le {{date}}"),
-                    { date: dateCreated.toLocaleString() }, true);
+                MessageSrvc.addInfo(gettext('Créé le {{date}}'), { date: dateCreated.toLocaleString() }, true);
             }
             // Affichage pour un temps limité à l'ouverture
             MessageSrvc.initPanel();
@@ -235,11 +249,10 @@
 
             $scope.hasLogo = {};
             if ($routeParams.id) {
-                LibrarySrvc.hasLogo({}, library).$promise
-                    .then(function (result) {
-                        $scope.hasLogo = result[library.identifier];
-                        refreshThumbnail();
-                    });
+                LibrarySrvc.hasLogo({}, library).$promise.then(function (result) {
+                    $scope.hasLogo = result[library.identifier];
+                    refreshThumbnail();
+                });
             }
         }
 
@@ -248,21 +261,27 @@
 
             if ('duplicate' in $routeParams && angular.isDefined($routeParams.id)) {
                 // Duplication
-                $scope.library = LibrarySrvc.duplicate({
-                    id: $routeParams.id
-                }, function (library) {
-                    afterLoadingLibrary(library);
-                });
+                $scope.library = LibrarySrvc.duplicate(
+                    {
+                        id: $routeParams.id,
+                    },
+                    function (library) {
+                        afterLoadingLibrary(library);
+                    }
+                );
             } else if (angular.isDefined($routeParams.id)) {
                 // Chargement bibliothèque
-                $scope.library = LibrarySrvc.get({
-                    id: $routeParams.id
-                }, function (library) {
-                    afterLoadingLibrary(library);
-                });
+                $scope.library = LibrarySrvc.get(
+                    {
+                        id: $routeParams.id,
+                    },
+                    function (library) {
+                        afterLoadingLibrary(library);
+                    }
+                );
             } else if (angular.isDefined($routeParams.new)) {
                 // Création d'une nouvelle bibliothèque
-                HistorySrvc.add(gettext("Nouvelle bibliothèque"));
+                HistorySrvc.add(gettext('Nouvelle bibliothèque'));
                 $scope.library = new LibrarySrvc();
                 $scope.library.active = true;
                 afterLoadingLibrary($scope.library);
@@ -292,23 +311,24 @@
                     var url = CONFIGURATION.numahop.url + 'api/rest/library/' + $scope.library.identifier;
 
                     var formData = new FormData();
-                    formData.append("logo", true);
-                    formData.append("file", logo);
+                    formData.append('logo', true);
+                    formData.append('file', logo);
 
                     var config = {
                         transformRequest: angular.identity,
                         headers: {
-                            'Content-Type': undefined
-                        }
+                            'Content-Type': undefined,
+                        },
                     };
-                    $http.post(url, formData, config)
+                    $http
+                        .post(url, formData, config)
                         .success(function (data, status) {
-                            MessageSrvc.addSuccess(gettext("Le logo a été mis à jour"));
+                            MessageSrvc.addSuccess(gettext('Le logo a été mis à jour'));
                             $scope.hasLogo = true;
                             refreshThumbnail();
                         })
                         .error(function (data, status) {
-                            MessageSrvc.addError(gettext("Échec lors du téléversement du logo"));
+                            MessageSrvc.addError(gettext('Échec lors du téléversement du logo'));
                         });
                 });
             }
@@ -320,23 +340,22 @@
          * @param {any} library
          */
         function deleteLogo(library) {
-            LibrarySrvc.deleteLogo({ id: library.identifier }).$promise
-                .then(function () {
-                    MessageSrvc.addSuccess(gettext("Le logo a été supprimé"));
+            LibrarySrvc.deleteLogo({ id: library.identifier })
+                .$promise.then(function () {
+                    MessageSrvc.addSuccess(gettext('Le logo a été supprimé'));
                     $scope.hasLogo = false;
                     refreshThumbnail();
                 })
                 .catch(function () {
-                    MessageSrvc.addError(gettext("Échec lors de la suppression du logo"));
+                    MessageSrvc.addError(gettext('Échec lors de la suppression du logo'));
                 });
-
         }
 
         /**
          * Rafraichissement de l'aperçu du logo
          */
         function refreshThumbnail() {
-            $scope._library_thumbnail = "/api/rest/library/" + $scope.library.identifier + "?thumbnail=true&ts=" + new Date().getTime();
+            $scope._library_thumbnail = '/api/rest/library/' + $scope.library.identifier + '?thumbnail=true&ts=' + new Date().getTime();
         }
     }
 })();

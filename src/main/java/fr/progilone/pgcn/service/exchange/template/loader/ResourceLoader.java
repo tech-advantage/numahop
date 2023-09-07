@@ -1,8 +1,7 @@
 package fr.progilone.pgcn.service.exchange.template.loader;
 
-import org.apache.velocity.exception.ResourceNotFoundException;
-
 import java.io.InputStream;
+import org.apache.velocity.exception.ResourceNotFoundException;
 
 public interface ResourceLoader {
 

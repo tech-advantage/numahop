@@ -1,14 +1,13 @@
 package fr.progilone.pgcn.domain.administration;
 
 import com.google.common.base.MoreObjects;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
-import javax.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Id;
+import jakarta.persistence.IdClass;
+import jakarta.persistence.Table;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -22,7 +21,9 @@ public class Transliteration {
 
     public static final String TABLE_NAME = "conf_transliteration";
 
-    public enum Type {FUNCTION}
+    public enum Type {
+        FUNCTION
+    }
 
     @Id
     @Column(name = "type", nullable = false)
@@ -69,7 +70,8 @@ public class Transliteration {
             return false;
         }
         final Transliteration that = (Transliteration) o;
-        return type == that.type && Objects.equals(code, that.code) && Objects.equals(value, that.value);
+        return type == that.type && Objects.equals(code, that.code)
+               && Objects.equals(value, that.value);
     }
 
     @Override
@@ -83,7 +85,7 @@ public class Transliteration {
     }
 
     /**
-     * {@link javax.persistence.IdClass} pour les {@link Transliteration}
+     * {@link jakarta.persistence.IdClass} pour les {@link Transliteration}
      */
     public static class TransliterationId implements Serializable {
 

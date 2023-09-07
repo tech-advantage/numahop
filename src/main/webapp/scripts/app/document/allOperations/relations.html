@@ -4,10 +4,14 @@
             <div class="formBlockTitle">
                 <span translate>Unité documentaire parente</span>
                 <!-- Sélection de l'unité documentaire parente -->
-                <button type="button" class="btn btn-syr-cataloging-action btn-xs margin-l10"
-                        uib-tooltip="{{ 'Ajouter une unité documentaire parente' | translate}}"
-                        ng-click="relCtrl.selectParent()" ng-show="!relCtrl.docUnit.parentIdentifier"
-                        sem-roles-allowed="DOC_UNIT_HAB2">
+                <button
+                    type="button"
+                    class="btn btn-syr-cataloging-action btn-xs margin-l10"
+                    uib-tooltip="{{ 'Ajouter une unité documentaire parente' | translate}}"
+                    ng-click="relCtrl.selectParent()"
+                    ng-show="!relCtrl.docUnit.parentIdentifier"
+                    sem-roles-allowed="DOC_UNIT_HAB2"
+                >
                     <span class="glyphicon-halflings glyphicon-option-horizontal"></span>
                 </button>
             </div>
@@ -19,15 +23,11 @@
                         <span class="glyphicon-halflings glyphicon-share"></span>
                     </a>
                     <!-- Sélection de l'unité documentaire parente -->
-                    <button type="button" class="btn btn-syr-cataloging-action btn-xs"
-                            uib-tooltip="{{ 'Modifier l\'unité documentaire parente' | translate}}"
-                            ng-click="relCtrl.selectParent()">
+                    <button type="button" class="btn btn-syr-cataloging-action btn-xs" uib-tooltip="{{ 'Modifier l\'unité documentaire parente' | translate}}" ng-click="relCtrl.selectParent()">
                         <span class="glyphicon-halflings glyphicon-option-horizontal"></span>
                     </button>
                     <!-- Suppression du lien vers l'unité documentaire parente -->
-                    <button type="button" class="btn btn-syr-cataloging-action btn-xs"
-                            uib-tooltip="{{ 'Supprimer le lien vers l\'unité documentaire parente' | translate}}"
-                            ng-click="relCtrl.removeParent()">
+                    <button type="button" class="btn btn-syr-cataloging-action btn-xs" uib-tooltip="{{ 'Supprimer le lien vers l\'unité documentaire parente' | translate}}" ng-click="relCtrl.removeParent()">
                         <span class="glyphicon-halflings glyphicon-trash"></span>
                     </button>
                     <b>{{ relCtrl.docUnit.parentPgcnId }}</b> {{ relCtrl.docUnit.parentLabel }}&nbsp;
@@ -38,15 +38,23 @@
             <div class="formBlockTitle">
                 <span translate>Unités documentaires filles</span>
                 <!-- Création d'une unité documentaire fille -->
-                <button type="button" class="btn btn-syr-cataloging-action btn-xs margin-l10"
-                        uib-tooltip="{{ 'Créer une unité documentaire fille' | translate}}"
-                        ng-click="relCtrl.newChild()" sem-roles-allowed="DOC_UNIT_HAB2">
+                <button
+                    type="button"
+                    class="btn btn-syr-cataloging-action btn-xs margin-l10"
+                    uib-tooltip="{{ 'Créer une unité documentaire fille' | translate}}"
+                    ng-click="relCtrl.newChild()"
+                    sem-roles-allowed="DOC_UNIT_HAB2"
+                >
                     <span class="glyphicon-halflings glyphicon-plus"></span>
                 </button>
                 <!-- Ajout d'une unité documentaire fille -->
-                <button type="button" class="btn btn-syr-cataloging-action btn-xs"
-                        uib-tooltip="{{ 'Ajouter une unité documentaire fille existante' | translate}}"
-                        ng-click="relCtrl.addChild()" sem-roles-allowed="DOC_UNIT_HAB2">
+                <button
+                    type="button"
+                    class="btn btn-syr-cataloging-action btn-xs"
+                    uib-tooltip="{{ 'Ajouter une unité documentaire fille existante' | translate}}"
+                    ng-click="relCtrl.addChild()"
+                    sem-roles-allowed="DOC_UNIT_HAB2"
+                >
                     <span class="glyphicon-halflings glyphicon-option-horizontal"></span>
                 </button>
             </div>
@@ -59,9 +67,7 @@
                             <span class="glyphicon-halflings glyphicon-share"></span>
                         </a>
                         <!-- Suppression du lien vers l'unité documentaire parente -->
-                        <button type="button" class="btn btn-syr-cataloging-action btn-xs"
-                                uib-tooltip="{{ 'Supprimer le lien vers l\'unité documentaire' | translate}}"
-                                ng-click="relCtrl.removeChild(ch)">
+                        <button type="button" class="btn btn-syr-cataloging-action btn-xs" uib-tooltip="{{ 'Supprimer le lien vers l\'unité documentaire' | translate}}" ng-click="relCtrl.removeChild(ch)">
                             <span class="glyphicon-halflings glyphicon-trash"></span>
                         </button>
                         <b>{{ ::ch.pgcnId }}</b> {{ ::ch.label }}&nbsp;
@@ -73,9 +79,13 @@
             <div class="formBlockTitle">
                 <span translate>Unités documentaires soeurs</span>
                 <!-- Ajout d'une unité documentaire soeur -->
-                <button type="button" class="btn btn-syr-cataloging-action btn-xs"
-                        uib-tooltip="{{ 'Ajouter une unité documentaire soeur existante' | translate}}"
-                        ng-click="relCtrl.addSibling()" sem-roles-allowed="DOC_UNIT_HAB2">
+                <button
+                    type="button"
+                    class="btn btn-syr-cataloging-action btn-xs"
+                    uib-tooltip="{{ 'Ajouter une unité documentaire soeur existante' | translate}}"
+                    ng-click="relCtrl.addSibling()"
+                    sem-roles-allowed="DOC_UNIT_HAB2"
+                >
                     <span class="glyphicon-halflings glyphicon-option-horizontal"></span>
                 </button>
             </div>
@@ -88,9 +98,7 @@
                             <span class="glyphicon-halflings glyphicon-share"></span>
                         </a>
                         <!-- Suppression du lien vers l'unité documentaire soeur -->
-                        <button type="button" class="btn btn-syr-cataloging-action btn-xs"
-                                uib-tooltip="{{ 'Supprimer le lien vers l\'unité documentaire' | translate}}"
-                                ng-click="relCtrl.removeSibling(sib)">
+                        <button type="button" class="btn btn-syr-cataloging-action btn-xs" uib-tooltip="{{ 'Supprimer le lien vers l\'unité documentaire' | translate}}" ng-click="relCtrl.removeSibling(sib)">
                             <span class="glyphicon-halflings glyphicon-trash"></span>
                         </button>
                         <b>{{ ::sib.pgcnId }}</b> {{ ::sib.label }}&nbsp;

@@ -8,9 +8,9 @@
         padding: 0px 2px;
 
         > span {
-        	width: 100%;
-        	font-size: 1.5em;
-        	bottom: 5px;
+            width: 100%;
+            font-size: 1.5em;
+            bottom: 5px;
         }
         > .btn {
             width: 42px;
@@ -24,14 +24,14 @@
         margin: 2px;
         line-height: 48px;
         text-align: center;
-        background-color: #FFFF;
+        background-color: #ffff;
         border: solid 1px $sid-main-color;
         border-radius: 2px;
         cursor: pointer;
 
         &.calendrier-jour-selected {
-            background-color: #8ABD5D;
-            color: #FFF;
+            background-color: #8abd5d;
+            color: #fff;
             border: none;
             font-weight: bold;
         }

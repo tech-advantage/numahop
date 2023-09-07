@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ValueNode;
 import fr.progilone.pgcn.domain.document.DocPropertyType;
 import fr.progilone.pgcn.domain.exchange.MappingRule;
-
 import java.io.IOException;
 import java.util.function.Consumer;
 
@@ -20,9 +19,7 @@ public class MappingRuleDeserializer extends StdDeserializer<MappingRule> {
     }
 
     @Override
-    public MappingRule deserialize(final JsonParser jp, final DeserializationContext deserializationContext) throws
-                                                                                                             IOException,
-                                                                                                             JsonProcessingException {
+    public MappingRule deserialize(final JsonParser jp, final DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
         final MappingRule rule = new MappingRule();
         final TreeNode node = jp.getCodec().readTree(jp);
 

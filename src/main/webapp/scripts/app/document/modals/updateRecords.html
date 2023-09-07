@@ -12,16 +12,18 @@
                         <tr ng-repeat="field in mainCtrl.updates.fields">
                             <td style="width: 40px; padding-top: 12px">
                                 <span class="btn-group-xs margin-l15">
-                                    <button type="button" class="btn btn-sem1 btn-removable" uib-tooltip="{{::'Supprimer' | translate}}" 
-                                            ng-click="mainCtrl.deleteField(field)">
+                                    <button type="button" class="btn btn-sem1 btn-removable" uib-tooltip="{{::'Supprimer' | translate}}" ng-click="mainCtrl.deleteField(field)">
                                         <span class="glyphicon-halflings glyphicon-trash"></span>
                                     </button>
                                 </span>
                             </td>
                             <td style="width: 30%">
-                                <sem-field sem-type="select" sem-model="field.type"
-                                           sem-select-options="option.code as option.label for option in optionData | orderBy:'rank'"
-                                           sem-option-data="mainCtrl.fields"></sem-field>
+                                <sem-field
+                                    sem-type="select"
+                                    sem-model="field.type"
+                                    sem-select-options="option.code as option.label for option in optionData | orderBy:'rank'"
+                                    sem-option-data="mainCtrl.fields"
+                                ></sem-field>
                             </td>
                             <td>
                                 <sem-field sem-type="text" sem-model="field.value"></sem-field>
@@ -32,8 +34,7 @@
                         <tr>
                             <td colspan="3">
                                 <span class="btn-group-xs margin-l15">
-                                    <button type="button" class="btn btn-sem1" uib-tooltip="{{::'Ajouter' | translate}}"
-                                            ng-click="mainCtrl.addField()">
+                                    <button type="button" class="btn btn-sem1" uib-tooltip="{{::'Ajouter' | translate}}" ng-click="mainCtrl.addField()">
                                         <span class="glyphicon-halflings glyphicon-plus"></span>
                                         <i translate>Ajouter un nouveau champ</i>
                                     </button>
@@ -53,16 +54,18 @@
                         <tr ng-repeat="property in mainCtrl.updates.properties">
                             <td style="width: 40px; padding-top: 12px">
                                 <span class="btn-group-xs margin-l15">
-                                    <button type="button" class="btn btn-sem1 btn-removable" uib-tooltip="{{::'Supprimer' | translate}}" 
-                                            ng-click="mainCtrl.deleteProperty(property)">
+                                    <button type="button" class="btn btn-sem1 btn-removable" uib-tooltip="{{::'Supprimer' | translate}}" ng-click="mainCtrl.deleteProperty(property)">
                                         <span class="glyphicon-halflings glyphicon-trash"></span>
                                     </button>
                                 </span>
                             </td>
                             <td style="width: 30%">
-                                <sem-field sem-type="select" sem-model="property.type"
-                                        sem-select-options="option.label group by option.superType for option in optionData | orderBy:['superType', 'rank'] track by option.identifier"
-                                        sem-option-data="mainCtrl.types"></sem-field>
+                                <sem-field
+                                    sem-type="select"
+                                    sem-model="property.type"
+                                    sem-select-options="option.label group by option.superType for option in optionData | orderBy:['superType', 'rank'] track by option.identifier"
+                                    sem-option-data="mainCtrl.types"
+                                ></sem-field>
                             </td>
                             <td ng-switch="property.type.identifier">
                                 <sem-field sem-type="textarea" sem-model="property.value" ng-switch-when="description"></sem-field>
@@ -74,8 +77,7 @@
                         <tr>
                             <td colspan="3">
                                 <span class="btn-group-xs margin-l15">
-                                    <button type="button" class="btn btn-sem1" uib-tooltip="{{::'Ajouter' | translate}}"
-                                            ng-click="mainCtrl.addProperty()">
+                                    <button type="button" class="btn btn-sem1" uib-tooltip="{{::'Ajouter' | translate}}" ng-click="mainCtrl.addProperty()">
                                         <span class="glyphicon-halflings glyphicon-plus"></span>
                                         <i translate>Ajouter une nouvelle propriété</i>
                                     </button>
@@ -90,7 +92,5 @@
 </div>
 <div class="modal-footer">
     <button type="button" class="btn btn-sem4" ng-click="mainCtrl.close()" translate>Annuler et fermer la fenêtre</button>
-    <button type="button" class="btn btn-sem2" ng-click="mainCtrl.applyUpdates()">
-        <span class="glyphicon-regular floppy-save"></span> {{::'Appliquer' | translate}}
-    </button>
+    <button type="button" class="btn btn-sem2" ng-click="mainCtrl.applyUpdates()"><span class="glyphicon-regular floppy-save"></span> {{::'Appliquer' | translate}}</button>
 </div>

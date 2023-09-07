@@ -1,25 +1,8 @@
 package fr.progilone.pgcn.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.time.LocalDateTime;
-import java.util.Collections;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.security.authentication.TestingAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.test.util.ReflectionTestUtils;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 import fr.progilone.pgcn.domain.Lock;
 import fr.progilone.pgcn.domain.document.DocUnit;
@@ -28,8 +11,19 @@ import fr.progilone.pgcn.domain.user.User;
 import fr.progilone.pgcn.domain.util.CustomUserDetails;
 import fr.progilone.pgcn.exception.PgcnLockException;
 import fr.progilone.pgcn.repository.LockRepository;
+import java.time.LocalDateTime;
+import java.util.Collections;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.test.util.ReflectionTestUtils;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class LockServiceTest {
 
     @Mock
@@ -37,7 +31,7 @@ public class LockServiceTest {
 
     private LockService service;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         service = new LockService(lockRepository);
     }
@@ -46,13 +40,13 @@ public class LockServiceTest {
     public void testAcquireLock_ShouldThrowException_whenExistingNonExpiredLockOnEntityForAnotherUser() {
         final String USER_ID = "user";
         final CustomUserDetails userDetails = new CustomUserDetails("4efbfc73-3af8-4747-b730-8610374acf86",
-                                                                  "user",
-                                                                  "azerty",
-                                                                  Lang.FR,
-                                                                  "LIB-001",
-                                                                  Collections.emptyList(),
-                                                                  false,
-                                                                  User.Category.PROVIDER);
+                                                                    "user",
+                                                                    "azerty",
+                                                                    Lang.FR,
+                                                                    "LIB-001",
+                                                                    Collections.emptyList(),
+                                                                    false,
+                                                                    User.Category.PROVIDER);
         final TestingAuthenticationToken authenticationToken = new TestingAuthenticationToken(userDetails, "credentials");
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
@@ -88,7 +82,7 @@ public class LockServiceTest {
         final DocUnit lockedWork = new DocUnit();
         lockedWork.setIdentifier("DocUnit");
 
-        final LocalDateTime lockedOn = LocalDateTime.of(2018,11,5,0,0);
+        final LocalDateTime lockedOn = LocalDateTime.of(2018, 11, 5, 0, 0);
         final Lock expiredLockOnWork = new Lock(lockedWork.getIdentifier(), "toto");
         ReflectionTestUtils.setField(expiredLockOnWork, "lockedDate", lockedOn);
 
@@ -157,7 +151,7 @@ public class LockServiceTest {
     }
 
     @Test
-    public void testReleaseLock_ShouldThrowException_whenExistingLockOnEntityForAnotherUser()  {
+    public void testReleaseLock_ShouldThrowException_whenExistingLockOnEntityForAnotherUser() {
         final CustomUserDetails userDetails = new CustomUserDetails("4efbfc73-3af8-4747-b730-8610374acf86",
                                                                     "user",
                                                                     "azerty",
@@ -183,26 +177,28 @@ public class LockServiceTest {
         }
     }
 
-    @Test(expected = PgcnLockException.class)
+    @Test
     public void testCheckLock_ShouldThrowException_whenExistingNonExpiredLockOnEntityForAnotherUser() throws PgcnLockException {
-        final CustomUserDetails userDetails = new CustomUserDetails("4efbfc73-3af8-4747-b730-8610374acf86",
-                                                                    "user",
-                                                                    "azerty",
-                                                                    Lang.FR,
-                                                                    "LIB-001",
-                                                                    Collections.emptyList(),
-                                                                    false,
-                                                                    User.Category.PROVIDER);
-        final TestingAuthenticationToken authenticationToken = new TestingAuthenticationToken(userDetails, "credentials");
-        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+        assertThrows(PgcnLockException.class, () -> {
+            final CustomUserDetails userDetails = new CustomUserDetails("4efbfc73-3af8-4747-b730-8610374acf86",
+                                                                        "user",
+                                                                        "azerty",
+                                                                        Lang.FR,
+                                                                        "LIB-001",
+                                                                        Collections.emptyList(),
+                                                                        false,
+                                                                        User.Category.PROVIDER);
+            final TestingAuthenticationToken authenticationToken = new TestingAuthenticationToken(userDetails, "credentials");
+            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
-        final DocUnit lockedWork = new DocUnit();
-        lockedWork.setIdentifier("DocUnit");
-        final Lock lockOnWork = new Lock(lockedWork.getIdentifier(), "toto");
+            final DocUnit lockedWork = new DocUnit();
+            lockedWork.setIdentifier("DocUnit");
+            final Lock lockOnWork = new Lock(lockedWork.getIdentifier(), "toto");
 
-        when(lockRepository.findByIdentifier(lockedWork.getIdentifier())).thenReturn(lockOnWork);
+            when(lockRepository.findByIdentifier(lockedWork.getIdentifier())).thenReturn(lockOnWork);
 
-        service.checkLock(lockedWork);
+            service.checkLock(lockedWork);
+        });
     }
 
     @Test
@@ -251,4 +247,3 @@ public class LockServiceTest {
         service.checkLock(lockedWork);
     }
 }
-

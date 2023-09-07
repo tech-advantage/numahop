@@ -1,31 +1,29 @@
 package fr.progilone.pgcn.domain.workflow;
 
+import fr.progilone.pgcn.domain.AbstractDomainObject;
+import fr.progilone.pgcn.domain.document.DocUnit;
+import fr.progilone.pgcn.service.util.NumahopCollectors;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-
-import fr.progilone.pgcn.domain.AbstractDomainObject;
-import fr.progilone.pgcn.domain.document.DocUnit;
-import fr.progilone.pgcn.service.util.NumahopCollectors;
-
 /**
  * Un workflow attaché à un {@link DocUnit}
  * Il possède n {@link DocUnitState}
  *
  * @author jbrunet
- * Créé le 5 juil. 2017
+ *         Créé le 5 juil. 2017
  */
 @Entity
 @Table(name = DocUnitWorkflow.TABLE_NAME)
@@ -52,7 +50,7 @@ public class DocUnitWorkflow extends AbstractDomainObject {
     @Column(name = "end_date")
     private LocalDateTime endDate;
 
-    @OneToOne(mappedBy = "workflow", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "workflow", fetch = FetchType.EAGER)
     private DocUnit docUnit;
 
     public WorkflowModel getModel() {
@@ -69,13 +67,13 @@ public class DocUnitWorkflow extends AbstractDomainObject {
 
     public void setStates(final Set<DocUnitState> states) {
         this.states.clear();
-        if(states != null) {
+        if (states != null) {
             states.forEach(this::addState);
         }
     }
 
     public void addState(final DocUnitState state) {
-        if(state != null) {
+        if (state != null) {
             state.setWorkflow(this);
             states.add(state);
         }
@@ -107,13 +105,12 @@ public class DocUnitWorkflow extends AbstractDomainObject {
 
     /**
      * Retourne la liste des étapes en cours ie l'ensemble des étapes dont le statut est
-     *  {@link WorkflowStateStatus#PENDING} ou {@link WorkflowStateStatus#WAITING}
+     * {@link WorkflowStateStatus#PENDING} ou {@link WorkflowStateStatus#WAITING}
      */
     public List<DocUnitState> getCurrentStates() {
         return states.stream()
-                .filter(state -> WorkflowStateStatus.PENDING.equals(state.getStatus())
-                        || WorkflowStateStatus.WAITING.equals(state.getStatus()))
-                .collect(Collectors.toList());
+                     .filter(state -> WorkflowStateStatus.PENDING.equals(state.getStatus()) || WorkflowStateStatus.WAITING.equals(state.getStatus()))
+                     .collect(Collectors.toList());
     }
 
     /**
@@ -121,15 +118,13 @@ public class DocUnitWorkflow extends AbstractDomainObject {
      * Retourne null si ce n'est pas une étape en cours sauf cas particulier de Validation Constat Etat.
      */
     public DocUnitState getCurrentStateByKey(final WorkflowStateKey key) {
-        if(key == null) {
+        if (key == null) {
             return null;
         }
         return states.stream()
-                                .filter(state -> (WorkflowStateStatus.PENDING.equals(state.getStatus())
-                                      || WorkflowStateStatus.WAITING.equals(state.getStatus())
-                                      || WorkflowStateStatus.WAITING_NEXT_COMPLETED.equals(state.getStatus()))
-                                    && key.equals(state.getKey()))
-                                .collect(NumahopCollectors.zeroOrOneCollector());
+                     .filter(state -> (WorkflowStateStatus.PENDING.equals(state.getStatus()) || WorkflowStateStatus.WAITING.equals(state.getStatus())
+                                       || WorkflowStateStatus.WAITING_NEXT_COMPLETED.equals(state.getStatus())) && key.equals(state.getKey()))
+                     .collect(NumahopCollectors.zeroOrOneCollector());
     }
 
     /**
@@ -143,54 +138,52 @@ public class DocUnitWorkflow extends AbstractDomainObject {
     /**
      * Retourne l'étape correspondant à la clé qui ne s'est pas encore déroulée
      * (est forcément unique ou inexistante s'il s'est déjà déroulée)
-     * @param key étape de workflow
+     *
+     * @param key
+     *            étape de workflow
      */
     public DocUnitState getFutureOrRunningByKey(final WorkflowStateKey key) {
-        return states.stream()
-                .filter(state -> state.getKey().equals(key) && state.isFutureOrCurrentState())
-                .collect(NumahopCollectors.zeroOrOneCollector());
+        return states.stream().filter(state -> state.getKey().equals(key) && state.isFutureOrCurrentState()).collect(NumahopCollectors.zeroOrOneCollector());
     }
 
     /**
      * Retourne toutes les étapes non déroulées
+     *
      * @return boolean
      */
     public List<DocUnitState> getFutureOrRunning() {
-        return states.stream()
-                .filter(DocUnitState::isFutureOrCurrentState)
-                .collect(Collectors.toList());
+        return states.stream().filter(DocUnitState::isFutureOrCurrentState).collect(Collectors.toList());
     }
 
     /**
      * Retourne vrai si le document a été rejeté.
+     *
      * @return boolean
      */
     public boolean isDocumentRejected() {
-        return states.stream()
-                     .anyMatch(state -> state.getKey().equals(WorkflowStateKey.VALIDATION_DOCUMENT) && state.isRejected());
+        return states.stream().anyMatch(state -> state.getKey().equals(WorkflowStateKey.VALIDATION_DOCUMENT) && state.isRejected());
     }
 
     /**
      * Retourne vrai si le document a été validé.
+     *
      * @return boolean
      */
     public boolean isDocumentValidated() {
-        return states.stream()
-                     .anyMatch(state -> state.getKey().equals(WorkflowStateKey.VALIDATION_DOCUMENT) && state.isValidated());
+        return states.stream().anyMatch(state -> state.getKey().equals(WorkflowStateKey.VALIDATION_DOCUMENT) && state.isValidated());
     }
 
     public boolean isNoticeValidated() {
-        return states.stream()
-                     .anyMatch(state -> state.getKey().equals(WorkflowStateKey.VALIDATION_NOTICES) && state.isValidated());
+        return states.stream().anyMatch(state -> state.getKey().equals(WorkflowStateKey.VALIDATION_NOTICES) && state.isValidated());
     }
 
     /**
      * Retourne vrai si le rapport de controles a été envoyé au prestataire.
+     *
      * @return boolean
      */
     public boolean isRapportSent() {
-        return states.stream()
-                     .anyMatch(state -> state.getKey().equals(WorkflowStateKey.RAPPORT_CONTROLES) && state.isValidated());
+        return states.stream().anyMatch(state -> state.getKey().equals(WorkflowStateKey.RAPPORT_CONTROLES) && state.isValidated());
     }
 
     /**
@@ -199,12 +192,12 @@ public class DocUnitWorkflow extends AbstractDomainObject {
      * @return boolean
      */
     public boolean isRapportFailed() {
-        return states.stream()
-                     .anyMatch(state -> state.getKey().equals(WorkflowStateKey.RAPPORT_CONTROLES) && state.isRejected());
+        return states.stream().anyMatch(state -> state.getKey().equals(WorkflowStateKey.RAPPORT_CONTROLES) && state.isRejected());
     }
 
     /**
      * Retourne vrai si le workflow est terminé
+     *
      * @return boolean
      */
     public boolean isDone() {

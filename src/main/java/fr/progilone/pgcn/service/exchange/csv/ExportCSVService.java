@@ -2,21 +2,18 @@ package fr.progilone.pgcn.service.exchange.csv;
 
 import static com.opencsv.CSVWriter.*;
 
+import com.opencsv.bean.StatefulBeanToCsv;
+import com.opencsv.bean.StatefulBeanToCsvBuilder;
+import com.opencsv.exceptions.CsvDataTypeMismatchException;
+import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
+import fr.progilone.pgcn.exception.PgcnTechnicalException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.Collections;
 import java.util.List;
-
 import org.springframework.stereotype.Service;
-
-import com.opencsv.bean.StatefulBeanToCsv;
-import com.opencsv.bean.StatefulBeanToCsvBuilder;
-import com.opencsv.exceptions.CsvDataTypeMismatchException;
-import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
-
-import fr.progilone.pgcn.exception.PgcnTechnicalException;
 
 @Service
 public class ExportCSVService {
@@ -32,9 +29,8 @@ public class ExportCSVService {
      * @throws IOException
      * @throws PgcnTechnicalException
      */
-    public <T extends Comparable<T>> void exportOrderedBeans(final List<T> beans, final OutputStream out, final String encoding, final char separator) throws
-                                                                                                                                                IOException,
-                                                                                                                                                PgcnTechnicalException {
+    public <T extends Comparable<T>> void exportOrderedBeans(final List<T> beans, final OutputStream out, final String encoding, final char separator) throws IOException,
+                                                                                                                                                       PgcnTechnicalException {
         Collections.sort(beans);
 
         try (final Writer writer = new OutputStreamWriter(out, encoding)) {
@@ -61,8 +57,7 @@ public class ExportCSVService {
 
         final StringBuilder sb = new StringBuilder();
         values.forEach(val -> {
-            sb.append(deleteUnwantedCrLf(val))
-              .append(csvRepeatedFieldSep);
+            sb.append(deleteUnwantedCrLf(val)).append(csvRepeatedFieldSep);
         });
         final String aggreg = sb.toString();
         if (aggreg.endsWith(csvRepeatedFieldSep)) {

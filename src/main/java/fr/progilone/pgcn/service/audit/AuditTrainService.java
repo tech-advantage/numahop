@@ -6,16 +6,15 @@ import fr.progilone.pgcn.domain.project.Project;
 import fr.progilone.pgcn.domain.train.Train;
 import fr.progilone.pgcn.repository.audit.AuditTrainRepository;
 import fr.progilone.pgcn.repository.train.TrainRepository;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class AuditTrainService {
@@ -39,10 +38,7 @@ public class AuditTrainService {
      * @return
      */
     @Transactional(readOnly = true)
-    public List<AuditTrainRevisionDTO> getRevisions(final LocalDate fromDate,
-                                                    final List<String> libraries,
-                                                    final List<String> projects,
-                                                    final List<Train.TrainStatus> status) {
+    public List<AuditTrainRevisionDTO> getRevisions(final LocalDate fromDate, final List<String> libraries, final List<String> projects, final List<Train.TrainStatus> status) {
         List<AuditTrainRevisionDTO> revisions = auditTrainRepository.getRevisions(fromDate, status);
         revisions = updateRevisions(revisions, libraries, projects);
         return revisions;
@@ -55,12 +51,10 @@ public class AuditTrainService {
      * @param libraries
      * @param projects
      */
-    private List<AuditTrainRevisionDTO> updateRevisions(final List<AuditTrainRevisionDTO> revisions,
-                                                        final List<String> libraries,
-                                                        final List<String> projects) {
+    private List<AuditTrainRevisionDTO> updateRevisions(final List<AuditTrainRevisionDTO> revisions, final List<String> libraries, final List<String> projects) {
         final List<AuditTrainRevisionDTO> updatedRevs = new ArrayList<>();
         final List<String> trainIds = revisions.stream().map(AuditTrainRevisionDTO::getIdentifier).collect(Collectors.toList());
-        final List<Train> trains = trainRepository.findAll(trainIds);
+        final List<Train> trains = trainRepository.findAllById(trainIds);
 
         for (final AuditTrainRevisionDTO revision : revisions) {
             trains.stream()
@@ -69,7 +63,8 @@ public class AuditTrainService {
                   // Filtrage par bibliothèque et par projet
                   .filter(train -> {
                       final Project project = train.getProject();
-                      final Library library = project != null ? project.getLibrary() : null;
+                      final Library library = project != null ? project.getLibrary()
+                                                              : null;
 
                       // Projet
                       if (CollectionUtils.isNotEmpty(projects) && (project == null || !projects.contains(project.getIdentifier()))) {
@@ -81,7 +76,8 @@ public class AuditTrainService {
                       }
                       return true;
 
-                  }).findAny()
+                  })
+                  .findAny()
                   // alimentation liste résultats
                   .ifPresent(train -> {
                       revision.setLabel(train.getLabel());

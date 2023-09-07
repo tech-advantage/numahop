@@ -32,6 +32,7 @@ public class SimpleFTPConfigurationDTO extends AbstractDTO {
     }
 
     public static final class Builder {
+
         private String identifier;
         private String label;
 

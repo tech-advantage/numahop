@@ -1,18 +1,5 @@
 package fr.progilone.pgcn.service.administration.omeka;
 
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import fr.progilone.pgcn.domain.administration.omeka.OmekaConfiguration;
 import fr.progilone.pgcn.domain.dto.administration.omeka.OmekaConfigurationDTO;
 import fr.progilone.pgcn.domain.library.Library;
@@ -23,7 +10,15 @@ import fr.progilone.pgcn.exception.message.PgcnErrorCode;
 import fr.progilone.pgcn.exception.message.PgcnList;
 import fr.progilone.pgcn.repository.administration.omeka.OmekaConfigurationRepository;
 import fr.progilone.pgcn.service.administration.mapper.OmekaConfigurationMapper;
-
+import java.util.List;
+import java.util.Set;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class OmekaConfigurationService {
@@ -34,18 +29,18 @@ public class OmekaConfigurationService {
     public OmekaConfigurationService(final OmekaConfigurationRepository repository) {
         this.omekaConfigurationRepository = repository;
     }
-    
+
     @Transactional(readOnly = true)
     public Set<OmekaConfigurationDTO> findAllDto(final Boolean active) {
         final Set<OmekaConfiguration> confs = Boolean.TRUE.equals(active) ? omekaConfigurationRepository.findByActiveWithDependencies(true)
-                                                                         : omekaConfigurationRepository.findAllWithDependencies();
-        
+                                                                          : omekaConfigurationRepository.findAllWithDependencies();
+
         return OmekaConfigurationMapper.INSTANCE.confOmekaToDtos(confs);
     }
 
-    
     /**
      * Liste par bibliothèque
+     *
      * @param libraryId
      * @return
      */
@@ -58,6 +53,7 @@ public class OmekaConfigurationService {
 
     /**
      * Liste par bibliothèque et actif/inactif
+     *
      * @param library
      * @param active
      * @return
@@ -71,6 +67,7 @@ public class OmekaConfigurationService {
 
     /**
      * Récupération sous la forme de DTO
+     *
      * @param library
      * @param active
      * @return
@@ -84,6 +81,7 @@ public class OmekaConfigurationService {
 
     /**
      * Récupération d'un élément
+     *
      * @param id
      * @return
      */
@@ -91,10 +89,10 @@ public class OmekaConfigurationService {
     public OmekaConfiguration findOne(final String id) {
         return omekaConfigurationRepository.findOneWithDependencies(id);
     }
-    
+
     /**
      * Récupération des résultats de recherche
-     * 
+     *
      * @param search
      * @param libraries
      * @param page
@@ -102,30 +100,21 @@ public class OmekaConfigurationService {
      * @return
      */
     @Transactional(readOnly = true)
-    public Page<OmekaConfigurationDTO>
-           search(final String search, final List<String> libraries, final Boolean omekas, final Integer page, final Integer size) {
+    public Page<OmekaConfigurationDTO> search(final String search, final List<String> libraries, final Boolean omekas, final Integer page, final Integer size) {
 
-        final Pageable pageRequest = new PageRequest(page, size);
+        final Pageable pageRequest = PageRequest.of(page, size);
 
-        final Page<OmekaConfiguration> configurations = omekaConfigurationRepository.search(search, libraries, omekas, pageRequest);
-
-        final List<OmekaConfigurationDTO>
-                results =
-                        configurations.getContent().stream().map(OmekaConfigurationMapper.INSTANCE::confOmekaToDto).collect(Collectors.toList());
-
-        return new PageImpl<>(results,
-                              new PageRequest(configurations.getNumber(), configurations.getSize(), configurations.getSort()),
-                              configurations.getTotalElements());
+        return omekaConfigurationRepository.search(search, libraries, omekas, pageRequest).map(OmekaConfigurationMapper.INSTANCE::confOmekaToDto);
     }
 
     @Transactional
     public void delete(final String id) {
-        omekaConfigurationRepository.delete(id);
+        omekaConfigurationRepository.deleteById(id);
     }
 
     /**
      * Sauvegarde avec validation
-     * 
+     *
      * @param conf
      * @return
      * @throws PgcnValidationException
@@ -138,11 +127,9 @@ public class OmekaConfigurationService {
         return omekaConfigurationRepository.findOneWithDependencies(savedConf.getIdentifier());
     }
 
-
-
     /**
      * Validation des champs requis
-     * 
+     *
      * @param conf
      * @return
      * @throws PgcnValidationException

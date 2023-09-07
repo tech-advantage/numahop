@@ -8,11 +8,11 @@ public class ProjectSearchDTO {
     private String identifier;
     private String name;
 
-    public ProjectSearchDTO() {}
+    public ProjectSearchDTO() {
+    }
 
-    public ProjectSearchDTO(final String identifier,
-                            final String name) {
-    	super();
+    public ProjectSearchDTO(final String identifier, final String name) {
+        super();
         this.identifier = identifier;
         this.name = name;
     }
@@ -26,14 +26,14 @@ public class ProjectSearchDTO {
     }
 
     public void setIdentifier(String identifier) {
-		this.identifier = identifier;
-	}
+        this.identifier = identifier;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	/**
+    /**
      * Builder pour la classe ProjectDTO
      */
     public static final class Builder {

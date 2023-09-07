@@ -13,12 +13,11 @@ import fr.progilone.pgcn.exception.message.PgcnErrorCode;
 import fr.progilone.pgcn.service.library.LibraryParameterService;
 import fr.progilone.pgcn.service.library.mapper.LibraryParameterMapper;
 import fr.progilone.pgcn.service.library.mapper.UILibraryParameterMapper;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Service dédié à les gestion des vues des bibliothèques
@@ -114,8 +113,7 @@ public class UILibraryParameterService {
 
     private LibraryParameterDTO saveAndReturn(final LibraryParameter param) {
         final LibraryParameter savedLibraryParameter = libraryParameterService.save(param);
-        final LibraryParameter libParamWithValues =
-            libraryParameterService.findLibraryParameterWithDependencies(savedLibraryParameter.getIdentifier());
+        final LibraryParameter libParamWithValues = libraryParameterService.findLibraryParameterWithDependencies(savedLibraryParameter.getIdentifier());
         return LibraryParameterMapper.INSTANCE.libraryParameterToLibraryParameterDTO(libParamWithValues);
     }
 

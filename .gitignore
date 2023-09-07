@@ -21,3 +21,6 @@ src/main/webapp/styles/main.css
 /bin/
 src/main/webapp/.vscode/
 velocity.log.1
+.temp-PGCN App-classpathOnly-*.jar
+.factorypath
+.vscode/

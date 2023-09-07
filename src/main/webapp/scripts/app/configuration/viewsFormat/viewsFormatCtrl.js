@@ -1,12 +1,9 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('ViewsFormatCtrl', ViewsFormatCtrl);
+    angular.module('numaHopApp.controller').controller('ViewsFormatCtrl', ViewsFormatCtrl);
 
-    function ViewsFormatCtrl($location, $scope, $timeout, $q,
-        ViewsFormatSrvc, StringTools, NumahopStorageService, NumaHopInitializationSrvc) {
-
+    function ViewsFormatCtrl($location, $scope, $timeout, $q, ViewsFormatSrvc, StringTools, NumahopStorageService, NumaHopInitializationSrvc) {
         $scope.applyFilter = applyFilter;
         $scope.clearSelection = clearSelection;
         $scope.create = create;
@@ -19,10 +16,10 @@
         $scope.unfilterInitial = unfilterInitial;
         $scope.updateConfiguration = updateConfiguration;
 
-        $scope.configurationInclude = "scripts/app/configuration/viewsFormat/viewsFormatEdit.html";
+        $scope.configurationInclude = 'scripts/app/configuration/viewsFormat/viewsFormatEdit.html';
         $scope.configuration = null;
 
-        var FILTER_STORAGE_SERVICE_KEY = "views_format";
+        var FILTER_STORAGE_SERVICE_KEY = 'views_format';
 
         $scope.filters = {};
 
@@ -31,14 +28,14 @@
          */
         $scope.options = {
             institutions: [],
-            libraries: []
+            libraries: [],
         };
         $scope.pagination = {
             items: [],
             totalItems: 0,
             busy: false,
             last: false,
-            page: 0
+            page: 0,
         };
         $scope.newConfigurations = []; // liste des configurations récemment créées
 
@@ -51,15 +48,13 @@
             nextPage();
         }
 
-        $scope.$on("$routeUpdate",
-            function ($currentRoute, $previousRoute) {
-                $timeout(function () {
-                    $scope.configurationInclude = null;
-                    $scope.$apply();
-                    $scope.configurationInclude = "scripts/app/configuration/viewsFormat/viewsFormatEdit.html";
-                });
-            }
-        );
+        $scope.$on('$routeUpdate', function ($currentRoute, $previousRoute) {
+            $timeout(function () {
+                $scope.configurationInclude = null;
+                $scope.$apply();
+                $scope.configurationInclude = 'scripts/app/configuration/viewsFormat/viewsFormatEdit.html';
+            });
+        });
 
         // CRUD
         function create() {
@@ -67,7 +62,7 @@
                 $scope.configuration._selected = false;
                 $scope.configuration = null;
             }
-            $location.path("/administration/appconfiguration/viewsformat").search({ id: null, new: true });
+            $location.path('/administration/appconfiguration/viewsformat').search({ id: null, new: true });
         }
         function edit(configuration) {
             clearSelection();
@@ -79,7 +74,7 @@
                 configuration._selected = true;
                 search = { id: configuration.identifier };
             }
-            $location.path("/administration/appconfiguration/viewsformat").search(search);
+            $location.path('/administration/appconfiguration/viewsformat').search(search);
         }
 
         function filterConfigurations() {
@@ -87,12 +82,12 @@
 
             var searchParams = {
                 page: $scope.pagination.page,
-                search: $scope.filterWith || ""
+                search: $scope.filterWith || '',
             };
 
             if ($scope.filters.libraries) {
-                var librariesIds = _.pluck($scope.filters.libraries, "identifier");
-                searchParams["libraries"] = librariesIds;
+                var librariesIds = _.pluck($scope.filters.libraries, 'identifier');
+                searchParams['libraries'] = librariesIds;
             }
 
             return ViewsFormatSrvc.search(searchParams).$promise;
@@ -108,7 +103,7 @@
             doFilter();
         }
         function applyFilter(filterWith, event) {
-            if (event.type === "keypress" && event.keyCode === 13) {
+            if (event.type === 'keypress' && event.keyCode === 13) {
                 doFilter();
             }
         }
@@ -132,8 +127,7 @@
                         } else {
                             $scope.pagination.items.push(value.content[i]);
                         }
-                    }
-                    else {
+                    } else {
                         // On ne compte pas 2 fois les nouvelles config rechargées
                         $scope.pagination.totalItems--;
                     }
@@ -158,11 +152,10 @@
                 }
             }
 
-            $q.all([NumaHopInitializationSrvc.loadLibraries()])
-                .then(function (data) {
-                    $scope.options.libraries = data[0];
-                    nextPage();
-                });
+            $q.all([NumaHopInitializationSrvc.loadLibraries()]).then(function (data) {
+                $scope.options.libraries = data[0];
+                nextPage();
+            });
 
             return !!filters;
         }
@@ -174,15 +167,16 @@
         }
 
         function reinitFilters(reload) {
-            $scope.filters = {
-            };
+            $scope.filters = {};
             if (reload) {
                 doFilter();
             }
         }
         // liste
         function nextPage() {
-            if ($scope.pagination.busy || $scope.pagination.last) { return; }
+            if ($scope.pagination.busy || $scope.pagination.last) {
+                return;
+            }
             $scope.pagination.busy = true;
 
             filterConfigurations().then(function (value, responseHeaders) {
@@ -206,13 +200,12 @@
             }
         }
         function clearSelection() {
-            _.union($scope.pagination.items, $scope.newConfigurations)
-                .forEach(function (elt, i) {
-                    elt._selected = false;
-                });
+            _.union($scope.pagination.items, $scope.newConfigurations).forEach(function (elt, i) {
+                elt._selected = false;
+            });
         }
         function getFirstLetter(conf) {
-            return StringTools.getFirstLetter(conf.label, "OTHER");
+            return StringTools.getFirstLetter(conf.label, 'OTHER');
         }
     }
 })();

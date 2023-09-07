@@ -1,20 +1,5 @@
 package fr.progilone.pgcn.service.exchange.cines;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.PostConstruct;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.exchange.cines.CinesReport;
 import fr.progilone.pgcn.domain.library.Library;
@@ -22,6 +7,18 @@ import fr.progilone.pgcn.domain.workflow.WorkflowStateKey;
 import fr.progilone.pgcn.repository.exchange.cines.CinesReportRepository;
 import fr.progilone.pgcn.service.workflow.WorkflowService;
 import fr.progilone.pgcn.web.websocket.WebsocketService;
+import jakarta.annotation.PostConstruct;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by Sébastien on 02/01/2017.
@@ -48,10 +45,7 @@ public class CinesReportService {
         // Mise à jour du statut des rapports en cours d'exécution au démarrage de l'application
         final List<CinesReport> interruptedImports = cinesReportRepository.findByStatusIn(CinesReport.Status.EXPORTING, CinesReport.Status.SENDING);
         for (final CinesReport report : interruptedImports) {
-            LOG.warn("L'export CINES de {}, démarré le {}, a été interrompu au statut {}",
-                     report.getIdentifier(),
-                     report.getCreatedDate(),
-                     report.getStatus());
+            LOG.warn("L'export CINES de {}, démarré le {}, a été interrompu au statut {}", report.getIdentifier(), report.getCreatedDate(), report.getStatus());
             failReport(report, "L'import a été interrompu en cours d'exécution");
         }
     }
@@ -163,9 +157,9 @@ public class CinesReportService {
         report.setDateArchived(dateArchive);
         report.setCertificate(certificate);
         final CinesReport savedReport = cinesReportRepository.save(report);
-        
+
         if (CinesReport.Status.ARCHIVED == savedReport.getStatus()) {
-            // on avance ds le workflow si necessaire 
+            // on avance ds le workflow si necessaire
             final String docUnitId = savedReport.getDocUnit().getIdentifier();
             if (workflowService.isStateRunning(docUnitId, WorkflowStateKey.ARCHIVAGE_DOCUMENT)) {
                 workflowService.processAutomaticState(docUnitId, WorkflowStateKey.ARCHIVAGE_DOCUMENT);
@@ -186,12 +180,14 @@ public class CinesReportService {
      */
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public CinesReport failReport(final CinesReport report, final String message) {
-    	
-    	final CinesReport reloaded = cinesReportRepository.findByIdentifier(report.getIdentifier());
 
-    	reloaded.setMessage("Arrêt imprévu du traitement au statut " + reloaded.getStatus() + " avec l'erreur: " + message);
-    	reloaded.setStatus(CinesReport.Status.FAILED);
-    	reloaded.setDateSent(LocalDateTime.now());
+        final CinesReport reloaded = cinesReportRepository.findByIdentifier(report.getIdentifier());
+
+        reloaded.setMessage("Arrêt imprévu du traitement au statut " + reloaded.getStatus()
+                            + " avec l'erreur: "
+                            + message);
+        reloaded.setStatus(CinesReport.Status.FAILED);
+        reloaded.setDateSent(LocalDateTime.now());
 
         final CinesReport savedReport = cinesReportRepository.save(reloaded);
         sendUpdate(savedReport);

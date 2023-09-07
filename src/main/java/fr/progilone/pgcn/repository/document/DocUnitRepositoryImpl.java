@@ -1,20 +1,38 @@
 package fr.progilone.pgcn.repository.document;
 
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.JPQLQuery;
+import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import fr.progilone.pgcn.domain.document.DocUnit;
+import fr.progilone.pgcn.domain.document.QBibliographicRecord;
+import fr.progilone.pgcn.domain.document.QDocProperty;
+import fr.progilone.pgcn.domain.document.QDocUnit;
+import fr.progilone.pgcn.domain.document.QPhysicalDocument;
+import fr.progilone.pgcn.domain.exchange.cines.QCinesReport;
+import fr.progilone.pgcn.domain.exchange.internetarchive.QInternetArchiveReport;
+import fr.progilone.pgcn.domain.library.QLibrary;
+import fr.progilone.pgcn.domain.lot.QLot;
+import fr.progilone.pgcn.domain.project.QProject;
+import fr.progilone.pgcn.domain.user.QUser;
+import fr.progilone.pgcn.domain.user.User;
+import fr.progilone.pgcn.domain.util.CustomUserDetails;
+import fr.progilone.pgcn.domain.workflow.QDocUnitState;
+import fr.progilone.pgcn.domain.workflow.QDocUnitWorkflow;
+import fr.progilone.pgcn.domain.workflow.WorkflowStateKey;
+import fr.progilone.pgcn.domain.workflow.WorkflowStateStatus;
+import fr.progilone.pgcn.repository.util.QueryDSLBuilderUtils;
+import fr.progilone.pgcn.security.SecurityUtils;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
-import com.mysema.query.types.path.SetPath;
-import fr.progilone.pgcn.domain.library.Library;
-import fr.progilone.pgcn.domain.library.QLibrary;
-import fr.progilone.pgcn.domain.user.QUser;
-import fr.progilone.pgcn.repository.util.QueryDSLBuilderUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Hibernate;
@@ -25,38 +43,15 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import com.mysema.query.BooleanBuilder;
-import com.mysema.query.jpa.JPASubQuery;
-import com.mysema.query.jpa.JPQLQuery;
-import com.mysema.query.jpa.impl.JPAQuery;
-import com.mysema.query.types.Order;
-import com.mysema.query.types.OrderSpecifier;
-import com.mysema.query.types.expr.BooleanExpression;
-import com.mysema.query.types.query.ListSubQuery;
-
-import fr.progilone.pgcn.domain.document.DocUnit;
-import fr.progilone.pgcn.domain.document.QBibliographicRecord;
-import fr.progilone.pgcn.domain.document.QDocProperty;
-import fr.progilone.pgcn.domain.document.QDocUnit;
-import fr.progilone.pgcn.domain.document.QPhysicalDocument;
-import fr.progilone.pgcn.domain.exchange.cines.QCinesReport;
-import fr.progilone.pgcn.domain.exchange.internetarchive.QInternetArchiveReport;
-import fr.progilone.pgcn.domain.lot.QLot;
-import fr.progilone.pgcn.domain.project.QProject;
-import fr.progilone.pgcn.domain.user.User;
-import fr.progilone.pgcn.domain.util.CustomUserDetails;
-import fr.progilone.pgcn.domain.workflow.QDocUnitState;
-import fr.progilone.pgcn.domain.workflow.QDocUnitWorkflow;
-import fr.progilone.pgcn.domain.workflow.WorkflowStateKey;
-import fr.progilone.pgcn.domain.workflow.WorkflowStateStatus;
-import fr.progilone.pgcn.security.SecurityUtils;
-
 public class DocUnitRepositoryImpl implements DocUnitRepositoryCustom {
 
     private static final Logger LOG = LoggerFactory.getLogger(DocUnitRepositoryImpl.class);
 
-    @PersistenceContext
-    private EntityManager em;
+    private final JPAQueryFactory queryFactory;
+
+    public DocUnitRepositoryImpl(final JPAQueryFactory queryFactory) {
+        this.queryFactory = queryFactory;
+    }
 
     @Override
     public Page<DocUnit> search(final String search,
@@ -109,9 +104,7 @@ public class DocUnitRepositoryImpl implements DocUnitRepositoryCustom {
         }
         // Archivés / non archivés
         if (archived != nonArchived) {
-            final JPASubQuery subQuery = new JPASubQuery();
-            final ListSubQuery<String> subRes =
-                subQuery.from(cinesReport).where(cinesReport.certificate.isNotNull()).list(cinesReport.docUnit.identifier);
+            final JPQLQuery<String> subRes = JPAExpressions.select(cinesReport.docUnit.identifier).from(cinesReport).where(cinesReport.certificate.isNotNull());
             if (archived) {
                 builder.and(doc.identifier.in(subRes));
             } else {
@@ -126,9 +119,7 @@ public class DocUnitRepositoryImpl implements DocUnitRepositoryCustom {
         }
         // Diffusés / non diffusés
         if (distributed != nonDistributed) {
-            final JPASubQuery subQueryIa = new JPASubQuery();
-            final ListSubQuery<String> subResIa =
-                subQueryIa.from(iaReport).where(iaReport.dateArchived.isNotNull()).list(iaReport.docUnit.identifier);
+            final JPQLQuery<String> subResIa = JPAExpressions.select(iaReport.docUnit.identifier).from(iaReport).where(iaReport.dateArchived.isNotNull());
             if (distributed) {
                 builder.and(doc.identifier.in(subResIa));
             } else {
@@ -150,20 +141,13 @@ public class DocUnitRepositoryImpl implements DocUnitRepositoryCustom {
             builder.and(lotFilter);
         }
         if (CollectionUtils.isNotEmpty(trains)) {
-            final QPhysicalDocument qpd = doc.docUnit.physicalDocuments.any();
+            final QPhysicalDocument qpd = doc.physicalDocuments.any();
             final BooleanExpression trainFilter = qpd.isNotNull().and(qpd.train.identifier.in(trains));
             builder.and(trainFilter);
         }
 
         // provider, library
-        QueryDSLBuilderUtils.addAccessFilters(builder,
-                                              library,
-                                              lot,
-                                              project,
-                                              associatedLibrary,
-                                              associatedUser,
-                                              libraries,
-                                              null);
+        QueryDSLBuilderUtils.addAccessFilters(builder, library, lot, project, associatedLibrary, associatedUser, libraries, null);
 
         // Statuts de workflow
         if (CollectionUtils.isNotEmpty(statuses)) {
@@ -205,38 +189,45 @@ public class DocUnitRepositoryImpl implements DocUnitRepositoryCustom {
             builder.and(doc.identifier.in(identifiers));
         }
 
-        final JPQLQuery baseQuery = new JPAQuery(em);
+        final JPAQuery<DocUnit> baseQuery = queryFactory.selectDistinct(doc)
+                                                        .from(doc)
+                                                        .leftJoin(doc.library)
+                                                        .fetchJoin()
+                                                        .leftJoin(doc.project, project)
+                                                        .leftJoin(project.associatedLibraries, associatedLibrary)
+                                                        .leftJoin(project.associatedUsers, associatedUser)
+                                                        .leftJoin(doc.lot, lot)
+                                                        .leftJoin(doc.workflow, workflow)
+                                                        .leftJoin(workflow.states, state)
+                                                        .where(builder.getValue());
 
         if (pageable != null) {
             baseQuery.offset(pageable.getOffset()).limit(pageable.getPageSize());
             applySorting(pageable.getSort(), baseQuery, doc, project, lot);
         }
 
-        final List<DocUnit> result = baseQuery.from(doc)
-                                              .leftJoin(doc.library)
-                                              .fetch()
-                                              .leftJoin(doc.project, project)
-                                              .leftJoin(project.associatedLibraries, associatedLibrary)
-                                              .leftJoin(project.associatedUsers, associatedUser)
-                                              .leftJoin(doc.lot, lot)
-                                              .leftJoin(doc.workflow, workflow)
-                                              .leftJoin(workflow.states, state)
-                                              .where(builder.getValue())
-                                              .distinct()
-                                              .list(doc);
-        final long total = baseQuery.count();
+        final long total = queryFactory.select(doc.countDistinct())
+                                       .from(doc)
+                                       .leftJoin(doc.library)
+                                       .leftJoin(doc.project, project)
+                                       .leftJoin(project.associatedLibraries, associatedLibrary)
+                                       .leftJoin(project.associatedUsers, associatedUser)
+                                       .leftJoin(doc.lot, lot)
+                                       .leftJoin(doc.workflow, workflow)
+                                       .leftJoin(workflow.states, state)
+                                       .where(builder.getValue())
+                                       .fetchOne();
 
-        return new PageImpl<>(result, pageable, total);
+        return new PageImpl<>(baseQuery.fetch(), pageable, total);
     }
-
 
     @Override
     public List<DocUnit> minSearch(final String search,
-                                final List<String> libraries,
-                                final List<String> projects,
-                                final List<String> lots,
-                                final List<String> trains,
-                                final List<String> statuses) {
+                                   final List<String> libraries,
+                                   final List<String> projects,
+                                   final List<String> lots,
+                                   final List<String> trains,
+                                   final List<String> statuses) {
 
         final QDocUnit doc = QDocUnit.docUnit;
         final QProject project = QProject.project;
@@ -251,7 +242,7 @@ public class DocUnitRepositoryImpl implements DocUnitRepositoryCustom {
             builder.andAnyOf(nameFilter);
         }
         // available
-        //builder.and(doc.digitalDocuments.isEmpty().not());
+        // builder.and(doc.digitalDocuments.isEmpty().not());
 
         if (CollectionUtils.isNotEmpty(libraries)) {
             final BooleanExpression sitesFilter = doc.library.identifier.in(libraries);
@@ -267,7 +258,7 @@ public class DocUnitRepositoryImpl implements DocUnitRepositoryCustom {
         }
 
         if (CollectionUtils.isNotEmpty(trains)) {
-            final QPhysicalDocument qpd = doc.docUnit.physicalDocuments.any();
+            final QPhysicalDocument qpd = doc.physicalDocuments.any();
             final BooleanExpression trainFilter = qpd.isNotNull().and(qpd.train.identifier.in(trains));
             builder.and(trainFilter);
         }
@@ -293,32 +284,28 @@ public class DocUnitRepositoryImpl implements DocUnitRepositoryCustom {
             builder.and(statusBuilder);
         }
 
-        final JPQLQuery baseQuery = new JPAQuery(em);
-
-        final List<DocUnit> result = baseQuery.from(doc)
-                                              .leftJoin(doc.library)
-                                              .fetch()
-                                              .leftJoin(doc.project, project)
-                                              //.leftJoin(project.trains, train)
-                                              .leftJoin(doc.lot, lot)
-                                              .leftJoin(doc.workflow, workflow)
-                                              .leftJoin(workflow.states, state)
-                                              .where(builder.getValue())
-                                              .orderBy(doc.label.asc())
-                                              .orderBy(doc.pgcnId.asc())
-                                              .distinct()
-                                              .list(doc);
-
-        return result;
+        return queryFactory.selectDistinct(doc)
+                           .from(doc)
+                           .leftJoin(doc.library)
+                           .fetchJoin()
+                           .leftJoin(doc.project, project)
+                           // .leftJoin(project.trains, train)
+                           .leftJoin(doc.lot, lot)
+                           .leftJoin(doc.workflow, workflow)
+                           .leftJoin(workflow.states, state)
+                           .where(builder.getValue())
+                           .orderBy(doc.label.asc())
+                           .orderBy(doc.pgcnId.asc())
+                           .fetch();
     }
-    
+
     @Override
     public Page<DocUnit> searchAllForProject(final String projectId, final Pageable pageable) {
-        
+
         final QDocUnit doc = QDocUnit.docUnit;
         final QProject project = QProject.project;
         final QLot lot = QLot.lot;
-        
+
         final BooleanBuilder builder = new BooleanBuilder();
         // filtrage des unités documentaires disponibles
         if (!projectId.isEmpty()) {
@@ -331,34 +318,38 @@ public class DocUnitRepositoryImpl implements DocUnitRepositoryCustom {
             // Prestataires
             if (currentUser.getCategory() == User.Category.PROVIDER) {
                 final BooleanExpression providerFilter =
-                        // prestataire sur le projet
-                        project.provider.identifier.eq(currentUser.getIdentifier())
-                                                   // prestataire sur un lot du projet
-                                                   .or(lot.provider.identifier.eq(currentUser.getIdentifier()));
+                // prestataire sur le projet
+                                                       project.provider.identifier.eq(currentUser.getIdentifier())
+                                                                                  // prestataire sur un lot du projet
+                                                                                  .or(lot.provider.identifier.eq(currentUser.getIdentifier()));
                 builder.and(providerFilter);
             }
         }
-        
-        final JPQLQuery baseQuery = new JPAQuery(em);
-        
+
+        final JPAQuery<DocUnit> baseQuery = queryFactory.selectDistinct(doc)
+                                                        .from(doc)
+                                                        .leftJoin(doc.library)
+                                                        .fetchJoin()
+                                                        .leftJoin(doc.project, project)
+                                                        .leftJoin(doc.lot, lot)
+                                                        .where(builder.getValue())
+                                                        .orderBy(doc.label.asc())
+                                                        .orderBy(doc.pgcnId.asc());
+
         if (pageable != null) {
             baseQuery.offset(pageable.getOffset()).limit(pageable.getPageSize());
             applySorting(pageable.getSort(), baseQuery, doc, project, lot);
         }
-        
-        final List<DocUnit> result = baseQuery.from(doc)
-                                              .leftJoin(doc.library)
-                                              .fetch()
-                                              .leftJoin(doc.project, project)
-                                              .leftJoin(doc.lot, lot)
-                                              .where(builder.getValue())
-                                              .orderBy(doc.label.asc())
-                                              .orderBy(doc.pgcnId.asc())
-                                              .distinct()
-                                              .list(doc);
-        final long total = baseQuery.count();
-        
-        return new PageImpl<>(result, pageable, total);
+
+        final long total = queryFactory.select(doc.count())
+                                       .from(doc)
+                                       .leftJoin(doc.library)
+                                       .leftJoin(doc.project, project)
+                                       .leftJoin(doc.lot, lot)
+                                       .where(builder.getValue())
+                                       .fetchOne();
+
+        return new PageImpl<>(baseQuery.fetch(), pageable, total);
     }
 
     /**
@@ -371,38 +362,39 @@ public class DocUnitRepositoryImpl implements DocUnitRepositoryCustom {
      * @param lot
      * @return
      */
-    protected JPQLQuery applySorting(final Sort sort, final JPQLQuery query, final QDocUnit doc, final QProject project, final QLot lot) {
+    protected JPAQuery<DocUnit> applySorting(final Sort sort, final JPAQuery<DocUnit> query, final QDocUnit doc, final QProject project, final QLot lot) {
 
-        final List<OrderSpecifier> orders = new ArrayList<>();
+        final List<OrderSpecifier<?>> orders = new ArrayList<>();
         if (sort == null) {
             return query;
         }
 
         for (final Sort.Order order : sort) {
-            final Order qOrder = order.isAscending() ? Order.ASC : Order.DESC;
+            final Order qOrder = order.isAscending() ? Order.ASC
+                                                     : Order.DESC;
 
             switch (order.getProperty()) {
                 case "pgcnId":
-                    orders.add(new OrderSpecifier(qOrder, doc.pgcnId));
+                    orders.add(new OrderSpecifier<>(qOrder, doc.pgcnId));
                     break;
                 case "label":
-                    orders.add(new OrderSpecifier(qOrder, doc.label));
+                    orders.add(new OrderSpecifier<>(qOrder, doc.label));
                     break;
                 case "project.name":
-                    orders.add(new OrderSpecifier(qOrder, project.name));
+                    orders.add(new OrderSpecifier<>(qOrder, project.name));
                     break;
                 case "lot.label":
-                    orders.add(new OrderSpecifier(qOrder, lot.label));
+                    orders.add(new OrderSpecifier<>(qOrder, lot.label));
                     break;
                 case "parent.pgcnId":
-                    orders.add(new OrderSpecifier(qOrder, doc.parent.pgcnId));
+                    orders.add(new OrderSpecifier<>(qOrder, doc.parent.pgcnId));
                     break;
                 default:
                     LOG.warn("Tri non implémenté: {}", order.getProperty());
                     break;
             }
         }
-        OrderSpecifier[] orderArray = new OrderSpecifier[orders.size()];
+        OrderSpecifier<?>[] orderArray = new OrderSpecifier[orders.size()];
         orderArray = orders.toArray(orderArray);
         return query.orderBy(orderArray);
     }
@@ -419,8 +411,10 @@ public class DocUnitRepositoryImpl implements DocUnitRepositoryCustom {
         final QDocProperty qDocProperty = QDocProperty.docProperty;
 
         // Requête
-        final JPQLQuery query = new JPAQuery(em);
-        query.distinct().from(qDocUnit).innerJoin(qDocUnit.records, qBibliographicRecord).innerJoin(qBibliographicRecord.properties, qDocProperty);
+        final JPAQuery<DocUnit> query = queryFactory.selectDistinct(qDocUnit)
+                                                    .from(qDocUnit)
+                                                    .innerJoin(qDocUnit.records, qBibliographicRecord)
+                                                    .innerJoin(qBibliographicRecord.properties, qDocProperty);
 
         // Différent de l'unité documentaire de référence
         query.where(qDocUnit.identifier.ne(reference.getIdentifier()));
@@ -430,16 +424,14 @@ public class DocUnitRepositoryImpl implements DocUnitRepositoryCustom {
         if (state.length > 0) {
             query.where(qDocUnit.state.in(state));
         }
-        //Filtrage sur les identifiants
+        // Filtrage sur les identifiants
         final BooleanBuilder identifierPredicate = new BooleanBuilder();
         identifiers.stream().map(qDocProperty.value::eq).forEach(identifierPredicate::or);
         query.where(identifierPredicate);
 
         // Recherche
-        return query.list(qDocUnit);
+        return query.fetch();
     }
-
-
 
     public DocUnit findOneWithAllDependencies(final String identifier) {
         return findOneWithAllDependencies(identifier, false);
@@ -449,7 +441,7 @@ public class DocUnitRepositoryImpl implements DocUnitRepositoryCustom {
     public DocUnit findOneWithAllDependencies(final String identifier, final boolean initFiles) {
 
         final QDocUnit qDocUnit = QDocUnit.docUnit;
-        final DocUnit doc = new JPAQuery(em).from(qDocUnit).where(qDocUnit.identifier.eq(identifier)).uniqueResult(qDocUnit);
+        final DocUnit doc = queryFactory.select(qDocUnit).from(qDocUnit).where(qDocUnit.identifier.eq(identifier)).fetchOne();
         if (doc != null) {
             Hibernate.initialize(doc.getParent());
             Hibernate.initialize(doc.getLibrary());
@@ -481,17 +473,17 @@ public class DocUnitRepositoryImpl implements DocUnitRepositoryCustom {
                     }
                 }
             } else {
-            	Hibernate.initialize(doc.getPlanClassementPAC());
+                Hibernate.initialize(doc.getPlanClassementPAC());
             }
 
             Hibernate.initialize(doc.getRecords());
             doc.getRecords().forEach(not -> {
-            	if (not != null) {
-            		Hibernate.initialize(not.getProperties());
-            		if (not.getProperties() != null) {
-            			not.getProperties().forEach(p -> Hibernate.initialize(p.getType()));
-            		}
-            	}
+                if (not != null) {
+                    Hibernate.initialize(not.getProperties());
+                    if (not.getProperties() != null) {
+                        not.getProperties().forEach(p -> Hibernate.initialize(p.getType()));
+                    }
+                }
             });
 
             if (doc.getExportData() != null) {

@@ -1,25 +1,7 @@
 package fr.progilone.pgcn.service.document.ui;
 
-import java.time.LocalDate;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import fr.progilone.pgcn.domain.document.BibliographicRecord;
-import fr.progilone.pgcn.domain.document.DocPropertyType;
 import fr.progilone.pgcn.domain.document.DocUnit;
-import fr.progilone.pgcn.domain.document.ExportData;
-import fr.progilone.pgcn.domain.document.ExportProperty;
 import fr.progilone.pgcn.domain.dto.document.BibliographicRecordDTO;
 import fr.progilone.pgcn.domain.dto.document.BibliographicRecordDcDTO;
 import fr.progilone.pgcn.domain.dto.document.DocPropertyDTO;
@@ -35,6 +17,17 @@ import fr.progilone.pgcn.service.document.mapper.BibliographicRecordMapper;
 import fr.progilone.pgcn.service.document.mapper.SimpleBibliographicRecordMapper;
 import fr.progilone.pgcn.service.document.mapper.UIBibliographicRecordMapper;
 import fr.progilone.pgcn.service.util.transaction.VersionValidationService;
+import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Service dédié à les gestion des vues des notices
@@ -79,7 +72,7 @@ public class UIBibliographicRecordService {
      * Mise à jour d'une notice
      *
      * @param request
-     *         un objet contenant les informations necessaires à l'enregistrement d'une notice
+     *            un objet contenant les informations necessaires à l'enregistrement d'une notice
      * @return la notice nouvellement créée ou mise à jour
      * @throws PgcnValidationException
      */
@@ -103,15 +96,15 @@ public class UIBibliographicRecordService {
             final BibliographicRecordDTO dto = getOne(savedRecord.getIdentifier());
 
             // controle language
-            final DocPropertyDTO docProp = request.getProperties().stream()
-                    .filter(dp -> StringUtils.equals(dp.getType().getIdentifier(), "language"))
-                    .findFirst().orElse(null);
+            final DocPropertyDTO docProp = request.getProperties().stream().filter(dp -> StringUtils.equals(dp.getType().getIdentifier(), "language")).findFirst().orElse(null);
             if (docProp != null) {
                 // test valididite language saisi pour warning
                 if (!languageCodeService.checkCinesLangCodeExists(docProp.getValue())) {
                     final PgcnError.Builder builder = new PgcnError.Builder();
-                    dto.addError(builder.reinit().setCode(PgcnErrorCode.RECORD_LANGUAGE_UNKNOWN)
-                                 .setMessage("Attention: la propriété Language n'est pas valide pour l'export Cines.").build());
+                    dto.addError(builder.reinit()
+                                        .setCode(PgcnErrorCode.RECORD_LANGUAGE_UNKNOWN)
+                                        .setMessage("Attention: la propriété Language n'est pas valide pour l'export Cines.")
+                                        .build());
                 }
             }
             return dto;
@@ -248,9 +241,7 @@ public class UIBibliographicRecordService {
     @Transactional(readOnly = true)
     public List<SimpleBibliographicRecordDTO> findAllSimpleDTOForDocUnit(final String docUnitId) {
         final List<BibliographicRecord> records = bibliographicRecordService.findAllByDocUnitId(docUnitId);
-        return records.stream()
-                      .map(BibliographicRecordMapper.INSTANCE::bibliographicRecordToSimpleBibliographicRecordDTO)
-                      .collect(Collectors.toList());
+        return records.stream().map(BibliographicRecordMapper.INSTANCE::bibliographicRecordToSimpleBibliographicRecordDTO).collect(Collectors.toList());
     }
 
     @Transactional
@@ -266,7 +257,7 @@ public class UIBibliographicRecordService {
      * @return
      */
     @Transactional
-    //FIXME: FACTORISE THIS METHOD TO AVOID DUPLICATE CODE (OmekaService: method getDataRecord)
+    // FIXME: FACTORISE THIS METHOD TO AVOID DUPLICATE CODE (OmekaService: method getDataRecord)
     public BibliographicRecordDcDTO getBibliographicRecordDcDTOFromDocUnit(final DocUnit docUnit) {
         final BibliographicRecordDcDTO dto;
 

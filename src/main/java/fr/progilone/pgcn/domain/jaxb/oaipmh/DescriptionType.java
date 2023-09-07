@@ -5,24 +5,24 @@
 // Généré le : 2018.08.13 à 01:08:19 PM CEST
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.oaipmh;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAnyElement;
-import javax.xml.bind.annotation.XmlType;
-
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAnyElement;
+import jakarta.xml.bind.annotation.XmlType;
 
 /**
  * The descriptionType is used for the description
- *       element in Identify and for setDescription element in ListSets.
- *       Content must be compliant with an XML Schema defined by a
- *       community.
+ * element in Identify and for setDescription element in ListSets.
+ * Content must be compliant with an XML Schema defined by a
+ * community.
  *
- * <p>Classe Java pour descriptionType complex type.
+ * <p>
+ * Classe Java pour descriptionType complex type.
  *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="descriptionType">
@@ -39,9 +39,7 @@ import javax.xml.bind.annotation.XmlType;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "descriptionType", propOrder = {
-    "any"
-})
+@XmlType(name = "descriptionType", propOrder = {"any"})
 public class DescriptionType {
 
     @XmlAnyElement(lax = true)
@@ -51,8 +49,8 @@ public class DescriptionType {
      * Obtient la valeur de la propriété any.
      *
      * @return
-     *     possible object is
-     *     {@link Object }
+     *         possible object is
+     *         {@link Object }
      *
      */
     public Object getAny() {
@@ -63,8 +61,8 @@ public class DescriptionType {
      * Définit la valeur de la propriété any.
      *
      * @param value
-     *     allowed object is
-     *     {@link Object }
+     *            allowed object is
+     *            {@link Object }
      *
      */
     public void setAny(Object value) {

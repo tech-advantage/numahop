@@ -5,24 +5,24 @@
 // Généré le : 2017.05.16 à 10:56:55 AM CEST
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.ead;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlID;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.ArrayList;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlID;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 
 /**
- * <p>Classe Java pour list complex type.
+ * <p>
+ * Classe Java pour list complex type.
  *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="list">
@@ -77,12 +77,11 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "list", propOrder = {
-    "head",
-    "item",
-    "listhead",
-    "defitem"
-})
+@XmlType(name = "list",
+         propOrder = {"head",
+                      "item",
+                      "listhead",
+                      "defitem"})
 public class List {
 
     protected Head head;
@@ -117,8 +116,8 @@ public class List {
      * Obtient la valeur de la propriété head.
      *
      * @return
-     *     possible object is
-     *     {@link Head }
+     *         possible object is
+     *         {@link Head }
      *
      */
     public Head getHead() {
@@ -129,8 +128,8 @@ public class List {
      * Définit la valeur de la propriété head.
      *
      * @param value
-     *     allowed object is
-     *     {@link Head }
+     *            allowed object is
+     *            {@link Head }
      *
      */
     public void setHead(Head value) {
@@ -148,8 +147,9 @@ public class List {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getItem().add(newItem);
+     * getItem().add(newItem);
      * </pre>
      *
      *
@@ -170,8 +170,8 @@ public class List {
      * Obtient la valeur de la propriété listhead.
      *
      * @return
-     *     possible object is
-     *     {@link Listhead }
+     *         possible object is
+     *         {@link Listhead }
      *
      */
     public Listhead getListhead() {
@@ -182,8 +182,8 @@ public class List {
      * Définit la valeur de la propriété listhead.
      *
      * @param value
-     *     allowed object is
-     *     {@link Listhead }
+     *            allowed object is
+     *            {@link Listhead }
      *
      */
     public void setListhead(Listhead value) {
@@ -201,8 +201,9 @@ public class List {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getDefitem().add(newItem);
+     * getDefitem().add(newItem);
      * </pre>
      *
      *
@@ -223,8 +224,8 @@ public class List {
      * Obtient la valeur de la propriété type.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getType() {
@@ -235,8 +236,8 @@ public class List {
      * Définit la valeur de la propriété type.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setType(String value) {
@@ -247,8 +248,8 @@ public class List {
      * Obtient la valeur de la propriété mark.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getMark() {
@@ -259,8 +260,8 @@ public class List {
      * Définit la valeur de la propriété mark.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setMark(String value) {
@@ -271,8 +272,8 @@ public class List {
      * Obtient la valeur de la propriété numeration.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getNumeration() {
@@ -283,8 +284,8 @@ public class List {
      * Définit la valeur de la propriété numeration.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setNumeration(String value) {
@@ -295,8 +296,8 @@ public class List {
      * Obtient la valeur de la propriété continuation.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getContinuation() {
@@ -307,8 +308,8 @@ public class List {
      * Définit la valeur de la propriété continuation.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setContinuation(String value) {
@@ -319,8 +320,8 @@ public class List {
      * Obtient la valeur de la propriété id.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getId() {
@@ -331,8 +332,8 @@ public class List {
      * Définit la valeur de la propriété id.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setId(String value) {
@@ -343,8 +344,8 @@ public class List {
      * Obtient la valeur de la propriété altrender.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getAltrender() {
@@ -355,8 +356,8 @@ public class List {
      * Définit la valeur de la propriété altrender.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setAltrender(String value) {
@@ -367,8 +368,8 @@ public class List {
      * Obtient la valeur de la propriété audience.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getAudience() {
@@ -379,8 +380,8 @@ public class List {
      * Définit la valeur de la propriété audience.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setAudience(String value) {

@@ -2,7 +2,6 @@
     <h3 class="modal-title" translate>Export CINES</h3>
 </div>
 <div class="modal-body">
-
     <div class="row vertical-align" ng-if="mainCtrl.alertPlanPac">
         <div class="text-center col-xs-12 text-danger">
             <label translate>Attention : Le plan de classement n'est pas renseigné.</label>
@@ -26,11 +25,11 @@
         </div>
         <div class="col-xs-8 col-lg-10 form-inline padding-b10">
             <div class="checkbox checkbox-sid-main form-group no-padding">
-                <input id="metaDc" type="checkbox" ng-model="mainCtrl.meta.dc" ng-disabled="true">
+                <input id="metaDc" type="checkbox" ng-model="mainCtrl.meta.dc" ng-disabled="true" />
                 <label for="metaDc" translate>Dublin Core</label>
             </div>
             <div class="checkbox checkbox-sid-main form-group no-padding">
-                <input id="metaEad" type="checkbox" ng-model="mainCtrl.meta.ead" ng-disabled="true">
+                <input id="metaEad" type="checkbox" ng-model="mainCtrl.meta.ead" ng-disabled="true" />
                 <label for="metaEad" translate>EAD</label>
             </div>
         </div>
@@ -41,16 +40,9 @@
             <label translate>Reversion</label>
         </div>
         <div class="col-xs-8 col-lg-10 form-inline padding-b10">
-            <label class="radio-inline">
-                <input type="radio" value="reversion" ng-model="mainCtrl.majAndReversion" name="reversion" translate>Reversion
-            </label>
-            <label class="radio-inline">
-                <input type="radio" value="maj" ng-model="mainCtrl.majAndReversion" name="reversion" checked translate>Mise à jour
-            </label>
-            <label class="radio-inline">
-                <input type="radio" value="twice" ng-model="mainCtrl.majAndReversion" name="reversion" translate>Les 2
-            </label>
-
+            <label class="radio-inline"> <input type="radio" value="reversion" ng-model="mainCtrl.majAndReversion" name="reversion" translate />Reversion </label>
+            <label class="radio-inline"> <input type="radio" value="maj" ng-model="mainCtrl.majAndReversion" name="reversion" checked translate />Mise à jour </label>
+            <label class="radio-inline"> <input type="radio" value="twice" ng-model="mainCtrl.majAndReversion" name="reversion" translate />Les 2 </label>
         </div>
     </div>
     <!-- Numéros de version -->
@@ -74,26 +66,42 @@
     <!-- Champs Dublin Core -->
     <div ng-repeat="dc in mainCtrl.dcFields | orderBy:'rank' track by dc.code" ng-if="::mainCtrl.loaded">
         <div class="pull-right" ng-repeat-start="property in mainCtrl.dc[dc.code] track by $index" ng-init="label = dc.label + (mainCtrl.dc[dc.code].length > 1 ? ' (' + ($index + 1) + ')' : '')">
-            <button type="button" class="btn btn-xs btn-sem1" ng-class="{'invisible': !$last}" uib-tooltip="{{ ::'Ajouter' | translate }} {{::dc.label}}"
-                ng-click="mainCtrl.addProperty(dc)" ng-disabled="!mainCtrl.meta.dc">
+            <button
+                type="button"
+                class="btn btn-xs btn-sem1"
+                ng-class="{'invisible': !$last}"
+                uib-tooltip="{{ ::'Ajouter' | translate }} {{::dc.label}}"
+                ng-click="mainCtrl.addProperty(dc)"
+                ng-disabled="!mainCtrl.meta.dc"
+            >
                 <span class="glyphicon-halflings glyphicon-plus"></span>
             </button>
-            <button type="button" class="btn btn-xs btn-sem1" ng-class="{'invisible': mainCtrl.dc[dc.code].length <= 1}" uib-tooltip="{{ ::'Supprimer' | translate }} {{::label}}"
-                ng-click="mainCtrl.removeProperty(dc, property)" ng-disabled="!mainCtrl.meta.dc">
+            <button
+                type="button"
+                class="btn btn-xs btn-sem1"
+                ng-class="{'invisible': mainCtrl.dc[dc.code].length <= 1}"
+                uib-tooltip="{{ ::'Supprimer' | translate }} {{::label}}"
+                ng-click="mainCtrl.removeProperty(dc, property)"
+                ng-disabled="!mainCtrl.meta.dc"
+            >
                 <span class="glyphicon-halflings glyphicon-trash"></span>
             </button>
         </div>
-        <sem-field ng-repeat-end sem-type="text" sem-label="{{ ::$first ? dc.label : ' ' }}" sem-placeholder="{{::label}}" sem-label-class="col-xs-4 col-lg-2"
-            sem-field-class="col-xs-8 col-lg-10" sem-model="property.value" mandatory="dc.mandatory" ng-readonly="!mainCtrl.meta.dc"></sem-field>
+        <sem-field
+            ng-repeat-end
+            sem-type="text"
+            sem-label="{{ ::$first ? dc.label : ' ' }}"
+            sem-placeholder="{{::label}}"
+            sem-label-class="col-xs-4 col-lg-2"
+            sem-field-class="col-xs-8 col-lg-10"
+            sem-model="property.value"
+            mandatory="dc.mandatory"
+            ng-readonly="!mainCtrl.meta.dc"
+        ></sem-field>
     </div>
-
 </div>
 <div class="modal-footer">
     <button type="button" class="btn btn-sem2" ng-click="mainCtrl.close()" translate>Annuler et fermer la fenêtre</button>
-    <button type="button" class="btn btn-sem2" ng-click="mainCtrl.saveCines()">
-        <span class="glyphicon-regular floppy-save"></span> {{::'Enregistrer les données du formulaire' | translate}}
-    </button>
-    <button type="button" class="btn btn-sem2" ng-click="mainCtrl.exportCines()">
-        <span class="glyphicon-regular floppy-save"></span> {{::'Exporter vers CINES' | translate}}
-    </button>
+    <button type="button" class="btn btn-sem2" ng-click="mainCtrl.saveCines()"><span class="glyphicon-regular floppy-save"></span> {{::'Enregistrer les données du formulaire' | translate}}</button>
+    <button type="button" class="btn btn-sem2" ng-click="mainCtrl.exportCines()"><span class="glyphicon-regular floppy-save"></span> {{::'Exporter vers CINES' | translate}}</button>
 </div>

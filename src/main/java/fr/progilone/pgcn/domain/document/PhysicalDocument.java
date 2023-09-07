@@ -6,25 +6,20 @@ package fr.progilone.pgcn.domain.document;
 import fr.progilone.pgcn.domain.AbstractDomainObject;
 import fr.progilone.pgcn.domain.check.AutomaticCheckResult;
 import fr.progilone.pgcn.domain.train.Train;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
-
-import static fr.progilone.pgcn.service.es.EsConstant.*;
 
 /**
  * @author jbrunet
@@ -65,11 +60,9 @@ public class PhysicalDocument extends AbstractDomainObject {
     private String name;
 
     @Column(name = "total_page")
-    @Field(type = FieldType.Integer)
     private Integer totalPage;
 
     @Column(name = "digital_id")
-    @Field(type = FieldType.String, analyzer = ANALYZER_KEYWORD)
     private String digitalId;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -86,7 +79,7 @@ public class PhysicalDocument extends AbstractDomainObject {
         return docUnit;
     }
 
-    public void setDocUnit(DocUnit docUnit) {
+    public void setDocUnit(final DocUnit docUnit) {
         this.docUnit = docUnit;
     }
 
@@ -94,14 +87,14 @@ public class PhysicalDocument extends AbstractDomainObject {
         return digitalDocuments;
     }
 
-    public void setDigitalDocuments(Set<DigitalDocument> digitalDocuments) {
+    public void setDigitalDocuments(final Set<DigitalDocument> digitalDocuments) {
         this.digitalDocuments.clear();
         if (digitalDocuments != null) {
             digitalDocuments.forEach(this::addDigitalDocument);
         }
     }
 
-    public void addDigitalDocument(DigitalDocument doc) {
+    public void addDigitalDocument(final DigitalDocument doc) {
         if (doc != null) {
             this.digitalDocuments.add(doc);
             doc.getPhysicalDocuments().add(this);
@@ -112,7 +105,7 @@ public class PhysicalDocument extends AbstractDomainObject {
         return status;
     }
 
-    public void setStatus(PhysicalDocumentStatus status) {
+    public void setStatus(final PhysicalDocumentStatus status) {
         this.status = status;
     }
 
@@ -120,7 +113,7 @@ public class PhysicalDocument extends AbstractDomainObject {
         return totalPage;
     }
 
-    public void setTotalPage(Integer totalPage) {
+    public void setTotalPage(final Integer totalPage) {
         this.totalPage = totalPage;
     }
 
@@ -128,7 +121,7 @@ public class PhysicalDocument extends AbstractDomainObject {
         return digitalId;
     }
 
-    public void setDigitalId(String digitalId) {
+    public void setDigitalId(final String digitalId) {
         this.digitalId = digitalId;
     }
 
@@ -136,7 +129,7 @@ public class PhysicalDocument extends AbstractDomainObject {
         return train;
     }
 
-    public void setTrain(Train train) {
+    public void setTrain(final Train train) {
         this.train = train;
     }
 
@@ -144,7 +137,7 @@ public class PhysicalDocument extends AbstractDomainObject {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -152,14 +145,14 @@ public class PhysicalDocument extends AbstractDomainObject {
         return automaticCheckResults;
     }
 
-    public void setAutomaticCheckResults(Set<AutomaticCheckResult> results) {
+    public void setAutomaticCheckResults(final Set<AutomaticCheckResult> results) {
         this.automaticCheckResults.clear();
         if (results != null) {
             results.forEach(this::addAutomaticCheckResult);
         }
     }
 
-    public void addAutomaticCheckResult(AutomaticCheckResult result) {
+    public void addAutomaticCheckResult(final AutomaticCheckResult result) {
         if (result != null) {
             this.automaticCheckResults.add(result);
             result.setPhysicalDocument(this);

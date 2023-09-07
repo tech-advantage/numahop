@@ -1,9 +1,8 @@
 package fr.progilone.pgcn.repository.administration.z3950;
 
 import fr.progilone.pgcn.domain.administration.exchange.z3950.Z3950Server;
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  * Created by Sébastien on 21/12/2016.

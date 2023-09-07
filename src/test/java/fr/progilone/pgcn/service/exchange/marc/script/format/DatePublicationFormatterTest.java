@@ -1,21 +1,19 @@
 package fr.progilone.pgcn.service.exchange.marc.script.format;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import fr.progilone.pgcn.service.exchange.marc.script.AbstractScriptTest;
-import org.junit.Test;
+import java.util.HashMap;
+import java.util.Map;
+import javax.script.ScriptException;
+import org.junit.jupiter.api.Test;
 import org.marc4j.marc.DataField;
 import org.marc4j.marc.MarcFactory;
 
-import javax.script.ScriptException;
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
 /**
- * 
+ *
  * @author jbrunet
- * Créé le 20 févr. 2017
+ *         Créé le 20 févr. 2017
  */
 public class DatePublicationFormatterTest extends AbstractScriptTest {
 
@@ -40,7 +38,7 @@ public class DatePublicationFormatterTest extends AbstractScriptTest {
         fld.addSubfield(MARC_FACTORY.newSubfield('b', "inutilisé"));
 
         final String actual = fmt.format(fld);
-        
+
         assertNull(actual);
     }
 
@@ -72,7 +70,7 @@ public class DatePublicationFormatterTest extends AbstractScriptTest {
 
         assertEquals("19XX|1962", actual);
     }
-    
+
     /**
      * Type u, date inconnue
      */
@@ -88,7 +86,7 @@ public class DatePublicationFormatterTest extends AbstractScriptTest {
 
         assertEquals("s.d.", actual);
     }
-    
+
     /**
      * Type j, date précise
      */
@@ -107,7 +105,7 @@ public class DatePublicationFormatterTest extends AbstractScriptTest {
 
     /**
      * Test basique avec configuration par défaut
-     * 
+     *
      * @throws ScriptException
      */
     @Test
@@ -127,7 +125,7 @@ public class DatePublicationFormatterTest extends AbstractScriptTest {
 
     /**
      * Configuration personnalisée ( changement code, décalage de 6, changement de la position du type)
-     * 
+     *
      * @throws ScriptException
      */
     @Test
@@ -136,10 +134,9 @@ public class DatePublicationFormatterTest extends AbstractScriptTest {
         fld100.addSubfield(MARC_FACTORY.newSubfield('b', "ttt198 1983#re#k"));
         fld100.addSubfield(MARC_FACTORY.newSubfield('c', "Paris"));
 
-        final String configuration = "datepublicationFilter('b')\n"
-                + "datepublicationPositionDebut(3)\n"
-                + "datepublicationPositionFin(10)\n"
-                + "datepublicationPositionTypeDate(15)";
+        final String configuration = "datepublicationFilter('b')\n" + "datepublicationPositionDebut(3)\n"
+                                     + "datepublicationPositionFin(10)\n"
+                                     + "datepublicationPositionTypeDate(15)";
         final String expression = "datepublication(marc_100)";
 
         final Map<String, Object> bindings = new HashMap<>();

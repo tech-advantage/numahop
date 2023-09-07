@@ -1,13 +1,14 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp')
+    angular
+        .module('numaHopApp')
         .config(function (dashboardProvider, gettext) {
             dashboardProvider.widget('docUnitState', {
                 /* Recopie de la clé dans le widget, necessaire car le support des catégories lors de l'ajout des widgets 
                 est mal fait : la fonction qui crée les catégories (createCategories) depuis les widgets "perd" la clé,
                 voir le template widget-add.html */
-                key: "docUnitState",
+                key: 'docUnitState',
                 title: gettext('Activité des UD'),
                 category: gettext('Projets'),
                 description: gettext('Dernières unités documentaires modifiées'),
@@ -17,14 +18,13 @@
                 edit: {
                     templateUrl: 'scripts/app/dashboard/widgets/docUnitState/docUnitStateEditWidget.html',
                     controller: 'DocUnitStateEditWidgetCtrl',
-                    controllerAs: 'mainCtrl'
+                    controllerAs: 'mainCtrl',
                 },
                 authority: 'W_DOCUNIT_STATE',
-                tableContent: true  // le contenu est un tableau => pas de panel-body
+                tableContent: true, // le contenu est un tableau => pas de panel-body
             });
         })
         .controller('DocUnitStateWidgetCtrl', function ($scope, config, StatisticsSrvc, codeSrvc) {
-
             var mainCtrl = this;
             mainCtrl.config = config;
             mainCtrl.isConfigured = isConfigured;
@@ -32,10 +32,11 @@
             mainCtrl.setTitleBadge = setTitleBadge;
             mainCtrl.code = codeSrvc;
 
-            mainCtrl.columns = [{ 'name': 'PGCN Id', 'field': 'pgcnId'},
-                                {'name': 'Nb.pages', 'field': 'nbPages'},
-                                {'name': 'Etape', 'field': 'stage'}
-                                ];
+            mainCtrl.columns = [
+                { name: 'PGCN Id', field: 'pgcnId' },
+                { name: 'Nb.pages', field: 'nbPages' },
+                { name: 'Etape', field: 'stage' },
+            ];
 
             /**
              * Le widget est-il configuré ?
@@ -52,7 +53,7 @@
             function loadDocUnits(params) {
                 params.current = true;
                 params.wdocunit = true;
-                params.stype = "workflow";
+                params.stype = 'workflow';
 
                 return StatisticsSrvc.query(params).$promise.then(function (results) {
                     return _.chain(results)
@@ -64,12 +65,12 @@
                                     nbPages: r.totalPage,
                                     stage: mainCtrl.code['workflow.' + w.key],
                                     status: mainCtrl.code['workflow.status.' + w.status],
-                                    timestamp: w.endDate || w.startDate
+                                    timestamp: w.endDate || w.startDate,
                                 };
                             });
                         })
                         .flatten()
-                        .sortBy("timestamp")
+                        .sortBy('timestamp')
                         .value();
                 });
             }

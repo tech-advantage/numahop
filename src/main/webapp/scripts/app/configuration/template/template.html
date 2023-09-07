@@ -2,8 +2,7 @@
     <div class="col-sm-3 col-lg-2 col-layout-columns">
         <div class="panel panel-column-1">
             <div class="panel-heading">
-                <button type="button" class="btn btn-sem2 btn-xs pull-right"
-                        ng-click="mainCtrl.create()" uib-tooltip="{{::'Créer' | translate}}">
+                <button type="button" class="btn btn-sem2 btn-xs pull-right" ng-click="mainCtrl.create()" uib-tooltip="{{::'Créer' | translate}}" tooltip-append-to-body="true">
                     <span class="glyphicon-halflings glyphicon-plus"></span>
                 </button>
                 <span translate>Templates</span>
@@ -11,8 +10,7 @@
             <div class="panel-body">
                 <div class="list padding-b20" ng-repeat="lib in mainCtrl.libraries | orderBy:mainCtrl.sortLibrary">
                     <div class="filter-title">{{ ::lib.name }}</div>
-                    <div class="list"
-                         ng-repeat="tpl in mainCtrl.templates | filter:{ library: { identifier : lib.identifier } } | orderBy:'name'">
+                    <div class="list" ng-repeat="tpl in mainCtrl.templates | filter:{ library: { identifier : lib.identifier } } | orderBy:'name'">
                         <a ng-click="mainCtrl.edit(tpl)" ng-class="{'active': tpl === mainCtrl.editedTemplate}">
                             <span>{{ mainCtrl.displayTemplateName(tpl.name) }}</span>
                         </a>

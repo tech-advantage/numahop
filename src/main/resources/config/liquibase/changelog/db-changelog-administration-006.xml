@@ -1,67 +1,68 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <changeSet id="pgcn-create-administration-006" author="progilone">
 
         <createTable tableName="conf_files_gestion">
             <column name="identifier" type="varchar(191)">
-                <constraints nullable="false" primaryKey="true"/>
+                <constraints nullable="false" primaryKey="true" />
             </column>
             <column name="trigger_type" type="varchar(255)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="delay" type="int">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="destination_dir" type="varchar(255)">
             </column>
             <column name="delete_master" type="boolean" defaultValueBoolean="false">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="delete_print" type="boolean" defaultValueBoolean="false">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="delete_view" type="boolean" defaultValueBoolean="false">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="delete_thumb" type="boolean" defaultValueBoolean="false">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="save_master" type="boolean" defaultValueBoolean="false">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="save_print" type="boolean" defaultValueBoolean="false">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="save_view" type="boolean" defaultValueBoolean="false">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="save_thumb" type="boolean" defaultValueBoolean="false">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             
             <!-- Lien technique -->
             <column name="library" type="varchar(191)" />
             <column name="version" type="BIGINT">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_by" type="varchar(255)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_by" type="varchar(255)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>
         
-        <addForeignKeyConstraint baseTableName="conf_files_gestion" baseColumnNames="library" constraintName="fk_configuration_filesgestion_library"
-                                 referencedTableName="lib_library" referencedColumnNames="identifier"/>
+        <addForeignKeyConstraint baseTableName="conf_files_gestion" baseColumnNames="library" constraintName="fk_configuration_filesgestion_library" referencedTableName="lib_library" referencedColumnNames="identifier" />
     </changeSet>
 </databaseChangeLog>

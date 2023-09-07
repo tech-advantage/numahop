@@ -1,7 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <!-- Changeset du module Configuration / Storage -->
     <changeSet id="pgcn-create-storage-6" author="progilone">
@@ -35,16 +37,16 @@
                 <constraints nullable="false" />
             </column>
             <column name="created_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>
         
@@ -58,29 +60,45 @@
         </addColumn>
         
         <addColumn tableName="lot_lot">
-            <column name="active_format_configuration" type="varchar(191)"></column>
+            <column name="active_format_configuration" type="varchar(191)" />
         </addColumn>
 
         <addColumn tableName="proj_project">
-            <column name="active_format_configuration" type="varchar(191)"></column>
+            <column name="active_format_configuration" type="varchar(191)" />
         </addColumn>
 
 
-        <addForeignKeyConstraint constraintName="fk_configuration_viewsformat_library"
-                                 baseTableName="conf_views_format_configuration" baseColumnNames="library"
-                                 referencedTableName="lib_library" referencedColumnNames="identifier"/>
+        <addForeignKeyConstraint
+            constraintName="fk_configuration_viewsformat_library"
+            baseTableName="conf_views_format_configuration"
+            baseColumnNames="library"
+            referencedTableName="lib_library"
+            referencedColumnNames="identifier"
+        />
 
-        <addForeignKeyConstraint constraintName="fk_project_configuration_viewsformat"
-                                 baseTableName="proj_project" baseColumnNames="active_format_configuration"
-                                 referencedTableName="conf_views_format_configuration" referencedColumnNames="identifier"/>
+        <addForeignKeyConstraint
+            constraintName="fk_project_configuration_viewsformat"
+            baseTableName="proj_project"
+            baseColumnNames="active_format_configuration"
+            referencedTableName="conf_views_format_configuration"
+            referencedColumnNames="identifier"
+        />
 
-        <addForeignKeyConstraint constraintName="fk_lot_configuration_viewsformat"
-                                 baseTableName="lot_lot" baseColumnNames="active_format_configuration"
-                                 referencedTableName="conf_views_format_configuration" referencedColumnNames="identifier"/>    
+        <addForeignKeyConstraint
+            constraintName="fk_lot_configuration_viewsformat"
+            baseTableName="lot_lot"
+            baseColumnNames="active_format_configuration"
+            referencedTableName="conf_views_format_configuration"
+            referencedColumnNames="identifier"
+        />    
         
-        <addForeignKeyConstraint constraintName="fk_sto_stored_file_format_config"
-                                baseColumnNames="format_configuration" baseTableName="sto_stored_file"
-                                referencedColumnNames="identifier" referencedTableName="conf_views_format_configuration" />
+        <addForeignKeyConstraint
+            constraintName="fk_sto_stored_file_format_config"
+            baseColumnNames="format_configuration"
+            baseTableName="sto_stored_file"
+            referencedColumnNames="identifier"
+            referencedTableName="conf_views_format_configuration"
+        />
                                 
         <sql>
             INSERT INTO conf_views_format_configuration(identifier,label,thumb_height,thumb_width,view_height,view_width,print_height,print_width,library,version)

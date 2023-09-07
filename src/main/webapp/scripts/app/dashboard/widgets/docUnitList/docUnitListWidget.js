@@ -1,14 +1,14 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp')
+    angular
+        .module('numaHopApp')
         .config(function (dashboardProvider, gettext) {
-
             dashboardProvider.widget('docUnitList', {
                 /* Recopie de la clé dans le widget, necessaire car le support des catégories lors de l'ajout des widgets 
                 est mal fait : la fonction qui crée les catégories (createCategories) depuis les widgets "perd" la clé,
                 voir le template widget-add.html */
-                key: "docUnitList",
+                key: 'docUnitList',
                 title: gettext('Unités documentaires'),
                 category: gettext('UD'),
                 description: gettext('Liste des unités documentaires'),
@@ -18,14 +18,13 @@
                 edit: {
                     templateUrl: 'scripts/app/dashboard/widgets/docUnitList/docUnitListEditWidget.html',
                     controller: 'DocUnitListEditWidgetCtrl',
-                    controllerAs: 'mainCtrl'
+                    controllerAs: 'mainCtrl',
                 },
                 authority: 'W_DOC_UNIT',
-                tableContent: true  // le contenu est un tableau => pas de panel-body
+                tableContent: true, // le contenu est un tableau => pas de panel-body
             });
         })
         .controller('DocUnitListWidgetCtrl', function ($scope, config, StatisticsSrvc) {
-
             var mainCtrl = this;
             mainCtrl.config = config;
             mainCtrl.getPage = getPage;
@@ -34,7 +33,6 @@
             var searchParams = {};
 
             getData();
-
 
             /**
              * Le widget est-il configuré ?
@@ -58,7 +56,7 @@
             function getData() {
                 var params = {
                     page: searchParams && searchParams.page ? searchParams.page : 0,
-                    size: 10
+                    size: 10,
                 };
                 if (config.project) {
                     params.project = config.project.identifier;
@@ -77,7 +75,7 @@
                         totalItems: data.totalElements,
                         totalPages: data.totalPages,
                         page: data.number + 1,
-                        size: data.size
+                        size: data.size,
                     };
 
                     return data;

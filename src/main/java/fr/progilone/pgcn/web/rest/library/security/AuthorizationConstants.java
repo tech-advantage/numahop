@@ -10,42 +10,43 @@ import fr.progilone.pgcn.web.util.AuthorizationManager;
  */
 @AuthorizationManager.Init
 public final class AuthorizationConstants {
+
     /**
      * Habilitation à la gestion des bibliothèques: créer
      */
-    public static final  String LIB_HAB1 ="LIB-HAB1";
+    public static final String LIB_HAB1 = "LIB-HAB1";
     /**
      * Habilitation à la gestion des bibliothèques: Modifier
      */
-    public static final  String LIB_HAB2 ="LIB-HAB2";
+    public static final String LIB_HAB2 = "LIB-HAB2";
     /**
      * Habilitation à la gestion des bibliothèques: Supprimer
      */
-    public static final  String LIB_HAB3 ="LIB-HAB3";
+    public static final String LIB_HAB3 = "LIB-HAB3";
     /**
      * Habilitation à la gestion des bibliothèques: Désactiver
      */
-    public static final  String LIB_HAB4 ="LIB-HAB4";
+    public static final String LIB_HAB4 = "LIB-HAB4";
     /**
      * Habilitation à la gestion des bibliothèques: Visualiser (hors données de production)
      */
-    public static final  String LIB_HAB5="LIB-HAB5";
+    public static final String LIB_HAB5 = "LIB-HAB5";
     /**
      * Habilitation à la gestion des bibliothèques: Visualiser les utilisateurs
      */
-    public static final  String LIB_HAB6 ="LIB-HAB6";
+    public static final String LIB_HAB6 = "LIB-HAB6";
     /**
      * Habilitation à la gestion des bibliothèques: Visualiser les projets et les données de production
      */
-    public static final  String LIB_HAB7 ="LIB-HAB7";
+    public static final String LIB_HAB7 = "LIB-HAB7";
     /**
      * Habilitation à la gestion des bibliothèques: Exporter la liste / une fiche au format CSV
      */
-    public static final  String LIB_HAB8="LIB-HAB8";
+    public static final String LIB_HAB8 = "LIB-HAB8";
     /**
      * Habilitation à la gestion des bibliothèques: Imprime la liste / une fiche
      */
-    public static final  String LIB_HAB9 ="LIB-HAB9";
+    public static final String LIB_HAB9 = "LIB-HAB9";
 
     // ne pas oublier de placer l'annotation @AuthorizationManager.Init sur la classe pour initialiser les relations entre autorisations
     static {

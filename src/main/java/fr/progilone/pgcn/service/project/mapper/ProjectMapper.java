@@ -1,10 +1,5 @@
 package fr.progilone.pgcn.service.project.mapper;
 
-import fr.progilone.pgcn.domain.dto.exportftpconfiguration.ExportFTPConfigurationDTO;
-import fr.progilone.pgcn.service.exportftpconfiguration.mapper.ExportFTPConfigurationMapper;
-import org.mapstruct.*;
-import org.mapstruct.factory.Mappers;
-
 import fr.progilone.pgcn.domain.dto.project.ProjectDTO;
 import fr.progilone.pgcn.domain.dto.project.ProjectSearchDTO;
 import fr.progilone.pgcn.domain.dto.statistics.StatisticsProjectDTO;
@@ -16,6 +11,7 @@ import fr.progilone.pgcn.service.administration.mapper.OmekaListMapper;
 import fr.progilone.pgcn.service.administration.mapper.SimpleViewsFormatConfigurationMapper;
 import fr.progilone.pgcn.service.checkconfiguration.mapper.SimpleCheckConfigurationMapper;
 import fr.progilone.pgcn.service.document.mapper.SimpleDocUnitMapper;
+import fr.progilone.pgcn.service.exportftpconfiguration.mapper.ExportFTPConfigurationMapper;
 import fr.progilone.pgcn.service.ftpconfiguration.mapper.SimpleFTPConfigurationMapper;
 import fr.progilone.pgcn.service.library.mapper.SimpleLibraryMapper;
 import fr.progilone.pgcn.service.lot.mapper.LotMapper;
@@ -23,6 +19,8 @@ import fr.progilone.pgcn.service.train.mapper.SimpleTrainMapper;
 import fr.progilone.pgcn.service.user.mapper.AddressMapper;
 import fr.progilone.pgcn.service.user.mapper.UserMapper;
 import fr.progilone.pgcn.service.workflow.mapper.SimpleWorkflowMapper;
+import org.mapstruct.*;
+import org.mapstruct.factory.Mappers;
 
 @Mapper(uses = {AddressMapper.class,
                 SimpleLibraryMapper.class,

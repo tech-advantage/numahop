@@ -11,8 +11,8 @@ public class WebsocketSecurityConfiguration extends AbstractSecurityWebSocketMes
     @Override
     protected void configureInbound(final MessageSecurityMetadataSourceRegistry messages) {
         messages
-        // message types other than MESSAGE and SUBSCRIBE
-        .nullDestMatcher()
+                // message types other than MESSAGE and SUBSCRIBE
+                .nullDestMatcher()
                 .authenticated()
                 // matches any destination that starts with /rooms/
                 .simpDestMatchers("/topic/**")

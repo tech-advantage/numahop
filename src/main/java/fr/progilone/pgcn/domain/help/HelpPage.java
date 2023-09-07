@@ -1,14 +1,14 @@
 package fr.progilone.pgcn.domain.help;
 
 import fr.progilone.pgcn.domain.AbstractDomainObject;
-
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(name = HelpPage.TABLE_NAME)
 public class HelpPage extends AbstractDomainObject {
+
     public static final String TABLE_NAME = "hlp_page";
 
     /**

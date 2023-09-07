@@ -1,53 +1,64 @@
 package fr.progilone.pgcn.repository.es;
 
+import static fr.progilone.pgcn.repository.es.helper.EsQueryHelper.*;
+
+import co.elastic.clients.elasticsearch._types.SortOrder;
+import co.elastic.clients.elasticsearch._types.aggregations.Aggregation;
+import co.elastic.clients.elasticsearch._types.aggregations.TermsAggregation;
+import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
+import co.elastic.clients.elasticsearch._types.query_dsl.ChildScoreMode;
+import co.elastic.clients.elasticsearch._types.query_dsl.Query;
+import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders;
+import co.elastic.clients.elasticsearch.core.search.CompletionContext;
+import co.elastic.clients.elasticsearch.core.search.Context;
+import co.elastic.clients.elasticsearch.core.search.SuggestFuzziness;
+import co.elastic.clients.elasticsearch.core.search.Suggester;
+import co.elastic.clients.json.JsonData;
+import co.elastic.clients.util.NamedValue;
 import fr.progilone.pgcn.domain.administration.CinesPAC_;
 import fr.progilone.pgcn.domain.administration.InternetArchiveCollection_;
-import fr.progilone.pgcn.domain.document.BibliographicRecord;
 import fr.progilone.pgcn.domain.document.BibliographicRecord_;
-import fr.progilone.pgcn.domain.document.DocPropertyType_;
-import fr.progilone.pgcn.domain.document.DocProperty_;
-import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.document.DocUnit_;
 import fr.progilone.pgcn.domain.document.PhysicalDocument_;
-import fr.progilone.pgcn.domain.exchange.cines.CinesReport;
+import fr.progilone.pgcn.domain.es.document.EsDocUnit;
 import fr.progilone.pgcn.domain.exchange.cines.CinesReport_;
-import fr.progilone.pgcn.domain.exchange.internetarchive.InternetArchiveReport;
-import fr.progilone.pgcn.domain.exchange.internetarchive.InternetArchiveReport_;
 import fr.progilone.pgcn.domain.library.Library_;
 import fr.progilone.pgcn.repository.es.helper.EsQueryBuilder;
 import fr.progilone.pgcn.repository.es.helper.EsSearchOperation;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
-import org.elasticsearch.search.aggregations.bucket.children.ChildrenBuilder;
-import org.elasticsearch.search.aggregations.bucket.filter.FilterAggregationBuilder;
-import org.elasticsearch.search.aggregations.bucket.nested.NestedBuilder;
-import org.elasticsearch.search.aggregations.bucket.terms.Terms;
-import org.elasticsearch.search.aggregations.bucket.terms.TermsBuilder;
-import org.elasticsearch.search.highlight.HighlightBuilder.Field;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
-import org.springframework.data.elasticsearch.core.EntityMapper;
-
+import fr.progilone.pgcn.service.es.EsConstant;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.elasticsearch.client.elc.NativeQuery;
+import org.springframework.data.elasticsearch.client.elc.NativeQueryBuilder;
+import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.SearchOperations;
+import org.springframework.data.elasticsearch.core.query.HighlightQuery;
+import org.springframework.data.elasticsearch.core.query.highlight.Highlight;
+import org.springframework.data.elasticsearch.core.query.highlight.HighlightField;
+import org.springframework.data.elasticsearch.core.suggest.response.Suggest;
 
-import static fr.progilone.pgcn.repository.es.helper.EsQueryHelper.*;
+public class EsDocUnitRepositoryImpl extends AbstractEsRepository<EsDocUnit> implements EsDocUnitRepositoryCustom {
 
-public class EsDocUnitRepositoryImpl extends AbstractEsRepository<DocUnit> implements EsDocUnitRepositoryCustom {
+    private static final Logger LOG = LoggerFactory.getLogger(EsDocUnitRepositoryImpl.class);
 
     @Autowired
-    public EsDocUnitRepositoryImpl(final ElasticsearchTemplate elasticsearchTemplate, final EntityMapper entityMapper) {
-        super(DocUnit.class, elasticsearchTemplate, entityMapper);
+    public EsDocUnitRepositoryImpl(final SearchOperations searchOperations) {
+        super(EsDocUnit.class, searchOperations);
     }
 
     @Override
-    protected QueryBuilder getSearchQueryBuilder(final EsSearchOperation searchOp, final boolean fuzzy) {
+    protected Query getSearchQueryBuilder(final EsSearchOperation searchOp, final boolean fuzzy) {
         final EsQueryBuilder builder = new EsQueryBuilder();
         final String search = searchOp.getSearch();
         final String[] index = readIndex(searchOp.getIndex(), INDEX_DOCUNIT);
@@ -87,33 +98,33 @@ public class EsDocUnitRepositoryImpl extends AbstractEsRepository<DocUnit> imple
     }
 
     @Override
-    protected Optional<QueryBuilder> getLibraryQueryBuilder(final List<String> libraries) {
+    protected Optional<Query> getLibraryQueryBuilder(final List<String> libraries) {
         if (CollectionUtils.isNotEmpty(libraries)) {
-            return Optional.of(QueryBuilders.termsQuery(path(DocUnit_.library, Library_.identifier), libraries));
+            return Optional.of(getExactQueryBuilder(path(DocUnit_.library, Library_.identifier), libraries));
         }
         return Optional.empty();
     }
 
     @Override
-    protected Field[] getHighlightField() {
-        return new Field[] {new Field("label"), new Field("pgcnId")};
+    protected HighlightQuery getHighlightField() {
+        return new HighlightQuery(new Highlight(List.of("label", "pgcnId").stream().map(HighlightField::new).toList()), null);
     }
 
     @Override
-    protected QueryBuilder getFilterQueryBuilder(final String searchField, final List<String> values) {
+    protected Query getFilterQueryBuilder(final String searchField, final List<String> values) {
         final int pos = searchField.indexOf(':');
-        final String type = pos >= 0 ? searchField.substring(0, pos) : "DOCUNIT";
-        final String field = pos >= 0 ? searchField.substring(pos + 1) : searchField;
+        final String type = pos >= 0 ? searchField.substring(0, pos)
+                                     : "DOCUNIT";
+        final String field = pos >= 0 ? searchField.substring(pos + 1)
+                                      : searchField;
 
         switch (type) {
             case "RECORD_PROPERTY":
                 // docunit > bib_record > properties [type = field] > value.raw = values
-                final BoolQueryBuilder searchQry = QueryBuilders.boolQuery()
-                                                                .filter(QueryBuilders.termsQuery("properties.type.identifier", field))
-                                                                .filter(QueryBuilders.termsQuery("properties.value.raw",
-                                                                                                 values.toArray(new String[0])));
-                return QueryBuilders.hasChildQuery(BibliographicRecord.ES_TYPE, QueryBuilders.nestedQuery("properties", searchQry));
-
+                final BoolQuery.Builder searchQry = QueryBuilders.bool()
+                                                                 .filter(getExactQueryBuilder("records.properties.type.identifier", field))
+                                                                 .filter(getExactQueryBuilder("records.properties.value.raw", values));
+                return QueryBuilders.nested(b -> b.path("records.properties").query(searchQry.build()._toQuery()).scoreMode(ChildScoreMode.Sum));
             case "DOCUNIT":
             default:
                 return super.getFilterQueryBuilder(field, values);
@@ -121,7 +132,7 @@ public class EsDocUnitRepositoryImpl extends AbstractEsRepository<DocUnit> imple
     }
 
     @Override
-    protected List<AbstractAggregationBuilder> getAggregationBuilders() {
+    protected Map<String, Aggregation> getAggregationBuilders() {
         return Stream.of("DOCUNIT:type",
                          "DOCUNIT:archivable",
                          "DOCUNIT:distributable",
@@ -133,28 +144,32 @@ public class EsDocUnitRepositoryImpl extends AbstractEsRepository<DocUnit> imple
                          "RECORD_PROPERTY:relation",
                          "RECORD_PROPERTY:rights",
                          "RECORD_PROPERTY:subject",
-                         "RECORD_PROPERTY:type").map(this::getAggregationBuilder).collect(Collectors.toList());
+                         "RECORD_PROPERTY:type").collect(Collectors.toMap(Function.identity(), this::getAggregationBuilder));
     }
 
-    protected AbstractAggregationBuilder getAggregationBuilder(final String aggName) {
+    protected Aggregation getAggregationBuilder(final String aggName) {
         final int pos = aggName.indexOf(':');
-        final String type = pos >= 0 ? aggName.substring(0, pos) : "DOCUNIT";
-        final String field = pos >= 0 ? aggName.substring(pos + 1) : aggName;
+        final String type = pos >= 0 ? aggName.substring(0, pos)
+                                     : "DOCUNIT";
+        final String field = pos >= 0 ? aggName.substring(pos + 1)
+                                      : aggName;
 
         switch (type) {
             case "RECORD_PROPERTY":
                 // docunit > bib_record > properties [type = field] > value.raw
-                final ChildrenBuilder recordAgg = new ChildrenBuilder(aggName).childType(BibliographicRecord.ES_TYPE);
-                final NestedBuilder propertyAgg = new NestedBuilder("nested-property").path("properties");
-                final FilterAggregationBuilder filterByTypeAgg =
-                    new FilterAggregationBuilder("filter-type").filter(QueryBuilders.termsQuery("properties.type.identifier", field));
-                final TermsBuilder valueAgg = new TermsBuilder(aggName).field("properties.value.raw").size(20).order(Terms.Order.count(false));
-
-                return recordAgg.subAggregation(propertyAgg.subAggregation(filterByTypeAgg.subAggregation(valueAgg)));
+                return new Aggregation.Builder().nested(n -> n.path("records.properties"))
+                                                .aggregations("filter-type",
+                                                              f -> f.filter(getExactQueryBuilder("records.properties.type.identifier", field))
+                                                                    .aggregations(aggName,
+                                                                                  t -> t.terms(t1 -> t1.field("records.properties.value.raw")
+                                                                                                       .size(20)
+                                                                                                       .order(List.of(NamedValue.of("_count", SortOrder.Desc))))))
+                                                .build();
+            // recordAgg.subAggregation(filterByTypeAgg.subAggregation(valueAgg));
 
             case "DOCUNIT":
             default:
-                return new TermsBuilder(aggName).field(field).size(20).order(Terms.Order.count(false));
+                return TermsAggregation.of(b -> b.field(field).size(20).order(List.of(NamedValue.of("_count", SortOrder.Desc))))._toAggregation();
         }
     }
 
@@ -200,16 +215,16 @@ public class EsDocUnitRepositoryImpl extends AbstractEsRepository<DocUnit> imple
                 builder.should(getExactQueryBuilder(path(DocUnit_.library, Library_.identifier), search));
                 break;
             case "project":
-                builder.should(getExactQueryBuilder(DocUnit_.projectId.getName(), search));
+                builder.should(getExactQueryBuilder("projectId", search));
                 break;
             case "lot":
-                builder.should(getExactQueryBuilder(DocUnit_.lotId.getName(), search));
+                builder.should(getExactQueryBuilder("lotId", search));
                 break;
             case "nbDigitalDocuments":
                 if ("false".equals(search)) {
                     builder.should(getExactQueryBuilder("nbDigitalDocuments", "0"));
                 } else {
-                    builder.should(QueryBuilders.rangeQuery("nbDigitalDocuments").gt(0));
+                    builder.should(QueryBuilders.range().field("nbDigitalDocuments").gt(JsonData.of(0)).build()._toQuery());
                 }
                 break;
             case "workflowState":
@@ -220,8 +235,12 @@ public class EsDocUnitRepositoryImpl extends AbstractEsRepository<DocUnit> imple
                 break;
             case "lastModifiedDate":
                 builder.should(getRangeQueryBuilder(DocUnit_.lastModifiedDate.getName(), search));
-                builder.should(QueryBuilders.hasChildQuery(BibliographicRecord.ES_TYPE,
-                                                           getRangeQueryBuilder(BibliographicRecord_.lastModifiedDate.getName(), search)));
+                builder.should(QueryBuilders.nested()
+                                            .path("records")
+                                            .query(getRangeQueryBuilder("records." + BibliographicRecord_.lastModifiedDate.getName(), search))
+                                            .scoreMode(ChildScoreMode.Sum)
+                                            .build()
+                                            ._toQuery());
                 break;
             case "latestDeliveryDate":
                 builder.should(getRangeQueryBuilder("latestDeliveryDate", search));
@@ -235,25 +254,24 @@ public class EsDocUnitRepositoryImpl extends AbstractEsRepository<DocUnit> imple
     private void addRecordsearch(final EsQueryBuilder builder, final String search, final String field, final boolean fuzzy) {
         switch (field) {
             case "title":
-                builder.should(QueryBuilders.hasChildQuery(BibliographicRecord.ES_TYPE,
-                                                           getFullTextQueryBuilder(BibliographicRecord_.title.getName(), search, fuzzy)));
+                builder.should(QueryBuilders.nested()
+                                            .path("records")
+                                            .query(getFullTextQueryBuilder("records.title", search, fuzzy))
+                                            .scoreMode(ChildScoreMode.Sum)
+                                            .build()
+                                            ._toQuery());
                 break;
         }
     }
 
     private void addPropertySearch(final EsQueryBuilder builder, final String search, final String field, final boolean fuzzy) {
-        final BoolQueryBuilder propQuery = QueryBuilders.boolQuery()
-                                                        // type
-                                                        .must(getExactQueryBuilder(path(BibliographicRecord_.properties,
-                                                                                        DocProperty_.type,
-                                                                                        DocPropertyType_.identifier), field))
-                                                        // valeur
-                                                        .must(getFullTextQueryBuilder(path(BibliographicRecord_.properties, DocProperty_.value),
-                                                                                      search,
-                                                                                      fuzzy));
+        final BoolQuery.Builder propQuery = QueryBuilders.bool()
+                                                         // type
+                                                         .must(getExactQueryBuilder("records.properties.type.identifier", field))
+                                                         // valeur
+                                                         .must(getFullTextQueryBuilder("records.properties.value", search, fuzzy));
         // nested
-        builder.should(QueryBuilders.hasChildQuery(BibliographicRecord.ES_TYPE,
-                                                   QueryBuilders.nestedQuery(BibliographicRecord_.properties.getName(), propQuery)));
+        builder.should(QueryBuilders.nested().path("records.properties").query(propQuery.build()._toQuery()).scoreMode(ChildScoreMode.Sum).build()._toQuery());
     }
 
     private void addPhysicalDocSearch(final EsQueryBuilder builder, final String search, final String field, final boolean fuzzy) {
@@ -267,10 +285,20 @@ public class EsDocUnitRepositoryImpl extends AbstractEsRepository<DocUnit> imple
     private void addCinesSearch(final EsQueryBuilder builder, final String search, final String field, final boolean fuzzy) {
         switch (field) {
             case "dateSent":
-                builder.should(QueryBuilders.hasChildQuery(CinesReport.ES_TYPE, getRangeQueryBuilder(path(CinesReport_.dateSent), search)));
+                builder.should(QueryBuilders.nested()
+                                            .path("cinesReports")
+                                            .query(getRangeQueryBuilder(path("cinesReports", CinesReport_.dateSent.getName()), search))
+                                            .scoreMode(ChildScoreMode.Sum)
+                                            .build()
+                                            ._toQuery());
                 break;
             case "status":
-                builder.should(QueryBuilders.hasChildQuery(CinesReport.ES_TYPE, getExactQueryBuilder(path(CinesReport_.status), search)));
+                builder.should(QueryBuilders.nested()
+                                            .path("cinesReports")
+                                            .query(getExactQueryBuilder(path("cinesReports", CinesReport_.status.getName()), search))
+                                            .scoreMode(ChildScoreMode.Sum)
+                                            .build()
+                                            ._toQuery());
                 break;
         }
     }
@@ -278,32 +306,62 @@ public class EsDocUnitRepositoryImpl extends AbstractEsRepository<DocUnit> imple
     private void addIaSearch(final EsQueryBuilder builder, final String search, final String field, final boolean fuzzy) {
         switch (field) {
             case "dateSent":
-                builder.should(QueryBuilders.hasChildQuery(InternetArchiveReport.ES_TYPE,
-                                                           getRangeQueryBuilder(path(InternetArchiveReport_.dateSent), search)));
+                builder.should(QueryBuilders.nested().path("iaReports").query(getRangeQueryBuilder("iaReports.dateSent", search)).scoreMode(ChildScoreMode.Sum).build()._toQuery());
                 break;
             case "status":
-                builder.should(QueryBuilders.hasChildQuery(InternetArchiveReport.ES_TYPE,
-                                                           getExactQueryBuilder(path(InternetArchiveReport_.status), search)));
+                builder.should(QueryBuilders.nested().path("iaReports").query(getExactQueryBuilder("iaReports.status", search)).scoreMode(ChildScoreMode.Sum).build()._toQuery());
                 break;
         }
     }
 
     private void addDefaultSearch(final EsQueryBuilder builder, final String search, final boolean fuzzy) {
         builder
-            // Unité documentaire
-            .should(getFullTextQueryBuilder(DocUnit_.pgcnId.getName(), search, false)) // pas de recherche fuzzy sur le pgcnId
-            .should(getFullTextQueryBuilder(DocUnit_.label.getName(), search, fuzzy))
-            .should(getExactQueryBuilder(DocUnit_.type.getName(), search))
-            .should(getExactQueryBuilder(DocUnit_.arkUrl.getName(), search))
-            .should(getExactQueryBuilder(DocUnit_.rights.getName(), search))
-            .should(getExactQueryBuilder(DocUnit_.condReportType.getName(), search))
-            // Record: titre
-            .should(QueryBuilders.hasChildQuery(BibliographicRecord.ES_TYPE,
-                                                getFullTextQueryBuilder(BibliographicRecord_.title.getName(), search, fuzzy)))
-            // Record: propriétés
-            .should(QueryBuilders.hasChildQuery(BibliographicRecord.ES_TYPE,
-                                                QueryBuilders.nestedQuery(BibliographicRecord_.properties.getName(),
-                                                                          getFullTextQueryBuilder(path(BibliographicRecord_.properties,
-                                                                                                       DocProperty_.value), search, fuzzy))));
+               // Unité documentaire
+               .should(getFullTextQueryBuilder(DocUnit_.pgcnId.getName(), search, false)) // pas de recherche fuzzy sur le pgcnId
+               .should(getFullTextQueryBuilder(DocUnit_.label.getName(), search, fuzzy))
+               .should(getExactQueryBuilder(DocUnit_.type.getName(), search))
+               .should(getExactQueryBuilder(DocUnit_.arkUrl.getName(), search))
+               .should(getExactQueryBuilder(DocUnit_.rights.getName(), search))
+               .should(getExactQueryBuilder(DocUnit_.condReportType.getName(), search))
+               // Record: titre
+               .should(QueryBuilders.nested().path("records").query(getFullTextQueryBuilder("records.title", search, fuzzy)).scoreMode(ChildScoreMode.Sum).build()._toQuery())
+               // Record: propriétés
+               .should(QueryBuilders.nested()
+                                    .path("records.properties")
+                                    .query(getFullTextQueryBuilder("records.properties.value", search, fuzzy))
+                                    .scoreMode(ChildScoreMode.Sum)
+                                    .build()
+                                    ._toQuery());
+    }
+
+    /**
+     * Suggestions avec payload, et filtrage par contexte sur la bibliothèque
+     */
+    @Override
+    public List<Map<String, Object>> suggest(final String text, final int size, final List<String> libraries) {
+        final NativeQuery query = new NativeQueryBuilder().withSuggester(Suggester.of(b -> b.suggesters(EsConstant.SUGGEST_FIELD,
+                                                                                                        s -> s.completion(c -> c.field(EsConstant.SUGGEST_FIELD)
+                                                                                                                                .fuzzy(SuggestFuzziness.of(f -> f.fuzziness("AUTO")))
+                                                                                                                                .size(size)
+                                                                                                                                .contexts(Map.of(EsConstant.SUGGEST_CTX_LIBRARY,
+                                                                                                                                                 libraries.stream()
+                                                                                                                                                          .map(id -> CompletionContext.of(cc -> cc.context(Context.of(ccc -> ccc.category(id)))))
+                                                                                                                                                          .collect(Collectors.toList()))))
+                                                                                                              .prefix(text)))).build();
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("Suggest : {}", query.getSuggester());
+        }
+
+        final SearchHits<EsDocUnit> response = searchOperations.search(query, clazz);
+
+        final Suggest suggestions = response.getSuggest();
+        if (suggestions == null) {
+            return Collections.emptyList();
+        }
+        return suggestions.getSuggestions().stream().flatMap(e -> e.getEntries().stream()).flatMap(e -> e.getOptions().stream()).map(option -> {
+            final Map<String, Object> resultOption = new HashMap<>();
+            resultOption.put(FIELD_SUGG_TEXT, option.getText());
+            return resultOption;
+        }).collect(Collectors.toList());
     }
 }

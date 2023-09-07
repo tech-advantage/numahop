@@ -2,25 +2,31 @@ package fr.progilone.pgcn.service.delivery;
 
 import static com.opencsv.CSVWriter.*;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
+import com.opencsv.CSVWriter;
+import fr.progilone.pgcn.domain.checkconfiguration.CheckConfiguration;
+import fr.progilone.pgcn.domain.delivery.*;
+import fr.progilone.pgcn.domain.delivery.Delivery.DeliveryStatus;
+import fr.progilone.pgcn.domain.document.DigitalDocument;
+import fr.progilone.pgcn.domain.dto.document.ValidatedDeliveredDocumentDTO;
+import fr.progilone.pgcn.domain.library.Library;
+import fr.progilone.pgcn.domain.multilotsdelivery.MultiLotsDelivery;
+import fr.progilone.pgcn.exception.PgcnBusinessException;
+import fr.progilone.pgcn.exception.PgcnException;
+import fr.progilone.pgcn.exception.PgcnTechnicalException;
+import fr.progilone.pgcn.exception.PgcnValidationException;
+import fr.progilone.pgcn.repository.delivery.DeliveryRepository;
+import fr.progilone.pgcn.repository.delivery.helper.DeliverySearchBuilder;
+import fr.progilone.pgcn.repository.multilotsdelivery.MultiLotsDeliveryRepository;
 import fr.progilone.pgcn.repository.sample.SampleRepository;
+import fr.progilone.pgcn.service.JasperReportsService;
+import fr.progilone.pgcn.service.document.mapper.DeliveredDocumentMapper;
+import fr.progilone.pgcn.service.es.EsDeliveryService;
+import fr.progilone.pgcn.service.library.LibraryService;
+import fr.progilone.pgcn.service.util.DateUtils;
+import java.io.*;
+import java.time.LocalDate;
+import java.util.*;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
@@ -34,37 +40,11 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.opencsv.CSVWriter;
-
-import fr.progilone.pgcn.domain.checkconfiguration.CheckConfiguration;
-import fr.progilone.pgcn.domain.delivery.DeliveredDocument;
-import fr.progilone.pgcn.domain.delivery.Delivery;
-import fr.progilone.pgcn.domain.delivery.Delivery.DeliveryStatus;
-import fr.progilone.pgcn.domain.delivery.DeliverySlip;
-import fr.progilone.pgcn.domain.delivery.DeliverySlipConfiguration;
-import fr.progilone.pgcn.domain.delivery.DeliverySlipLine;
-import fr.progilone.pgcn.domain.document.DigitalDocument;
-import fr.progilone.pgcn.domain.dto.document.ValidatedDeliveredDocumentDTO;
-import fr.progilone.pgcn.domain.library.Library;
-import fr.progilone.pgcn.domain.multilotsdelivery.MultiLotsDelivery;
-import fr.progilone.pgcn.exception.PgcnBusinessException;
-import fr.progilone.pgcn.exception.PgcnException;
-import fr.progilone.pgcn.exception.PgcnTechnicalException;
-import fr.progilone.pgcn.exception.PgcnValidationException;
-import fr.progilone.pgcn.repository.delivery.DeliveryRepository;
-import fr.progilone.pgcn.repository.delivery.helper.DeliverySearchBuilder;
-import fr.progilone.pgcn.repository.multilotsdelivery.MultiLotsDeliveryRepository;
-import fr.progilone.pgcn.service.JasperReportsService;
-import fr.progilone.pgcn.service.document.mapper.DeliveredDocumentMapper;
-import fr.progilone.pgcn.service.es.EsDeliveryService;
-import fr.progilone.pgcn.service.library.LibraryService;
-import fr.progilone.pgcn.service.util.DateUtils;
-
 /**
  * Service de gestion des livraisons : interaction repository
  *
  * @author jbrunet
- * Créé le 16 mai 2017
+ *         Créé le 16 mai 2017
  */
 @Service
 public class DeliveryService {
@@ -98,16 +78,6 @@ public class DeliveryService {
 
     /**
      * Lance une recherche paginée
-     *
-     * @param search
-     * @param projects
-     * @param lots
-     * @param status
-     * @param dateFrom
-     * @param dateTo
-     * @param page
-     * @param size
-     * @return
      */
     @Transactional(readOnly = true)
     public Page<Delivery> search(final String search,
@@ -128,12 +98,12 @@ public class DeliveryService {
                                                                     .setProviders(providers)
                                                                     .setStatus(status)
                                                                     .setDateFrom(dateFrom)
-                                                                    .setDateTo(dateTo), new PageRequest(page, size));
+                                                                    .setDateTo(dateTo), PageRequest.of(page, size));
     }
 
     @Transactional(readOnly = true)
     public Delivery getOne(final String id) {
-        final Delivery one = deliveryRepository.getOne(id);
+        final Delivery one = deliveryRepository.findById(id).orElse(null);
         Hibernate.initialize(one);
         return one;
     }
@@ -175,12 +145,12 @@ public class DeliveryService {
 
     @Transactional(readOnly = true)
     public List<Delivery> findAll() {
-        return deliveryRepository.findAll(new Sort(Direction.DESC, "receptionDate"));
+        return deliveryRepository.findAll(Sort.by(Direction.DESC, "receptionDate"));
     }
 
     @Transactional(readOnly = true)
     public List<Delivery> findAll(final Iterable<String> identifiers) {
-        return deliveryRepository.findAll(identifiers);
+        return deliveryRepository.findAllById(identifiers);
     }
 
     @Transactional(readOnly = true)
@@ -191,14 +161,14 @@ public class DeliveryService {
     @Transactional(readOnly = true)
     public Set<DeliveredDocument> getDigitalDocumentsByDelivery(final String id) {
 
-        final Set<DeliveredDocument> deliveredDocs =  deliveryRepository.findDeliveredDocumentsByDeliveryIdentifier(id);
-        deliveredDocs.forEach(dd-> {
+        final Set<DeliveredDocument> deliveredDocs = deliveryRepository.findDeliveredDocumentsByDeliveryIdentifier(id);
+        deliveredDocs.forEach(dd -> {
             final DigitalDocument dig = dd.getDigitalDocument();
             Hibernate.initialize(dig.getDocUnit());
             Hibernate.initialize(dig.getAutomaticCheckResults());
             Hibernate.initialize(dig.getPages());
         });
-        return deliveredDocs; 
+        return deliveredDocs;
     }
 
     @Transactional(readOnly = true)
@@ -223,12 +193,11 @@ public class DeliveryService {
 
     @Transactional
     public void delete(final String identifier) {
-        final Delivery delivery = deliveryRepository.findOne(identifier);
-        if(sampleRepository.findByDeliveryIdentifier(identifier) != null){
-            sampleRepository.delete(sampleRepository.findByDeliveryIdentifier(identifier).getIdentifier());
+        if (sampleRepository.findByDeliveryIdentifier(identifier) != null) {
+            sampleRepository.deleteById(sampleRepository.findByDeliveryIdentifier(identifier).getIdentifier());
         }
-        deliveryRepository.delete(identifier);
-        esDeliveryService.deleteAsync(delivery);
+        deliveryRepository.deleteById(identifier);
+        esDeliveryService.deleteAsync(identifier);
     }
 
     @Transactional(readOnly = true)
@@ -271,8 +240,7 @@ public class DeliveryService {
 
         final Delivery delivery = findOneWithDep(deliveryId);
         final DeliverySlip deliverySlip = findOneWithDep(deliveryId).getDeliverySlip();
-        final Optional<DeliverySlipConfiguration> configuration =
-            deliveryConfigurationService.getOneByLibrary(delivery.getLot().getProject().getLibrary().getIdentifier());
+        final Optional<DeliverySlipConfiguration> configuration = deliveryConfigurationService.getOneByLibrary(delivery.getLot().getProject().getLibrary().getIdentifier());
         if (deliverySlip == null) {
             return;
         }
@@ -289,11 +257,7 @@ public class DeliveryService {
     /**
      * Ecriture du CSV
      */
-    public void writeCSV(final OutputStream out,
-                         final List<CSVColumn> columns,
-                         final DeliverySlip deliverySlip,
-                         final String encoding,
-                         final char separator) throws IOException {
+    public void writeCSV(final OutputStream out, final List<CSVColumn> columns, final DeliverySlip deliverySlip, final String encoding, final char separator) throws IOException {
 
         // Alimentation du CSV
         try (final Writer writer = new OutputStreamWriter(out, encoding);
@@ -348,10 +312,6 @@ public class DeliveryService {
 
     /**
      * Génération du bordereau de livraison PDF via Jasper.
-     *
-     * @param out
-     * @param deliveryId
-     * @throws PgcnTechnicalException
      */
     @Transactional(readOnly = true)
     public void writeDeliveryPdfSlip(final OutputStream out, final String deliveryId) throws PgcnTechnicalException {
@@ -376,22 +336,31 @@ public class DeliveryService {
         if (logo != null) {
             paramsMap.put("logoPath", logo.getName());
         }
-        paramsMap.put("isPgcnIdPresent", config.isPresent() ? config.get().getPgcnId() : true);
-        paramsMap.put("isLotPresent", config.isPresent() ? config.get().getLot() : true);
-        paramsMap.put("isTrainPresent", config.isPresent() ? config.get().getTrain() : true);
-        paramsMap.put("isRadicalPresent", config.isPresent() ? config.get().getRadical() : true);
-        paramsMap.put("isTitlePresent", config.isPresent() ? config.get().getTitle() : true);
-        paramsMap.put("isPagesPresent", config.isPresent() ? config.get().getNbPages() : true);
-        paramsMap.put("isDatePresent", config.isPresent() ? config.get().getDate() : true);
+        paramsMap.put("isPgcnIdPresent",
+                      config.isPresent() ? config.get().getPgcnId()
+                                         : true);
+        paramsMap.put("isLotPresent",
+                      config.isPresent() ? config.get().getLot()
+                                         : true);
+        paramsMap.put("isTrainPresent",
+                      config.isPresent() ? config.get().getTrain()
+                                         : true);
+        paramsMap.put("isRadicalPresent",
+                      config.isPresent() ? config.get().getRadical()
+                                         : true);
+        paramsMap.put("isTitlePresent",
+                      config.isPresent() ? config.get().getTitle()
+                                         : true);
+        paramsMap.put("isPagesPresent",
+                      config.isPresent() ? config.get().getNbPages()
+                                         : true);
+        paramsMap.put("isDatePresent",
+                      config.isPresent() ? config.get().getDate()
+                                         : true);
         final List<DeliverySlipLine> lines = (List<DeliverySlipLine>) params.get("slipLines");
 
         try {
-            jasperReportService.exportReportToStream(JasperReportsService.REPORT_DELIV_SLIP,
-                                                     JasperReportsService.ExportType.PDF,
-                                                     paramsMap,
-                                                     lines,
-                                                     out, 
-                                                     library.getIdentifier());
+            jasperReportService.exportReportToStream(JasperReportsService.REPORT_DELIV_SLIP, JasperReportsService.ExportType.PDF, paramsMap, lines, out, library.getIdentifier());
         } catch (final PgcnException e) {
             LOG.error("Erreur a la generation du bordereau de livraison: {}", e.getLocalizedMessage());
             throw new PgcnTechnicalException(e);
@@ -477,11 +446,13 @@ public class DeliveryService {
         delivery.setCompressionRateOK(true);
         delivery.setCompressionTypeOK(true);
         delivery.setResolutionOK(true);
+        delivery.setFileDefinitionOK(true);
         delivery.setColorspaceOK(true);
         delivery.setFileIntegrityOk(true);
         delivery.setFileBibPrefixOK(true);
         delivery.setFileCaseOK(true);
         delivery.setFileRadicalOK(true);
+        delivery.setFileImageMetadataOK(true);
     }
 
     public List<Delivery> findAllByProjectId(final String projectId) {
@@ -490,9 +461,6 @@ public class DeliveryService {
 
     /**
      * Renvoie une livraison avec copie des proprietes à dupliquer.
-     *
-     * @param id
-     * @return
      */
     @Transactional
     public Delivery duplicate(final String id) {
@@ -507,8 +475,6 @@ public class DeliveryService {
 
     /**
      * Récupération de la {@link CheckConfiguration} active de la delivery.
-     *
-     * @return
      */
     @Transactional(readOnly = true)
     public Delivery getWithActiveCheckConfiguration(final String deliveryId) {
@@ -517,9 +483,6 @@ public class DeliveryService {
 
     /**
      * Recherche la dernière livraison d'une unité documentaire
-     *
-     * @param docUnitId
-     * @return
      */
     @Transactional(readOnly = true)
     public Delivery findLatestDelivery(final String docUnitId) {
@@ -527,8 +490,7 @@ public class DeliveryService {
         return deliveries.stream()
                          .max(Comparator.comparing(del -> del.getDocuments()
                                                              .stream()
-                                                             .filter(doc -> StringUtils.equals(doc.getDigitalDocument().getDocUnit().getIdentifier(),
-                                                                                               docUnitId))
+                                                             .filter(doc -> StringUtils.equals(doc.getDigitalDocument().getDocUnit().getIdentifier(), docUnitId))
                                                              .map(DeliveredDocument::getDeliveryDate)
                                                              .filter(Objects::nonNull)
                                                              .max(Comparator.naturalOrder())
@@ -539,9 +501,6 @@ public class DeliveryService {
     /**
      * Recherche les lots par bibliothèque, groupés par statut
      *
-     * @param libraries
-     * @param projects
-     * @param lots
      * @return liste de map avec 2 clés: statut et décompte
      */
     @Transactional(readOnly = true)
@@ -568,10 +527,8 @@ public class DeliveryService {
     @Transactional(readOnly = true)
     public void writeSlipLot(final OutputStream outputStream, final String id, final String encoding, final char separator) throws IOException {
         final Optional<Delivery> deliveryOpt = findByLot(id).stream()
-                                                            .reduce((delivery1, delivery2) -> delivery1.getCreatedDate()
-                                                                                                       .isAfter(delivery2.getCreatedDate()) ?
-                                                                                              delivery1 :
-                                                                                              delivery2);
+                                                            .reduce((delivery1, delivery2) -> delivery1.getCreatedDate().isAfter(delivery2.getCreatedDate()) ? delivery1
+                                                                                                                                                             : delivery2);
         if (deliveryOpt.isPresent()) {
             writeSlip(outputStream, deliveryOpt.get().getIdentifier(), encoding, separator);
         }
@@ -580,16 +537,15 @@ public class DeliveryService {
     @Transactional(readOnly = true)
     public void writeSlipLotPDF(final OutputStream outputStream, final String id) throws PgcnTechnicalException {
         final Optional<Delivery> deliveryOpt = findByLot(id).stream()
-                                                            .reduce((delivery1, delivery2) -> delivery1.getCreatedDate()
-                                                                                                       .isAfter(delivery2.getCreatedDate()) ?
-                                                                                              delivery1 :
-                                                                                              delivery2);
+                                                            .reduce((delivery1, delivery2) -> delivery1.getCreatedDate().isAfter(delivery2.getCreatedDate()) ? delivery1
+                                                                                                                                                             : delivery2);
         if (deliveryOpt.isPresent()) {
             writeDeliveryPdfSlip(outputStream, deliveryOpt.get().getIdentifier());
         }
     }
 
     private enum CSVColumn {
+
         PGCN_ID("Cote"),
         LOT("Lot"),
         TRAIN("Train"),

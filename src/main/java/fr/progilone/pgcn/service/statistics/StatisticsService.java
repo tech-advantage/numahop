@@ -1,26 +1,5 @@
 package fr.progilone.pgcn.service.statistics;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import fr.progilone.pgcn.domain.delivery.DeliveredDocument;
 import fr.progilone.pgcn.domain.delivery.Delivery;
 import fr.progilone.pgcn.domain.document.DigitalDocument;
@@ -49,6 +28,25 @@ import fr.progilone.pgcn.service.project.mapper.ProjectMapper;
 import fr.progilone.pgcn.service.train.TrainService;
 import fr.progilone.pgcn.service.user.UserService;
 import fr.progilone.pgcn.service.workflow.DocUnitWorkflowService;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Service dédié à l'affichage des statistiques
@@ -114,11 +112,7 @@ public class StatisticsService {
     }
 
     @Transactional(readOnly = true)
-    public Page<StatisticsDocUnitCountDTO> getDocUnits(final List<String> libraries,
-                                                       final List<String> projects,
-                                                       final List<String> lots,
-                                                       final Integer page,
-                                                       final Integer size) {
+    public Page<StatisticsDocUnitCountDTO> getDocUnits(final List<String> libraries, final List<String> projects, final List<String> lots, final Integer page, final Integer size) {
 
         final Page<DocUnit> pageOfDocs = docUnitService.search(null,
                                                                false,
@@ -163,21 +157,19 @@ public class StatisticsService {
             dto.setPgcnId(doc.getPgcnId());
 
             final boolean isIa = iaReports.stream()
-                                          .anyMatch(report -> StringUtils.equals(report.getDocUnitId(), doc.getIdentifier())
-                                                              && report.getStatus() == InternetArchiveReport.Status.ARCHIVED);
+                                          .anyMatch(report -> StringUtils.equals(report.getDocUnit().getIdentifier(), doc.getIdentifier()) && report.getStatus()
+                                                                                                                                              == InternetArchiveReport.Status.ARCHIVED);
             dto.setIa(isIa);
 
             final boolean isCines = cinesReports.stream()
-                                                .anyMatch(report -> StringUtils.equals(report.getDocUnitId(), doc.getIdentifier())
-                                                                    && report.getStatus() == CinesReport.Status.ARCHIVED);
+                                                .anyMatch(report -> StringUtils.equals(report.getDocUnit().getIdentifier(), doc.getIdentifier()) && report.getStatus()
+                                                                                                                                                    == CinesReport.Status.ARCHIVED);
             dto.setCines(isCines);
 
-            final int totalPages =
-                doc.getPhysicalDocuments().stream().filter(ph -> ph.getTotalPage() != null).mapToInt(PhysicalDocument::getTotalPage).sum();
+            final int totalPages = doc.getPhysicalDocuments().stream().filter(ph -> ph.getTotalPage() != null).mapToInt(PhysicalDocument::getTotalPage).sum();
             dto.setTotalPage(totalPages);
 
-            final long totalLength =
-                doc.getDigitalDocuments().stream().filter(dg -> dg.getTotalLength() != null).mapToLong(DigitalDocument::getTotalLength).sum();
+            final long totalLength = doc.getDigitalDocuments().stream().filter(dg -> dg.getTotalLength() != null).mapToLong(DigitalDocument::getTotalLength).sum();
             dto.setTotalLength(totalLength);
 
             return dto;
@@ -197,7 +189,8 @@ public class StatisticsService {
 
         switch (groupBy) {
             case PROJECT:
-                return groupDocUnitWorkflowByProject(workflows).entrySet().stream()
+                return groupDocUnitWorkflowByProject(workflows).entrySet()
+                                                               .stream()
                                                                // Pour chaque projet + liste de workflow, calcul d'un StatisticsDocUnitAverageDTO
                                                                .map(e -> {
                                                                    final Project project = e.getKey();
@@ -209,9 +202,11 @@ public class StatisticsService {
                                                                    setDocUnitAverages(dto, projectWorkflows);
                                                                    return dto;
 
-                                                               }).collect(Collectors.toList());
+                                                               })
+                                                               .collect(Collectors.toList());
             case LOT:
-                return groupDocUnitWorkflowByLot(workflows).entrySet().stream()
+                return groupDocUnitWorkflowByLot(workflows).entrySet()
+                                                           .stream()
                                                            // Pour chaque lot + liste de workflow, calcul d'un StatisticsDocUnitAverageDTO
                                                            .map(e -> {
                                                                final Lot lot = e.getKey();
@@ -230,16 +225,18 @@ public class StatisticsService {
                                                                setDocUnitAverages(dto, lotWorkflows);
                                                                return dto;
 
-                                                           }).collect(Collectors.toList());
+                                                           })
+                                                           .collect(Collectors.toList());
             case DELIVERY:
-                return groupDocUnitWorkflowByDelivery(workflows, deliveries).entrySet().stream()
-                                                                            // Pour chaque livraison + liste de workflow, calcul d'un StatisticsDocUnitAverageDTO
+                return groupDocUnitWorkflowByDelivery(workflows, deliveries).entrySet()
+                                                                            .stream()
+                                                                            // Pour chaque livraison + liste de workflow, calcul d'un
+                                                                            // StatisticsDocUnitAverageDTO
                                                                             .map(e -> {
                                                                                 final Delivery delivery = e.getKey();
                                                                                 final List<DocUnitWorkflow> deliveryWorkflows = e.getValue();
 
-                                                                                final StatisticsDocUnitAverageDTO dto =
-                                                                                    new StatisticsDocUnitAverageDTO();
+                                                                                final StatisticsDocUnitAverageDTO dto = new StatisticsDocUnitAverageDTO();
                                                                                 dto.setDeliveryIdentifier(delivery.getIdentifier());
                                                                                 dto.setDeliveryLabel(delivery.getLabel());
 
@@ -258,7 +255,8 @@ public class StatisticsService {
                                                                                 setDocUnitAverages(dto, deliveryWorkflows);
                                                                                 return dto;
 
-                                                                            }).collect(Collectors.toList());
+                                                                            })
+                                                                            .collect(Collectors.toList());
         }
 
         return Collections.emptyList();
@@ -275,7 +273,8 @@ public class StatisticsService {
 
         switch (groupBy) {
             case PROJECT:
-                return groupDocUnitWorkflowByProject(workflows).entrySet().stream()
+                return groupDocUnitWorkflowByProject(workflows).entrySet()
+                                                               .stream()
                                                                // Pour chaque projet + liste de workflow, calcul d'un StatisticsDocUnitAverageDTO
                                                                .map(e -> {
                                                                    final Project project = e.getKey();
@@ -287,9 +286,11 @@ public class StatisticsService {
                                                                    setDocUnitCheckDelay(dto, projectWorkflows);
                                                                    return dto;
 
-                                                               }).collect(Collectors.toList());
+                                                               })
+                                                               .collect(Collectors.toList());
             case LOT:
-                return groupDocUnitWorkflowByLot(workflows).entrySet().stream()
+                return groupDocUnitWorkflowByLot(workflows).entrySet()
+                                                           .stream()
                                                            // Pour chaque lot + liste de workflow, calcul d'un StatisticsDocUnitAverageDTO
                                                            .map(e -> {
                                                                final Lot lot = e.getKey();
@@ -308,16 +309,18 @@ public class StatisticsService {
                                                                setDocUnitCheckDelay(dto, lotWorkflows);
                                                                return dto;
 
-                                                           }).collect(Collectors.toList());
+                                                           })
+                                                           .collect(Collectors.toList());
             case DELIVERY:
-                return groupDocUnitWorkflowByDelivery(workflows, deliveries).entrySet().stream()
-                                                                            // Pour chaque livraison + liste de workflow, calcul d'un StatisticsDocUnitAverageDTO
+                return groupDocUnitWorkflowByDelivery(workflows, deliveries).entrySet()
+                                                                            .stream()
+                                                                            // Pour chaque livraison + liste de workflow, calcul d'un
+                                                                            // StatisticsDocUnitAverageDTO
                                                                             .map(e -> {
                                                                                 final Delivery delivery = e.getKey();
                                                                                 final List<DocUnitWorkflow> deliveryWorkflows = e.getValue();
 
-                                                                                final StatisticsDocUnitCheckDelayDTO dto =
-                                                                                    new StatisticsDocUnitCheckDelayDTO();
+                                                                                final StatisticsDocUnitCheckDelayDTO dto = new StatisticsDocUnitCheckDelayDTO();
                                                                                 dto.setDeliveryIdentifier(delivery.getIdentifier());
                                                                                 dto.setDeliveryLabel(delivery.getLabel());
 
@@ -336,17 +339,15 @@ public class StatisticsService {
                                                                                 setDocUnitCheckDelay(dto, deliveryWorkflows);
                                                                                 return dto;
 
-                                                                            }).collect(Collectors.toList());
+                                                                            })
+                                                                            .collect(Collectors.toList());
         }
 
         return Collections.emptyList();
     }
 
     @Transactional(readOnly = true)
-    public StatisticsDocUnitStatusRatioDTO getDocUnitStatusRatio(final List<String> libraries,
-                                                                 final String project,
-                                                                 final String lot,
-                                                                 final WorkflowStateKey state) {
+    public StatisticsDocUnitStatusRatioDTO getDocUnitStatusRatio(final List<String> libraries, final String project, final String lot, final WorkflowStateKey state) {
         final Page<DocUnit> pageOfDocs = docUnitService.search(null,
                                                                false,
                                                                false,
@@ -359,9 +360,11 @@ public class StatisticsService {
                                                                false,
                                                                false,
                                                                libraries,
-                                                               project != null ? Collections.singletonList(project) : null,
-                                                               lot != null ? Collections.singletonList(lot) : null,
-                                                               Collections.emptyList(),            
+                                                               project != null ? Collections.singletonList(project)
+                                                                               : null,
+                                                               lot != null ? Collections.singletonList(lot)
+                                                                           : null,
+                                                               Collections.emptyList(),
                                                                Collections.emptyList(),
                                                                null,
                                                                null,
@@ -395,10 +398,13 @@ public class StatisticsService {
         }
         // Workflow
         final List<DocUnitWorkflow> docWorkflows = docUnitWorkflowService.findAll(libraries,
-                                                                                  project != null ? Collections.singletonList(project) : null,
-                                                                                  lot != null ? Collections.singletonList(lot) : null,
+                                                                                  project != null ? Collections.singletonList(project)
+                                                                                                  : null,
+                                                                                  lot != null ? Collections.singletonList(lot)
+                                                                                              : null,
                                                                                   null,
-                                                                                  state != null ? Collections.singletonList(state) : null);
+                                                                                  state != null ? Collections.singletonList(state)
+                                                                                                : null);
         dto.setState(state);
         dto.setNbDocOnState(docWorkflows.size());
 
@@ -412,9 +418,7 @@ public class StatisticsService {
      * @return
      */
     private Map<Project, List<DocUnitWorkflow>> groupDocUnitWorkflowByProject(final List<DocUnitWorkflow> workflows) {
-        return workflows.stream()
-                        .filter(w -> w.getDocUnit() != null && w.getDocUnit().getProject() != null)
-                        .collect(Collectors.groupingBy(w -> w.getDocUnit().getProject()));
+        return workflows.stream().filter(w -> w.getDocUnit() != null && w.getDocUnit().getProject() != null).collect(Collectors.groupingBy(w -> w.getDocUnit().getProject()));
     }
 
     /**
@@ -424,9 +428,7 @@ public class StatisticsService {
      * @return
      */
     private Map<Lot, List<DocUnitWorkflow>> groupDocUnitWorkflowByLot(final List<DocUnitWorkflow> workflows) {
-        return workflows.stream()
-                        .filter(w -> w.getDocUnit() != null && w.getDocUnit().getLot() != null)
-                        .collect(Collectors.groupingBy(w -> w.getDocUnit().getLot()));
+        return workflows.stream().filter(w -> w.getDocUnit() != null && w.getDocUnit().getLot() != null).collect(Collectors.groupingBy(w -> w.getDocUnit().getLot()));
     }
 
     /**
@@ -434,11 +436,10 @@ public class StatisticsService {
      *
      * @param workflows
      * @param deliveries
-     *         filtrer par livraison
+     *            filtrer par livraison
      * @return
      */
-    private Map<Delivery, List<DocUnitWorkflow>> groupDocUnitWorkflowByDelivery(final List<DocUnitWorkflow> workflows,
-                                                                                final List<String> deliveries) {
+    private Map<Delivery, List<DocUnitWorkflow>> groupDocUnitWorkflowByDelivery(final List<DocUnitWorkflow> workflows, final List<String> deliveries) {
         return workflows.stream()
                         .filter(w -> w.getDocUnit() != null && w.getDocUnit().getDigitalDocuments() != null)
                         // on accède aux livraisons de l'UD via les docs numériques et le doc livré
@@ -449,8 +450,7 @@ public class StatisticsService {
                                        .flatMap(dg -> dg.getDeliveries().stream())
                                        .map(DeliveredDocument::getDelivery)
                                        // Si filtrage par livraison, on l'applique
-                                       .filter(delivery -> delivery != null && (CollectionUtils.isEmpty(deliveries)
-                                                                                || deliveries.contains(delivery.getIdentifier())))
+                                       .filter(delivery -> delivery != null && (CollectionUtils.isEmpty(deliveries) || deliveries.contains(delivery.getIdentifier())))
                                        // on renvoie la livraison + le doc workflow pour construire le regroupement
                                        .map(delivery -> Pair.of(delivery, w)))
                         .collect(Collectors.groupingBy(Pair::getLeft, Collectors.mapping(Pair::getRight, Collectors.toList())));
@@ -468,7 +468,7 @@ public class StatisticsService {
         }
         // Regroupement de workflows par unité documentaire
         final Map<DocUnit, List<DocUnitWorkflow>> byDocUnit = workflows.stream().collect(Collectors.groupingBy(DocUnitWorkflow::getDocUnit));
-        
+
         dto.setNbDocs(byDocUnit.size());
         // Nombre total de pages
         setAvgTotalPages(dto, byDocUnit);
@@ -498,7 +498,8 @@ public class StatisticsService {
         final Map<DocUnit, List<DocUnitWorkflow>> byDocUnit = workflows.stream().collect(Collectors.groupingBy(DocUnitWorkflow::getDocUnit));
 
         // durée restante
-        byDocUnit.entrySet().stream()
+        byDocUnit.entrySet()
+                 .stream()
                  // calcul de la durée restante
                  .map(e -> {
                      final DocUnit docUnit = e.getKey();
@@ -506,14 +507,14 @@ public class StatisticsService {
 
                      final Integer checkDelay = docUnit.getCheckDelay();
                      if (checkDelay == null) {
-                         return Optional.<Long>empty();
+                         return Optional.<Long> empty();
                      }
 
                      return docUnitWorkflows.stream()
                                             .flatMap(w -> w.getStates().stream())
                                             // étape de livraison / relivraison
-                                            .filter(state -> state.getKey() == WorkflowStateKey.LIVRAISON_DOCUMENT_EN_COURS
-                                                             || state.getKey() == WorkflowStateKey.RELIVRAISON_DOCUMENT_EN_COURS)
+                                            .filter(state -> state.getKey() == WorkflowStateKey.LIVRAISON_DOCUMENT_EN_COURS || state.getKey()
+                                                                                                                               == WorkflowStateKey.RELIVRAISON_DOCUMENT_EN_COURS)
                                             // étape terminée
                                             .filter(state -> state.getEndDate() != null)
                                             // (re)livraison la plus récente
@@ -523,16 +524,21 @@ public class StatisticsService {
                                             .filter(remaning -> remaning > 0);
                  })
                  //
-                 .filter(Optional::isPresent).mapToLong(Optional::get)
+                 .filter(Optional::isPresent)
+                 .mapToLong(Optional::get)
                  // durée restante minimale
-                 .min().ifPresent(dto::setMinRemainingCheckDelay);
+                 .min()
+                 .ifPresent(dto::setMinRemainingCheckDelay);
 
         // délai avant contrôle
-        byDocUnit.keySet().stream()
+        byDocUnit.keySet()
+                 .stream()
                  // délais
-                 .mapToInt(docUnit -> docUnit.getCheckDelay() != null ? docUnit.getCheckDelay() : 0)
+                 .mapToInt(docUnit -> docUnit.getCheckDelay() != null ? docUnit.getCheckDelay()
+                                                                      : 0)
                  // délai maximal
-                 .max().ifPresent(dto::setMaxCheckDelay);
+                 .max()
+                 .ifPresent(dto::setMaxCheckDelay);
     }
 
     /**
@@ -544,14 +550,11 @@ public class StatisticsService {
     private void setAvgTotalPages(final StatisticsDocUnitAverageDTO dto, final Map<DocUnit, List<DocUnitWorkflow>> byDocUnit) {
         final int totalPages = byDocUnit.keySet()
                                         .stream()
-                                        .flatMapToInt(doc -> doc.getDigitalDocuments()
-                                                                .stream()
-                                                                .filter(dig -> dig != null)
-                                                                .mapToInt(DigitalDocument::getNbPages))
+                                        .flatMapToInt(doc -> doc.getDigitalDocuments().stream().filter(dig -> dig != null).mapToInt(DigitalDocument::getNbPages))
                                         .sum();
         dto.setAvgTotalPages(totalPages);
     }
-    
+
     /**
      * Calcul du taux de rejet de documents.
      *
@@ -559,33 +562,31 @@ public class StatisticsService {
      * @param byDocUnit
      */
     private void setRejectRatio(final StatisticsDocUnitAverageDTO dto, final Map<DocUnit, List<DocUnitWorkflow>> byDocUnit) {
-      
+
         final List<DigitalDocument> digs = byDocUnit.keySet()
-                .stream()
-                .map(doc -> doc.getDigitalDocuments().stream()
-                                .filter(dig -> dig != null)
-                                .findFirst().orElse(null))
-                .collect(Collectors.toList());
-        
+                                                    .stream()
+                                                    .map(doc -> doc.getDigitalDocuments().stream().filter(dig -> dig != null).findFirst().orElse(null))
+                                                    .collect(Collectors.toList());
+
         if (CollectionUtils.isEmpty(digs)) {
             dto.setRejectRatio(0);
         } else {
-        
+
             final long nbRejected = digs.stream()
-                    .filter(dd -> dd != null)
-                    .filter(dd -> (dd.getDeliveries().size() == 1 
-                        && dd.getDeliveries().stream().findFirst().get().getStatus() == DigitalDocumentStatus.REJECTED)
-                      || (dd.getDeliveries().size() > 1 
-                          && dd.getDeliveries().stream()
-                              .noneMatch(deliv -> deliv.getStatus() == DigitalDocumentStatus.REJECTED)))
-                    .count();
+                                        .filter(dd -> dd != null)
+                                        .filter(dd -> (dd.getDeliveries().size() == 1 && dd.getDeliveries().stream().findFirst().get().getStatus()
+                                                                                         == DigitalDocumentStatus.REJECTED) || (dd.getDeliveries().size() > 1 && dd.getDeliveries()
+                                                                                                                                                                   .stream()
+                                                                                                                                                                   .noneMatch(deliv -> deliv.getStatus()
+                                                                                                                                                                                       == DigitalDocumentStatus.REJECTED)))
+                                        .count();
             final BigDecimal total = BigDecimal.valueOf(digs.size());
             final BigDecimal ratio = BigDecimal.valueOf(nbRejected).divide(total, 2, RoundingMode.HALF_UP);
-            dto.setRejectRatio( ratio.doubleValue());
+            dto.setRejectRatio(ratio.doubleValue());
         }
-                                                                      
+
     }
-    
+
     /**
      * Calcul du poids total des documents.
      *
@@ -593,15 +594,15 @@ public class StatisticsService {
      * @param byDocUnit
      */
     private void setTotalLengthDocs(final StatisticsDocUnitAverageDTO dto, final Map<DocUnit, List<DocUnitWorkflow>> byDocUnit) {
-        
+
         final long totalLength = byDocUnit.keySet()
-                                        .stream()
-                                        .filter(doc -> doc.getDigitalDocuments() != null)
-                                        .flatMapToLong(doc -> doc.getDigitalDocuments()
-                                                                .stream()
-                                                                .filter(dig -> dig != null && dig.getTotalLength() != null)
-                                                                .mapToLong(DigitalDocument::getTotalLength))
-                                        .sum();
+                                          .stream()
+                                          .filter(doc -> doc.getDigitalDocuments() != null)
+                                          .flatMapToLong(doc -> doc.getDigitalDocuments()
+                                                                   .stream()
+                                                                   .filter(dig -> dig != null && dig.getTotalLength() != null)
+                                                                   .mapToLong(DigitalDocument::getTotalLength))
+                                          .sum();
         dto.setLengthDocs(totalLength);
     }
 
@@ -612,7 +613,8 @@ public class StatisticsService {
      * @param byDocUnit
      */
     private void setAvgDurControl(final StatisticsDocUnitAverageDTO dto, final Map<DocUnit, List<DocUnitWorkflow>> byDocUnit) {
-        byDocUnit.values().stream()
+        byDocUnit.values()
+                 .stream()
                  // workflows
                  .flatMap(Collection::stream)
                  // calcul de la durée des étapes de contrôles (achevées) pour chaque workflow d'unité documentaire
@@ -629,7 +631,10 @@ public class StatisticsService {
                      // pas d'étapes => on n'en tient pas compte dans le calcul de la durée moyenne
                      return null;
 
-                 }).filter(Objects::nonNull).mapToLong(Long::longValue).average()
+                 })
+                 .filter(Objects::nonNull)
+                 .mapToLong(Long::longValue)
+                 .average()
                  // set value
                  .ifPresent(avg -> dto.setAvgDurControl((long) avg));
     }
@@ -641,14 +646,14 @@ public class StatisticsService {
      * @param byDocUnit
      */
     private void setAvgDurDelivery(final StatisticsDocUnitAverageDTO dto, final Map<DocUnit, List<DocUnitWorkflow>> byDocUnit) {
-        byDocUnit.values().stream()
+        byDocUnit.values()
+                 .stream()
                  // workflow
                  .flatMap(Collection::stream)
                  // étapes
                  .flatMap(workflow -> workflow.getStates().stream())
                  // étapes de livraison et de relivraison
-                 .filter(state -> state.getKey() == WorkflowStateKey.LIVRAISON_DOCUMENT_EN_COURS
-                                  || state.getKey() == WorkflowStateKey.RELIVRAISON_DOCUMENT_EN_COURS)
+                 .filter(state -> state.getKey() == WorkflowStateKey.LIVRAISON_DOCUMENT_EN_COURS || state.getKey() == WorkflowStateKey.RELIVRAISON_DOCUMENT_EN_COURS)
                  // étapes terminées
                  .filter(state -> state.getStartDate() != null && state.getEndDate() != null)
                  // durée de l'étape
@@ -666,11 +671,15 @@ public class StatisticsService {
      * @param byDocUnit
      */
     private void setAvgDurWorkflow(final StatisticsDocUnitAverageDTO dto, final Map<DocUnit, List<DocUnitWorkflow>> byDocUnit) {
-        byDocUnit.values().stream()
+        byDocUnit.values()
+                 .stream()
                  // workflows
-                 .flatMap(Collection::stream).filter(workflow -> workflow.getStartDate() != null && workflow.getEndDate() != null)
+                 .flatMap(Collection::stream)
+                 .filter(workflow -> workflow.getStartDate() != null && workflow.getEndDate() != null)
                  // calcul de la durée du workflow, ie entre le début de l'initialisation et la fin de la clôture
-                 .map(workflow -> workflow.getStartDate().until(workflow.getEndDate(), ChronoUnit.SECONDS)).mapToLong(Long::longValue).average()
+                 .map(workflow -> workflow.getStartDate().until(workflow.getEndDate(), ChronoUnit.SECONDS))
+                 .mapToLong(Long::longValue)
+                 .average()
                  // set value
                  .ifPresent(avg -> dto.setAvgDurWorkflow((long) avg));
     }

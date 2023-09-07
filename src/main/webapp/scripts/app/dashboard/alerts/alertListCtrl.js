@@ -1,8 +1,7 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('AlertListCtrl', AlertListCtrl);
+    angular.module('numaHopApp.controller').controller('AlertListCtrl', AlertListCtrl);
 
     function AlertListCtrl(AuthenticationSharedService, USER_ROLES) {
         var ctrl = this;

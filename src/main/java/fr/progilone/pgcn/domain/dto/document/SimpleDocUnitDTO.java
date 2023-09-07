@@ -1,10 +1,9 @@
 package fr.progilone.pgcn.domain.dto.document;
 
-import java.util.List;
-
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.dto.AbstractDTO;
 import fr.progilone.pgcn.domain.dto.library.SimpleLibraryDTO;
+import java.util.List;
 
 /**
  * DTO représentant une unité documentaire pour les select
@@ -17,15 +16,19 @@ public class SimpleDocUnitDTO extends AbstractDTO {
     private String identifier;
     private String label;
     private String pgcnId;
-    private String digitizingNotes; 
+    private String digitizingNotes;
     private SimpleLibraryDTO library;
-    
+
     private List<SimpleDocUnitDTO> children;
     private String parentIdentifier;
 
-    public SimpleDocUnitDTO(final String identifier, final String label, final String pgcnId, 
-                            final String digitizingNotes, final SimpleLibraryDTO library, 
-                            final List<SimpleDocUnitDTO> children, final String parentIdentifier) {
+    public SimpleDocUnitDTO(final String identifier,
+                            final String label,
+                            final String pgcnId,
+                            final String digitizingNotes,
+                            final SimpleLibraryDTO library,
+                            final List<SimpleDocUnitDTO> children,
+                            final String parentIdentifier) {
         super();
         this.identifier = identifier;
         this.label = label;
@@ -68,7 +71,8 @@ public class SimpleDocUnitDTO extends AbstractDTO {
     }
 
     /**
-     * @param digitizingNotes the digitizingNotes to set
+     * @param digitizingNotes
+     *            the digitizingNotes to set
      */
     public void setDigitizingNotes(final String digitizingNotes) {
         this.digitizingNotes = digitizingNotes;

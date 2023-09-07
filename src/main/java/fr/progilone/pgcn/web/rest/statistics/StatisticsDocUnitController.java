@@ -15,6 +15,10 @@ import fr.progilone.pgcn.service.statistics.StatisticsDocumentService;
 import fr.progilone.pgcn.service.statistics.StatisticsService;
 import fr.progilone.pgcn.web.util.AccessHelper;
 import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
+import jakarta.annotation.security.PermitAll;
+import jakarta.servlet.http.HttpServletRequest;
+import java.time.LocalDate;
+import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,11 +31,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.annotation.security.PermitAll;
-import javax.servlet.http.HttpServletRequest;
-import java.time.LocalDate;
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/rest/statistics/docunit")
@@ -67,15 +66,11 @@ public class StatisticsDocUnitController {
     @RequestMapping(method = RequestMethod.GET, params = {"count"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<Page<StatisticsDocUnitCountDTO>> getDocUnitList(final HttpServletRequest request,
-                                                                          @RequestParam(value = "libraries", required = false)
-                                                                          final List<String> libraries,
-                                                                          @RequestParam(value = "project", required = false)
-                                                                          final List<String> projects,
+                                                                          @RequestParam(value = "libraries", required = false) final List<String> libraries,
+                                                                          @RequestParam(value = "project", required = false) final List<String> projects,
                                                                           @RequestParam(value = "lot", required = false) final List<String> lots,
-                                                                          @RequestParam(value = "page", required = false, defaultValue = "0")
-                                                                          final Integer page,
-                                                                          @RequestParam(value = "size", required = false, defaultValue = "10")
-                                                                          final Integer size) {
+                                                                          @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
+                                                                          @RequestParam(value = "size", required = false, defaultValue = "10") final Integer size) {
         // Droits d'accès
         final List<String> filteredLibraries = libraryAccesssHelper.getLibraryFilter(request, libraries);
         final Page<StatisticsDocUnitCountDTO> docUnits = uiStatService.getDocUnits(filteredLibraries, projects, lots, page, size);
@@ -85,8 +80,7 @@ public class StatisticsDocUnitController {
     @RequestMapping(method = RequestMethod.GET, params = {"countStatus"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<StatisticsDocUnitStatusRatioDTO> getDocUnitStatusRatio(final HttpServletRequest request,
-                                                                                 @RequestParam(value = "project", required = false)
-                                                                                 final String project,
+                                                                                 @RequestParam(value = "project", required = false) final String project,
                                                                                  @RequestParam(value = "lot", required = false) final String lot,
                                                                                  @RequestParam(value = "state") final WorkflowStateKey state) {
         // Paramètres
@@ -103,42 +97,32 @@ public class StatisticsDocUnitController {
     @RequestMapping(method = RequestMethod.GET, params = {"average"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<List<StatisticsDocUnitAverageDTO>> getDocUnitAverages(final HttpServletRequest request,
-                                                                                @RequestParam(value = "library", required = false)
-                                                                                final List<String> libraries,
-                                                                                @RequestParam(value = "project", required = false)
-                                                                                final List<String> projects,
-                                                                                @RequestParam(value = "lot", required = false)
-                                                                                final List<String> lots,
-                                                                                @RequestParam(value = "delivery", required = false)
-                                                                                final List<String> deliveries,
-                                                                                @DateTimeFormat(pattern = "yyyy-MM-dd")
-                                                                                @RequestParam(name = "from", required = false)
-                                                                                final LocalDate fromDate,
-                                                                                @DateTimeFormat(pattern = "yyyy-MM-dd")
-                                                                                @RequestParam(name = "to", required = false) final LocalDate toDate,
+                                                                                @RequestParam(value = "library", required = false) final List<String> libraries,
+                                                                                @RequestParam(value = "project", required = false) final List<String> projects,
+                                                                                @RequestParam(value = "lot", required = false) final List<String> lots,
+                                                                                @RequestParam(value = "delivery", required = false) final List<String> deliveries,
+                                                                                @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "from",
+                                                                                                                                      required = false) final LocalDate fromDate,
+                                                                                @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "to",
+                                                                                                                                      required = false) final LocalDate toDate,
                                                                                 @RequestParam(value = "groupby",
                                                                                               required = false,
-                                                                                              defaultValue = "PROJECT")
-                                                                                final StatisticsService.GroupBy groupBy) {
+                                                                                              defaultValue = "PROJECT") final StatisticsService.GroupBy groupBy) {
         // Droits d'accès
-        if (accessHelper.checkUserIsPresta()) { //  no presta
+        if (accessHelper.checkUserIsPresta()) { // no presta
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         final List<String> filteredLibraries = libraryAccesssHelper.getLibraryFilter(request, libraries);
-        final List<StatisticsDocUnitAverageDTO> docUnits =
-            uiStatService.getDocUnitAverages(filteredLibraries, projects, lots, deliveries, fromDate, toDate, groupBy);
+        final List<StatisticsDocUnitAverageDTO> docUnits = uiStatService.getDocUnitAverages(filteredLibraries, projects, lots, deliveries, fromDate, toDate, groupBy);
         return new ResponseEntity<>(docUnits, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.GET, params = {"export"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<List<StatisticsProcessedDocUnitDTO>> getExportedDocUnitList(final HttpServletRequest request,
-                                                                                      @RequestParam(value = "libraries", required = false)
-                                                                                      final List<String> libraries,
-                                                                                      @DateTimeFormat(pattern = "yyyy-MM-dd")
-                                                                                      @RequestParam(name = "from") final LocalDate fromDate,
-                                                                                      @RequestParam(name = "failures", defaultValue = "false")
-                                                                                      final boolean failures) {
+                                                                                      @RequestParam(value = "libraries", required = false) final List<String> libraries,
+                                                                                      @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "from") final LocalDate fromDate,
+                                                                                      @RequestParam(name = "failures", defaultValue = "false") final boolean failures) {
         // Droits d'accès
         final List<String> filteredLibraries = libraryAccesssHelper.getLibraryFilter(request, libraries);
         return new ResponseEntity<>(uiInternetArchiveReportService.findAll(filteredLibraries, fromDate, failures), HttpStatus.OK);
@@ -147,12 +131,9 @@ public class StatisticsDocUnitController {
     @RequestMapping(method = RequestMethod.GET, params = {"archive"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<List<StatisticsProcessedDocUnitDTO>> getArchivedDocUnitList(final HttpServletRequest request,
-                                                                                      @RequestParam(value = "libraries", required = false)
-                                                                                      final List<String> libraries,
-                                                                                      @DateTimeFormat(pattern = "yyyy-MM-dd")
-                                                                                      @RequestParam(name = "from") final LocalDate fromDate,
-                                                                                      @RequestParam(name = "failures", defaultValue = "false")
-                                                                                      final boolean failures) {
+                                                                                      @RequestParam(value = "libraries", required = false) final List<String> libraries,
+                                                                                      @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "from") final LocalDate fromDate,
+                                                                                      @RequestParam(name = "failures", defaultValue = "false") final boolean failures) {
         // Droits d'accès
         final List<String> filteredLibraries = libraryAccesssHelper.getLibraryFilter(request, libraries);
         return new ResponseEntity<>(uiCinesReportService.findAll(filteredLibraries, fromDate, failures), HttpStatus.OK);
@@ -165,8 +146,7 @@ public class StatisticsDocUnitController {
                                                       @RequestParam(value = "project", required = false) final List<String> projects,
                                                       @RequestParam(value = "lot", required = false) final List<String> lots,
                                                       @RequestParam(value = "delivery", required = false) final List<String> deliveries,
-                                                      @RequestParam(value = "groupby", required = false, defaultValue = "PROJECT")
-                                                      final StatisticsService.GroupBy groupBy) {
+                                                      @RequestParam(value = "groupby", required = false, defaultValue = "PROJECT") final StatisticsService.GroupBy groupBy) {
         // Droits d'accès
         final List<String> filteredLibraries = libraryAccesssHelper.getLibraryFilter(request, libraries);
         return new ResponseEntity<>(uiStatService.getCheckDelayStatisitics(filteredLibraries, projects, lots, deliveries, groupBy), HttpStatus.OK);
@@ -175,69 +155,44 @@ public class StatisticsDocUnitController {
     @RequestMapping(method = RequestMethod.GET, params = {"doc_published"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<Page<StatisticsDocPublishedDTO>> getDocPublishedStat(final HttpServletRequest request,
-                                                                               @RequestParam(value = "library", required = false)
-                                                                               final List<String> libraries,
-                                                                               @RequestParam(value = "project", required = false)
-                                                                               final List<String> projects,
+                                                                               @RequestParam(value = "library", required = false) final List<String> libraries,
+                                                                               @RequestParam(value = "project", required = false) final List<String> projects,
                                                                                @RequestParam(value = "lot", required = false) final List<String> lots,
-                                                                               @DateTimeFormat(pattern = "yyyy-MM-dd")
-                                                                               @RequestParam(name = "from", required = false)
-                                                                               final LocalDate fromDate,
-                                                                               @DateTimeFormat(pattern = "yyyy-MM-dd")
-                                                                               @RequestParam(name = "to", required = false) final LocalDate toDate,
-                                                                               @RequestParam(value = "type", required = false)
-                                                                               final List<String> types,
-                                                                               @RequestParam(value = "collection", required = false)
-                                                                               final List<String> collections,
-                                                                               @RequestParam(value = "page", required = false, defaultValue = "0")
-                                                                               final Integer page,
-                                                                               @RequestParam(value = "size", required = false, defaultValue = "10")
-                                                                               final Integer size) {
+                                                                               @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "from",
+                                                                                                                                     required = false) final LocalDate fromDate,
+                                                                               @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "to",
+                                                                                                                                     required = false) final LocalDate toDate,
+                                                                               @RequestParam(value = "type", required = false) final List<String> types,
+                                                                               @RequestParam(value = "collection", required = false) final List<String> collections,
+                                                                               @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
+                                                                               @RequestParam(value = "size", required = false, defaultValue = "10") final Integer size) {
         // Droits d'accès
-        if (accessHelper.checkUserIsPresta()) { //  no presta
+        if (accessHelper.checkUserIsPresta()) { // no presta
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         final List<String> filteredLibraries = libraryAccesssHelper.getLibraryFilter(request, libraries);
-        return new ResponseEntity<>(statisticsDocumentService.getDocPublishedStat(filteredLibraries,
-                                                                                  projects,
-                                                                                  lots,
-                                                                                  fromDate,
-                                                                                  toDate,
-                                                                                  types,
-                                                                                  collections,
-                                                                                  page,
-                                                                                  size), HttpStatus.OK);
+        return new ResponseEntity<>(statisticsDocumentService.getDocPublishedStat(filteredLibraries, projects, lots, fromDate, toDate, types, collections, page, size),
+                                    HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.GET, params = {"doc_rejected"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public ResponseEntity<Page<StatisticsDocRejectedDTO>> getDocRejectedStat(final HttpServletRequest request,
-                                                                             @RequestParam(value = "library", required = false)
-                                                                             final List<String> libraries,
-                                                                             @RequestParam(value = "project", required = false)
-                                                                             final List<String> projects,
-                                                                             @RequestParam(value = "provider", required = false)
-                                                                             final List<String> providers,
-                                                                             @DateTimeFormat(pattern = "yyyy-MM-dd")
-                                                                             @RequestParam(name = "from", required = false) final LocalDate fromDate,
-                                                                             @DateTimeFormat(pattern = "yyyy-MM-dd")
-                                                                             @RequestParam(name = "to", required = false) final LocalDate toDate,
-                                                                             @RequestParam(value = "page", required = false, defaultValue = "0")
-                                                                             final Integer page,
-                                                                             @RequestParam(value = "size", required = false, defaultValue = "10")
-                                                                             final Integer size) {
+                                                                             @RequestParam(value = "library", required = false) final List<String> libraries,
+                                                                             @RequestParam(value = "project", required = false) final List<String> projects,
+                                                                             @RequestParam(value = "provider", required = false) final List<String> providers,
+                                                                             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "from",
+                                                                                                                                   required = false) final LocalDate fromDate,
+                                                                             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "to",
+                                                                                                                                   required = false) final LocalDate toDate,
+                                                                             @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
+                                                                             @RequestParam(value = "size", required = false, defaultValue = "10") final Integer size) {
         // Droits d'accès
-        if (accessHelper.checkUserIsPresta()) { //  no presta
+        if (accessHelper.checkUserIsPresta()) { // no presta
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         final List<String> filteredLibraries = libraryAccesssHelper.getLibraryFilter(request, libraries);
-        return new ResponseEntity<>(statisticsDocumentService.getDocRejectedStats(filteredLibraries,
-                                                                                  projects,
-                                                                                  providers,
-                                                                                  fromDate,
-                                                                                  toDate,
-                                                                                  page,
-                                                                                  size), HttpStatus.OK);
+        return new ResponseEntity<>(statisticsDocumentService.getDocRejectedStats(filteredLibraries, projects, providers, fromDate, toDate, page, size), HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.GET, params = {"doc_types"}, produces = MediaType.APPLICATION_JSON_VALUE)

@@ -65,30 +65,25 @@ module.exports = function (config) {
             'main/webapp/scripts/components/**/*.+(js|html)',
             //'test/javascript/spec/helpers/module.js',
             //'test/javascript/spec/helpers/httpBackend.js',
-            'test/javascript/**/!(karma.conf).js'
+            'test/javascript/**/!(karma.conf).js',
         ],
-
 
         // list of files / patterns to exclude
         exclude: [],
 
         preprocessors: {
-            './**/*.js': ['coverage']
+            './**/*.js': ['coverage'],
         },
 
         reporters: ['dots', 'jenkins', 'coverage', 'progress'],
 
         jenkinsReporter: {
-            
-            outputFile: '../target/test-results/karma/TESTS-results.xml'
+            outputFile: '../target/test-results/karma/TESTS-results.xml',
         },
 
         coverageReporter: {
-            
             dir: '../target/test-results/coverage',
-            reporters: [
-                {type: 'lcov', subdir: 'report-lcov'}
-            ]
+            reporters: [{ type: 'lcov', subdir: 'report-lcov' }],
         },
 
         // web server port
@@ -116,8 +111,8 @@ module.exports = function (config) {
         singleRun: false,
 
         // to avoid DISCONNECTED messages when connecting to slow virtual machines
-        browserDisconnectTimeout : 10000, // default 2000
-        browserDisconnectTolerance : 1, // default 0
-        browserNoActivityTimeout : 4*60*1000 //default 10000
+        browserDisconnectTimeout: 10000, // default 2000
+        browserDisconnectTolerance: 1, // default 0
+        browserNoActivityTimeout: 4 * 60 * 1000, //default 10000
     });
 };

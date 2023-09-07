@@ -18,7 +18,10 @@ public class NotificationDTO {
     }
 
     public enum NotificationLevel {
-        INFO, ERROR, WARN, SUCCESS;
+        INFO,
+        ERROR,
+        WARN,
+        SUCCESS;
     }
 
     private String userLogin;
@@ -60,7 +63,10 @@ public class NotificationDTO {
 
     @Override
     public String toString() {
-        return "NotificationDTO{userLogin='" + userLogin + "', code='" + code + "', level='\" + level + \"'}";
+        return "NotificationDTO{userLogin='" + userLogin
+               + "', code='"
+               + code
+               + "', level='\" + level + \"'}";
     }
 
 }

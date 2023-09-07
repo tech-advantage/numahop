@@ -1,5 +1,13 @@
 package fr.progilone.pgcn.service.exchange.ead;
 
+import fr.progilone.pgcn.domain.jaxb.ead.C;
+import fr.progilone.pgcn.domain.jaxb.ead.Chronitem;
+import fr.progilone.pgcn.domain.jaxb.ead.Did;
+import fr.progilone.pgcn.domain.jaxb.ead.Eadheader;
+import fr.progilone.pgcn.domain.jaxb.ead.Eventgrp;
+import fr.progilone.pgcn.domain.jaxb.ead.Note;
+import fr.progilone.pgcn.domain.jaxb.ead.Publicationstmt;
+import jakarta.xml.bind.JAXBElement;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,22 +16,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
-import javax.xml.bind.JAXBElement;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import fr.progilone.pgcn.domain.jaxb.ead.C;
-import fr.progilone.pgcn.domain.jaxb.ead.Chronitem;
-import fr.progilone.pgcn.domain.jaxb.ead.Did;
-import fr.progilone.pgcn.domain.jaxb.ead.Eadheader;
-import fr.progilone.pgcn.domain.jaxb.ead.Eventgrp;
-import fr.progilone.pgcn.domain.jaxb.ead.Note;
-import fr.progilone.pgcn.domain.jaxb.ead.Publicationstmt;
 
 /**
  * Created by Sébastien on 16/05/2017.
@@ -134,12 +131,16 @@ public class EadCParser {
      *
      * @param c
      * @param fullField
-     *         si le champ commence par "all:", recherche des valeur dans toute la hiérarchie des éléments C, sans se limiter au premier niveau renseigné
+     *            si le champ commence par "all:", recherche des valeur dans toute la hiérarchie des éléments C, sans se limiter au premier niveau
+     *            renseigné
      * @return
      */
     public List<?> getValues(final C c, final String fullField) {
         final boolean allFlag = fullField.startsWith(PREFIX_ALL + ":");
-        return getValues(c, allFlag ? fullField.substring(PREFIX_ALL.length() + 1) : fullField, allFlag);
+        return getValues(c,
+                         allFlag ? fullField.substring(PREFIX_ALL.length() + 1)
+                                 : fullField,
+                         allFlag);
     }
 
     /**
@@ -149,7 +150,7 @@ public class EadCParser {
      * @param c
      * @param fullField
      * @param allFlag
-     *         recherche des valeur dans toute la hiérarchie des éléments C, sans se limiter au premier niveau renseigné
+     *            recherche des valeur dans toute la hiérarchie des éléments C, sans se limiter au premier niveau renseigné
      * @return
      */
     private List<?> getValues(final C c, final String fullField, final boolean allFlag) {
@@ -188,7 +189,8 @@ public class EadCParser {
             final C parent = parentMap.get(c.getId());
             final List<?> parentValues = getValues(parent, fullField, allFlag);
             // si allFlag, on concatène les valeurs courante avec celles des parents
-            values = allFlag ? ListUtils.union(parentValues, values) : parentValues;
+            values = allFlag ? ListUtils.union(parentValues, values)
+                             : parentValues;
         }
         return values;
     }
@@ -249,7 +251,8 @@ public class EadCParser {
 
                 if (value != null) {
                     // on renvoie bien une liste d'objets
-                    List<?> values = value instanceof List ? (List) value : Collections.singletonList(value);
+                    List<?> values = value instanceof List ? (List) value
+                                                           : Collections.singletonList(value);
                     // extraction des valeurs de JAXBElements, filtrage des valeurs valides
                     values = values.stream().map(EadCParser::unwrapJAXBElement).filter(Objects::nonNull).collect(Collectors.toList());
                     // Valeurs de enfants
@@ -307,7 +310,7 @@ public class EadCParser {
         else if (o instanceof Eventgrp) {
             values = ((Eventgrp) o).getEvent();
         }
-        //  List
+        // List
         else if (o instanceof fr.progilone.pgcn.domain.jaxb.ead.List) {
             values = ((fr.progilone.pgcn.domain.jaxb.ead.List) o).getItem();
         }
@@ -343,7 +346,8 @@ public class EadCParser {
     public static Object unwrapJAXBElement(final Object o) {
         if (o instanceof JAXBElement) {
             final JAXBElement jaxbElement = (JAXBElement) o;
-            return jaxbElement.isNil() ? null : jaxbElement.getValue();
+            return jaxbElement.isNil() ? null
+                                       : jaxbElement.getValue();
         }
         return o;
     }

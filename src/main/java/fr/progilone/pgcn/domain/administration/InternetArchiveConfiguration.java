@@ -4,15 +4,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.progilone.pgcn.domain.AbstractDomainObject;
 import fr.progilone.pgcn.domain.library.Library;
-
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.List;
 
 /**
  * Configuration des connexions Internet Archive
  *
  * @author jbrunet
- * Créé le 18 avr. 2017
+ *         Créé le 18 avr. 2017
  */
 @Entity
 @Table(name = InternetArchiveConfiguration.TABLE_NAME)
@@ -98,11 +97,16 @@ public class InternetArchiveConfiguration extends AbstractDomainObject {
 
     @Override
     public String toString() {
-        return "InternetArchiveConfiguration{" +
-               "label='" + label + '\'' +
-               ", S3 access key='" + accessKey + '\'' +
-               ", active='" + active + '\'' +
-               '}';
+        return "InternetArchiveConfiguration{" + "label='"
+               + label
+               + '\''
+               + ", S3 access key='"
+               + accessKey
+               + '\''
+               + ", active='"
+               + active
+               + '\''
+               + '}';
     }
 
     public List<InternetArchiveCollection> getCollections() {

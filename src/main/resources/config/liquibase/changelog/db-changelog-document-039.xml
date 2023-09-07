@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
+
+    <!-- Ajout colonne export bibliothèque numérique -->
+    <changeSet id="pgcn-document-39" author="progilone">
+
+        <addColumn tableName="doc_unit">
+            <column name="image_height" type="integer" />
+        </addColumn>
+
+        <addColumn tableName="doc_unit">
+            <column name="image_width" type="integer" />
+        </addColumn>
+
+    </changeSet>
+</databaseChangeLog>

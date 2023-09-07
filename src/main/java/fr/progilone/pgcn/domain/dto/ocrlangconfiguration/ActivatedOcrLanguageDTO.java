@@ -7,17 +7,15 @@ public class ActivatedOcrLanguageDTO extends AbstractVersionedDTO {
     private String identifier;
     private OcrLangConfigurationDTO ocrLangConfiguration;
     private OcrLanguageDTO ocrLanguage;
-    
-    public ActivatedOcrLanguageDTO(final String identifier,
-                                   final OcrLangConfigurationDTO ocrLangConfiguration,
-                                   final OcrLanguageDTO ocrLanguage) {
+
+    public ActivatedOcrLanguageDTO(final String identifier, final OcrLangConfigurationDTO ocrLangConfiguration, final OcrLanguageDTO ocrLanguage) {
         this.identifier = identifier;
         this.ocrLangConfiguration = ocrLangConfiguration;
         this.ocrLanguage = ocrLanguage;
     }
-    
+
     public ActivatedOcrLanguageDTO() {
-        
+
     }
 
     public String getIdentifier() {
@@ -43,7 +41,5 @@ public class ActivatedOcrLanguageDTO extends AbstractVersionedDTO {
     public void setOcrLanguage(final OcrLanguageDTO ocrLanguage) {
         this.ocrLanguage = ocrLanguage;
     }
-    
-    
-    
+
 }

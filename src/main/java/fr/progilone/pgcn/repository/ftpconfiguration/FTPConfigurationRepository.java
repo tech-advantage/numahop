@@ -8,8 +8,7 @@ import org.springframework.stereotype.Service;
 @Service
 public interface FTPConfigurationRepository extends JpaRepository<FTPConfiguration, String>, FTPConfigurationRepositoryCustom {
 
-    @Query("select c "
-           + "from FTPConfiguration c "
+    @Query("select c " + "from FTPConfiguration c "
            + "join fetch c.library "
            + "where c.identifier = ?1")
     FTPConfiguration findOneWithDependencies(String identifier);

@@ -2,10 +2,13 @@ package fr.progilone.pgcn.web.rest.user;
 
 import static fr.progilone.pgcn.web.rest.user.security.AuthorizationConstants.ROLE_HAB0;
 
+import com.codahale.metrics.annotation.Timed;
+import fr.progilone.pgcn.domain.dto.user.AuthorizationDTO;
+import fr.progilone.pgcn.domain.user.Authorization;
+import fr.progilone.pgcn.service.user.AuthorizationService;
+import fr.progilone.pgcn.web.rest.AbstractRestController;
+import jakarta.annotation.security.RolesAllowed;
 import java.util.List;
-
-import javax.annotation.security.RolesAllowed;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,13 +17,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.codahale.metrics.annotation.Timed;
-
-import fr.progilone.pgcn.domain.dto.user.AuthorizationDTO;
-import fr.progilone.pgcn.domain.user.Authorization;
-import fr.progilone.pgcn.service.user.AuthorizationService;
-import fr.progilone.pgcn.web.rest.AbstractRestController;
 
 @RestController
 @RequestMapping(value = "/api/rest/authorization")

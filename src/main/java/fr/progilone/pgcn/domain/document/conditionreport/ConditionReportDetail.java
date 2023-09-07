@@ -1,41 +1,22 @@
 package fr.progilone.pgcn.domain.document.conditionreport;
 
-import static fr.progilone.pgcn.service.es.EsConstant.ANALYZER_CI_AI;
-import static fr.progilone.pgcn.service.es.EsConstant.ANALYZER_CI_AS;
-import static fr.progilone.pgcn.service.es.EsConstant.ANALYZER_KEYWORD;
-import static fr.progilone.pgcn.service.es.EsConstant.ANALYZER_PHRASE;
-import static fr.progilone.pgcn.service.es.EsConstant.SUBFIELD_CI_AI;
-import static fr.progilone.pgcn.service.es.EsConstant.SUBFIELD_CI_AS;
-import static fr.progilone.pgcn.service.es.EsConstant.SUBFIELD_PHRASE;
-import static fr.progilone.pgcn.service.es.EsConstant.SUBFIELD_RAW;
-
-import java.time.LocalDate;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldIndex;
-import org.springframework.data.elasticsearch.annotations.FieldType;
-import org.springframework.data.elasticsearch.annotations.InnerField;
-import org.springframework.data.elasticsearch.annotations.MultiField;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
-
 import fr.progilone.pgcn.domain.AbstractDomainObject;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import java.time.LocalDate;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * Constat d'état: données d'un constat particulier
@@ -86,12 +67,7 @@ public class ConditionReportDetail extends AbstractDomainObject {
      */
     @Column(name = "type", nullable = false)
     @Enumerated(EnumType.STRING)
-    @Field(type = FieldType.String, analyzer = ANALYZER_KEYWORD)
     private Type type;
-
-    @Transient
-    @Field(type = FieldType.Integer)
-    private final int sortedType = 0;
 
     /**
      * Nom du rédacteur du constat - bibliothèque
@@ -121,7 +97,6 @@ public class ConditionReportDetail extends AbstractDomainObject {
      * Date du constat
      */
     @Column(name = "report_date")
-    @Field(type = FieldType.Date)
     private LocalDate date;
 
     /**
@@ -140,7 +115,6 @@ public class ConditionReportDetail extends AbstractDomainObject {
      * Propriétés du constat d'état
      */
     @OneToMany(mappedBy = "detail", orphanRemoval = true, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @Field(type = FieldType.Nested)
     private final Set<Description> descriptions = new LinkedHashSet<>();
 
     /**
@@ -183,60 +157,18 @@ public class ConditionReportDetail extends AbstractDomainObject {
      * État de la reliure: autres infos
      */
     @Column(name = "binding_desc", columnDefinition = "text")
-    @MultiField(mainField = @Field(type = FieldType.String),
-                otherFields = {@InnerField(type = FieldType.String, suffix = SUBFIELD_RAW, index = FieldIndex.not_analyzed),
-                               @InnerField(type = FieldType.String,
-                                           suffix = SUBFIELD_CI_AI,
-                                           indexAnalyzer = ANALYZER_CI_AI,
-                                           searchAnalyzer = ANALYZER_CI_AI),
-                               @InnerField(type = FieldType.String,
-                                           suffix = SUBFIELD_CI_AS,
-                                           indexAnalyzer = ANALYZER_CI_AS,
-                                           searchAnalyzer = ANALYZER_CI_AS),
-                               @InnerField(type = FieldType.String,
-                                           suffix = SUBFIELD_PHRASE,
-                                           indexAnalyzer = ANALYZER_PHRASE,
-                                           searchAnalyzer = ANALYZER_PHRASE)})
     private String bindingDesc;
 
     /**
      * État du corps d'ouvrage: autres infos
      */
     @Column(name = "body_desc", columnDefinition = "text")
-    @MultiField(mainField = @Field(type = FieldType.String),
-                otherFields = {@InnerField(type = FieldType.String, suffix = SUBFIELD_RAW, index = FieldIndex.not_analyzed),
-                               @InnerField(type = FieldType.String,
-                                           suffix = SUBFIELD_CI_AI,
-                                           indexAnalyzer = ANALYZER_CI_AI,
-                                           searchAnalyzer = ANALYZER_CI_AI),
-                               @InnerField(type = FieldType.String,
-                                           suffix = SUBFIELD_CI_AS,
-                                           indexAnalyzer = ANALYZER_CI_AS,
-                                           searchAnalyzer = ANALYZER_CI_AS),
-                               @InnerField(type = FieldType.String,
-                                           suffix = SUBFIELD_PHRASE,
-                                           indexAnalyzer = ANALYZER_PHRASE,
-                                           searchAnalyzer = ANALYZER_PHRASE)})
     private String bodyDesc;
 
     /**
      * Description: autres infos
      */
     @Column(name = "additionnal_desc", columnDefinition = "text")
-    @MultiField(mainField = @Field(type = FieldType.String),
-                otherFields = {@InnerField(type = FieldType.String, suffix = SUBFIELD_RAW, index = FieldIndex.not_analyzed),
-                               @InnerField(type = FieldType.String,
-                                           suffix = SUBFIELD_CI_AI,
-                                           indexAnalyzer = ANALYZER_CI_AI,
-                                           searchAnalyzer = ANALYZER_CI_AI),
-                               @InnerField(type = FieldType.String,
-                                           suffix = SUBFIELD_CI_AS,
-                                           indexAnalyzer = ANALYZER_CI_AS,
-                                           searchAnalyzer = ANALYZER_CI_AS),
-                               @InnerField(type = FieldType.String,
-                                           suffix = SUBFIELD_PHRASE,
-                                           indexAnalyzer = ANALYZER_PHRASE,
-                                           searchAnalyzer = ANALYZER_PHRASE)})
     private String additionnalDesc;
 
     @Column(name = "insurance")
@@ -258,8 +190,8 @@ public class ConditionReportDetail extends AbstractDomainObject {
         this.type = type;
     }
 
-    public int getSortedType() {
-        return type != null ? type.ordinal() : Integer.MAX_VALUE;
+    ConditionReportDetail withSortedType(final int sortedType) {
+        return this;
     }
 
     public String getLibWriterName() {
@@ -361,7 +293,8 @@ public class ConditionReportDetail extends AbstractDomainObject {
     }
 
     public int getNbViewTotal() {
-        return nbViewBinding + nbViewBody + nbViewAdditionnal;
+        return nbViewBinding + nbViewBody
+               + nbViewAdditionnal;
     }
 
     public Integer getDim1() {

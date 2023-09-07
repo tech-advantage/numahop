@@ -2,8 +2,7 @@ package fr.progilone.pgcn.domain.administration.exchange.z3950;
 
 import fr.progilone.pgcn.domain.AbstractDomainObject;
 import fr.progilone.pgcn.domain.exchange.DataEncoding;
-
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = Z3950Server.TABLE_NAME)
@@ -153,16 +152,28 @@ public class Z3950Server extends AbstractDomainObject {
 
     @Override
     public String toString() {
-        return "Z3950Server{" +
-               "name='" + name + '\'' +
-               ", host='" + host + '\'' +
-               ", port=" + port +
-               ", database='" + database + '\'' +
-               ", userId='" + userId + '\'' +
-               ", active=" + active +
-               ", dataFormat=" + dataFormat +
-               ", dataEncoding=" + dataEncoding +
-               ", recordType=" + recordType +
-               '}';
+        return "Z3950Server{" + "name='"
+               + name
+               + '\''
+               + ", host='"
+               + host
+               + '\''
+               + ", port="
+               + port
+               + ", database='"
+               + database
+               + '\''
+               + ", userId='"
+               + userId
+               + '\''
+               + ", active="
+               + active
+               + ", dataFormat="
+               + dataFormat
+               + ", dataEncoding="
+               + dataEncoding
+               + ", recordType="
+               + recordType
+               + '}';
     }
 }

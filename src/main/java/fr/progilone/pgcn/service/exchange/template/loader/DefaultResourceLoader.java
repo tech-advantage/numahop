@@ -1,9 +1,8 @@
 package fr.progilone.pgcn.service.exchange.template.loader;
 
+import java.io.InputStream;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.util.ClassUtils;
-
-import java.io.InputStream;
 
 /**
  * Classe qui recherche une ressource dans le classpath, à partir d'un répertoire de base
@@ -33,10 +32,13 @@ public class DefaultResourceLoader implements ResourceLoader {
         try {
             result = ClassUtils.getResourceAsStream(getClass(), name);
         } catch (Exception fnfe) {
-            throw new ResourceNotFoundException("Une erreur est survenue au chargement du template " + name + ": " + fnfe.getMessage());
+            throw new ResourceNotFoundException("Une erreur est survenue au chargement du template " + name
+                                                + ": "
+                                                + fnfe.getMessage());
         }
         if (result == null) {
-            throw new ResourceNotFoundException("Le template " + name + " n'a pas pu être chargé");
+            throw new ResourceNotFoundException("Le template " + name
+                                                + " n'a pas pu être chargé");
         }
         return result;
     }

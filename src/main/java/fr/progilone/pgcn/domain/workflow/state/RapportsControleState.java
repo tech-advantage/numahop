@@ -1,16 +1,13 @@
 package fr.progilone.pgcn.domain.workflow.state;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-
 import fr.progilone.pgcn.domain.user.User;
 import fr.progilone.pgcn.domain.workflow.DocUnitState;
 import fr.progilone.pgcn.domain.workflow.WorkflowStateKey;
-import fr.progilone.pgcn.domain.workflow.WorkflowStateStatus;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
 @DiscriminatorValue(value = WorkflowStateKey.Values.RAPPORT_CONTROLES)
@@ -33,7 +30,7 @@ public class RapportsControleState extends DocUnitState {
     @Override
     protected List<DocUnitState> getNextStates() {
         final List<DocUnitState> states = new ArrayList<>();
-        
+
         if (getWorkflow().isDocumentValidated()) {
             states.add(getWorkflow().getFutureOrRunningByKey(WorkflowStateKey.ARCHIVAGE_DOCUMENT));
             states.add(getWorkflow().getFutureOrRunningByKey(WorkflowStateKey.DIFFUSION_DOCUMENT));
@@ -55,11 +52,8 @@ public class RapportsControleState extends DocUnitState {
     }
 
     private void handleWorkflow() {
-        if(getWorkflow().getCurrentStates().isEmpty()
-                    && getWorkflow().isNoticeValidated()) {
-                getNextStates().stream()
-                    .filter(Objects::nonNull)
-                    .forEach(state -> state.initializeState(null, null, null));
+        if (getWorkflow().getCurrentStates().isEmpty() && getWorkflow().isNoticeValidated()) {
+            getNextStates().stream().filter(Objects::nonNull).forEach(state -> state.initializeState(null, null, null));
         }
     }
 

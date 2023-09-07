@@ -5,36 +5,37 @@
 // Généré le : 2016.12.29 à 11:54:46 AM CET
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.mets;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAnyAttribute;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElements;
+import jakarta.xml.bind.annotation.XmlID;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAnyAttribute;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlID;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
-
 
 /**
  * parType: Complex Type for Parallel Files
- * 				The <par> or parallel files element aggregates pointers to files, parts of files, and/or sequences of files or parts of files that must be played or displayed simultaneously to manifest a block of digital content represented by an <fptr> element.
+ * The <par> or parallel files element aggregates pointers to files, parts of files, and/or sequences of files or parts of files that must be played
+ * or displayed simultaneously to manifest a block of digital content represented by an <fptr> element.
  *
  *
- * <p>Classe Java pour parType complex type.
+ * <p>
+ * Classe Java pour parType complex type.
  *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="parType"&gt;
@@ -55,15 +56,11 @@ import javax.xml.namespace.QName;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "parType", propOrder = {
-    "areaOrSeq"
-})
+@XmlType(name = "parType", propOrder = {"areaOrSeq"})
 public class ParType {
 
-    @XmlElements({
-        @XmlElement(name = "area", type = AreaType.class),
-        @XmlElement(name = "seq", type = SeqType.class)
-    })
+    @XmlElements({@XmlElement(name = "area", type = AreaType.class),
+                  @XmlElement(name = "seq", type = SeqType.class)})
     protected List<Object> areaOrSeq;
     @XmlAttribute(name = "ID")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
@@ -90,8 +87,9 @@ public class ParType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getAreaOrSeq().add(newItem);
+     * getAreaOrSeq().add(newItem);
      * </pre>
      *
      *
@@ -113,8 +111,8 @@ public class ParType {
      * Obtient la valeur de la propriété id.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getID() {
@@ -125,8 +123,8 @@ public class ParType {
      * Définit la valeur de la propriété id.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setID(String value) {
@@ -137,8 +135,8 @@ public class ParType {
      * Obtient la valeur de la propriété order.
      *
      * @return
-     *     possible object is
-     *     {@link BigInteger }
+     *         possible object is
+     *         {@link BigInteger }
      *
      */
     public BigInteger getORDER() {
@@ -149,8 +147,8 @@ public class ParType {
      * Définit la valeur de la propriété order.
      *
      * @param value
-     *     allowed object is
-     *     {@link BigInteger }
+     *            allowed object is
+     *            {@link BigInteger }
      *
      */
     public void setORDER(BigInteger value) {
@@ -161,8 +159,8 @@ public class ParType {
      * Obtient la valeur de la propriété orderlabel.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getORDERLABEL() {
@@ -173,8 +171,8 @@ public class ParType {
      * Définit la valeur de la propriété orderlabel.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setORDERLABEL(String value) {
@@ -185,8 +183,8 @@ public class ParType {
      * Obtient la valeur de la propriété label.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getLABEL() {
@@ -197,8 +195,8 @@ public class ParType {
      * Définit la valeur de la propriété label.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setLABEL(String value) {
@@ -217,7 +215,7 @@ public class ParType {
      *
      *
      * @return
-     *     always non-null
+     *         always non-null
      */
     public Map<QName, String> getOtherAttributes() {
         return otherAttributes;

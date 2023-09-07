@@ -1,12 +1,10 @@
 package fr.progilone.pgcn.repository.security;
 
+import fr.progilone.pgcn.domain.security.PersistentToken;
 import java.util.Date;
 import java.util.List;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-
-import fr.progilone.pgcn.domain.security.PersistentToken;
 
 /**
  * Spring Data JPA repository for the PersistentToken entity.

@@ -1,8 +1,8 @@
 package fr.progilone.pgcn.web.filter.gzip;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponseWrapper;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -14,16 +14,15 @@ class GZipServletResponseWrapper extends HttpServletResponseWrapper {
     private PrintWriter printWriter = null;
     private boolean disableFlushBuffer = false;
 
-    public GZipServletResponseWrapper(HttpServletResponse response, GZIPOutputStream gzout)
-            throws IOException {
+    public GZipServletResponseWrapper(HttpServletResponse response, GZIPOutputStream gzout) throws IOException {
         super(response);
         gzipOutputStream = new GZipServletOutputStream(gzout);
     }
 
     public void close() throws IOException {
 
-        //PrintWriter.close does not throw exceptions. Thus, the call does not need
-        //be inside a try-catch block.
+        // PrintWriter.close does not throw exceptions. Thus, the call does not need
+        // be inside a try-catch block.
         if (this.printWriter != null) {
             this.printWriter.close();
         }
@@ -41,7 +40,7 @@ class GZipServletResponseWrapper extends HttpServletResponseWrapper {
     @Override
     public void flushBuffer() throws IOException {
 
-        //PrintWriter.flush() does not throw exception
+        // PrintWriter.flush() does not throw exception
         if (this.printWriter != null) {
             this.printWriter.flush();
         }
@@ -63,8 +62,7 @@ class GZipServletResponseWrapper extends HttpServletResponseWrapper {
     @Override
     public ServletOutputStream getOutputStream() throws IOException {
         if (this.printWriter != null) {
-            throw new IllegalStateException(
-                    "PrintWriter obtained already - cannot get OutputStream");
+            throw new IllegalStateException("PrintWriter obtained already - cannot get OutputStream");
         }
 
         return this.gzipOutputStream;
@@ -73,21 +71,18 @@ class GZipServletResponseWrapper extends HttpServletResponseWrapper {
     @Override
     public PrintWriter getWriter() throws IOException {
         if (this.printWriter == null) {
-            this.gzipOutputStream = new GZipServletOutputStream(
-                    getResponse().getOutputStream());
+            this.gzipOutputStream = new GZipServletOutputStream(getResponse().getOutputStream());
 
-            this.printWriter = new PrintWriter(new OutputStreamWriter(
-                    this.gzipOutputStream, getResponse().getCharacterEncoding()), true);
+            this.printWriter = new PrintWriter(new OutputStreamWriter(this.gzipOutputStream, getResponse().getCharacterEncoding()), true);
         }
 
         return this.printWriter;
     }
 
-
     @Override
     public void setContentLength(int length) {
-        //ignore, since content length of zipped content
-        //does not match content length of unzipped content.
+        // ignore, since content length of zipped content
+        // does not match content length of unzipped content.
     }
 
     /**
@@ -106,7 +101,8 @@ class GZipServletResponseWrapper extends HttpServletResponseWrapper {
     /**
      * Set if the wrapped reponse's buffer flushing should be disabled.
      *
-     * @param disableFlushBuffer true if the wrapped reponse's buffer flushing should be disabled
+     * @param disableFlushBuffer
+     *            true if the wrapped reponse's buffer flushing should be disabled
      */
     public void setDisableFlushBuffer(boolean disableFlushBuffer) {
         this.disableFlushBuffer = disableFlushBuffer;

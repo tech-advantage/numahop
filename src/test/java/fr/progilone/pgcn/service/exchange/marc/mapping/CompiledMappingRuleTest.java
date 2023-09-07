@@ -1,12 +1,11 @@
 package fr.progilone.pgcn.service.exchange.marc.mapping;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import fr.progilone.pgcn.domain.exchange.MappingRule;
 import fr.progilone.pgcn.util.TestUtil;
-import org.junit.Test;
-
 import java.util.Arrays;
-
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Test;
 
 /**
  * Created by Sebastien on 01/12/2016.
@@ -27,12 +26,7 @@ public class CompiledMappingRuleTest {
         assertEquals(condition, actual.getRule().getCondition());
         assertEquals(expression, actual.getRule().getExpression());
 
-        TestUtil.checkCollectionContainsSameElements(Arrays.asList(new MarcKey("100"), new MarcKey("712"), new MarcKey("200", 'a')),
-                                                     actual.getExpressionStatement().getMarcKeys());
-        TestUtil.checkCollectionContainsSameElements(Arrays.asList(new MarcKey("100"),
-                                                                   new MarcKey("712"),
-                                                                   new MarcKey("200", 'a'),
-                                                                   new MarcKey("702", '4')),
-                                                     actual.getMarcKeys());
+        TestUtil.checkCollectionContainsSameElements(Arrays.asList(new MarcKey("100"), new MarcKey("712"), new MarcKey("200", 'a')), actual.getExpressionStatement().getMarcKeys());
+        TestUtil.checkCollectionContainsSameElements(Arrays.asList(new MarcKey("100"), new MarcKey("712"), new MarcKey("200", 'a'), new MarcKey("702", '4')), actual.getMarcKeys());
     }
 }

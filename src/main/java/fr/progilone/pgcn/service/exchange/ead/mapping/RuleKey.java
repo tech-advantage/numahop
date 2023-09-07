@@ -39,7 +39,8 @@ public class RuleKey {
     public String getRegex() {
         String regex = field.replaceAll("\\.", "\\\\.");
         // le nom du champ est précédé d'un \, est eventuellement entre accolades {...}, et la fin de mot n'est pas suivie d'un point
-        regex = "\\\\\\{?" + regex + "\\b(?!\\.)\\}?";
+        regex = "\\\\\\{?" + regex
+                + "\\b(?!\\.)\\}?";
         return regex;
     }
 

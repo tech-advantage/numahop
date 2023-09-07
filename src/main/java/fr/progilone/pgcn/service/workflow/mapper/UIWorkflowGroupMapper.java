@@ -1,11 +1,5 @@
 package fr.progilone.pgcn.service.workflow.mapper;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import fr.progilone.pgcn.domain.dto.user.SimpleUserDTO;
 import fr.progilone.pgcn.domain.dto.workflow.WorkflowGroupDTO;
 import fr.progilone.pgcn.domain.library.Library;
@@ -13,6 +7,10 @@ import fr.progilone.pgcn.domain.workflow.WorkflowGroup;
 import fr.progilone.pgcn.security.SecurityUtils;
 import fr.progilone.pgcn.service.library.LibraryService;
 import fr.progilone.pgcn.service.user.UserService;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 public class UIWorkflowGroupMapper {
@@ -21,8 +19,7 @@ public class UIWorkflowGroupMapper {
     private final LibraryService libraryService;
 
     @Autowired
-    public UIWorkflowGroupMapper(final UserService userService,
-            final LibraryService libraryService) {
+    public UIWorkflowGroupMapper(final UserService userService, final LibraryService libraryService) {
         this.userService = userService;
         this.libraryService = libraryService;
     }
@@ -35,15 +32,14 @@ public class UIWorkflowGroupMapper {
         // Users
         List<SimpleUserDTO> users = dto.getUsers();
         if (users != null) {
-            domainObject.setUsers(users.stream().map(user -> userService.getOne(user.getIdentifier())).collect(
-                    Collectors.toSet()));
+            domainObject.setUsers(users.stream().map(user -> userService.getOne(user.getIdentifier())).collect(Collectors.toSet()));
         } else {
             domainObject.setUsers(null);
         }
 
         // Bibliothèque
         Library library = null;
-        if(dto.getLibrary() != null) {
+        if (dto.getLibrary() != null) {
             library = libraryService.findByIdentifier(dto.getLibrary().getIdentifier());
         } else {
             if (SecurityUtils.getCurrentUser().getLibraryId() != null) {

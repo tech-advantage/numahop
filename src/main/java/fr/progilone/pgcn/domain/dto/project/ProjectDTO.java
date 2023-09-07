@@ -1,12 +1,5 @@
 package fr.progilone.pgcn.domain.dto.project;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import fr.progilone.pgcn.domain.dto.AbstractVersionedDTO;
 import fr.progilone.pgcn.domain.dto.administration.CinesPACDTO;
 import fr.progilone.pgcn.domain.dto.administration.InternetArchiveCollectionDTO;
@@ -16,11 +9,16 @@ import fr.progilone.pgcn.domain.dto.administration.viewsFormat.SimpleViewsFormat
 import fr.progilone.pgcn.domain.dto.checkconfiguration.SimpleCheckConfigurationDTO;
 import fr.progilone.pgcn.domain.dto.exportftpconfiguration.ExportFTPConfigurationDTO;
 import fr.progilone.pgcn.domain.dto.exportftpconfiguration.ExportFTPConfigurationDeliveryFolderDTO;
-import fr.progilone.pgcn.domain.dto.exportftpconfiguration.SimpleExportFTPConfDTO;
 import fr.progilone.pgcn.domain.dto.ftpconfiguration.SimpleFTPConfigurationDTO;
 import fr.progilone.pgcn.domain.dto.library.SimpleLibraryDTO;
 import fr.progilone.pgcn.domain.dto.user.SimpleUserDTO;
 import fr.progilone.pgcn.domain.dto.workflow.SimpleWorkflowModelDTO;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * DTO représentant un projet
@@ -167,9 +165,13 @@ public class ProjectDTO extends AbstractVersionedDTO {
         this.activeFTPConfiguration = activeFTPConfiguration;
     }
 
-    public ExportFTPConfigurationDTO getActiveExportFTPConfiguration() { return activeExportFTPConfiguration; }
+    public ExportFTPConfigurationDTO getActiveExportFTPConfiguration() {
+        return activeExportFTPConfiguration;
+    }
 
-    public void setActiveExportFTPConfiguration(ExportFTPConfigurationDTO activeExportFTPConfiguration) { this.activeExportFTPConfiguration = activeExportFTPConfiguration; }
+    public void setActiveExportFTPConfiguration(ExportFTPConfigurationDTO activeExportFTPConfiguration) {
+        this.activeExportFTPConfiguration = activeExportFTPConfiguration;
+    }
 
     public SimpleCheckConfigurationDTO getActiveCheckConfiguration() {
         return activeCheckConfiguration;

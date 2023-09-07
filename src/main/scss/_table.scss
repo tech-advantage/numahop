@@ -3,7 +3,10 @@
 @include table-row-variant('sid-third', $sid-third-color);
 @include table-row-variant('sid-fourth', $sid-fourth-color);
 
-.table .sid-main, .table .sid-sec, .table .sid-third, .table .sid-fourth {
+.table .sid-main,
+.table .sid-sec,
+.table .sid-third,
+.table .sid-fourth {
     color: $sid-text-light;
 }
 .table td.vcenter {
@@ -80,7 +83,7 @@ th.sem-btn-group {
     }
 
     .select-col {
-        width : 35px;
+        width: 35px;
     }
 }
 
@@ -89,12 +92,12 @@ th.sem-btn-group {
         height: 28px;
 
         > td {
-            padding:2px;
+            padding: 2px;
         }
     }
 
     .select-col {
-        width : 35px;
+        width: 35px;
     }
 }
 

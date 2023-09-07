@@ -2,15 +2,7 @@ package fr.progilone.pgcn.repository.audit;
 
 import fr.progilone.pgcn.domain.AbstractDomainObject;
 import fr.progilone.pgcn.domain.audit.AuditRevision;
-import org.apache.commons.collections4.CollectionUtils;
-import org.hibernate.envers.AuditReaderFactory;
-import org.hibernate.envers.query.AuditEntity;
-import org.hibernate.envers.query.AuditQuery;
-import org.hibernate.envers.query.criteria.AuditCriterion;
-import org.hibernate.envers.query.internal.property.RevisionNumberPropertyName;
-import org.hibernate.envers.query.order.internal.PropertyAuditOrder;
-
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.HashSet;
@@ -18,6 +10,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
+import org.apache.commons.collections4.CollectionUtils;
+import org.hibernate.envers.AuditReaderFactory;
+import org.hibernate.envers.query.AuditEntity;
+import org.hibernate.envers.query.AuditQuery;
+import org.hibernate.envers.query.criteria.AuditCriterion;
+import org.hibernate.envers.query.internal.property.RevisionNumberPropertyName;
+import org.hibernate.envers.query.order.internal.PropertyAuditOrder;
 
 public class AbstractAuditRepository<T extends AbstractDomainObject> {
 
@@ -50,18 +49,16 @@ public class AbstractAuditRepository<T extends AbstractDomainObject> {
      * @param <U>
      * @return
      */
-    protected <U> List<U> getRevisions(final LocalDate fromDate,
-                                       final EntityManager em,
-                                       final List<AuditCriterion> criterion,
-                                       final BiFunction<T, AuditRevision, U> resultFn) {
+    protected <U> List<U> getRevisions(final LocalDate fromDate, final EntityManager em, final List<AuditCriterion> criterion, final BiFunction<T, AuditRevision, U> resultFn) {
 
-        final AuditQuery auditQuery = AuditReaderFactory.get(em).createQuery().forRevisionsOfEntity(clazz, false, false)
+        final AuditQuery auditQuery = AuditReaderFactory.get(em)
+                                                        .createQuery()
+                                                        .forRevisionsOfEntity(clazz, false, false)
                                                         // Tri par n° de révision desc
                                                         .addOrder(new PropertyAuditOrder(null, new RevisionNumberPropertyName(), false));
         // Filtre sur le timestamp de la révision
         if (fromDate != null) {
-            auditQuery.add(AuditEntity.revisionProperty("timestamp")
-                                      .ge(fromDate.atStartOfDay().atZone(ZoneId.systemDefault()).toEpochSecond() * 1000));
+            auditQuery.add(AuditEntity.revisionProperty("timestamp").ge(fromDate.atStartOfDay().atZone(ZoneId.systemDefault()).toEpochSecond() * 1000));
         }
         // Filtres additionnels
         if (CollectionUtils.isNotEmpty(criterion)) {
@@ -89,6 +86,7 @@ public class AbstractAuditRepository<T extends AbstractDomainObject> {
 
                             return resultFn.apply(entity, rev);
 
-                        }).collect(Collectors.toList());
+                        })
+                        .collect(Collectors.toList());
     }
 }

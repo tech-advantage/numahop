@@ -3,8 +3,7 @@ package fr.progilone.pgcn.domain.dto.statistics;
 import com.google.common.collect.Ordering;
 import com.opencsv.bean.CsvBindByName;
 import fr.progilone.pgcn.domain.train.Train;
-
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 import java.time.LocalDate;
 
 public class StatisticsProviderTrainDTO implements Comparable<StatisticsProviderTrainDTO> {

@@ -1,8 +1,5 @@
 package fr.progilone.pgcn.service.document.mapper;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import fr.progilone.pgcn.domain.document.ArchiveCollection;
 import fr.progilone.pgcn.domain.document.ArchiveContributor;
 import fr.progilone.pgcn.domain.document.ArchiveCoverage;
@@ -12,6 +9,8 @@ import fr.progilone.pgcn.domain.document.ArchiveItem;
 import fr.progilone.pgcn.domain.document.ArchiveLanguage;
 import fr.progilone.pgcn.domain.document.ArchiveSubject;
 import fr.progilone.pgcn.service.exchange.internetarchive.InternetArchiveItemDTO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 public class UIInternetArchiveItemMapper {
@@ -42,17 +41,17 @@ public class UIInternetArchiveItemMapper {
         item.getCreators().clear();
         item.getLanguages().clear();
 
-        for(final InternetArchiveItemDTO.CustomHeader header : itemDTO.getCustomHeaders()) {
+        for (final InternetArchiveItemDTO.CustomHeader header : itemDTO.getCustomHeaders()) {
             final ArchiveHeader archiveHeader = createHeader(header);
             item.getHeaders().add(archiveHeader);
             archiveHeader.setItem(item);
         }
-        for(final String subject : itemDTO.getSubjects()) {
+        for (final String subject : itemDTO.getSubjects()) {
             final ArchiveSubject archiveSubject = createSubject(subject);
             item.getSubjects().add(archiveSubject);
             archiveSubject.setItem(item);
         }
-        for(final String collection : itemDTO.getCollections()) {
+        for (final String collection : itemDTO.getCollections()) {
             final ArchiveCollection archiveCollection = createCollection(collection);
             item.getCollections().add(archiveCollection);
             archiveCollection.setItem(item);
@@ -85,11 +84,13 @@ public class UIInternetArchiveItemMapper {
         header.setType(dto.getType());
         return header;
     }
+
     private ArchiveSubject createSubject(final String dto) {
         final ArchiveSubject subject = new ArchiveSubject();
         subject.setValue(dto);
         return subject;
     }
+
     private ArchiveCollection createCollection(final String dto) {
         final ArchiveCollection collection = new ArchiveCollection();
         collection.setValue(dto);

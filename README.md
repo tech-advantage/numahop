@@ -29,15 +29,14 @@ Les instructions suivantes permettent d'installer NumaHop sur un poste de dével
 
 Numahop nécessite au préalable l'installation des outils listés ci-dessous.
 
-* JDK 8
+* OpenJdk 17
 * MariaDB
-* elasticsearch 2.4.6
-* tesseract
-* ImageMagick 
-* exiftool 
-* compass 
+* Elasticsearch 8
+* Tesseract
+* ImageMagick
+* Exiftool 
 
-Les versions proposées sont valides dans un environnement Debian 9 & 11.
+Les versions proposées sont valides dans un environnement Debian 12.
 
 Il vous faudra également un user linux dédié disposant d'un repository maven (.m2).
 
@@ -65,21 +64,15 @@ spring:
         url: jdbc:mariadb://**urlDataBase**
         username: **userName**
         password: **userpassword**
-        maximumPoolSize: 20
+        maximum-pool-size: 20
 ```
 * elasticsearch
 ```
 spring:
-    data:
-      elasticsearch:
-          cluster-nodes: localhost:9300
-          cluster-name: **clusterName**
-          properties:
-              node:
-                  name: Transport Client
-          repositories:
-              enabled: true
-              
+    elasticsearch:
+        uris:
+            - http://localhost:9200
+
 elasticsearch:
     bulk_size: 1000
     index:
@@ -165,7 +158,7 @@ $ mvn clean package spring-boot:run -Pprod -Drun.jvmArguments="-Dspring.profiles
 En cas de problème, une commande alternative :
 
 ```
-$  mvn spring-boot:run -P prod  -Drun.arguments="--spring.profiles.active=prod,--spring.config.location=file:/opt/pgcn/src/main/resources/config/"
+$  mvn spring-boot:run -P prod  -Drun.arguments="--spring.profiles.active=prod,--spring.config.additional-location=file:/opt/pgcn/src/main/resources/config/"
 ```
 
 En fin de build, l'application  est lancée sur le port 8080. 
@@ -182,15 +175,15 @@ Vous pouvez vous logger en admin / admin afin d'effectuer le paramétrage de bas
 
 ## Maîtrise d'oeuvre
 
-* **Progilone** - https://www.progilone.fr
+* **TECH'advantage** - https://www.tech-advantage.com/
 
 
 ## Contribution
 
-Progilone reste responsable de la version principale.
+TECH'advantage reste responsable de la version principale.
 Les issues et/ou merge requests doivent nous être adressées.
 
-Progilone étudiera également toute demande d'évolution de l'application.
+TECH'advantage étudiera également toute demande d'évolution de l'application.
 
 
 ## Licence

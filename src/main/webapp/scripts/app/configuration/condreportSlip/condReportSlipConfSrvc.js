@@ -7,5 +7,4 @@
         var service = $resource(CONFIGURATION.numahop.url + 'api/rest/condreportslip_configuration/:id', { id: '@identifier' }, {});
         return service;
     }
-
 })();

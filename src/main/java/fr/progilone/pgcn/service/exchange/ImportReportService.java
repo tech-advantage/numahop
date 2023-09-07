@@ -1,22 +1,30 @@
 package fr.progilone.pgcn.service.exchange;
 
+import fr.progilone.pgcn.domain.document.DocUnit;
+import fr.progilone.pgcn.domain.exchange.*;
+import fr.progilone.pgcn.domain.library.Library;
+import fr.progilone.pgcn.domain.lot.Lot;
+import fr.progilone.pgcn.domain.project.Project;
+import fr.progilone.pgcn.exception.PgcnTechnicalException;
+import fr.progilone.pgcn.repository.document.DocUnitRepository;
+import fr.progilone.pgcn.repository.document.conditionreport.ConditionReportRepository;
+import fr.progilone.pgcn.repository.exchange.ImportReportRepository;
+import fr.progilone.pgcn.repository.exchange.ImportedDocUnitRepository;
+import fr.progilone.pgcn.repository.imagemetadata.ImageMetadataValuesRepository;
+import fr.progilone.pgcn.security.SecurityUtils;
+import fr.progilone.pgcn.service.storage.FileStorageManager;
+import fr.progilone.pgcn.service.util.transaction.TransactionService;
+import fr.progilone.pgcn.service.util.transaction.TransactionalJobRunner;
+import fr.progilone.pgcn.web.websocket.WebsocketService;
+import jakarta.annotation.PostConstruct;
+import jakarta.xml.bind.UnmarshalException;
 import java.io.File;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.PostConstruct;
-import javax.xml.bind.UnmarshalException;
-
+import java.util.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -37,27 +45,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.xml.sax.SAXParseException;
 
-import com.google.common.collect.Lists;
-
-import fr.progilone.pgcn.domain.document.DocUnit;
-import fr.progilone.pgcn.domain.exchange.CSVMapping;
-import fr.progilone.pgcn.domain.exchange.DataEncoding;
-import fr.progilone.pgcn.domain.exchange.FileFormat;
-import fr.progilone.pgcn.domain.exchange.ImportReport;
-import fr.progilone.pgcn.domain.exchange.Mapping;
-import fr.progilone.pgcn.domain.library.Library;
-import fr.progilone.pgcn.domain.lot.Lot;
-import fr.progilone.pgcn.domain.project.Project;
-import fr.progilone.pgcn.exception.PgcnTechnicalException;
-import fr.progilone.pgcn.repository.document.DocUnitRepository;
-import fr.progilone.pgcn.repository.exchange.ImportReportRepository;
-import fr.progilone.pgcn.repository.exchange.ImportedDocUnitRepository;
-import fr.progilone.pgcn.security.SecurityUtils;
-import fr.progilone.pgcn.service.storage.FileStorageManager;
-import fr.progilone.pgcn.service.util.transaction.StatefullTransactionalLoopService;
-import fr.progilone.pgcn.service.util.transaction.TransactionService;
-import fr.progilone.pgcn.web.websocket.WebsocketService;
-
 /**
  * Created by Sebastien on 08/12/2016.
  */
@@ -69,10 +56,11 @@ public class ImportReportService {
     private static final int BATCH_SIZE = 50;
 
     private final DocUnitRepository docUnitRepository;
+    private final ConditionReportRepository conditionReportRepository;
     private final FileStorageManager fm;
     private final ImportReportRepository importReportRepository;
     private final ImportedDocUnitRepository importedDocUnitRepository;
-    private final StatefullTransactionalLoopService transactionalLoopService;
+    private final ImageMetadataValuesRepository imageMetadataValuesRepository;
     private final TransactionService transactionService;
     private final WebsocketService websocketService;
 
@@ -85,14 +73,16 @@ public class ImportReportService {
                                final FileStorageManager fm,
                                final ImportReportRepository importReportRepository,
                                final ImportedDocUnitRepository importedDocUnitRepository,
-                               final StatefullTransactionalLoopService transactionalLoopService,
                                final TransactionService transactionService,
-                               final WebsocketService websocketService) {
+                               final WebsocketService websocketService,
+                               final ConditionReportRepository conditionReportRepository,
+                               final ImageMetadataValuesRepository imageMetadataValuesRepository) {
         this.docUnitRepository = docUnitRepository;
+        this.conditionReportRepository = conditionReportRepository;
         this.fm = fm;
         this.importReportRepository = importReportRepository;
         this.importedDocUnitRepository = importedDocUnitRepository;
-        this.transactionalLoopService = transactionalLoopService;
+        this.imageMetadataValuesRepository = imageMetadataValuesRepository;
         this.transactionService = transactionService;
         this.websocketService = websocketService;
     }
@@ -109,10 +99,7 @@ public class ImportReportService {
                                                                                             ImportReport.Status.DEDUPLICATING,
                                                                                             ImportReport.Status.IMPORTING);
         for (final ImportReport report : interruptedImports) {
-            LOG.warn("L'import des fichiers {}, démarré le {}, a été interrompu au statut {}",
-                     report.getFilesAsString(),
-                     report.getStart(),
-                     report.getStatus());
+            LOG.warn("L'import des fichiers {}, démarré le {}, a été interrompu au statut {}", report.getFilesAsString(), report.getStart(), report.getStatus());
             failReport(report, "L'import a été interrompu en cours d'exécution");
         }
     }
@@ -390,7 +377,9 @@ public class ImportReportService {
             importReport.setStart(now);
         }
         importReport.setEnd(now);
-        importReport.setMessage("Arrêt imprévu du traitement au statut " + importReport.getStatus() + " avec l'erreur: " + message);
+        importReport.setMessage("Arrêt imprévu du traitement au statut " + importReport.getStatus()
+                                + " avec l'erreur: "
+                                + message);
         importReport.setStatus(ImportReport.Status.FAILED);
 
         final ImportReport savedReport = importReportRepository.save(importReport);
@@ -444,8 +433,8 @@ public class ImportReportService {
 
     @Transactional(readOnly = true)
     public Page<ImportReport> findAllByLibraryIn(final List<String> libraries, final int page, final int size) {
-        final Sort order = new Sort(Sort.Direction.DESC, "createdDate");
-        final Pageable pageable = new PageRequest(page, size, order);
+        final Sort order = Sort.by(Sort.Direction.DESC, "createdDate");
+        final Pageable pageable = PageRequest.of(page, size, order);
 
         if (CollectionUtils.isEmpty(libraries)) {
             return importReportRepository.findAll(pageable);
@@ -466,7 +455,7 @@ public class ImportReportService {
                                      final List<String> libraries,
                                      final Integer page,
                                      final Integer size) {
-        final Pageable pageRequest = new PageRequest(page, size);
+        final Pageable pageRequest = PageRequest.of(page, size);
         return importReportRepository.search(search, users, status, libraries, pageRequest);
     }
 
@@ -499,21 +488,26 @@ public class ImportReportService {
         final List<String> docUnitIds = importReportRepository.findDocUnitIdentifiersByReportAndDocUnitState(identifier, DocUnit.State.NOT_AVAILABLE);
 
         LOG.debug("Suppression des références aux unités documentaires dans le rapport d'import {}", identifier);
-        transactionalLoopService.loop(Lists.partition(importedIds, BATCH_SIZE), 1, false, ids -> {
+        new TransactionalJobRunner<>(importedIds, transactionService).setCommit(BATCH_SIZE).forEachGroup(BATCH_SIZE, ids -> {
             importedDocUnitRepository.deleteDuplicatedUnitsByImportedDocUnitIds(ids);
             importedDocUnitRepository.deleteMessagesByImportedDocUnitIds(ids);
             importedDocUnitRepository.deleteByIds(ids);
-        });
+            return true;
+        }).process();
         LOG.debug("Suppression des unités documentaires liées au rapport d'import {}", identifier);
-        transactionalLoopService.loop(Lists.partition(docUnitIds, BATCH_SIZE), 1, false, docUnitRepository::setParentNullByParentIdIn);
-        transactionalLoopService.loop(Lists.partition(docUnitIds, BATCH_SIZE), 1, false, ids -> {
+        new TransactionalJobRunner<>(docUnitIds, transactionService).setCommit(BATCH_SIZE).forEachGroup(BATCH_SIZE, ids -> {
+            docUnitRepository.setParentNullByParentIdIn(ids);
+            return true;
+        }).process();
+        new TransactionalJobRunner<>(docUnitIds, transactionService).setCommit(BATCH_SIZE).forEachGroup(BATCH_SIZE, ids -> {
             final List<DocUnit> docUnits = docUnitRepository.findByIdentifierIn(ids);
-            docUnitRepository.delete(docUnits);
-        });
+            docUnitRepository.deleteAll(docUnits);
+            return true;
+        }).process();
 
         // Suppression du rapport
         LOG.debug("Suppression du rapport d'import {}", identifier);
-        importReportRepository.delete(identifier);
+        importReportRepository.deleteById(identifier);
     }
 
     /**
@@ -555,7 +549,7 @@ public class ImportReportService {
      * @return
      */
     public File saveImportFile(final InputStream source, final ImportReport importReport, final String fileName) {
-        
+
         final Path root = Paths.get(importDir);
         final String destName = Base64.getEncoder().encodeToString(fileName.getBytes(StandardCharsets.UTF_8));
 
@@ -600,7 +594,8 @@ public class ImportReportService {
             }
         }
         if (StringUtils.isNotBlank(message)) {
-            message += " (message original: " + StringUtils.join(getStackMessages(e), ", ") + ")";
+            message += " (message original: " + StringUtils.join(getStackMessages(e), ", ")
+                       + ")";
             return message;
         }
         return findKnownException(e.getCause());

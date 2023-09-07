@@ -1,10 +1,10 @@
-<div class="alert alert-warning margin-10" ng-if="!mainCtrl.isConfigured()" translate>
-    Veuillez configurer le widget via le bouton de configuration à droite du titre de ce widget.
-</div>
-<numa-alert-audit-entity entity-type="delivery" 
-                         columns="[{'name': 'Livraison', 'field': 'label'}, {'name': 'Lot', 'field': 'lotLabel'}]"
-                         filter="mainCtrl.config"
-                         status-prefix="delivery"
-                         set-count="mainCtrl.setTitleBadge(value)"
-                         ng-if="mainCtrl.isConfigured()"
-                         provider="mainCtrl.loadDeliveries(params)" ></numa-alert-audit-entity>
+<div class="alert alert-warning margin-10" ng-if="!mainCtrl.isConfigured()" translate>Veuillez configurer le widget via le bouton de configuration à droite du titre de ce widget.</div>
+<numa-alert-audit-entity
+    entity-type="delivery"
+    columns="[{'name': 'Livraison', 'field': 'label'}, {'name': 'Lot', 'field': 'lotLabel'}]"
+    filter="mainCtrl.config"
+    status-prefix="delivery"
+    set-count="mainCtrl.setTitleBadge(value)"
+    ng-if="mainCtrl.isConfigured()"
+    provider="mainCtrl.loadDeliveries(params)"
+></numa-alert-audit-entity>

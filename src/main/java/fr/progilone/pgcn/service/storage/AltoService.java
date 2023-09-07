@@ -1,5 +1,6 @@
 package fr.progilone.pgcn.service.storage;
 
+import jakarta.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,8 +9,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import javax.annotation.PostConstruct;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -18,15 +17,13 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.URIResolver;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-
+import net.sf.saxon.TransformerFactoryImpl;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
-
-import net.sf.saxon.TransformerFactoryImpl;
 
 @Service
 public class AltoService {
@@ -44,7 +41,7 @@ public class AltoService {
 
     @Value("${instance.libraries}")
     private String[] instanceLibraries;
-    
+
     @Value("${services.archive.alto}")
     private String outputPath;
 
@@ -59,20 +56,20 @@ public class AltoService {
 
     @PostConstruct
     public void initialize() {
-        
-        // 1 disk space per library 
+
+        // 1 disk space per library
         Arrays.asList(instanceLibraries).forEach(lib -> {
             try {
                 FileUtils.forceMkdir(new File(outputPath, lib));
             } catch (final IOException ex) {
                 LOG.error(ex.getMessage(), ex);
             }
-        }); 
+        });
     }
 
     /**
      * Creation du fichier alto.xml par transformation depuis un hocr.
-     * 
+     *
      * @param hocr
      * @param prefix
      * @param libraryId
@@ -87,6 +84,7 @@ public class AltoService {
             final Transformer transformer = fact.newTransformer(new StreamSource(xslInput));
 
             transformer.setURIResolver(new URIResolver() {
+
                 @Override
                 public Source resolve(final String href, final String base) throws TransformerException {
                     try {
@@ -100,7 +98,7 @@ public class AltoService {
 
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
             transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
-            
+
             final File xmlAlto = new File(Paths.get(outputPath, libraryId, prefix).toFile(), ALTO_XML_FILE);
             if (hocr != null && hocr.isFile()) {
                 final Source hocrInput = new StreamSource(hocr);
@@ -132,6 +130,7 @@ public class AltoService {
             final Transformer transformer = fact.newTransformer(new StreamSource(xslInput));
 
             transformer.setURIResolver(new URIResolver() {
+
                 @Override
                 public Source resolve(final String href, final String base) throws TransformerException {
                     try {

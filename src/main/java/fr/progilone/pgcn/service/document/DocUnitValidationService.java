@@ -48,11 +48,10 @@ public class DocUnitValidationService {
         }
         // statut + pgcn_id unique
         else {
-            final Long countDuplicates = doc.getIdentifier() == null ?
-                                         docUnitRepository.countByPgcnIdAndState(doc.getPgcnId(), doc.getState()) :
-                                         docUnitRepository.countByPgcnIdAndStateAndIdentifierNot(doc.getPgcnId(),
-                                                                                                 doc.getState(),
-                                                                                                 doc.getIdentifier());
+            final Long countDuplicates = doc.getIdentifier() == null ? docUnitRepository.countByPgcnIdAndState(doc.getPgcnId(), doc.getState())
+                                                                     : docUnitRepository.countByPgcnIdAndStateAndIdentifierNot(doc.getPgcnId(),
+                                                                                                                               doc.getState(),
+                                                                                                                               doc.getIdentifier());
             if (countDuplicates > 0) {
                 errors.add(builder.reinit()
                                   .setCode(PgcnErrorCode.DOC_UNIT_DUPLICATE_PGCN_ID)

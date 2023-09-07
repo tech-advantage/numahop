@@ -1,34 +1,41 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
 
     <changeSet id="pgcn-condition-report-008" author="progilone">
 
         <addColumn tableName="doc_unit">
-            <column name="condreport_type" type="varchar(255)"/>
+            <column name="condreport_type" type="varchar(255)" />
         </addColumn>
 
         <createTable tableName="doc_condreport_property_config_type">
-            <column name="conf" type="varchar(191)"/>
+            <column name="conf" type="varchar(191)" />
             <column name="type" type="varchar(255)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>
 
-        <addForeignKeyConstraint baseTableName="doc_condreport_property_config_type" baseColumnNames="conf" constraintName="fk_prop_conf_type_conf"
-                                 referencedTableName="doc_condreport_property_config" referencedColumnNames="identifier"/>
+        <addForeignKeyConstraint
+            baseTableName="doc_condreport_property_config_type"
+            baseColumnNames="conf"
+            constraintName="fk_prop_conf_type_conf"
+            referencedTableName="doc_condreport_property_config"
+            referencedColumnNames="identifier"
+        />
         <createIndex tableName="doc_condreport_property_config_type" indexName="idx_prop_conf_type_conf">
-            <column name="conf"/>
+            <column name="conf" />
         </createIndex>
 
-        <sql dbms="mysql">
+        <sql>
             INSERT INTO doc_condreport_property_config_type(conf, type)
             SELECT c.identifier, t.type
             FROM doc_condreport_property_config c
-                CROSS JOIN (SELECT 'MONO_PAGE' AS 'type' UNION SELECT 'MULTI_PAGE') t
-            WHERE c.show_on_creation=1
+                     CROSS JOIN (SELECT 'MONO_PAGE' AS 'type' UNION SELECT 'MULTI_PAGE') t
+            WHERE c.show_on_creation = 1
         </sql>
 
     </changeSet>

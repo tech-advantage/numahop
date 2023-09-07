@@ -1,19 +1,24 @@
-<div class="alert alert-warning" ng-if="!mainCtrl.isConfigured()" translate>
-    Veuillez configurer le widget via le bouton de configuration à droite du titre de ce widget.
-</div>
+<div class="alert alert-warning" ng-if="!mainCtrl.isConfigured()" translate>Veuillez configurer le widget via le bouton de configuration à droite du titre de ce widget.</div>
 <div class="col-xs-12" ng-show="mainCtrl.isConfigured() && mainCtrl.project">
     <div class="text-center">
         <div class="dashboard-progress-wrapper" ng-show="mainCtrl.size > 0">
-            <div round-progress max="mainCtrl.maxSize" current="mainCtrl.size" color="{{mainCtrl.progressBar.color}}"
-                bgcolor="#eaeaea" radius="50" stroke="15" semi="false" rounded="true" clockwise="true" animation="easeOutCubic"></div>
+            <div
+                round-progress
+                max="mainCtrl.maxSize"
+                current="mainCtrl.size"
+                color="{{mainCtrl.progressBar.color}}"
+                bgcolor="#eaeaea"
+                radius="50"
+                stroke="15"
+                semi="false"
+                rounded="true"
+                clockwise="true"
+                animation="easeOutCubic"
+            ></div>
             <div class="dashboard-progress dashboard-progress-1line">
                 <div class="dashboard-progress-current">
-                    <span translate translate-n="mainCtrl.size" 
-                        translate-plural="{{mainCtrl.size || 0}} documents contrôlés">1 document contrôlé
-                    </span>&nbsp;/&nbsp;
-                    <span translate translate-n="mainCtrl.maxSize" 
-                        translate-plural="{{mainCtrl.maxSize}} documents">1 document
-                    </span>
+                    <span translate translate-n="mainCtrl.size" translate-plural="{{mainCtrl.size || 0}} documents contrôlés">1 document contrôlé </span>&nbsp;/&nbsp;
+                    <span translate translate-n="mainCtrl.maxSize" translate-plural="{{mainCtrl.maxSize}} documents">1 document </span>
                 </div>
             </div>
         </div>

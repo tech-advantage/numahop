@@ -5,28 +5,28 @@
 // Généré le : 2017.05.16 à 10:56:55 AM CEST
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.ead;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElements;
+import jakarta.xml.bind.annotation.XmlID;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlID;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 
 /**
- * <p>Classe Java pour c complex type.
+ * <p>
+ * Classe Java pour c complex type.
  *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="c">
@@ -50,52 +50,47 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "c", propOrder = {
-    "head",
-    "did",
-    "mDescFull",
-    "theadAndC"
-})
+@XmlType(name = "c",
+         propOrder = {"head",
+                      "did",
+                      "mDescFull",
+                      "theadAndC"})
 @XmlRootElement(name = "c")
 public class C {
 
     protected Head head;
     @XmlElement(required = true)
     protected Did did;
-    @XmlElements({
-        @XmlElement(name = "accessrestrict", type = Accessrestrict.class),
-        @XmlElement(name = "accruals", type = Accruals.class),
-        @XmlElement(name = "acqinfo", type = Acqinfo.class),
-        @XmlElement(name = "altformavail", type = Altformavail.class),
-        @XmlElement(name = "appraisal", type = Appraisal.class),
-        @XmlElement(name = "arrangement", type = Arrangement.class),
-        @XmlElement(name = "bibliography", type = Bibliography.class),
-        @XmlElement(name = "bioghist", type = Bioghist.class),
-        @XmlElement(name = "controlaccess", type = Controlaccess.class),
-        @XmlElement(name = "custodhist", type = Custodhist.class),
-        @XmlElement(name = "descgrp", type = Descgrp.class),
-        @XmlElement(name = "fileplan", type = Fileplan.class),
-        @XmlElement(name = "index", type = Index.class),
-        @XmlElement(name = "odd", type = Odd.class),
-        @XmlElement(name = "originalsloc", type = Originalsloc.class),
-        @XmlElement(name = "otherfindaid", type = Otherfindaid.class),
-        @XmlElement(name = "phystech", type = Phystech.class),
-        @XmlElement(name = "prefercite", type = Prefercite.class),
-        @XmlElement(name = "processinfo", type = Processinfo.class),
-        @XmlElement(name = "relatedmaterial", type = Relatedmaterial.class),
-        @XmlElement(name = "scopecontent", type = Scopecontent.class),
-        @XmlElement(name = "separatedmaterial", type = Separatedmaterial.class),
-        @XmlElement(name = "userestrict", type = Userestrict.class),
-        @XmlElement(name = "dsc", type = Dsc.class),
-        @XmlElement(name = "dao", type = Dao.class),
-        @XmlElement(name = "daogrp", type = Daogrp.class),
-        @XmlElement(name = "note", type = Note.class)
-    })
+    @XmlElements({@XmlElement(name = "accessrestrict", type = Accessrestrict.class),
+                  @XmlElement(name = "accruals", type = Accruals.class),
+                  @XmlElement(name = "acqinfo", type = Acqinfo.class),
+                  @XmlElement(name = "altformavail", type = Altformavail.class),
+                  @XmlElement(name = "appraisal", type = Appraisal.class),
+                  @XmlElement(name = "arrangement", type = Arrangement.class),
+                  @XmlElement(name = "bibliography", type = Bibliography.class),
+                  @XmlElement(name = "bioghist", type = Bioghist.class),
+                  @XmlElement(name = "controlaccess", type = Controlaccess.class),
+                  @XmlElement(name = "custodhist", type = Custodhist.class),
+                  @XmlElement(name = "descgrp", type = Descgrp.class),
+                  @XmlElement(name = "fileplan", type = Fileplan.class),
+                  @XmlElement(name = "index", type = Index.class),
+                  @XmlElement(name = "odd", type = Odd.class),
+                  @XmlElement(name = "originalsloc", type = Originalsloc.class),
+                  @XmlElement(name = "otherfindaid", type = Otherfindaid.class),
+                  @XmlElement(name = "phystech", type = Phystech.class),
+                  @XmlElement(name = "prefercite", type = Prefercite.class),
+                  @XmlElement(name = "processinfo", type = Processinfo.class),
+                  @XmlElement(name = "relatedmaterial", type = Relatedmaterial.class),
+                  @XmlElement(name = "scopecontent", type = Scopecontent.class),
+                  @XmlElement(name = "separatedmaterial", type = Separatedmaterial.class),
+                  @XmlElement(name = "userestrict", type = Userestrict.class),
+                  @XmlElement(name = "dsc", type = Dsc.class),
+                  @XmlElement(name = "dao", type = Dao.class),
+                  @XmlElement(name = "daogrp", type = Daogrp.class),
+                  @XmlElement(name = "note", type = Note.class)})
     protected List<Object> mDescFull;
-    @XmlElements({
-        @XmlElement(name = "thead", type = Thead.class),
-        @XmlElement(name = "c", type = C.class)
-    })
+    @XmlElements({@XmlElement(name = "thead", type = Thead.class),
+                  @XmlElement(name = "c", type = C.class)})
     protected List<Object> theadAndC;
     @XmlAttribute(name = "level")
     protected AvLevel level;
@@ -126,8 +121,8 @@ public class C {
      * Obtient la valeur de la propriété head.
      *
      * @return
-     *     possible object is
-     *     {@link Head }
+     *         possible object is
+     *         {@link Head }
      *
      */
     public Head getHead() {
@@ -138,8 +133,8 @@ public class C {
      * Définit la valeur de la propriété head.
      *
      * @param value
-     *     allowed object is
-     *     {@link Head }
+     *            allowed object is
+     *            {@link Head }
      *
      */
     public void setHead(Head value) {
@@ -150,8 +145,8 @@ public class C {
      * Obtient la valeur de la propriété did.
      *
      * @return
-     *     possible object is
-     *     {@link Did }
+     *         possible object is
+     *         {@link Did }
      *
      */
     public Did getDid() {
@@ -162,8 +157,8 @@ public class C {
      * Définit la valeur de la propriété did.
      *
      * @param value
-     *     allowed object is
-     *     {@link Did }
+     *            allowed object is
+     *            {@link Did }
      *
      */
     public void setDid(Did value) {
@@ -181,8 +176,9 @@ public class C {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getMDescFull().add(newItem);
+     * getMDescFull().add(newItem);
      * </pre>
      *
      *
@@ -236,8 +232,9 @@ public class C {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getTheadAndC().add(newItem);
+     * getTheadAndC().add(newItem);
      * </pre>
      *
      *
@@ -259,8 +256,8 @@ public class C {
      * Obtient la valeur de la propriété level.
      *
      * @return
-     *     possible object is
-     *     {@link AvLevel }
+     *         possible object is
+     *         {@link AvLevel }
      *
      */
     public AvLevel getLevel() {
@@ -271,8 +268,8 @@ public class C {
      * Définit la valeur de la propriété level.
      *
      * @param value
-     *     allowed object is
-     *     {@link AvLevel }
+     *            allowed object is
+     *            {@link AvLevel }
      *
      */
     public void setLevel(AvLevel value) {
@@ -283,8 +280,8 @@ public class C {
      * Obtient la valeur de la propriété otherlevel.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getOtherlevel() {
@@ -295,8 +292,8 @@ public class C {
      * Définit la valeur de la propriété otherlevel.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setOtherlevel(String value) {
@@ -307,8 +304,8 @@ public class C {
      * Obtient la valeur de la propriété encodinganalog.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getEncodinganalog() {
@@ -319,8 +316,8 @@ public class C {
      * Définit la valeur de la propriété encodinganalog.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setEncodinganalog(String value) {
@@ -331,8 +328,8 @@ public class C {
      * Obtient la valeur de la propriété id.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getId() {
@@ -343,8 +340,8 @@ public class C {
      * Définit la valeur de la propriété id.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setId(String value) {
@@ -355,8 +352,8 @@ public class C {
      * Obtient la valeur de la propriété altrender.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getAltrender() {
@@ -367,8 +364,8 @@ public class C {
      * Définit la valeur de la propriété altrender.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setAltrender(String value) {
@@ -379,8 +376,8 @@ public class C {
      * Obtient la valeur de la propriété audience.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getAudience() {
@@ -391,8 +388,8 @@ public class C {
      * Définit la valeur de la propriété audience.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setAudience(String value) {
@@ -403,8 +400,8 @@ public class C {
      * Obtient la valeur de la propriété tpattern.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getTpattern() {
@@ -415,8 +412,8 @@ public class C {
      * Définit la valeur de la propriété tpattern.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setTpattern(String value) {

@@ -1,17 +1,19 @@
 package fr.progilone.pgcn.service.util.transaction;
 
+import jakarta.persistence.EntityManager;
 import org.hibernate.SessionFactory;
 import org.hibernate.StatelessSession;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
-
-import javax.persistence.EntityManager;
-import javax.transaction.Transactional;
 
 /**
  * Service permettant de gérer des transactions à la main. Deux types de transactions sont possibles :
@@ -31,13 +33,20 @@ public class TransactionService {
     private final PlatformTransactionManager txManager;
     private final LocalContainerEntityManagerFactoryBean entityManagerFactory;
     private final EntityManager entityManager;
+    private final ThreadPoolTaskExecutor taskExecutor;
 
     public TransactionService(final PlatformTransactionManager txManager,
                               final LocalContainerEntityManagerFactoryBean entityManagerFactory,
-                              final EntityManager entityManager) {
+                              final EntityManager entityManager,
+                              @Qualifier("jobRunnerExecutor") final ThreadPoolTaskExecutor taskExecutor) {
         this.txManager = txManager;
         this.entityManagerFactory = entityManagerFactory;
         this.entityManager = entityManager;
+        this.taskExecutor = taskExecutor;
+    }
+
+    public ThreadPoolTaskExecutor getTaskExecutor() {
+        return taskExecutor;
     }
 
     public TransactionStatus startTransaction(final boolean readonly) {
@@ -76,9 +85,6 @@ public class TransactionService {
     /**
      * Utilise la session passée en paramètre et démarre une nouvelle transaction. Si la session est <code>null</code>,
      * une nouvelle est créee. Attention à bien fermer la session après l'avoir utilisée !
-     *
-     * @param session
-     * @return StatelessSession
      */
     public StatelessSession startStatelessTransaction(StatelessSession session) {
         if (session == null || !session.isOpen()) {
@@ -90,8 +96,6 @@ public class TransactionService {
 
     /**
      * Commite la transaction contenue dans la session.
-     *
-     * @param session
      */
     public void commitStatelessTransaction(final StatelessSession session) {
         session.getTransaction().commit();
@@ -99,8 +103,6 @@ public class TransactionService {
 
     /**
      * Rollback la transaction contenue dans la session.
-     *
-     * @param session
      */
     public void rollbackStatelessTransaction(final StatelessSession session) {
         if (session.getTransaction().getStatus() == org.hibernate.resource.transaction.spi.TransactionStatus.ACTIVE) {
@@ -110,8 +112,6 @@ public class TransactionService {
 
     /**
      * Ferme la session
-     *
-     * @param session
      */
     public void closeStatelessSession(final StatelessSession session) {
         session.close();
@@ -120,7 +120,7 @@ public class TransactionService {
     /**
      * Exécute une méthode dans une nouvelle transaction
      */
-    @Transactional(value = Transactional.TxType.REQUIRES_NEW, rollbackOn = Exception.class)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
     public void executeInNewTransaction(final Runnable runnable) {
         runnable.run();
     }
@@ -128,7 +128,7 @@ public class TransactionService {
     /**
      * Exécute une méthode dans une nouvelle transaction non readonly
      */
-    @Transactional(value = Transactional.TxType.REQUIRES_NEW, rollbackOn = Exception.class)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
     public <T> T executeInNewTransactionWithReturn(final RunnableWithReturn<T> runnable) {
         return runnable.run();
     }
@@ -136,7 +136,7 @@ public class TransactionService {
     /**
      * Exécute une méthode dans une nouvelle transaction non readonly
      */
-    @Transactional(value = Transactional.TxType.REQUIRES_NEW, rollbackOn = Exception.class)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
     public <T> T executeInNewTransactionWithReturnAndException(final RunnableWithReturnAndException<T> runnable) throws Exception {
         return runnable.run();
     }
@@ -145,7 +145,7 @@ public class TransactionService {
      * Exécute une méthode dans une nouvelle transaction asynchrone
      */
     @Async
-    @Transactional(value = Transactional.TxType.REQUIRES_NEW, rollbackOn = Exception.class)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
     public void executeInNewTransactionAsync(final Runnable runnable) {
         executeInNewTransaction(runnable);
     }

@@ -9,7 +9,6 @@
                 });
             },
             findByDates: function (fromDate, toDate) {
-
                 var formatDate = function (dateToFormat) {
                     if (angular.isDefined(dateToFormat) && !angular.isString(dateToFormat)) {
                         return dateToFormat.getYear() + '-' + dateToFormat.getMonth() + '-' + dateToFormat.getDay();
@@ -17,15 +16,17 @@
                     return dateToFormat;
                 };
 
-                return $http.get('api_int/audits/byDates', {
-                    params: {
-                        fromDate: formatDate(fromDate),
-                        toDate: formatDate(toDate)
-                    }
-                }).then(function (response) {
-                    return response.data;
-                });
-            }
+                return $http
+                    .get('api_int/audits/byDates', {
+                        params: {
+                            fromDate: formatDate(fromDate),
+                            toDate: formatDate(toDate),
+                        },
+                    })
+                    .then(function (response) {
+                        return response.data;
+                    });
+            },
         };
     });
 })();

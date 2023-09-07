@@ -1,20 +1,80 @@
+/** Composant menuTop.html**/
+.menuTop {
+    display: flex;
+    height: 5rem;
+}
+
+.menuTop_languages {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.menuTop_languages_locales {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.menuTop_languages_locales__span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.menuTop_languages_locales__span-link {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 0.5rem;
+    height: 100%;
+}
+
 /** Composant: document -> allOperations **/
 .workflow {
     display: flex;
     justify-content: center;
     align-items: center;
 }
+
 .workflow__notExist {
     display: flex;
     align-items: center;
 }
+
 .workflow__notExist--message {
     margin: 1em;
 }
-.workflow__notExist--button {}
+
+.workflow__notExist--button {
+}
 
 /** Composant: menuLeft **/
 .longMenu {
     max-height: 25rem;
     overflow: auto;
+}
+
+/** Rotate icon accordion   **/
+.rotate-icon-down {
+    transition: 0.5s;
+    transform: rotate(90deg);
+}
+
+.rotate-icon-up {
+    transition: 0.5s;
+    transform: rotate(0deg);
+}
+
+/** Composant: importEdit **/
+.import__accordion-body .panel-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.import__accordion-body .panel-body sem-field {
+    margin-top: 1rem;
 }

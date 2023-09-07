@@ -1,36 +1,31 @@
 package fr.progilone.pgcn.service.exchange.cines;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
+import fr.progilone.pgcn.domain.jaxb.facile.FacileResponse;
+import fr.progilone.pgcn.domain.jaxb.facile.ValidatorType;
+import fr.progilone.pgcn.service.check.FacileCinesService;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
-
-import fr.progilone.pgcn.domain.jaxb.facile.FacileResponse;
-import fr.progilone.pgcn.domain.jaxb.facile.ValidatorType;
-import fr.progilone.pgcn.service.check.FacileCinesService;
 
 /**
  * Created by Jonathan on 10/02/2017.
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class FacileCinesServiceTest {
 
     private static final String VALIDATOR_FORMAT_PNG = "PNG";
@@ -41,17 +36,17 @@ public class FacileCinesServiceTest {
 
     private FacileCinesService service;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         service = new FacileCinesService();
         ReflectionTestUtils.setField(service, "facileApiUrl", FACILE_TEST_URL);
     }
 
-    @Ignore
+    @Disabled
     @Test
     public void testCheckFilesAgainstFacile() {
         // ignoré car chronophage - mais ça fonctionne !
-        
+
         final List<File> files = getTestListFiles();
         final List<ValidatorType> results = service.checkFilesAgainstFacile(files.toArray(new File[files.size()]));
         results.forEach(this::validateResult);
@@ -104,9 +99,11 @@ public class FacileCinesServiceTest {
 
     private List<File> getTestListFiles() {
         final File baseDirectory = new File(RESOURCE_FOLDER);
-        final List<File> files = new ArrayList<File>();
+        final List<File> files = new ArrayList<>();
         for (int i = 1; i < 6; i++) {
-            final File file = new File(baseDirectory, FILE_PREFIX + i + FILE_SUFFIX);
+            final File file = new File(baseDirectory,
+                                       FILE_PREFIX + i
+                                                      + FILE_SUFFIX);
             files.add(file);
         }
         return files;

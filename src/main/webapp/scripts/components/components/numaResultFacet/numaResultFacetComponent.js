@@ -1,14 +1,13 @@
 (function () {
-    "use strict";
+    'use strict';
 
-    angular.module('numaHopApp.component')
-        .component("numaResultFacet", {
-            bindings: {
-                "aggs": "<",
-                "filters": "<",
-                "onChange": "&"
-            },
-            templateUrl: "/scripts/components/components/numaResultFacet/numaResultFacet.html",
-            controller: "NumaResultFacetCtrl"
-        });
+    angular.module('numaHopApp.component').component('numaResultFacet', {
+        bindings: {
+            aggs: '<',
+            filters: '<',
+            onChange: '&',
+        },
+        templateUrl: '/scripts/components/components/numaResultFacet/numaResultFacet.html',
+        controller: 'NumaResultFacetCtrl',
+    });
 })();

@@ -1,18 +1,16 @@
-<div class="alert alert-warning margin-10" ng-if="!mainCtrl.isConfigured()" translate>
-    Veuillez configurer le widget via le bouton de configuration à droite du titre de ce widget.
-</div>
+<div class="alert alert-warning margin-10" ng-if="!mainCtrl.isConfigured()" translate>Veuillez configurer le widget via le bouton de configuration à droite du titre de ce widget.</div>
 <div class="row" ng-if="mainCtrl.chartData">
     <div class="col-xs-12" ng-switch="mainCtrl.config.format.identifier">
         <!-- Anneau -->
-        <div ng-switch-when="doughnut" style="width:95%; text-align: center">
+        <div ng-switch-when="doughnut" style="width: 95%; text-align: center">
             <canvas chart-doughnut chart-data="mainCtrl.data" chart-labels="mainCtrl.labels" chart-options="mainCtrl.options" />
         </div>
         <!-- Camembert -->
-        <div ng-switch-when="pie" style="width:95%; text-align: center">
+        <div ng-switch-when="pie" style="width: 95%; text-align: center">
             <canvas chart-pie chart-data="mainCtrl.data" chart-labels="mainCtrl.labels" chart-options="mainCtrl.options" />
         </div>
         <!-- Histogramme -->
-        <div ng-switch-when="hbar" style="width:95%; text-align: center">
+        <div ng-switch-when="hbar" style="width: 95%; text-align: center">
             <canvas chart-horizontal-bar chart-data="mainCtrl.data" chart-labels="mainCtrl.labels" chart-options="mainCtrl.options" />
         </div>
         <!-- Liste -->
@@ -29,18 +27,10 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="text-left" ng-if="mainCtrl.chartData.projectIdentifier">
-                            {{ ::mainCtrl.chartData.projectName }}
-                        </td>
-                        <td class="text-left" ng-if="mainCtrl.chartData.lotIdentifier">
-                            {{ ::mainCtrl.chartData.lotLabel }}
-                        </td>
-                        <td class="text-left nowrap">
-                            {{ ::mainCtrl.chartData.nbDocOnState | number }}
-                        </td>
-                        <td class="text-left nowrap">
-                            {{ ::mainCtrl.chartData.nbDoc | number }}
-                        </td>
+                        <td class="text-left" ng-if="mainCtrl.chartData.projectIdentifier">{{ ::mainCtrl.chartData.projectName }}</td>
+                        <td class="text-left" ng-if="mainCtrl.chartData.lotIdentifier">{{ ::mainCtrl.chartData.lotLabel }}</td>
+                        <td class="text-left nowrap">{{ ::mainCtrl.chartData.nbDocOnState | number }}</td>
+                        <td class="text-left nowrap">{{ ::mainCtrl.chartData.nbDoc | number }}</td>
                         <td ng-if="mainCtrl.chartData.projectIdentifier">
                             <numa-custom-link numa-link-type="project" numa-link-parameters="{id: mainCtrl.chartData.projectIdentifier}"></numa-custom-link>
                         </td>

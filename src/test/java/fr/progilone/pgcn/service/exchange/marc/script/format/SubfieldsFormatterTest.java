@@ -1,16 +1,15 @@
 package fr.progilone.pgcn.service.exchange.marc.script.format;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import fr.progilone.pgcn.service.exchange.marc.MarcMappingEvaluationService;
 import fr.progilone.pgcn.service.exchange.marc.script.AbstractScriptTest;
-import org.junit.Test;
-import org.marc4j.marc.DataField;
-import org.marc4j.marc.MarcFactory;
-
-import javax.script.ScriptException;
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.junit.Assert.*;
+import javax.script.ScriptException;
+import org.junit.jupiter.api.Test;
+import org.marc4j.marc.DataField;
+import org.marc4j.marc.MarcFactory;
 
 /**
  * Created by Sebastien on 02/12/2016.
@@ -149,8 +148,7 @@ public class SubfieldsFormatterTest extends AbstractScriptTest {
         fld200.addSubfield(MARC_FACTORY.newSubfield('e', "l'oeuvre et l'image"));
         fld200.addSubfield(MARC_FACTORY.newSubfield('g', "test g"));
 
-        final String configuration = "subfieldsAdd('a')\n"
-                                     + "subfieldsAdd('b', ', ')\n"
+        final String configuration = "subfieldsAdd('a')\n" + "subfieldsAdd('b', ', ')\n"
                                      + "subfieldsAdd('e', ' - ', '#')\n"
                                      + "subfieldsAddGroup(' (', ')', ', ', 'f', ', ', 'g')";
         final String expression = "subfields(marc_200)";
@@ -169,14 +167,14 @@ public class SubfieldsFormatterTest extends AbstractScriptTest {
         fld200.addSubfield(MARC_FACTORY.newSubfield('a', "Les Arts bibliographiques"));
         fld200.addSubfield(MARC_FACTORY.newSubfield('4', "070"));
 
-        final String configuration = "subfieldsAdd('a')\n"
-                                     + "subfieldsAdd('4', ', ')\n"
+        final String configuration = "subfieldsAdd('a')\n" + "subfieldsAdd('4', ', ')\n"
                                      + "subfieldsTransliterate('4', 'FUNCTION')\n";
         final String expression = "subfields(marc_200)";
 
         final Map<String, Object> bindings = new HashMap<>();
         bindings.put("marc_200", fld200);
         bindings.put(MarcMappingEvaluationService.BINDING_FN_TRANSLITERATE, new Object() {
+
             public String getValue(final String type, final String code) {
                 return "Auteur";
             }

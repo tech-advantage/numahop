@@ -1,12 +1,9 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('LotListCtrl', LotListCtrl);
+    angular.module('numaHopApp.controller').controller('LotListCtrl', LotListCtrl);
 
-    function LotListCtrl($q, $routeParams, DtoService, gettext, gettextCatalog, HistorySrvc, LotSrvc,
-        NumahopUrlService, MessageSrvc, ModalSrvc, NumaHopInitializationSrvc, NumahopStorageService, SelectionSrvc) {
-
+    function LotListCtrl($q, $routeParams, DtoService, gettext, gettextCatalog, HistorySrvc, LotSrvc, NumahopUrlService, MessageSrvc, ModalSrvc, NumaHopInitializationSrvc, NumahopStorageService, SelectionSrvc) {
         var mainCtrl = this;
 
         /** check actions **/
@@ -42,7 +39,7 @@
         }
 
         var PAGE_START = 1;
-        var FILTER_STORAGE_SERVICE_KEY = "lot_list";
+        var FILTER_STORAGE_SERVICE_KEY = 'lot_list';
 
         /**
          * Recherche
@@ -64,15 +61,15 @@
             totalItems: 0,
             busy: false,
             page: PAGE_START,
-            size: mainCtrl.pageSize
+            size: mainCtrl.pageSize,
         };
 
         mainCtrl.sizeOptions = [
-            { value: 10, label: "10" },
-            { value: 20, label: "20" },
-            { value: 50, label: "50" },
-            { value: 100, label: "100" },
-            { value: null, label: "Tout" }
+            { value: 10, label: '10' },
+            { value: 20, label: '20' },
+            { value: 50, label: '50' },
+            { value: 100, label: '100' },
+            { value: null, label: 'Tout' },
         ];
 
         /**
@@ -82,7 +79,7 @@
         mainCtrl.filters = {
             libraries: [],
             available: true,
-            projects: []
+            projects: [],
         };
 
         /**
@@ -95,7 +92,7 @@
             last_modified_date_filter: true,
             project_filter: true,
             lot_filter: true,
-            created_date_filter: true
+            created_date_filter: true,
         };
 
         /**
@@ -116,16 +113,16 @@
             libraries: [],
             projects: [],
             type: {
-                "PHYSICAL": gettextCatalog.getString('Physique'),
-                "DIGITAL": gettextCatalog.getString('Numérique')
+                PHYSICAL: gettextCatalog.getString('Physique'),
+                DIGITAL: gettextCatalog.getString('Numérique'),
             },
             status: {
-                "CREATED": gettextCatalog.getString('Créé'),
-                "ONGOING": gettextCatalog.getString('En cours'),
-                "PENDING": gettextCatalog.getString('En attente'),
-                "CANCELED": gettextCatalog.getString('Annulé'),
-                "CLOSED": gettextCatalog.getString('Clôturé')
-            }
+                CREATED: gettextCatalog.getString('Créé'),
+                ONGOING: gettextCatalog.getString('En cours'),
+                PENDING: gettextCatalog.getString('En attente'),
+                CANCELED: gettextCatalog.getString('Annulé'),
+                CLOSED: gettextCatalog.getString('Clôturé'),
+            },
         };
 
         init();
@@ -135,7 +132,7 @@
          * @return {[type]} [description]
          */
         function init() {
-            HistorySrvc.add(gettextCatalog.getString("Catalogue toutes opérations"));
+            HistorySrvc.add(gettextCatalog.getString('Catalogue toutes opérations'));
             mainCtrl.isFilteredByIds = !!$routeParams.searchresult;
 
             // Opérations groupées sur les résultats de recherche
@@ -144,52 +141,51 @@
             }
 
             // Chargement des données
-            $q.all([NumaHopInitializationSrvc.loadProjects()])
-                .then(function (data) {
-                    mainCtrl.options.projects = data[0];
-                    
-                    loadFilters();
-                    loadPageSize();
-                    
-                    getPage().then(function () {
-                        // auto-sélection
-                        if (mainCtrl.isFilteredByIds) {
-                            mainCtrl.checkAll();
-                        }
-                        mainCtrl.loaded = true;
-                    });
-                    // Affichage pour un temps limité à l'ouverture
-                    MessageSrvc.initPanel();
+            $q.all([NumaHopInitializationSrvc.loadProjects()]).then(function (data) {
+                mainCtrl.options.projects = data[0];
+
+                loadFilters();
+                loadPageSize();
+
+                getPage().then(function () {
+                    // auto-sélection
+                    if (mainCtrl.isFilteredByIds) {
+                        mainCtrl.checkAll();
+                    }
+                    mainCtrl.loaded = true;
                 });
+                // Affichage pour un temps limité à l'ouverture
+                MessageSrvc.initPanel();
+            });
         }
-        
+
         /**
          * => Lien vers le detail du lot.
          */
         function getUrlLot(lotId) {
-            var params = {id: lotId};
-            return NumahopUrlService.getUrlForTypeAndParameters("lot", params);
+            var params = { id: lotId };
+            return NumahopUrlService.getUrlForTypeAndParameters('lot', params);
         }
-        
+
         /**
          * => Lien vers le detail du projet.
          */
         function getUrlProject(projId) {
-            var params = {id: projId};
-            return NumahopUrlService.getUrlForTypeAndParameters("project", params);
+            var params = { id: projId };
+            return NumahopUrlService.getUrlForTypeAndParameters('project', params);
         }
 
         /**
          * Chargement des résultats de recherche sélectionnés
          */
         function initFromSearchResults() {
-            var searchSelection = SelectionSrvc.get("SEARCH_RESULT_LOT");
+            var searchSelection = SelectionSrvc.get('SEARCH_RESULT_LOT');
             // Sélection
             _.each(searchSelection, function (s) {
                 mainCtrl.selection[s.identifier] = s;
             });
             // Filtre
-            mainCtrl.filteredIds = _.pluck(searchSelection, "identifier");
+            mainCtrl.filteredIds = _.pluck(searchSelection, 'identifier');
         }
 
         /**
@@ -231,14 +227,14 @@
          */
         function getPage() {
             mainCtrl.pagination.busy = true;
-            
+
             var params = {};
-            params["page"] = mainCtrl.pagination.page - 1;
-            params["size"] = mainCtrl.pageSize;
-            params["sorts"] = mainCtrl.sortModel;
+            params['page'] = mainCtrl.pagination.page - 1;
+            params['size'] = mainCtrl.pageSize;
+            params['sorts'] = mainCtrl.sortModel;
 
             var body = getSearchParams();
-            
+
             return LotSrvc.postSearch(params, body).$promise.then(handlePageOfItems);
         }
 
@@ -273,9 +269,9 @@
             saveFilters(newValue, field);
 
             var params = {};
-            params["page"] = mainCtrl.pagination.page - 1;
-            params["size"] = mainCtrl.pageSize;
-            params["sorts"] = mainCtrl.sortModel;
+            params['page'] = mainCtrl.pagination.page - 1;
+            params['size'] = mainCtrl.pageSize;
+            params['sorts'] = mainCtrl.sortModel;
 
             var body = getSearchParams(newValue, field);
 
@@ -290,30 +286,30 @@
             // Filtrage à partir des résultats de recherche
             if (mainCtrl.isFilteredByIds && mainCtrl.filteredIds) {
                 return {
-                    filter: mainCtrl.filteredIds
+                    filter: mainCtrl.filteredIds,
                 };
             }
 
             var params = {};
-            params["active"] = true;
-            params["search"] = mainCtrl.searchRequest || "";
+            params['active'] = true;
+            params['search'] = mainCtrl.searchRequest || '';
 
             // Projet
             if (mainCtrl.filters.projects) {
-                var projectsIds = _.pluck(mainCtrl.filters.projects, "identifier");
-                params["projects"] = projectsIds;
+                var projectsIds = _.pluck(mainCtrl.filters.projects, 'identifier');
+                params['projects'] = projectsIds;
             }
             if (mainCtrl.filters.createdDateFrom) {
-                params["createdDateFrom"] = mainCtrl.filters.createdDateFrom;
+                params['createdDateFrom'] = mainCtrl.filters.createdDateFrom;
             }
             if (mainCtrl.filters.createdDateTo) {
-                params["createdDateTo"] = mainCtrl.filters.createdDateTo;
+                params['createdDateTo'] = mainCtrl.filters.createdDateTo;
             }
             if (mainCtrl.filters.lastModifiedDateFrom) {
-                params["lastModifiedDateFrom"] = mainCtrl.filters.lastModifiedDateFrom;
+                params['lastModifiedDateFrom'] = mainCtrl.filters.lastModifiedDateFrom;
             }
             if (mainCtrl.filters.lastModifiedDateTo) {
-                params["lastModifiedDateTo"] = mainCtrl.filters.lastModifiedDateTo;
+                params['lastModifiedDateTo'] = mainCtrl.filters.lastModifiedDateTo;
             }
 
             if (field) {
@@ -407,26 +403,23 @@
 
         /**
          * Suppression des unités documentaires sélectionnées
-         * 
+         *
          */
         function deleteSelection() {
             if (mainCtrl.selectedLength === 0) {
-                MessageSrvc.addWarn(gettext("La sélection est vide"), {}, false);
+                MessageSrvc.addWarn(gettext('La sélection est vide'), {}, false);
                 return;
             }
-            ModalSrvc.confirmDeletion(gettextCatalog.getPlural(mainCtrl.selectedLength,
-                "le lot sélectionné",
-                "les {{n}} lots sélectionnés", { n: mainCtrl.selectedLength }))
-                .then(function () {
-                    LotSrvc.deleteSelection({}, _.keys(mainCtrl.selection), function (value) {
-                        if (value.length > 0) {
-                            ModalSrvc.modalDeleteDocUnitResults(value, 'xl');
-                        } else {
-                            MessageSrvc.addSuccess(gettext("Aucun lot n'a été supprimé"));
-                        }
-                        search();
-                    });
+            ModalSrvc.confirmDeletion(gettextCatalog.getPlural(mainCtrl.selectedLength, 'le lot sélectionné', 'les {{n}} lots sélectionnés', { n: mainCtrl.selectedLength })).then(function () {
+                LotSrvc.deleteSelection({}, _.keys(mainCtrl.selection), function (value) {
+                    if (value.length > 0) {
+                        ModalSrvc.modalDeleteDocUnitResults(value, 'xl');
+                    } else {
+                        MessageSrvc.addSuccess(gettext("Aucun lot n'a été supprimé"));
+                    }
+                    search();
                 });
+            });
         }
 
         function removeProject(lot) {
@@ -439,14 +432,21 @@
                 return;
             }
             var params = {
-                project: projectId
+                project: projectId,
             };
-            var body = _.pluck(lots, "identifier");
+            var body = _.pluck(lots, 'identifier');
 
             var defer = $q.defer();
-            LotSrvc.addToProject(params, body,
-                function () { defer.resolve(); },
-                function () { defer.reject(); });
+            LotSrvc.addToProject(
+                params,
+                body,
+                function () {
+                    defer.resolve();
+                },
+                function () {
+                    defer.reject();
+                }
+            );
             return defer.promise;
         }
 

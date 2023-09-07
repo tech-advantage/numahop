@@ -1,16 +1,5 @@
 package fr.progilone.pgcn.service.checkconfiguration.ui;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.mapstruct.factory.Mappers;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import fr.progilone.pgcn.domain.checkconfiguration.CheckConfiguration;
 import fr.progilone.pgcn.domain.dto.checkconfiguration.CheckConfigurationDTO;
 import fr.progilone.pgcn.domain.dto.checkconfiguration.SimpleCheckConfigurationDTO;
@@ -22,6 +11,15 @@ import fr.progilone.pgcn.service.checkconfiguration.mapper.SimpleCheckConfigurat
 import fr.progilone.pgcn.service.checkconfiguration.mapper.UICheckConfigurationMapper;
 import fr.progilone.pgcn.service.project.ProjectService;
 import fr.progilone.pgcn.service.util.transaction.VersionValidationService;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.mapstruct.factory.Mappers;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by lebouchp on 03/02/2017.
@@ -70,6 +68,11 @@ public class UICheckConfigurationService {
         return checkConfigMapper.checkConfigurationToCheckConfigurationDTO(checkConfigurationService.findOne(id));
     }
 
+    @Transactional(readOnly = true)
+    public CheckConfigurationDTO getOneForEdition(final String id) {
+        return checkConfigMapper.checkConfigurationToCheckConfigurationDTO(checkConfigurationService.findAndEnrich(id));
+    }
+
     /**
      * Recherche paramétrée paginée
      *
@@ -81,7 +84,7 @@ public class UICheckConfigurationService {
      */
     @Transactional(readOnly = true)
     public Page<SimpleCheckConfigurationDTO> search(final String search, final List<String> libraries, final Integer page, final Integer size) {
-        final Pageable pageRequest = new PageRequest(page, size);
+        final Pageable pageRequest = PageRequest.of(page, size);
         final Page<CheckConfiguration> checkConfigurations = checkConfigurationService.search(search, libraries, pageRequest);
         return checkConfigurations.map(SimpleCheckConfigurationMapper.INSTANCE::checkConfigurationToSimpleCheckConfigurationDTO);
     }

@@ -9,7 +9,6 @@ import fr.progilone.pgcn.domain.library.Library;
 import fr.progilone.pgcn.exception.PgcnTechnicalException;
 import fr.progilone.pgcn.service.document.DocPropertyTypeService;
 import fr.progilone.pgcn.service.document.DocUnitService;
-import fr.progilone.pgcn.service.es.EsBibliographicRecordService;
 import fr.progilone.pgcn.service.es.EsDocUnitService;
 import fr.progilone.pgcn.service.exchange.AbstractImportService;
 import fr.progilone.pgcn.service.exchange.DeduplicationService;
@@ -20,14 +19,13 @@ import fr.progilone.pgcn.service.library.LibraryService;
 import fr.progilone.pgcn.service.util.transaction.TransactionService;
 import fr.progilone.pgcn.service.util.transaction.TransactionalJobRunner;
 import fr.progilone.pgcn.web.websocket.WebsocketService;
+import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * Import d'unités documentaires à partir d'un service OAI-PMH
@@ -50,7 +48,6 @@ public class ImportOaiPmhService extends AbstractImportService {
     protected ImportOaiPmhService(final DeduplicationService deduplicationService,
                                   final DocUnitService docUnitService,
                                   final EsDocUnitService esDocUnitService,
-                                  final EsBibliographicRecordService esBibliographicRecordService,
                                   final ImportDocUnitService importDocUnitService,
                                   final ImportReportService importReportService,
                                   final TransactionService transactionService,
@@ -63,14 +60,7 @@ public class ImportOaiPmhService extends AbstractImportService {
                                   final OaiPmhService oaiPmhService,
                                   final TransactionService transactionService1,
                                   final WebsocketService websocketService1) {
-        super(deduplicationService,
-              docUnitService,
-              esDocUnitService,
-              esBibliographicRecordService,
-              importDocUnitService,
-              importReportService,
-              transactionService,
-              websocketService);
+        super(deduplicationService, docUnitService, esDocUnitService, importDocUnitService, importReportService, transactionService, websocketService);
         this.convertService = convertService;
         this.docPropertyTypeService = docPropertyTypeService;
         this.importDocUnitService = importDocUnitService1;
@@ -83,13 +73,6 @@ public class ImportOaiPmhService extends AbstractImportService {
 
     /**
      * Import des notices à partir d'un service OAI-PMH
-     *
-     * @param libraryId
-     * @param report
-     * @param oaiRequest
-     * @param stepValidation
-     * @param stepDeduplication
-     * @param defaultDedupProcess
      */
     @Async
     public void importOaiPmhAsync(final String libraryId,
@@ -122,8 +105,7 @@ public class ImportOaiPmhService extends AbstractImportService {
      * @return
      * @throws PgcnTechnicalException
      */
-    private ImportReport preImportOaiPmh(final String libraryId, final ImportReport report, final OaiPmhRequest oaiRequest) throws
-                                                                                                                            PgcnTechnicalException {
+    private ImportReport preImportOaiPmh(final String libraryId, final ImportReport report, final OaiPmhRequest oaiRequest) throws PgcnTechnicalException {
         try {
             final TransactionStatus status = transactionService.startTransaction(true);
 
@@ -137,49 +119,48 @@ public class ImportOaiPmhService extends AbstractImportService {
             final List<DocPropertyType> propertyTypes = docPropertyTypeService.findAll();
 
             // Résumé d'exécution
-            // report.setMapping(mapping);   // lien avec le mapping qui vient d'être chargé
+            // report.setMapping(mapping); // lien avec le mapping qui vient d'être chargé
             final ImportReport runningReport = importReportService.startReport(report);
 
             transactionService.commitTransaction(status);
 
             // Création des unités documentaires pré-importées à partir des notices OAI_DC
-            new TransactionalJobRunner<OaiDcType>(transactionService)
-                // Configuration du job
-                .setCommit(BULK_SIZE)
-                // pas de parallélisation pour prévenir les transaction lock au moment de importDocUnitService.create
-                .setMaxThreads(1)
-                // .setMaxThreads(Runtime.getRuntime().availableProcessors())
-                // Traitement principal
-                .forEach((oaidc) -> {
-                    try {
-                        // Conversion du XML en unité documentaire
-                        final DocUnit docUnit = convertService.convert(oaidc, library, propertyTypes);
+            final TransactionalJobRunner<OaiDcType> job = new TransactionalJobRunner<>(new OaiPmhRecordIterator(oaiPmhService, oaiRequest), transactionService);
+            job
+               // Configuration du job
+               .setCommit(BULK_SIZE)
+               // pas de parallélisation pour prévenir les transaction lock au moment de importDocUnitService.create
+               // Traitement principal
+               .forEach((oaidc) -> {
+                   try {
+                       // Conversion du XML en unité documentaire
+                       final DocUnit docUnit = convertService.convert(oaidc, library, propertyTypes);
 
-                        // Sauvegarde
-                        final ImportedDocUnit imp = new ImportedDocUnit();
-                        imp.initDocUnitFields(docUnit);
-                        imp.setReport(runningReport);
-                        importDocUnitService.create(imp);
+                       // Sauvegarde
+                       final ImportedDocUnit imp = new ImportedDocUnit();
+                       imp.initDocUnitFields(docUnit);
+                       imp.setReport(runningReport);
+                       importDocUnitService.create(imp);
 
-                        synchronized (runningReport) {
-                            runningReport.incrementNbImp(1);
-                        }
-                        return true;
-                    }
-                    // Erreur imprévue
-                    catch (Exception e) {
-                        LOG.error(e.getMessage(), e);
-                        return false;
-                    }
-                })
-                // progression => websocket
-                .onProgress((nb) -> {
-                    final Map<String, Object> statusMap = importReportService.getStatus(runningReport);
-                    statusMap.put("processed", nb);
-                    websocketService.sendObject(runningReport.getIdentifier(), statusMap);
-                })
-                // iterator
-                .process(new OaiPmhRecordIterator(oaiPmhService, oaiRequest));
+                       synchronized (runningReport) {
+                           runningReport.incrementNbImp(1);
+                       }
+                       return true;
+                   }
+                   // Erreur imprévue
+                   catch (final Exception e) {
+                       LOG.error(e.getMessage(), e);
+                       return false;
+                   }
+               })
+               // progression => websocket
+               .onProgress((nb) -> {
+                   final Map<String, Object> statusMap = importReportService.getStatus(runningReport);
+                   statusMap.put("processed", nb);
+                   websocketService.sendObject(runningReport.getIdentifier(), statusMap);
+               })
+               // iterator
+               .process();
 
             return runningReport;
 

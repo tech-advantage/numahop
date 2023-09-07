@@ -1,33 +1,32 @@
 package fr.progilone.pgcn.repository.user;
 
-import com.mysema.query.BooleanBuilder;
-import com.mysema.query.jpa.JPQLQuery;
-import com.mysema.query.jpa.impl.JPAQuery;
-import com.mysema.query.types.expr.BooleanExpression;
-import fr.progilone.pgcn.domain.user.*;
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import fr.progilone.pgcn.domain.user.QAuthorization;
+import fr.progilone.pgcn.domain.user.QRole;
+import fr.progilone.pgcn.domain.user.Role;
+import java.util.List;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import java.util.List;
-
 public class RoleRepositoryImpl implements RoleRepositoryCustom {
 
-    @PersistenceContext
-    private EntityManager em;
+    private final JPAQueryFactory queryFactory;
+
+    public RoleRepositoryImpl(final JPAQueryFactory queryFactory) {
+        this.queryFactory = queryFactory;
+    }
 
     @Override
-    public List<Role> search(String search,
-                             List<String> authorizations) {
+    public List<Role> search(final String search, final List<String> authorizations) {
 
         final QRole role = QRole.role;
         final QAuthorization authorization = QAuthorization.authorization;
         final BooleanBuilder builder = new BooleanBuilder();
 
         if (StringUtils.isNotBlank(search)) {
-            final BooleanExpression nameFilter =
-                role.label.containsIgnoreCase(search).or(role.identifier.containsIgnoreCase(search));
+            final BooleanExpression nameFilter = role.label.containsIgnoreCase(search).or(role.identifier.containsIgnoreCase(search));
             builder.andAnyOf(nameFilter);
         }
 
@@ -39,15 +38,6 @@ public class RoleRepositoryImpl implements RoleRepositoryCustom {
         final BooleanExpression excludeSuperRoleFilter = role.identifier.ne("SUPERROLE");
         builder.and(excludeSuperRoleFilter);
 
-        final JPQLQuery baseQuery = new JPAQuery(em);
-
-        final List<Role> result = baseQuery.from(role)
-                                           .leftJoin(role.authorizations, authorization)
-                                           .fetch()
-                                           .where(builder.getValue())
-                                           .orderBy(role.label.asc())
-                                           .distinct()
-                                           .list(role);
-        return result;
+        return queryFactory.selectDistinct(role).from(role).leftJoin(role.authorizations, authorization).fetchJoin().where(builder).orderBy(role.label.asc()).fetch();
     }
 }

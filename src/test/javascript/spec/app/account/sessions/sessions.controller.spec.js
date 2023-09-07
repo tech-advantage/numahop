@@ -1,7 +1,6 @@
 'use strict';
 
 xdescribe('Controllers Tests ', function () {
-
     beforeEach(module('numaHopApp'));
 
     describe('SessionsController', function () {
@@ -11,12 +10,12 @@ xdescribe('Controllers Tests ', function () {
             $scope = $rootScope.$new();
 
             SessionsService = Sessions;
-            $controller('SessionsController',{$scope:$scope, Sessions:SessionsService});
+            $controller('SessionsController', { $scope: $scope, Sessions: SessionsService });
         }));
 
         it('should invalidate session', function () {
             //GIVEN
-            $scope.series = "123456789";
+            $scope.series = '123456789';
 
             //SET SPY
             spyOn(SessionsService, 'delete');
@@ -26,7 +25,7 @@ xdescribe('Controllers Tests ', function () {
 
             //THEN
             expect(SessionsService.delete).toHaveBeenCalled();
-            expect(SessionsService.delete).toHaveBeenCalledWith({series: "123456789"}, jasmine.any(Function), jasmine.any(Function));
+            expect(SessionsService.delete).toHaveBeenCalledWith({ series: '123456789' }, jasmine.any(Function), jasmine.any(Function));
 
             //SIMULATE SUCCESS CALLBACK CALL FROM SERVICE
             SessionsService.delete.calls.mostRecent().args[1]();

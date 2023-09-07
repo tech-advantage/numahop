@@ -1,13 +1,9 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('LotCtrl', LotCtrl);
+    angular.module('numaHopApp.controller').controller('LotCtrl', LotCtrl);
 
-    function LotCtrl($location, $scope, $timeout, $q, $routeParams,
-        gettextCatalog, HistorySrvc, LotSrvc,
-        StringTools, NumahopStorageService, NumaHopInitializationSrvc) {
-
+    function LotCtrl($location, $scope, $timeout, $q, $routeParams, gettextCatalog, HistorySrvc, LotSrvc, StringTools, NumahopStorageService, NumaHopInitializationSrvc) {
         $scope.applyFilter = applyFilter;
         $scope.clearSelection = clearSelection;
         $scope.create = create;
@@ -26,10 +22,10 @@
         $scope.selectedIndex = null;
         $scope.selectedInNew = false;
 
-        $scope.lotInclude = "scripts/app/lot/lotEdit.html";
+        $scope.lotInclude = 'scripts/app/lot/lotEdit.html';
         $scope.lot = null;
 
-        var FILTER_STORAGE_SERVICE_KEY = "lots";
+        var FILTER_STORAGE_SERVICE_KEY = 'lots';
 
         $scope.loaded = false;
 
@@ -38,13 +34,13 @@
          */
         $scope.options = {
             categories: [
-                { identifier: "PROVIDER", label: gettextCatalog.getString("Prestataire") },
-                { identifier: "OTHER", label: gettextCatalog.getString("Autre") }
+                { identifier: 'PROVIDER', label: gettextCatalog.getString('Prestataire') },
+                { identifier: 'OTHER', label: gettextCatalog.getString('Autre') },
             ],
             projects: [],
             providers: [],
             statuses: LotSrvc.config.status,
-            fileFormat: LotSrvc.config.fileFormat
+            fileFormat: LotSrvc.config.fileFormat,
         };
 
         $scope.pagination = {
@@ -52,7 +48,7 @@
             totalItems: 0,
             busy: false,
             last: false,
-            page: 0
+            page: 0,
         };
         $scope.newLots = []; // liste des lots récemment créés
 
@@ -60,7 +56,7 @@
             libraries: [],
             projects: [],
             inactive: false,
-            available: false
+            available: false,
         };
         $scope.listFilters = {
             inactive_filter: true,
@@ -69,30 +65,27 @@
             status_filter: true,
             file_format_filter: true,
             resolution_filter: true,
-            doc_number_filter: true
+            doc_number_filter: true,
         };
         $scope.filterLabels = {
-            inactive: "Voir les lots inactifs"
+            inactive: 'Voir les lots inactifs',
         };
 
         init();
 
-
         /** Initialisation */
         function init() {
-            HistorySrvc.add(gettextCatalog.getString("Lots"));
+            HistorySrvc.add(gettextCatalog.getString('Lots'));
             reinitFilters(false);
             loadOptionsAndFilters();
 
-            $scope.$on("$routeUpdate",
-                function ($currentRoute, $previousRoute) {
-                    $timeout(function () {
-                        $scope.lotInclude = null;
-                        $scope.$apply();
-                        $scope.lotInclude = "scripts/app/lot/lotEdit.html";
-                    });
-                }
-            );
+            $scope.$on('$routeUpdate', function ($currentRoute, $previousRoute) {
+                $timeout(function () {
+                    $scope.lotInclude = null;
+                    $scope.$apply();
+                    $scope.lotInclude = 'scripts/app/lot/lotEdit.html';
+                });
+            });
         }
 
         /****************************************************************/
@@ -110,21 +103,17 @@
         /** Options *****************************************************/
         /****************************************************************/
         function loadOptionsAndFilters() {
-            $q.all([
-                NumaHopInitializationSrvc.loadProjects(),
-                NumaHopInitializationSrvc.loadProviders(),
-                NumaHopInitializationSrvc.loadLibraries()])
-                .then(function (data) {
-                    $scope.options.projects = data[0];
-                    $scope.options.providers = data[1];
-                    $scope.options.libraries = data[2];
+            $q.all([NumaHopInitializationSrvc.loadProjects(), NumaHopInitializationSrvc.loadProviders(), NumaHopInitializationSrvc.loadLibraries()]).then(function (data) {
+                $scope.options.projects = data[0];
+                $scope.options.providers = data[1];
+                $scope.options.libraries = data[2];
 
-                    handleRedirect();
+                handleRedirect();
 
-                    nextPage().then(function () {
-                        $scope.loaded = true;
-                    });
+                nextPage().then(function () {
+                    $scope.loaded = true;
                 });
+            });
         }
 
         // CRUD
@@ -133,7 +122,7 @@
                 $scope.lot._selected = false;
                 $scope.lot = null;
             }
-            $location.path("/lot/lot").search({ new: true });
+            $location.path('/lot/lot').search({ new: true });
         }
         function edit(lot, index, selectedInNew) {
             clearSelection();
@@ -148,7 +137,7 @@
                 search = { id: lot.identifier };
             }
 
-            $location.path("/lot/lot").search(search);
+            $location.path('/lot/lot').search(search);
         }
 
         function filterLots() {
@@ -156,24 +145,24 @@
 
             var searchParams = {
                 page: $scope.pagination.page,
-                search: $scope.filterWith || "",
-                active: !$scope.filters.inactive
+                search: $scope.filterWith || '',
+                active: !$scope.filters.inactive,
             };
 
             if ($scope.filters.libraries) {
-                searchParams["libraries"] = _.pluck($scope.filters.libraries, "identifier");
+                searchParams['libraries'] = _.pluck($scope.filters.libraries, 'identifier');
             }
             if ($scope.filters.projects) {
-                searchParams["projects"] = _.pluck($scope.filters.projects, "identifier");
+                searchParams['projects'] = _.pluck($scope.filters.projects, 'identifier');
             }
             if ($scope.filters.statuses) {
-                searchParams["statuses"] = _.pluck($scope.filters.statuses, "identifier");
+                searchParams['statuses'] = _.pluck($scope.filters.statuses, 'identifier');
             }
             if ($scope.filters.docNumber !== null) {
-                searchParams["docNumber"] = $scope.filters.docNumber;
+                searchParams['docNumber'] = $scope.filters.docNumber;
             }
             if ($scope.filters.fileFormat) {
-                searchParams["fileFormat"] = _.pluck($scope.filters.fileFormat, "identifier");
+                searchParams['fileFormat'] = _.pluck($scope.filters.fileFormat, 'identifier');
             }
             return LotSrvc.search(searchParams).$promise;
         }
@@ -189,7 +178,7 @@
         }
 
         function applyFilter(filterWith, event) {
-            if (event.type === "keypress" && event.keyCode === 13) {
+            if (event.type === 'keypress' && event.keyCode === 13) {
                 doFilter();
             }
         }
@@ -213,8 +202,7 @@
                         } else {
                             $scope.pagination.items.push(value.content[i]);
                         }
-                    }
-                    else {
+                    } else {
                         // On ne compte pas 2 fois les nouveaux lots rechargés
                         $scope.pagination.totalItems--;
                     }
@@ -258,7 +246,7 @@
                 projects: [],
                 statuses: [],
                 categories: [],
-                inactive: false
+                inactive: false,
             };
             if (reload) {
                 doFilter();
@@ -267,7 +255,9 @@
 
         // liste
         function nextPage() {
-            if ($scope.pagination.busy || $scope.pagination.last) { return; }
+            if ($scope.pagination.busy || $scope.pagination.last) {
+                return;
+            }
             $scope.pagination.busy = true;
 
             return filterLots().then(function (value, responseHeaders) {
@@ -280,13 +270,12 @@
         }
 
         function clearSelection() {
-            _.union($scope.pagination.items, $scope.newLots)
-                .forEach(function (elt, i) {
-                    elt._selected = false;
-                });
+            _.union($scope.pagination.items, $scope.newLots).forEach(function (elt, i) {
+                elt._selected = false;
+            });
         }
         function getFirstLetter(lot) {
-            return StringTools.getFirstLetter(lot.label, "OTHER");
+            return StringTools.getFirstLetter(lot.label, 'OTHER');
         }
         function moveUp() {
             var index;

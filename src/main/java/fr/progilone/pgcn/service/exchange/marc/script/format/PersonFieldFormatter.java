@@ -25,21 +25,37 @@ public class PersonFieldFormatter extends SubfieldsFormatter {
 
     @Override
     public String getConfigScript() {
-        return "def " + SCRIPT_NAME + "Filter = {\n"
-               + "      String... codes -> script." + getCode() + ".setFilterCodes((char[])codes)\n"
+        return "def " + SCRIPT_NAME
+               + "Filter = {\n"
+               + "      String... codes -> script."
+               + getCode()
+               + ".setFilterCodes((char[])codes)\n"
                + "}\n"
-               + "def " + SCRIPT_NAME + "Transliterate = {\n"
-               + "      String code, String type -> script." + getCode() + ".addTransliteration((char)code, type)\n"
+               + "def "
+               + SCRIPT_NAME
+               + "Transliterate = {\n"
+               + "      String code, String type -> script."
+               + getCode()
+               + ".addTransliteration((char)code, type)\n"
                + "}\n";
     }
 
     @Override
     public String getInitScript() {
-        return "def " + SCRIPT_NAME + " = {\n"
-               + "      DataField field -> script." + getCode() + ".format(field)\n"
+        return "def " + SCRIPT_NAME
+               + " = {\n"
+               + "      DataField field -> script."
+               + getCode()
+               + ".format(field)\n"
                + "}\n"
-               + "if(binding.hasVariable('" + MarcMappingEvaluationService.BINDING_FN_TRANSLITERATE + "')) {\n"
-               + "  script." + getCode() + ".setTransliterate(" + MarcMappingEvaluationService.BINDING_FN_TRANSLITERATE + ".&getValue)\n"
+               + "if(binding.hasVariable('"
+               + MarcMappingEvaluationService.BINDING_FN_TRANSLITERATE
+               + "')) {\n"
+               + "  script."
+               + getCode()
+               + ".setTransliterate("
+               + MarcMappingEvaluationService.BINDING_FN_TRANSLITERATE
+               + ".&getValue)\n"
                + "}\n";
     }
 }

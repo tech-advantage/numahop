@@ -1,13 +1,16 @@
 package fr.progilone.pgcn.service.exchange.internetarchive;
 
+import fr.progilone.pgcn.domain.document.DocUnit;
+import fr.progilone.pgcn.domain.exchange.internetarchive.InternetArchiveReport;
+import fr.progilone.pgcn.domain.library.Library;
+import fr.progilone.pgcn.repository.exchange.internetarchive.InternetArchiveReportRepository;
+import fr.progilone.pgcn.web.websocket.WebsocketService;
+import jakarta.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.annotation.PostConstruct;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,15 +18,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import fr.progilone.pgcn.domain.document.DocUnit;
-import fr.progilone.pgcn.domain.exchange.internetarchive.InternetArchiveReport;
-import fr.progilone.pgcn.domain.library.Library;
-import fr.progilone.pgcn.repository.exchange.internetarchive.InternetArchiveReportRepository;
-import fr.progilone.pgcn.web.websocket.WebsocketService;
-
 /**
  * @author jbrunet
- * Créé le 2 mai 2017
+ *         Créé le 2 mai 2017
  */
 @Service
 public class InternetArchiveReportService {
@@ -43,13 +40,9 @@ public class InternetArchiveReportService {
     @Transactional
     public void init() {
         // Mise à jour du statut des rapports en cours d'exécution au démarrage de l'application
-        final List<InternetArchiveReport> interruptedImports =
-            iaReportRepository.findByStatusIn(InternetArchiveReport.Status.EXPORTING, InternetArchiveReport.Status.SENDING);
+        final List<InternetArchiveReport> interruptedImports = iaReportRepository.findByStatusIn(InternetArchiveReport.Status.EXPORTING, InternetArchiveReport.Status.SENDING);
         for (final InternetArchiveReport report : interruptedImports) {
-            LOG.warn("L'export Internet Archive de {}, démarré le {}, a été interrompu au statut {}",
-                     report.getIdentifier(),
-                     report.getCreatedDate(),
-                     report.getStatus());
+            LOG.warn("L'export Internet Archive de {}, démarré le {}, a été interrompu au statut {}", report.getIdentifier(), report.getCreatedDate(), report.getStatus());
             failReport(report, "L'import a été interrompu en cours d'exécution");
         }
     }
@@ -159,7 +152,9 @@ public class InternetArchiveReportService {
      */
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public InternetArchiveReport failReport(final InternetArchiveReport report, final String message) {
-        report.setMessage("Arrêt imprévu du traitement au statut " + report.getStatus() + " avec l'erreur: " + message);
+        report.setMessage("Arrêt imprévu du traitement au statut " + report.getStatus()
+                          + " avec l'erreur: "
+                          + message);
         report.setStatus(InternetArchiveReport.Status.FAILED);
 
         final InternetArchiveReport savedReport = iaReportRepository.save(report);
@@ -181,11 +176,10 @@ public class InternetArchiveReportService {
     public List<InternetArchiveReport> findByDocUnit(final String docUnitId) {
         return iaReportRepository.findByDocUnitIdentifierOrderByLastModifiedDateDesc(docUnitId);
     }
-    
+
     @Transactional(readOnly = true)
     public InternetArchiveReport findLastReportByDocUnit(final String docUnitId) {
-        return iaReportRepository.findByDocUnitIdentifierOrderByLastModifiedDateDesc(docUnitId)
-                            .stream().findFirst().orElse(null);
+        return iaReportRepository.findByDocUnitIdentifierOrderByLastModifiedDateDesc(docUnitId).stream().findFirst().orElse(null);
     }
 
     @Transactional(readOnly = true)

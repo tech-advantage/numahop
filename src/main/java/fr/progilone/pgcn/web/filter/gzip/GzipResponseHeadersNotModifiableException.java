@@ -1,6 +1,6 @@
 package fr.progilone.pgcn.web.filter.gzip;
 
-import javax.servlet.ServletException;
+import jakarta.servlet.ServletException;
 
 public class GzipResponseHeadersNotModifiableException extends ServletException {
 

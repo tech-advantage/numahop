@@ -1,7 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <!-- Changeset du module Import/Export -->
     <changeSet id="pgcn-csv-mapping" author="progilone">
@@ -9,74 +11,72 @@
         <!-- Mapping -->
         <createTable tableName="exc_csv_mapping">
             <column name="identifier" type="varchar(191)">
-                <constraints primaryKey="true" nullable="false"/>
+                <constraints primaryKey="true" nullable="false" />
             </column>
             <column name="label" type="varchar(255)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="library" type="varchar(191)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="version" type="BIGINT">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_by" type="varchar(255)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_by" type="varchar(255)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>
 
         <!-- Règles de mapping -->
         <createTable tableName="exc_csv_mapping_rule">
             <column name="identifier" type="varchar(191)">
-                <constraints primaryKey="true" nullable="false"/>
+                <constraints primaryKey="true" nullable="false" />
             </column>
-            <column name="doc_unit_field" type="varchar(255)"/>
-            <column name="csv_field" type="varchar(255)"/>
+            <column name="doc_unit_field" type="varchar(255)" />
+            <column name="csv_field" type="varchar(255)" />
             <column name="mapping" type="varchar(191)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="version" type="BIGINT">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_by" type="varchar(255)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_by" type="varchar(255)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>
 
         <!-- Clés étrangères exc_mapping -->
-        <addForeignKeyConstraint baseTableName="exc_csv_mapping" baseColumnNames="library" constraintName="fk_exc_csv_mapping_library"
-                                 referencedTableName="lib_library" referencedColumnNames="identifier"/>
+        <addForeignKeyConstraint baseTableName="exc_csv_mapping" baseColumnNames="library" constraintName="fk_exc_csv_mapping_library" referencedTableName="lib_library" referencedColumnNames="identifier" />
 
         <!-- Clés étrangères exc_mapping_rule -->
-        <addForeignKeyConstraint baseTableName="exc_csv_mapping_rule" baseColumnNames="mapping" constraintName="fk_exc_csv_mapping_rule_mapping"
-                                 referencedTableName="exc_csv_mapping" referencedColumnNames="identifier"/>
+        <addForeignKeyConstraint baseTableName="exc_csv_mapping_rule" baseColumnNames="mapping" constraintName="fk_exc_csv_mapping_rule_mapping" referencedTableName="exc_csv_mapping" referencedColumnNames="identifier" />
 
         <!-- Index exc_mapping -->
         <createIndex tableName="exc_csv_mapping" indexName="idx_exc_csv_mapping_library">
-            <column name="library"/>
+            <column name="library" />
         </createIndex>
 
         <!-- Index exc_mapping_rule -->
         <createIndex tableName="exc_csv_mapping_rule" indexName="idx_exc_csv_mapping_rule_mapping">
-            <column name="mapping"/>
+            <column name="mapping" />
         </createIndex>
 
     </changeSet>

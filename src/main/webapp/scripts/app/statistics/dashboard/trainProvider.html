@@ -5,136 +5,104 @@
             <numa-filter data-class="pull-left btn-filter">
                 <!-- Bibliothèques -->
                 <numa-filter-field data-title="{{ ::'Bibliothèque' | translate }}" ng-if="statCtrl.showLib">
-                    <sem-field sem-type="uiselect" sem-model="statCtrl.filters.library" sem-option-data="statCtrl.config.libraries"
-                               sem-onchange="statCtrl.search()"></sem-field>
+                    <sem-field sem-type="uiselect" sem-model="statCtrl.filters.library" sem-option-data="statCtrl.config.libraries" sem-onchange="statCtrl.search()"></sem-field>
                 </numa-filter-field>
                 <!-- Projet -->
                 <numa-filter-field data-title="{{ ::'Projet' | translate }}">
-                    <sem-field sem-type="uiselect" sem-model="statCtrl.filters.project" sem-option-data="statCtrl.config.projects" 
-                               sem-onchange="statCtrl.search()"></sem-field>
+                    <sem-field sem-type="uiselect" sem-model="statCtrl.filters.project" sem-option-data="statCtrl.config.projects" sem-onchange="statCtrl.search()"></sem-field>
                 </numa-filter-field>
                 <!-- Train -->
                 <numa-filter-field data-title="{{ ::'Train' | translate }}">
-                    <sem-field sem-type="uiselect" sem-model="statCtrl.filters.train" sem-option-data="statCtrl.config.trains" 
-                               sem-onchange="statCtrl.search()"></sem-field>
+                    <sem-field sem-type="uiselect" sem-model="statCtrl.filters.train" sem-option-data="statCtrl.config.trains" sem-onchange="statCtrl.search()"></sem-field>
                 </numa-filter-field>
                 <!-- Statut du train -->
                 <numa-filter-field data-title="{{ ::'Statut' | translate }}">
-                    <sem-field sem-type="uiselect" sem-model="statCtrl.filters.status" sem-option-data="statCtrl.config.status" 
-                               sem-onchange="statCtrl.search()"></sem-field>
+                    <sem-field sem-type="uiselect" sem-model="statCtrl.filters.status" sem-option-data="statCtrl.config.status" sem-onchange="statCtrl.search()"></sem-field>
                 </numa-filter-field>
                 <!-- Date d'envoi du train -->
                 <numa-filter-field data-title="{{ ::'Date d\'envoi' | translate }}">
                     <div class="form-inline text-right margin-b10">
                         <label translate>entre le</label>
-                        <sem-datepicker ng-model="statCtrl.filters.sendFrom" sem-model-options="{ debounce: 300 }"
-                                        ng-change="statCtrl.searchValue('sendFrom', $data)"></sem-datepicker>
+                        <sem-datepicker ng-model="statCtrl.filters.sendFrom" sem-model-options="{ debounce: 300 }" ng-change="statCtrl.searchValue('sendFrom', $data)"></sem-datepicker>
                     </div>
                     <div class="form-inline text-right">
                         <label translate>et le</label>
-                        <sem-datepicker ng-model="statCtrl.filters.sendTo" sem-model-options="{ debounce: 300 }"
-                                        ng-change="statCtrl.searchValue('sendTo', $data)"></sem-datepicker>
+                        <sem-datepicker ng-model="statCtrl.filters.sendTo" sem-model-options="{ debounce: 300 }" ng-change="statCtrl.searchValue('sendTo', $data)"></sem-datepicker>
                     </div>
                 </numa-filter-field>
                 <!-- Date de réception du train -->
                 <numa-filter-field data-title="{{ ::'Date de réception' | translate }}">
                     <div class="form-inline text-right margin-b10">
                         <label translate>entre le</label>
-                        <sem-datepicker ng-model="statCtrl.filters.returnFrom" sem-model-options="{ debounce: 300 }"
-                                        ng-change="statCtrl.searchValue('returnFrom', $data)"></sem-datepicker>
+                        <sem-datepicker ng-model="statCtrl.filters.returnFrom" sem-model-options="{ debounce: 300 }" ng-change="statCtrl.searchValue('returnFrom', $data)"></sem-datepicker>
                     </div>
                     <div class="form-inline text-right">
                         <label translate>et le</label>
-                        <sem-datepicker ng-model="statCtrl.filters.returnTo" sem-model-options="{ debounce: 300 }"
-                                        ng-change="statCtrl.searchValue('returnTo', $data)"></sem-datepicker>
+                        <sem-datepicker ng-model="statCtrl.filters.returnTo" sem-model-options="{ debounce: 300 }" ng-change="statCtrl.searchValue('returnTo', $data)"></sem-datepicker>
                     </div>
                 </numa-filter-field>
                 <!-- Valeur d'assurance -->
                 <numa-filter-field data-title="{{ ::'Valeur d\'assurance' | translate }}">
                     <div class="form-inline text-right margin-b10">
                         <label translate>entre</label>
-                        <input type="text" class="form-control" ng-model="statCtrl.filters.insuranceFrom" 
-                            ng-change="statCtrl.search()" sem-enter-key="statCtrl.onSearch()" />
+                        <input type="text" class="form-control" ng-model="statCtrl.filters.insuranceFrom" ng-change="statCtrl.search()" sem-enter-key="statCtrl.onSearch()" />
                     </div>
                     <div class="form-inline text-right">
                         <label class="margin-l10" translate>et</label>
-                        <input type="text" class="form-control" ng-model="statCtrl.filters.insuranceTo" 
-                            ng-change="statCtrl.search()" sem-enter-key="statCtrl.onSearch()" />
+                        <input type="text" class="form-control" ng-model="statCtrl.filters.insuranceTo" ng-change="statCtrl.search()" sem-enter-key="statCtrl.onSearch()" />
                     </div>
                 </numa-filter-field>
             </numa-filter>
             <!-- Entête -->
             <div class="panel-heading">
                 <div class="pull-right">
-                    <button type="button" class="btn btn-sem2 btn-xs" 
-                            ng-click="statCtrl.reinitFilters()" uib-tooltip="{{::'Réinitialiser les filtres de la recherche' | translate}}">
+                    <button type="button" class="btn btn-sem2 btn-xs" ng-click="statCtrl.reinitFilters()" uib-tooltip="{{::'Réinitialiser les filtres de la recherche' | translate}}" tooltip-append-to-body="true">
                         <span class="glyphicon-halflings glyphicon-refresh"></span>
                     </button>
-                    <a class="btn btn-sem2 btn-xs" 
-                            ng-href="{{statCtrl.getExportUrl()}}" uib-tooltip="{{::'Export CSV' | translate}}">
+                    <a class="btn btn-sem2 btn-xs" ng-href="{{statCtrl.getExportUrl()}}" uib-tooltip="{{::'Export CSV' | translate}}" tooltip-append-to-body="true">
                         <span class="fa fa-download"></span>
                     </a>
                 </div>
             </div>
             <div class="panel-body">
                 <div ng-if="statCtrl.loaded">
-                    <div class="well" ng-show="statCtrl.items.length == 0" translate>
-                        Aucun train trouvé
-                    </div>
-                    <div ng-show="statCtrl.items.length > 0" class="well well-sm" translate
-                        translate-n="statCtrl.items.length"
-                        translate-plural="{{$count}} trains trouvés">
-                        1 train trouvé
-                    </div>
+                    <div class="well" ng-show="statCtrl.items.length == 0" translate>Aucun train trouvé</div>
+                    <div ng-show="statCtrl.items.length > 0" class="well well-sm" translate translate-n="statCtrl.items.length" translate-plural="{{$count}} trains trouvés">1 train trouvé</div>
                 </div>
                 <!-- Liste des entités  -->
                 <div class="table-responsive" ng-show="statCtrl.items.length > 0">
                     <table class="table table-hover sem-list">
                         <thead>
-                        <tr>
-                            <th class="text-center h6 bold" translate>Projet</th>
-                            <th class="text-center h6 bold" translate>Train</th>
-                            <th class="text-center h6 bold" translate>Statut</th>
-                            <th class="text-center h6 bold" translate>Date d'envoi</th>
-                            <th class="text-center h6 bold" translate>Date de retour</th>
-                            <th class="text-center h6 bold" translate>Durée</th>
-                            <th class="text-center h6 bold" translate>Nb de documents physiques</th>
-                            <th class="text-center h6 bold" translate>Valeur d'assurance (€)</th>
-                        </tr>
+                            <tr>
+                                <th class="text-center h6 bold" translate>Projet</th>
+                                <th class="text-center h6 bold" translate>Train</th>
+                                <th class="text-center h6 bold" translate>Statut</th>
+                                <th class="text-center h6 bold" translate>Date d'envoi</th>
+                                <th class="text-center h6 bold" translate>Date de retour</th>
+                                <th class="text-center h6 bold" translate>Durée</th>
+                                <th class="text-center h6 bold" translate>Nb de documents physiques</th>
+                                <th class="text-center h6 bold" translate>Valeur d'assurance (€)</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="item in statCtrl.items | orderBy:['libraryName', 'projectName', 'trainLabel']">
-                            <td class="text-right">
-                                {{ ::item.projectName }} 
-                                <numa-custom-link numa-link-type="project"
-                                                  numa-link-parameters="{id: item.projectIdentifier}"
-                                                  ng-if="item.projectIdentifier"></numa-custom-link>
-                            </td>
-                            <td class="text-right">
-                                {{ ::item.trainLabel }} 
-                                <numa-custom-link numa-link-type="train"
-                                                  numa-link-parameters="{id: item.trainIdentifier}"
-                                                  ng-if="item.trainIdentifier"></numa-custom-link>
-                            </td>
-                            <td class="text-right">
-                                {{ ::statCtrl.code['train.status.' + item.status] || item.status }}
-                            </td>
-                            <td class="text-right nowrap">
-                                {{ ::item._sendingDate | moment:'L' }}
-                            </td>
-                            <td class="text-right nowrap">
-                                {{ ::item._returnDate | moment:'L' }}
-                            </td>
-                            <td class="text-right nowrap">
-                                <span ng-if="item.duration">{{ ::(item.duration + 'j') }}</span>
-                            </td>
-                            <td class="text-right nowrap">
-                                {{ ::item.nbDoc | number }}
-                            </td>
-                            <td class="text-right nowrap">
-                                {{ ::item.insurance | number }}
-                            </td>
-                        </tr>
+                            <tr ng-repeat="item in statCtrl.items | orderBy:['libraryName', 'projectName', 'trainLabel']">
+                                <td class="text-right">
+                                    {{ ::item.projectName }}
+                                    <numa-custom-link numa-link-type="project" numa-link-parameters="{id: item.projectIdentifier}" ng-if="item.projectIdentifier"></numa-custom-link>
+                                </td>
+                                <td class="text-right">
+                                    {{ ::item.trainLabel }}
+                                    <numa-custom-link numa-link-type="train" numa-link-parameters="{id: item.trainIdentifier}" ng-if="item.trainIdentifier"></numa-custom-link>
+                                </td>
+                                <td class="text-right">{{ ::statCtrl.code['train.status.' + item.status] || item.status }}</td>
+                                <td class="text-right nowrap">{{ ::item._sendingDate | moment:'L' }}</td>
+                                <td class="text-right nowrap">{{ ::item._returnDate | moment:'L' }}</td>
+                                <td class="text-right nowrap">
+                                    <span ng-if="item.duration">{{ ::(item.duration + 'j') }}</span>
+                                </td>
+                                <td class="text-right nowrap">{{ ::item.nbDoc | number }}</td>
+                                <td class="text-right nowrap">{{ ::item.insurance | number }}</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>

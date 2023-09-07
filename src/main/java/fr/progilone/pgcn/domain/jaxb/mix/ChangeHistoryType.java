@@ -5,21 +5,21 @@
 // Généré le : 2017.08.25 à 03:15:17 PM CEST
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.mix;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
-
 
 /**
- * <p>Classe Java pour ChangeHistoryType complex type.
+ * <p>
+ * Classe Java pour ChangeHistoryType complex type.
  *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="ChangeHistoryType">
@@ -65,10 +65,9 @@ import javax.xml.bind.annotation.XmlType;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ChangeHistoryType", propOrder = {
-    "imageProcessing",
-    "previousImageMetadata"
-})
+@XmlType(name = "ChangeHistoryType",
+         propOrder = {"imageProcessing",
+                      "previousImageMetadata"})
 public class ChangeHistoryType {
 
     @XmlElement(name = "ImageProcessing")
@@ -87,8 +86,9 @@ public class ChangeHistoryType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getImageProcessing().add(newItem);
+     * getImageProcessing().add(newItem);
      * </pre>
      *
      *
@@ -116,8 +116,9 @@ public class ChangeHistoryType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getPreviousImageMetadata().add(newItem);
+     * getPreviousImageMetadata().add(newItem);
      * </pre>
      *
      *
@@ -134,11 +135,12 @@ public class ChangeHistoryType {
         return this.previousImageMetadata;
     }
 
-
     /**
-     * <p>Classe Java pour anonymous complex type.
+     * <p>
+     * Classe Java pour anonymous complex type.
      *
-     * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+     * <p>
+     * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
      *
      * <pre>
      * &lt;complexType>
@@ -173,14 +175,13 @@ public class ChangeHistoryType {
      *
      */
     @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "dateTimeProcessed",
-        "sourceData",
-        "processingAgency",
-        "processingRationale",
-        "processingSoftware",
-        "processingActions"
-    })
+    @XmlType(name = "",
+             propOrder = {"dateTimeProcessed",
+                          "sourceData",
+                          "processingAgency",
+                          "processingRationale",
+                          "processingSoftware",
+                          "processingActions"})
     public static class ImageProcessing {
 
         protected TypeOfDateType dateTimeProcessed;
@@ -195,8 +196,8 @@ public class ChangeHistoryType {
          * Obtient la valeur de la propriété dateTimeProcessed.
          *
          * @return
-         *     possible object is
-         *     {@link TypeOfDateType }
+         *         possible object is
+         *         {@link TypeOfDateType }
          *
          */
         public TypeOfDateType getDateTimeProcessed() {
@@ -207,8 +208,8 @@ public class ChangeHistoryType {
          * Définit la valeur de la propriété dateTimeProcessed.
          *
          * @param value
-         *     allowed object is
-         *     {@link TypeOfDateType }
+         *            allowed object is
+         *            {@link TypeOfDateType }
          *
          */
         public void setDateTimeProcessed(TypeOfDateType value) {
@@ -219,8 +220,8 @@ public class ChangeHistoryType {
          * Obtient la valeur de la propriété sourceData.
          *
          * @return
-         *     possible object is
-         *     {@link StringType }
+         *         possible object is
+         *         {@link StringType }
          *
          */
         public StringType getSourceData() {
@@ -231,8 +232,8 @@ public class ChangeHistoryType {
          * Définit la valeur de la propriété sourceData.
          *
          * @param value
-         *     allowed object is
-         *     {@link StringType }
+         *            allowed object is
+         *            {@link StringType }
          *
          */
         public void setSourceData(StringType value) {
@@ -250,8 +251,9 @@ public class ChangeHistoryType {
          *
          * <p>
          * For example, to add a new item, do as follows:
+         *
          * <pre>
-         *    getProcessingAgency().add(newItem);
+         * getProcessingAgency().add(newItem);
          * </pre>
          *
          *
@@ -272,8 +274,8 @@ public class ChangeHistoryType {
          * Obtient la valeur de la propriété processingRationale.
          *
          * @return
-         *     possible object is
-         *     {@link StringType }
+         *         possible object is
+         *         {@link StringType }
          *
          */
         public StringType getProcessingRationale() {
@@ -284,8 +286,8 @@ public class ChangeHistoryType {
          * Définit la valeur de la propriété processingRationale.
          *
          * @param value
-         *     allowed object is
-         *     {@link StringType }
+         *            allowed object is
+         *            {@link StringType }
          *
          */
         public void setProcessingRationale(StringType value) {
@@ -303,8 +305,9 @@ public class ChangeHistoryType {
          *
          * <p>
          * For example, to add a new item, do as follows:
+         *
          * <pre>
-         *    getProcessingSoftware().add(newItem);
+         * getProcessingSoftware().add(newItem);
          * </pre>
          *
          *
@@ -332,8 +335,9 @@ public class ChangeHistoryType {
          *
          * <p>
          * For example, to add a new item, do as follows:
+         *
          * <pre>
-         *    getProcessingActions().add(newItem);
+         * getProcessingActions().add(newItem);
          * </pre>
          *
          *
@@ -350,11 +354,12 @@ public class ChangeHistoryType {
             return this.processingActions;
         }
 
-
         /**
-         * <p>Classe Java pour anonymous complex type.
+         * <p>
+         * Classe Java pour anonymous complex type.
          *
-         * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+         * <p>
+         * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
          *
          * <pre>
          * &lt;complexType>
@@ -374,12 +379,11 @@ public class ChangeHistoryType {
          *
          */
         @XmlAccessorType(XmlAccessType.FIELD)
-        @XmlType(name = "", propOrder = {
-            "processingSoftwareName",
-            "processingSoftwareVersion",
-            "processingOperatingSystemName",
-            "processingOperatingSystemVersion"
-        })
+        @XmlType(name = "",
+                 propOrder = {"processingSoftwareName",
+                              "processingSoftwareVersion",
+                              "processingOperatingSystemName",
+                              "processingOperatingSystemVersion"})
         public static class ProcessingSoftware {
 
             protected StringType processingSoftwareName;
@@ -391,8 +395,8 @@ public class ChangeHistoryType {
              * Obtient la valeur de la propriété processingSoftwareName.
              *
              * @return
-             *     possible object is
-             *     {@link StringType }
+             *         possible object is
+             *         {@link StringType }
              *
              */
             public StringType getProcessingSoftwareName() {
@@ -403,8 +407,8 @@ public class ChangeHistoryType {
              * Définit la valeur de la propriété processingSoftwareName.
              *
              * @param value
-             *     allowed object is
-             *     {@link StringType }
+             *            allowed object is
+             *            {@link StringType }
              *
              */
             public void setProcessingSoftwareName(StringType value) {
@@ -415,8 +419,8 @@ public class ChangeHistoryType {
              * Obtient la valeur de la propriété processingSoftwareVersion.
              *
              * @return
-             *     possible object is
-             *     {@link StringType }
+             *         possible object is
+             *         {@link StringType }
              *
              */
             public StringType getProcessingSoftwareVersion() {
@@ -427,8 +431,8 @@ public class ChangeHistoryType {
              * Définit la valeur de la propriété processingSoftwareVersion.
              *
              * @param value
-             *     allowed object is
-             *     {@link StringType }
+             *            allowed object is
+             *            {@link StringType }
              *
              */
             public void setProcessingSoftwareVersion(StringType value) {
@@ -439,8 +443,8 @@ public class ChangeHistoryType {
              * Obtient la valeur de la propriété processingOperatingSystemName.
              *
              * @return
-             *     possible object is
-             *     {@link StringType }
+             *         possible object is
+             *         {@link StringType }
              *
              */
             public StringType getProcessingOperatingSystemName() {
@@ -451,8 +455,8 @@ public class ChangeHistoryType {
              * Définit la valeur de la propriété processingOperatingSystemName.
              *
              * @param value
-             *     allowed object is
-             *     {@link StringType }
+             *            allowed object is
+             *            {@link StringType }
              *
              */
             public void setProcessingOperatingSystemName(StringType value) {
@@ -463,8 +467,8 @@ public class ChangeHistoryType {
              * Obtient la valeur de la propriété processingOperatingSystemVersion.
              *
              * @return
-             *     possible object is
-             *     {@link StringType }
+             *         possible object is
+             *         {@link StringType }
              *
              */
             public StringType getProcessingOperatingSystemVersion() {
@@ -475,8 +479,8 @@ public class ChangeHistoryType {
              * Définit la valeur de la propriété processingOperatingSystemVersion.
              *
              * @param value
-             *     allowed object is
-             *     {@link StringType }
+             *            allowed object is
+             *            {@link StringType }
              *
              */
             public void setProcessingOperatingSystemVersion(StringType value) {

@@ -10,6 +10,14 @@ import fr.progilone.pgcn.service.exchange.ExchangeHelper;
 import fr.progilone.pgcn.service.exchange.marc.mapping.CompiledMapping;
 import fr.progilone.pgcn.service.exchange.marc.mapping.CompiledMappingRule;
 import fr.progilone.pgcn.service.exchange.marc.mapping.MarcKey;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.marc4j.converter.CharConverter;
@@ -22,15 +30,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 /**
  * Service assurant la conversion de notices aux format MARC (MARC, MARC JSON ou MARC XML) en unités documentaires
@@ -75,7 +74,8 @@ public class MarcToDocUnitConvertService extends AbstractImportConvertService {
         // Alimentation du binding index
         final AtomicInteger index = new AtomicInteger();
         // Création d'une sous-notice par notice d'exemplaire
-        return MarcUtils.splitRecordByMarcKeys(record, itemTags).stream()
+        return MarcUtils.splitRecordByMarcKeys(record, itemTags)
+                        .stream()
                         // Création d'une unité documentaire par sous-notice d'exemplaire
                         .map(itemRecord -> {
                             final DocUnitWrapper wrapper = new DocUnitWrapper();
@@ -90,14 +90,14 @@ public class MarcToDocUnitConvertService extends AbstractImportConvertService {
                                     LOG.debug("Aucune valeur n'est définie pour la clé parent (UD {})", docUnit.getPgcnId());
                                 } else {
                                     if (values.size() > 1) {
-                                        LOG.debug("Il y a plus d'une valeur trouvée pour la clé parent (UD {}); seule la première sera récupérée.",
-                                                  docUnit.getPgcnId());
+                                        LOG.debug("Il y a plus d'une valeur trouvée pour la clé parent (UD {}); seule la première sera récupérée.", docUnit.getPgcnId());
                                     }
                                     wrapper.setParentKey(values.get(0));
                                 }
                             }
                             return wrapper;
-                        }).collect(Collectors.toList());
+                        })
+                        .collect(Collectors.toList());
     }
 
     /**
@@ -126,8 +126,7 @@ public class MarcToDocUnitConvertService extends AbstractImportConvertService {
             if (rule.isDefaultRule()) {
                 // UD
                 if (FIELD_DIGITAL_ID.equals(rule.getDocUnitField())) {
-                    applyOnDocUnit = rule.getDocUnitField() != null && !hasObjectField(Iterables.getOnlyElement(docUnit.getPhysicalDocuments()),
-                                                                                       rule.getDocUnitField());
+                    applyOnDocUnit = rule.getDocUnitField() != null && !hasObjectField(Iterables.getOnlyElement(docUnit.getPhysicalDocuments()), rule.getDocUnitField());
                 } else {
                     applyOnDocUnit = rule.getDocUnitField() != null && !hasObjectField(docUnit, rule.getDocUnitField());
                 }
@@ -137,7 +136,8 @@ public class MarcToDocUnitConvertService extends AbstractImportConvertService {
                 if (rule.getProperty() != null) {
                     applyOnProperty = rule.getProperty() != null && !hasDocProperty(bibRecord, rule.getProperty().getIdentifier());
                 }
-                if (!applyOnDocUnit && !applyOnBibRecord && !applyOnProperty) {
+                if (!applyOnDocUnit && !applyOnBibRecord
+                    && !applyOnProperty) {
                     continue;
                 }
             }
@@ -234,7 +234,8 @@ public class MarcToDocUnitConvertService extends AbstractImportConvertService {
                                                           .map(Subfield::getData)
                                                           .map(val -> MarcUtils.convert(val, charConverter))
                                                           // Si le sous-champ est répété, on concaténe ses différentes valeurs
-                                                          .reduce((a, b) -> a + " " + b)
+                                                          .reduce((a, b) -> a + " "
+                                                                            + b)
                                                           .orElse(null);
                             }
                         }
@@ -258,8 +259,7 @@ public class MarcToDocUnitConvertService extends AbstractImportConvertService {
             bindings = bindings.stream().filter(binding -> mappingEvaluationService.evalCondition(rule, binding)).collect(Collectors.toList());
 
             // Déduplication des bindings par rapport aux champs utilisés dans l'expression de la règle
-            final List<String> variables =
-                rule.getExpressionStatement().getMarcKeys().stream().map(MarcKey::getVariableName).collect(Collectors.toList());
+            final List<String> variables = rule.getExpressionStatement().getMarcKeys().stream().map(MarcKey::getVariableName).collect(Collectors.toList());
             bindings = ExchangeHelper.distinctBindings(bindings, variables);
         }
 

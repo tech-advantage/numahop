@@ -5,27 +5,27 @@
 // Généré le : 2017.12.08 à 03:23:15 PM CET
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.ppdi;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
 import javax.xml.datatype.XMLGregorianCalendar;
-
 
 /**
  *
- * Pr�sentation du contexte d'archivage des documents au CINES.
+ * Présentation du contexte d'archivage des documents au CINES.
  *
  *
- * <p>Classe Java pour ArchivageType complex type.
+ * <p>
+ * Classe Java pour ArchivageType complex type.
  *
- * <p>Le fragment de sch�ma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="ArchivageType">
@@ -48,15 +48,14 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ArchivageType", propOrder = {
-    "cadre",
-    "dateArchivage",
-    "contexteLegal",
-    "classeService",
-    "infoPreserv",
-    "acces",
-    "reproduction"
-})
+@XmlType(name = "ArchivageType",
+         propOrder = {"cadre",
+                      "dateArchivage",
+                      "contexteLegal",
+                      "classeService",
+                      "infoPreserv",
+                      "acces",
+                      "reproduction"})
 public class ArchivageType {
 
     @XmlElement(required = true)
@@ -85,8 +84,9 @@ public class ArchivageType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getCadre().add(newItem);
+     * getCadre().add(newItem);
      * </pre>
      *
      *
@@ -104,11 +104,11 @@ public class ArchivageType {
     }
 
     /**
-     * Obtient la valeur de la propri�t� dateArchivage.
+     * Obtient la valeur de la propriété dateArchivage.
      *
      * @return
-     *     possible object is
-     *     {@link XMLGregorianCalendar }
+     *         possible object is
+     *         {@link XMLGregorianCalendar }
      *
      */
     public XMLGregorianCalendar getDateArchivage() {
@@ -116,14 +116,14 @@ public class ArchivageType {
     }
 
     /**
-     * D�finit la valeur de la propri�t� dateArchivage.
+     * Définit la valeur de la propriété dateArchivage.
      *
      * @param value
-     *     allowed object is
-     *     {@link XMLGregorianCalendar }
+     *            allowed object is
+     *            {@link XMLGregorianCalendar }
      *
      */
-    public void setDateArchivage(XMLGregorianCalendar value) {
+    public void setDateArchivage(final XMLGregorianCalendar value) {
         this.dateArchivage = value;
     }
 
@@ -138,8 +138,9 @@ public class ArchivageType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getContexteLegal().add(newItem);
+     * getContexteLegal().add(newItem);
      * </pre>
      *
      *
@@ -167,8 +168,9 @@ public class ArchivageType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getClasseService().add(newItem);
+     * getClasseService().add(newItem);
      * </pre>
      *
      *
@@ -196,8 +198,9 @@ public class ArchivageType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getInfoPreserv().add(newItem);
+     * getInfoPreserv().add(newItem);
      * </pre>
      *
      *
@@ -225,8 +228,9 @@ public class ArchivageType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getAcces().add(newItem);
+     * getAcces().add(newItem);
      * </pre>
      *
      *
@@ -254,8 +258,9 @@ public class ArchivageType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getReproduction().add(newItem);
+     * getReproduction().add(newItem);
      * </pre>
      *
      *

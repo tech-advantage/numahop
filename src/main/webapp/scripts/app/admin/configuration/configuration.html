@@ -1,14 +1,14 @@
 <div>
     <h2 translate>configuration</h2>
 
-    <span translate>Filter (by prefix)</span> <input type="text" ng-model="filter" class="form-control">
+    <span translate>Filter (by prefix)</span> <input type="text" ng-model="filter" class="form-control" />
 
-    <table class="table table-condensed table-striped table-bordered table-responsive" style="table-layout:fixed">
+    <table class="table table-condensed table-striped table-bordered table-responsive" style="table-layout: fixed">
         <thead>
-        <tr>
-            <th ng-click="predicate = 'prefix'; reverse=!reverse"><span translate>Prefix</span></th>
-            <th>Properties</th>
-        </tr>
+            <tr>
+                <th ng-click="predicate = 'prefix'; reverse=!reverse"><span translate>Prefix</span></th>
+                <th>Properties</th>
+            </tr>
         </thead>
 
         <tr ng-repeat="entry in configuration | filter:filter | orderBy:predicate:reverse">
@@ -16,7 +16,7 @@
             <td>
                 <div class="row" ng-repeat="(key, value) in entry.properties">
                     <div class="col-md-6">{{key}}</div>
-                    <div class="col-md-6"><span class="pull-right label label-info" style="white-space: normal;word-break:break-all">{{value}}</span></div>
+                    <div class="col-md-6"><span class="pull-right label label-info" style="white-space: normal; word-break: break-all">{{value}}</span></div>
                 </div>
             </td>
         </tr>

@@ -1,14 +1,13 @@
 package fr.progilone.pgcn.domain.dto.library;
 
-import java.util.List;
-
 import fr.progilone.pgcn.domain.dto.AbstractDTO;
+import java.util.List;
 
 /**
  * DTO représentant un paramètre de bibliothèque
- * 
+ *
  * @author jbrunet
- * Créé le 24 févr. 2017
+ *         Créé le 24 févr. 2017
  */
 public class LibraryParameterValuedDTO extends AbstractDTO {
 
@@ -16,16 +15,17 @@ public class LibraryParameterValuedDTO extends AbstractDTO {
     private String type;
     private SimpleLibraryDTO library;
     private List<LibraryParameterValueCinesDTO> values;
-    
-    public LibraryParameterValuedDTO() {}
+
+    public LibraryParameterValuedDTO() {
+    }
 
     public String getIdentifier() {
         return identifier;
     }
 
-	public void setIdentifier(final String identifier) {
-		this.identifier = identifier;
-	}
+    public void setIdentifier(final String identifier) {
+        this.identifier = identifier;
+    }
 
     public final String getType() {
         return type;
@@ -51,5 +51,4 @@ public class LibraryParameterValuedDTO extends AbstractDTO {
         this.values = values;
     }
 
-  
 }

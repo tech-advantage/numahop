@@ -1,11 +1,10 @@
 package fr.progilone.pgcn.domain.dto.workflow;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
 import fr.progilone.pgcn.domain.dto.AbstractVersionedDTO;
 import fr.progilone.pgcn.domain.dto.library.SimpleLibraryDTO;
 import fr.progilone.pgcn.domain.dto.user.SimpleUserDTO;
+import java.time.LocalDateTime;
+import java.util.List;
 
 public class WorkflowGroupDTO extends AbstractVersionedDTO {
 
@@ -14,7 +13,7 @@ public class WorkflowGroupDTO extends AbstractVersionedDTO {
     private SimpleLibraryDTO library;
     private String description;
     private List<SimpleUserDTO> users;
-    
+
     /**
      * Ajout des infos de création
      */

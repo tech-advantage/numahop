@@ -1,19 +1,17 @@
 package fr.progilone.pgcn.service.exchange.ssh;
 
+import fr.progilone.pgcn.exception.PgcnTechnicalException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPSClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import fr.progilone.pgcn.exception.PgcnTechnicalException;
 
 /**
  * Service de connexion FTP
@@ -36,12 +34,9 @@ public class FTPClientService {
      *            fichier ou dossier à copier
      * @throws PgcnTechnicalException
      */
-    public void ftpPut(final String adress,
-                       final String port,
-                       final String login,
-                       final String password,
-                       final String targetDir,
-                       final Path localSource) throws PgcnTechnicalException, IOException {
+    public void ftpPut(final String adress, final String port, final String login, final String password, final String targetDir, final Path localSource)
+                                                                                                                                                          throws PgcnTechnicalException,
+                                                                                                                                                          IOException {
         final FTPSClient ftpClient = new FTPSClient("SSL");
 
         if (localSource != null && Files.exists(localSource)) {
@@ -64,12 +59,7 @@ public class FTPClientService {
                 // Set data channel protection to private
                 ftpClient.execPROT("P");
 
-                LOG.debug("Envoi de {} vers {}@{}:{}:{}",
-                          localSource.toAbsolutePath().toString(),
-                          login,
-                          adress,
-                          port,
-                          targetDir);
+                LOG.debug("Envoi de {} vers {}@{}:{}:{}", localSource.toAbsolutePath().toString(), login, adress, port, targetDir);
 
                 // Positionnement sur le répertoire cible
                 ftpClient.changeWorkingDirectory(targetDir);
@@ -132,12 +122,11 @@ public class FTPClientService {
                 LOG.trace(ftpclient.getReplyString());
 
                 // Changement des droits
-                ftpclient.sendSiteCommand("chmod " + "755 " + targetName);
+                ftpclient.sendSiteCommand("chmod " + "755 "
+                                          + targetName);
 
             } catch (final IOException e) {
-                LOG.error("Une erreur s'est produite lors de la copie du fichier {} vers {}",
-                          localSource.getAbsolutePath(),
-                          targetName);
+                LOG.error("Une erreur s'est produite lors de la copie du fichier {} vers {}", localSource.getAbsolutePath(), targetName);
                 LOG.error(e.getMessage(), e);
             }
         }

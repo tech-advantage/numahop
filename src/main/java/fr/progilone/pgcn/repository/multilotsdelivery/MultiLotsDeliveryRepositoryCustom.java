@@ -1,14 +1,12 @@
 package fr.progilone.pgcn.repository.multilotsdelivery;
 
-import java.time.LocalDate;
-import java.util.List;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
 import fr.progilone.pgcn.domain.delivery.Delivery;
 import fr.progilone.pgcn.domain.multilotsdelivery.MultiLotsDelivery;
 import fr.progilone.pgcn.domain.workflow.WorkflowStateKey;
+import java.time.LocalDate;
+import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface MultiLotsDeliveryRepositoryCustom {
 
@@ -28,16 +26,15 @@ public interface MultiLotsDeliveryRepositoryCustom {
      * @return
      */
     Page<MultiLotsDelivery> search(String search,
-                          List<String> libraries,
-                          List<String> projects,
-                          List<String> lots,
-                          List<String> deliveries,
-                          List<String> providers,
+                                   List<String> libraries,
+                                   List<String> projects,
+                                   List<String> lots,
+                                   List<String> deliveries,
+                                   List<String> providers,
                                    List<Delivery.DeliveryStatus> status,
-                          LocalDate dateFrom,
-                          LocalDate dateTo,
-                          List<WorkflowStateKey> docUnitStates,
-                          Pageable pageable);
+                                   LocalDate dateFrom,
+                                   LocalDate dateTo,
+                                   List<WorkflowStateKey> docUnitStates,
+                                   Pageable pageable);
 
-    
 }

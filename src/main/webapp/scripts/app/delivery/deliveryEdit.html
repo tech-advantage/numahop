@@ -2,64 +2,73 @@
     <div class="panel panel-column-3">
         <div class="panel-heading">
             <div class="pull-right">
-                <button type="button" class="btn btn-sem2 btn-xs" ng-show="!deliveryForm.$visible && loaded && delivery.lot.type === 'PHYSICAL'"
-                    ng-click="deliver(delivery)" ng-disabled="!delivery || !delivery.identifier || !loaded || isDeliveryLocked(delivery) || delivered"
-                    uib-tooltip="{{::'Livrer' | translate}}" sem-roles-allowed="DEL_HAB5">
+                <button
+                    type="button"
+                    class="btn btn-sem2 btn-xs"
+                    ng-show="!deliveryForm.$visible && loaded && delivery.lot.type === 'PHYSICAL'"
+                    ng-click="deliver(delivery)"
+                    ng-disabled="!delivery || !delivery.identifier || !loaded || isDeliveryLocked(delivery) || delivered"
+                    uib-tooltip="{{::'Livrer' | translate}}"
+                    tooltip-append-to-body="true"
+                    sem-roles-allowed="DEL_HAB5"
+                >
                     <span class="glyphicon-halflings glyphicon-upload"></span>&nbsp;{{::'Livrer' | translate}}
                 </button>
-                <button type="button" class="btn btn-sem2 btn-xs" ng-show="!deliveryForm.$visible && loaded && delivery.lot.type === 'DIGITAL'"
-                    ng-click="deliver(delivery, true)" ng-disabled="!delivery || !delivery.identifier || !loaded || isDeliveryLocked(delivery) || delivered"
-                    uib-tooltip="{{::'Livrer' | translate}}" sem-roles-allowed="DEL_HAB5_2">
+                <button
+                    type="button"
+                    class="btn btn-sem2 btn-xs"
+                    ng-show="!deliveryForm.$visible && loaded && delivery.lot.type === 'DIGITAL'"
+                    ng-click="deliver(delivery, true)"
+                    ng-disabled="!delivery || !delivery.identifier || !loaded || isDeliveryLocked(delivery) || delivered"
+                    uib-tooltip="{{::'Livrer' | translate}}"
+                    tooltip-append-to-body="true"
+                    sem-roles-allowed="DEL_HAB5_2"
+                >
                     <span class="glyphicon-halflings glyphicon-upload"></span>&nbsp;{{::'Livrer et créer les UD' | translate}}
                 </button>
-                <button type="button" class="btn btn-sem2 btn-xs" ng-click="deliveryForm.$show()"
-                        ng-disabled="!delivery || !delivery.identifier || isDeliveryLocked(delivery)" sem-roles-allowed="DEL_HAB2, DEL_HAB8"
-                        uib-tooltip="{{::'Modifier' | translate}}" ng-show="!deliveryForm.$visible && loaded">
+                <button
+                    type="button"
+                    class="btn btn-sem2 btn-xs"
+                    ng-click="deliveryForm.$show()"
+                    ng-disabled="!delivery || !delivery.identifier || isDeliveryLocked(delivery)"
+                    sem-roles-allowed="DEL_HAB2, DEL_HAB8"
+                    uib-tooltip="{{::'Modifier' | translate}}"
+                    tooltip-append-to-body="true"
+                    ng-show="!deliveryForm.$visible && loaded"
+                >
                     <span class="glyphicon-regular edit"></span>
                 </button>
-                <div class="btn-group" ng-show="!deliveryForm.$visible && loaded" sem-roles-allowed="DEL_HAB2, DEL_HAB3, DEL_HAB6, DEL_HAB7, DEL_HAB8" uib-dropdown
-                    dropdown-append-to-body>
-                    <button type="button" class="btn btn-sem2 btn-xs" ng-disabled="!delivery || !delivery.identifier"
-                        uib-tooltip="{{::'Autres actions' | translate}}" uib-dropdown-toggle>
+                <div class="btn-group" ng-show="!deliveryForm.$visible && loaded" sem-roles-allowed="DEL_HAB2, DEL_HAB3, DEL_HAB6, DEL_HAB7, DEL_HAB8" uib-dropdown dropdown-append-to-body>
+                    <button type="button" class="btn btn-sem2 btn-xs" ng-disabled="!delivery || !delivery.identifier" uib-tooltip="{{::'Autres actions' | translate}}" uib-dropdown-toggle tooltip-append-to-body="true">
                         <span class="glyphicon-halflings glyphicon-align-justify"></span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-right" role="menu" uib-dropdown-menu>
-                        <li ng-class="{'disabled': !loaded || !delivery || !delivery.identifier || isUnexpectedError || isDeliveryLocked(delivery) || !canDeleteDelivery }"
-                            sem-roles-allowed="DEL_HAB3">
+                        <li ng-class="{'disabled': !loaded || !delivery || !delivery.identifier || isUnexpectedError || isDeliveryLocked(delivery) || !canDeleteDelivery }" sem-roles-allowed="DEL_HAB3">
                             <a ng-click="!(!loaded || !delivery || !delivery.identifier || isUnexpectedError || isDeliveryLocked(delivery)) && canDeleteDelivery && delete(delivery)">
                                 <span class="glyphicon-halflings glyphicon-trash"></span> {{ ::'Supprimer' | translate }}
                             </a>
                         </li>
                         <li role="separator" class="divider" sem-roles-allowed="DEL_HAB1, DEL_HAB2, DEL_HAB3"></li>
-                        <li ng-class="{'disabled': !loaded || !delivery || !delivery.identifier}"
-                            sem-roles-allowed="DEL_HAB2,DEL_HAB8">
-                            <a ng-click="loaded && delivery && delivery.identifier && duplicate()">
-                                <span class="glyphicon-halflings glyphicon-duplicate"></span> {{ ::'Dupliquer' | translate }}
-                            </a>
+                        <li ng-class="{'disabled': !loaded || !delivery || !delivery.identifier}" sem-roles-allowed="DEL_HAB2,DEL_HAB8">
+                            <a ng-click="loaded && delivery && delivery.identifier && duplicate()"> <span class="glyphicon-halflings glyphicon-duplicate"></span> {{ ::'Dupliquer' | translate }} </a>
                         </li>
                         <li role="separator" class="divider" sem-roles-allowed="DEL_HAB4, DEL_HAB6, DEL_HAB7"></li>
-                        <li ng-class="{'disabled': !loaded || !delivery || !delivery.identifier || delivery.status == 'SAVED'}"
-                            sem-roles-allowed="DEL_HAB4, DEL_HAB6, DEL_HAB7">
-                            <a ng-click="downloadSlip('csv')">
-                                <span class="glyphicon-halflings glyphicon-export"></span> {{ ::'Télécharger le bordereau de livraison CSV' | translate }}
-                            </a>
+                        <li ng-class="{'disabled': !loaded || !delivery || !delivery.identifier || delivery.status == 'SAVED'}" sem-roles-allowed="DEL_HAB4, DEL_HAB6, DEL_HAB7">
+                            <a ng-click="downloadSlip('csv')"> <span class="glyphicon-halflings glyphicon-export"></span> {{ ::'Télécharger le bordereau de livraison CSV' | translate }} </a>
                         </li>
-                        <li ng-class="{'disabled': !loaded || !delivery || !delivery.identifier || delivery.status == 'SAVED'}"
-                            sem-roles-allowed="DEL_HAB4, DEL_HAB6, DEL_HAB7">
-                            <a ng-click="downloadSlip('pdf')">
-                                <span class="glyphicon-halflings glyphicon-export"></span> {{ ::'Télécharger le bordereau de livraison PDF' | translate }}
-                            </a>
+                        <li ng-class="{'disabled': !loaded || !delivery || !delivery.identifier || delivery.status == 'SAVED'}" sem-roles-allowed="DEL_HAB4, DEL_HAB6, DEL_HAB7">
+                            <a ng-click="downloadSlip('pdf')"> <span class="glyphicon-halflings glyphicon-export"></span> {{ ::'Télécharger le bordereau de livraison PDF' | translate }} </a>
                         </li>
-                        <li ng-class="{'disabled': !loaded || !delivery || !delivery.identifier || deliveryNotChecked }"
-                            sem-roles-allowed="DEL_HAB4, DEL_HAB6, DEL_HAB7">
+                        <li ng-class="{'disabled': !loaded || !delivery || !delivery.identifier || deliveryNotChecked }" sem-roles-allowed="DEL_HAB4, DEL_HAB6, DEL_HAB7">
                             <a ng-click="!loaded || !delivery || !delivery.identifier || deliveryNotChecked || downloadCheckSlip('csv')">
-                                <span class="glyphicon-halflings glyphicon-export"></span> {{ ::'Télécharger le bordereau de contrôle CSV' | translate }}
+                                <span class="glyphicon-halflings glyphicon-export"></span>
+                                {{ ::'Télécharger le bordereau de contrôle CSV' | translate }}
                             </a>
                         </li>
-                        <li ng-class="{'disabled': !loaded || !delivery || !delivery.identifier || deliveryNotChecked}"
-                            sem-roles-allowed="DEL_HAB4, DEL_HAB6, DEL_HAB7">
+                        <li ng-class="{'disabled': !loaded || !delivery || !delivery.identifier || deliveryNotChecked}" sem-roles-allowed="DEL_HAB4, DEL_HAB6, DEL_HAB7">
                             <a ng-click="!loaded || !delivery || !delivery.identifier || deliveryNotChecked || downloadCheckSlip('pdf')">
-                                <span class="glyphicon-halflings glyphicon-export"></span> {{ ::'Télécharger le bordereau de contrôle PDF' | translate }}
+                                <span class="glyphicon-halflings glyphicon-export"></span>
+                                {{ ::'Télécharger le bordereau de contrôle PDF' | translate }}
                             </a>
                         </li>
                     </ul>
@@ -69,18 +78,26 @@
         </div>
         <div class="panel-body" ng-show="loaded" id="deliveryDetails">
             <div>
-
                 <form editable-form name="deliveryForm" onaftersave="saveDelivery(delivery)" ng-show="loaded">
-
-                    <numa-editable-field title="{{::'Libellé' | translate}}" placeholder="{{::'Libellé' | translate}}" onbeforesave="validation.required($data)"
-                        form="deliveryForm" model="delivery.label" errors="{{ errors.label }}" maxlength="255" mandatory="true" numa-readonly="formRO"> </numa-editable-field>
+                    <numa-editable-field
+                        title="{{::'Libellé' | translate}}"
+                        placeholder="{{::'Libellé' | translate}}"
+                        onbeforesave="validation.required($data)"
+                        form="deliveryForm"
+                        model="delivery.label"
+                        errors="{{ errors.label }}"
+                        maxlength="255"
+                        mandatory="true"
+                        numa-readonly="formRO"
+                    >
+                    </numa-editable-field>
 
                     <div class="row">
                         <div class="col-xs-4 text-right">
                             <span translate>Statut</span>
                         </div>
-                        <div class="col-xs-8 text-left" >
-                            <span>{{codes['delivery.' + delivery.status]}} </span>
+                        <div class="col-xs-8 text-left">
+                            <span>{{codes['delivery.' + delivery.status] | translate}} </span>
                         </div>
                     </div>
 
@@ -88,77 +105,154 @@
                         <div class="col-xs-4 text-right">
                             <span translate>Livraison multi-lots</span>
                         </div>
-                        <div class="col-xs-8 text-left" >
-                            <span>{{::delivery.multiLotsDelLabel}} <numa-custom-link numa-link-type="multiLotsDelivery"
-                                                                  numa-tooltip="Voir la livraison multi-lots"
-                                                                  numa-image-class="glyphicon-halflings glyphicon-share"
-                                                                  numa-link-parameters='{"id": delivery.multiLotsDelId}'
-                                                                  ng-show="true"
-                                                                  sem-roles-allowed="DEL_HAB0"></numa-custom-link>
+                        <div class="col-xs-8 text-left">
+                            <span
+                                >{{::delivery.multiLotsDelLabel}}
+                                <numa-custom-link
+                                    numa-link-type="multiLotsDelivery"
+                                    numa-tooltip="Voir la livraison multi-lots"
+                                    numa-image-class="glyphicon-halflings glyphicon-share"
+                                    numa-link-parameters='{"id": delivery.multiLotsDelId}'
+                                    ng-show="true"
+                                    sem-roles-allowed="DEL_HAB0"
+                                ></numa-custom-link>
                             </span>
                         </div>
                     </div>
-                    <numa-editable-field ng_if="!userIsPresta" title="{{::'Lot' | translate}}" type="select" form="deliveryForm" numa-onchange="checkExpectedFormat($data)"
-                    model="delivery.lot" numa-readonly="formRO || !canChangeLot" errors="{{ errors.lot }}" onbeforesave="validation.required($data)"
-                    config="{ data: sel2Lots,
+
+                    <numa-editable-field
+                        ng_if="!userIsPresta"
+                        title="{{::'Lot' | translate}}"
+                        type="select"
+                        form="deliveryForm"
+                        numa-onchange="checkExpectedFormat($data)"
+                        model="delivery.lot"
+                        numa-readonly="formRO || !canChangeLot"
+                        errors="{{ errors.lot }}"
+                        onbeforesave="validation.required($data)"
+                        config="{ data: sel2Lots,
                      display: 'label',
                      query: 'o.label for o in $ctrl.config.data track by o.identifier'}"
-                    link="{ type: 'lot', parameters: {'id': delivery.lot.identifier} }" mandatory="true"> </numa-editable-field>
+                        link="{ type: 'lot', parameters: {'id': delivery.lot.identifier} }"
+                        mandatory="true"
+                    >
+                    </numa-editable-field>
 
-                    <numa-editable-field ng_if="userIsPresta" title="{{::'Lot presta' | translate}}" type="select" form="deliveryForm" numa-onchange="checkExpectedFormat($data)"
-                    model="delivery.lot" numa-readonly="formRO || !canChangeLot" errors="{{ errors.lot }}" onbeforesave="validation.required($data)"
-                    config="{ data: sel2Lots,
+                    <numa-editable-field
+                        ng_if="userIsPresta"
+                        title="{{::'Lot presta' | translate}}"
+                        type="select"
+                        form="deliveryForm"
+                        numa-onchange="checkExpectedFormat($data)"
+                        model="delivery.lot"
+                        numa-readonly="formRO || !canChangeLot"
+                        errors="{{ errors.lot }}"
+                        onbeforesave="validation.required($data)"
+                        config="{ data: sel2Lots,
                      display: 'label',
                      query: 'o.label for o in $ctrl.config.data track by o.identifier'}"
-                    mandatory="true"> </numa-editable-field>
+                        mandatory="true"
+                    >
+                    </numa-editable-field>
 
-                    <numa-editable-field title="{{::'Description' | translate}}" placeholder="{{::'Description' | translate}}" maxlength="255"
-                    form="deliveryForm" model="delivery.description" numa-readonly="formRO" errors="{{ errors.description }}"> </numa-editable-field>
+                    <numa-editable-field
+                        title="{{::'Description' | translate}}"
+                        placeholder="{{::'Description' | translate}}"
+                        maxlength="255"
+                        form="deliveryForm"
+                        model="delivery.description"
+                        numa-readonly="formRO"
+                        errors="{{ errors.description }}"
+                    >
+                    </numa-editable-field>
 
-                    <numa-editable-field title="{{::'Paiement' | translate}}" type="select" form="deliveryForm"
-                    model="delivery.payment" numa-readonly="userIsPresta || formRO" errors="{{ errors.payment }}"
-                    config="{ data: options.payment,
+                    <numa-editable-field
+                        title="{{::'Paiement' | translate}}"
+                        type="select"
+                        form="deliveryForm"
+                        model="delivery.payment"
+                        numa-readonly="userIsPresta || formRO"
+                        errors="{{ errors.payment }}"
+                        config="{ data: options.payment,
                     displayFn: displayPayment,
                     query: 'key as value for (key, value) in $ctrl.config.data'}"
-                     onbeforesave="validation.required($data)"> </numa-editable-field>
+                        onbeforesave="validation.required($data)"
+                    >
+                    </numa-editable-field>
 
-                    <numa-editable-field title="{{::'Date de réception' | translate}}" placeholder="{{::'Date de réception' | translate}}" type="datepicker"
-                    form="deliveryForm" model="delivery.receptionDate" numa-readonly="formRO" errors="{{ errors.receptionDate }}"> </numa-editable-field>
+                    <numa-editable-field
+                        title="{{::'Date de réception' | translate}}"
+                        placeholder="{{::'Date de réception' | translate}}"
+                        type="datepicker"
+                        form="deliveryForm"
+                        model="delivery.receptionDate"
+                        numa-readonly="formRO"
+                        errors="{{ errors.receptionDate }}"
+                    >
+                    </numa-editable-field>
 
-                    <numa-editable-field title="{{::'Dossier de livraison' | translate}}" placeholder="{{::'Dossier de livraison' | translate}}"
-                    form="deliveryForm" model="delivery.folderPath" numa-readonly="formRO" errors="{{ errors.folderPath }}"
-                     onbeforesave="validation.required($data)" mandatory="true"> </numa-editable-field>
+                    <numa-editable-field
+                        title="{{::'Dossier de livraison' | translate}}"
+                        placeholder="{{::'Dossier de livraison' | translate}}"
+                        form="deliveryForm"
+                        model="delivery.folderPath"
+                        numa-readonly="formRO"
+                        errors="{{ errors.folderPath }}"
+                        onbeforesave="validation.required($data)"
+                        mandatory="true"
+                    >
+                    </numa-editable-field>
 
-                    <numa-editable-field title="{{::'Notes de livraison' | translate}}" type="textarea" maxlength="255"
-                    form="deliveryForm" model="delivery.digitizingNotes" numa-readonly="formRO" errors="{{ errors.digitizingNotes }}"> </numa-editable-field>
+                    <numa-editable-field
+                        title="{{::'Notes de livraison' | translate}}"
+                        type="textarea"
+                        maxlength="255"
+                        form="deliveryForm"
+                        model="delivery.digitizingNotes"
+                        numa-readonly="formRO"
+                        errors="{{ errors.digitizingNotes }}"
+                    >
+                    </numa-editable-field>
 
-                    <numa-editable-field title="{{::'Notes de contrôle livraison' | translate}}" type="textarea" maxlength="255"
-                    form="deliveryForm" model="delivery.controlNotes" numa-readonly="formRO" errors="{{ errors.controlNotes }}"> </numa-editable-field>
+                    <numa-editable-field
+                        title="{{::'Notes de contrôle livraison' | translate}}"
+                        type="textarea"
+                        maxlength="255"
+                        form="deliveryForm"
+                        model="delivery.controlNotes"
+                        numa-readonly="formRO"
+                        errors="{{ errors.controlNotes }}"
+                    >
+                    </numa-editable-field>
 
-                    <numa-editable-field title="{{::'Echantillonnage' | translate}}" form="deliveryForm"
-                        numa-readonly="true"  model="checkConfiguration.sampleModeLabel" />
-                    <div class="text-center  column-6 margin-t10"
+                    <numa-editable-field title="{{::'Echantillonnage' | translate}}" form="deliveryForm" numa-readonly="true" model="checkConfiguration.sampleModeLabel"></numa-editable-field>
+
+                    <div
+                        class="text-center column-6 margin-t10"
                         ng-if="digitalDocuments.length > 0 && delivery.status === 'TO_BE_CONTROLLED'
                                                         && 'NO_SAMPLE' !== checkConfiguration.sampleMode
-                                                        && deliverySample.pages.length > 0">
-                          <div class="column-bottom-button">
-                              <!-- Echantillonnage -->
-                              <div class="btn-group">
-                                  <button type="button" class="btn btn-sem4" ng-click="sampleDelivery()" sem-roles-allowed="CHECK_HAB4">
-                                      <span class="glyphicon-regular share"></span> {{::'Contrôler échantillon (' + deliverySample.pages.length + ' page(s) / ' + delivery.totalPages +')' | translate}}
-                                  </button>
-                              </div>
-                          </div>
+                                                        && deliverySample.pages.length > 0"
+                    >
+                        <div class="column-bottom-button">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-sem4" ng-click="sampleDelivery()" sem-roles-allowed="CHECK_HAB4">
+                                    <span class="glyphicon-regular share"></span>
+                                    <span translate>Contrôler échantillon&nbsp;</span>{{:: '(' + deliverySample.pages.length + ' page(s) / ' + delivery.totalPages + ')'}}
+                                </button>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="margin-t10" uib-accordion>
+                    <uib-accordion class="margin-t10">
                         <div uib-accordion-group is-open="accordions.docunit">
                             <uib-accordion-heading>
-                                <span class="pull-left glyphicon-halflings" ng-class="{false: 'glyphicon-chevron-right', true: 'glyphicon-chevron-down'}[accordions.docunit]">&nbsp;</span>
-                                <h4>{{ ::'Documents numériques rattachés' | translate }}
+                                <i ng-class="{false: 'fa fa-chevron-right rotate-icon-up', true: 'fa fa-chevron-right rotate-icon-down'}[accordions.docunit]"></i>
+                                <span
+                                    >{{ ::'Documents numériques rattachés' | translate }}
                                     <span class="badge btn-sem2">{{ digitalDocuments.length }}</span>
-                                </h4>
+                                </span>
                             </uib-accordion-heading>
+
                             <table class="table table-condensed table-hover">
                                 <thead>
                                     <tr>
@@ -172,7 +266,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr ng-repeat="doc in digitalDocuments">
+                                    <tr ng-repeat="doc in digitalDocuments | limitTo:pagination.size:(pagination.page-1)*pagination.size">
                                         <td>
                                             <div ng_if="delivering && doc.status !== 'TO_CHECK'">
                                                 <uib-progressbar type="livraison" value="doc.progress" title="{{::doc.digitalId}}">
@@ -189,69 +283,79 @@
                                         <td>{{::doc.deliveryDate | moment:'L'}}</td>
                                         <td>{{::doc.nbPages}}</td>
                                         <td ng-if="doc.totalLength > 0">{{ ::doc.totalLength | filesize }}</td>
-                                        <td ng-if="doc.totalLength === '' || doc.totalLength <= 0">- - - </td>
+                                        <td ng-if="doc.totalLength === '' || doc.totalLength <= 0">- - -</td>
                                         <td ng-if="delivery.status === 'SAVED'">{{codes['digitalDocument.CREATING']}}</td>
-                                        <td ng-if="delivery.status!== 'SAVED'">{{codes['digitalDocument.' +doc.status]}}</td>
+                                        <td ng-if="delivery.status!== 'SAVED'">{{codes['digitalDocument.' + doc.status] | translate}}</td>
                                         <td>
-                                            <div ng-if="delivery.status !== 'SAVED' && delivery.status !== 'DELIVERING_ERROR'
-                                                        && (delivery.status !=='DELIVERING' || doc.status ==='TO_CHECK' || doc.status ==='CHECKING')" class="info-status">
+                                            <div
+                                                ng-if="delivery.status !== 'SAVED' && delivery.status !== 'DELIVERING_ERROR'
+                                                        && (delivery.status !=='DELIVERING' || doc.status ==='TO_CHECK' || doc.status ==='CHECKING')"
+                                                class="info-status"
+                                            >
                                                 <div ng-class="{false: 'circle green-circle', true: 'circle red-circle'}[doc.isFailed || doc.status === 'REJECTED']"></div>
                                             </div>
                                         </td>
                                         <td ng-if="doc.nbPages > 0 && doc.totalLength > 0">
                                             <div ng_if="delivery.status!== 'SAVED' && toCheckStatus.indexOf(doc.status) > -1" class="info-status">
-                                                <numa-custom-link numa-link-type="viewer_document"
-                                                                  numa-tooltip="Contrôler le document"
-                                                                  numa-image-class="glyphicon-halflings glyphicon-eye-open"
-                                                                  numa-link-parameters='{"id": doc.identifier, "pdfExtracted": pdfExtracted, "deliveryId": delivery.identifier}'
-                                                                  ng-show="canDigitalDocBeViewed(doc) && doc.isWorkflowStarted"
-                                                                  sem-roles-allowed="CHECK_HAB4"></numa-custom-link>
-
+                                                <numa-custom-link
+                                                    numa-link-type="viewer_document"
+                                                    numa-tooltip="Contrôler le document"
+                                                    numa-image-class="glyphicon-halflings glyphicon-eye-open"
+                                                    numa-link-parameters='{"id": doc.identifier, "pdfExtracted": pdfExtracted, "deliveryId": delivery.identifier}'
+                                                    ng-show="canDigitalDocBeViewed(doc) && doc.isWorkflowStarted"
+                                                    sem-roles-allowed="CHECK_HAB4"
+                                                ></numa-custom-link>
                                             </div>
                                             <div ng_if="delivery.status !== 'SAVED' && doc.status !== 'DELIVERING' && toCheckStatus.indexOf(doc.status) === -1" class="info-status">
-                                                <button type="button" class="btn btn-sem2 btn-xs"
-                                                        ng-click="goToAllOperations(doc.docUnitId, 'CHECK')"
-                                                        ng-show="canDigitalDocBeViewed(doc) || !doc.isWorkflowStarted"
-                                                        uib-tooltip="{{::'Voir le document' | translate}}"
-                                                        >
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-sem2 btn-xs"
+                                                    ng-click="goToAllOperations(doc.docUnitId, 'CHECK')"
+                                                    ng-show="canDigitalDocBeViewed(doc) || !doc.isWorkflowStarted"
+                                                    uib-tooltip="{{::'Voir le document' | translate}}"
+                                                >
                                                     <span class="glyphicon-halflings glyphicon-share"></span>
                                                 </button>
                                             </div>
-
                                         </td>
                                         <td ng-if="(('DELIVERING' === doc.status && doc.nbPages === 0 && !doc.totalLength) || 'DELIVERING_ERROR' === doc.status )">
-                                            <div><button type="button" class="btn btn-sem2 btn-xs"
-                                                        ng-click="detachFromDelivery(doc)"
-                                                        uib-tooltip="{{::'Détacher et réinitialiser le document' | translate}}">
+                                            <div>
+                                                <button type="button" class="btn btn-sem2 btn-xs" ng-click="detachFromDelivery(doc)" uib-tooltip="{{::'Détacher et réinitialiser le document' | translate}}">
                                                     <span class="glyphicon-halflings glyphicon-remove"></span>
-                                            </button></div>
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
-                            <div class="text-center  column-6 margin-t10" ng-if="digitalDocuments.length > 0 && delivery.status!== 'SAVED' && delivery.status!== 'DELIVERING'">
-		                        <div class="column-bottom-button">
-		                            <!-- Charger le rapport de livraison -->
-		                            <div class="btn-group">
-		                                <button type="button" class="btn btn-sem4" ng-click="downloadDelivReport()">
-		                                    <span class="glyphicon-regular download"></span> {{::'Charger le rapport' | translate}}
-		                                </button>
-		                            </div>
-		                        </div>
-		                    </div>
-		                 </div>
-                    </div>
+                            <div class="row" ng-show="digitalDocuments.length > pagination.size">
+                                <div class="col-sm-12">
+                                    <div class="text-center">
+                                        <ul uib-pagination total-items="digitalDocuments.length" items-per-page="pagination.size" ng-model="pagination.page" class="pagination-sm"></ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-center column-6 margin-t10" ng-if="digitalDocuments.length > 0 && delivery.status!== 'SAVED' && delivery.status!== 'DELIVERING'">
+                                <div class="column-bottom-button">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-sem4" ng-click="downloadDelivReport()">
+                                            <span class="glyphicon-regular download"></span>
+                                            {{::'Charger le rapport' | translate}}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </uib-accordion>
 
                     <div class="text-center column-bottom column-6 margin-t10" ng-if="deliveryForm.$visible">
                         <div class="column-bottom-button">
                             <!-- Création / Modification -->
                             <div class="btn-group">
-                                <button type="button" class="btn btn-sem4" ng-click="cancel()">
-                                <span class="glyphicon-regular unshare"></span> {{::'Annuler' | translate}}
-                            </button>
+                                <button type="button" class="btn btn-sem4" ng-click="cancel()"><span class="glyphicon-regular unshare"></span> {{::'Annuler' | translate}}</button>
                                 <button type="submit" class="btn btn-sem2" ng-disabled="delivery.status === 'DELIVERING' || formRO" sem-roles-allowed="DEL_HAB1,DEL_HAB2,DEL_HAB3,DEL_HAB8">
-                                <span class="glyphicon-regular floppy-save"></span> {{::'Enregistrer' | translate}}
-                            </button>
+                                    <span class="glyphicon-regular floppy-save"></span> {{::'Enregistrer' | translate}}
+                                </button>
                             </div>
                         </div>
                     </div>

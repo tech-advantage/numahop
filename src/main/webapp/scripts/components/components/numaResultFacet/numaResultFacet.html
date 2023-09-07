@@ -1,21 +1,17 @@
-<div id="facet_{{facet.id}}" class="panel panel-cataloging-sec"
-     ng-repeat="facet in $ctrl.facets | orderBy:'pos' track by facet.code" ng-init="facetLimit = 5">
+<div id="facet_{{facet.id}}" class="panel panel-cataloging-sec" ng-repeat="facet in $ctrl.facets | orderBy:'pos' track by facet.code" ng-init="facetLimit = 5">
     <div class="panel-heading" data-toggle="collapse" data-parent="#facet_{{facet.id}}" ng-href="#facet_{{facet.id}} div.list-group">
         <div class="panel-title">
-            <h5>{{::facet.label}}
-	            <span class="glyphicon-regular remove" ng-click="$ctrl.clearFacet(facet.code)" ng-if="$ctrl.aggs[facet.code]._selected"></span>
+            <h5>
+                {{::facet.label}}
+                <span class="glyphicon-regular remove" ng-click="$ctrl.clearFacet(facet.code)" ng-if="$ctrl.aggs[facet.code]._selected"></span>
             </h5>
         </div>
     </div>
     <div class="list-group panel-collapse collapse" ng-class="{true: 'in'}[$ctrl.aggs[facet.code]._selected]">
-        <div class="list-group-item"
-             ng-repeat="val in $ctrl.aggs[facet.code] | orderBy:['_selected'] | limitTo:facetLimit"
-             ng-click="$ctrl.filterFacet(facet.code, val)">
+        <div class="list-group-item" ng-repeat="val in $ctrl.aggs[facet.code] | orderBy:['_selected'] | limitTo:facetLimit" ng-click="$ctrl.filterFacet(facet.code, val)">
             <span class="badge">{{::val.count}}</span>
             <span>{{::val.translation || val.title}}</span>
-            <span class="glyphicon-regular remove"
-                  ng-click="$ctrl.clearFacet(facet.code, val, $event)"
-                  ng-if="val._selected"></span>
+            <span class="glyphicon-regular remove" ng-click="$ctrl.clearFacet(facet.code, val, $event)" ng-if="val._selected"></span>
         </div>
         <div class="list-group-item" ng-show="facetLimit < $ctrl.aggs[facet.code].length">
             <a ng-click="facetLimit = $ctrl.aggs[facet.code].length">

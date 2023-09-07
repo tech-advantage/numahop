@@ -2,7 +2,6 @@
     'use strict';
 
     angular.module('numaHopApp.service').factory('DashboardSrvc', function ($http) {
-
         /**
          * Le service
          * @type {Object}
@@ -10,7 +9,7 @@
         var service = {
             setDashboard: setDashboard,
             getDashboard: getDashboard,
-            saveDashboard: saveDashboard
+            saveDashboard: saveDashboard,
         };
 
         /**

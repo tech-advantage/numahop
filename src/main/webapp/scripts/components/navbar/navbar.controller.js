@@ -1,14 +1,13 @@
 (function () {
-    "use strict";
+    'use strict';
 
-    angular.module('numaHopApp')
-        .controller('NavbarController', function ($scope, $state, Auth, Principal) {
-            $scope.isAuthenticated = Principal.isAuthenticated;
-            $scope.$state = $state;
+    angular.module('numaHopApp').controller('NavbarController', function ($scope, $state, Auth, Principal) {
+        $scope.isAuthenticated = Principal.isAuthenticated;
+        $scope.$state = $state;
 
-            $scope.logout = function () {
-                Auth.logout();
-                $state.go('home');
-            };
-        });
+        $scope.logout = function () {
+            Auth.logout();
+            $state.go('home');
+        };
+    });
 })();

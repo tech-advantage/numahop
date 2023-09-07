@@ -1,7 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <!-- Changeset du module Common (Language) -->
     <changeSet id="pgcn-create-common-language-code" author="progilone">
@@ -10,7 +12,7 @@
                 <constraints primaryKey="true" nullable="false" />
             </column>
 			<!-- Données -->
-			<column name="name" type="varchar(255)"/>
+			<column name="name" type="varchar(255)" />
 			<column name="all_names_french" type="varchar(500)" />
 			<column name="all_names_english" type="varchar(500)" />
 			<column name="iso_639_2_t" type="varchar(3)" />
@@ -21,24 +23,22 @@
                 <constraints nullable="false" />
             </column>
             <column name="created_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>
     </changeSet>
     
     <!-- Chargement des données du module Common (Language) -->
     <changeSet id="pgcn-load-data-common-language-code" author="progilone">
-        <loadData encoding="UTF-8" separator=";"
-            file="config/liquibase/numahop/document/common/languageCode.csv"
-            tableName="com_language_code" />
+        <loadData encoding="UTF-8" separator=";" file="config/liquibase/numahop/document/common/languageCode.csv" tableName="com_language_code" />
     </changeSet>
 </databaseChangeLog>

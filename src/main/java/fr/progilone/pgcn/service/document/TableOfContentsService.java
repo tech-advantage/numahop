@@ -1,5 +1,16 @@
 package fr.progilone.pgcn.service.document;
 
+import fr.progilone.pgcn.domain.AbstractDomainObject;
+import fr.progilone.pgcn.domain.administration.viewsformat.ViewsFormatConfiguration;
+import fr.progilone.pgcn.domain.document.DocPage;
+import fr.progilone.pgcn.domain.jaxb.mets.FileType;
+import fr.progilone.pgcn.domain.jaxb.mets.Mets;
+import fr.progilone.pgcn.domain.jaxb.mets.StructMapType;
+import fr.progilone.pgcn.domain.storage.StoredFile;
+import fr.progilone.pgcn.repository.document.DocPageRepository;
+import fr.progilone.pgcn.repository.storage.BinaryRepository;
+import fr.progilone.pgcn.service.exchange.iiif.manifest.Ranges;
+import fr.progilone.pgcn.service.exchange.iiif.manifest.Structures;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -10,7 +21,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -26,31 +36,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import fr.progilone.pgcn.domain.AbstractDomainObject;
-import fr.progilone.pgcn.domain.administration.viewsformat.ViewsFormatConfiguration;
-import fr.progilone.pgcn.domain.document.DocPage;
-import fr.progilone.pgcn.domain.jaxb.mets.FileType;
-import fr.progilone.pgcn.domain.jaxb.mets.Mets;
-import fr.progilone.pgcn.domain.jaxb.mets.StructMapType;
-import fr.progilone.pgcn.domain.storage.StoredFile;
-import fr.progilone.pgcn.repository.document.DocPageRepository;
-import fr.progilone.pgcn.repository.storage.BinaryRepository;
-import fr.progilone.pgcn.service.exchange.iiif.manifest.Ranges;
-import fr.progilone.pgcn.service.exchange.iiif.manifest.Structures;
-
 @Service
 public class TableOfContentsService {
 
     private static final Logger LOG = LoggerFactory.getLogger(TableOfContentsService.class);
-    
+
     public final static String TOC_COL_ZERO_NAME = "FICHIER";
 
     private final DocPageRepository docPageRepository;
     private final BinaryRepository binaryRepository;
 
     @Autowired
-    public TableOfContentsService(final DocPageRepository docPageRepository,
-                         final BinaryRepository binaryRepository) {
+    public TableOfContentsService(final DocPageRepository docPageRepository, final BinaryRepository binaryRepository) {
 
         this.docPageRepository = docPageRepository;
         this.binaryRepository = binaryRepository;
@@ -68,8 +65,7 @@ public class TableOfContentsService {
         final String TYPE_STRUCT_PHYSICAL = "physical";
 
         final List<StoredFile> storedMasters = getMasterStoredFiles(identifier);
-        final Map<String, StoredFile> mastersMap = storedMasters.stream().map(sf -> Pair.of(sf.getFilename(), sf))
-                                                                              .collect(Collectors.toMap(Pair::getLeft, Pair::getRight));
+        final Map<String, StoredFile> mastersMap = storedMasters.stream().map(sf -> Pair.of(sf.getFilename(), sf)).collect(Collectors.toMap(Pair::getLeft, Pair::getRight));
         // Table des matieres
         LOG.info("Construction table des matieres depuis 1 METS.");
 
@@ -93,31 +89,22 @@ public class TableOfContentsService {
                 r0Struct.setAdditionalProperty("label", title);
                 structList.add(r0Struct);
 
-                smt.getDiv()
-                    .getDiv()
-                        .stream()
-                            .forEach((page) -> {
+                smt.getDiv().getDiv().stream().forEach((page) -> {
 
-                    page.getFptr()
-                        .stream()
-                            .filter((fptr) -> fptr.getFILEID()!= null )
-                                .forEach((fptr) -> {
+                    page.getFptr().stream().filter((fptr) -> fptr.getFILEID() != null).forEach((fptr) -> {
 
-                        final FileType fileType = (FileType)fptr.getFILEID();
-                        fileType.getFLocat().stream()
-                                .findFirst()
-                                .ifPresent(location -> {
+                        final FileType fileType = (FileType) fptr.getFILEID();
+                        fileType.getFLocat().stream().findFirst().ifPresent(location -> {
 
-                                    final String[] split = location.getHref().split("/");
-                                    final String fileName = Stream.of( split )
-                                                    .reduce( (first,last) -> last ).get();
-                                    final StoredFile masterSf = mastersMap.get(fileName);
-                                    if (masterSf != null) {
-                                        final int index = storedMasters.indexOf(masterSf);
-                                        final String pageOrder = String.valueOf(index + 1);
-                                        final Structures s = buildStructure(identifier, pageOrder, page.getTYPE(), page.getORDERLABEL(), page.getLABEL(), masterSf, ranges);
-                                        structList.add(s);
-                                    }
+                            final String[] split = location.getHref().split("/");
+                            final String fileName = Stream.of(split).reduce((first, last) -> last).get();
+                            final StoredFile masterSf = mastersMap.get(fileName);
+                            if (masterSf != null) {
+                                final int index = storedMasters.indexOf(masterSf);
+                                final String pageOrder = String.valueOf(index + 1);
+                                final Structures s = buildStructure(identifier, pageOrder, page.getTYPE(), page.getORDERLABEL(), page.getLABEL(), masterSf, ranges);
+                                structList.add(s);
+                            }
                         });
 
                     });
@@ -140,8 +127,7 @@ public class TableOfContentsService {
         final List<StoredFile> storedMasters = getMasterStoredFiles(identifier);
         // Table des matieres depuis infos de la DB.
         LOG.info("Construction table des matieres depuis DB si saisie au contrôle.");
-        final boolean tocExists = storedMasters.stream()
-                                    .anyMatch(sf -> ! StringUtils.isAllBlank(sf.getTitleToc(), sf.getTypeToc(), sf.getOrderToc()));
+        final boolean tocExists = storedMasters.stream().anyMatch(sf -> !StringUtils.isAllBlank(sf.getTitleToc(), sf.getTypeToc(), sf.getOrderToc()));
 
         if (tocExists) {
 
@@ -155,12 +141,11 @@ public class TableOfContentsService {
             r0Struct.setAdditionalProperty("label", "Table des matières");
             structList.add(r0Struct);
 
-            storedMasters.stream()
-                            .forEach(sf -> {
-                                final String pageOrder = String.valueOf(sf.getPage().getNumber().intValue());
-                                final Structures s = buildStructure(identifier, pageOrder, null, null, null, sf, ranges);
-                                structList.add(s);
-                            });
+            storedMasters.stream().forEach(sf -> {
+                final String pageOrder = String.valueOf(sf.getPage().getNumber().intValue());
+                final Structures s = buildStructure(identifier, pageOrder, null, null, null, sf, ranges);
+                structList.add(s);
+            });
         }
         return structList;
     }
@@ -175,17 +160,19 @@ public class TableOfContentsService {
      * @param ranges
      * @return
      */
-    private Structures buildStructure(final String identifier, final String pageOrder,
-                                      final String type, final String orderLabel, final String label,
-                                      final StoredFile sf, final List<Ranges> ranges) {
+    private Structures buildStructure(final String identifier,
+                                      final String pageOrder,
+                                      final String type,
+                                      final String orderLabel,
+                                      final String label,
+                                      final StoredFile sf,
+                                      final List<Ranges> ranges) {
 
         final String SEPAR = " - ";
 
         final Structures s = new Structures();
         final List<String> canvases = new ArrayList<>();
-        final String idRange = ViewerService.URI_WS_VIEWER.concat(identifier)
-                .concat("/range/r")
-                .concat(pageOrder);
+        final String idRange = ViewerService.URI_WS_VIEWER.concat(identifier).concat("/range/r").concat(pageOrder);
         s.setId(idRange);
         s.setType("sc:range");
 
@@ -207,8 +194,7 @@ public class TableOfContentsService {
                     lib.append(orderLabel);
                 }
                 if (StringUtils.isNotBlank(label)) {
-                    if (StringUtils.isNotBlank(lib.toString())
-                            && ! StringUtils.endsWith(lib.toString(), SEPAR)) {
+                    if (StringUtils.isNotBlank(lib.toString()) && !StringUtils.endsWith(lib.toString(), SEPAR)) {
                         lib.append(SEPAR);
                     }
                     lib.append(label);
@@ -230,8 +216,7 @@ public class TableOfContentsService {
                 lib.append(sf.getOrderToc());
             }
             if (StringUtils.isNotBlank(sf.getTitleToc())) {
-                if (StringUtils.isNotBlank(lib.toString())
-                        && ! StringUtils.endsWith(lib.toString(), SEPAR)) {
+                if (StringUtils.isNotBlank(lib.toString()) && !StringUtils.endsWith(lib.toString(), SEPAR)) {
                     lib.append(SEPAR);
                 }
                 lib.append(sf.getTitleToc());
@@ -312,7 +297,6 @@ public class TableOfContentsService {
         return structList;
     }
 
-
     /**
      * Classe gérant la lecture du fichier excel, et la création de la structure => TOC.
      */
@@ -333,7 +317,6 @@ public class TableOfContentsService {
             return this;
         }
 
-
         /**
          *
          * @param identifier
@@ -341,12 +324,10 @@ public class TableOfContentsService {
          * @param ranges
          * @return
          */
-        public SheetReader process(final String identifier, final List<Structures> structList,
-                                   final List<Ranges> ranges, final List<StoredFile> storedMasters) {
+        public SheetReader process(final String identifier, final List<Structures> structList, final List<Ranges> ranges, final List<StoredFile> storedMasters) {
             this.wb.sheetIterator().forEachRemaining(sheet -> readSheet(sheet, identifier, structList, ranges, storedMasters));
             return this;
         }
-
 
         /**
          * Lecture des feuilles du classeur excel.
@@ -356,15 +337,11 @@ public class TableOfContentsService {
          * @param structList
          * @param ranges
          */
-        private void readSheet(final Sheet sheet, final String identifier, final List<Structures> structList,
-                               final List<Ranges> ranges, final List<StoredFile> storedMasters) {
+        private void readSheet(final Sheet sheet, final String identifier, final List<Structures> structList, final List<Ranges> ranges, final List<StoredFile> storedMasters) {
 
-            final Optional<String> value = getCell(sheet, 0, 0)
-                    .filter(cell->cell!=null && CellType.STRING.equals(cell.getCellTypeEnum()))
-                    .map(Cell::getStringCellValue);
+            final Optional<String> value = getCell(sheet, 0, 0).filter(cell -> cell != null && CellType.STRING.equals(cell.getCellType())).map(Cell::getStringCellValue);
 
-            if (value.isPresent() 
-                    && value.get().toUpperCase().contains(TOC_COL_ZERO_NAME)) {
+            if (value.isPresent() && value.get().toUpperCase().contains(TOC_COL_ZERO_NAME)) {
                 LOG.debug("ok : TOC excel valorisée !");
                 // on traite
                 parseSheet(sheet, identifier, structList, ranges, storedMasters);
@@ -381,8 +358,8 @@ public class TableOfContentsService {
          */
         private void parseSheet(final Sheet sheet, final String identifier, final List<Structures> structList, final List<Ranges> ranges, final List<StoredFile> storedMasters) {
 
-            /* Le classeur doit etre structuré en colonnes comme suit :  */
-            /* Fichier  ||  Type  ||  Page  ||  Chapitre  ||  Titre */
+            /* Le classeur doit etre structuré en colonnes comme suit : */
+            /* Fichier || Type || Page || Chapitre || Titre */
 
             final Iterator<Row> rowIterator = sheet.rowIterator();
             while (rowIterator.hasNext()) {
@@ -394,8 +371,7 @@ public class TableOfContentsService {
                 }
                 final Optional<String> optFile = Optional.ofNullable(row.getCell(0)).map(Cell::getStringCellValue);
                 // Le nom de fichier doit etre renseigné.
-                if (!optFile.isPresent()
-                        || StringUtils.isBlank(optFile.get())) {
+                if (!optFile.isPresent() || StringUtils.isBlank(optFile.get())) {
                     LOG.warn("TDM excel : nom de fichier non renseigné");
                     return;
                 }
@@ -417,21 +393,22 @@ public class TableOfContentsService {
                     title.append(optChap.get());
                 }
                 if (optTitle.isPresent() && StringUtils.isNotBlank(optTitle.get())) {
-                    if (StringUtils.isNoneBlank(title)){
+                    if (StringUtils.isNoneBlank(title)) {
                         title.append(" - ");
                     }
                     title.append(optTitle.get());
                 }
-                final String type = optType.isPresent() && StringUtils.isNotBlank(optType.get())?optType.get():"";
-                final String orderPg = optPage.isPresent() && StringUtils.isNotBlank(optPage.get())?optPage.get():"";
+                final String type = optType.isPresent() && StringUtils.isNotBlank(optType.get()) ? optType.get()
+                                                                                                 : "";
+                final String orderPg = optPage.isPresent() && StringUtils.isNotBlank(optPage.get()) ? optPage.get()
+                                                                                                    : "";
 
-                final Structures s = buildStructure(identifier, String.valueOf(pgNum), type, orderPg, title.toString(), storedMasters.get(pgNum-1), ranges);
+                final Structures s = buildStructure(identifier, String.valueOf(pgNum), type, orderPg, title.toString(), storedMasters.get(pgNum - 1), ranges);
                 structList.add(s);
             }
         }
 
-
-         private Optional<Cell> getCell(final Sheet sheet, final int rowNb, final int cellNb) {
+        private Optional<Cell> getCell(final Sheet sheet, final int rowNb, final int cellNb) {
             final Row row = sheet.getRow(rowNb);
             if (row == null) {
                 return Optional.empty();

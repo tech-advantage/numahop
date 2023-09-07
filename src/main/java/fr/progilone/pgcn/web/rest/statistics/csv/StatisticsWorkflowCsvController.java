@@ -1,31 +1,6 @@
 package fr.progilone.pgcn.web.rest.statistics.csv;
 
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.annotation.security.PermitAll;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
 import com.codahale.metrics.annotation.Timed;
-
 import fr.progilone.pgcn.domain.dto.statistics.WorkflowDeliveryProgressDTO;
 import fr.progilone.pgcn.domain.dto.statistics.WorkflowDocUnitProgressDTO;
 import fr.progilone.pgcn.domain.dto.statistics.WorkflowProfileActivityDTO;
@@ -41,6 +16,26 @@ import fr.progilone.pgcn.service.exchange.csv.ExportCSVService;
 import fr.progilone.pgcn.service.statistics.mapper.StatisticsMapper;
 import fr.progilone.pgcn.web.rest.AbstractRestController;
 import fr.progilone.pgcn.web.rest.statistics.StatisticsWorkflowController;
+import jakarta.annotation.security.PermitAll;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Controller
 @RequestMapping(value = "/api/rest/statistics/workflow/csv")
@@ -70,13 +65,10 @@ public class StatisticsWorkflowCsvController extends AbstractRestController {
                                                       @RequestParam(value = "delivery", required = false) final List<String> deliveries,
                                                       @RequestParam(value = "pgcnid", required = false) final String pgcnId,
                                                       @RequestParam(value = "state", required = false) final List<WorkflowStateKey> states,
-                                                      @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "from", required = false)
-                                                      final LocalDate fromDate,
-                                                      @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "to", required = false)
-                                                      final LocalDate toDate,
+                                                      @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "from", required = false) final LocalDate fromDate,
+                                                      @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "to", required = false) final LocalDate toDate,
                                                       @RequestParam(value = "encoding", defaultValue = "ISO-8859-15") final String encoding,
-                                                      @RequestParam(value = "separator", defaultValue = ";") final char separator) throws
-                                                                                                                                   PgcnTechnicalException {
+                                                      @RequestParam(value = "separator", defaultValue = ";") final char separator) throws PgcnTechnicalException {
         final ResponseEntity<Page<WorkflowDeliveryProgressDTO>> result = delegate.getWorkflowDeliveryProgressStatistics(request,
                                                                                                                         libraries,
                                                                                                                         projects,
@@ -114,13 +106,10 @@ public class StatisticsWorkflowCsvController extends AbstractRestController {
                                                      @RequestParam(value = "state", required = false) final List<WorkflowStateKey> states,
                                                      @RequestParam(value = "status", required = false) final List<WorkflowStateStatus> status,
                                                      @RequestParam(value = "mine", required = false, defaultValue = "false") final boolean onlyMine,
-                                                     @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "from", required = false)
-                                                     final LocalDate fromDate,
-                                                     @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "to", required = false)
-                                                     final LocalDate toDate,
+                                                     @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "from", required = false) final LocalDate fromDate,
+                                                     @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "to", required = false) final LocalDate toDate,
                                                      @RequestParam(value = "encoding", defaultValue = "ISO-8859-15") final String encoding,
-                                                     @RequestParam(value = "separator", defaultValue = ";") final char separator) throws
-                                                                                                                                  PgcnTechnicalException {
+                                                     @RequestParam(value = "separator", defaultValue = ";") final char separator) throws PgcnTechnicalException {
         final ResponseEntity<Page<WorkflowDocUnitProgressDTO>> result = delegate.getWorkflowDocUnitProgressStatistics(request,
                                                                                                                       libraries,
                                                                                                                       projects,
@@ -157,15 +146,11 @@ public class StatisticsWorkflowCsvController extends AbstractRestController {
                                             @RequestParam(value = "library", required = false) final List<String> libraries,
                                             @RequestParam(value = "workflow", required = false) final List<String> workflows,
                                             @RequestParam(value = "state", required = false) final List<WorkflowStateKey> states,
-                                            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "from", required = false)
-                                            final LocalDate fromDate,
-                                            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "to", required = false)
-                                            final LocalDate toDate,
+                                            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "from", required = false) final LocalDate fromDate,
+                                            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "to", required = false) final LocalDate toDate,
                                             @RequestParam(value = "encoding", defaultValue = "ISO-8859-15") final String encoding,
-                                            @RequestParam(value = "separator", defaultValue = ";") final char separator) throws
-                                                                                                                         PgcnTechnicalException {
-        final ResponseEntity<List<WorkflowStateProgressDTO>> result =
-            delegate.getWorkflowStatesStatistics(request, libraries, workflows, states, fromDate, toDate);
+                                            @RequestParam(value = "separator", defaultValue = ";") final char separator) throws PgcnTechnicalException {
+        final ResponseEntity<List<WorkflowStateProgressDTO>> result = delegate.getWorkflowStatesStatistics(request, libraries, workflows, states, fromDate, toDate);
 
         try {
             writeResponseHeaderForDownload(response, "text/csv; charset=" + encoding, null, FILENAME);
@@ -186,15 +171,11 @@ public class StatisticsWorkflowCsvController extends AbstractRestController {
                                            @RequestParam(value = "project", required = false) final List<String> projects,
                                            @RequestParam(value = "lot", required = false) final List<String> lots,
                                            @RequestParam(value = "delivery", required = false) final List<String> deliveries,
-                                           @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "from", required = false)
-                                           final LocalDate fromDate,
-                                           @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "to", required = false)
-                                           final LocalDate toDate,
+                                           @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "from", required = false) final LocalDate fromDate,
+                                           @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "to", required = false) final LocalDate toDate,
                                            @RequestParam(value = "encoding", defaultValue = "ISO-8859-15") final String encoding,
-                                           @RequestParam(value = "separator", defaultValue = ";") final char separator) throws
-                                                                                                                        PgcnTechnicalException {
-        final ResponseEntity<Collection<WorkflowUserProgressDTO>> result =
-            delegate.getWorkflowUsersStatistics(request, libraries, projects, lots, deliveries, fromDate, toDate);
+                                           @RequestParam(value = "separator", defaultValue = ";") final char separator) throws PgcnTechnicalException {
+        final ResponseEntity<Collection<WorkflowUserProgressDTO>> result = delegate.getWorkflowUsersStatistics(request, libraries, projects, lots, deliveries, fromDate, toDate);
 
         try {
             writeResponseHeaderForDownload(response, "text/csv; charset=" + encoding, null, FILENAME);
@@ -216,15 +197,18 @@ public class StatisticsWorkflowCsvController extends AbstractRestController {
                                               @RequestParam(value = "lot", required = false) final List<String> lots,
                                               @RequestParam(value = "state", required = false) final List<WorkflowStateKey> states,
                                               @RequestParam(value = "role", required = false) final List<String> roles,
-                                              @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "from", required = false) final
-                                                  LocalDate fromDate,
-                                              @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "to", required = false)
-                                              final LocalDate toDate,
+                                              @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "from", required = false) final LocalDate fromDate,
+                                              @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "to", required = false) final LocalDate toDate,
                                               @RequestParam(value = "encoding", defaultValue = "ISO-8859-15") final String encoding,
-                                              @RequestParam(value = "separator", defaultValue = ";") final char separator) throws
-                                                                                                                           PgcnTechnicalException {
-        final ResponseEntity<Collection<WorkflowProfileActivityDTO>> result =
-            delegate.getProfilesActivityStatistics(request, libraries, projects, lots, states, roles, fromDate, toDate);
+                                              @RequestParam(value = "separator", defaultValue = ";") final char separator) throws PgcnTechnicalException {
+        final ResponseEntity<Collection<WorkflowProfileActivityDTO>> result = delegate.getProfilesActivityStatistics(request,
+                                                                                                                     libraries,
+                                                                                                                     projects,
+                                                                                                                     lots,
+                                                                                                                     states,
+                                                                                                                     roles,
+                                                                                                                     fromDate,
+                                                                                                                     toDate);
 
         try {
             writeResponseHeaderForDownload(response, "text/csv; charset=" + encoding, null, FILENAME);
@@ -247,13 +231,10 @@ public class StatisticsWorkflowCsvController extends AbstractRestController {
                                            @RequestParam(value = "state", required = false) final List<WorkflowStateKey> states,
                                            @RequestParam(value = "role", required = false) final List<String> roles,
                                            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "from", required = false) final LocalDate fromDate,
-                                           @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "to", required = false)
-                                           final LocalDate toDate,
+                                           @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "to", required = false) final LocalDate toDate,
                                            @RequestParam(value = "encoding", defaultValue = "ISO-8859-15") final String encoding,
-                                           @RequestParam(value = "separator", defaultValue = ";") final char separator) throws
-                                                                                                                        PgcnTechnicalException {
-        final ResponseEntity<Collection<WorkflowUserActivityDTO>> result =
-            delegate.getUsersActivityStatistics(request, libraries, projects, lots, states, roles, fromDate, toDate);
+                                           @RequestParam(value = "separator", defaultValue = ";") final char separator) throws PgcnTechnicalException {
+        final ResponseEntity<Collection<WorkflowUserActivityDTO>> result = delegate.getUsersActivityStatistics(request, libraries, projects, lots, states, roles, fromDate, toDate);
 
         try {
             writeResponseHeaderForDownload(response, "text/csv; charset=" + encoding, null, FILENAME);

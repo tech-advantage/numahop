@@ -1,13 +1,27 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('CondreportDescEditCtrl', CondreportDescEditCtrl);
+    angular.module('numaHopApp.controller').controller('CondreportDescEditCtrl', CondreportDescEditCtrl);
 
-    function CondreportDescEditCtrl($location, $q, $route, $routeParams, $scope, $timeout, CondreportDescValueSrvc,
-        CondreportPropertyConfSrvc, DocUnitBaseService, gettext, gettextCatalog, MessageSrvc, ModalSrvc, NumaHopInitializationSrvc,
-        Principal, USER_ROLES, ValidationSrvc) {
-
+    function CondreportDescEditCtrl(
+        $location,
+        $q,
+        $route,
+        $routeParams,
+        $scope,
+        $timeout,
+        CondreportDescValueSrvc,
+        CondreportPropertyConfSrvc,
+        DocUnitBaseService,
+        gettext,
+        gettextCatalog,
+        MessageSrvc,
+        ModalSrvc,
+        NumaHopInitializationSrvc,
+        Principal,
+        USER_ROLES,
+        ValidationSrvc
+    ) {
         var editCtrl = this;
         editCtrl.cancel = cancel;
         editCtrl.displayBoolean = DocUnitBaseService.displayBoolean;
@@ -27,20 +41,19 @@
         editCtrl.options = {
             boolean: DocUnitBaseService.options.booleanObj,
             types: {
-                display: "label",
+                display: 'label',
                 placeholder: gettextCatalog.getString("Type de constat d'état"),
-                trackby: "identifier",
+                trackby: 'identifier',
                 multiple: true,
                 'allow-clear': true,
-                data: DocUnitBaseService.options.condreportTypes
-            }
+                data: DocUnitBaseService.options.condreportTypes,
+            },
         };
 
         var updatedProperty = false;
         var updatedPropConf;
         var updatedValues = [];
         var deletedValues = [];
-
 
         /**
          * Chargement des valeurs de la propriété prop
@@ -148,14 +161,13 @@
          */
         function removeProperty() {
             if (editCtrl.prop) {
-                ModalSrvc.confirmDeletion(gettextCatalog.getString("la propriété {{label}}, ainsi que toutes ses valeurs", editCtrl.prop))
-                    .then(function () {
-                        editCtrl.prop.$delete(function () {
-                            MessageSrvc.addSuccess(gettext("la propriété {{label}}, ainsi que toutes ses valeurs ont été supprimées"), editCtrl.prop);
-                            $location.search({});
-                            $route.reload();
-                        });
+                ModalSrvc.confirmDeletion(gettextCatalog.getString('la propriété {{label}}, ainsi que toutes ses valeurs', editCtrl.prop)).then(function () {
+                    editCtrl.prop.$delete(function () {
+                        MessageSrvc.addSuccess(gettext('la propriété {{label}}, ainsi que toutes ses valeurs ont été supprimées'), editCtrl.prop);
+                        $location.search({});
+                        $route.reload();
                     });
+                });
             }
         }
 
@@ -199,8 +211,7 @@
             if (editCtrl.isNew) {
                 $location.search({});
                 $route.reload();
-            }
-            else {
+            } else {
                 loadValues(editCtrl.prop).then(function () {
                     $scope.valuesForm.$cancel();
                 });
@@ -221,8 +232,7 @@
                 var propPromise;
                 if (updatedProperty) {
                     propPromise = editCtrl.prop.$save();
-                }
-                else {
+                } else {
                     propPromise = $q.when();
                 }
 
@@ -235,9 +245,11 @@
                                 updatedPropConf.descPropertyId = editCtrl.prop.identifier;
                             }
                             updatedPropConf.types = objToTypes(updatedPropConf._types);
-                            promises.push(updatedPropConf.$save().then(function (conf) {
-                                conf._types = typesToObj(conf.types);
-                            }));
+                            promises.push(
+                                updatedPropConf.$save().then(function (conf) {
+                                    conf._types = typesToObj(conf.types);
+                                })
+                            );
                         }
                         // Suppresion des valeurs
                         _.each(deletedValues, function (value) {
@@ -253,7 +265,7 @@
                         return $q.all(promises);
                     })
                     .then(function () {
-                        MessageSrvc.addSuccess(gettext("Les modifications ont été sauvegardées"));
+                        MessageSrvc.addSuccess(gettext('Les modifications ont été sauvegardées'));
                         updatedProperty = false;
                         updatedPropConf = null;
                         updatedValues = [];
@@ -287,17 +299,14 @@
             if (newLib && editCtrl.prop.identifier) {
                 if (editCtrl.prop.fake) {
                     editCtrl.propConf = CondreportPropertyConfSrvc.get({ internal: editCtrl.prop.identifier, library: newLib.identifier });
-                }
-                else {
+                } else {
                     editCtrl.propConf = CondreportPropertyConfSrvc.get({ desc: editCtrl.prop.identifier, library: newLib.identifier });
                 }
-                return editCtrl.propConf.$promise
-                    .then(function (conf) {
-                        conf._types = typesToObj(conf.types);
-                        return conf;
-                    });
-            }
-            else {
+                return editCtrl.propConf.$promise.then(function (conf) {
+                    conf._types = typesToObj(conf.types);
+                    return conf;
+                });
+            } else {
                 var defer = $q.defer();
                 editCtrl.propConf = null;
 
@@ -334,7 +343,7 @@
          * @param {any} arr
          */
         function objToTypes(arr) {
-            return _.pluck(arr, "identifier");
+            return _.pluck(arr, 'identifier');
         }
     }
 })();

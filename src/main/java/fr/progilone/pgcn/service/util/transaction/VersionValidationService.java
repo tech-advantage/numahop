@@ -9,7 +9,7 @@ import org.springframework.orm.ObjectOptimisticLockingFailureException;
  * Cas du mapping DTO / Domain Object en accès concurrents
  *
  * @author jbrunet
- * Créé le 6 juil. 2017
+ *         Créé le 6 juil. 2017
  */
 public class VersionValidationService {
 
@@ -17,7 +17,7 @@ public class VersionValidationService {
     }
 
     public static void checkForStateObject(AbstractDomainObject object, AbstractVersionedDTO dto) {
-        if(object.getVersion() != dto.getVersion()) {
+        if (object.getVersion() != dto.getVersion()) {
             throw new ObjectOptimisticLockingFailureException(object.getClass(), object.getIdentifier());
         }
     }

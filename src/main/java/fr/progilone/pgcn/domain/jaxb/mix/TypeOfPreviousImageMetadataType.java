@@ -5,22 +5,22 @@
 // Généré le : 2017.08.25 à 03:15:17 PM CEST
 //
 
-
 package fr.progilone.pgcn.domain.jaxb.mix;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAnyElement;
+import jakarta.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAnyElement;
-import javax.xml.bind.annotation.XmlType;
 import org.w3c.dom.Element;
 
-
 /**
- * <p>Classe Java pour typeOfPreviousImageMetadataType complex type.
+ * <p>
+ * Classe Java pour typeOfPreviousImageMetadataType complex type.
  *
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  *
  * <pre>
  * &lt;complexType name="typeOfPreviousImageMetadataType">
@@ -37,9 +37,7 @@ import org.w3c.dom.Element;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "typeOfPreviousImageMetadataType", propOrder = {
-    "any"
-})
+@XmlType(name = "typeOfPreviousImageMetadataType", propOrder = {"any"})
 public class TypeOfPreviousImageMetadataType {
 
     @XmlAnyElement
@@ -56,8 +54,9 @@ public class TypeOfPreviousImageMetadataType {
      *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getAny().add(newItem);
+     * getAny().add(newItem);
      * </pre>
      *
      *

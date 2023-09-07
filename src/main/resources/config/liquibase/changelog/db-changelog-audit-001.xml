@@ -1,66 +1,81 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <!-- Créations des tables d'audit -->
     <changeSet id="pgcn-create-audit-001" author="progilone">
 
         <createTable tableName="aud_revision">
             <column name="id" type="integer">
-                <constraints primaryKey="true" nullable="false"/>
+                <constraints primaryKey="true" nullable="false" />
             </column>
-            <column name="timestamp" type="bigint"/>
-            <column name="username" type="varchar(255)"/>
+            <column name="timestamp" type="bigint" />
+            <column name="username" type="varchar(255)" />
         </createTable>
-        <addAutoIncrement tableName="aud_revision" columnName="id" columnDataType="int" incrementBy="1" startWith="1"/>
+        <addAutoIncrement tableName="aud_revision" columnName="id" columnDataType="int" incrementBy="1" startWith="1" />
 
         <createTable tableName="aud_exc_mapping">
             <column name="identifier" type="varchar(191)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="rev" type="integer">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
-            <column name="revtype" type="tinyint"/>
-            <column name="label" type="varchar(255)"/>
-            <column name="library" type="varchar(191)"/>
-            <column name="type" type="varchar(255)"/>
+            <column name="revtype" type="tinyint" />
+            <column name="label" type="varchar(255)" />
+            <column name="library" type="varchar(191)" />
+            <column name="type" type="varchar(255)" />
         </createTable>
-        <addPrimaryKey tableName="aud_exc_mapping" columnNames="identifier, rev"/>
+        <addPrimaryKey tableName="aud_exc_mapping" columnNames="identifier, rev" />
 
         <createTable tableName="aud_exc_mapping_rule">
             <column name="identifier" type="varchar(191)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="rev" type="integer">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
-            <column name="revtype" type="tinyint"/>
-            <column name="doc_unit_field" type="varchar(255)"/>
-            <column name="bib_record_field" type="varchar(255)"/>
-            <column name="property" type="varchar(191)"/>
-            <column name="expression" type="text"/>
-            <column name="expression_conf" type="text"/>
-            <column name="apply_if" type="text"/>
-            <column name="apply_if_conf" type="text"/>
-            <column name="mapping" type="varchar(191)"/>
+            <column name="revtype" type="tinyint" />
+            <column name="doc_unit_field" type="varchar(255)" />
+            <column name="bib_record_field" type="varchar(255)" />
+            <column name="property" type="varchar(191)" />
+            <column name="expression" type="text" />
+            <column name="expression_conf" type="text" />
+            <column name="apply_if" type="text" />
+            <column name="apply_if_conf" type="text" />
+            <column name="mapping" type="varchar(191)" />
         </createTable>
-        <addPrimaryKey tableName="aud_exc_mapping_rule" columnNames="identifier, rev"/>
+        <addPrimaryKey tableName="aud_exc_mapping_rule" columnNames="identifier, rev" />
 
         <!-- insertion des données d'audit initiales -->
-        <sql dbms="mysql">
-            INSERT INTO aud_revision(timestamp, username) VALUES (UNIX_TIMESTAMP() * 1000, 'system')
+        <sql>
+            INSERT INTO aud_revision(timestamp, username)
+            VALUES (UNIX_TIMESTAMP() * 1000, 'system')
         </sql>
-        <sql dbms="mysql">
+        <sql>
             INSERT INTO aud_exc_mapping (identifier, rev, revtype, label, library, type)
-            SELECT identifier, 1, 0, label, library, type FROM exc_mapping
+            SELECT identifier, 1, 0, label, library, type
+            FROM exc_mapping
         </sql>
-        <sql dbms="mysql">
-            INSERT INTO aud_exc_mapping_rule (identifier, rev, revtype, doc_unit_field, bib_record_field, property, expression, expression_conf,
-            apply_if, apply_if_conf, mapping)
-            SELECT identifier, 1, 0, doc_unit_field, bib_record_field, property, expression, expression_conf, apply_if, apply_if_conf, mapping FROM
-            exc_mapping_rule
+        <sql>
+            INSERT INTO aud_exc_mapping_rule (identifier, rev, revtype, doc_unit_field, bib_record_field, property,
+                                              expression, expression_conf,
+                                              apply_if, apply_if_conf, mapping)
+            SELECT identifier,
+                   1,
+                   0,
+                   doc_unit_field,
+                   bib_record_field,
+                   property,
+                   expression,
+                   expression_conf,
+                   apply_if,
+                   apply_if_conf,
+                   mapping
+            FROM exc_mapping_rule
         </sql>
 
     </changeSet>

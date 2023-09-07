@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
+
+    <!-- Creation de la table pour les métadata des images -->
+    <changeSet id="pgcn-imagemetadata-001" author="progilone">
+        <createTable tableName="image_metadata_properties">
+            <column name="identifier" type="varchar(191)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="label" type="varchar(255)" />
+            <column name="meta_repeat" type="boolean" />
+            <column name="meta_type" type="varchar(255)" />
+            <column name="iptc_tag" type="varchar(255)" />
+            <column name="xmp_tag" type="varchar(255)" />
+            <column name="version" type="BIGINT" />
+            <column name="created_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false" />
+            </column>
+            <column name="last_modified_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+            <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+
+        <createTable tableName="image_metadata_values">
+            <column name="identifier" type="varchar(191)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="doc_unit" type="varchar(191)" />
+            <column name="metadata" type="varchar(191)" />
+            <column name="value" type="varchar(255)" />
+            <column name="version" type="BIGINT" />
+            <column name="created_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false" />
+            </column>
+            <column name="last_modified_by" type="varchar(191)" defaultValue="system">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+            <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="image_metadata_values" baseColumnNames="doc_unit" constraintName="fk_metadata_values_doc_unit" referencedTableName="doc_unit" referencedColumnNames="identifier" />
+
+        <addForeignKeyConstraint
+            baseTableName="image_metadata_values"
+            baseColumnNames="metadata"
+            constraintName="fk_metadata_values_to_properties"
+            referencedTableName="image_metadata_properties"
+            referencedColumnNames="identifier"
+        />
+    </changeSet>
+</databaseChangeLog>

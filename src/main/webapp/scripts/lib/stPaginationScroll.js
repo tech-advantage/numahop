@@ -1,9 +1,10 @@
 (function () {
-    "use strict";
+    'use strict';
 
     // http://lorenzofox3.github.io/smart-table-website/#examples-section
-    angular.module('smart-table')
-        .directive('stPaginationScroll', ['$timeout', function (timeout) {
+    angular.module('smart-table').directive('stPaginationScroll', [
+        '$timeout',
+        function (timeout) {
             return {
                 require: 'stTable',
                 link: function (scope, element, attr, ctrl) {
@@ -32,8 +33,7 @@
                         var remaining = container[0].scrollHeight - (container[0].clientHeight + container[0].scrollTop);
 
                         //if we have reached the threshold and we scroll down
-                        if (remaining < lengthThreshold && (remaining - lastRemaining) < 0) {
-
+                        if (remaining < lengthThreshold && remaining - lastRemaining < 0) {
                             //if there is already a timer running which has no expired yet we have to cancel it and restart the timer
                             if (promise !== null) {
                                 timeout.cancel(promise);
@@ -49,8 +49,8 @@
                         }
                         lastRemaining = remaining;
                     });
-                }
-
+                },
             };
-        }]);
+        },
+    ]);
 })();

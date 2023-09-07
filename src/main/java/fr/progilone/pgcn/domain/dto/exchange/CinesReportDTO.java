@@ -1,14 +1,13 @@
 package fr.progilone.pgcn.domain.dto.exchange;
 
-import java.time.LocalDateTime;
-
 import fr.progilone.pgcn.domain.dto.AbstractDTO;
+import java.time.LocalDateTime;
 
 /**
  * DTO pour un rapport d'archivage au CINES
  *
  * @author jbrunet
- * Créé le 3 mars 2017
+ *         Créé le 3 mars 2017
  */
 public class CinesReportDTO extends AbstractDTO {
 
@@ -23,7 +22,8 @@ public class CinesReportDTO extends AbstractDTO {
     private String certificate;
     private String message;
 
-    public CinesReportDTO() {}
+    public CinesReportDTO() {
+    }
 
     public String getIdentifier() {
         return identifier;

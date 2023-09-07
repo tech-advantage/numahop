@@ -1,40 +1,16 @@
 package fr.progilone.pgcn.domain.lot;
 
-import static fr.progilone.pgcn.service.es.EsConstant.*;
-
-import java.time.LocalDate;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.persistence.*;
-
-import fr.progilone.pgcn.domain.administration.ExportFTPDeliveryFolder;
-import fr.progilone.pgcn.domain.administration.ExportFTPDeliveryFolder_;
-import org.hibernate.Hibernate;
-import org.hibernate.LazyInitializationException;
-import org.hibernate.envers.AuditTable;
-import org.hibernate.envers.Audited;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldIndex;
-import org.springframework.data.elasticsearch.annotations.FieldType;
-import org.springframework.data.elasticsearch.annotations.InnerField;
-import org.springframework.data.elasticsearch.annotations.MultiField;
-import org.springframework.data.elasticsearch.annotations.Parent;
-
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.google.common.base.MoreObjects;
-
 import fr.progilone.pgcn.domain.AbstractDomainObject;
 import fr.progilone.pgcn.domain.administration.CinesPAC;
+import fr.progilone.pgcn.domain.administration.ExportFTPDeliveryFolder;
 import fr.progilone.pgcn.domain.administration.InternetArchiveCollection;
 import fr.progilone.pgcn.domain.administration.omeka.OmekaConfiguration;
 import fr.progilone.pgcn.domain.administration.omeka.OmekaList;
 import fr.progilone.pgcn.domain.administration.viewsformat.ViewsFormatConfiguration;
 import fr.progilone.pgcn.domain.checkconfiguration.CheckConfiguration;
+import fr.progilone.pgcn.domain.delivery.Delivery;
 import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.exportftpconfiguration.ExportFTPConfiguration;
 import fr.progilone.pgcn.domain.ftpconfiguration.FTPConfiguration;
@@ -43,6 +19,26 @@ import fr.progilone.pgcn.domain.platform.Platform;
 import fr.progilone.pgcn.domain.project.Project;
 import fr.progilone.pgcn.domain.user.User;
 import fr.progilone.pgcn.domain.workflow.WorkflowModel;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import java.time.LocalDate;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+import org.hibernate.Hibernate;
+import org.hibernate.LazyInitializationException;
+import org.hibernate.envers.AuditTable;
+import org.hibernate.envers.Audited;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Classe métier permettant de gérer les bibliothèques.
@@ -53,8 +49,6 @@ import fr.progilone.pgcn.domain.workflow.WorkflowModel;
 @JsonSubTypes({@JsonSubTypes.Type(name = "lot", value = Lot.class)})
 // Audit
 @AuditTable(value = Lot.AUDIT_TABLE_NAME)
-// Elasticsearch
-@Document(indexName = "#{elasticsearchIndexName}", type = Lot.ES_TYPE, createIndex = false)
 public class Lot extends AbstractDomainObject {
 
     private static final Logger LOG = LoggerFactory.getLogger(Lot.class);
@@ -63,7 +57,6 @@ public class Lot extends AbstractDomainObject {
      * Nom des tables dans la base de données.
      */
     public static final String TABLE_NAME = "lot_lot";
-    public static final String ES_TYPE = "lot";
     public static final String AUDIT_TABLE_NAME = "aud_lot_lot";
 
     /**
@@ -73,15 +66,8 @@ public class Lot extends AbstractDomainObject {
     @JoinColumn(name = "project")
     private Project project;
 
-    /**
-     * Le champ "projet" est répété pour la config elasticsearch @Parent, qui doit être de type String
-     */
-    @Column(name = "project", insertable = false, updatable = false)
-    @Parent(type = Project.ES_TYPE)
-    @Field(type = FieldType.String, index = FieldIndex.not_analyzed)
-    private String projectId;
-
-    //    private Provider provider; TODO
+    @OneToMany(mappedBy = "lot", fetch = FetchType.LAZY)
+    private final Set<Delivery> deliveries = new HashSet<>();
 
     /**
      * Unités documentaires rattachées
@@ -93,20 +79,6 @@ public class Lot extends AbstractDomainObject {
      * Libellé
      */
     @Column(name = "label")
-    @MultiField(mainField = @Field(type = FieldType.String),
-                otherFields = {@InnerField(type = FieldType.String, suffix = SUBFIELD_RAW, index = FieldIndex.not_analyzed),
-                               @InnerField(type = FieldType.String,
-                                           suffix = SUBFIELD_CI_AI,
-                                           indexAnalyzer = ANALYZER_CI_AI,
-                                           searchAnalyzer = ANALYZER_CI_AI),
-                               @InnerField(type = FieldType.String,
-                                           suffix = SUBFIELD_CI_AS,
-                                           indexAnalyzer = ANALYZER_CI_AS,
-                                           searchAnalyzer = ANALYZER_CI_AS),
-                               @InnerField(type = FieldType.String,
-                                           suffix = SUBFIELD_PHRASE,
-                                           indexAnalyzer = ANALYZER_PHRASE,
-                                           searchAnalyzer = ANALYZER_PHRASE)})
     private String label;
 
     /**
@@ -133,7 +105,6 @@ public class Lot extends AbstractDomainObject {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "provider")
-    @Field(type = FieldType.Object)
     private User provider;
 
     /** langage selectionné pour ocr */
@@ -146,7 +117,6 @@ public class Lot extends AbstractDomainObject {
      */
     @Column(name = "type")
     @Enumerated(EnumType.STRING)
-    @Field(type = FieldType.String, analyzer = ANALYZER_KEYWORD)
     private Type type;
 
     /**
@@ -159,7 +129,6 @@ public class Lot extends AbstractDomainObject {
      * Etat
      */
     @Column(name = "active")
-    @Field(type = FieldType.Boolean)
     private boolean active;
 
     /**
@@ -167,7 +136,6 @@ public class Lot extends AbstractDomainObject {
      */
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
-    @Field(type = FieldType.String, analyzer = ANALYZER_KEYWORD)
     @Audited
     private LotStatus status;
 
@@ -199,7 +167,6 @@ public class Lot extends AbstractDomainObject {
      * Format des fichiers numériques
      */
     @Column(name = "required_format")
-    @Field(type = FieldType.String, analyzer = ANALYZER_KEYWORD)
     private String requiredFormat;
 
     /**
@@ -357,7 +324,8 @@ public class Lot extends AbstractDomainObject {
             if (!Hibernate.isInitialized(project)) {
                 Hibernate.initialize(project);
             }
-            return project != null ? project.getCollectionIA() : null;
+            return project != null ? project.getCollectionIA()
+                                   : null;
         } catch (final LazyInitializationException e) {
             LOG.warn("Problème d'initialisation (IA): {}", e.getMessage());
             return null;
@@ -377,19 +345,12 @@ public class Lot extends AbstractDomainObject {
             if (!Hibernate.isInitialized(project)) {
                 Hibernate.initialize(project);
             }
-            return project != null ? project.getPlanClassementPAC() : null;
+            return project != null ? project.getPlanClassementPAC()
+                                   : null;
         } catch (final LazyInitializationException e) {
             LOG.warn("Problème d'initialisation (PAC): {}", e.getMessage());
             return null;
         }
-    }
-
-    public String getProjectId() {
-        return projectId;
-    }
-
-    public void setProjectId(final String projectId) {
-        this.projectId = projectId;
     }
 
     public void setPlanClassementPAC(final CinesPAC planClassementPAC) {
@@ -405,7 +366,8 @@ public class Lot extends AbstractDomainObject {
             if (!Hibernate.isInitialized(project)) {
                 Hibernate.initialize(project);
             }
-            return project != null ? project.getProvider() : null;
+            return project != null ? project.getProvider()
+                                   : null;
         } catch (final LazyInitializationException e) {
             LOG.warn("Problème d'initialisation (Provider): {}", e.getMessage());
             return null;
@@ -624,8 +586,26 @@ public class Lot extends AbstractDomainObject {
         return activeExportFTPDeliveryFolder;
     }
 
-    public void setActiveExportFTPDeliveryFolder(ExportFTPDeliveryFolder activeExportFTPDeliveryFolder) {
+    public void setActiveExportFTPDeliveryFolder(final ExportFTPDeliveryFolder activeExportFTPDeliveryFolder) {
         this.activeExportFTPDeliveryFolder = activeExportFTPDeliveryFolder;
+    }
+
+    public Set<Delivery> getDeliveries() {
+        return deliveries;
+    }
+
+    public void setDeliveries(final Set<Delivery> deliveries) {
+        this.deliveries.clear();
+        if (deliveries != null) {
+            deliveries.forEach(this::addDelivery);
+        }
+    }
+
+    public void addDelivery(final Delivery delivery) {
+        if (delivery != null) {
+            this.deliveries.add(delivery);
+            delivery.setLot(this);
+        }
     }
 
     @Override

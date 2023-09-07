@@ -5,14 +5,22 @@ import static fr.progilone.pgcn.web.rest.workflow.security.AuthorizationConstant
 import static fr.progilone.pgcn.web.rest.workflow.security.AuthorizationConstants.WORKFLOW_HAB3;
 import static fr.progilone.pgcn.web.rest.workflow.security.AuthorizationConstants.WORKFLOW_HAB4;
 
-import java.util.ArrayList;
+import com.codahale.metrics.annotation.Timed;
+import fr.progilone.pgcn.domain.dto.workflow.SimpleWorkflowGroupDTO;
+import fr.progilone.pgcn.domain.dto.workflow.WorkflowGroupDTO;
+import fr.progilone.pgcn.exception.PgcnBusinessException;
+import fr.progilone.pgcn.exception.PgcnException;
+import fr.progilone.pgcn.exception.message.PgcnError;
+import fr.progilone.pgcn.exception.message.PgcnErrorCode;
+import fr.progilone.pgcn.service.workflow.WorkflowGroupService;
+import fr.progilone.pgcn.service.workflow.ui.UIWorkflowGroupService;
+import fr.progilone.pgcn.web.rest.AbstractRestController;
+import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
+import fr.progilone.pgcn.web.util.WorkflowAccessHelper;
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,20 +33,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.codahale.metrics.annotation.Timed;
-
-import fr.progilone.pgcn.domain.dto.workflow.SimpleWorkflowGroupDTO;
-import fr.progilone.pgcn.domain.dto.workflow.WorkflowGroupDTO;
-import fr.progilone.pgcn.exception.PgcnBusinessException;
-import fr.progilone.pgcn.exception.PgcnException;
-import fr.progilone.pgcn.exception.message.PgcnError;
-import fr.progilone.pgcn.exception.message.PgcnErrorCode;
-import fr.progilone.pgcn.service.workflow.WorkflowGroupService;
-import fr.progilone.pgcn.service.workflow.ui.UIWorkflowGroupService;
-import fr.progilone.pgcn.web.rest.AbstractRestController;
-import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
-import fr.progilone.pgcn.web.util.WorkflowAccessHelper;
 
 @RestController
 @RequestMapping(value = "/api/rest/workflow_group")
@@ -92,8 +86,7 @@ public class WorkflowGroupController extends AbstractRestController {
                                                                @RequestParam(value = "initiale", required = false) final String initiale,
                                                                @RequestParam(value = "libraries", required = false) final List<String> libraries,
                                                                @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
-                                                               @RequestParam(value = "size", required = false, defaultValue = "10")
-                                                               final Integer size,
+                                                               @RequestParam(value = "size", required = false, defaultValue = "10") final Integer size,
                                                                @RequestParam(value = "sorts", required = false) final List<String> sorts) {
         final List<String> filteredLibraries = accessHelper.getLibraryFilter(request, libraries);
         return new ResponseEntity<>(uiService.search(search, initiale, filteredLibraries, page, size, sorts), HttpStatus.OK);
@@ -122,7 +115,10 @@ public class WorkflowGroupController extends AbstractRestController {
         return new ResponseEntity<>(saved, HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.GET, params = {"groups", "library"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.GET,
+                    params = {"groups",
+                              "library"},
+                    produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed({WORKFLOW_HAB4})
     public ResponseEntity<Collection<SimpleWorkflowGroupDTO>> findGroupsByLibrary(@RequestParam(name = "library") final String libraryId) {

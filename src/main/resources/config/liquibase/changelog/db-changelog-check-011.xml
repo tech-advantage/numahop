@@ -1,19 +1,20 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <changeSet id="pgcn-check-011" author="progilone">
-        
+
         <!-- Ajout controle / génération pdf ocr -->
-        <sql dbms="mysql">
-            INSERT INTO check_automatic_type 
-                (identifier, label, type, active, version, configurable, check_automatic_type.order)
-            VALUES 
-                ('automatic_file_gener_ocr', 
-                    'Génération du pdf OCRisé', 
+        <sql>
+            INSERT INTO check_automatic_type
+            (identifier, label, type, active, version, configurable, check_automatic_type.order)
+            VALUES ('automatic_file_gener_ocr',
+                    'Génération du pdf OCRisé',
                     'GENER_PDF_OCR', 0, 0, 1, 43)
         </sql>
-        
+
     </changeSet>
 </databaseChangeLog>

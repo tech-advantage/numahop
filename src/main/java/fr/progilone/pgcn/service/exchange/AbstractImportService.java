@@ -1,5 +1,18 @@
 package fr.progilone.pgcn.service.exchange;
 
+import fr.progilone.pgcn.domain.AbstractDomainObject_;
+import fr.progilone.pgcn.domain.document.BibliographicRecord;
+import fr.progilone.pgcn.domain.document.DocUnit;
+import fr.progilone.pgcn.domain.document.DocUnit.State;
+import fr.progilone.pgcn.domain.exchange.ImportReport;
+import fr.progilone.pgcn.domain.exchange.ImportedDocUnit;
+import fr.progilone.pgcn.domain.exchange.ImportedDocUnit_;
+import fr.progilone.pgcn.exception.PgcnTechnicalException;
+import fr.progilone.pgcn.exception.PgcnValidationException;
+import fr.progilone.pgcn.service.document.DocUnitService;
+import fr.progilone.pgcn.service.es.EsDocUnitService;
+import fr.progilone.pgcn.service.util.transaction.TransactionService;
+import fr.progilone.pgcn.web.websocket.WebsocketService;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
@@ -8,7 +21,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -21,21 +33,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.transaction.TransactionStatus;
 
-import fr.progilone.pgcn.domain.AbstractDomainObject_;
-import fr.progilone.pgcn.domain.document.BibliographicRecord;
-import fr.progilone.pgcn.domain.document.DocUnit;
-import fr.progilone.pgcn.domain.document.DocUnit.State;
-import fr.progilone.pgcn.domain.exchange.ImportReport;
-import fr.progilone.pgcn.domain.exchange.ImportedDocUnit;
-import fr.progilone.pgcn.domain.exchange.ImportedDocUnit_;
-import fr.progilone.pgcn.exception.PgcnTechnicalException;
-import fr.progilone.pgcn.exception.PgcnValidationException;
-import fr.progilone.pgcn.service.document.DocUnitService;
-import fr.progilone.pgcn.service.es.EsBibliographicRecordService;
-import fr.progilone.pgcn.service.es.EsDocUnitService;
-import fr.progilone.pgcn.service.util.transaction.TransactionService;
-import fr.progilone.pgcn.web.websocket.WebsocketService;
-
 /**
  * Created by Sébastien on 02/01/2017.
  */
@@ -47,7 +44,6 @@ public abstract class AbstractImportService {
     private final DeduplicationService deduplicationService;
     private final DocUnitService docUnitService;
     private final EsDocUnitService esDocUnitService;
-    private final EsBibliographicRecordService esBibliographicRecordService;
     private final ImportDocUnitService importDocUnitService;
     private final ImportReportService importReportService;
     private final TransactionService transactionService;
@@ -59,7 +55,6 @@ public abstract class AbstractImportService {
     protected AbstractImportService(final DeduplicationService deduplicationService,
                                     final DocUnitService docUnitService,
                                     final EsDocUnitService esDocUnitService,
-                                    final EsBibliographicRecordService esBibliographicRecordService,
                                     final ImportDocUnitService importDocUnitService,
                                     final ImportReportService importReportService,
                                     final TransactionService transactionService,
@@ -67,7 +62,6 @@ public abstract class AbstractImportService {
         this.deduplicationService = deduplicationService;
         this.docUnitService = docUnitService;
         this.esDocUnitService = esDocUnitService;
-        this.esBibliographicRecordService = esBibliographicRecordService;
         this.importDocUnitService = importDocUnitService;
         this.importReportService = importReportService;
         this.transactionService = transactionService;
@@ -78,17 +72,18 @@ public abstract class AbstractImportService {
      * Mise à disposition des notices pré-importées dans le catalogue
      * Les notices déjà importées ne sont pas modifiées
      *
-     * @param report
      * @param defaultProcess
-     *         gestion par défaut des unité documentaires pré-importées, sans doublon
+     *            gestion par défaut des unité documentaires pré-importées, sans doublon
      * @param defaultDedupProcess
-     *         gestion par défaut des unité documentaires pré-importées, avec doublon
-     * @return
+     *            gestion par défaut des unité documentaires pré-importées, avec doublon
      */
+
     @Async
-    public ImportReport processPreimportedDocUnitsAsync(ImportReport report,
-                                                        final ImportedDocUnit.Process defaultProcess,
-                                                        final ImportedDocUnit.Process defaultDedupProcess) {
+    public void processPreimportedDocUnitsAsync(final ImportReport report, final ImportedDocUnit.Process defaultProcess, final ImportedDocUnit.Process defaultDedupProcess) {
+        processPreimportedDocUnits(report, defaultProcess, defaultDedupProcess);
+    }
+
+    private ImportReport processPreimportedDocUnits(ImportReport report, final ImportedDocUnit.Process defaultProcess, final ImportedDocUnit.Process defaultDedupProcess) {
         try {
             LOG.info("Import des unités documentaires pré-importées à partir du fichier {}", report.getFilesAsString());
 
@@ -105,9 +100,8 @@ public abstract class AbstractImportService {
             do {
                 status = transactionService.startTransaction(false);
                 try {
-                    final Pageable pageable = importedUnits == null ?
-                                              new PageRequest(0, BULK_SIZE, new Sort(ImportedDocUnit_.identifier.getName())) :
-                                              importedUnits.nextPageable();
+                    final Pageable pageable = importedUnits == null ? PageRequest.of(0, BULK_SIZE, Sort.by(ImportedDocUnit_.identifier.getName()))
+                                                                    : importedUnits.nextPageable();
                     importedUnits = importDocUnitService.findByImportReport(report, pageable);
 
                     for (final ImportedDocUnit imp : importedUnits) {
@@ -120,10 +114,11 @@ public abstract class AbstractImportService {
 
                         // Process à effectuer: celui défini sur l'unité documentaire, ou celui par défaut
                         final ImportedDocUnit.Process process = imp.getProcess() != null
-                                                                // Une action est définie sur l'unité importée
-                                                                ? imp.getProcess()
-                                                                // Sinon on effectue l'action par défaut avec / sans doublon
-                                                                : hasDuplicates ? defaultDedupProcess : defaultProcess;
+                                                                   // Une action est définie sur l'unité importée
+                                                                   ? imp.getProcess()
+                                                                   // Sinon on effectue l'action par défaut avec / sans doublon
+                                                                   : hasDuplicates ? defaultDedupProcess
+                                                                   : defaultProcess;
                         imp.setProcess(process);
 
                         final DocUnit importedUnit = imp.getDocUnit();
@@ -140,7 +135,8 @@ public abstract class AbstractImportService {
                                 if (process == ImportedDocUnit.Process.ADD) {
                                     merge(imp, report, deletedUnits, false);
                                 }
-                                // Remplacement de la notice existante par celle importée, sans toucher à l'UD pour conserver les données liées (workflows, constats, ...)
+                                // Remplacement de la notice existante par celle importée, sans toucher à l'UD pour conserver les données liées
+                                // (workflows, constats, ...)
                                 else if (process == ImportedDocUnit.Process.REPLACE) {
                                     merge(imp, report, deletedUnits, true);
                                 }
@@ -182,7 +178,6 @@ public abstract class AbstractImportService {
                 LOG.debug("{} enregistrements traités avec succès", nbProcessed);
             } while (importedUnits.hasNext());
 
-
             /* Indexation des unités documentaires importées */
             report = importReportService.setReportStatus(report, ImportReport.Status.INDEXING);
             report = indexEntities(report);
@@ -199,11 +194,8 @@ public abstract class AbstractImportService {
     /**
      * Fusion de la notice importée dans l'existante
      *
-     * @param udReport
-     * @param report
-     * @param deletedUnits
      * @param replace
-     *         supprimer les notices existantes
+     *            supprimer les notices existantes
      */
     public void merge(final ImportedDocUnit udReport, final ImportReport report, final Set<DocUnit> deletedUnits, final boolean replace) {
         final DocUnit importedDoc = udReport.getDocUnit();
@@ -237,9 +229,6 @@ public abstract class AbstractImportService {
 
     /**
      * Mets à jour les infos de l'unité documentaire par rapport aux paramètres d'import (projet, lot)
-     *
-     * @param docUnit
-     * @param report
      */
     public void set(final DocUnit docUnit, final ImportReport report) {
         if (report.getProject() != null) {
@@ -262,7 +251,7 @@ public abstract class AbstractImportService {
             return 0;
         }
         final Set<DocUnit> docUnits = transactionService.executeInNewTransactionWithReturn(() -> {
-            
+
             final Set<String> ids = importedDocUnits.stream()
                                                     .filter(imp -> imp.getDocUnit() != null)
                                                     .map(imp -> imp.getDocUnit().getIdentifier())
@@ -270,7 +259,6 @@ public abstract class AbstractImportService {
                                                     .collect(Collectors.toSet());
             return docUnitService.findAllById(ids);
         });
-        
 
         final Set<DocUnit> deletedUnits = new HashSet<>();
         TransactionStatus status = null;
@@ -289,8 +277,7 @@ public abstract class AbstractImportService {
                 status = transactionService.startTransaction(false); // nouvelle transaction pour mettre à jour le rapport d'import
                 // rapport d'import
                 importedDocUnits.stream()
-                                .filter(imp -> imp.getDocUnit() != null && StringUtils.equals(imp.getDocUnit().getIdentifier(),
-                                                                                              docUnit.getIdentifier()))
+                                .filter(imp -> imp.getDocUnit() != null && StringUtils.equals(imp.getDocUnit().getIdentifier(), docUnit.getIdentifier()))
                                 .findAny()
                                 .ifPresent(imp -> {
                                     importDocUnitService.saveWithError(imp, e);
@@ -314,7 +301,7 @@ public abstract class AbstractImportService {
      *
      * @param report
      * @param parentReportId
-     *         identifiant de l'import parent, pour gérer la création des relations hiérarchiques avec des parents provenant d'un autre import
+     *            identifiant de l'import parent, pour gérer la création des relations hiérarchiques avec des parents provenant d'un autre import
      * @param stepValidation
      * @param stepDeduplication
      * @param defaultDedupProcess
@@ -342,7 +329,7 @@ public abstract class AbstractImportService {
         /* Import + Indexation des unités documentaires */
         else {
             report = importReportService.setReportStatus(report, ImportReport.Status.IMPORTING);
-            report = processPreimportedDocUnitsAsync(report, ImportedDocUnit.Process.ADD, defaultDedupProcess);
+            report = processPreimportedDocUnits(report, ImportedDocUnit.Process.ADD, defaultDedupProcess);
         }
         return importReportService.endReport(report);
     }
@@ -361,9 +348,8 @@ public abstract class AbstractImportService {
         do {
             final TransactionStatus status = transactionService.startTransaction(false);
             try {
-                final Pageable pageable = importedUnits == null ?
-                                          new PageRequest(0, BULK_SIZE, new Sort(ImportedDocUnit_.identifier.getName())) :
-                                          importedUnits.nextPageable();
+                final Pageable pageable = importedUnits == null ? PageRequest.of(0, BULK_SIZE, Sort.by(ImportedDocUnit_.identifier.getName()))
+                                                                : importedUnits.nextPageable();
                 importedUnits = importDocUnitService.findByImportReport(report, pageable);
 
                 for (final ImportedDocUnit imp : importedUnits) {
@@ -374,10 +360,7 @@ public abstract class AbstractImportService {
                     // Recherche de doublon pour l'unité documentaire pré-importée
                     final Collection<DocUnit> duplicated = deduplicationService.lookupDuplicates(imp.getDocUnit());
                     if (!duplicated.isEmpty()) {
-                        LOG.debug("{} doublon(s) trouvé(s) pour l'unité documentaire ({}) {}",
-                                  duplicated.size(),
-                                  imp.getDocUnit().getIdentifier(),
-                                  imp.getDocUnit().getLabel());
+                        LOG.debug("{} doublon(s) trouvé(s) pour l'unité documentaire ({}) {}", duplicated.size(), imp.getDocUnit().getIdentifier(), imp.getDocUnit().getLabel());
                         imp.setDuplicatedUnits(duplicated);
 
                         importDocUnitService.save(imp);
@@ -406,7 +389,7 @@ public abstract class AbstractImportService {
      *
      * @param report
      * @param parentReportId
-     *         identifiant de l'import des UD parentes
+     *            identifiant de l'import des UD parentes
      * @return
      */
     protected ImportReport linkToParent(final ImportReport report, final String parentReportId) {
@@ -417,17 +400,12 @@ public abstract class AbstractImportService {
         do {
             final TransactionStatus status = transactionService.startTransaction(false);
             try {
-                final Pageable pageable = importedUnits == null ?
-                                          new PageRequest(0, BULK_SIZE, new Sort(ImportedDocUnit_.identifier.getName())) :
-                                          importedUnits.nextPageable();
+                final Pageable pageable = importedUnits == null ? PageRequest.of(0, BULK_SIZE, Sort.by(ImportedDocUnit_.identifier.getName()))
+                                                                : importedUnits.nextPageable();
                 importedUnits = importDocUnitService.findByImportReport(report, pageable);
 
                 // clés de rapprochement imports parent / import enfant
-                final Set<String> parentKeys = importedUnits.getContent()
-                                                            .stream()
-                                                            .map(ImportedDocUnit::getParentKey)
-                                                            .filter(StringUtils::isNotBlank)
-                                                            .collect(Collectors.toSet());
+                final Set<String> parentKeys = importedUnits.getContent().stream().map(ImportedDocUnit::getParentKey).filter(StringUtils::isNotBlank).collect(Collectors.toSet());
                 // recherche des unités parentes
                 final List<ImportedDocUnit> parentUnits = importDocUnitService.findByReportIdentifierAndParentKeyIn(parentReportId, parentKeys);
 
@@ -435,7 +413,8 @@ public abstract class AbstractImportService {
                 for (final ImportedDocUnit imp : importedUnits) {
                     final DocUnit docUnit = imp.getDocUnit();
                     // L'unité documentaire a déjà été importée, ou le lien parent/enfant n'existe pas
-                    if (StringUtils.isEmpty(imp.getParentKey()) || docUnit == null || docUnit.getState() == State.AVAILABLE) {
+                    if (StringUtils.isEmpty(imp.getParentKey()) || docUnit == null
+                        || docUnit.getState() == State.AVAILABLE) {
                         continue;
                     }
 
@@ -466,7 +445,7 @@ public abstract class AbstractImportService {
     }
 
     private ImportReport indexEntities(final ImportReport report) {
-        
+
         LOG.info("Indexation des unités documentaires importées à partir du fichier {}", report.getFilesAsString());
         long nbDocUnits = 0, nbRecords = 0;
         final AtomicReference<Page<DocUnit>> pageRef = new AtomicReference<>();
@@ -474,24 +453,19 @@ public abstract class AbstractImportService {
             final int[] result = transactionService.executeInNewTransactionWithReturn(() -> {
 
                 // Chargement des objets
-                final Pageable pageable = pageRef.get() == null ?
-                                          new PageRequest(0, esBulkSize, Sort.Direction.ASC, AbstractDomainObject_.identifier.getName()) :
-                                              pageRef.get().nextPageable();
+                final Pageable pageable = pageRef.get() == null ? PageRequest.of(0, esBulkSize, Sort.Direction.ASC, AbstractDomainObject_.identifier.getName())
+                                                                : pageRef.get().nextPageable();
                 final Page<DocUnit> pageOfDocs = importDocUnitService.findDocUnitByImportReport(report, State.AVAILABLE, pageable);
                 final List<DocUnit> docUnits = pageOfDocs.getContent();
                 final List<String> docUnitIds = docUnits.stream().map(DocUnit::getIdentifier).collect(Collectors.toList());
-                final List<String> recordIds =
-                    docUnits.stream().flatMap(doc -> doc.getRecords().stream()).map(BibliographicRecord::getIdentifier).collect(Collectors.toList());
-    
-                // Traitement des unités documentaires
-                esDocUnitService.extendDocUnits(docUnits);
+                final List<String> recordIds = docUnits.stream().flatMap(doc -> doc.getRecords().stream()).map(BibliographicRecord::getIdentifier).collect(Collectors.toList());
+
                 // Indexation des unités documentaires
                 esDocUnitService.index(docUnitIds);
-                // Indexation des notices biblio
-                esBibliographicRecordService.index(recordIds);
-                
+
                 pageRef.set(pageOfDocs);
-                final int[] tab = {docUnitIds.size(), recordIds.size()};
+                final int[] tab = {docUnitIds.size(),
+                                   recordIds.size()};
                 return tab;
             });
 

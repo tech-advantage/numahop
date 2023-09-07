@@ -1,13 +1,9 @@
 (function () {
     'use strict';
 
-    angular.module('numaHopApp.controller')
-        .controller('StatisticsDashboardUserActivityCtrl', StatisticsDashboardUserActivityCtrl);
+    angular.module('numaHopApp.controller').controller('StatisticsDashboardUserActivityCtrl', StatisticsDashboardUserActivityCtrl);
 
-    function StatisticsDashboardUserActivityCtrl($q, codeSrvc, gettextCatalog, HistorySrvc, LibrarySrvc, LotSrvc,
-        NumahopStorageService, Principal, ProjectSrvc, StatisticsSrvc, USER_ROLES, UserRoleSrvc,
-        WorkflowSrvc) {
-
+    function StatisticsDashboardUserActivityCtrl($q, codeSrvc, gettextCatalog, HistorySrvc, LibrarySrvc, LotSrvc, NumahopStorageService, Principal, ProjectSrvc, StatisticsSrvc, USER_ROLES, UserRoleSrvc, WorkflowSrvc) {
         var statCtrl = this;
 
         statCtrl.code = codeSrvc;
@@ -16,39 +12,37 @@
         statCtrl.search = search;
         statCtrl.searchDates = searchDates;
 
-        var FILTER_STORAGE_SERVICE_KEY = "stat_dashboard_user_activity";
+        var FILTER_STORAGE_SERVICE_KEY = 'stat_dashboard_user_activity';
 
         /**
          * Listes déroulantes
          */
         statCtrl.config = {
             libraries: {
-                text: "name",
-                placeholder: gettextCatalog.getString("Bibliothèque"),
-                trackby: "identifier",
+                text: 'name',
+                placeholder: gettextCatalog.getString('Bibliothèque'),
+                trackby: 'identifier',
                 // Chargement avec mise en cache du résultat
                 refresh: function () {
                     if (!statCtrl.config.libraries.data) {
                         statCtrl.config.libraries.data = LibrarySrvc.query({ dto: true });
-                        return statCtrl.config.libraries.data.$promise
-                            .then(function (lib) {
-                                return _.map(lib, function (l) {
-                                    return _.pick(l, "identifier", "name");
-                                });
+                        return statCtrl.config.libraries.data.$promise.then(function (lib) {
+                            return _.map(lib, function (l) {
+                                return _.pick(l, 'identifier', 'name');
                             });
-                    }
-                    else {
+                        });
+                    } else {
                         return $q.when(statCtrl.config.libraries.data);
                     }
                 },
                 'refresh-delay': 0, // pas de refresh-delay, car on lit les données en cache après le 1er chargement
                 'allow-clear': true,
-                multiple: true
+                multiple: true,
             },
             lots: {
-                text: "label",
-                placeholder: gettextCatalog.getString("Lot"),
-                trackby: "identifier",
+                text: 'label',
+                placeholder: gettextCatalog.getString('Lot'),
+                trackby: 'identifier',
                 refresh: function ($select) {
                     statCtrl.lotsSelect = $select;
                     // Gestion du cas où la liste est réinitialisée manuellement (search est indéfini)
@@ -58,77 +52,74 @@
                     var searchParams = {
                         page: 0,
                         search: $select.search,
-                        active: true
+                        active: true,
                     };
                     if (statCtrl.filters.project) {
-                        searchParams["projects"] = _.pluck(statCtrl.filters.project, "identifier");
+                        searchParams['projects'] = _.pluck(statCtrl.filters.project, 'identifier');
                     }
-                    return LotSrvc.search(searchParams).$promise
-                        .then(function (lots) {
-                            return _.map(lots.content, function (lot) {
-                                return _.pick(lot, "identifier", "label");
-                            });
+                    return LotSrvc.search(searchParams).$promise.then(function (lots) {
+                        return _.map(lots.content, function (lot) {
+                            return _.pick(lot, 'identifier', 'label');
                         });
+                    });
                 },
                 'refresh-delay': 300,
                 'allow-clear': true,
-                multiple: true
+                multiple: true,
             },
             projects: {
-                text: "name",
-                placeholder: gettextCatalog.getString("Projet"),
-                trackby: "identifier",
+                text: 'name',
+                placeholder: gettextCatalog.getString('Projet'),
+                trackby: 'identifier',
                 refresh: function ($select) {
                     var searchParams = {
                         page: 0,
                         search: $select.search,
-                        active: true
+                        active: true,
                     };
-                    return ProjectSrvc.search(searchParams).$promise
-                        .then(function (projects) {
-                            return _.map(projects.content, function (project) {
-                                return _.pick(project, "identifier", "name");
-                            });
+                    return ProjectSrvc.search(searchParams).$promise.then(function (projects) {
+                        return _.map(projects.content, function (project) {
+                            return _.pick(project, 'identifier', 'name');
                         });
+                    });
                 },
                 'refresh-delay': 300,
                 multiple: true,
-                'allow-clear': true
+                'allow-clear': true,
             },
             roles: {
-                text: "label",
-                placeholder: gettextCatalog.getString("Profil"),
-                trackby: "identifier",
+                text: 'label',
+                placeholder: gettextCatalog.getString('Profil'),
+                trackby: 'identifier',
                 refresh: function ($select) {
                     var searchParams = {
                         page: 0,
-                        search: $select.search
+                        search: $select.search,
                     };
                     return UserRoleSrvc.search(searchParams).$promise;
                 },
                 'refresh-delay': 300,
                 multiple: true,
-                'allow-clear': true
+                'allow-clear': true,
             },
             states: {
                 data: WorkflowSrvc.getConfigWorkflow(),
-                text: "label",
-                placeholder: gettextCatalog.getString("État"),
-                trackby: "identifier",
+                text: 'label',
+                placeholder: gettextCatalog.getString('État'),
+                trackby: 'identifier',
                 multiple: true,
-                'allow-clear': true
-            }
+                'allow-clear': true,
+            },
         };
 
         init();
-
 
         /**
          * Initialisation du controleur
          * @return {[type]} [description]
          */
         function init() {
-            HistorySrvc.add(gettextCatalog.getString("Statistiques des utilisateurs"));
+            HistorySrvc.add(gettextCatalog.getString('Statistiques des utilisateurs'));
             statCtrl.loaded = false;
             statCtrl.showLib = Principal.isInRole(USER_ROLES.SUPER_ADMIN) || Principal.isInRole(USER_ROLES.ADMINISTRATION_LIB);
 
@@ -158,8 +149,8 @@
 
         /**
          * Recherche  d'entités sur un changement de période
-         * @param {*} from 
-         * @param {*} to 
+         * @param {*} from
+         * @param {*} to
          */
         function searchDates(from, to) {
             statCtrl.filters.from = from;
@@ -193,13 +184,13 @@
          */
         function getSearchParams() {
             var params = {
-                library: _.pluck(statCtrl.filters.library, "identifier"),
-                lot: _.pluck(statCtrl.filters.lot, "identifier"),
-                project: _.pluck(statCtrl.filters.project, "identifier"),
-                role: _.pluck(statCtrl.filters.role, "identifier"),
-                state: _.pluck(statCtrl.filters.state, "identifier"),
+                library: _.pluck(statCtrl.filters.library, 'identifier'),
+                lot: _.pluck(statCtrl.filters.lot, 'identifier'),
+                project: _.pluck(statCtrl.filters.project, 'identifier'),
+                role: _.pluck(statCtrl.filters.role, 'identifier'),
+                state: _.pluck(statCtrl.filters.state, 'identifier'),
                 from: statCtrl.filters.from,
-                to: statCtrl.filters.to
+                to: statCtrl.filters.to,
             };
             return params;
         }
@@ -218,7 +209,7 @@
         function getExportUrl() {
             var params = getSearchParams();
             params.wuser_activity = true;
-            return StatisticsSrvc.getExportUrl(params, "workflow");
+            return StatisticsSrvc.getExportUrl(params, 'workflow');
         }
     }
 })();

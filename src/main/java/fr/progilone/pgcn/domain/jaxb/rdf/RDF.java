@@ -7,15 +7,18 @@
 
 package fr.progilone.pgcn.domain.jaxb.rdf;
 
-import javax.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * <p>Classe Java pour anonymous complex type.
  * <p>
- * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * Classe Java pour anonymous complex type.
  * <p>
+ * <p>
+ * Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * <p>
+ *
  * <pre>
  * &lt;complexType>
  *   &lt;complexContent>
@@ -29,9 +32,7 @@ import java.util.List;
  * </pre>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "description"
-})
+@XmlType(name = "", propOrder = {"description"})
 @XmlRootElement(name = "RDF", namespace = "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
 public class RDF {
 
@@ -49,8 +50,9 @@ public class RDF {
      * <p>
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
-     *    getDescription().add(newItem);
+     * getDescription().add(newItem);
      * </pre>
      * <p>
      * <p>
@@ -70,18 +72,21 @@ public class RDF {
      * is removed again.
      */
     public void setDescriptionListener(final Listener l) {
-        description = (l == null) ? null : new ArrayList<DescriptionType>() {
-            public boolean add(DescriptionType o) {
-                l.handleDescription(RDF.this, o);
-                return false;
-            }
-        };
+        description = (l == null) ? null
+                                  : new ArrayList<DescriptionType>() {
+
+                                      public boolean add(DescriptionType o) {
+                                          l.handleDescription(RDF.this, o);
+                                          return false;
+                                      }
+                                  };
     }
 
     /**
      * This listener is invoked every time a new descriptions is unmarshalled.
      */
     public interface Listener {
+
         void handleDescription(RDF rdf, DescriptionType descriptionType);
     }
 }

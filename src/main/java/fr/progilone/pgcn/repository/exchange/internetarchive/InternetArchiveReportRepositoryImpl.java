@@ -1,26 +1,22 @@
 package fr.progilone.pgcn.repository.exchange.internetarchive;
 
-import java.time.LocalDate;
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
-import org.apache.commons.collections4.CollectionUtils;
-
-import com.mysema.query.BooleanBuilder;
-import com.mysema.query.jpa.JPQLQuery;
-import com.mysema.query.jpa.impl.JPAQuery;
-import com.mysema.query.types.expr.BooleanExpression;
-
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import fr.progilone.pgcn.domain.document.QDocUnit;
 import fr.progilone.pgcn.domain.exchange.internetarchive.InternetArchiveReport;
 import fr.progilone.pgcn.domain.exchange.internetarchive.QInternetArchiveReport;
+import java.time.LocalDate;
+import java.util.List;
+import org.apache.commons.collections4.CollectionUtils;
 
 public class InternetArchiveReportRepositoryImpl implements InternetArchiveReportRepositoryCustom {
 
-    @PersistenceContext
-    private EntityManager em;
+    private final JPAQueryFactory queryFactory;
+
+    public InternetArchiveReportRepositoryImpl(final JPAQueryFactory queryFactory) {
+        this.queryFactory = queryFactory;
+    }
 
     @Override
     public List<InternetArchiveReport> findAll(final List<String> libraries, final LocalDate fromDate, final boolean failures) {
@@ -37,15 +33,9 @@ public class InternetArchiveReportRepositoryImpl implements InternetArchiveRepor
         // Date
         builder.and(qIaReport.dateSent.goe(fromDate.atStartOfDay()));
         // failures
-        builder.and(qIaReport.status.eq(failures ? InternetArchiveReport.Status.FAILED : InternetArchiveReport.Status.ARCHIVED));
+        builder.and(qIaReport.status.eq(failures ? InternetArchiveReport.Status.FAILED
+                                                 : InternetArchiveReport.Status.ARCHIVED));
 
-        // Query
-        final JPQLQuery query = new JPAQuery(em);
-
-        return query.from(qIaReport)
-                    .innerJoin(qIaReport.docUnit, qDocUnit).fetch()
-                    .where(builder)
-                    .orderBy(qIaReport.dateSent.desc())
-                    .list(qIaReport);
+        return queryFactory.select(qIaReport).from(qIaReport).innerJoin(qIaReport.docUnit, qDocUnit).fetchJoin().where(builder).orderBy(qIaReport.dateSent.desc()).fetch();
     }
 }

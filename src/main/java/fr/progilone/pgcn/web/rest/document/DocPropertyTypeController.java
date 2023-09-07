@@ -3,10 +3,15 @@ package fr.progilone.pgcn.web.rest.document;
 import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.DOC_UNIT_HAB0;
 import static fr.progilone.pgcn.web.rest.document.security.AuthorizationConstants.DOC_UNIT_HAB5;
 
+import com.codahale.metrics.annotation.Timed;
+import fr.progilone.pgcn.domain.document.DocPropertyType;
+import fr.progilone.pgcn.domain.dto.document.DocPropertyTypeDTO;
+import fr.progilone.pgcn.exception.PgcnValidationException;
+import fr.progilone.pgcn.service.document.DocPropertyTypeService;
+import fr.progilone.pgcn.service.document.ui.UIDocPropertyTypeService;
+import fr.progilone.pgcn.web.rest.AbstractRestController;
+import jakarta.annotation.security.RolesAllowed;
 import java.util.List;
-
-import javax.annotation.security.RolesAllowed;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,15 +22,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.codahale.metrics.annotation.Timed;
-
-import fr.progilone.pgcn.domain.document.DocPropertyType;
-import fr.progilone.pgcn.domain.dto.document.DocPropertyTypeDTO;
-import fr.progilone.pgcn.exception.PgcnValidationException;
-import fr.progilone.pgcn.service.document.DocPropertyTypeService;
-import fr.progilone.pgcn.service.document.ui.UIDocPropertyTypeService;
-import fr.progilone.pgcn.web.rest.AbstractRestController;
 
 @RestController
 @RequestMapping(value = "/api/rest/docpropertytype")
@@ -54,7 +50,7 @@ public class DocPropertyTypeController extends AbstractRestController {
     public ResponseEntity<List<DocPropertyTypeDTO>> findAllDto() {
         return new ResponseEntity<>(uiDocPropertyTypeService.findAllDTO(), HttpStatus.OK);
     }
-    
+
     @RequestMapping(method = RequestMethod.GET, params = {"customOnly"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(DOC_UNIT_HAB0)
@@ -62,11 +58,13 @@ public class DocPropertyTypeController extends AbstractRestController {
         return new ResponseEntity<>(uiDocPropertyTypeService.findCustomDTO(), HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.GET, params = {"dto", "supertype"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.GET,
+                    params = {"dto",
+                              "supertype"},
+                    produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @RolesAllowed(DOC_UNIT_HAB0)
-    public ResponseEntity<List<DocPropertyTypeDTO>> findAllBySuperType(
-        @RequestParam(value = "supertype") final DocPropertyType.DocPropertySuperType superType) {
+    public ResponseEntity<List<DocPropertyTypeDTO>> findAllBySuperType(@RequestParam(value = "supertype") final DocPropertyType.DocPropertySuperType superType) {
         return new ResponseEntity<>(uiDocPropertyTypeService.findAllDTOBySuperType(superType), HttpStatus.OK);
     }
 
@@ -83,9 +81,8 @@ public class DocPropertyTypeController extends AbstractRestController {
     public ResponseEntity<DocPropertyType> create(@RequestBody final DocPropertyType type) throws PgcnValidationException {
         // On ne peut créer que des types personnalisés
         final DocPropertyType.DocPropertySuperType superType = type.getSuperType();
-        if (superType == null 
-                || superType == DocPropertyType.DocPropertySuperType.DC 
-                || superType == DocPropertyType.DocPropertySuperType.DCQ) {
+        if (superType == null || superType == DocPropertyType.DocPropertySuperType.DC
+            || superType == DocPropertyType.DocPropertySuperType.DCQ) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
@@ -100,9 +97,8 @@ public class DocPropertyTypeController extends AbstractRestController {
         // On ne peut supprimer que des types personnalisés
         final DocPropertyType type = docPropertyTypeService.findOne(id);
         final DocPropertyType.DocPropertySuperType superType = type.getSuperType();
-        if (superType == null 
-                || superType == DocPropertyType.DocPropertySuperType.DC 
-                || superType == DocPropertyType.DocPropertySuperType.DCQ) {
+        if (superType == null || superType == DocPropertyType.DocPropertySuperType.DC
+            || superType == DocPropertyType.DocPropertySuperType.DCQ) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 

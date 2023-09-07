@@ -1,5 +1,19 @@
 package fr.progilone.pgcn.service.check;
 
+import fr.progilone.pgcn.domain.check.AutomaticCheckResult;
+import fr.progilone.pgcn.domain.check.AutomaticCheckResult.AutoCheckResult;
+import fr.progilone.pgcn.domain.delivery.Delivery;
+import fr.progilone.pgcn.domain.dto.document.PreDeliveryDocumentFileDTO;
+import fr.progilone.pgcn.domain.jaxb.mets.AmdSecType;
+import fr.progilone.pgcn.domain.jaxb.mets.MdSecType;
+import fr.progilone.pgcn.domain.jaxb.mets.Mets;
+import fr.progilone.pgcn.domain.jaxb.mix.Mix;
+import fr.progilone.pgcn.service.delivery.DeliveryReportingService;
+import fr.progilone.pgcn.service.storage.FileStorageManager;
+import jakarta.annotation.PostConstruct;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Unmarshaller;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,13 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
-import javax.annotation.PostConstruct;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOCase;
 import org.apache.commons.io.filefilter.RegexFileFilter;
@@ -36,22 +44,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import fr.progilone.pgcn.domain.check.AutomaticCheckResult;
-import fr.progilone.pgcn.domain.check.AutomaticCheckResult.AutoCheckResult;
-import fr.progilone.pgcn.domain.delivery.Delivery;
-import fr.progilone.pgcn.domain.dto.document.PreDeliveryDocumentFileDTO;
-import fr.progilone.pgcn.domain.jaxb.mets.AmdSecType;
-import fr.progilone.pgcn.domain.jaxb.mets.MdSecType;
-import fr.progilone.pgcn.domain.jaxb.mets.Mets;
-import fr.progilone.pgcn.domain.jaxb.mix.Mix;
-import fr.progilone.pgcn.service.delivery.DeliveryReportingService;
-import fr.progilone.pgcn.service.storage.FileStorageManager;
-
 /**
  * Service de Validation des fichiers de metadonnees.
  *
  * @author erizet
- * Créé le 20 juillet 2017
+ *         Créé le 20 juillet 2017
  */
 @Service
 public class MetaDatasCheckService {
@@ -206,9 +203,7 @@ public class MetaDatasCheckService {
      * @param metaDatasDTO
      * @return Map Listes de fichiers classés par document_id
      */
-    public Map<String, List<File>> getMetadataFiles(final Delivery delivery,
-                                                    final File[] subDirectories,
-                                                    final Map<String, Set<PreDeliveryDocumentFileDTO>> metaDatasDTO) {
+    public Map<String, List<File>> getMetadataFiles(final Delivery delivery, final File[] subDirectories, final Map<String, Set<PreDeliveryDocumentFileDTO>> metaDatasDTO) {
 
         LOG.info("Recuperation des fichiers de metadonnees classes par document");
         final Map<String, List<String>> fileNames = new HashMap<>();
@@ -229,9 +224,7 @@ public class MetaDatasCheckService {
                 for (final File directory : subDirectories) {
                     // idDoc correspond au prefix => on ne cherche que ds les directories du document.
                     if (StringUtils.containsIgnoreCase(directory.getName(), idDoc)) {
-                        final Collection<File> metaDataFiles = FileUtils.listFiles(directory,
-                                                                                   new RegexFileFilter(fileName, IOCase.SENSITIVE),
-                                                                                   TrueFileFilter.TRUE);
+                        final Collection<File> metaDataFiles = FileUtils.listFiles(directory, new RegexFileFilter(fileName, IOCase.SENSITIVE), TrueFileFilter.TRUE);
                         if (metaDataFiles.size() > 0) {
                             mdFiles.addAll(metaDataFiles);
                         }
@@ -243,10 +236,7 @@ public class MetaDatasCheckService {
         return files;
     }
 
-    public List<File> getMetadataFilesByDoc(final Delivery delivery,
-                                            final File[] subDirectories,
-                                            final String prefix,
-                                            final Set<PreDeliveryDocumentFileDTO> metaDatasDTO) {
+    public List<File> getMetadataFilesByDoc(final Delivery delivery, final File[] subDirectories, final String prefix, final Set<PreDeliveryDocumentFileDTO> metaDatasDTO) {
 
         LOG.info("Recuperation des fichiers de metadonnees du document");
         final List<String> listNames = new ArrayList<>();
@@ -257,9 +247,7 @@ public class MetaDatasCheckService {
         final List<File> mdFiles = new ArrayList<>();
         listNames.forEach((fileName) -> {
             for (final File directory : subDirectories) {
-                final Collection<File> metaDataFiles = FileUtils.listFiles(directory,
-                                                                           new RegexFileFilter(fileName, IOCase.SENSITIVE),
-                                                                           TrueFileFilter.TRUE);
+                final Collection<File> metaDataFiles = FileUtils.listFiles(directory, new RegexFileFilter(fileName, IOCase.SENSITIVE), TrueFileFilter.TRUE);
                 if (metaDataFiles.size() > 0) {
                     mdFiles.addAll(metaDataFiles);
                 }
@@ -292,6 +280,7 @@ public class MetaDatasCheckService {
 
     /**
      * Recuperation du fichier mets brut.
+     *
      * @param digitalId
      * @param libraryId
      * @return
@@ -317,7 +306,8 @@ public class MetaDatasCheckService {
         Optional<Mets> mets;
         final Optional<File> metsFile = getMetsXmlFile(digitalId, libraryId);
         try {
-            mets = metsFile.isPresent() ? unmarshallMetsFile(metsFile.get()) : Optional.empty();
+            mets = metsFile.isPresent() ? unmarshallMetsFile(metsFile.get())
+                                        : Optional.empty();
         } catch (final JAXBException e) {
             LOG.error("JAXB : fichier METS illisible - {}", e.getLocalizedMessage());
             mets = Optional.empty();
@@ -387,31 +377,26 @@ public class MetaDatasCheckService {
                             LOG.debug("another role (not TOC) : {}", dto.getRole());
                             break;
                     }
-    
+
                     // retrieve file
-                    final Optional<File> toCheck = files == null ?
-                                                   Optional.empty() :
-                                                   files.stream().filter(file -> StringUtils.equalsIgnoreCase(file.getName(), dto.getName())).findFirst();
+                    final Optional<File> toCheck = files == null ? Optional.empty()
+                                                                 : files.stream().filter(file -> StringUtils.equalsIgnoreCase(file.getName(), dto.getName())).findFirst();
                     if (toCheck.isPresent() && StringUtils.isNotBlank(targetName)) {
                         try (final BufferedInputStream input = new BufferedInputStream(new FileInputStream(toCheck.get()))) {
                             fm.copyInputStreamToFileWithOtherDirs(input, root.toFile(), Arrays.asList(dirsToAdd), targetName, true, false);
                             reportService.updateReport(delivery, Optional.empty(), Optional.empty(), dto.getName().concat(" enregistré"), libraryId);
-    
+
                         } catch (final FileNotFoundException e) {
                             LOG.error("Fichier {} non trouvé.", dto.getName());
                             reportService.updateReport(delivery, Optional.empty(), Optional.empty(), dto.getName().concat(" introuvable"), libraryId);
                         } catch (final IOException e) {
                             LOG.error("Erreur {} lors du traitement du fichier {}.", e.getMessage(), dto.getName());
-                            reportService.updateReport(delivery,
-                                                       Optional.empty(),
-                                                       Optional.empty(),
-                                                       "Erreur lors du traitement du fichier ".concat(dto.getName()),
-                                                       libraryId);
+                            reportService.updateReport(delivery, Optional.empty(), Optional.empty(), "Erreur lors du traitement du fichier ".concat(dto.getName()), libraryId);
                         }
                     } else {
                         LOG.debug("Pas de TDM pour {} dans {}", dto.getName(), files);
                     }
-                    
+
                 });
             }
         });
@@ -427,16 +412,12 @@ public class MetaDatasCheckService {
 
         final List<String> masterIds = new ArrayList<>();
         // Recuperation des id des masters.
-        mets.getFileSec()
-            .getFileGrp()
-            .stream()
-            .filter(fgMaster -> StringUtils.containsIgnoreCase(fgMaster.getUSE(), LABEL_MASTER))
-            .forEach(fgMaster -> {
-                fgMaster.getFile().forEach(f -> {
-                    final MdSecType t = (MdSecType) f.getADMID().get(0);
-                    masterIds.add(t.getID());
-                });
+        mets.getFileSec().getFileGrp().stream().filter(fgMaster -> StringUtils.containsIgnoreCase(fgMaster.getUSE(), LABEL_MASTER)).forEach(fgMaster -> {
+            fgMaster.getFile().forEach(f -> {
+                final MdSecType t = (MdSecType) f.getADMID().get(0);
+                masterIds.add(t.getID());
             });
+        });
 
         // Recuperation des objets AmdSecType correspondant aux masters.
         final List<AmdSecType> listAmdSec = new ArrayList<>();

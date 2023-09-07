@@ -1,7 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <!-- Changeset du module Projet -->
     <changeSet id="pgcn-create-project" author="progilone">
@@ -10,7 +12,7 @@
             <column name="identifier" type="varchar(191)">
                 <constraints primaryKey="true" nullable="false" />
             </column>
-            <column name="label" type="varchar(191)"/>
+            <column name="label" type="varchar(191)" />
             <column name="address" type="varchar(255)" />
             <column name="login" type="varchar(255)" />
             <column name="password" type="varchar(255)" />
@@ -19,16 +21,16 @@
                 <constraints nullable="false" />
             </column>
             <column name="created_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>
 
@@ -37,7 +39,7 @@
             <column name="identifier" type="varchar(191)">
                 <constraints primaryKey="true" nullable="false" />
             </column>
-            <column name="library" type="varchar(191)"/>
+            <column name="library" type="varchar(191)" />
             <column name="name" type="varchar(255)" />
             <column name="description" type="varchar(2000)" />
             <column name="start_date" type="timestamp" />
@@ -49,16 +51,16 @@
                 <constraints nullable="false" />
             </column>
             <column name="created_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>
 
@@ -69,7 +71,7 @@
             </column>
             <column name="label" type="varchar(255)" />
             <column name="code" type="varchar(191)">
-                <constraints unique="true" uniqueConstraintName="uniq_lot_lot_code"/>
+                <constraints unique="true" uniqueConstraintName="uniq_lot_lot_code" />
             </column>
             <column name="type" type="varchar(255)" />
             <column name="description" type="varchar(2000)" />
@@ -82,16 +84,16 @@
                 <constraints nullable="false" />
             </column>
             <column name="created_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>
 
@@ -107,22 +109,22 @@
             <column name="password" type="varchar(255)" />
             <column name="format" type="varchar(255)" />
             <column name="type" type="varchar(255)" />
-            <column name="library" type="varchar(191)"/>
-            <column name="lot" type="varchar(191)"/>
+            <column name="library" type="varchar(191)" />
+            <column name="lot" type="varchar(191)" />
             <column name="version" type="BIGINT">
                 <constraints nullable="false" />
             </column>
             <column name="created_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>
 
@@ -141,16 +143,16 @@
                 <constraints nullable="false" />
             </column>
             <column name="created_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_by" type="varchar(191)" defaultValue="system">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="created_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="last_modified_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>
 
@@ -160,11 +162,10 @@
                 <constraints nullable="false" />
             </column>
             <column name="project" type="varchar(191)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>
-        <addPrimaryKey columnNames="proj_library, project"
-        tableName="proj_project_library" />
+        <addPrimaryKey columnNames="proj_library, project" tableName="proj_project_library" />
 
         <!-- Table de liaison entre project et plateforme -->
         <createTable tableName="proj_project_platform">
@@ -172,11 +173,10 @@
                 <constraints nullable="false" />
             </column>
             <column name="project" type="varchar(191)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>
-        <addPrimaryKey columnNames="proj_platform, project"
-        tableName="proj_project_platform" />
+        <addPrimaryKey columnNames="proj_platform, project" tableName="proj_project_platform" />
 
         <!-- Table de liaison entre project et train -->
         <createTable tableName="proj_project_train">
@@ -184,11 +184,10 @@
                 <constraints nullable="false" />
             </column>
             <column name="project" type="varchar(191)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>
-        <addPrimaryKey columnNames="proj_train, project"
-                       tableName="proj_project_train" />
+        <addPrimaryKey columnNames="proj_train, project" tableName="proj_project_train" />
 
         <!-- Table de liaison entre project et lot -->
         <createTable tableName="proj_project_lot">
@@ -196,11 +195,10 @@
                 <constraints nullable="false" />
             </column>
             <column name="project" type="varchar(191)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>
-        <addPrimaryKey columnNames="proj_lot, project"
-                       tableName="proj_project_lot" />
+        <addPrimaryKey columnNames="proj_lot, project" tableName="proj_project_lot" />
 
         <!-- Table de liaison entre project et user -->
         <createTable tableName="proj_project_user">
@@ -208,64 +206,43 @@
                 <constraints nullable="false" />
             </column>
             <column name="project" type="varchar(191)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
         </createTable>
-        <addPrimaryKey columnNames="proj_user, project"
-                       tableName="proj_project_user" />
+        <addPrimaryKey columnNames="proj_user, project" tableName="proj_project_user" />
 
 
         <!-- Foreign keys -->
-        <addForeignKeyConstraint baseColumnNames="proj_user"
-                                 baseTableName="proj_project_user" constraintName="fk_proj_user_project_user"
-                                 referencedColumnNames="identifier" referencedTableName="user_user" />
+        <addForeignKeyConstraint baseColumnNames="proj_user" baseTableName="proj_project_user" constraintName="fk_proj_user_project_user" referencedColumnNames="identifier" referencedTableName="user_user" />
 
-        <addForeignKeyConstraint baseColumnNames="project"
-                                 baseTableName="proj_project_user" constraintName="fk_project_project_user"
-                                 referencedColumnNames="identifier" referencedTableName="proj_project" />
+        <addForeignKeyConstraint baseColumnNames="project" baseTableName="proj_project_user" constraintName="fk_project_project_user" referencedColumnNames="identifier" referencedTableName="proj_project" />
 
-        <addForeignKeyConstraint baseColumnNames="user"
-                                 baseTableName="conf_configuration_ftp" constraintName="fk_user_configuration_ftp"
-                                 referencedColumnNames="identifier" referencedTableName="user_user" />
+        <addForeignKeyConstraint baseColumnNames="user" baseTableName="conf_configuration_ftp" constraintName="fk_user_configuration_ftp" referencedColumnNames="identifier" referencedTableName="user_user" />
 
-        <addForeignKeyConstraint baseColumnNames="library"
-                                 baseTableName="proj_project" constraintName="fk_project_library"
-                                 referencedColumnNames="identifier" referencedTableName="lib_library" />
+        <addForeignKeyConstraint baseColumnNames="library" baseTableName="proj_project" constraintName="fk_project_library" referencedColumnNames="identifier" referencedTableName="lib_library" />
 
-        <addForeignKeyConstraint baseColumnNames="proj_library"
-                                 baseTableName="proj_project_library" constraintName="fk_library_project_library"
-                                 referencedColumnNames="identifier" referencedTableName="lib_library" />
+        <addForeignKeyConstraint baseColumnNames="proj_library" baseTableName="proj_project_library" constraintName="fk_library_project_library" referencedColumnNames="identifier" referencedTableName="lib_library" />
 
-        <addForeignKeyConstraint baseColumnNames="project"
-                                 baseTableName="proj_project_library" constraintName="fk_project_project_library"
-                                 referencedColumnNames="identifier" referencedTableName="proj_project" />
+        <addForeignKeyConstraint baseColumnNames="project" baseTableName="proj_project_library" constraintName="fk_project_project_library" referencedColumnNames="identifier" referencedTableName="proj_project" />
 
-        <addForeignKeyConstraint baseColumnNames="proj_platform"
-                                 baseTableName="proj_project_platform" constraintName="fk_platform_project_platform"
-                                 referencedColumnNames="identifier" referencedTableName="plat_platform" />
+        <addForeignKeyConstraint
+            baseColumnNames="proj_platform"
+            baseTableName="proj_project_platform"
+            constraintName="fk_platform_project_platform"
+            referencedColumnNames="identifier"
+            referencedTableName="plat_platform"
+        />
 
-        <addForeignKeyConstraint baseColumnNames="project"
-                                 baseTableName="proj_project_platform" constraintName="fk_project_project_platform"
-                                 referencedColumnNames="identifier" referencedTableName="proj_project" />
+        <addForeignKeyConstraint baseColumnNames="project" baseTableName="proj_project_platform" constraintName="fk_project_project_platform" referencedColumnNames="identifier" referencedTableName="proj_project" />
 
-        <addForeignKeyConstraint baseColumnNames="library"
-                                 baseTableName="plat_platform" constraintName="fk_platform_library"
-                                 referencedColumnNames="identifier" referencedTableName="lib_library" />
+        <addForeignKeyConstraint baseColumnNames="library" baseTableName="plat_platform" constraintName="fk_platform_library" referencedColumnNames="identifier" referencedTableName="lib_library" />
 
-        <addForeignKeyConstraint baseColumnNames="lot"
-                                 baseTableName="plat_platform" constraintName="fk_platform_lot"
-                                 referencedColumnNames="identifier" referencedTableName="lot_lot" />
+        <addForeignKeyConstraint baseColumnNames="lot" baseTableName="plat_platform" constraintName="fk_platform_lot" referencedColumnNames="identifier" referencedTableName="lot_lot" />
 
-        <addForeignKeyConstraint baseColumnNames="project"
-                                 baseTableName="user_user" constraintName="fk_project_user"
-                                 referencedColumnNames="identifier" referencedTableName="proj_project" />
+        <addForeignKeyConstraint baseColumnNames="project" baseTableName="user_user" constraintName="fk_project_user" referencedColumnNames="identifier" referencedTableName="proj_project" />
 
-        <addForeignKeyConstraint baseColumnNames="project"
-                                 baseTableName="doc_unit" constraintName="fk_doc_unit_project"
-                                 referencedColumnNames="identifier" referencedTableName="proj_project" />
+        <addForeignKeyConstraint baseColumnNames="project" baseTableName="doc_unit" constraintName="fk_doc_unit_project" referencedColumnNames="identifier" referencedTableName="proj_project" />
 
-        <addForeignKeyConstraint baseColumnNames="project"
-                                 baseTableName="user_user" constraintName="fk_user_project"
-                                 referencedColumnNames="identifier" referencedTableName="proj_project" />
+        <addForeignKeyConstraint baseColumnNames="project" baseTableName="user_user" constraintName="fk_user_project" referencedColumnNames="identifier" referencedTableName="proj_project" />
     </changeSet>
 </databaseChangeLog>

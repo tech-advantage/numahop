@@ -1,18 +1,16 @@
 package fr.progilone.pgcn.domain.document;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
-
 import fr.progilone.pgcn.domain.AbstractDomainObject;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 /**
  * Created by lebouchp on 10/02/2017.
@@ -66,6 +64,7 @@ public class Check extends AbstractDomainObject {
     }
 
     public enum ErrorLabel {
+
         // major
         UNREADABLE("Fichier illisible", ErrorType.MAJOR),
         BAD_NAME("Non-conformité du nommage", ErrorType.MAJOR),

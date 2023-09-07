@@ -3,19 +3,18 @@ package fr.progilone.pgcn.repository.audit;
 import fr.progilone.pgcn.domain.audit.AuditRevision;
 import fr.progilone.pgcn.domain.dto.audit.AuditLotRevisionDTO;
 import fr.progilone.pgcn.domain.lot.Lot;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.PersistenceContext;
+import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
 import org.apache.commons.collections4.CollectionUtils;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.criteria.AuditCriterion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.PersistenceContext;
-import java.time.LocalDate;
-import java.util.Collections;
-import java.util.List;
 
 @Repository
 public class AuditLotRepository extends AbstractAuditRepository<Lot> {

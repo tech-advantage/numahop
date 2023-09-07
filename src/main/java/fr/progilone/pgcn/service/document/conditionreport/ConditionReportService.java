@@ -2,46 +2,7 @@ package fr.progilone.pgcn.service.document.conditionreport;
 
 import static com.opencsv.CSVWriter.*;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.BiFunction;
-import java.util.stream.Collectors;
-
-import javax.servlet.ServletOutputStream;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.opencsv.CSVWriter;
-
 import fr.opensagres.xdocreport.document.images.ClassPathImageProvider;
 import fr.opensagres.xdocreport.document.images.IImageProvider;
 import fr.progilone.pgcn.domain.document.BibliographicRecord;
@@ -87,6 +48,41 @@ import fr.progilone.pgcn.service.library.LibraryService;
 import fr.progilone.pgcn.service.user.UserService;
 import fr.progilone.pgcn.service.util.ImageUtils;
 import fr.progilone.pgcn.service.util.SortUtils;
+import jakarta.servlet.ServletOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.BiFunction;
+import java.util.stream.Collectors;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ConditionReportService {
@@ -104,7 +100,6 @@ public class ConditionReportService {
     private final UserService userService;
     private final JasperReportsService jasperReportService;
     private final ConditionReportSlipConfigurationService conditionReportSlipConfigurationService;
-    
 
     private static final ConditionReportMapper REPORT_MAPPER = ConditionReportMapper.INSTANCE;
     private static final ConditionReportDetailMapper DETAIL_MAPPER = ConditionReportDetailMapper.INSTANCE;
@@ -142,15 +137,11 @@ public class ConditionReportService {
 
     /**
      * Création d'un constat d'état, et du 1er constat avant départ de la bibliothèque
-     *
-     * @param docUnitId
-     * @return
-     * @throws PgcnValidationException
      */
     @Transactional
     public ConditionReport create(final String docUnitId) throws PgcnValidationException {
         // Recherche de l'unité documentaire
-        final DocUnit docUnit = docUnitRepository.findOne(docUnitId);
+        final DocUnit docUnit = docUnitRepository.findById(docUnitId).orElse(null);
         if (docUnit == null) {
             LOG.error("L'unité documentaire {} n'existe pas", docUnitId);
             return null;
@@ -175,9 +166,6 @@ public class ConditionReportService {
 
     /**
      * Initialisation d'un nouveau constat d'état
-     *
-     * @param docUnit
-     * @return
      */
     public ConditionReport getNewConditionReport(final DocUnit docUnit) {
         final ConditionReport conditionReport = new ConditionReport();
@@ -203,20 +191,16 @@ public class ConditionReportService {
         }
 
         // Responsable bibliothèque
-        if(docUnit.getProject() != null &&
-           (!StringUtils.isEmpty(docUnit.getProject().getLibRespName()) ||
-            !StringUtils.isEmpty(docUnit.getProject().getLibRespPhone()) ||
-            !StringUtils.isEmpty(docUnit.getProject().getLibRespEmail()))){
+        if (docUnit.getProject() != null && (!StringUtils.isEmpty(docUnit.getProject().getLibRespName()) || !StringUtils.isEmpty(docUnit.getProject().getLibRespPhone())
+                                             || !StringUtils.isEmpty(docUnit.getProject().getLibRespEmail()))) {
 
             // Du côté du projet d'abord
             conditionReport.setLibRespName(docUnit.getProject().getLibRespName());
             conditionReport.setLibRespPhone(docUnit.getProject().getLibRespPhone());
             conditionReport.setLibRespEmail(docUnit.getProject().getLibRespEmail());
 
-        } else if(docUnit.getLibrary() != null &&
-                  (!StringUtils.isEmpty(docUnit.getLibrary().getLibRespName()) ||
-                   !StringUtils.isEmpty(docUnit.getLibrary().getLibRespPhone()) ||
-                   !StringUtils.isEmpty(docUnit.getLibrary().getLibRespEmail()))) {
+        } else if (docUnit.getLibrary() != null && (!StringUtils.isEmpty(docUnit.getLibrary().getLibRespName()) || !StringUtils.isEmpty(docUnit.getLibrary().getLibRespPhone())
+                                                    || !StringUtils.isEmpty(docUnit.getLibrary().getLibRespEmail()))) {
 
             // Puis de la bibliothèque
             conditionReport.setLibRespName(docUnit.getLibrary().getLibRespName());
@@ -225,57 +209,66 @@ public class ConditionReportService {
         }
         return conditionReport;
     }
-    
+
     /**
      * Propagation du rapport aux relations filles.
-     * 
-     * @param docUnitId String
-     * @param detailId String
+     *
+     * @param docUnitId
+     *            String
+     * @param detailId
+     *            String
      */
     @Transactional
     public Map<String, String> propagateReport(final String docUnitId, final String detailId) {
-        
+
         final Map<String, String> result = new HashMap<>();
-        final List<DocUnit> childs =  docUnitRepository.findByParentIdentifier(docUnitId);
+        final List<DocUnit> childs = docUnitRepository.findByParentIdentifier(docUnitId);
         // pas d'enfant, on quitte sans rien faire...
         if (CollectionUtils.isEmpty(childs)) {
             return result;
         }
-              
-        final ConditionReport parentReport = conditionReportRepository.findByDocUnit(docUnitId);       
-        final Optional<ConditionReportDetail> detail = parentReport.getDetails().stream()
-                                                            .filter(det -> det.getIdentifier().equals(detailId))
-                                                                .findFirst();
-        if (detail.isPresent()) {            
+
+        final ConditionReport parentReport = conditionReportRepository.findByDocUnit(docUnitId);
+        final Optional<ConditionReportDetail> detail = parentReport.getDetails().stream().filter(det -> det.getIdentifier().equals(detailId)).findFirst();
+        if (detail.isPresent()) {
             for (final DocUnit doc : childs) {
-                createChildReport(doc, detail.get(), result); 
+                createChildReport(doc, detail.get(), result);
             }
         }
         return result;
     }
 
-    
     /**
      * Creation du constat par propagation sur l'UD fille.
-     * 
+     *
      * @param doc
      * @param detail
      * @param result
      */
     private void createChildReport(final DocUnit doc, final ConditionReportDetail detail, final Map<String, String> result) {
-        
+
         // Recherche d'un constat d'état existant
         final ConditionReport existingReport = conditionReportRepository.findByDocUnit(doc.getIdentifier());
         final ConditionReportDetail childDetail;
-        
+
         if (existingReport == null) {
             // il faut creer constat + detail + descriptions
             final ConditionReport childReport = new ConditionReport();
             childReport.setDocUnit(doc);
-            BeanUtils.copyProperties(detail.getReport(), childReport, "identifier", "version", "docUnit", "attachments", "details", "docUnitId", "docUnitLabel", "docUnitPgcnId", "docUnitCondReportType");
-            
+            BeanUtils.copyProperties(detail.getReport(),
+                                     childReport,
+                                     "identifier",
+                                     "version",
+                                     "docUnit",
+                                     "attachments",
+                                     "details",
+                                     "docUnitId",
+                                     "docUnitLabel",
+                                     "docUnitPgcnId",
+                                     "docUnitCondReportType");
+
             final ConditionReport savedReport = conditionReportRepository.save(childReport);
-            
+
             // détail
             childDetail = conditionReportDetailService.getNewDetailWithoutWriters(detail.getType(), savedReport, 0);
             BeanUtils.copyProperties(detail, childDetail, "identifier", "version", "position", "report", "sortedType", "descriptions");
@@ -294,7 +287,7 @@ public class ConditionReportService {
                 result.put(existingReport.getIdentifier(), "Attention: le constat d'état initial existait déjà");
                 return;
             } else {
-                childDetail = conditionReportDetailService.getNewDetail(detail.getType(), existingReport, existingReport.getDetails().size()-1);
+                childDetail = conditionReportDetailService.getNewDetail(detail.getType(), existingReport, existingReport.getDetails().size() - 1);
 
                 childDetail.setReport(existingReport);
                 existingReport.addDetail(childDetail);
@@ -308,7 +301,7 @@ public class ConditionReportService {
                 }
             }
         }
-        
+
         final ConditionReportDetail saved = conditionReportDetailService.save(childDetail, false);
         LOG.debug("Detail persiste de type {} - identifier : {}", saved.getType(), saved.getIdentifier());
 
@@ -317,7 +310,7 @@ public class ConditionReportService {
             case LIBRARY_LEAVING:
                 typConstat = "initial";
                 break;
-            case PROVIDER_RECEPTION:    
+            case PROVIDER_RECEPTION:
             case DIGITALIZATION:
                 typConstat = "avant numérisation";
                 break;
@@ -327,16 +320,16 @@ public class ConditionReportService {
             default:
                 break;
         }
-        final String docLabel = saved.getReport().getDocUnitLabel();
-        result.put(saved.getReport().getIdentifier(), "DocUnit " + docLabel +" - Constat d'état " + typConstat + " ajouté");
+        final String docLabel = saved.getReport().getDocUnit().getLabel();
+        result.put(saved.getReport().getIdentifier(),
+                   "DocUnit " + docLabel
+                                                      + " - Constat d'état "
+                                                      + typConstat
+                                                      + " ajouté");
     }
-    
 
     /**
      * Chargement des constats d'état de l'unité documentaire
-     *
-     * @param docUnitId
-     * @return
      */
     @Transactional(readOnly = true)
     public ConditionReport findByDocUnit(final String docUnitId) {
@@ -345,10 +338,6 @@ public class ConditionReportService {
 
     /**
      * Vérifie que le type de constat d'état existe déjà
-     *
-     * @param docUnitId
-     * @param type
-     * @return
      */
     @Transactional(readOnly = true)
     public boolean isConditionReportDetailPresentInDocUnit(final String docUnitId, final Type type) {
@@ -364,9 +353,6 @@ public class ConditionReportService {
     /**
      * Recherche d'un constat d'état à partir de son identifiant
      * Récupération des objets liés
-     *
-     * @param identifier
-     * @return
      */
     @Transactional(readOnly = true)
     public ConditionReport findByIdentifier(final String identifier) {
@@ -375,9 +361,6 @@ public class ConditionReportService {
 
     /**
      * Recherche d'un constat d'état à partir de son identifiant
-     *
-     * @param identifier
-     * @return
      */
     @Transactional(readOnly = true)
     public DocUnit findDocUnitByIdentifier(final String identifier) {
@@ -386,9 +369,6 @@ public class ConditionReportService {
 
     /**
      * Recherche de constats d'état à partir de leurs identifiants
-     *
-     * @param identifiers
-     * @return
      */
     @Transactional(readOnly = true)
     public List<ConditionReport> findDocUnitByIdentifierIn(final List<String> identifiers) {
@@ -400,19 +380,15 @@ public class ConditionReportService {
 
     /**
      * Suppression d'un constat d'état
-     *
-     * @param identifier
      */
     @Transactional
     public void delete(final String identifier) {
-        final ConditionReport report = conditionReportRepository.findOne(identifier);
+        final ConditionReport report = conditionReportRepository.findById(identifier).orElse(null);
         delete(report);
     }
 
     /**
      * Suppression d'un constat d'état à partir de l'identifiant de son unité documentaire
-     *
-     * @param docUnitId
      */
     @Transactional
     public void deleteByDocUnitIdentifier(final String docUnitId) {
@@ -433,16 +409,12 @@ public class ConditionReportService {
             // Suppression du constat d'état
             conditionReportRepository.delete(report);
             // Désindexation
-            esConditionReportService.deleteAsync(report);
+            esConditionReportService.deleteAsync(report.getIdentifier());
         }
     }
 
     /**
      * Sauvegarde d'un constat d'état
-     *
-     * @param report
-     * @return
-     * @throws PgcnValidationException
      */
     @Transactional
     public ConditionReport save(final ConditionReport report) throws PgcnValidationException {
@@ -454,23 +426,21 @@ public class ConditionReportService {
      * Recherche paginée de constats d'états
      *
      * @param libraries
-     *         Filtrage: sites
+     *            Filtrage: sites
      * @param dimensions
-     *         Filtrage: dimensions du document
+     *            Filtrage: dimensions du document
      * @param from
-     *         Filtrage: date min du constat d'état
+     *            Filtrage: date min du constat d'état
      * @param to
-     *         Filtrage: date max du constat d'état
+     *            Filtrage: date max du constat d'état
      * @param descriptions
-     *         Filtrage: descriptions
-     * @param docIdentifiers
+     *            Filtrage: descriptions
      * @param page
-     *         Pagination: n° de page
+     *            Pagination: n° de page
      * @param size
-     *         Pagination: taille de la page
+     *            Pagination: taille de la page
      * @param sorts
-     *         Critères de tri
-     * @return
+     *            Critères de tri
      */
     @Transactional(readOnly = true)
     public Page<SearchResult> search(final List<String> libraries,
@@ -487,26 +457,32 @@ public class ConditionReportService {
                                      final List<String> sorts) {
         Sort sort = SortUtils.getSort(sorts);
         if (sort == null) {
-            sort = new Sort(DocUnit_.pgcnId.getName());
+            sort = Sort.by(DocUnit_.pgcnId.getName());
         }
-        final Pageable pageable = new PageRequest(page, size, sort);
+        final Pageable pageable = PageRequest.of(page, size, sort);
         // Recherche de la page d'identifiants
-        final Page<String> pageOfIds =
-            conditionReportRepository.search(libraries, projects, lots,
-                                             from, to, dimensions, parseDescriptions(descriptions),
-                                             docIdentifiers, toValidateOnly, pageable);
+        final Page<String> pageOfIds = conditionReportRepository.search(libraries,
+                                                                        projects,
+                                                                        lots,
+                                                                        from,
+                                                                        to,
+                                                                        dimensions,
+                                                                        parseDescriptions(descriptions),
+                                                                        docIdentifiers,
+                                                                        toValidateOnly,
+                                                                        pageable);
 
         if (pageOfIds.getNumberOfElements() > 0) {
             final List<SearchResult> results = findSearchResultByIdentifierIn(pageOfIds.getContent(), toValidateOnly);
-                return new PageImpl<>(results, pageable, pageOfIds.getTotalElements() );
+            return new PageImpl<>(results, pageable, pageOfIds.getTotalElements());
         } else {
             return new PageImpl<>(Collections.emptyList(), pageable, pageOfIds.getTotalElements());
         }
     }
 
     /**
-     * Retourne la liste de constats à afficher dans l'ecran 'Liste constats d'état'. 
-     * 
+     * Retourne la liste de constats à afficher dans l'ecran 'Liste constats d'état'.
+     *
      * @param reportIds
      * @param toValidateOnly
      * @return
@@ -519,11 +495,8 @@ public class ConditionReportService {
 
         // DTO docUnits
         final List<SimpleListDocUnitDTO> docDtos;
-        docDtos = docUnitRepository.findByIdentifierInWithProj(docUnitIds)
-                .stream()
-                .map(SimpleDocUnitMapper.INSTANCE::docUnitToSimpleListDocUnitDTO)
-                .collect(Collectors.toList());
-        
+        docDtos = docUnitRepository.findByIdentifierInWithProj(docUnitIds).stream().map(SimpleDocUnitMapper.INSTANCE::docUnitToSimpleListDocUnitDTO).collect(Collectors.toList());
+
         // Liste de résultats; on part de la liste des identifiants pour conserver le tri demandé
         return reportIds.stream()
                         // report correspondant à l'identifiant
@@ -533,19 +506,14 @@ public class ConditionReportService {
                         .map(report -> {
                             // docunit correspondant au report
                             final SimpleListDocUnitDTO docDto = docDtos.stream()
-                                                                       .filter(doc -> StringUtils.equals(doc.getIdentifier(),
-                                                                                                         report.getDocUnit().getIdentifier()))
+                                                                       .filter(doc -> StringUtils.equals(doc.getIdentifier(), report.getDocUnit().getIdentifier()))
                                                                        .findAny()
                                                                        .orElse(null);
-                            
+
                             final SearchResult res = new SearchResult();
                             res.setDocUnit(docDto);
                             res.setReport(REPORT_MAPPER.reportToDTO(report));
-                            report.getDetails()
-                                  .stream()
-                                  .max(Comparator.comparing(ConditionReportDetail::getPosition))
-                                  .map(DETAIL_MAPPER::detailToDTO)
-                                  .ifPresent(res::setDetail);
+                            report.getDetails().stream().max(Comparator.comparing(ConditionReportDetail::getPosition)).map(DETAIL_MAPPER::detailToDTO).ifPresent(res::setDetail);
                             return res;
                         })
                         .filter(res -> res.getDocUnit() != null)
@@ -575,11 +543,9 @@ public class ConditionReportService {
      * Génération du document récapitulatif à partir du template
      *
      * @param identifier
-     *         Identifiant du constat d'état
+     *            Identifiant du constat d'état
      * @param out
-     *         Flux dans lequel sera écrit le rapport généré
-     * @param convertType
-     * @throws PgcnTechnicalException
+     *            Flux dans lequel sera écrit le rapport généré
      */
     @Transactional(readOnly = true)
     public void exportDocument(final String identifier, final OutputStream out, final ConvertType convertType) throws PgcnTechnicalException {
@@ -601,8 +567,7 @@ public class ConditionReportService {
      * Génération du bordereau PDF
      */
     @Transactional(readOnly = true)
-    public void writeSlipDocUnitsPDF(final OutputStream out, final Collection<DocUnit> docUnits, final String docTitle) throws
-                                                                                                                        PgcnTechnicalException {
+    public void writeSlipDocUnitsPDF(final OutputStream out, final Collection<DocUnit> docUnits, final String docTitle) throws PgcnTechnicalException {
         final List<String> details = new ArrayList<>();
 
         for (final DocUnit docUnit : docUnits) {
@@ -651,10 +616,18 @@ public class ConditionReportService {
         if (logo != null) {
             paramsMap.put("logoPath", logo.getName());
         }
-        paramsMap.put("isPgcnIdPresent", config.isPresent() ? config.get().isPgcnId() : true);
-        paramsMap.put("isTitlePresent", config.isPresent() ? config.get().isTitle() : true);
-        paramsMap.put("isNbPagesPresent", config.isPresent() ? config.get().isNbPages() : true);
-        paramsMap.put("isSummaryPresent", config.isPresent() ? config.get().isGlobalReport() : true);
+        paramsMap.put("isPgcnIdPresent",
+                      config.isPresent() ? config.get().isPgcnId()
+                                         : true);
+        paramsMap.put("isTitlePresent",
+                      config.isPresent() ? config.get().isTitle()
+                                         : true);
+        paramsMap.put("isNbPagesPresent",
+                      config.isPresent() ? config.get().isNbPages()
+                                         : true);
+        paramsMap.put("isSummaryPresent",
+                      config.isPresent() ? config.get().isGlobalReport()
+                                         : true);
 
         final List<Map<String, String>> lines = (List<Map<String, String>>) params.get("slipLines");
 
@@ -723,8 +696,7 @@ public class ConditionReportService {
     /**
      * Ecriture du CSV
      */
-    public void writeCSV(final OutputStream out, final List<ConditionReportDetail> reports, final String encoding, final char separator) throws
-                                                                                                                                         IOException {
+    public void writeCSV(final OutputStream out, final List<ConditionReportDetail> reports, final String encoding, final char separator) throws IOException {
         // Alimentation du CSV
         try (final Writer writer = new OutputStreamWriter(out, encoding);
              final CSVWriter csvWriter = new CSVWriter(writer, separator, DEFAULT_QUOTE_CHARACTER, DEFAULT_ESCAPE_CHARACTER, RFC4180_LINE_END)) {
@@ -741,7 +713,10 @@ public class ConditionReportService {
      * Écriture de l'entête du fichier CSV
      */
     private void writeHeader(final CSVWriter csvWriter) {
-        final String[] types = {"Cote", "Titre", "NbDePagesEstimées", "Synthèse constat d'état"};
+        final String[] types = {"Cote",
+                                "Titre",
+                                "NbDePagesEstimées",
+                                "Synthèse constat d'état"};
         csvWriter.writeNext(types);
     }
 
@@ -767,19 +742,19 @@ public class ConditionReportService {
 
     private String writeSummary(final ConditionReportDetail detail) {
         final StringBuilder summary = new StringBuilder();
-        if (detail.getDim1() != null || detail.getDim2() != null || detail.getDim3() != null) {
-            final Integer dim1 = detail.getDim1() != null ? detail.getDim1() : 0;
-            final Integer dim2 = detail.getDim2() != null ? detail.getDim2() : 0;
-            final Integer dim3 = detail.getDim3() != null ? detail.getDim3() : 0;
+        if (detail.getDim1() != null || detail.getDim2() != null
+            || detail.getDim3() != null) {
+            final Integer dim1 = detail.getDim1() != null ? detail.getDim1()
+                                                          : 0;
+            final Integer dim2 = detail.getDim2() != null ? detail.getDim2()
+                                                          : 0;
+            final Integer dim3 = detail.getDim3() != null ? detail.getDim3()
+                                                          : 0;
             summary.append("Dimensions (HxLxP, mm): ");
             summary.append(dim1).append(" x ").append(dim2).append(" x ").append(dim3);
             summary.append(System.getProperty("line.separator"));
         }
-        final List<Description> descriptions =
-                                             detail.getDescriptions()
-                                                   .stream()
-                                                   .sorted(Comparator.comparing(desc -> desc.getProperty().getType()))
-                                                   .collect(Collectors.toList());
+        final List<Description> descriptions = detail.getDescriptions().stream().sorted(Comparator.comparing(desc -> desc.getProperty().getType())).collect(Collectors.toList());
 
         final List<String> titles = new ArrayList<>();
         for (final Description description : descriptions) {
@@ -831,8 +806,7 @@ public class ConditionReportService {
 
         final Set<String> summaries = new HashSet<>();
         if (report != null) {
-            final List<ConditionReportDetail> details =
-                conditionReportDetailService.findWithDescriptionsByCondReportIdentifier(report.getIdentifier());
+            final List<ConditionReportDetail> details = conditionReportDetailService.findWithDescriptionsByCondReportIdentifier(report.getIdentifier());
             details.forEach(detail -> summaries.add(writeSummary(detail)));
         }
         return summaries;
@@ -862,8 +836,7 @@ public class ConditionReportService {
             params.put("laststep", steps.get(steps.size() - 1));
         }
         // pièces jointe
-        params.put("attachments",
-                   report.getAttachments().stream().map(ConditionReportAttachmentMapper.INSTANCE::attachmentToDTO).collect(Collectors.toList()));
+        params.put("attachments", report.getAttachments().stream().map(ConditionReportAttachmentMapper.INSTANCE::attachmentToDTO).collect(Collectors.toList()));
 
         // Unité documentaire, bibliothèque, projet, lot, train
         final SimpleListDocUnitDTO docUnitDto = SimpleDocUnitMapper.INSTANCE.docUnitToSimpleListDocUnitDTO(report.getDocUnit());
@@ -885,24 +858,20 @@ public class ConditionReportService {
         // Notice bibliographique
         final Set<BibliographicRecord> records = report.getDocUnit().getRecords();
         if (!records.isEmpty()) {
-            final DocUnitBibliographicRecordDTO recordDto =
-                BibliographicRecordMapper.INSTANCE.bibliographicRecordToDocUnitBibliographicRecordDTO(records.iterator().next());
+            final DocUnitBibliographicRecordDTO recordDto = BibliographicRecordMapper.INSTANCE.bibliographicRecordToDocUnitBibliographicRecordDTO(records.iterator().next());
             params.put("record", recordDto);
 
             final Map<String, List<String>> properties = recordDto.getProperties()
                                                                   .stream()
                                                                   .sorted(Comparator.comparing(DocPropertyDTO::getWeightedRank))
                                                                   .collect(Collectors.groupingBy(p -> p.getType().getIdentifier(),
-                                                                                                 Collectors.mapping(DocPropertyDTO::getValue,
-                                                                                                                    Collectors.toList())));
+                                                                                                 Collectors.mapping(DocPropertyDTO::getValue, Collectors.toList())));
             params.put("properties", properties);
 
             final Map<String, String> types = recordDto.getProperties()
                                                        .stream()
                                                        .map(DocPropertyDTO::getType)
-                                                       .collect(Collectors.toMap(DocPropertyTypeDTO::getIdentifier,
-                                                                                 DocPropertyTypeDTO::getLabel,
-                                                                                 (a, b) -> a));
+                                                       .collect(Collectors.toMap(DocPropertyTypeDTO::getIdentifier, DocPropertyTypeDTO::getLabel, (a, b) -> a));
             params.put("types", types);
         }
         // Accès à une description particulière depuis le rapport, par ex.: $Get.apply($laststep.Vigilances, "MAX_ANGLE")
@@ -928,8 +897,7 @@ public class ConditionReportService {
         final Map<String, IImageProvider> imageParams = new HashMap<>();
 
         // image vide
-        final ClassPathImageProvider defaultImage =
-            new ClassPathImageProvider(Thread.currentThread().getContextClassLoader(), DEFAULT_THUMBNAIL, false);
+        final ClassPathImageProvider defaultImage = new ClassPathImageProvider(Thread.currentThread().getContextClassLoader(), DEFAULT_THUMBNAIL, false);
         imageParams.put("img_empty", defaultImage);
 
         // bibliothèque
@@ -955,11 +923,14 @@ public class ConditionReportService {
                     }
                 }
             }
-            imageParams.put("img_" + detail.getPosition() + "_libwriter", imgProvider);
+            imageParams.put("img_" + detail.getPosition()
+                            + "_libwriter",
+                            imgProvider);
         }
 
         // pièces jointes
-        report.getAttachments().stream()
+        report.getAttachments()
+              .stream()
               // paires (id attachment, fichiers)
               .map(att -> {
                   final File thumbnail = conditionReportAttachmentService.downloadAttachmentThumbnail(att);
@@ -967,7 +938,10 @@ public class ConditionReportService {
                       return Pair.of("img_" + att.getIdentifier(), new TypedFileImageProvider(thumbnail, ImageUtils.FORMAT_PNG, true));
                   }
                   return null;
-              }).filter(Objects::nonNull).collect(Collectors.toMap(Pair::getLeft, Pair::getRight)).forEach(imageParams::put);
+              })
+              .filter(Objects::nonNull)
+              .collect(Collectors.toMap(Pair::getLeft, Pair::getRight))
+              .forEach(imageParams::put);
 
         return imageParams;
     }

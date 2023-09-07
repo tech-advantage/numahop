@@ -1,14 +1,5 @@
 package fr.progilone.pgcn.service.exportftpconfiguration;
 
-import java.util.List;
-import java.util.Set;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import fr.progilone.pgcn.domain.exportftpconfiguration.ExportFTPConfiguration;
 import fr.progilone.pgcn.domain.library.Library;
 import fr.progilone.pgcn.exception.PgcnTechnicalException;
@@ -20,6 +11,13 @@ import fr.progilone.pgcn.repository.exportftpconfiguration.ExportFTPConfiguratio
 import fr.progilone.pgcn.repository.library.LibraryRepository;
 import fr.progilone.pgcn.repository.lot.LotRepository;
 import fr.progilone.pgcn.repository.project.ProjectRepository;
+import java.util.List;
+import java.util.Set;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ExportFTPConfigurationService {
@@ -31,9 +29,9 @@ public class ExportFTPConfigurationService {
 
     @Autowired
     public ExportFTPConfigurationService(final ExportFTPConfigurationRepository exportFtpConfigurationRepository,
-                                   final LibraryRepository libraryRepository,
-                                   final LotRepository lotRepository,
-                                   final ProjectRepository projectRepository) {
+                                         final LibraryRepository libraryRepository,
+                                         final LotRepository lotRepository,
+                                         final ProjectRepository projectRepository) {
         this.exportFtpConfigurationRepository = exportFtpConfigurationRepository;
         this.libraryRepository = libraryRepository;
         this.lotRepository = lotRepository;
@@ -77,7 +75,7 @@ public class ExportFTPConfigurationService {
         validateDelete(conf);
 
         // Suppression
-        exportFtpConfigurationRepository.delete(id);
+        exportFtpConfigurationRepository.deleteById(id);
     }
 
     private void validateDelete(final ExportFTPConfiguration conf) throws PgcnValidationException {

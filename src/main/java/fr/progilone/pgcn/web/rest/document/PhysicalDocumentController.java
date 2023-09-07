@@ -1,7 +1,12 @@
 package fr.progilone.pgcn.web.rest.document;
 
+import com.codahale.metrics.annotation.Timed;
+import fr.progilone.pgcn.domain.dto.document.ListPhysicalDocumentDTO;
+import fr.progilone.pgcn.domain.dto.document.PhysicalDocumentDTO;
+import fr.progilone.pgcn.service.document.ui.UIPhysicalDocumentService;
+import fr.progilone.pgcn.service.es.EsDocUnitService;
+import fr.progilone.pgcn.web.rest.AbstractRestController;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,14 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.codahale.metrics.annotation.Timed;
-
-import fr.progilone.pgcn.domain.dto.document.ListPhysicalDocumentDTO;
-import fr.progilone.pgcn.domain.dto.document.PhysicalDocumentDTO;
-import fr.progilone.pgcn.service.document.ui.UIPhysicalDocumentService;
-import fr.progilone.pgcn.service.es.EsDocUnitService;
-import fr.progilone.pgcn.web.rest.AbstractRestController;
-
 @RestController
 @RequestMapping(value = "/api/rest/physicaldocument")
 public class PhysicalDocumentController extends AbstractRestController {
@@ -30,8 +27,7 @@ public class PhysicalDocumentController extends AbstractRestController {
     private final UIPhysicalDocumentService uiPhysicalDocumentService;
 
     @Autowired
-    public PhysicalDocumentController(final EsDocUnitService esDocUnitService,
-                                      final UIPhysicalDocumentService uiPhysicalDocumentService) {
+    public PhysicalDocumentController(final EsDocUnitService esDocUnitService, final UIPhysicalDocumentService uiPhysicalDocumentService) {
         super();
         this.esDocUnitService = esDocUnitService;
         this.uiPhysicalDocumentService = uiPhysicalDocumentService;
@@ -60,7 +56,7 @@ public class PhysicalDocumentController extends AbstractRestController {
         final List<ListPhysicalDocumentDTO> documents = uiPhysicalDocumentService.findByTrainIdentifier(trainId);
         return createResponseEntity(documents);
     }
-    
+
     @RequestMapping(method = RequestMethod.GET, params = {"trainDocUnits"})
     @ResponseStatus(HttpStatus.OK)
     @Timed

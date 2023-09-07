@@ -1,11 +1,10 @@
 /* globals $ */
 (function () {
-    "use strict";
+    'use strict';
 
-    angular.module('numaHopApp')
-        .directive('sidServerAppPager', function () {
-            return {
-                templateUrl: 'scripts/components/form/pager.html'
-            };
-        });
+    angular.module('numaHopApp').directive('sidServerAppPager', function () {
+        return {
+            templateUrl: 'scripts/components/form/pager.html',
+        };
+    });
 })();

@@ -12,10 +12,14 @@
                             <h4 translate>Rechercher</h4>
                             <div class="row">
                                 <div class="col-xs-12 h4 margin-t0 margin-b20">
-                                    <div class="label pointer margin-r10" 
-                                          ng-class="{true: 'label-sem-warning', false: 'label-sem-light-blue'}[searchCtrl.query.get === get.identifier]"
-                                          ng-click="searchCtrl.setTarget(get)"
-                                          ng-repeat="get in searchCtrl.config.target">{{ ::get.label }}</span>
+                                    <div
+                                        class="label pointer margin-r10"
+                                        ng-class="{true: 'label-sem-warning', false: 'label-sem-light-blue'}[searchCtrl.query.get === get.identifier]"
+                                        ng-click="searchCtrl.setTarget(get)"
+                                        ng-repeat="get in searchCtrl.config.target"
+                                    >
+                                        {{ ::get.label }}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -23,23 +27,28 @@
                         <div class="filter-group">
                             <h4 translate>Critères de recherche</h4>
                             <numa-search-controls>
-                                <numa-search-control ng-repeat="search in searchCtrl.query.search" 
-                                                    control-model="search" is-first="$first" target="searchCtrl.query.get"
-                                                    on-search="searchCtrl.search(searchCtrl.query)" 
-                                                    on-remove="searchCtrl.removeSearch($search)"></numa-search-control>
+                                <numa-search-control
+                                    ng-repeat="search in searchCtrl.query.search"
+                                    control-model="search"
+                                    is-first="$first"
+                                    target="searchCtrl.query.get"
+                                    on-search="searchCtrl.search(searchCtrl.query)"
+                                    on-remove="searchCtrl.removeSearch($search)"
+                                ></numa-search-control>
                             </numa-search-controls>
-                            <a class="btn btn-sem1" type="button" ng-click="searchCtrl.addSearch()">
-                                <span class="glyphicon-regular plus"></span>&nbsp;<span translate>Ajouter un critère de recherche</span>
-                            </a>
+                            <a class="btn btn-sem1" type="button" ng-click="searchCtrl.addSearch()"> <span class="glyphicon-regular plus"></span>&nbsp;<span translate>Ajouter un critère de recherche</span> </a>
                         </div>
                         <!-- Recherche approchée -->
                         <div class="filter-group padding-l10">
                             <div class="checkbox checkbox-sid-main-inv">
-                                <input type="checkbox" ng-model="searchCtrl.query.fuzzy">
+                                <input type="checkbox" ng-model="searchCtrl.query.fuzzy" />
                                 <label onclick="$(this).prev('input').click()" class="no-select">
                                     {{::'Recherche approchée' | translate}}
-                                    <span class="glyphicon-halflings glyphicon-question-sign cursor-help" 
-                                          uib-tooltip="{{'Élargir la recherche aux termes proches de ceux saisis, pour les champs en saisie libre' | translate}}"></span>
+                                    <span
+                                        class="glyphicon-halflings glyphicon-question-sign cursor-help"
+                                        uib-tooltip="{{'Élargir la recherche aux termes proches de ceux saisis, pour les champs en saisie libre' | translate}}"
+                                        tooltip-append-to-body="true"
+                                    ></span>
                                 </label>
                             </div>
                         </div>
