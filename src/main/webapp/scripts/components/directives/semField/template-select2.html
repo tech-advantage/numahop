@@ -1,6 +1,6 @@
 <div class="row vertical-align" ng-hide="hideIfEmpty && !model">
     <div ng-class="labelclass || 'col-xs-4'" class="text-right" ng-if="label">
-        <label uib-tooltip="{{tooltip}}">{{::label}}</label>
+        <label uib-tooltip="{{tooltip}}">{{label | translate}}</label>
         <!-- Mandatory -->
         <span class="text-danger cursor-help" uib-tooltip="{{ ::'Ce champ est obligatoire' | translate }}" ng-if="mandatory">*</span>
     </div>

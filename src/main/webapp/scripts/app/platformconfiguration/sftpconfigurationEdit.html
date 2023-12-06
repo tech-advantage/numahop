@@ -110,7 +110,7 @@
                     <div uib-accordion-group is-open="accordions.pacs">
                         <uib-accordion-heading>
                             <i ng-class="{false: 'fa fa-chevron-right rotate-icon-up', true: 'fa fa-chevron-right rotate-icon-down'}[accordions.pacs]"></i>
-                            <span>{{::' Plans de classement PAC' | translate}}</span>
+                            &nbsp;<span>{{::'Plans de classement PAC' | translate}}</span>
                         </uib-accordion-heading>
 
                         <div class="row vertical-align" ng-if="viewMode === viewModes.EDIT && loaded">
@@ -181,7 +181,7 @@
                     <div uib-accordion-group is-open="accordions.defaultValues">
                         <uib-accordion-heading>
                             <i ng-class="{false: 'fa fa-chevron-right rotate-icon-up', true: 'fa fa-chevron-right rotate-icon-down'}[accordions.defaultValues]"></i>
-                            <span>{{::' Paramètres Cines: valeurs par défaut' | translate}}</span>
+                            &nbsp;<span>{{::'Paramètres Cines: valeurs par défaut' | translate}}</span>
                         </uib-accordion-heading>
 
                         <div class="pull-left"></div>
@@ -208,7 +208,7 @@
                     <div uib-accordion-group is-open="accordions.langCodes">
                         <uib-accordion-heading>
                             <i ng-class="{false: 'fa fa-chevron-right rotate-icon-up', true: 'fa fa-chevron-right rotate-icon-down'}[accordions.langCodes]"></i>
-                            <span>{{::' Codes langues à transposer (commun à l\'ensemble des bibliothèques)' | translate}}</span>
+                            &nbsp;<span>{{::'Codes langues à transposer (commun à l\'ensemble des bibliothèques)' | translate}}</span>
                         </uib-accordion-heading>
 
                         <div class="row vertical-align" ng-if="viewMode === viewModes.EDIT && loaded">
@@ -240,7 +240,7 @@
                                     <td class="text-center">
                                         <sem-editable-field
                                             sem-type="text"
-                                            sem-model="lang.identifier"
+                                            sem-model="lang.langDC"
                                             onaftersave="onaftersave"
                                             sem-server-error="{{ (configuration.errors | filter:{field: 'cinesLangCodes'}:true) }}"
                                         ></sem-editable-field>

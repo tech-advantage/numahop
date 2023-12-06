@@ -150,7 +150,7 @@
                         <div uib-accordion-group is-open="accordions.collections">
                             <uib-accordion-heading>
                                 <i ng-class="{false: 'fa fa-chevron-right rotate-icon-up', true: 'fa fa-chevron-right rotate-icon-down'}[accordions.collections]"></i>
-                                <span>{{::' Collections Omeka' | translate}}</span>
+                                &nbsp;<span>{{::'Collections Omeka' | translate}}</span>
                             </uib-accordion-heading>
                             <button type="button" class="btn btn-sem2 btn-xs" ng-click="addCollection()" uib-tooltip="{{::'Ajouter' | translate}}" ng-show="configurationForm.$visible && loaded">
                                 <span class="glyphicon-regular plus"></span>
@@ -182,7 +182,7 @@
                         <div uib-accordion-group is-open="accordions.items">
                             <uib-accordion-heading>
                                 <i ng-class="{false: 'fa fa-chevron-right rotate-icon-up', true: 'fa fa-chevron-right rotate-icon-down'}[accordions.items]"></i>
-                                <span>{{::' Types d\'items Omeka' | translate}}</span>
+                                &nbsp;<span>{{::'Types d\'items Omeka' | translate}}</span>
                             </uib-accordion-heading>
                             <button type="button" class="btn btn-sem2 btn-xs" ng-click="addItem()" uib-tooltip="{{::'Ajouter' | translate}}" ng-show="configurationForm.$visible && loaded">
                                 <span class="glyphicon-regular plus"></span>

@@ -9,8 +9,8 @@
 
         <!-- Gestion d'un mapping spécifique à l'import des exemplaires de périodiques -->
         <addColumn tableName="exc_import_report">
-            <column name="project" type="varchar(191)" beforeColumn="mapping" />
-            <column name="lot" type="varchar(191)" beforeColumn="mapping" />
+            <column name="project" type="varchar(191)" />
+            <column name="lot" type="varchar(191)" />
         </addColumn>
 
         <addForeignKeyConstraint baseTableName="exc_import_report" baseColumnNames="project" constraintName="fk_exc_import_report_project" referencedTableName="proj_project" referencedColumnNames="identifier" />

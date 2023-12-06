@@ -15,7 +15,7 @@
             <column name="timestamp" type="bigint" />
             <column name="username" type="varchar(255)" />
         </createTable>
-        <addAutoIncrement tableName="aud_revision" columnName="id" columnDataType="int" incrementBy="1" startWith="1" />
+        <addAutoIncrement tableName="aud_revision" columnName="id" columnDataType="int" startWith="1" />
 
         <createTable tableName="aud_exc_mapping">
             <column name="identifier" type="varchar(191)">

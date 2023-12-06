@@ -121,6 +121,7 @@
     <include file="classpath:config/liquibase/changelog/db-changelog-conf-export-ftp-002.xml" relativeToChangelogFile="false" />
     <include file="classpath:config/liquibase/changelog/db-changelog-conf-omeka-004.xml" relativeToChangelogFile="false" />
     <include file="classpath:config/liquibase/changelog/db-changelog-conf-export_ftp-003.xml" relativeToChangelogFile="false" />
+    <include file="classpath:config/liquibase/changelog/db-changelog-conf-cines-language-codes-02.xml" relativeToChangelogFile="false" />
 
     <!-- Import -->
     <include file="classpath:config/liquibase/changelog/db-changelog-exchange-004.xml" relativeToChangelogFile="false" />

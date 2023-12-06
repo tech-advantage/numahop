@@ -34,7 +34,7 @@
                         <div ng-controller="LanguageController" class="menuTop_languages_locales">
                             <span ng-repeat="locale in ::locales" class="menuTop_languages_locales__span">
                                 <a href="javascript:;" ng-click="changeLocale(locale.code)" class="menuTop_languages_locales__span-link">
-                                    <span uib-tooltip="{{::locale.label}}" tooltip-append-to-body="true" tooltip-placement="bottom" ng-class="locale.flag" class="famfamfam-flags"></span>
+                                    <span uib-tooltip="{{locale.label | translate}}" tooltip-append-to-body="true" tooltip-placement="bottom" ng-class="locale.flag" class="famfamfam-flags"></span>
                                 </a>
                             </span>
                         </div>

@@ -23,6 +23,7 @@ import fr.progilone.pgcn.service.document.DocCheckHistoryService;
 import fr.progilone.pgcn.service.document.DocUnitService;
 import fr.progilone.pgcn.service.document.ui.UIDocUnitService;
 import fr.progilone.pgcn.service.es.EsDocUnitService;
+import fr.progilone.pgcn.service.util.DateUtils;
 import fr.progilone.pgcn.web.rest.AbstractRestController;
 import fr.progilone.pgcn.web.util.AccessHelper;
 import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
@@ -31,10 +32,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -566,7 +569,8 @@ public class DocUnitController extends AbstractRestController {
     @RolesAllowed(DOC_UNIT_HAB4)
     public void massExport(final HttpServletResponse response,
                            @RequestParam(name = "docs") final List<String> docs,
-                           @RequestParam(name = "types", defaultValue = "METS,VIEW") final List<String> exportTypes) throws PgcnTechnicalException {
+                           @RequestParam(name = "types", defaultValue = "METS,VIEW") final List<String> exportTypes,
+                           @RequestParam(required = false) final String pgcnId) throws PgcnTechnicalException {
         // droits d'accès à l'ud
         final List<DocUnit> filteredDocUnits = new ArrayList<>(accessHelper.filterDocUnits(docs));
         if (filteredDocUnits.isEmpty()) {
@@ -575,11 +579,13 @@ public class DocUnitController extends AbstractRestController {
         }
         // export du modèle de doc d'import
         try {
-            writeResponseHeaderForDownload(response, "application/zip", null, "mass_export.zip");
-
-            // réponse
+            writeResponseHeaderForDownload(response,
+                                           "application/zip",
+                                           null,
+                                           DateUtils.formatDateToString(LocalDateTime.now(), "yyyy-MM-dd HH-mm-ss") + (StringUtils.isNotBlank(pgcnId) ? "_" + pgcnId
+                                                                                                                                                      : "")
+                                                 + "_export.zip");
             uiDocUnitService.massExport(response.getOutputStream(), docs, exportTypes);
-
         } catch (final IOException e) {
             throw new PgcnTechnicalException(e);
         }

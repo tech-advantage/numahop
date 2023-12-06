@@ -67,7 +67,11 @@ import fr.progilone.pgcn.service.util.transaction.VersionValidationService;
 import fr.progilone.pgcn.service.workflow.WorkflowService;
 import jakarta.annotation.PostConstruct;
 import jakarta.xml.bind.JAXBException;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -825,7 +829,7 @@ public class UIDocUnitService {
         final Path zipPath = zipFile.toPath();
 
         // recup config export ftp
-        List<DocUnit> docsInError = new ArrayList<>();
+        final List<DocUnit> docsInError = new ArrayList<>();
         docUnits.stream().forEach(docUnit -> {
             // Get conf FTP on Lot then, if null, on project or terminate process to this docUnit
             ExportFTPConfiguration confExport = docUnit.getLot().getActiveExportFTPConfiguration();
@@ -872,7 +876,7 @@ public class UIDocUnitService {
     }
 
     @Transactional
-    public boolean exportToFtp(List<String> docIdentifiers, List<String> exportTypes, Library library) throws IOException {
+    public boolean exportToFtp(final List<String> docIdentifiers, final List<String> exportTypes, final Library library) throws IOException {
         return massExportToFtp(new ArrayList<>(docUnitService.findAllById(docIdentifiers)), exportTypes, library);
     }
 
@@ -899,7 +903,7 @@ public class UIDocUnitService {
                     for (final DigitalDocument dd : du.getDigitalDocuments()) {
                         // PDF
                         if (exportTypes.contains("PDF")) {
-                            DocPage pdfPage = digitalDocumentService.getPdfPage(dd.getIdentifier());
+                            final DocPage pdfPage = digitalDocumentService.getPdfPage(dd.getIdentifier());
                             if (pdfPage != null && pdfPage.getMaster().isPresent()) {
                                 final Optional<StoredFile> master = pdfPage.getMaster();
                                 final StoredFile sf = master.get();
@@ -1021,15 +1025,15 @@ public class UIDocUnitService {
         }
     }
 
-    private void copyToZip(ZipOutputStream zos, File file) throws IOException {
+    private void copyToZip(final ZipOutputStream zos, final File file) throws IOException {
         LOG.trace("copyToZip - start");
         try (Stream<Path> paths = Files.walk(Paths.get(file.getPath()))) {
             paths.filter(Files::isRegularFile).forEach(path -> {
                 try {
                     LOG.trace("copyToZip - walk - " + path.toString());
-                    FileInputStream fileInputTest = new FileInputStream(path.toFile());
+                    final FileInputStream fileInputTest = new FileInputStream(path.toFile());
                     IOUtils.copy(fileInputTest, zos);
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     LOG.error(e.getMessage(), e);
                 }
             });

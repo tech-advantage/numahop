@@ -71,14 +71,7 @@
             if (!filename || angular.isUndefined(mainCtrl.digitalDocument.identifier)) {
                 return;
             }
-
-            var url = 'api/rest/viewer/document/' + mainCtrl.digitalDocument.identifier + '/master/';
-
-            // on met la réponse dans un arraybuffer pour conserver l'encodage original dans le fichier sauvegardé
-            $http.get(url, { responseType: 'arraybuffer' }).then(function (response) {
-                var blob = new Blob([response.data], { type: response.headers('content-type') });
-                FileSaver.saveAs(blob, filename);
-            });
+            window.open('api/rest/viewer/document/' + mainCtrl.digitalDocument.identifier + '/master/', '_parent', '');
         }
 
         /**

@@ -187,7 +187,7 @@ public class ProjectService {
                                                                                          .setInitiale(initiale)
                                                                                          .setStatuses(statuses)
                                                                                          .setLibraries(libraries)
-                                                                                         .setActive(active), null);
+                                                                                         .setActive(active), PageRequest.of(0, 10));
         return results.getContent();
     }
 

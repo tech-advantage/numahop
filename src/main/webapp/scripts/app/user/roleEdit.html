@@ -74,7 +74,7 @@
                 <div class="row">
                     <label class="col-sm-4 text-right form-control-static" translate>Habilitations</label>
                     <div class="col-sm-8 col-lg-4">
-                        <select class="form-control" ng-model="filterBy.module" ng-options="module.code as module.label for module in modules | orderBy:'label'">
+                        <select class="form-control" ng-model="filterBy.module" ng-options="module.code as module.label | translate for module in modules | orderBy:'label'">
                             <option value translate>Tous les modules</option>
                         </select>
                     </div>
@@ -106,21 +106,23 @@
                                             />
                                         </div>
                                     </td>
-                                    <td>{{::code[auth.module]}}</td>
+                                    <td>{{::code[auth.module] | translate}}</td>
                                     <td class="nowrap">
-                                        <span>{{::auth.code}}</span>
+                                        <span>{{::auth.code | translate}}</span>
                                         <span
                                             class="glyphicon-regular circle-question-mark"
                                             ng-if="auth._readOnly && !auth._activated && auth.requirements.length > 0"
                                             uib-tooltip="{{::('Cette autorisation ne peut pas être activée tant que les autorisations suivantes ne sont pas activées: ' | translate) + auth.requirements.join(', ') }}"
+                                            tooltip-append-to-body="true"
                                         ></span>
                                         <span
                                             class="glyphicon-regular circle-question-mark"
                                             ng-if="auth._readOnly && auth._activated && auth.dependencies.length > 0"
                                             uib-tooltip="{{::('Cette autorisation ne peut pas être désactivée tant que les autorisations suivantes ne sont pas désactivées: ' | translate) + auth.dependencies.join(', ') }}"
+                                            tooltip-append-to-body="true"
                                         ></span>
                                     </td>
-                                    <td><span uib-tooltip="{{::auth.description}}">{{::auth.label}}</span></td>
+                                    <td><span uib-tooltip="{{auth.description | translate}}" tooltip-append-to-body="true">{{auth.label | translate}}</span></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -138,11 +140,11 @@
                             </thead>
                             <tbody>
                                 <tr ng-repeat="auth in displayedAuthorizations | filter:(filterBy.module ? filterBy : {}) | orderBy:orderBy">
-                                    <td>{{::code[auth.module]}}</td>
+                                    <td>{{::code[auth.module] | translate}}</td>
                                     <td class="nowrap">
-                                        <span>{{::auth.code}}</span>
+                                        <span>{{::auth.code | translate}}</span>
                                     </td>
-                                    <td><span uib-tooltip="{{::auth.description}}">{{::auth.label}}</span></td>
+                                    <td><span uib-tooltip="{{::auth.description | translate}}" tooltip-append-to-body="true">{{::auth.label | translate}}</span></td>
                                 </tr>
                             </tbody>
                         </table>

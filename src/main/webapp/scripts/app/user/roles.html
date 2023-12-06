@@ -15,9 +15,9 @@
                     <div class="filter-title">{{::'Habilitations' | translate}}</div>
                     <div class="filter-element">
                         <ui-select multiple ng-model="filters.authorizations" theme="select2" on-select="doFilter()" on-remove="doFilter()" class="form-control">
-                            <ui-select-match placeholder="{{::'Habilitations' | translate}}">{{$item.label}}</ui-select-match>
+                            <ui-select-match placeholder="{{::'Habilitations' | translate}}"> {{$item.label | translate}} </ui-select-match>
                             <ui-select-choices repeat="authorization in options.authorizations | filter: $select.search track by authorization.identifier">
-                                <div ng-bind-html="authorization.label | highlight: $select.search"></div>
+                                <div ng-bind-html="authorization.label | highlight: $select.search | translate"></div>
                             </ui-select-choices>
                         </ui-select>
                     </div>
@@ -64,7 +64,7 @@
 
                 <div ng-switch-default>
                     <div ng-repeat="role in roles" class="col-infinite-scroll">
-                        <div ng-show="$index === 0 || getFirstLetter(role) != getFirstLetter(roles[$index-1])" class="pagination-break">{{role.label|initial:'OTHER'}}</div>
+                        <div ng-show="$index === 0 || getFirstLetter(role) != getFirstLetter(roles[$index-1])" class="pagination-break">{{role.label | initial:'OTHER'}}</div>
                         <div class="list" ng-class="{active: role._selected}">
                             <a ng-click="edit(role, $index)">
                                 <span class="principal">{{ role.label }}</span>

@@ -583,7 +583,7 @@
                                                 <span class="glyphicon-halflings glyphicon-share"></span>
                                             </a>
                                         </div>
-                                        <span class="label label-primary" ng-if="impDoc.docUnit">{{::editCtrl.code['import.DocUnit.State.' + impDoc.docUnit.state] || impDoc.docUnit.state}}</span>
+                                        <span class="label label-primary" ng-if="impDoc.docUnit">{{::editCtrl.code['import.DocUnit.State.' + impDoc.docUnit.state] || impDoc.docUnit.state | translate}}</span>
                                         <span class="label label-primary" ng-if="!impDoc.docUnit && !impDoc.divider" translate>Ignoré</span>
                                         {{::impDoc.docUnitPgcnId}}
                                         <div>{{::impDoc.docUnitLabel}}</div>

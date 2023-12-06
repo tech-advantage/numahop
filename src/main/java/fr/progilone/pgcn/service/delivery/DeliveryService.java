@@ -50,6 +50,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class DeliveryService {
 
     private static final Logger LOG = LoggerFactory.getLogger(DeliveryService.class);
+    public static final String PGCN_ID = "pgcnId";
 
     private final DeliveryRepository deliveryRepository;
     private final EsDeliveryService esDeliveryService;
@@ -264,7 +265,9 @@ public class DeliveryService {
              final CSVWriter csvWriter = new CSVWriter(writer, separator, DEFAULT_QUOTE_CHARACTER, DEFAULT_ESCAPE_CHARACTER, RFC4180_LINE_END)) {
             // Entête
             writeHeader(csvWriter, columns);
-            for (final DeliverySlipLine line : deliverySlip.getSlipLines()) {
+
+            List<DeliverySlipLine> sortedSlipLines = deliverySlip.getSlipLines().stream().sorted(Comparator.comparing(DeliverySlipLine::getPgcnId)).toList();
+            for (final DeliverySlipLine line : sortedSlipLines) {
                 // Corps
                 writeBody(csvWriter, columns, line);
             }
@@ -357,10 +360,16 @@ public class DeliveryService {
         paramsMap.put("isDatePresent",
                       config.isPresent() ? config.get().getDate()
                                          : true);
-        final List<DeliverySlipLine> lines = (List<DeliverySlipLine>) params.get("slipLines");
+        final List<Map<String, String>> lines = (List<Map<String, String>>) params.get("slipLines");
+        final List<Map<String, String>> sortedLines = lines.stream().sorted(Comparator.comparing(l -> l.get(PGCN_ID))).toList();
 
         try {
-            jasperReportService.exportReportToStream(JasperReportsService.REPORT_DELIV_SLIP, JasperReportsService.ExportType.PDF, paramsMap, lines, out, library.getIdentifier());
+            jasperReportService.exportReportToStream(JasperReportsService.REPORT_DELIV_SLIP,
+                                                     JasperReportsService.ExportType.PDF,
+                                                     paramsMap,
+                                                     sortedLines,
+                                                     out,
+                                                     library.getIdentifier());
         } catch (final PgcnException e) {
             LOG.error("Erreur a la generation du bordereau de livraison: {}", e.getLocalizedMessage());
             throw new PgcnTechnicalException(e);
@@ -382,7 +391,7 @@ public class DeliveryService {
             final Map<String, String> line = new HashMap<>();
             if (config.isPresent()) {
                 if (config.get().getPgcnId()) {
-                    line.put("pgcnId", slipLine.getPgcnId());
+                    line.put(PGCN_ID, slipLine.getPgcnId());
                 }
                 if (config.get().getLot()) {
                     line.put("lot", slipLine.getLot());
@@ -404,7 +413,7 @@ public class DeliveryService {
                 }
 
             } else {
-                line.put("pgcnId", slipLine.getPgcnId());
+                line.put(PGCN_ID, slipLine.getPgcnId());
                 line.put("lot", slipLine.getLot());
                 line.put("train", slipLine.getTrain());
                 line.put("radical", slipLine.getRadical());

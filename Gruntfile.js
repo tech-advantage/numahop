@@ -38,9 +38,9 @@ module.exports = function (grunt) {
             webapp: 'src/main/webapp',
         },
         watch: {
-            compass: {
+            'dart-sass': {
                 files: ['src/main/scss/**/*.{scss,sass}'],
-                tasks: ['compass:server', 'autoprefixer'],
+                tasks: ['dart-sass:dev', 'autoprefixer'],
             },
             styles: {
                 files: ['styles/**/*.css'],
@@ -196,24 +196,19 @@ module.exports = function (grunt) {
             },
             all: ['Gruntfile.js', 'scripts/{,*/}*.js'],
         },
-        compass: {
-            options: {
-                sassDir: 'src/main/scss',
-                cssDir: '.tmp/assets/styles',
-                generatedImagesDir: 'src/main/webapp/assets/images/generated',
-                imagesDir: 'images',
-                javascriptsDir: 'scripts',
-                fontsDir: 'src/main/webapp/assets/fonts',
-                httpImagesPath: '/assets/images',
-                httpGeneratedImagesPath: '/assets/images/generated',
-                httpFontsPath: '/assets/fonts',
-                relativeAssets: false,
-                raw: 'Sass::Script::Number.precision = 9\n',
-                debugInfo: false,
+        'dart-sass': {
+            dev: {
+                files: {
+                    '.tmp/assets/styles/main.css': 'src/main/scss/main.scss',
+                },
             },
-            server: {
+            dist: {
                 options: {
-                    debugInfo: true,
+                    outputStyle: 'compressed',
+                    sourceMap: false,
+                },
+                files: {
+                    '.tmp/assets/styles/main.css': 'src/main/scss/main.scss',
                 },
             },
         },
@@ -373,7 +368,7 @@ module.exports = function (grunt) {
                     {
                         expand: true,
                         cwd: '.tmp/styles',
-                        dest: '<%= yeoman.dist %>/styles',
+                        dest: '<%= yeoman.dist %>/assets/styles',
                         src: ['famfamfam-flags.png'],
                     },
                 ],
@@ -478,9 +473,9 @@ module.exports = function (grunt) {
             },
         },
         concurrent: {
-            server: ['compass:server', 'copy:styles', 'copy:i18n', 'copy:libs', 'copy:mirador', 'copy:summernote_fonts'],
+            server: ['dart-sass:dev', 'copy:styles', 'copy:i18n', 'copy:libs', 'copy:mirador', 'copy:summernote_fonts'],
             test: ['copy:libs', 'copy:mirador', 'copy:mediaelement'],
-            dist: ['compass', 'imagemin', 'copy:styles', 'copy:i18n', 'copy:libs', 'copy:mirador', 'copy:summernote_fonts'],
+            dist: ['dart-sass:dist', 'imagemin', 'copy:styles', 'copy:i18n', 'copy:libs', 'copy:mirador', 'copy:summernote_fonts'],
         },
         nggettext_extract: {
             pot: {
@@ -566,7 +561,7 @@ module.exports = function (grunt) {
         if (target === 'dist') {
             return grunt.task.run(['build', 'configureProxies', 'connect:dist:keepalive']);
         } else if (target == 'fast') {
-            grunt.task.run(['checkDependencies', 'compass:server', 'autoprefixer', 'configureProxies', 'connect:livereload', 'watch']);
+            grunt.task.run(['checkDependencies', 'dart-sass:dev', 'autoprefixer', 'configureProxies', 'connect:livereload', 'watch']);
         } else {
             grunt.task.run(['checkDependencies', 'clean', 'nggettext_compile', 'concurrent:server', 'autoprefixer', 'copy:directives', 'configureProxies', 'connect:livereload', 'watch']);
         }

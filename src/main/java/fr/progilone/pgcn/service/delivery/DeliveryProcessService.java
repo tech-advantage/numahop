@@ -362,29 +362,31 @@ public class DeliveryProcessService {
 
     private Map<String, PrefixedDocuments> getPrefixedDocuments(final Delivery delivery, final PreDeliveryDTO preDeliveryDTO) {
         final Map<String, PrefixedDocuments> documentsForPrefix = new HashMap<>();
-        final Set<PhysicalDocument> physicalDocuments = physicalDocumentRepository.findAllByLot(delivery.getLot().getIdentifier());
-        physicalDocuments.forEach(physicalDoc -> {
-            // Vérification de la possibilité de livrer le document
-            if (workflowAccessHelper.canDocUnitBeDelivered(physicalDoc.getDocUnit().getIdentifier())) {
-                if (physicalDoc.getDigitalId() == null || physicalDoc.getDigitalId().isEmpty()) {
-                    final PhysicalDocumentDTO physicalDocDTO = PhysicalDocumentMapper.INSTANCE.physicalDocumentToPhysicalDocumentDTO(physicalDoc);
-                    physicalDocDTO.setCommentaire("Aucun radical n'est configuré sur le document");
-                    physicalDocDTO.setIdentifier(physicalDoc.getDocUnit().getPgcnId());
-                    preDeliveryDTO.addUndeliveredDigitalDocument(physicalDocDTO);
-                    LOG.info("Le document ayant pour PGCN id {} ne peut pas être livré (aucun radical n'est configuré)", physicalDoc.getDocUnit().getPgcnId());
+        transactionService.executeInNewTransaction(() -> {
+            final Set<PhysicalDocument> physicalDocuments = physicalDocumentRepository.findAllByLot(delivery.getLot().getIdentifier());
+            physicalDocuments.forEach(physicalDoc -> {
+                // Vérification de la possibilité de livrer le document
+                if (workflowAccessHelper.canDocUnitBeDelivered(physicalDoc.getDocUnit().getIdentifier())) {
+                    if (physicalDoc.getDigitalId() == null || physicalDoc.getDigitalId().isEmpty()) {
+                        final PhysicalDocumentDTO physicalDocDTO = PhysicalDocumentMapper.INSTANCE.physicalDocumentToPhysicalDocumentDTO(physicalDoc);
+                        physicalDocDTO.setCommentaire("Aucun radical n'est configuré sur le document");
+                        physicalDocDTO.setIdentifier(physicalDoc.getDocUnit().getPgcnId());
+                        preDeliveryDTO.addUndeliveredDigitalDocument(physicalDocDTO);
+                        LOG.info("Le document ayant pour PGCN id {} ne peut pas être livré (aucun radical n'est configuré)", physicalDoc.getDocUnit().getPgcnId());
+                    } else {
+                        final PrefixedDocuments prefixedDocs = new PrefixedDocuments();
+                        prefixedDocs.addPhysicalDocument(physicalDoc);
+                        documentsForPrefix.put(physicalDoc.getDigitalId(), prefixedDocs);
+                        LOG.trace("documentsForPrefix if: {}", documentsForPrefix);
+                    }
                 } else {
-                    final PrefixedDocuments prefixedDocs = new PrefixedDocuments();
-                    prefixedDocs.addPhysicalDocument(physicalDoc);
-                    documentsForPrefix.put(physicalDoc.getDigitalId(), prefixedDocs);
-                    LOG.trace("documentsForPrefix if: {}", documentsForPrefix);
+                    final PhysicalDocumentDTO physicalDocDTOWorkflow = PhysicalDocumentMapper.INSTANCE.physicalDocumentToPhysicalDocumentDTO(physicalDoc);
+                    physicalDocDTOWorkflow.setCommentaire("L'état du workflow du document ne correspond pas à la livraison");
+                    physicalDocDTOWorkflow.setIdentifier(physicalDoc.getDocUnit().getPgcnId());
+                    preDeliveryDTO.addUndeliveredDigitalDocument(physicalDocDTOWorkflow);
+                    LOG.info("Le document ayant pour préfixe {} ne peut pas être livré (workflow)", physicalDoc.getDigitalId());
                 }
-            } else {
-                final PhysicalDocumentDTO physicalDocDTOWorkflow = PhysicalDocumentMapper.INSTANCE.physicalDocumentToPhysicalDocumentDTO(physicalDoc);
-                physicalDocDTOWorkflow.setCommentaire("L'état du workflow du document ne correspond pas à la livraison");
-                physicalDocDTOWorkflow.setIdentifier(physicalDoc.getDocUnit().getPgcnId());
-                preDeliveryDTO.addUndeliveredDigitalDocument(physicalDocDTOWorkflow);
-                LOG.info("Le document ayant pour préfixe {} ne peut pas être livré (workflow)", physicalDoc.getDigitalId());
-            }
+            });
         });
 
         // Vérification de l'éventuel traitement en cours sur les documents
@@ -434,8 +436,8 @@ public class DeliveryProcessService {
         return documentsForPrefix;
     }
 
-    private DigitalDocumentDTO createDigitDocDTOFromDigitDoc(DigitalDocument dd, DigitalDocumentStatus status) {
-        DigitalDocumentDTO dto = new DigitalDocumentDTO();
+    private DigitalDocumentDTO createDigitDocDTOFromDigitDoc(final DigitalDocument dd, final DigitalDocumentStatus status) {
+        final DigitalDocumentDTO dto = new DigitalDocumentDTO();
         dto.setIdentifier(dd.getIdentifier());
         dto.setDigitalId(dd.getDigitalId());
         dto.setStatus(status.name());

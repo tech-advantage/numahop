@@ -226,7 +226,7 @@ public class ExportSipService {
             languageIso = defaultLang;
         } else {
             // transpose le language par celui indiqué dans la conf cines - "Codes lang à transposer" s'il y a lieu...
-            languageIso = cinesLanguageCodeService.getCinesLanguageByIdentifier(metaDc.getLanguage().get(0));
+            languageIso = cinesLanguageCodeService.getCinesLanguageByLangDC(metaDc.getLanguage().get(0));
         }
 
         // Proprietes avec plusieurs languages possibles

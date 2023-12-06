@@ -15,6 +15,9 @@ public class CinesLanguageCode extends AbstractDomainObject {
     @Column(name = "label")
     private String label;
 
+    @Column(name = "langDC")
+    private String langDC;
+
     /**
      * Etat
      */
@@ -37,4 +40,11 @@ public class CinesLanguageCode extends AbstractDomainObject {
         this.active = active;
     }
 
+    public String getlangDC() {
+        return langDC;
+    }
+
+    public void setlangDC(final String langDC) {
+        this.langDC = langDC;
+    }
 }

@@ -27,6 +27,8 @@ import fr.progilone.pgcn.service.storage.BinaryStorageManager;
 import fr.progilone.pgcn.service.storage.FileCleaningManager;
 import fr.progilone.pgcn.service.util.CryptoService;
 import fr.progilone.pgcn.service.util.ImageUtils;
+import fr.progilone.pgcn.service.util.transaction.TransactionService;
+import fr.progilone.pgcn.service.util.transaction.TransactionalJobRunner;
 import jakarta.annotation.PostConstruct;
 import jakarta.xml.bind.JAXBException;
 import java.io.*;
@@ -78,6 +80,8 @@ public class OmekaService {
     private final DocPropertyTypeService docPropertyTypeService;
     private final CryptoService cryptoService;
 
+    private final TransactionService transactionService;
+
     @Autowired
     public OmekaService(final LibraryService libraryService,
                         final OmekaConfigurationService omekaConfigurationService,
@@ -89,7 +93,8 @@ public class OmekaService {
                         final FileCleaningManager fileCleaningManager,
                         final MailService mailService,
                         final DocPropertyTypeService docPropertyTypeService,
-                        final CryptoService cryptoService) {
+                        final CryptoService cryptoService,
+                        final TransactionService transactionService) {
         this.libraryService = libraryService;
         this.omekaConfigurationService = omekaConfigurationService;
         this.bm = bm;
@@ -101,6 +106,7 @@ public class OmekaService {
         this.mailService = mailService;
         this.docPropertyTypeService = docPropertyTypeService;
         this.cryptoService = cryptoService;
+        this.transactionService = transactionService;
     }
 
     @PostConstruct
@@ -122,17 +128,30 @@ public class OmekaService {
      *
      * @return
      */
-    @Transactional(readOnly = true)
-    public List<DocUnit> findDocUnitsReadyForOmekaExport(final Library lib) {
+    public List<String> findDocUnitsReadyForOmekaExport(final Library lib) {
 
-        final List<DocUnit> docsToExport = new ArrayList<>();
+        final List<String> docsToExport = new ArrayList<>();
 
-        final List<DocUnit> distribuables = docUnitService.findByLibraryWithOmekaExportDep(lib.getIdentifier());
-        distribuables.stream().filter(doc -> {
-            return CollectionUtils.isNotEmpty(doc.getRecords()) && (doc.getWorkflow().getCurrentStateByKey(WorkflowStateKey.DIFFUSION_DOCUMENT_OMEKA) != null && doc.getWorkflow()
+        final List<String> distribuablesIds = docUnitService.findByLibraryWithOmekaExportDep(lib.getIdentifier());
+        TransactionalJobRunner<String> job = new TransactionalJobRunner<>(distribuablesIds, transactionService);
+
+        job.setCommit(1)
+           .setReadOnly(true)
+           .setElementName("Doc Unit (Export OMEKA " + lib.getName()
+                           + ")")
+           .forEach(id -> {
+               DocUnit doc = docUnitService.findOne(id);
+
+               if (CollectionUtils.isNotEmpty(doc.getRecords()) && (doc.getWorkflow().getCurrentStateByKey(WorkflowStateKey.DIFFUSION_DOCUMENT_OMEKA) != null && doc.getWorkflow()
                                                                                                                                                                     .getCurrentStateByKey(WorkflowStateKey.DIFFUSION_DOCUMENT_OMEKA)
-                                                                                                                                                                    .isCurrentState());
-        }).forEach(docsToExport::add);
+                                                                                                                                                                    .isCurrentState())) {
+                   docsToExport.add(doc.getIdentifier());
+               }
+
+               return true;
+           })
+           .process();
+
         LOG.debug("OMEKA :  " + docsToExport.size()
                   + " Docs recuperes pour l'export pour la bibliothèque {}",
                   lib.getName());

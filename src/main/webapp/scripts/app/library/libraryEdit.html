@@ -334,7 +334,7 @@
                                         </a>
                                     </div>
                                     <button type="button" class="btn btn-sem3 btn-xs" ng-click="deleteLogo(library)" sem-roles-allowed="LIB_HAB1, LIB_HAB2">
-                                        <span class="glyphicon-halflings glyphicon-trash"></span> Supprimer le logo
+                                        <span class="glyphicon-halflings glyphicon-trash"></span><span translate>Supprimer le logo</span>
                                     </button>
                                 </div>
                             </div>
@@ -356,7 +356,10 @@
                     <div class="column-bottom-button">
                         <!-- Création / Modification -->
                         <div class="btn-group">
-                            <button type="button" ng-disabled="libraryForm.$waiting" class="btn btn-sem4" ng-click="cancel()"><span class="glyphicon-regular unshare"></span> {{::'Annuler' | translate}}</button>
+                            <button type="button" ng-disabled="libraryForm.$waiting" class="btn btn-sem4" ng-click="cancel()">
+                                <span class="glyphicon-regular unshare"></span>
+                                {{::'Annuler' | translate}}
+                            </button>
                             <button type="submit" class="btn btn-sem2" sem-roles-allowed="LIB_HAB1, LIB_HAB2"><span class="glyphicon-regular floppy-save"></span> {{::'Enregistrer' | translate}}</button>
                         </div>
                     </div>

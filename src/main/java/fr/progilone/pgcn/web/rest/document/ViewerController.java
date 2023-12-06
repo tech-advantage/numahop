@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.tika.Tika;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -242,10 +243,12 @@ public class ViewerController extends AbstractRestController {
     @RolesAllowed(CHECK_HAB3)
     public ResponseEntity<?> getPdfMaster(final HttpServletRequest request, final HttpServletResponse response, @PathVariable final String identifier)
                                                                                                                                                        throws PgcnTechnicalException {
-        final File f = digitalDocumentService.getPdfMaster(identifier);
+        final Pair<String, File> master = digitalDocumentService.getPdfMaster(identifier);
+        final String filename = master.getLeft();
+        final File f = master.getRight();
         if (f != null) {
             try {
-                writeResponseForDownload(response, f, new Tika().detect(f), f.getName());
+                writeResponseForDownload(response, f, new Tika().detect(f), filename);
             } catch (final IOException e) {
                 throw new PgcnTechnicalException(e);
             }

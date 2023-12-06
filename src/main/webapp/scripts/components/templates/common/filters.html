@@ -84,7 +84,7 @@
                 <div class="filter-title">{{::'Prestataire' | translate}}</div>
                 <div class="filter-element">
                     <ui-select multiple ng-model="filters.providers" theme="select2" on-select="doFilter()" on-remove="doFilter()" class="form-control">
-                        <ui-select-match placeholder="{{::'Prestataires' | translate}}">{{$item.fullName}}</ui-select-match>
+                        <ui-select-match placeholder="{{::'Prestataires' | translate}}">{{$item.fullName}} </ui-select-match>
                         <ui-select-choices repeat="provider in options.providers | filter: $select.search track by provider.identifier">
                             <div ng-bind-html="provider.fullName | highlight: $select.search"></div>
                         </ui-select-choices>
@@ -96,9 +96,9 @@
                 <div class="filter-title">{{::'Statut' | translate}}</div>
                 <div class="filter-element">
                     <ui-select multiple ng-model="filters.wkf_statuses" theme="select2" on-select="doFilter()" on-remove="doFilter()" class="form-control">
-                        <ui-select-match placeholder="{{::'Statuts' | translate}}">{{$item.label}}</ui-select-match>
+                        <ui-select-match placeholder="{{::'Statuts' | translate}}">{{::$item.label | translate}} </ui-select-match>
                         <ui-select-choices repeat="status in options.statuses | filter: $select.search track by status.identifier">
-                            <div ng-bind-html="status.label | highlight: $select.search"></div>
+                            <div ng-bind-html="status.label | highlight: $select.search | translate"></div>
                         </ui-select-choices>
                     </ui-select>
                 </div>
@@ -108,9 +108,9 @@
                 <div class="filter-title">{{::'Statut' | translate}}</div>
                 <div class="filter-element">
                     <ui-select multiple ng-model="filters.statuses" theme="select2" on-select="doFilter()" on-remove="doFilter()" class="form-control">
-                        <ui-select-match placeholder="{{::'Statuts' | translate}}">{{$item.label}}</ui-select-match>
+                        <ui-select-match placeholder="{{::'Statuts' | translate}}">{{$item.label | translate}} </ui-select-match>
                         <ui-select-choices repeat="status in options.statuses | filter: $select.search track by status.identifier">
-                            <div ng-bind-html="status.label | highlight: $select.search"></div>
+                            <div ng-bind-html="status.label | highlight: $select.search | translate"></div>
                         </ui-select-choices>
                     </ui-select>
                 </div>
@@ -132,7 +132,7 @@
                 <div class="filter-title">{{::'Format de fichier' | translate}}</div>
                 <div class="filter-element">
                     <ui-select multiple ng-model="filters.fileFormat" theme="select2" on-select="doFilter()" on-remove="doFilter()" class="form-control">
-                        <ui-select-match placeholder="{{::'Format de fichier' | translate}}">{{$item.label}}</ui-select-match>
+                        <ui-select-match placeholder="{{::'Format de fichier' | translate}}">{{$item.label}} </ui-select-match>
                         <ui-select-choices repeat="fileFormat in options.fileFormat | filter: $select.search track by fileFormat.identifier">
                             <div ng-bind-html="fileFormat.label | highlight: $select.search"></div>
                         </ui-select-choices>
@@ -241,7 +241,7 @@
             <div class="filter-block" ng-show="FilterCtrl.isAvailable(listFilters.inactive_filter)">
                 <div class="checkbox checkbox-sid-main">
                     <input id="filterInactive" type="checkbox" ng-model="filters.inactive" ng-change="doFilter()" />
-                    <label for="filterInactive" translate>{{filterLabels.inactive}}</label>
+                    <label for="filterInactive">{{filterLabels.inactive | translate}}</label>
                 </div>
             </div>
             <!-- Statut d'archivage -->

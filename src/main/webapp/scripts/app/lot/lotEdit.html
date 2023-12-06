@@ -54,7 +54,7 @@
                             <a ng-click="!(!loaded || !lot || !lot.identifier) && delete(lot)"> <span class="glyphicon-halflings glyphicon-trash"></span> {{ ::'Supprimer' | translate }} </a>
                         </li>
                         <li ng-if="lot.status == 'CREATED' && docUnits.length > 0">
-                            <a ng-click="validateLot(lot)"> <span class="glyphicon-halflings glyphicon-check"></span>{{ ::' Démarrer le workflow' | translate }} </a>
+                            <a ng-click="validateLot(lot)"> <span class="glyphicon-halflings glyphicon-check"></span>&nbsp;{{ ::'Démarrer le workflow' | translate }} </a>
                         </li>
                         <li role="separator" class="divider" ng-show="!lotForm.$visible" sem-roles-allowed="LOT_HAB2"></li>
                         <li>
@@ -562,7 +562,10 @@
                     <div class="column-bottom-button">
                         <!-- Création / Modification -->
                         <div class="btn-group">
-                            <button type="button" ng-disabled="lotForm.$waiting" class="btn btn-sem4" ng-click="cancel()"><span class="glyphicon-regular unshare"></span> {{::'Annuler' | translate}}</button>
+                            <button type="button" ng-disabled="lotForm.$waiting" class="btn btn-sem4" ng-click="cancel()">
+                                <span class="glyphicon-regular unshare"></span>
+                                {{::'Annuler' | translate}}
+                            </button>
                             <button type="submit" class="btn btn-sem2" sem-roles-allowed="LOT_HAB0, LOT_HAB1"><span class="glyphicon-regular floppy-save"></span> {{::'Enregistrer' | translate}}</button>
                         </div>
                     </div>

@@ -1,11 +1,7 @@
 package fr.progilone.pgcn.service.document;
 
-import fr.progilone.pgcn.domain.document.BibliographicRecord;
-import fr.progilone.pgcn.domain.document.DocSibling;
-import fr.progilone.pgcn.domain.document.DocUnit;
+import fr.progilone.pgcn.domain.document.*;
 import fr.progilone.pgcn.domain.document.DocUnit.State;
-import fr.progilone.pgcn.domain.document.DocUnit_;
-import fr.progilone.pgcn.domain.document.PhysicalDocument;
 import fr.progilone.pgcn.domain.dto.document.DocUnitDeletedReportDTO;
 import fr.progilone.pgcn.domain.dto.document.SummaryDocUnitDTO;
 import fr.progilone.pgcn.domain.lot.Lot;
@@ -33,13 +29,7 @@ import fr.progilone.pgcn.service.exchange.internetarchive.ui.UIInternetArchiveRe
 import fr.progilone.pgcn.service.util.SortUtils;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -717,12 +707,12 @@ public class DocUnitService {
     }
 
     @Transactional(readOnly = true)
-    public List<DocUnit> findByLibraryWithCinesExportDep(final String libraryId) {
-        return docUnitRepository.findByLibraryWithCinesExportDep(libraryId);
+    public List<String> findDocUnitByLibraryForCinesExport(final String libraryId) {
+        return docUnitRepository.findDocUnitByLibraryForCinesExport(libraryId);
     }
 
     @Transactional(readOnly = true)
-    public List<DocUnit> findByLibraryWithOmekaExportDep(final String libraryId) {
+    public List<String> findByLibraryWithOmekaExportDep(final String libraryId) {
         return docUnitRepository.findByLibraryWithOmekaExportDep(libraryId);
     }
 

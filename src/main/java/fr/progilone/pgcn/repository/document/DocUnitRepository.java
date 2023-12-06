@@ -176,27 +176,15 @@ public interface DocUnitRepository extends JpaRepository<DocUnit, String>, DocUn
            + "where d.identifier = ?1")
     DocUnit findOneWithExportDependencies(String identifier);
 
-    @Query("select distinct d from DocUnit d " + "left join fetch d.parent parent "
-           + "left join fetch d.library lib "
-           + "left join fetch d.exportData ed "
-           + "left join fetch ed.properties "
-           + "left join fetch d.records r "
-           + "left join fetch r.properties p "
-           + "left join fetch p.type "
-           + "left join fetch d.workflow w "
+    @Query("select distinct d.identifier from DocUnit d " + "left join d.workflow w "
            + "where d.archivable = true and w != null "
-           + "and lib.identifier in ?1")
-    List<DocUnit> findByLibraryWithCinesExportDep(String libraryId);
+           + "and d.library.identifier = ?1")
+    List<String> findDocUnitByLibraryForCinesExport(String libraryId);
 
-    @Query("select distinct d from DocUnit d " + "left join fetch d.parent parent "
-           + "left join fetch d.library lib "
-           + "left join fetch d.records r "
-           + "left join fetch r.properties p "
-           + "left join fetch p.type "
-           + "left join fetch d.workflow w "
+    @Query("select distinct d.identifier from DocUnit d " + "left join d.workflow w "
            + "where d.distributable = true and w != null "
-           + "and lib.identifier in ?1")
-    List<DocUnit> findByLibraryWithOmekaExportDep(String libraryId);
+           + "and d.library.identifier in ?1")
+    List<String> findByLibraryWithOmekaExportDep(String libraryId);
 
     @Query("select distinct d from DocUnit d " + "left join fetch d.library lib "
            + "left join fetch d.records r "

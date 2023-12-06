@@ -30,14 +30,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +47,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class SlipService {
 
+    public static final String PGCN_ID = "pgcnId";
     private static final Logger LOG = LoggerFactory.getLogger(SlipService.class);
 
     private final DeliveryService deliveryService;
@@ -132,9 +126,8 @@ public class SlipService {
             // Entête
             writeHeader(csvWriter, slipConfig);
             final List<Map<String, String>> lines = (List<Map<String, String>>) params.get("slipLines");
-            lines.forEach(line -> {
-                writeBody(csvWriter, line, slipConfig);
-            });
+            final List<Map<String, String>> sortedLines = lines.stream().sorted(Comparator.comparing(l -> l.get(PGCN_ID))).toList();
+            sortedLines.forEach(line -> writeBody(csvWriter, line, slipConfig));
         }
     }
 
@@ -174,7 +167,7 @@ public class SlipService {
     private void writeBody(final CSVWriter csvWriter, final Map<String, String> slipLine, final Optional<CheckSlipConfiguration> slipConfig) {
         final List<String> line = new ArrayList<>();
         if (!slipConfig.isPresent() || slipConfig.get().isPgcnId()) {
-            line.add(slipLine.get("pgcnId"));
+            line.add(slipLine.get(PGCN_ID));
         }
         if (!slipConfig.isPresent() || slipConfig.get().isTitle()) {
             line.add(slipLine.get("title"));
@@ -346,9 +339,14 @@ public class SlipService {
         }
         final Map<String, Object> params = getSlipParams(delivery, config, true, logo);
         final List<Map<String, String>> lines = (List<Map<String, String>>) params.remove("slipLines");
-
+        final List<Map<String, String>> sortedLines = lines.stream().sorted(Comparator.comparing(l -> l.get(PGCN_ID))).toList();
         try {
-            jasperReportService.exportReportToStream(JasperReportsService.REPORT_CHECK_SLIP, JasperReportsService.ExportType.PDF, params, lines, out, library.getIdentifier());
+            jasperReportService.exportReportToStream(JasperReportsService.REPORT_CHECK_SLIP,
+                                                     JasperReportsService.ExportType.PDF,
+                                                     params,
+                                                     sortedLines,
+                                                     out,
+                                                     library.getIdentifier());
         } catch (final PgcnException e) {
             LOG.error("Erreur a la generation du bordereau de livraison: {}", e.getLocalizedMessage());
             throw new PgcnTechnicalException(e);
@@ -402,7 +400,7 @@ public class SlipService {
 
                 final Map<String, String> line = new HashMap<>();
                 if (!config.isPresent() || config.get().isPgcnId()) {
-                    line.put("pgcnId", sLine.getPgcnId());
+                    line.put(PGCN_ID, sLine.getPgcnId());
                 }
                 if (!config.isPresent() || config.get().isTitle()) {
                     line.put("title", sLine.getTitle());
@@ -517,7 +515,7 @@ public class SlipService {
                     .filter(sLine -> StringUtils.equals(delivDoc.getDigitalDocument().getDocUnit().getPgcnId(), sLine.getPgcnId()))
                     .forEach(sLine -> {
 
-                        line.put("pgcnId", sLine.getPgcnId());
+                        line.put(PGCN_ID, sLine.getPgcnId());
                         line.put("title", sLine.getTitle());
                         if (StringUtils.isBlank(sLine.getStatus())) {
                             line.put("status", getStatusForReport(delivDoc.getStatus()));

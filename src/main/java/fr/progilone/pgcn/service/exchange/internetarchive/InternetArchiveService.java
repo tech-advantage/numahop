@@ -486,18 +486,13 @@ public class InternetArchiveService {
                     LOG.info("Export => Internet Archive: {} fichiers traités", cpt);
                 }
                 try (final FileInputStream in = new FileInputStream(file)) {
-                    metadata.setContentLength(in.available());
-                    if (file.length() != in.available()) {
-                        LOG.info("Attention: difference file.length : {} vs input stream available : {}", file.length(), metadata.getContentLength());
-                    }
+                    metadata.setContentLength(file.length());
                     final PutObjectRequest por = new PutObjectRequest(item.getArchiveIdentifier(), sfName, in, metadata);
                     try {
-
                         s3Client.putObject(por);
                     } catch (final AmazonServiceException ase) {
                         // cas particulier erreur 503 SlowDown => on pause 30sec et on re essaie 1 fois....
                         if (ase.getStatusCode() == 503 && StringUtils.contains(ase.getErrorCode(), "SlowDown")) {
-
                             LOG.error("Caught AmazonServiceException 503 : SlowDown - retries to put file {} in {} seconds", sfName, TIME_SECONDS_BEFORE_RETRY);
                             try {
                                 TimeUnit.SECONDS.sleep(TIME_SECONDS_BEFORE_RETRY);
@@ -508,8 +503,8 @@ public class InternetArchiveService {
                             // tentative 2 apres 1 pause
                             s3Client.putObject(por);
                             LOG.info("{} put successfully in S3 after retry", sfName);
-
                         } else {
+                            LOG.error("Erreur lors de l'appel à InternetArchive : bucket = [{}], key = [{}]", item.getArchiveIdentifier(), sfName);
                             throw ase;
                         }
                     }

@@ -64,7 +64,7 @@
 
         $scope.addCodeLang = function () {
             var newCodeLang = {
-                identifier: '',
+                langDC: '',
                 label: '',
             };
             if ($scope.cinesLangCodes) {

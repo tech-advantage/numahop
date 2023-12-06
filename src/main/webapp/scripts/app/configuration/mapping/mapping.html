@@ -13,7 +13,7 @@
                         </button>
                         <ul class="dropdown-menu dropdown-menu-left" uib-dropdown-menu role="menu">
                             <li role="menuitem">
-                                <a ng-click="mainCtrl.importNewMapping()">Nouveau mapping</a>
+                                <a ng-click="mainCtrl.importNewMapping()" translate>Nouveau mapping</a>
                             </li>
                             <li role="menuitem" ng-show="mainCtrl.editedMapping.identifier">
                                 <a ng-click="mainCtrl.importMapping(mainCtrl.editedMapping)">Mapping {{mainCtrl.editedMapping.label}}</a>

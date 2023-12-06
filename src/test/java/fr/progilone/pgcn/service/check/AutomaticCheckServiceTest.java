@@ -1,9 +1,8 @@
 package fr.progilone.pgcn.service.check;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 import fr.progilone.pgcn.domain.check.AutomaticCheckResult;
 import fr.progilone.pgcn.domain.check.AutomaticCheckResult.AutoCheckResult;
@@ -16,6 +15,7 @@ import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.dto.check.AutomaticCheckTypeDTO;
 import fr.progilone.pgcn.domain.dto.check.SplitFilename;
 import fr.progilone.pgcn.domain.dto.checkconfiguration.AutomaticCheckRuleDTO;
+import fr.progilone.pgcn.domain.jaxb.facile.ValidatorType;
 import fr.progilone.pgcn.domain.storage.StoredFile;
 import fr.progilone.pgcn.domain.storage.StoredFile.StoredFileType;
 import fr.progilone.pgcn.repository.check.AutomaticCheckResultRepository;
@@ -28,13 +28,17 @@ import fr.progilone.pgcn.service.storage.BinaryStorageManager;
 import fr.progilone.pgcn.service.storage.ImageMagickService;
 import fr.progilone.pgcn.web.websocket.WebsocketService;
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.util.ReflectionTestUtils;
 
 /**
  * Created by Jonathan on 10/02/2017.
@@ -42,7 +46,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 @ExtendWith(MockitoExtension.class)
 public class AutomaticCheckServiceTest {
 
-    private static final String FACILE_TEST_URL = "https://facile.cines.fr/xml";
     private static final String RESOURCE_FOLDER = "src/test/resources/facile";
     private static final String PAGE_1 = "BSG_DELTA_0001.png";
     private static final String PAGE_2 = "BSG_DELTA_0002.png";
@@ -54,23 +57,21 @@ public class AutomaticCheckServiceTest {
     private AutomaticCheckResultRepository checkResultRepository;
     @Mock
     private BinaryStorageManager bm;
-
     @Mock
     private ImageMagickService imageMagickService;
-
     @Mock
     private WebsocketService websocketService;
     @Mock
     private ImageMetadataValuesRepository imageMetadataValuesRepository;
-
+    @Mock
     private FacileCinesService facileService;
+    @Mock
     private MetaDatasCheckService metaCheckService;
+    @Mock
     private DigitalDocumentService digitalDocumentService;
 
     @BeforeEach
     public void setUp() {
-        facileService = new FacileCinesService();
-        ReflectionTestUtils.setField(facileService, "facileApiUrl", FACILE_TEST_URL);
         service = new AutomaticCheckService(checkTypeRepository,
                                             checkResultRepository,
                                             facileService,
@@ -293,6 +294,9 @@ public class AutomaticCheckServiceTest {
                     return file2;
             }
         });
+        final ValidatorType vt = new ValidatorType();
+        vt.setValid(true);
+        when(facileService.checkFileAgainstFacile(file1)).thenReturn(vt);
 
         final List<AutomaticCheckResult> results = service.check(checkList, doc, "fake_lib");
         assertEquals(1, results.size());

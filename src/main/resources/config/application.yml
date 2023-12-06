@@ -45,7 +45,7 @@ async:
 spring:
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
-        url: jdbc:mariadb://localhost:3306/scpo_prod?cachePrepStmts=true&prepStmtCacheSize=250&prepStmtCacheSqlLimit=2048&useServerPrepStmts=true&characterEncoding=utf8&useUnicode=true
+        url: jdbc:mariadb://localhost:3306/pgcn?cachePrepStmts=true&prepStmtCacheSize=250&prepStmtCacheSqlLimit=2048&useServerPrepStmts=true&characterEncoding=utf8&useUnicode=true
         username:
         password:
         hikari:

@@ -440,7 +440,9 @@ public class FileCleaningManager {
             final BibliographicRecord record = docUnit.getRecords().iterator().next();
             final BibliographicRecordDcDTO noticeDto = uiBibliographicRecordService.getOneDc(record.getIdentifier());
 
-            final Path metsPath = Files.createFile(dest.resolve(MetaDatasCheckService.METS_XML_FILE));
+            final Path metsPath = dest.resolve(MetaDatasCheckService.METS_XML_FILE);
+            if (!Files.exists(metsPath))
+                Files.createFile(metsPath);
 
             final List<CheckSummedStoredFile> checkSums = new ArrayList<>();
             masters.stream().filter(sf -> sf.getPage().getNumber() != null).forEach(sf -> {

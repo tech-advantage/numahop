@@ -10,4 +10,5 @@ public interface CinesLanguageCodeRepository extends JpaRepository<CinesLanguage
 
     CinesLanguageCode findOneByIdentifier(String identifier);
 
+    CinesLanguageCode findOneByLangDC(String langDC);
 }

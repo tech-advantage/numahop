@@ -67,7 +67,7 @@
                     <ui-select multiple ng-model="mainCtrl.filters.wkf_statuses" theme="select2" on-select="mainCtrl.search()" on-remove="mainCtrl.search()" class="form-control">
                         <ui-select-match placeholder="{{::'Statut' | translate}}">{{$item.label}}</ui-select-match>
                         <ui-select-choices repeat="option in mainCtrl.options.statuses | filter: $select.search track by option.identifier">
-                            <div ng-bind-html="option.label | highlight: $select.search"></div>
+                            <div ng-bind-html="option.label | highlight: $select.search | translate"></div>
                         </ui-select-choices>
                     </ui-select>
                 </div>
@@ -104,7 +104,7 @@
             <div class="filter-block" ng-show="FilterCtrl.isAvailable(mainCtrl.listFilters.archive_filter)">
                 <div class="checkbox checkbox-sid-main">
                     <input id="filterHasDigitalDocuments" type="checkbox" ng-model="mainCtrl.filters.hasDigitalDocuments" ng-change="mainCtrl.search()" />
-                    <label for="filterHasDigitalDocuments" translate>Voir uniquement les Unités Documentaires avec des documents numériques</label>
+                    <label for="filterHasDigitalDocuments">{{ 'Voir uniquement les Unités Documentaires avec des documents numériques' | translate}}</label>
                 </div>
             </div>
             <!-- Inactifs -->

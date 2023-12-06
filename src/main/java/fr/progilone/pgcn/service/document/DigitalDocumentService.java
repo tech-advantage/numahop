@@ -38,6 +38,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -166,10 +167,10 @@ public class DigitalDocumentService {
      * @return
      */
     @Transactional(readOnly = true)
-    public File getPdfMaster(final String identifier) {
+    public Pair<String, File> getPdfMaster(final String identifier) {
         final DocPage dp = getPdfPage(identifier);
         final StoredFile sf = binaryRepository.getOneByPageIdentifierAndFileFormat(dp.getIdentifier(), ViewsFormatConfiguration.FileFormat.MASTER);
-        return bm.getFileForStoredFile(sf, dp.getDigitalDocument().getDocUnit().getLibrary().getIdentifier());
+        return Pair.of(sf.getFilename(), bm.getFileForStoredFile(sf, dp.getDigitalDocument().getDocUnit().getLibrary().getIdentifier()));
     }
 
     /**

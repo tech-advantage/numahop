@@ -51,18 +51,22 @@
 
             reqPromise
                 .then(function (exportParams) {
-                    //FIXME Use a service instead of $http directly in controller
-                    $http
-                        .get(DOCUNIT_URL + $httpParamSerializer(exportParams), { responseType: 'arraybuffer' })
-                        .then(function (response) {
-                            var headers = response.headers;
-                            saveExport(response, headers('content-type'), exportParams.export_ftp, exportConfig.pgcnId);
-                            deferred.resolve();
-                        })
-                        .catch(function (err) {
-                            MessageSrvc.addWarn(gettext("L'export FTP est terminé mais une ou plusieurs unités documentaires sont en erreurs."));
-                            return deferred.reject(err);
-                        });
+                    if (exportParams.export_ftp) {
+                        $http
+                            .get(DOCUNIT_URL + $httpParamSerializer(exportParams), { responseType: 'arraybuffer' })
+                            .then(function (response) {
+                                MessageSrvc.addSuccess(gettext('[' + (exportConfig.pgcnId || '') + "] L'export FTP est en cours"));
+                                deferred.resolve();
+                            })
+                            .catch(function (err) {
+                                MessageSrvc.addWarn(gettext("L'export FTP est terminé mais une ou plusieurs unités documentaires sont en erreurs."));
+                                return deferred.reject(err);
+                            });
+                    } else {
+                        exportParams.pgcnId = exportConfig.pgcnId;
+                        window.open(DOCUNIT_URL + $httpParamSerializer(exportParams), '_parent', '');
+                        deferred.resolve();
+                    }
                 })
                 .catch(function (err) {
                     return deferred.reject(err);
@@ -155,25 +159,6 @@
                 exports.ftpExport = 'true';
             }
             return buildParams(docUnitId, exports);
-        }
-
-        /**
-         * Sauvegarde du fichier d'export
-         *
-         * @param response la réponse de la requête de l'export
-         * @param contentType le type de contenu de la réponse
-         * @param ftpExport mode ftp
-         * @param pgcnId identifiant pgcn
-         */
-        function saveExport(response, contentType, ftpExport, pgcnId) {
-            if (ftpExport) {
-                MessageSrvc.addSuccess(gettext('[' + (pgcnId || '') + "] L'export FTP est en cours"));
-            } else {
-                const PGCN_NAME = pgcnId ? '_' + pgcnId : '';
-                var filename = DateUtils.getFormattedDateYearMonthDayHourMinSec(new Date()) + PGCN_NAME + '_export.zip';
-                var blob = new Blob([response.data], { type: contentType });
-                FileSaver.saveAs(blob, filename);
-            }
         }
 
         return service;

@@ -87,6 +87,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ConditionReportService {
 
+    public static final String PGCN_ID = "pgcnId";
     private static final Logger LOG = LoggerFactory.getLogger(ConditionReportService.class);
     private static final String DEFAULT_THUMBNAIL = "images/empty.png";
 
@@ -570,7 +571,8 @@ public class ConditionReportService {
     public void writeSlipDocUnitsPDF(final OutputStream out, final Collection<DocUnit> docUnits, final String docTitle) throws PgcnTechnicalException {
         final List<String> details = new ArrayList<>();
 
-        for (final DocUnit docUnit : docUnits) {
+        List<DocUnit> sortedDocUnits = docUnits.stream().sorted(Comparator.comparing(DocUnit::getPgcnId)).toList();
+        for (final DocUnit docUnit : sortedDocUnits) {
             final ConditionReport report = findByDocUnit(docUnit.getIdentifier());
             conditionReportDetailService.getLatest(report).ifPresent(detail -> details.add(detail.getIdentifier()));
         }
@@ -580,7 +582,8 @@ public class ConditionReportService {
     public void writeSlipDocUnitsCSV(final ServletOutputStream outputStream, final Set<DocUnit> docUnits, final String encoding, final char separator) throws IOException {
         final List<String> details = new ArrayList<>();
 
-        for (final DocUnit docUnit : docUnits) {
+        List<DocUnit> sortedDocUnits = docUnits.stream().sorted(Comparator.comparing(DocUnit::getPgcnId)).toList();
+        for (final DocUnit docUnit : sortedDocUnits) {
             final ConditionReport report = findByDocUnit(docUnit.getIdentifier());
             conditionReportDetailService.getLatest(report).ifPresent(detail -> details.add(detail.getIdentifier()));
         }
@@ -630,12 +633,13 @@ public class ConditionReportService {
                                          : true);
 
         final List<Map<String, String>> lines = (List<Map<String, String>>) params.get("slipLines");
+        final List<Map<String, String>> sortedLines = lines.stream().sorted(Comparator.comparing(l -> l.get(PGCN_ID))).toList();
 
         try {
             jasperReportService.exportReportToStream(JasperReportsService.REPORT_CONDREPORT_SLIP,
                                                      JasperReportsService.ExportType.PDF,
                                                      paramsMap,
-                                                     lines,
+                                                     sortedLines,
                                                      out,
                                                      library.getIdentifier());
         } catch (final PgcnException e) {
@@ -656,7 +660,7 @@ public class ConditionReportService {
             final Map<String, String> line = new HashMap<>();
             if (config.isPresent()) {
                 if (config.get().isPgcnId()) {
-                    line.put("pgcnId", detail.getReport().getDocUnit().getPgcnId());
+                    line.put(PGCN_ID, detail.getReport().getDocUnit().getPgcnId());
                 }
                 if (config.get().isTitle()) {
                     line.put("title", detail.getReport().getDocUnit().getLabel());
@@ -669,7 +673,7 @@ public class ConditionReportService {
                 }
 
             } else {
-                line.put("pgcnId", detail.getReport().getDocUnit().getPgcnId());
+                line.put(PGCN_ID, detail.getReport().getDocUnit().getPgcnId());
                 line.put("title", detail.getReport().getDocUnit().getLabel());
                 line.put("nbPages", String.valueOf(detail.getNbViewTotal()));
                 line.put("summary", writeSummary(detail));
@@ -689,8 +693,8 @@ public class ConditionReportService {
     @Transactional(readOnly = true)
     public void writeSlip(final OutputStream out, final List<String> reportIds, final String encoding, final char separator) throws IOException {
         final List<ConditionReportDetail> reports = conditionReportDetailService.findByIdentifierIn(reportIds);
-
-        writeCSV(out, reports, encoding, separator);
+        final List<ConditionReportDetail> sortedReports = reports.stream().sorted(Comparator.comparing(r -> r.getReport().getDocUnit().getPgcnId())).toList();
+        writeCSV(out, sortedReports, encoding, separator);
     }
 
     /**

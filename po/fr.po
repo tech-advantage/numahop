@@ -468,9 +468,8 @@ msgstr "Ajouter une unité documentaire fille existante"
 msgid "Ajouter une unité documentaire parente"
 msgstr "Ajouter une unité documentaire parente"
 
-#: src/main/webapp/scripts/components/message/codeSrvc.js:8
 msgid "Anglais"
-msgstr "Anglais"
+msgstr "English"
 
 #: src/main/webapp/scripts/app/project/projects.html:63
 msgid "Année de début du projet"

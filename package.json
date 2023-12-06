@@ -9,8 +9,7 @@
         "prepare": "husky install",
         "prettier:check": "prettier --check \"{,src/**/,webpack/}*.{md,json,yml,html,cjs,mjs,js,ts,tsx,css,scss,xml}\"",
         "prettier:format": "prettier --write \"{,src/**/,webpack/}*.{md,json,yml,html,cjs,mjs,js,ts,tsx,css,scss,xml}\"",
-        "start": "grunt server --force",
-        "start-dist": "grunt server:dist",
+        "start": "grunt server",
         "test": "grunt test"
     },
     "dependencies": {
@@ -85,7 +84,7 @@
         "grunt-babel": "8.0.0",
         "grunt-browser-sync": "2.2.0",
         "grunt-build-control": "0.7.1",
-        "grunt-check-dependencies": "0.11.2",
+        "grunt-check-dependencies": "1.0.0",
         "grunt-cli": "1.4.3",
         "grunt-concurrent": "3.0.0",
         "grunt-connect-proxy": "0.2.0",
@@ -103,7 +102,6 @@
         "grunt-dart-sass": "2.0.1",
         "grunt-dev-update": "2.3.0",
         "grunt-filerev": "2.3.1",
-        "grunt-karma": "4.0.2",
         "grunt-manifest": "0.4.4",
         "grunt-ng-annotate": "1.0.1",
         "grunt-ng-constant": "2.0.3",

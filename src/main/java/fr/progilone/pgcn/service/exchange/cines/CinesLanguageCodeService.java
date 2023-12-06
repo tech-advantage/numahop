@@ -41,4 +41,10 @@ public class CinesLanguageCodeService {
                                  : langCode.getLabel());
     }
 
+    @Transactional(readOnly = true)
+    public String getCinesLanguageByLangDC(final String langDC) {
+        final CinesLanguageCode langCode = repository.findOneByLangDC(langDC);
+        return (langCode == null ? langDC
+                                 : langCode.getLabel());
+    }
 }

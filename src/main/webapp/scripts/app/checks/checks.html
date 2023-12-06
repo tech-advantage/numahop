@@ -24,9 +24,9 @@
                     <div class="filter-title">{{::'Statut' | translate}}</div>
                     <div class="filter-element">
                         <ui-select multiple ng-model="mainCtrl.filters.statuses" theme="select2" on-select="mainCtrl.search()" on-remove="mainCtrl.search()" class="form-control">
-                            <ui-select-match placeholder="{{::'Statut' | translate}}"> {{mainCtrl.codes['digitalDocument.' + $item]}} </ui-select-match>
+                            <ui-select-match placeholder="{{::'Statut' | translate}}"> {{mainCtrl.codes['digitalDocument.' + $item] | translate}} </ui-select-match>
                             <ui-select-choices repeat="option in mainCtrl.options.statuses | filter: $select.search track by option">
-                                <div ng-bind-html="mainCtrl.codes['digitalDocument.'+option] | highlight: $select.search"></div>
+                                <div ng-bind-html="mainCtrl.codes['digitalDocument.'+option] | highlight: $select.search | translate"></div>
                             </ui-select-choices>
                         </ui-select>
                     </div>
@@ -352,7 +352,9 @@
             <!-- Panneau principal -->
             <div class="panel-body">
                 <div class="well well-sm">
-                    <div ng-show="!mainCtrl.pagination.busy && mainCtrl.pagination.items.length === 0" translate>Aucun document numérique trouvé</div>
+                    <div ng-show="!mainCtrl.pagination.busy && mainCtrl.pagination.items.length === 0">
+                        <span translate>Aucun document numérique trouvé</span>
+                    </div>
                     <div ng-show="!mainCtrl.pagination.busy && mainCtrl.pagination.items.length > 0" translate translate-n="mainCtrl.pagination.totalItems" translate-plural="{{$count}} documents numériques trouvés">
                         1 document numérique trouvé
                     </div>

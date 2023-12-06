@@ -5,9 +5,9 @@
 // Généré le : 2017.01.03 à 11:16:35 AM CET
 //
 
-@jakarta.xml.bind.annotation.XmlSchema(namespace = "http://www.cines.fr/pac/test/aip",
+@jakarta.xml.bind.annotation.XmlSchema(namespace = "http://www.cines.fr/pac/aip",
                                        elementFormDefault = jakarta.xml.bind.annotation.XmlNsForm.QUALIFIED,
-                                       xmlns = {@jakarta.xml.bind.annotation.XmlNs(namespaceURI = "http://www.cines.fr/pac/test/aip", prefix = "")})
+                                       xmlns = {@jakarta.xml.bind.annotation.XmlNs(namespaceURI = "http://www.cines.fr/pac/aip", prefix = "")})
 @XmlJavaTypeAdapter(value = LocalDateTimeXmlAdapter.class, type = LocalDateTime.class)
 package fr.progilone.pgcn.domain.jaxb.aip;
 

@@ -68,7 +68,7 @@
             docStates: {
                 data: [{ identifier: 'AVAILABLE' }, { identifier: 'NOT_AVAILABLE' }, { identifier: 'DELETED' }],
                 text: function (status) {
-                    return codeSrvc['import.DocUnit.State.' + status.identifier] || status.identifier;
+                    return gettextCatalog.getString(codeSrvc['import.DocUnit.State.' + status.identifier]) || status.identifier;
                 },
                 placeholder: gettextCatalog.getString("Statut de l'unité documentaire"),
                 'allow-clear': true,
@@ -441,7 +441,12 @@
 
         /** Chargement de la liste de mappings */
         function loadMappings() {
-            var result = editCtrl.isSuperAdmin ? MappingSrvc.query({ usable: true }) : MappingSrvc.query({ usable: true, library: editCtrl.library.identifier });
+            var result = editCtrl.isSuperAdmin
+                ? MappingSrvc.query({ usable: true })
+                : MappingSrvc.query({
+                      usable: true,
+                      library: editCtrl.library.identifier,
+                  });
 
             return result.$promise.then(function (data) {
                 editCtrl.options.mappingEAD.data = getMappings(data, 'EAD');
@@ -461,7 +466,12 @@
         }
 
         function loadCSVMappings() {
-            var result = editCtrl.isSuperAdmin ? CSVMappingSrvc.query({ usable: true }) : CSVMappingSrvc.query({ usable: true, library: editCtrl.library.identifier });
+            var result = editCtrl.isSuperAdmin
+                ? CSVMappingSrvc.query({ usable: true })
+                : CSVMappingSrvc.query({
+                      usable: true,
+                      library: editCtrl.library.identifier,
+                  });
 
             editCtrl.options.mappingCSV.data = result;
             return result.$promise.then(function (data) {
@@ -886,7 +896,10 @@
         function hasImportFile(report, file) {
             if (report.identifier) {
                 if (angular.isUndefined(editCtrl.cache.hasImportFiles[report.identifier])) {
-                    editCtrl.cache.hasImportFiles[report.identifier] = ImportReportSrvc.get({ id: report.identifier, hasfile: true }).$promise.then(function (data) {
+                    editCtrl.cache.hasImportFiles[report.identifier] = ImportReportSrvc.get({
+                        id: report.identifier,
+                        hasfile: true,
+                    }).$promise.then(function (data) {
                         editCtrl.cache.hasImportFiles[report.identifier] = data;
                         return data;
                     });

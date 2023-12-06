@@ -1,12 +1,7 @@
 package fr.progilone.pgcn.service.exchange.cines;
 
 import fr.progilone.pgcn.domain.administration.SftpConfiguration;
-import fr.progilone.pgcn.domain.document.BibliographicRecord;
-import fr.progilone.pgcn.domain.document.DocPage;
-import fr.progilone.pgcn.domain.document.DocPropertyType;
-import fr.progilone.pgcn.domain.document.DocUnit;
-import fr.progilone.pgcn.domain.document.ExportData;
-import fr.progilone.pgcn.domain.document.ExportProperty;
+import fr.progilone.pgcn.domain.document.*;
 import fr.progilone.pgcn.domain.dto.document.BibliographicRecordDcDTO;
 import fr.progilone.pgcn.domain.dto.document.DocPropertyDTO;
 import fr.progilone.pgcn.domain.exchange.cines.CinesReport;
@@ -36,30 +31,19 @@ import fr.progilone.pgcn.service.storage.FileStorageManager;
 import fr.progilone.pgcn.service.util.FileUtils.CheckSumType;
 import fr.progilone.pgcn.service.util.TarUtils;
 import fr.progilone.pgcn.service.util.transaction.TransactionService;
+import fr.progilone.pgcn.service.util.transaction.TransactionalJobRunner;
 import fr.progilone.pgcn.web.util.LibraryAccesssHelper;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.MarshalException;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.UncheckedIOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -702,31 +686,42 @@ public class ExportCinesService {
     /**
      * Retrouve les docUnit candidates pour l'export vers CINES.
      */
-    @Transactional(readOnly = true)
     public List<String> findDocUnitsReadyForCinesExport() {
 
-        final List<DocUnit> docsToExport = new ArrayList<>();
+        final List<String> docsToExport = new ArrayList<>();
 
         final List<Library> libraries = libraryService.findAllByActive(true);
         libraries.stream().filter(lib -> CollectionUtils.isNotEmpty(sftpConfigurationService.findByLibrary(lib, true))).forEach(lib -> {
 
-            final List<DocUnit> archivables = docUnitService.findByLibraryWithCinesExportDep(lib.getIdentifier());
-            archivables.stream().filter(doc -> {
-                final boolean notArchived = cinesReportService.findByDocUnit(doc.getIdentifier())
-                                                              .stream()
-                                                              .filter(cr -> CinesReport.Status.ARCHIVED == cr.getStatus() || CinesReport.Status.AR_RECEIVED == cr.getStatus()
-                                                                            || CinesReport.Status.SENT == cr.getStatus())
-                                                              .collect(Collectors.toList())
-                                                              .isEmpty();
-                return notArchived && (doc.getWorkflow().getCurrentStateByKey(WorkflowStateKey.ARCHIVAGE_DOCUMENT) != null && doc.getWorkflow()
-                                                                                                                                 .getCurrentStateByKey(WorkflowStateKey.ARCHIVAGE_DOCUMENT)
-                                                                                                                                 .isCurrentState());
+            final List<String> archivablesIds = docUnitService.findDocUnitByLibraryForCinesExport(lib.getIdentifier());
 
-            }).forEach(doc -> {
-                docsToExport.add(doc);
-            });
+            final TransactionalJobRunner<String> job = new TransactionalJobRunner<>(archivablesIds, transactionService);
+            job.setCommit(1)
+               .setReadOnly(true)
+               .setElementName("DocUnit (Export Cines " + lib.getName()
+                               + ")")
+               .forEach(id -> {
+                   final DocUnit doc = docUnitService.findOne(id);
+
+                   final boolean notArchived = cinesReportService.findByDocUnit(doc.getIdentifier())
+                                                                 .stream()
+                                                                 .filter(cr -> CinesReport.Status.ARCHIVED == cr.getStatus() || CinesReport.Status.AR_RECEIVED == cr.getStatus()
+                                                                               || CinesReport.Status.SENT == cr.getStatus())
+                                                                 .collect(Collectors.toList())
+                                                                 .isEmpty();
+
+                   if (notArchived && (doc.getWorkflow().getCurrentStateByKey(WorkflowStateKey.ARCHIVAGE_DOCUMENT) != null && doc.getWorkflow()
+                                                                                                                                 .getCurrentStateByKey(WorkflowStateKey.ARCHIVAGE_DOCUMENT)
+                                                                                                                                 .isCurrentState())) {
+                       docsToExport.add(doc.getIdentifier());
+                   }
+
+                   return true;
+               })
+               .process();
+
         });
-        return docsToExport.stream().map(DocUnit::getIdentifier).collect(Collectors.toList());
+        return docsToExport;
     }
 
     public CinesReport exportDocToCines(final String docUnitId, final boolean reversion) {

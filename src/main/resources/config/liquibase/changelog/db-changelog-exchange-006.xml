@@ -10,7 +10,7 @@
         <!-- Gestion d'un mapping spécifique à l'import des exemplaires de périodiques -->
         <addColumn tableName="exc_import_report">
             <column name="mapping_perio" type="varchar(191)" afterColumn="mapping" />
-            <column name="type" type="varchar(255)" beforeColumn="fileFormat" defaultValue="SIMPLE">
+            <column name="type" type="varchar(255)" defaultValue="SIMPLE">
                 <constraints nullable="false" />
             </column>
         </addColumn>
