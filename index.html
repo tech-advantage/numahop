@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <!--[if lt IE 7]>
 <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>
@@ -7,78 +7,77 @@
 <html class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]><!-->
 <html class="no-js">
-<!--<![endif]-->
+    <!--<![endif]-->
 
-<head>
-    <meta charset="utf-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <meta http-equiv="expires" content="0"/>
-    <title>syrtis-sid</title>
-    <meta name="description" content=""/>
-    <meta name="viewport" content="width=device-width"/>
-    <meta http-equiv="cache-control" content="no-cache, no-store">
-    <meta http-equiv="pragma" content="no-cache">
-    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-    <link rel="shortcut icon" href="images/Picto32.png"/>
-    <!-- build:css(.tmp) styles/libs.css -->
-    <link rel="stylesheet" href="bower_components/angular-loading-bar/build/loading-bar.css"/>
-    <link rel="stylesheet" href="bower_components/angular-tree-control/css/tree-control.css"/>
-    <link rel="stylesheet" href="bower_components/angular-ui-select/dist/select.css"/>
-    <link rel="stylesheet" href="bower_components/angular-xeditable/dist/css/xeditable.css"/>
-    <link rel="stylesheet" href="bower_components/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.css"/>
-    <link rel="stylesheet" href="bower_components/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css"/>
-    <link rel="stylesheet" href="bower_components/jquery-timepicker-jt/jquery.timepicker.css"/>
-    <link rel="stylesheet" href="bower_components/select2/select2.css"/>
-    <link rel="stylesheet" href="bower_components/select2-bootstrap-css/select2-bootstrap.css"/>
-    <link rel="stylesheet" href="bower_components/angular-chart.js/dist/angular-chart.css">
-    <link rel="stylesheet" href="bower_components/angular-dashboard-framework/dist/angular-dashboard-framework.css">
-    <!-- endbuild -->
-    <!-- build:css(.tmp) styles/sem.css -->
-    <link rel="stylesheet" href="styles/main.css"/>
-    <!-- endbuild -->
-    <link rel="stylesheet" href="styles/mediaelement/build/mediaelementplayer.min.css"/>
-</head>
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta http-equiv="expires" content="0" />
+        <title>syrtis-sid</title>
+        <meta name="description" content="" />
+        <meta name="viewport" content="width=device-width" />
+        <meta http-equiv="cache-control" content="no-cache, no-store" />
+        <meta http-equiv="pragma" content="no-cache" />
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+        <link rel="shortcut icon" href="images/Picto32.png" />
+        <!-- build:css(.tmp) styles/libs.css -->
+        <link rel="stylesheet" href="bower_components/angular-loading-bar/build/loading-bar.css" />
+        <link rel="stylesheet" href="bower_components/angular-tree-control/css/tree-control.css" />
+        <link rel="stylesheet" href="bower_components/angular-ui-select/dist/select.css" />
+        <link rel="stylesheet" href="bower_components/angular-xeditable/dist/css/xeditable.css" />
+        <link rel="stylesheet" href="bower_components/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.css" />
+        <link rel="stylesheet" href="bower_components/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" />
+        <link rel="stylesheet" href="bower_components/jquery-timepicker-jt/jquery.timepicker.css" />
+        <link rel="stylesheet" href="bower_components/select2/select2.css" />
+        <link rel="stylesheet" href="bower_components/select2-bootstrap-css/select2-bootstrap.css" />
+        <link rel="stylesheet" href="bower_components/angular-chart.js/dist/angular-chart.css" />
+        <link rel="stylesheet" href="bower_components/angular-dashboard-framework/dist/angular-dashboard-framework.css" />
+        <!-- endbuild -->
+        <!-- build:css(.tmp) styles/sem.css -->
+        <link rel="stylesheet" href="styles/main.css" />
+        <!-- endbuild -->
+        <link rel="stylesheet" href="styles/mediaelement/build/mediaelementplayer.min.css" />
+    </head>
 
-<body ng-app="numaHopApp" ng-controller="MainController" ng-cloak>
-<!--[if lt IE 10]>
-<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to
-    improve your experience.</p>
-<![endif]-->
-<!-- Menu top -->
-<ng-include src="'views/menuTop.html'" role="search"></ng-include>
-<!-- Menu left -->
-<div id="sem-menu" ng-include="'views/menuLeft.html'" role="navigation" ng-if="isAuthenticated()" sem-auto-hide></div>
-<!-- Content -->
-<div id="sem-content" ng-class="{'menu-left-on': isAuthenticated()}">
-    <div id="messages" ng-show="isAuthenticated() || isLoginPage()" class="alerts col-sm-2">
-        <!-- Autres messages d'information -->
-        <div uib-alert ng-repeat="msg in getTemporaryMessages() | orderBy:'-timestamp'" ng-class="'alert-' + msg.level" close="deleteMessage(msg)">
-            <span class="badge pull-right" ng-if="msg.count > 1">{{msg.count}}</span>
-            <span ng-bind-html="msg.content"></span>
-        </div>
-    </div>
-    <!-- Content -->
-    <div id="main-content" role="main" class="container-fluid">
-        <!-- Main view -->
-        <div ng-view ng-show="isAuthenticated() || isLoginPage()"></div>
-        <div class="layout-columns no-print" ng-if="isAuthenticated()">
-            <div class="col-sm-2 col-sm-offset-10 col-layout-columns">
-                <div class="panel panel-column-4" ng-class="{'panel-info': recommendations.content}">
-                    <div class="panel-heading">{{'Informations' | translate}}</div>
-                    <div class="panel-body">
-                        <div id="notificationColumn">
-                            <div uib-alert ng-repeat="notification in getPermanentMessages()" ng-class="'alert-' + notification.level">
-                                <span class="badge pull-right" ng-if="msg.count > 1">{{notification.count}}</span>
-                                <span class="preserve-line-breaks" ng-bind-html="notification.content"></span>
+    <body ng-app="numaHopApp" ng-controller="MainController" ng-cloak>
+        <!--[if lt IE 10]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+        <!-- Menu top -->
+        <ng-include src="'views/menuTop.html'" role="search"></ng-include>
+        <!-- Menu left -->
+        <div id="sem-menu" ng-include="'views/menuLeft.html'" role="navigation" ng-if="isAuthenticated()" sem-auto-hide></div>
+        <!-- Content -->
+        <div id="sem-content" ng-class="{'menu-left-on': isAuthenticated()}">
+            <div id="messages" ng-show="isAuthenticated() || isLoginPage()" class="alerts col-sm-2">
+                <!-- Autres messages d'information -->
+                <div uib-alert ng-repeat="msg in getTemporaryMessages() | orderBy:'-timestamp'" ng-class="'alert-' + msg.level" close="deleteMessage(msg)">
+                    <span class="badge pull-right" ng-if="msg.count > 1">{{msg.count}}</span>
+                    <span ng-bind-html="msg.content"></span>
+                </div>
+            </div>
+            <!-- Content -->
+            <div id="main-content" role="main" class="container-fluid">
+                <!-- Main view -->
+                <div ng-view ng-show="isAuthenticated() || isLoginPage()"></div>
+                <div class="layout-columns no-print" ng-if="isAuthenticated()">
+                    <div class="col-sm-2 col-sm-offset-10 col-layout-columns">
+                        <div class="panel panel-column-4" ng-class="{'panel-info': recommendations.content}">
+                            <div class="panel-heading">{{'Informations' | translate}}</div>
+                            <div class="panel-body">
+                                <div id="notificationColumn">
+                                    <div uib-alert ng-repeat="notification in getPermanentMessages()" ng-class="'alert-' + notification.level">
+                                        <span class="badge pull-right" ng-if="msg.count > 1">{{notification.count}}</span>
+                                        <span class="preserve-line-breaks" ng-bind-html="notification.content"></span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
-<!-- Google Analytics: uncomment and change UA-XXXXX-X to be your site's ID.
+        <!-- Google Analytics: uncomment and change UA-XXXXX-X to be your site's ID.
 <script>
 (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
 function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
@@ -87,93 +86,92 @@ e.src='//www.google-analytics.com/analytics.js';
 r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
 ga('create','UA-XXXXX-X');ga('send','pageview');
 </script>-->
-<!-- build:js scripts/libs-core.js -->
-<script type="text/javascript" src="bower_components/modernizr/modernizr.js"></script>
-<!-- JQuery -->
-<script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
-<script type="text/javascript" src="bower_components/jquery-ui/ui/core.js"></script>
-<script type="text/javascript" src="bower_components/jquery-ui/ui/widget.js"></script>
-<script type="text/javascript" src="bower_components/jquery-ui/ui/mouse.js"></script>
-<script type="text/javascript" src="bower_components/jquery-ui/ui/draggable.js"></script>
-<script type="text/javascript" src="bower_components/jquery-ui/ui/droppable.js"></script>
-<!-- AngularJS -->
-<script type="text/javascript" src="bower_components/angular/angular.js"></script>
-<script type="text/javascript" src="bower_components/angular-animate/angular-animate.js"></script>
-<script type="text/javascript" src="bower_components/angular-route/angular-route.js"></script>
-<script type="text/javascript" src="bower_components/angular-resource/angular-resource.js"></script>
-<script type="text/javascript" src="bower_components/angular-cookies/angular-cookies.js"></script>
-<script type="text/javascript" src="bower_components/angular-sanitize/angular-sanitize.js"></script>
-<script type="text/javascript" src="bower_components/angular-aria/angular-aria.js"></script>
-<!-- Bootstrap -->
-<script type="text/javascript" src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/affix.js"></script>
-<script type="text/javascript" src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/alert.js"></script>
-<script type="text/javascript" src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/button.js"></script>
-<script type="text/javascript" src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/carousel.js"></script>
-<script type="text/javascript" src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/collapse.js"></script>
-<script type="text/javascript" src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/dropdown.js"></script>
-<script type="text/javascript" src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/modal.js"></script>
-<script type="text/javascript" src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/tooltip.js"></script>
-<script type="text/javascript" src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/popover.js"></script>
-<script type="text/javascript" src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/scrollspy.js"></script>
-<script type="text/javascript" src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/tab.js"></script>
-<script type="text/javascript" src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/transition.js"></script>
-<!-- endbuild -->
-<!-- build:js scripts/libs.js -->
-<script type="text/javascript" src="bower_components/angular-smart-table/dist/smart-table.js"></script>
-<script type="text/javascript" src="bower_components/big.js/big.js"></script>
-<script type="text/javascript" src="bower_components/angular-bootstrap-contextmenu/contextMenu.js"></script>
-<script type="text/javascript" src="bower_components/bootstrap-switch/dist/js/bootstrap-switch.js"></script>
-<script type="text/javascript" src="bower_components/Chart.js/Chart.js"></script>
-<script type="text/javascript" src="bower_components/moment/moment.js"></script>
-<script type="text/javascript" src="bower_components/moment/min/locales.js"></script>
-<script type="text/javascript" src="bower_components/clndr/src/clndr.js"></script>
-<script type="text/javascript" src="bower_components/d3/d3.js"></script>
-<script type="text/javascript" src="bower_components/iso-currency/dist/isoCurrency.js"></script>
-<script type="text/javascript" src="bower_components/lrInfiniteScroll/lrInfiniteScroll.js"></script>
-<script type="text/javascript" src="bower_components/owlcarousel/owl-carousel/owl.carousel.js"></script>
-<script type="text/javascript" src="bower_components/select2/select2.js"></script>
-<script type="text/javascript" src="bower_components/underscore/underscore.js"></script>
-<script type="text/javascript" src="bower_components/qrcode/lib/qrcode.js"></script>
-<script type="text/javascript" src="bower_components/jquery-timepicker-jt/jquery.timepicker.js"></script>
-<script type="text/javascript" src="bower_components/mediaelement/build/mediaelement-and-player.js"></script>
-<script type="text/javascript" src="bower_components/naturalSort.js/dist/naturalSort.js"></script>
-<script type="text/javascript" src="bower_components/stomp-websocket/lib/stomp.js"></script>
-<script type="text/javascript" src="bower_components/sockjs-client/dist/sockjs.js"></script>
-<script type="text/javascript" src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
-<script type="text/javascript" src="bower_components/angular-bootstrap-switch/dist/angular-bootstrap-switch.js"></script>
-<script type="text/javascript" src="bower_components/angular-chart.js/dist/angular-chart.js"></script>
-<script type="text/javascript" src="bower_components/angular-dragdrop/src/angular-dragdrop.js"></script>
-<script type="text/javascript" src="bower_components/angular-dynamic-locale/src/tmhDynamicLocale.js"></script>
-<script type="text/javascript" src="bower_components/angular-file-upload/dist/angular-file-upload.js"></script>
-<script type="text/javascript" src="bower_components/angular-file-saver/dist/angular-file-saver.bundle.js"></script>
-<script type="text/javascript" src="bower_components/angular-gettext/dist/angular-gettext.js"></script>
-<script type="text/javascript" src="bower_components/angular-jquery-timepicker/src/timepickerdirective.js"></script>
-<script type="text/javascript" src="bower_components/angular-loading-bar/build/loading-bar.js"></script>
-<script type="text/javascript" src="bower_components/angular-local-storage/dist/angular-local-storage.js"></script>
-<script type="text/javascript" src="bower_components/angular-qr/src/angular-qr.js"></script>
-<script type="text/javascript" src="bower_components/angular-tree-control/angular-tree-control.js"></script>
-<script type="text/javascript" src="bower_components/angular-ui-select2/src/select2.js"></script>
-<script type="text/javascript" src="bower_components/angular-ui-select/dist/select.js"></script>
-<script type="text/javascript" src="bower_components/angular-ui-tree/dist/angular-ui-tree.js"></script>
-<script type="text/javascript" src="bower_components/angular-ui-utils/scrollfix.js"></script>
-<script type="text/javascript" src="bower_components/angular-xeditable/dist/js/xeditable.js"></script>
-<script type="text/javascript" src="bower_components/summernote/dist/summernote.js"></script>
-<script type="text/javascript" src="bower_components/summernote/lang/summernote-fr-FR.js"></script>
-<script type="text/javascript" src="bower_components/Sortable/Sortable.js"></script>
-<script type="text/javascript" src="bower_components/angular-dashboard-framework/dist/angular-dashboard-framework.js"></script>
-<script type="text/javascript" src="bower_components/angular-svg-round-progressbar/build/roundProgress.js"></script>
+        <!-- build:js scripts/libs-core.js -->
+        <script type="text/javascript" src="bower_components/modernizr/modernizr.js"></script>
+        <!-- JQuery -->
+        <script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
+        <script type="text/javascript" src="bower_components/jquery-ui/ui/core.js"></script>
+        <script type="text/javascript" src="bower_components/jquery-ui/ui/widget.js"></script>
+        <script type="text/javascript" src="bower_components/jquery-ui/ui/mouse.js"></script>
+        <script type="text/javascript" src="bower_components/jquery-ui/ui/draggable.js"></script>
+        <script type="text/javascript" src="bower_components/jquery-ui/ui/droppable.js"></script>
+        <!-- AngularJS -->
+        <script type="text/javascript" src="bower_components/angular/angular.js"></script>
+        <script type="text/javascript" src="bower_components/angular-animate/angular-animate.js"></script>
+        <script type="text/javascript" src="bower_components/angular-route/angular-route.js"></script>
+        <script type="text/javascript" src="bower_components/angular-resource/angular-resource.js"></script>
+        <script type="text/javascript" src="bower_components/angular-cookies/angular-cookies.js"></script>
+        <script type="text/javascript" src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+        <script type="text/javascript" src="bower_components/angular-aria/angular-aria.js"></script>
+        <!-- Bootstrap -->
+        <script type="text/javascript" src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/affix.js"></script>
+        <script type="text/javascript" src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/alert.js"></script>
+        <script type="text/javascript" src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/button.js"></script>
+        <script type="text/javascript" src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/carousel.js"></script>
+        <script type="text/javascript" src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/collapse.js"></script>
+        <script type="text/javascript" src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/dropdown.js"></script>
+        <script type="text/javascript" src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/modal.js"></script>
+        <script type="text/javascript" src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/tooltip.js"></script>
+        <script type="text/javascript" src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/popover.js"></script>
+        <script type="text/javascript" src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/scrollspy.js"></script>
+        <script type="text/javascript" src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/tab.js"></script>
+        <script type="text/javascript" src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/transition.js"></script>
+        <!-- endbuild -->
+        <!-- build:js scripts/libs.js -->
+        <script type="text/javascript" src="bower_components/angular-smart-table/dist/smart-table.js"></script>
+        <script type="text/javascript" src="bower_components/big.js/big.js"></script>
+        <script type="text/javascript" src="bower_components/angular-bootstrap-contextmenu/contextMenu.js"></script>
+        <script type="text/javascript" src="bower_components/bootstrap-switch/dist/js/bootstrap-switch.js"></script>
+        <script type="text/javascript" src="bower_components/Chart.js/Chart.js"></script>
+        <script type="text/javascript" src="bower_components/moment/moment.js"></script>
+        <script type="text/javascript" src="bower_components/moment/min/locales.js"></script>
+        <script type="text/javascript" src="bower_components/clndr/src/clndr.js"></script>
+        <script type="text/javascript" src="bower_components/d3/d3.js"></script>
+        <script type="text/javascript" src="bower_components/iso-currency/dist/isoCurrency.js"></script>
+        <script type="text/javascript" src="bower_components/lrInfiniteScroll/lrInfiniteScroll.js"></script>
+        <script type="text/javascript" src="bower_components/owlcarousel/owl-carousel/owl.carousel.js"></script>
+        <script type="text/javascript" src="bower_components/select2/select2.js"></script>
+        <script type="text/javascript" src="bower_components/underscore/underscore.js"></script>
+        <script type="text/javascript" src="bower_components/qrcode/lib/qrcode.js"></script>
+        <script type="text/javascript" src="bower_components/jquery-timepicker-jt/jquery.timepicker.js"></script>
+        <script type="text/javascript" src="bower_components/mediaelement/build/mediaelement-and-player.js"></script>
+        <script type="text/javascript" src="bower_components/naturalSort.js/dist/naturalSort.js"></script>
+        <script type="text/javascript" src="bower_components/stomp-websocket/lib/stomp.js"></script>
+        <script type="text/javascript" src="bower_components/sockjs-client/dist/sockjs.js"></script>
+        <script type="text/javascript" src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+        <script type="text/javascript" src="bower_components/angular-bootstrap-switch/dist/angular-bootstrap-switch.js"></script>
+        <script type="text/javascript" src="bower_components/angular-chart.js/dist/angular-chart.js"></script>
+        <script type="text/javascript" src="bower_components/angular-dragdrop/src/angular-dragdrop.js"></script>
+        <script type="text/javascript" src="bower_components/angular-dynamic-locale/src/tmhDynamicLocale.js"></script>
+        <script type="text/javascript" src="bower_components/angular-file-upload/dist/angular-file-upload.js"></script>
+        <script type="text/javascript" src="bower_components/angular-file-saver/dist/angular-file-saver.bundle.js"></script>
+        <script type="text/javascript" src="bower_components/angular-gettext/dist/angular-gettext.js"></script>
+        <script type="text/javascript" src="bower_components/angular-jquery-timepicker/src/timepickerdirective.js"></script>
+        <script type="text/javascript" src="bower_components/angular-loading-bar/build/loading-bar.js"></script>
+        <script type="text/javascript" src="bower_components/angular-local-storage/dist/angular-local-storage.js"></script>
+        <script type="text/javascript" src="bower_components/angular-qr/src/angular-qr.js"></script>
+        <script type="text/javascript" src="bower_components/angular-tree-control/angular-tree-control.js"></script>
+        <script type="text/javascript" src="bower_components/angular-ui-select2/src/select2.js"></script>
+        <script type="text/javascript" src="bower_components/angular-ui-select/dist/select.js"></script>
+        <script type="text/javascript" src="bower_components/angular-ui-tree/dist/angular-ui-tree.js"></script>
+        <script type="text/javascript" src="bower_components/angular-ui-utils/scrollfix.js"></script>
+        <script type="text/javascript" src="bower_components/angular-xeditable/dist/js/xeditable.js"></script>
+        <script type="text/javascript" src="bower_components/summernote/dist/summernote.js"></script>
+        <script type="text/javascript" src="bower_components/summernote/lang/summernote-fr-FR.js"></script>
+        <script type="text/javascript" src="bower_components/Sortable/Sortable.js"></script>
+        <script type="text/javascript" src="bower_components/angular-dashboard-framework/dist/angular-dashboard-framework.js"></script>
+        <script type="text/javascript" src="bower_components/angular-svg-round-progressbar/build/roundProgress.js"></script>
 
-<!-- endbuild -->
-<!-- build:js scripts/sem.js -->
-<!-- Général -->
-<script type="text/javascript" src="scripts/http-auth-interceptor.js"></script>
-<script type="text/javascript" src="scripts/truncate.js"></script>
-<script type="text/javascript" src="scripts/app.js"></script>
-<script type="text/javascript" src="scripts/utils.js"></script>
-<script type="text/javascript" src="scripts/controllers.js"></script>
-<script type="text/javascript" src="scripts/services.js"></script>
-<script type="text/javascript" src="scripts/directives.js"></script>
-<!--  Librairies -->
-</body>
-
+        <!-- endbuild -->
+        <!-- build:js scripts/sem.js -->
+        <!-- Général -->
+        <script type="text/javascript" src="scripts/http-auth-interceptor.js"></script>
+        <script type="text/javascript" src="scripts/truncate.js"></script>
+        <script type="text/javascript" src="scripts/app.js"></script>
+        <script type="text/javascript" src="scripts/utils.js"></script>
+        <script type="text/javascript" src="scripts/controllers.js"></script>
+        <script type="text/javascript" src="scripts/services.js"></script>
+        <script type="text/javascript" src="scripts/directives.js"></script>
+        <!--  Librairies -->
+    </body>
 </html>
