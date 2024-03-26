@@ -788,15 +788,6 @@ public class DocUnitService {
         return doc.getExportData() != null && !doc.getExportData().getProperties().isEmpty();
     }
 
-    /**
-     * Permet de s'assurer que les données d'export vers Omeka sont déjà existantes
-     */
-    @Transactional(readOnly = true)
-    public boolean isDocumentReadyForDiffusionOmeka(final String identifier) {
-        final DocUnit doc = docUnitRepository.findById(identifier).orElseThrow();
-        return doc.getOmekaCollection() != null && doc.getOmekaItem() != null;
-    }
-
     @Transactional(readOnly = true)
     public Page<String> getDistinctTypes(final String search, final Integer page, final Integer size) {
         if (StringUtils.isEmpty(search)) {

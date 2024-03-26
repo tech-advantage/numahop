@@ -457,18 +457,18 @@ public class OmekaService {
                 }
             }
 
-            // custom proerties
+            // custom properties
             for (final DocPropertyType enteteCustom : entetesCustom) {
                 if (metaDc.getCustomProperties() != null) {
-                    boolean value = false;
-                    for (final DocPropertyDTO customDC : metaDc.getCustomProperties()) {
-                        if (customDC.getType().getLabel().equals(enteteCustom.getLabel())) {
-                            writer.append(getFormatedValues(Collections.singletonList(customDC.getValue()))).append(CSV_COL_SEP);
-                            value = true;
-                            break;
-                        }
-                    }
-                    if (!value) {
+                    // Values with same type are put in the same group
+                    List<String> customProperties = metaDc.getCustomProperties()
+                                                          .stream()
+                                                          .filter(p -> p.getType().getLabel().equals(enteteCustom.getLabel()))
+                                                          .map(DocPropertyDTO::getValue)
+                                                          .toList();
+                    if (!customProperties.isEmpty()) {
+                        writer.append(getFormatedValues(customProperties)).append(CSV_COL_SEP);
+                    } else {
                         writer.append(EMPTY_FIELD_VALUE).append(CSV_COL_SEP);
                     }
                 }

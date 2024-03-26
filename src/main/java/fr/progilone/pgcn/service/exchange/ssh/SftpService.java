@@ -17,9 +17,11 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Vector;
+import java.util.regex.Matcher;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -138,7 +140,7 @@ public class SftpService {
                           conf.getTargetDir());
 
                 // Positionnement sur le répertoire cible
-                channelSftp.cd(conf.getTargetDir());
+                goToTargetDir(conf.getTargetDir(), channelSftp);
                 // Si le répertoire existe déjà, on le supprime
                 final boolean pathExists = checkPath(localSource, channelSftp);
                 if (pathExists) {
@@ -173,6 +175,38 @@ public class SftpService {
         }
     }
 
+    private static void goToTargetDir(final String targetDir, final ChannelSftp channelSftp) throws SftpException {
+        Path targetDirPath = Path.of(targetDir);
+        boolean targetExists = checkPath(targetDirPath, channelSftp);
+        if (!targetExists) {
+            // Si le chemin 'target' spécifié n'existe pas, le créer dans le serveur
+            String[] path = targetDirPath.toString().split(Matcher.quoteReplacement(System.getProperty("file.separator")));
+            Arrays.stream(path).filter(StringUtils::isNotEmpty).forEach(p -> putTargetDir(p, channelSftp));
+        } else {
+            channelSftp.cd(targetDir);
+        }
+    }
+
+    private static void putTargetDir(final String targetName, final ChannelSftp channelSftp) {
+        try {
+            // Si le sous-dossier distant existe déjà, on se place dedans
+            Path targetDirPath = Path.of(targetName);
+            boolean targetExists = checkPath(targetDirPath, channelSftp);
+            if (targetExists) {
+                channelSftp.cd(targetName);
+                return;
+            }
+            LOG.debug("Création du répertoire distant {} ({})", targetName, channelSftp.pwd());
+            // Création du sous-dossier distant
+            channelSftp.mkdir(targetName);
+            channelSftp.chmod(0770, targetName);    // permission en octal
+            channelSftp.cd(targetName);
+        } catch (final SftpException e) {
+            LOG.error("Une erreur s'est produite lors du traitement du répertoire {}: {}", targetName, e.getMessage());
+            LOG.error(e.getMessage(), e);
+        }
+    }
+
     /**
      * Vérifie l'existence du fichier / répertoire local dans le répertoire distant courant
      *
@@ -180,7 +214,7 @@ public class SftpService {
      * @param channelSftp
      * @return
      */
-    private boolean checkPath(final Path localSource, final ChannelSftp channelSftp) throws SftpException {
+    private static boolean checkPath(final Path localSource, final ChannelSftp channelSftp) throws SftpException {
         final Vector<ChannelSftp.LsEntry> ls = channelSftp.ls(".");
         return ls.stream().anyMatch(e -> StringUtils.equals(e.getFilename(), localSource.getFileName().toString()));
     }
@@ -193,7 +227,7 @@ public class SftpService {
      * @param channelSftp
      *            connexion SFTP établie
      */
-    private void putPathRecursively(final File localSource, final ChannelSftp channelSftp) {
+    private static void putPathRecursively(final File localSource, final ChannelSftp channelSftp) {
         final String targetName = localSource.getName();
 
         // Répertoire: création, ouverture et recopie du contenu

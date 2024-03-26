@@ -316,7 +316,7 @@ public class WorkflowService {
         if (workflow == null) {
             LOG.warn("Aucun workflow sur le document {} : impossible de réaliser automatiquement l'étape {}", doc.getPgcnId(), key.name());
         } else {
-            final DocUnitState currentState = workflow.getCurrentStateByKey(key);
+            DocUnitState currentState = workflow.getCurrentStateByKey(key);
             if (currentState != null && currentState.isWaiting()) {
                 currentState.process(null);
             } else {
@@ -464,7 +464,6 @@ public class WorkflowService {
             case CONTROLE_QUALITE_EN_COURS:
                 return true;
             case DIFFUSION_DOCUMENT_OMEKA:
-                return docUnitService.isDocumentReadyForDiffusionOmeka(doc.getIdentifier());
             case DIFFUSION_DOCUMENT_LOCALE:
             case DIFFUSION_DOCUMENT:
             case DIFFUSION_DOCUMENT_DIGITAL_LIBRARY:

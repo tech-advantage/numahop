@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
+
+    <!-- Ajout d'un paramètre pour permettre les transferts sftp  -->
+    <changeSet id="pgcn-create-digital-library-conf-sftp-01" author="progilone">
+        <addColumn tableName="conf_digital_library">
+            <column name="sftp" type="boolean">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

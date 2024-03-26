@@ -61,7 +61,7 @@ public class OmekaRequestHandlerService {
 
             TransactionalJobRunner<String> job = new TransactionalJobRunner<>(docsToExport, transactionService);
 
-            job.setCommit(1).setReadOnly(true).setElementName("Doc Unit Exporting Omeka").forEach(docId -> {
+            job.setCommit(1).setReadOnly(false).setElementName("Doc Unit Exporting Omeka").forEach(docId -> {
                 boolean lastDoc = i.incrementAndGet() == docsToExport.size();
                 DocUnit doc = docUnitRepository.getReferenceById(docId);
 

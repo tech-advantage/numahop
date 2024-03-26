@@ -1,5 +1,6 @@
 package fr.progilone.pgcn.service.exchange.digitallibrary;
 
+import fr.progilone.pgcn.domain.administration.SftpConfiguration;
 import fr.progilone.pgcn.domain.administration.digitallibrary.DigitalLibraryConfiguration;
 import fr.progilone.pgcn.domain.administration.viewsformat.ViewsFormatConfiguration;
 import fr.progilone.pgcn.domain.document.DocPropertyType;
@@ -19,11 +20,13 @@ import fr.progilone.pgcn.service.document.DocUnitService;
 import fr.progilone.pgcn.service.document.ui.UIBibliographicRecordService;
 import fr.progilone.pgcn.service.exchange.cines.ExportMetsService;
 import fr.progilone.pgcn.service.exchange.csv.ExportCSVService;
+import fr.progilone.pgcn.service.exchange.ssh.SftpService;
 import fr.progilone.pgcn.service.library.LibraryService;
 import fr.progilone.pgcn.service.storage.AltoService;
 import fr.progilone.pgcn.service.storage.BinaryStorageManager;
 import fr.progilone.pgcn.service.util.CryptoService;
 import fr.progilone.pgcn.service.util.DateUtils;
+import fr.progilone.pgcn.service.util.ImageUtils;
 import fr.progilone.pgcn.service.workflow.WorkflowService;
 import jakarta.persistence.EntityNotFoundException;
 import java.io.File;
@@ -44,6 +47,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.slf4j.Logger;
@@ -86,6 +90,8 @@ public class DigitalLibraryDiffusionService {
     private final AltoService altoService;
     private final LibraryService libraryService;
 
+    private final SftpService sftpService;
+
     public DigitalLibraryDiffusionService(final DocUnitService docUnitService,
                                           final DigitalLibraryConfigurationService digitalLibraryConfigurationService,
                                           final WorkflowService workflowService,
@@ -97,7 +103,8 @@ public class DigitalLibraryDiffusionService {
                                           final ExportCSVService exportCSVService,
                                           final MailService mailService,
                                           final AltoService altoService,
-                                          final LibraryService libraryService) {
+                                          final LibraryService libraryService,
+                                          final SftpService sftpService) {
         this.docUnitService = docUnitService;
         this.digitalLibraryConfigurationService = digitalLibraryConfigurationService;
         this.workflowService = workflowService;
@@ -110,6 +117,7 @@ public class DigitalLibraryDiffusionService {
         this.mailService = mailService;
         this.altoService = altoService;
         this.libraryService = libraryService;
+        this.sftpService = sftpService;
     }
 
     @Transactional(readOnly = true)
@@ -167,32 +175,19 @@ public class DigitalLibraryDiffusionService {
                 return exported;
             }
 
-            final File csv;
             // Génération des fichiers / répertoires MEDIA
-            csv = exportDocUnit(doc, metaDC, mediasDir, conf, multiple, firstDoc);
+            final Pair<File, Path> result = exportDocUnit(doc, metaDC, mediasDir, conf, multiple, firstDoc);
+            final File csv = result.getKey();
+            final Path depotPath = result.getValue();
 
             // Tranferts du csv et dossier media
             if (mediasDir.toFile().exists() && csv.exists()) {
 
-                final FTPClient ftpClient = new FTPClient();
-
-                ftpClient.connect(conf.getAddress(), Integer.parseInt(conf.getPort()));
-
-                final boolean success = ftpClient.login(conf.getLogin(), cryptoService.decrypt(conf.getPassword()));
-
-                if (!success) {
-                    LOG.error("Erreur de connexion ftp lors de l'export sur la Bibliothèque numérique");
-                    exported = false;
+                // Envoi des documents en SFTP
+                if (conf.isSftp() && depotPath.toFile().exists()) {
+                    exported = exportSftp(conf, multiple, lastDoc, csv.toPath(), depotPath);
                 } else {
-                    ftpClient.changeWorkingDirectory(conf.getDeliveryFolder());
-                    if (!multiple || lastDoc) {
-                        putPathRecursively(csv, ftpClient);
-                    }
-                    LOG.info("Envoi du document {}", mediasDir.getFileName());
-                    putPathRecursively(mediasDir.toFile(), ftpClient);
-                    exported = true;
-                    ftpClient.logout();
-                    ftpClient.disconnect();
+                    exported = exportFtp(conf, multiple, lastDoc, csv, mediasDir);
                 }
             }
 
@@ -221,12 +216,64 @@ public class DigitalLibraryDiffusionService {
     }
 
     @Transactional
-    public File exportDocUnit(final DocUnit docUnit,
-                              final BibliographicRecordDcDTO metaDc,
-                              final Path mediaDir,
-                              final DigitalLibraryConfiguration conf,
-                              final boolean multiple,
-                              final boolean firstDoc) throws IOException, PgcnTechnicalException {
+    public boolean exportSftp(final DigitalLibraryConfiguration conf, final boolean multiple, final boolean lastDoc, final Path csvPath, final Path mediasDirPath) {
+        final SftpConfiguration sftpConf = new SftpConfiguration();
+        sftpConf.setActive(true);
+        sftpConf.setHost(conf.getAddress());
+        sftpConf.setPort(Integer.valueOf(conf.getPort()));
+        sftpConf.setUsername(conf.getLogin());
+        sftpConf.setPassword(conf.getPassword());
+        try {
+            if (!multiple || lastDoc) {
+                String rootFolder = conf.getDeliveryFolder();
+                sftpConf.setTargetDir(rootFolder);
+                sftpService.sftpPut(sftpConf, csvPath);
+            }
+            // Chaque unité documentaire s'exporte dans un sous dossier "medias"
+            Path mediaFolderPath = Path.of(conf.getDeliveryFolder(), MEDIA_DIR);
+            String mediaFolder = mediaFolderPath.toString().replace('\\', '/');
+            sftpConf.setTargetDir(mediaFolder);
+            LOG.info("Envoi du document {}", mediasDirPath.getFileName());
+            sftpService.sftpPut(sftpConf, mediasDirPath.toAbsolutePath());
+            return true;
+        } catch (final PgcnTechnicalException e) {
+            LOG.error("Erreur de connexion sftp lors de l'export sur la Bibliothèque numérique");
+            return false;
+        }
+    }
+
+    @Transactional
+    public boolean exportFtp(final DigitalLibraryConfiguration conf, final boolean multiple, final boolean lastDoc, final File csv, final Path mediasDirPath) throws IOException,
+                                                                                                                                                              PgcnTechnicalException {
+        final FTPClient ftpClient = new FTPClient();
+
+        ftpClient.connect(conf.getAddress(), Integer.parseInt(conf.getPort()));
+
+        final boolean success = ftpClient.login(conf.getLogin(), cryptoService.decrypt(conf.getPassword()));
+
+        if (!success) {
+            LOG.error("Erreur de connexion ftp lors de l'export sur la Bibliothèque numérique");
+            return false;
+        } else {
+            ftpClient.changeWorkingDirectory(conf.getDeliveryFolder());
+            if (!multiple || lastDoc) {
+                putPathRecursively(csv, ftpClient);
+            }
+            LOG.info("Envoi du document {}", mediasDirPath.getFileName());
+            putPathRecursively(mediasDirPath.toFile(), ftpClient);
+            ftpClient.logout();
+            ftpClient.disconnect();
+            return true;
+        }
+    }
+
+    @Transactional
+    public Pair<File, Path> exportDocUnit(final DocUnit docUnit,
+                                          final BibliographicRecordDcDTO metaDc,
+                                          final Path mediaDir,
+                                          final DigitalLibraryConfiguration conf,
+                                          final boolean multiple,
+                                          final boolean firstDoc) throws IOException, PgcnTechnicalException {
 
         final Path root = mediaDir.resolve(docUnit.getPgcnId());
         // Suppression du répertoire s'il existe
@@ -252,7 +299,7 @@ public class DigitalLibraryDiffusionService {
         } catch (final PgcnUncheckedException e) {
             throw new PgcnTechnicalException(e);
         }
-        return csv;
+        return Pair.of(csv, depotPath);
     }
 
     private File createDocUnitsDigitalLibraryDiffusionCsv(final DocUnit docUnit,
@@ -543,10 +590,11 @@ public class DigitalLibraryDiffusionService {
                     final StoredFile printStoredFile = print.get();
                     final File sourceFile = bm.getFileForStoredFile(printStoredFile, libraryId);
                     final Path sourcePath = Paths.get(sourceFile.getAbsolutePath());
+                    final String fileName = printStoredFile.getFilename().substring(0, printStoredFile.getFilename().lastIndexOf(".") + 1) + ImageUtils.FORMAT_JPG;
 
                     if (conf.isExportPrint() && page.getNumber() != null) {
                         try {
-                            final Path destPath = Files.createFile(depotPrint.resolve(printStoredFile.getFilename()));
+                            final Path destPath = Files.createFile(depotPrint.resolve(fileName));
                             Files.copy(sourcePath, destPath, StandardCopyOption.REPLACE_EXISTING);
                             // On remplit la map pour optimiser le traitement ultérieur des métadonnées
                             checkSums.add(exportMetsService.getCheckSummedStoredFile(printStoredFile, sourceFile));

@@ -10,7 +10,14 @@ import fr.progilone.pgcn.domain.document.DocUnit;
 import fr.progilone.pgcn.domain.document.PhysicalDocument;
 import fr.progilone.pgcn.domain.document.conditionreport.ConditionReport;
 import fr.progilone.pgcn.domain.document.conditionreport.ConditionReportDetail;
-import fr.progilone.pgcn.domain.dto.statistics.*;
+import fr.progilone.pgcn.domain.dto.statistics.WorkflowDeliveryProgressDTO;
+import fr.progilone.pgcn.domain.dto.statistics.WorkflowDocUnitInfoDTO;
+import fr.progilone.pgcn.domain.dto.statistics.WorkflowDocUnitProgressDTO;
+import fr.progilone.pgcn.domain.dto.statistics.WorkflowDocUnitProgressDTOPending;
+import fr.progilone.pgcn.domain.dto.statistics.WorkflowProfileActivityDTO;
+import fr.progilone.pgcn.domain.dto.statistics.WorkflowStateProgressDTO;
+import fr.progilone.pgcn.domain.dto.statistics.WorkflowUserActivityDTO;
+import fr.progilone.pgcn.domain.dto.statistics.WorkflowUserProgressDTO;
 import fr.progilone.pgcn.domain.library.Library;
 import fr.progilone.pgcn.domain.lot.Lot;
 import fr.progilone.pgcn.domain.project.Project;
@@ -125,12 +132,25 @@ public class StatisticsWorkflowService {
                                                                                    final List<WorkflowStateStatus> status,
                                                                                    final List<String> users,
                                                                                    final LocalDate fromDate,
-                                                                                   final LocalDate toDate) {
+                                                                                   final LocalDate toDate,
+                                                                                   final int page,
+                                                                                   final int size) {
 
         final String userLogin = CollectionUtils.isEmpty(users) ? null
                                                                 : users.get(0);
 
-        return docUnitWorkflowRepository.findDocUnitProgressStatsPending(libraries, projects, projetActive, lots, trains, pgcnId, states, status, users, fromDate, toDate)
+        return docUnitWorkflowRepository.findDocUnitProgressStats(libraries,
+                                                                  projects,
+                                                                  projetActive,
+                                                                  lots,
+                                                                  trains,
+                                                                  pgcnId,
+                                                                  states,
+                                                                  status,
+                                                                  users,
+                                                                  fromDate,
+                                                                  toDate,
+                                                                  PageRequest.of(page, size))
                                         .stream()
                                         .map(w -> getWorkflowDocUnitProgressDTOLight(w, null, userLogin))  // transform to DTO
                                         .collect(Collectors.toList());
@@ -530,8 +550,9 @@ public class StatisticsWorkflowService {
         final DocUnit docUnit = workflow.getDocUnit();
         WorkflowDocUnitProgressDTO dto = new WorkflowDocUnitProgressDTO();
 
-        if (docUnit == null)
+        if (docUnit == null) {
             return pendingDTO;
+        }
 
         final Project project = docUnit.getProject();
         final Lot lot = docUnit.getLot();
@@ -579,11 +600,11 @@ public class StatisticsWorkflowService {
         return pendingDTO;
     }
 
-    private WorkflowDocUnitProgressDTO setInfosAndNumberPageToDTO(WorkflowDocUnitProgressDTO dto,
-                                                                  DocUnit docUnit,
-                                                                  Set<PhysicalDocument> physicalDocuments,
-                                                                  Lot lot,
-                                                                  Optional<BibliographicRecord> record) {
+    private WorkflowDocUnitProgressDTO setInfosAndNumberPageToDTO(final WorkflowDocUnitProgressDTO dto,
+                                                                  final DocUnit docUnit,
+                                                                  final Set<PhysicalDocument> physicalDocuments,
+                                                                  final Lot lot,
+                                                                  final Optional<BibliographicRecord> record) {
         final WorkflowDocUnitInfoDTO infos = new WorkflowDocUnitInfoDTO();
         final Optional<DigitalDocument> digitalDoc = docUnit.getDigitalDocuments().stream().filter(digDoc -> !StringUtils.isEmpty(digDoc.getDigitalId())).findFirst();
         if (digitalDoc.isPresent()) {

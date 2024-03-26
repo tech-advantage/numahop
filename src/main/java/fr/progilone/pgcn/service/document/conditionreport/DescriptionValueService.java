@@ -1,5 +1,6 @@
 package fr.progilone.pgcn.service.document.conditionreport;
 
+import fr.progilone.pgcn.domain.document.conditionreport.DescriptionProperty;
 import fr.progilone.pgcn.domain.document.conditionreport.DescriptionValue;
 import fr.progilone.pgcn.exception.PgcnValidationException;
 import fr.progilone.pgcn.exception.message.PgcnError;
@@ -28,6 +29,11 @@ public class DescriptionValueService {
     @Transactional(readOnly = true)
     public List<DescriptionValue> findAll() {
         return descriptionValueRepository.findAll();
+    }
+
+    @Transactional(readOnly = true)
+    public List<DescriptionValue> findByProperty(final DescriptionProperty property) {
+        return descriptionValueRepository.findByProperty(property);
     }
 
     @Transactional(readOnly = true)

@@ -224,7 +224,7 @@ public class CSVToDocUnitConvertService extends AbstractImportConvertService {
                 } else {
                     // get the allowed values
                     DescriptionProperty descProp = descriptionPropertyService.findByIdentifier(property);
-                    List<DescriptionValue> allowedValues = descriptionValueService.findByPropertyIdentifier(descProp.getIdentifier());
+                    List<DescriptionValue> allowedValues = descriptionValueService.findByProperty(descProp);
                     // if empty list, value is free to this property
                     if (!allowedValues.isEmpty()) {    // value have to be in the allowedValues
                         Optional<DescriptionValue> findedVal = allowedValues.stream().filter(val -> StringUtils.equalsIgnoreCase(val.getLabel(), recordValue)).findFirst();
@@ -234,11 +234,11 @@ public class CSVToDocUnitConvertService extends AbstractImportConvertService {
                             desc.setValue(findedVal.get());
                             condReportValues.add(desc);
                             LOG.warn("Propriété {} mappée", descProp.getLabel());
-                        } else {
+                        } else if (!checkAndWriteComments(descProp, recordValue, condReportValues)) {
                             LOG.warn("Propriété {} non mappée", descProp.getLabel());
                             errors.add(builder.reinit().setCode(PgcnErrorCode.CONDREPORT_DETAIL_DESC_NO_VALUE_FOR_PROP).setField("pgcnId").build());
                         }
-                    } else {
+                    } else if (!checkAndWriteComments(descProp, recordValue, condReportValues)) {
                         LOG.warn("Pas de valeurs associées à la propriété {}", descProp.getLabel());
                         errors.add(builder.reinit().setCode(PgcnErrorCode.CONDREPORT_DETAIL_DESC_BAD_VALUE).setField("pgcnId").build());
                     }
@@ -251,6 +251,31 @@ public class CSVToDocUnitConvertService extends AbstractImportConvertService {
         }
 
         return condReportValues;
+    }
+
+    /**
+     * Check if comments are authorized, if so add it to the description
+     *
+     * @param descProp
+     * @param recordValue
+     * @param condReportValues
+     * @return true if comments were added, false otherwise
+     */
+    protected boolean checkAndWriteComments(DescriptionProperty descProp, String recordValue, List<Object> condReportValues) {
+        final Optional<PropertyConfiguration> confOpt = descProp.getConfigurations()
+                                                                .stream()
+                                                                .filter(c -> c.getDescProperty() != null && StringUtils.equals(c.getDescProperty().getIdentifier(),
+                                                                                                                               descProp.getIdentifier()))
+                                                                .findAny();
+        if (confOpt.isPresent() && confOpt.get().isAllowComment() || descProp.isAllowComment()) {
+            Description desc = new Description();
+            desc.setProperty(descProp);
+            desc.setComment(recordValue);
+            condReportValues.add(desc);
+            LOG.warn("Commentaire {} mappé", descProp.getLabel());
+            return true;
+        }
+        return false;
     }
 
     /**

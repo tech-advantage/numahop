@@ -115,7 +115,7 @@ public class TrainController extends AbstractRestController {
     @Timed
     @RolesAllowed({LOT_HAB3})
     public ResponseEntity<List<SimpleTrainDTO>> findAllIdentifiersForProjects(final HttpServletRequest request,
-                                                                              @RequestParam(value = "projectsIds", required = false) final List<String> projectIds) {
+                                                                              @RequestParam(value = "projectIds", required = false) final List<String> projectIds) {
         final List<SimpleTrainDTO> trainIds = trainService.findAllByProjectIds(projectIds);
         return createResponseEntity(trainIds);
     }

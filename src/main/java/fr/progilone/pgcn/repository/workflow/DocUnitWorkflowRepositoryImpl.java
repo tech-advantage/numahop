@@ -3,7 +3,6 @@ package fr.progilone.pgcn.repository.workflow;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Predicate;
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -61,7 +60,8 @@ public class DocUnitWorkflowRepositoryImpl implements DocUnitWorkflowRepositoryC
 
         final QDocUnitWorkflow qDocUnitWorkflow = QDocUnitWorkflow.docUnitWorkflow;
 
-        final JPAQuery<DocUnitWorkflow> baseQuery = createQueryToFindDocUnitWorkFlows(libraries,
+        final JPAQuery<DocUnitWorkflow> baseQuery = createQueryToFindDocUnitWorkFlows(qDocUnitWorkflow,
+                                                                                      libraries,
                                                                                       projects,
                                                                                       projetActive,
                                                                                       lots,
@@ -80,46 +80,13 @@ public class DocUnitWorkflowRepositoryImpl implements DocUnitWorkflowRepositoryC
         if (pageable != null) {
             baseQuery.offset(pageable.getOffset()).limit(pageable.getPageSize());
         }
-        // Tri
-        baseQuery.orderBy(qDocUnitWorkflow.docUnit.pgcnId.asc());
+
         // Résultats
         return new PageImpl<>(baseQuery.fetch(), pageable, total);
     }
 
-    @Override
-    public List<DocUnitWorkflow> findDocUnitProgressStatsPending(final List<String> libraries,
-                                                                 final List<String> projects,
-                                                                 final boolean projetActive,
-                                                                 final List<String> lots,
-                                                                 final List<String> trains,
-                                                                 final String pgcnId,
-                                                                 final List<WorkflowStateKey> states,
-                                                                 final List<WorkflowStateStatus> status,
-                                                                 final List<String> users,
-                                                                 final LocalDate fromDate,
-                                                                 final LocalDate toDate) {
-        final QDocUnitWorkflow qDocUnitWorkflow = QDocUnitWorkflow.docUnitWorkflow;
-        final JPAQuery<DocUnitWorkflow> baseQuery = createQueryToFindDocUnitWorkFlows(libraries,
-                                                                                      projects,
-                                                                                      projetActive,
-                                                                                      lots,
-                                                                                      trains,
-                                                                                      pgcnId,
-                                                                                      states,
-                                                                                      status,
-                                                                                      users,
-                                                                                      fromDate,
-                                                                                      toDate);
-
-        // Tri
-        baseQuery.orderBy(qDocUnitWorkflow.docUnit.pgcnId.asc());
-        // Résultats
-        final List<DocUnitWorkflow> results = baseQuery.fetch();
-
-        return results;
-    }
-
-    private JPAQuery<DocUnitWorkflow> createQueryToFindDocUnitWorkFlows(final List<String> libraries,
+    private JPAQuery<DocUnitWorkflow> createQueryToFindDocUnitWorkFlows(final QDocUnitWorkflow qDocUnitWorkflow,
+                                                                        final List<String> libraries,
                                                                         final List<String> projects,
                                                                         final boolean projetActive,
                                                                         final List<String> lots,
@@ -130,18 +97,16 @@ public class DocUnitWorkflowRepositoryImpl implements DocUnitWorkflowRepositoryC
                                                                         final List<String> users,
                                                                         final LocalDate fromDate,
                                                                         final LocalDate toDate) {
-        final QDocUnitWorkflow qDocUnitWorkflow = QDocUnitWorkflow.docUnitWorkflow;
         final QDocUnitState qDocUnitState = QDocUnitState.docUnitState;
         final QWorkflowModelState qWorkflowModelState = QWorkflowModelState.workflowModelState;
         final QDocUnit qDocUnit = QDocUnit.docUnit;
-        final QLibrary qAssociatedLibrary = QLibrary.library;
+        final QLibrary qAssociatedLibrary = new QLibrary("associatedLibrary");
+        final QLibrary qLibrary = QLibrary.library;
         final QUser qAssociatedUser = QUser.user;
         final QProject qProject = QProject.project;
         final QLot qLot = QLot.lot;
+        final QPhysicalDocument qPhysicalDocument = QPhysicalDocument.physicalDocument;
         final BooleanBuilder builder = new BooleanBuilder();
-
-        // Droits d'accès
-        // QueryDSLBuilderUtils.addAccessFilters(builder, qDocUnit.library, qDocUnit.project, libraries, null);
 
         // UD
         if (StringUtils.isNotBlank(pgcnId)) {
@@ -150,20 +115,18 @@ public class DocUnitWorkflowRepositoryImpl implements DocUnitWorkflowRepositoryC
         }
         // Projets
         if (projetActive) {
-            builder.and(qDocUnit.project.active.eq(true));
+            builder.and(qProject.active.eq(true));
         }
         if (CollectionUtils.isNotEmpty(projects)) {
-            builder.and(qDocUnit.project.identifier.in(projects));
+            builder.and(qProject.identifier.in(projects));
         }
         // Lots
         if (CollectionUtils.isNotEmpty(lots)) {
-            builder.and(qDocUnit.lot.identifier.in(lots));
+            builder.and(qLot.identifier.in(lots));
         }
         // Trains
         if (CollectionUtils.isNotEmpty(trains)) {
-            final QPhysicalDocument qpd = qDocUnit.physicalDocuments.any();
-            final BooleanExpression trainFilter = qpd.isNotNull().and(qpd.train.identifier.in(trains));
-            builder.and(trainFilter);
+            builder.and(qPhysicalDocument.train.identifier.in(trains));
         }
         // Étape de workflow
         if (CollectionUtils.isNotEmpty(states)) {
@@ -172,18 +135,18 @@ public class DocUnitWorkflowRepositoryImpl implements DocUnitWorkflowRepositoryC
         // Étape de workflow, démarrée, appartenant à l'intervalle [fromDate; toDate]
         if (fromDate != null) {
             builder.and(qDocUnitState.status.ne(WorkflowStateStatus.NOT_STARTED));
-            builder.and(new BooleanBuilder().or(qDocUnitState.endDate.isNull()).or(qDocUnitState.endDate.after(fromDate.atStartOfDay())));
+            builder.and(qDocUnitState.endDate.isNull()).or(qDocUnitState.endDate.after(fromDate.atStartOfDay()));
         }
         if (toDate != null) {
             builder.and(qDocUnitState.status.ne(WorkflowStateStatus.NOT_STARTED));
-            builder.and(new BooleanBuilder().or(qDocUnitState.startDate.before(toDate.plusDays(1).atStartOfDay())));
+            builder.and(qDocUnitState.startDate.before(toDate.plusDays(1).atStartOfDay()));
         }
         if (CollectionUtils.isNotEmpty(status)) {
             builder.and(qDocUnitState.status.in(status));
         }
 
         // provider, library
-        QueryDSLBuilderUtils.addAccessFilters(builder, qDocUnit.library, qDocUnit.lot, qDocUnit.project, qAssociatedLibrary, qAssociatedUser, libraries, null);
+        QueryDSLBuilderUtils.addAccessFilters(builder, qLibrary, qLot, qProject, qAssociatedLibrary, qAssociatedUser, libraries, null);
 
         // Utilisateurs
         if (CollectionUtils.isNotEmpty(users)) {
@@ -193,7 +156,7 @@ public class DocUnitWorkflowRepositoryImpl implements DocUnitWorkflowRepositoryC
             builder.and(JPAExpressions.select(qUser)
                                       .from(qUser)
                                       .innerJoin(qUser.groups, qWorkflowGroup)
-                                      .where(new BooleanBuilder().and(qUser.login.in(users)).and(qWorkflowGroup.eq(qWorkflowModelState.group)))
+                                      .where(qUser.login.in(users).and(qWorkflowGroup.eq(qWorkflowModelState.group)))
                                       .exists());
         }
 
@@ -202,12 +165,14 @@ public class DocUnitWorkflowRepositoryImpl implements DocUnitWorkflowRepositoryC
                            .innerJoin(qDocUnitWorkflow.docUnit, qDocUnit)
                            .leftJoin(qDocUnitWorkflow.states, qDocUnitState)
                            .leftJoin(qDocUnitState.modelState, qWorkflowModelState)
-                           .leftJoin(qDocUnit.records)
                            .leftJoin(qDocUnit.project, qProject)
                            .leftJoin(qProject.associatedLibraries, qAssociatedLibrary)
                            .leftJoin(qProject.associatedUsers, qAssociatedUser)
                            .leftJoin(qDocUnit.lot, qLot)
-                           .where(builder);
+                           .leftJoin(qDocUnit.library, qLibrary)
+                           .leftJoin(qDocUnit.physicalDocuments, qPhysicalDocument)
+                           .where(builder)
+                           .orderBy(qDocUnit.pgcnId.asc());
     }
 
     @Override
@@ -234,15 +199,17 @@ public class DocUnitWorkflowRepositoryImpl implements DocUnitWorkflowRepositoryC
 
         final QDocUnitWorkflow qDocUnitWorkflow = QDocUnitWorkflow.docUnitWorkflow;
         final QDocUnit qDocUnit = QDocUnit.docUnit;
+        final QLibrary qLibrary = QLibrary.library;
+        final QProject qProject = QProject.project;
         final QDocUnitState qDocUnitState = QDocUnitState.docUnitState;
         final BooleanBuilder builder = new BooleanBuilder();
 
         // Droits d'accès
-        QueryDSLBuilderUtils.addAccessFilters(builder, qDocUnit.library, qDocUnit.project, libraries, null);
+        QueryDSLBuilderUtils.addAccessFilters(builder, qLibrary, qProject, libraries, null);
 
         // Projets
         if (CollectionUtils.isNotEmpty(projects)) {
-            builder.and(qDocUnit.project.identifier.in(projects));
+            builder.and(qProject.identifier.in(projects));
         }
         // Lots
         if (CollectionUtils.isNotEmpty(lots)) {
@@ -277,7 +244,14 @@ public class DocUnitWorkflowRepositoryImpl implements DocUnitWorkflowRepositoryC
         builder.and(JPAExpressions.select(qDocUnitState).from(qDocUnitState).where(stateBuilder).exists());
 
         // Requête
-        return queryFactory.selectDistinct(qDocUnitWorkflow).from(qDocUnitWorkflow).innerJoin(qDocUnitWorkflow.docUnit, qDocUnit).fetchJoin().where(builder).fetch();
+        return queryFactory.selectDistinct(qDocUnitWorkflow)
+                           .from(qDocUnitWorkflow)
+                           .innerJoin(qDocUnitWorkflow.docUnit, qDocUnit)
+                           .fetchJoin()
+                           .leftJoin(qDocUnit.library, qLibrary)
+                           .leftJoin(qDocUnit.project, qProject)
+                           .where(builder)
+                           .fetch();
     }
 
     @Override
@@ -285,14 +259,16 @@ public class DocUnitWorkflowRepositoryImpl implements DocUnitWorkflowRepositoryC
 
         final QDocUnitWorkflow qDocUnitWorkflow = QDocUnitWorkflow.docUnitWorkflow;
         final QDocUnit qDocUnit = QDocUnit.docUnit;
+        final QLibrary qLibrary = QLibrary.library;
+        final QProject qProject = QProject.project;
         final BooleanBuilder builder = new BooleanBuilder();
 
         // Droits d'accès
-        QueryDSLBuilderUtils.addAccessFilters(builder, qDocUnit.library, qDocUnit.project, libraries, null);
+        QueryDSLBuilderUtils.addAccessFilters(builder, qLibrary, qProject, libraries, null);
 
         // Projets
         if (CollectionUtils.isNotEmpty(projects)) {
-            builder.and(qDocUnit.project.identifier.in(projects));
+            builder.and(qProject.identifier.in(projects));
         }
         // Lots
         if (CollectionUtils.isNotEmpty(lots)) {
@@ -308,6 +284,8 @@ public class DocUnitWorkflowRepositoryImpl implements DocUnitWorkflowRepositoryC
             final Predicate subQuery = JPAExpressions.select(qDeliveredDocument)
                                                      .from(qDeliveredDocument)
                                                      .innerJoin(qDeliveredDocument.digitalDocument, qDigitalDocument)
+                                                     .leftJoin(qDocUnit.library, qLibrary)
+                                                     .leftJoin(qDocUnit.project, qProject)
                                                      .where(subBuilder)
                                                      .exists();
             builder.and(subQuery);
@@ -367,14 +345,16 @@ public class DocUnitWorkflowRepositoryImpl implements DocUnitWorkflowRepositoryC
         final QDocUnitWorkflow qDocUnitWorkflow = QDocUnitWorkflow.docUnitWorkflow;
         final QDocUnitState qDocUnitState = QDocUnitState.docUnitState;
         final QDocUnit qDocUnit = QDocUnit.docUnit;
+        final QLibrary qLibrary = QLibrary.library;
+        final QProject qProject = QProject.project;
         final BooleanBuilder builder = new BooleanBuilder();
 
         // Droits d'accès
-        QueryDSLBuilderUtils.addAccessFilters(builder, qDocUnit.library, qDocUnit.project, libraries, null);
+        QueryDSLBuilderUtils.addAccessFilters(builder, qLibrary, qProject, libraries, null);
 
         // Projets
         if (CollectionUtils.isNotEmpty(projects)) {
-            builder.and(qDocUnit.project.identifier.in(projects));
+            builder.and(qProject.identifier.in(projects));
         }
         // Lots
         if (CollectionUtils.isNotEmpty(lots)) {
@@ -388,6 +368,8 @@ public class DocUnitWorkflowRepositoryImpl implements DocUnitWorkflowRepositoryC
                            .from(qDocUnitWorkflow)
                            .innerJoin(qDocUnitWorkflow.docUnit, qDocUnit)
                            .innerJoin(qDocUnitWorkflow.states, qDocUnitState)
+                           .leftJoin(qDocUnit.library, qLibrary)
+                           .leftJoin(qDocUnit.project, qProject)
                            .where(builder)
                            .groupBy(qDocUnitState.discriminator)
                            .stream()
@@ -405,6 +387,8 @@ public class DocUnitWorkflowRepositoryImpl implements DocUnitWorkflowRepositoryC
         final QDocUnitWorkflow qDocUnitWorkflow = QDocUnitWorkflow.docUnitWorkflow;
         final QDocUnitState qDocUnitState = QDocUnitState.docUnitState;
         final QDocUnit qDocUnit = QDocUnit.docUnit;
+        final QLibrary qLibrary = QLibrary.library;
+        final QProject qProject = QProject.project;
 
         final BooleanBuilder builder = new BooleanBuilder();
 
@@ -412,11 +396,11 @@ public class DocUnitWorkflowRepositoryImpl implements DocUnitWorkflowRepositoryC
         wkfStates.add(WorkflowStateKey.CONTROLE_QUALITE_EN_COURS);
 
         // Droits d'accès
-        QueryDSLBuilderUtils.addAccessFilters(builder, qDocUnit.library, qDocUnit.project, libraries, null);
+        QueryDSLBuilderUtils.addAccessFilters(builder, qLibrary, qProject, libraries, null);
 
         // Projets
         if (CollectionUtils.isNotEmpty(projects)) {
-            builder.and(qDocUnit.project.identifier.in(projects));
+            builder.and(qProject.identifier.in(projects));
         }
         // Lots
         if (CollectionUtils.isNotEmpty(lots)) {
@@ -437,6 +421,8 @@ public class DocUnitWorkflowRepositoryImpl implements DocUnitWorkflowRepositoryC
                            .from(qDocUnitWorkflow)
                            .innerJoin(qDocUnitWorkflow.docUnit, qDocUnit)
                            .leftJoin(qDocUnitWorkflow.states, qDocUnitState)
+                           .leftJoin(qDocUnit.library, qLibrary)
+                           .leftJoin(qDocUnit.project, qProject)
                            .where(builder)
                            .fetch();
     }

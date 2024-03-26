@@ -90,6 +90,19 @@
                     numa-readonly="formRo"
                 ></numa-editable-field>
                 <numa-editable-field
+                    title="{{::'Connexion SFTP' | translate}}"
+                    type="radiolist"
+                    form="digitalLibraryConfigForm"
+                    model="ctrl.configuration.sftp"
+                    numa-readonly="formRO"
+                    id="sftp"
+                    onbeforesave="ctrl.validation.required($data)"
+                    onaftersave="onaftersave"
+                    errors="{{ ctrl.errors.sftp }}"
+                    config="{ data: ctrl.options.boolean, displayFn: ctrl.displayBoolean,
+                                                    query: 's.value as s.text for s in ::$ctrl.config.data track by s.value' }"
+                ></numa-editable-field>
+                <numa-editable-field
                     title="{{::'Email' | translate}}"
                     model="ctrl.configuration.mail"
                     errors="{{ ctrl.errors.mail }}"

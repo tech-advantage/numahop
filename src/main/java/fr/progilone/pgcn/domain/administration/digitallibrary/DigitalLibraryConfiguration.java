@@ -75,6 +75,12 @@ public class DigitalLibraryConfiguration extends AbstractDomainObject {
     @Column(name = "mail")
     private String mail;
 
+    /**
+     * envoi des fichiers en SFTP
+     */
+    @Column(name = "sftp")
+    private boolean sftp;
+
     /* Types de fichiers à exporter */
     @Column(name = "export_view")
     private boolean exportView;
@@ -237,6 +243,14 @@ public class DigitalLibraryConfiguration extends AbstractDomainObject {
 
     public void setDefaultValue(final String defaultValue) {
         this.defaultValue = defaultValue;
+    }
+
+    public boolean isSftp() {
+        return sftp;
+    }
+
+    public void setSftp(final boolean sftp) {
+        this.sftp = sftp;
     }
 
     @Override

@@ -261,6 +261,7 @@
     <include file="classpath:config/liquibase/changelog/db-changelog-imagemetadata-001.xml" relativeToChangelogFile="false" />
     <include file="classpath:config/liquibase/changelog/db-changelog-check-017.xml" relativeToChangelogFile="false" />
     <include file="classpath:config/liquibase/changelog/db-changelog-check-018.xml" relativeToChangelogFile="false" />
+    <include file="classpath:config/liquibase/changelog/db-changelog-conf-digital-library-03.xml" relativeToChangelogFile="false" />
 
     <!-- ajout données par defaut -->
     <include file="classpath:config/liquibase/changelog/db-changelog-update-parameter-cines-values.xml" relativeToChangelogFile="false" />

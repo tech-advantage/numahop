@@ -50,9 +50,16 @@
                 return gettextCatalog.getString('Ce champ est obligatoire');
             }
 
-            var regEx = new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})');
+            // Cette regex teste si le mdp contient au moins 12 caractères,
+            // au moins 1 majuscule (?=.*?[A-Z]),
+            // 1 minuscule (?=.*?[a-z]),
+            // 1 chiffre (?=.*?[0-9])
+            // et un caractère spécial (?=.*?[!-/:-@\\[-`{-~£§€µ²°~¨])
+            // Elle teste également que TOUS les caractères soient des alphanumériques OU des caractères spéciaux acceptés [!-~£§€µ²°~¨]{12,}
+            // !-~ contient tous les ASCII entre 33 et 126, y compris les caractères alpahanumériques (48 à 57), (65 à 90), (97 à 122)
+            const regEx = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!-/:-@\\[-`{-~£§€µ²°~¨])[!-~£§€µ²°~¨]{12,}$/;
             if (!regEx.test(value)) {
-                return gettextCatalog.getString("Le mot de passe n'est pas conforme. (12 caractères, au moins 1 majuscule, 1 minuscule, 1 chiffre et un caractère spécial).");
+                return gettextCatalog.getString(`Le mot de passe n'est pas conforme. Il nécessite au moins 12 caractères, 1 majuscule, 1 minuscule, 1 chiffre et un caractère spécial.`);
             }
             return true;
         };

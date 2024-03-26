@@ -3,7 +3,13 @@ package fr.progilone.pgcn.web.rest.statistics;
 import com.codahale.metrics.annotation.Timed;
 import fr.progilone.pgcn.domain.AbstractDomainObject;
 import fr.progilone.pgcn.domain.document.DigitalDocument.DigitalDocumentStatus;
-import fr.progilone.pgcn.domain.dto.statistics.*;
+import fr.progilone.pgcn.domain.dto.statistics.WorkflowDeliveryProgressDTO;
+import fr.progilone.pgcn.domain.dto.statistics.WorkflowDocUnitProgressDTO;
+import fr.progilone.pgcn.domain.dto.statistics.WorkflowDocUnitProgressDTOPending;
+import fr.progilone.pgcn.domain.dto.statistics.WorkflowProfileActivityDTO;
+import fr.progilone.pgcn.domain.dto.statistics.WorkflowStateProgressDTO;
+import fr.progilone.pgcn.domain.dto.statistics.WorkflowUserActivityDTO;
+import fr.progilone.pgcn.domain.dto.statistics.WorkflowUserProgressDTO;
 import fr.progilone.pgcn.domain.util.CustomUserDetails;
 import fr.progilone.pgcn.domain.workflow.WorkflowStateKey;
 import fr.progilone.pgcn.domain.workflow.WorkflowStateStatus;
@@ -199,7 +205,13 @@ public class StatisticsWorkflowController {
                                                                                                              @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "from",
                                                                                                                                                                    required = false) final LocalDate fromDate,
                                                                                                              @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "to",
-                                                                                                                                                                   required = false) final LocalDate toDate) {
+                                                                                                                                                                   required = false) final LocalDate toDate,
+                                                                                                             @RequestParam(value = "page",
+                                                                                                                           defaultValue = "0",
+                                                                                                                           required = false) final int page,
+                                                                                                             @RequestParam(value = "size",
+                                                                                                                           defaultValue = "10",
+                                                                                                                           required = false) final int size) {
         // Droits d'accès
         final List<String> filteredLibraries = libraryAccesssHelper.getLibraryFilter(request, libraries);
         final List<String> filteredProjects = accessHelper.filterProjects(projects).stream().map(AbstractDomainObject::getIdentifier).collect(Collectors.toList());
@@ -223,7 +235,9 @@ public class StatisticsWorkflowController {
                                                                                                   status,
                                                                                                   users,
                                                                                                   fromDate,
-                                                                                                  toDate), HttpStatus.OK);
+                                                                                                  toDate,
+                                                                                                  page,
+                                                                                                  size), HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.GET,
