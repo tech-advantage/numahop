@@ -207,6 +207,13 @@ public class SftpService {
         }
     }
 
+    private static boolean checkPath(final Path localSource, final ChannelSftp.LsEntry e) {
+        // Si le localSource ne retourne pas de fileName, considérer que l'on est sur la root
+        String localSourceStr = localSource.getFileName() != null ? localSource.getFileName().toString()
+                                                                  : ".";
+        return StringUtils.equals(e.getFilename(), localSourceStr);
+    }
+
     /**
      * Vérifie l'existence du fichier / répertoire local dans le répertoire distant courant
      *
@@ -216,7 +223,7 @@ public class SftpService {
      */
     private static boolean checkPath(final Path localSource, final ChannelSftp channelSftp) throws SftpException {
         final Vector<ChannelSftp.LsEntry> ls = channelSftp.ls(".");
-        return ls.stream().anyMatch(e -> StringUtils.equals(e.getFilename(), localSource.getFileName().toString()));
+        return ls.stream().anyMatch(e -> checkPath(localSource, e));
     }
 
     /**

@@ -8,7 +8,7 @@
     </parent>
     <groupId>fr.progilone.numahop</groupId>
     <artifactId>numahop</artifactId>
-    <version>2.2.0</version>
+    <version>2.2.1</version>
     <packaging>war</packaging>
     <name>NumaHOP</name>
     <description>NumaHOP</description>
@@ -19,12 +19,12 @@
         <commons-net.version>3.9.0</commons-net.version>
         <commons-text.version>1.10.0</commons-text.version>
         <commons-validator.version>1.7</commons-validator.version>
-        <formatter-maven-plugin.version>2.22.0</formatter-maven-plugin.version>
-        <frontend-maven-plugin.version>1.12.1</frontend-maven-plugin.version>
-        <git-code-format-maven-plugin.version>4.2</git-code-format-maven-plugin.version>
+        <formatter-maven-plugin.version>2.23.0</formatter-maven-plugin.version>
+        <frontend-maven-plugin.version>1.15.0</frontend-maven-plugin.version>
+        <git-code-format-maven-plugin.version>5.3</git-code-format-maven-plugin.version>
         <guava.version>31.1-jre</guava.version>
         <imgscalr.version>4.2</imgscalr.version>
-        <jacoco.version>0.8.8</jacoco.version>
+        <jacoco.version>0.8.11</jacoco.version>
         <jai-imageio-jpeg2000.version>1.4.0</jai-imageio-jpeg2000.version>
         <jakarta-activation.version>2.0.1</jakarta-activation.version>
         <jasper.version>6.20.0</jasper.version>
@@ -38,6 +38,7 @@
         <metadata-extractor.version>2.18.0</metadata-extractor.version>
         <metrics-spring.version>3.1.3</metrics-spring.version>
         <ninja-squad-dbsetup.version>2.1.0</ninja-squad-dbsetup.version>
+        <node.version>v16.14.0</node.version>
         <opencsv.version>5.7.1</opencsv.version>
         <poi.version>5.2.3</poi.version>
         <properties-maven-plugin.version>1.1.0</properties-maven-plugin.version>
@@ -95,11 +96,6 @@
             <version>${guava.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>com.jayway.jsonpath</groupId>
             <artifactId>json-path</artifactId>
         </dependency>
@@ -121,13 +117,6 @@
             <groupId>com.opencsv</groupId>
             <artifactId>opencsv</artifactId>
             <version>${opencsv.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.querydsl</groupId>
-            <artifactId>querydsl-apt</artifactId>
-            <version>${querydsl.version}</version>
-            <classifier>jakarta</classifier>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.querydsl</groupId>
@@ -345,11 +334,6 @@
             <version>${tika.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.ehcache</groupId>
             <artifactId>ehcache</artifactId>
             <classifier>jakarta</classifier>
@@ -446,17 +430,6 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.vaadin.external.google</groupId>
-                    <artifactId>android-json</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
         <dependency>
@@ -476,27 +449,44 @@
             <artifactId>spring-security-messaging</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.yaz4j</groupId>
             <artifactId>yaz4j-any</artifactId>
             <version>${yaz.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.querydsl</groupId>
+            <artifactId>querydsl-apt</artifactId>
+            <version>${querydsl.version}</version>
+            <classifier>jakarta</classifier>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.vaadin.external.google</groupId>
+                    <artifactId>android-json</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
-    <repositories>
-        <repository>
-            <id>id-maven-repo</id>
-            <url>https://maven.indexdata.com</url>
-        </repository>
-        <repository>
-            <!-- Dépôt pour la version custom de itext fournie par jasper report -->
-            <id>jaspersoft-third-party</id>
-            <url>https://jaspersoft.jfrog.io/jaspersoft/third-party-ce-artifacts/</url>
-        </repository>
-    </repositories>
     <build>
         <plugins>
             <plugin>
@@ -519,10 +509,44 @@
                 </dependencies>
                 <executions>
                     <execution>
-                        <id>validate-code-format</id>
                         <goals>
                             <goal>validate-code-format</goal>
                         </goals>
+                        <phase>validate</phase>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <version>${frontend-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>install node and npm</id>
+                        <goals>
+                            <goal>install-node-and-npm</goal>
+                        </goals>
+                        <configuration>
+                            <nodeVersion>${node.version}</nodeVersion>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>npm ci</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>ci --cache .npm --prefer-offline --no-audit</arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>check format</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>run prettier:check</arguments>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -533,12 +557,14 @@
                 <configuration>
                     <createBackupFile>false</createBackupFile>
                     <spaceBeforeCloseEmptyElement>true</spaceBeforeCloseEmptyElement>
-                    <sortProperties>true</sortProperties>
                     <nrOfIndentSpace>4</nrOfIndentSpace>
-                    <sortDependencies>groupId,artifactId</sortDependencies>
-                    <sortPlugins>groupId,artifactId</sortPlugins>
-                    <keepBlankLines>true</keepBlankLines>
                     <expandEmptyElements>false</expandEmptyElements>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                    <keepBlankLines>true</keepBlankLines>
+                    <predefinedSortOrder>custom_1</predefinedSortOrder>
+                    <sortDependencies>scope</sortDependencies>
+                    <sortProperties>true</sortProperties>
+                    <verifyFail>stop</verifyFail>
                 </configuration>
                 <executions>
                     <execution>
@@ -571,6 +597,7 @@
                         <goals>
                             <goal>validate</goal>
                         </goals>
+                        <phase>validate</phase>
                     </execution>
                 </executions>
             </plugin>
@@ -893,6 +920,17 @@
             </plugin>
         </plugins>
     </build>
+    <repositories>
+        <repository>
+            <id>id-maven-repo</id>
+            <url>https://maven.indexdata.com</url>
+        </repository>
+        <repository>
+            <!-- Dépôt pour la version custom de itext fournie par jasper report -->
+            <id>jaspersoft-third-party</id>
+            <url>https://jaspersoft.jfrog.io/jaspersoft/third-party-ce-artifacts/</url>
+        </repository>
+    </repositories>
     <profiles>
         <profile>
             <id>dev</id>
@@ -916,39 +954,12 @@
                         <version>${frontend-maven-plugin.version}</version>
                         <executions>
                             <execution>
-                                <id>install node and npm</id>
-                                <goals>
-                                    <goal>install-node-and-npm</goal>
-                                </goals>
-                                <configuration>
-                                    <nodeVersion>v16.14.0</nodeVersion>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>npm install</id>
-                                <goals>
-                                    <goal>npm</goal>
-                                </goals>
-                                <configuration>
-                                    <arguments>install</arguments>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>check format</id>
-                                <goals>
-                                    <goal>npm</goal>
-                                </goals>
-                                <configuration>
-                                    <arguments>run prettier:check</arguments>
-                                </configuration>
-                            </execution>
-                            <execution>
                                 <id>grunt build</id>
                                 <goals>
                                     <goal>grunt</goal>
                                 </goals>
                                 <configuration>
-                                    <arguments>build --force --no-color</arguments>
+                                    <arguments>build --force</arguments>
                                 </configuration>
                             </execution>
                         </executions>
