@@ -158,7 +158,9 @@
                             <label translate>Alto</label>
                             <input type="checkbox" ng-model="ctrl.configuration.exportAlto" style="margin-right: 15px" ng-disabled="!ctrl.loaded || viewMode !== viewModes.EDIT" />
                             <label translate>Pdf</label>
-                            <input type="checkbox" ng-model="ctrl.configuration.exportPdf" ng-disabled="!ctrl.loaded || viewMode !== viewModes.EDIT" />
+                            <input type="checkbox" ng-model="ctrl.configuration.exportPdf" style="margin-right: 15px" ng-disabled="!ctrl.loaded || viewMode !== viewModes.EDIT" />
+                            <label translate>Master</label>
+                            <input type="checkbox" ng-model="ctrl.configuration.exportMaster" ng-disabled="!ctrl.loaded || viewMode !== viewModes.EDIT" />
                         </div>
                     </div>
                 </div>

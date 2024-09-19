@@ -12,6 +12,7 @@ import fr.progilone.pgcn.repository.exchange.ImportReportRepository;
 import fr.progilone.pgcn.repository.exchange.ImportedDocUnitRepository;
 import fr.progilone.pgcn.repository.imagemetadata.ImageMetadataValuesRepository;
 import fr.progilone.pgcn.security.SecurityUtils;
+import fr.progilone.pgcn.service.document.DocUnitService;
 import fr.progilone.pgcn.service.storage.FileStorageManager;
 import fr.progilone.pgcn.service.util.transaction.TransactionService;
 import fr.progilone.pgcn.service.util.transaction.TransactionalJobRunner;
@@ -63,6 +64,7 @@ public class ImportReportService {
     private final ImageMetadataValuesRepository imageMetadataValuesRepository;
     private final TransactionService transactionService;
     private final WebsocketService websocketService;
+    private final DocUnitService docUnitService;
 
     // Stockage des fichiers importés
     @Value("${uploadPath.import}")
@@ -76,7 +78,8 @@ public class ImportReportService {
                                final TransactionService transactionService,
                                final WebsocketService websocketService,
                                final ConditionReportRepository conditionReportRepository,
-                               final ImageMetadataValuesRepository imageMetadataValuesRepository) {
+                               final ImageMetadataValuesRepository imageMetadataValuesRepository,
+                               final DocUnitService docUnitService) {
         this.docUnitRepository = docUnitRepository;
         this.conditionReportRepository = conditionReportRepository;
         this.fm = fm;
@@ -85,6 +88,7 @@ public class ImportReportService {
         this.imageMetadataValuesRepository = imageMetadataValuesRepository;
         this.transactionService = transactionService;
         this.websocketService = websocketService;
+        this.docUnitService = docUnitService;
     }
 
     @PostConstruct
@@ -494,29 +498,16 @@ public class ImportReportService {
             importedDocUnitRepository.deleteByIds(ids);
             return true;
         }).process();
-        LOG.debug("Suppression des unités documentaires liées au rapport d'import {}", identifier);
-        new TransactionalJobRunner<>(docUnitIds, transactionService).setCommit(BATCH_SIZE).forEachGroup(BATCH_SIZE, ids -> {
-            docUnitRepository.setParentNullByParentIdIn(ids);
-            return true;
-        }).process();
-        new TransactionalJobRunner<>(docUnitIds, transactionService).setCommit(BATCH_SIZE).forEachGroup(BATCH_SIZE, ids -> {
-            final List<DocUnit> docUnits = docUnitRepository.findByIdentifierIn(ids);
-            docUnitRepository.deleteAll(docUnits);
+
+        // Supression du docunit préchargé
+        new TransactionalJobRunner<>(docUnitIds, transactionService).setCommit(BATCH_SIZE).forEachGroup(BATCH_SIZE, id -> {
+            docUnitService.delete(id);
             return true;
         }).process();
 
         // Suppression du rapport
         LOG.debug("Suppression du rapport d'import {}", identifier);
         importReportRepository.deleteById(identifier);
-    }
-
-    /**
-     * Suppression de tous les imports d'une bibliothèque
-     *
-     * @param identifier
-     */
-    public void deleteByLibrary(final String identifier) {
-        importReportRepository.findByLibraryIdentifier(identifier).forEach(report -> delete(report.getIdentifier()));
     }
 
     @Transactional

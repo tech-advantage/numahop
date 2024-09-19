@@ -17,6 +17,7 @@ import fr.progilone.pgcn.repository.document.conditionreport.ConditionReportRepo
 import fr.progilone.pgcn.repository.exchange.ImportReportRepository;
 import fr.progilone.pgcn.repository.exchange.ImportedDocUnitRepository;
 import fr.progilone.pgcn.repository.imagemetadata.ImageMetadataValuesRepository;
+import fr.progilone.pgcn.service.document.DocUnitService;
 import fr.progilone.pgcn.service.storage.FileStorageManager;
 import fr.progilone.pgcn.service.util.transaction.TransactionService;
 import fr.progilone.pgcn.web.websocket.WebsocketService;
@@ -52,6 +53,9 @@ public class ImportReportServiceTest {
     @Mock
     private ImageMetadataValuesRepository imageMetadataValuesRepository;
 
+    @Mock
+    private DocUnitService docUnitService;
+
     private ImportReportService service;
 
     @BeforeEach
@@ -63,7 +67,8 @@ public class ImportReportServiceTest {
                                           transactionService,
                                           websocketService,
                                           conditionReportRepository,
-                                          imageMetadataValuesRepository);
+                                          imageMetadataValuesRepository,
+                                          docUnitService);
 
         final CustomUserDetails customUserDetails = new CustomUserDetails(null, "tortor", null, null, null, null, false, User.Category.OTHER);
         final TestingAuthenticationToken authenticationToken = new TestingAuthenticationToken(customUserDetails,

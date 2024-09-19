@@ -88,7 +88,8 @@ public class BibliographicRecordService {
     @Transactional
     public void delete(final String identifier) {
         bibliographicRecordRepository.findById(identifier).ifPresent(r -> {
-            esDocUnitService.delete(r.getDocUnit().getIdentifier());
+            if (r.getDocUnit() != null)
+                esDocUnitService.delete(r.getDocUnit().getIdentifier());
             bibliographicRecordRepository.deleteById(identifier);
         });
     }

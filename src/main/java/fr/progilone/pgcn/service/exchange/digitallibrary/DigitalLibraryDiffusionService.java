@@ -73,10 +73,11 @@ public class DigitalLibraryDiffusionService {
     private static final String ALTO_DIR = "-alto";
     private static final String JPG_DIR = "-jpg";
     private static final String PDF_DIR = "-pdf";
+    private static final String MASTER_DIR = "-master";
     private static final String MEDIA_HEADER = "media";
     private static final String ALTO_HEADER = "alto";
     private static final String PDF_HEADER = "pdf";
-
+    private static final String MASTER_HEADER = "master";
     private final DocUnitService docUnitService;
     private final DigitalLibraryConfigurationService digitalLibraryConfigurationService;
     private final WorkflowService workflowService;
@@ -350,6 +351,9 @@ public class DigitalLibraryDiffusionService {
             if (conf.isExportPdf()) {
                 writer.append(buildExportRelativePath(pgcnId, PDF_DIR, conf));
             }
+            if (conf.isExportMaster()) {
+                writer.append(buildExportRelativePath(pgcnId, MASTER_DIR, conf));
+            }
 
             final List<String> entetesDC = docPropertyTypeService.findAllBySuperType(DocPropertyType.DocPropertySuperType.DC)
                                                                  .stream()
@@ -452,6 +456,9 @@ public class DigitalLibraryDiffusionService {
             if (conf.isExportPdf()) {
                 writer.append(MEDIA_HEADER).append(CSV_COL_SEP);
             }
+            if (conf.isExportMaster()) {
+                writer.append(MASTER_HEADER).append(CSV_COL_SEP);
+            }
 
             // Entête Dublin Core
             final List<String> entetesDC = docPropertyTypeService.findAllBySuperType(DocPropertyType.DocPropertySuperType.DC)
@@ -501,6 +508,9 @@ public class DigitalLibraryDiffusionService {
             if (conf.isExportAlto()) {
                 Files.createDirectory(depotPath.resolve(pgcnId.concat(ALTO_DIR)));
             }
+            if (conf.isExportMaster()) {
+                Files.createDirectory(depotPath.resolve(pgcnId.concat(MASTER_DIR)));
+            }
         }
         return depotPath;
     }
@@ -519,9 +529,12 @@ public class DigitalLibraryDiffusionService {
                                            : 0;
         int exportAlto = conf.isExportAlto() ? 1
                                              : 0;
+        int exportMaster = conf.isExportMaster() ? 1
+                                                 : 0;
 
         return exportPrint + exportPdf
-               + exportAlto > 1;
+               + exportAlto
+               + exportMaster > 1;
     }
 
     /**
@@ -579,28 +592,50 @@ public class DigitalLibraryDiffusionService {
 
         final Path depotPrint = resolveExportDepotPath(depotPath, pgcnId.concat(JPG_DIR), conf);
         final Path depotPdf = resolveExportDepotPath(depotPath, pgcnId.concat(PDF_DIR), conf);
+        final Path depotMaster = resolveExportDepotPath(depotPath, pgcnId.concat(MASTER_DIR), conf);
 
         docUnit.getDigitalDocuments().forEach(digitalDoc -> digitalDoc.getOrderedPages().forEach(page -> {
             // Si page standard (non pdfs)
             if (page.getNumber() != null && page.getNumber() != 0) {
-                // Par défaut, export du format PRINT
-                final Optional<StoredFile> print = page.getDerivedForFormat(ViewsFormatConfiguration.FileFormat.PRINT);
+                if (conf.isExportPrint()) {
+                    // Par défaut, export du format PRINT
+                    final Optional<StoredFile> print = page.getDerivedForFormat(ViewsFormatConfiguration.FileFormat.PRINT);
 
-                if (print.isPresent()) {
-                    final StoredFile printStoredFile = print.get();
-                    final File sourceFile = bm.getFileForStoredFile(printStoredFile, libraryId);
-                    final Path sourcePath = Paths.get(sourceFile.getAbsolutePath());
-                    final String fileName = printStoredFile.getFilename().substring(0, printStoredFile.getFilename().lastIndexOf(".") + 1) + ImageUtils.FORMAT_JPG;
+                    if (print.isPresent()) {
+                        final StoredFile printStoredFile = print.get();
+                        final File sourceFile = bm.getFileForStoredFile(printStoredFile, libraryId);
+                        final Path sourcePath = Paths.get(sourceFile.getAbsolutePath());
+                        final String fileName = printStoredFile.getFilename().substring(0, printStoredFile.getFilename().lastIndexOf(".") + 1) + ImageUtils.FORMAT_JPG;
 
-                    if (conf.isExportPrint() && page.getNumber() != null) {
-                        try {
-                            final Path destPath = Files.createFile(depotPrint.resolve(fileName));
-                            Files.copy(sourcePath, destPath, StandardCopyOption.REPLACE_EXISTING);
-                            // On remplit la map pour optimiser le traitement ultérieur des métadonnées
-                            checkSums.add(exportMetsService.getCheckSummedStoredFile(printStoredFile, sourceFile));
-                        } catch (final IOException e) {
-                            throw new UncheckedIOException(e);
+                        if (conf.isExportPrint() && page.getNumber() != null) {
+                            try {
+                                final Path destPath = Files.createFile(depotPrint.resolve(fileName));
+                                Files.copy(sourcePath, destPath, StandardCopyOption.REPLACE_EXISTING);
+                                // On remplit la map pour optimiser le traitement ultérieur des métadonnées
+                                checkSums.add(exportMetsService.getCheckSummedStoredFile(printStoredFile, sourceFile));
+                            } catch (final IOException e) {
+                                throw new UncheckedIOException(e);
+                            }
                         }
+                    }
+                }
+
+                if (conf.isExportMaster()) {
+                    try {
+                        // On récupère le master
+                        final Optional<StoredFile> master = page.getMaster();
+
+                        if (master.isPresent()) {
+                            final StoredFile masterStoredFile = master.get();
+                            final File masterSourceFile = bm.getFileForStoredFile(masterStoredFile, libraryId);
+                            final Path masterSourcePath = Paths.get(masterSourceFile.getAbsolutePath());
+                            final Path destPath = Files.createFile(depotMaster.resolve(masterStoredFile.getFilename()));
+                            Files.copy(masterSourcePath, destPath, StandardCopyOption.REPLACE_EXISTING);
+                            // On remplit la map pour optimiser le traitement ultérieur des métadonnées
+                            checkSums.add(exportMetsService.getCheckSummedStoredFile(masterStoredFile, masterSourceFile));
+                        }
+                    } catch (final IOException e) {
+                        throw new UncheckedIOException(e);
                     }
                 }
             } else if (conf.isExportPdf()) {
@@ -638,6 +673,7 @@ public class DigitalLibraryDiffusionService {
                 throw new UncheckedIOException(e);
             }
         }
+
         return checkSums;
 
     }

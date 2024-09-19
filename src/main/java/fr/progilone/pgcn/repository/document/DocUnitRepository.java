@@ -152,6 +152,8 @@ public interface DocUnitRepository extends JpaRepository<DocUnit, String>, DocUn
 
     DocUnit getOneByPgcnId(String pgcnId);
 
+    List<DocUnit> findAllByPgcnId(String pgcnId);
+
     DocUnit getOneByPgcnIdAndState(String pgcnId, DocUnit.State state);
 
     Long countByPgcnIdAndState(String pgcnId, DocUnit.State state);

@@ -98,7 +98,7 @@
                     lot: workflowCtrl.lot.identifier,
                 };
                 $location.path('/delivery/delivery').search(params);
-            } else if (state.key === 'CONTROLE_QUALITE_EN_COURS') {
+            } else if (state.key === 'CONTROLE_QUALITE_EN_COURS' || state.key === 'VALIDATION_DOCUMENT') {
                 params = {
                     radical: workflowCtrl.radical,
                 };

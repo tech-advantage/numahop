@@ -769,8 +769,8 @@ public class DeliveryProcessService {
         final File tmpdir = bm.getTmpDir(libId);
         final Map<String, Long> infos = new HashMap<>();
         if (tmpdir != null) {
-            infos.put("occupe", tmpdir.getTotalSpace() - tmpdir.getUsableSpace());
-            infos.put("disponible", tmpdir.getUsableSpace());
+            infos.put("occupe", tmpdir.getTotalSpace() - tmpdir.getFreeSpace());
+            infos.put("disponible", tmpdir.getFreeSpace());
             LOG.debug("Espace disque - Occupé {} - Disponible {}", infos.get("occupe"), infos.get("disponible"));
         }
         return infos;

@@ -103,6 +103,9 @@ public class DigitalLibraryConfiguration extends AbstractDomainObject {
     @Column(name = "export_alto")
     private boolean exportAlto;
 
+    @Column(name = "export_master")
+    private boolean exportMaster;
+
     /**
      * Valeur par défaut des champs vides
      */
@@ -235,6 +238,14 @@ public class DigitalLibraryConfiguration extends AbstractDomainObject {
 
     public void setExportAlto(final boolean exportAlto) {
         this.exportAlto = exportAlto;
+    }
+
+    public boolean isExportMaster() {
+        return exportMaster;
+    }
+
+    public void setExportMaster(final boolean exportMaster) {
+        this.exportMaster = exportMaster;
     }
 
     public String getDefaultValue() {

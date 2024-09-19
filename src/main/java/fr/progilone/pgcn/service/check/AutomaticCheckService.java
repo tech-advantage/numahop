@@ -646,7 +646,10 @@ public class AutomaticCheckService {
     private boolean isTagValuesValid(final String tag, final List<ImageMetadataValue> values, final Metadatas metas) {
         return StringUtils.isNotBlank(tag) && metas.getTags().containsKey(tag)
                && metas.getTags().get(tag).size() == values.size()
-               && metas.getTags().get(tag).stream().allMatch(t -> values.stream().map(ImageMetadataValue::getValue).anyMatch(value -> value.equalsIgnoreCase(t)));
+               && metas.getTags()
+                       .get(tag)
+                       .stream()
+                       .allMatch(t -> values.stream().map(ImageMetadataValue::getValue).anyMatch(value -> value.replaceAll(" ", "").equalsIgnoreCase(t.replaceAll(" ", ""))));
     }
 
     /**

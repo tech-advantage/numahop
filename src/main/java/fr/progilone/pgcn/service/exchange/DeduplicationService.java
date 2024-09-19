@@ -38,11 +38,15 @@ public class DeduplicationService {
         final Set<DocUnit> duplicates = new HashSet<>();
         // UD doublons sur le PGCN Id
         if (docUnit.getPgcnId() != null) {
-            final DocUnit duplPgcnId = docUnitRepository.getOneByPgcnIdAndState(docUnit.getPgcnId(), DocUnit.State.AVAILABLE);
 
-            if (duplPgcnId != null) {
-                duplicates.add(duplPgcnId);
-            }
+            // Les doublons peuvent être clôturés ! Ne pas restreindre aux unités documentaires disponibles.
+            final List<DocUnit> duplPgcnId = docUnitRepository.findAllByPgcnId(docUnit.getPgcnId());
+            duplPgcnId.stream().forEach(dupl -> {
+                // L'unité documentaire actuellement checkée se trouve aussi dans la liste retournée par la bdd
+                if (!dupl.getIdentifier().equals(docUnit.getIdentifier()))
+                    duplicates.add(dupl);
+            });
+
         }
         // UD doublon sur l'identifiant de la notice
         docUnit.getRecords().stream().map(bib -> lookupDuplicates(docUnit, bib)).flatMap(Collection::stream).forEach(duplicates::add);
@@ -62,7 +66,7 @@ public class DeduplicationService {
                                             .filter(prop -> StringUtils.equals(prop.getType().getIdentifier(), "identifier"))
                                             .map(DocProperty::getValue)
                                             .collect(Collectors.toList());
-        // Recherche des doublons déjà importés
-        return docUnitRepository.searchDuplicates(docUnit, identifiers, DocUnit.State.AVAILABLE);
+        // Les doublons peuvent être clôturés ! Ne pas restreindre aux unités documentaires disponibles.
+        return docUnitRepository.searchDuplicates(docUnit, identifiers);
     }
 }

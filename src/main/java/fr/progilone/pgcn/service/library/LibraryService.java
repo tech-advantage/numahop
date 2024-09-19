@@ -16,6 +16,7 @@ import fr.progilone.pgcn.repository.administration.SftpConfigurationRepository;
 import fr.progilone.pgcn.repository.document.BibliographicRecordRepository;
 import fr.progilone.pgcn.repository.document.DocUnitRepository;
 import fr.progilone.pgcn.repository.document.conditionreport.PropertyConfigurationRepository;
+import fr.progilone.pgcn.repository.exchange.ImportReportRepository;
 import fr.progilone.pgcn.repository.library.LibraryParameterRepository;
 import fr.progilone.pgcn.repository.library.LibraryRepository;
 import fr.progilone.pgcn.repository.project.ProjectRepository;
@@ -23,7 +24,6 @@ import fr.progilone.pgcn.repository.user.UserRepository;
 import fr.progilone.pgcn.repository.workflow.WorkflowGroupRepository;
 import fr.progilone.pgcn.repository.workflow.WorkflowModelRepository;
 import fr.progilone.pgcn.service.exchange.CSVMappingService;
-import fr.progilone.pgcn.service.exchange.ImportReportService;
 import fr.progilone.pgcn.service.exchange.MappingService;
 import fr.progilone.pgcn.service.exchange.template.TemplateService;
 import fr.progilone.pgcn.service.ocrlangconfiguration.mapper.OcrLanguageMapper;
@@ -58,7 +58,7 @@ public class LibraryService {
     private final CSVMappingService csvMappingService;
     private final DocUnitRepository docUnitRepository;
     private final FileStorageManager fm;
-    private final ImportReportService importReportService;
+    private final ImportReportRepository importReportRepository;
     private final LibraryRepository libraryRepository;
     private final LibraryParameterRepository libraryParameterRepository;
     private final MailboxConfigurationRepository mailboxConfigurationRepository;
@@ -80,7 +80,7 @@ public class LibraryService {
                           final CSVMappingService csvMappingService,
                           final DocUnitRepository docUnitRepository,
                           final FileStorageManager fm,
-                          final ImportReportService importReportService,
+                          final ImportReportRepository importReportRepository,
                           final LibraryRepository libraryRepository,
                           final LibraryParameterRepository libraryParameterRepository,
                           final MailboxConfigurationRepository mailboxConfigurationRepository,
@@ -97,7 +97,7 @@ public class LibraryService {
         this.csvMappingService = csvMappingService;
         this.docUnitRepository = docUnitRepository;
         this.fm = fm;
-        this.importReportService = importReportService;
+        this.importReportRepository = importReportRepository;
         this.libraryRepository = libraryRepository;
         this.libraryParameterRepository = libraryParameterRepository;
         this.mailboxConfigurationRepository = mailboxConfigurationRepository;
@@ -160,7 +160,7 @@ public class LibraryService {
                 projectRepository.save(project);
             }
             // Imports
-            importReportService.deleteByLibrary(identifier);
+            importReportRepository.findByLibraryIdentifier(identifier).forEach(report -> delete(report.getIdentifier()));
             // Templates
             templateService.deleteByLibrary(library);
             // Pptés des constats d'état
