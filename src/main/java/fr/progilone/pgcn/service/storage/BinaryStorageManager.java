@@ -454,7 +454,7 @@ public class BinaryStorageManager {
         // generate, store & save the binary
         try {
             // Temp file for generation
-            final File thumbnailTmp = File.createTempFile("create_", EXTENSION_JPG, getTmpDir(libraryId));
+            final File thumbnailTmp = Files.createTempFile(getTmpDir(libraryId).toPath(), "create_", EXTENSION_JPG).toFile();
 
             final boolean generationResult = imageDispatcherService.createThumbnailDerived(master.getMimetype(),
                                                                                            masterFile,
@@ -728,7 +728,7 @@ public class BinaryStorageManager {
 
     protected void storeWithDigest(final InputStream in, final StoredFile storedFile, final String libraryId) throws IOException {
 
-        final File tmp = File.createTempFile("create_", ".tmp", getTmpDir(libraryId));
+        final File tmp = Files.createTempFile(getTmpDir(libraryId).toPath(), "create_", ".tmp").toFile();
         /*
          * First, write the input stream to a temporary file, while computing a
          * digest.
@@ -792,7 +792,7 @@ public class BinaryStorageManager {
             // because it rewrites the destination file so is not atomic.
             // Do a copy through a tmp file on the same filesystem then
             // atomic rename.
-            final File tmp = File.createTempFile(dest.getName(), ".tmp", dest.getParentFile());
+            final File tmp = Files.createTempFile(dest.getParentFile().toPath(), dest.getName(), ".tmp").toFile();
             try (final InputStream in = new FileInputStream(source); final OutputStream out = new FileOutputStream(tmp)) {
                 IOUtils.copy(in, out);
             } finally {
