@@ -1,6 +1,6 @@
 package fr.progilone.pgcn.service.storage;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import fr.progilone.pgcn.exception.PgcnTechnicalException;
 import java.io.File;
@@ -48,7 +48,6 @@ public class TesseractServiceTest {
         service = new TesseractService(altoService);
         service.initialize(PATH_TO_TESS_PROCESS);
         ReflectionTestUtils.setField(service, "tessDataPath", TESSDATA_PATH);
-        service.init();
     }
 
     @Disabled

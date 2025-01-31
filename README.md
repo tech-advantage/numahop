@@ -37,7 +37,7 @@ Numahop nécessite au préalable l'installation des outils listés ci-dessous.
 -   ImageMagick
 -   Exiftool
 
-Les versions proposées sont valides dans un environnement Debian 11.
+Les versions proposées sont valides dans un environnement Debian 12.
 
 Il vous faudra également un user linux dédié disposant d'un repository maven (.m2).
 
@@ -171,19 +171,25 @@ $ mvn clean spring-boot:run -Pprod -Dspring-boot.run.profiles=prod
 En fin de build, l'application est lancée sur le port 8080.
 Vous pouvez vous logger en admin (mot de passe par défaut : password) afin d'effectuer le paramétrage de base, créer des utilisateurs autorisés etc..
 
+Si lors du build, une erreur sur le formatage du code est levée, vous pouvez lancer la commande suivante pour reformater tout le projet (nécessite l'installation de npm) :
+
+```
+npm run format
+```
+
 ## Les acteurs du projet
 
-## Maîtrise d'ouvrage
+### Maîtrise d'ouvrage
 
 -   Bibliothèque Sainte-Geneviève
 -   Bibliothèque de Sciences Po
 -   BULAC
 
-## Maîtrise d'oeuvre
+### Maîtrise d'oeuvre
 
 -   **TECH'advantage** - https://www.tech-advantage.com/
 
-## Contribution
+### Contribution
 
 TECH'advantage reste responsable de la version principale.
 Les issues et/ou merge requests doivent nous être adressées.

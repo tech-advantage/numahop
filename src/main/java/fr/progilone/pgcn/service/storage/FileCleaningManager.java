@@ -163,9 +163,9 @@ public class FileCleaningManager {
 
             final Path delivPath = Paths.get(dto.getDeliveryFolder(), dto.getFolderPath(), dto.getDigitalId());
             if (delivPath.toFile().exists() && delivPath.toFile().canWrite()) {
-                LOG.debug(delivPath.toAbsolutePath().toString());
                 try {
                     Files.walk(delivPath, FileVisitOption.FOLLOW_LINKS).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
+                    LOG.info("Suppression des documents livrés et validés dans {}", delivPath.toAbsolutePath().toString());
                 } catch (final IOException | SecurityException e) {
                     LOG.error("Erreur lors de la suppression des documents livrés dans {} - {}", delivPath.toAbsolutePath().toString(), e);
                 }

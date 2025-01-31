@@ -1,6 +1,3 @@
-storage:
-    binaries: /opt/pgcn/DAM/DAM_Repository
-
 imageMagick:
     convert: /usr/bin/convert
     identify: /usr/bin/identify
@@ -12,47 +9,9 @@ exifTool:
 tesseract:
     process: /usr/bin/tesseract
 
-messaging:
-    template:
-        path: /opt/pgcn/Messaging/MessagingTemplate
-
 nativeLibraries:
     path: /opt/svcmgmt/lib
-
-uploadPath:
-    condition_report: /opt/pgcn/upload/condition_report
-    ead: /opt/pgcn/upload/ead
-    import: /opt/pgcn/upload/import
-    library: /opt/pgcn/upload/library
-    user: /opt/pgcn/upload/user
-    template: /opt/pgcn/upload/templates
-
-export:
-    ssh:
-        knownHosts: /opt/pgcn/config/known_hosts
 
 crypto:
     password: PhoOpJaiCwy3Jos
     salt: POEvsixIf+LyzBkDpEsM5ngX8+mLNbGJDLpPlqhgrGw=
-
-# Services externes
-services:
-    cines:
-        aip: /opt/pgcn/cines/aip
-        cache: /opt/pgcn/cines/cache
-        facile: https://facile.cines.fr/xml
-        xsd:
-            sip: /opt/pgcn/xsd/sip.xsd
-    archive:
-        alto: /opt/pgcn/archive/alto
-        text: /opt/pgcn/archive/text
-    metaDatas:
-        path: /opt/pgcn/metadatas
-    deliveryreporting:
-        path: /opt/pgcn/deliveryReporting
-    omeka:
-        cache: /opt/pgcn/omeka/cache
-    ftpexport:
-        cache: /opt/pgcn/ftpexport/cache
-    digitalLibraryDiffusion:
-        cache: /opt/pgcn/digitalLibraryDiffusion/cache

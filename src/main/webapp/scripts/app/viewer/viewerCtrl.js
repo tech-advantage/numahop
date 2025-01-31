@@ -116,7 +116,6 @@
 
             if ($scope.sampling) {
                 // MODE ECHANTILLONNAGE
-
                 // chargement du sample avec ses pages (1->n docs possibles).
                 SampleSrvc.get(params, function (value) {
                     $scope.sample = value;
@@ -253,7 +252,23 @@
             $scope.bookView = 'BookView' === e.detail.currentTypeView;
             if (prevTypeView === 'ThumbnailsView') {
                 // entree en controle
-                initializeCheck();
+                saveErrorsWithPromise().then(function (value) {
+                    if (!$scope.sampling) {
+                        var digitNotes = $scope.digitalDocument.docUnit.digitizingNotes;
+                        if (digitNotes !== null && digitNotes.size > 0) {
+                            MessageSrvc.addInfo(gettextCatalog.getString('Informations de contrôle: {{infos}}'), { infos: $scope.digitalDocument.docUnit.digitizingNotes }, true);
+                        }
+                    } else {
+                        if ($scope.data.totalPages === 1) {
+                            nextPage(1);
+                        }
+                    }
+                    if ($scope.deliveryNotes !== null && $scope.deliveryNotes.size > 0) {
+                        MessageSrvc.addInfo(gettextCatalog.getString('Notes de livraison: {{notes}}'), { notes: $scope.deliveryNotes }, true);
+                    }
+                    loadPage($scope.currentPage, true);
+                });
+                return;
             } else if ($scope.typeView === 'ThumbnailsView') {
                 // sortie du controle
                 exitFromCheck();
@@ -381,8 +396,6 @@
                             pageNumber: 1,
                             deliveryId: $routeParams.deliveryId,
                         };
-
-                        setPageErrors(params, body, true);
                     });
 
                     //charge constat d etat
@@ -470,6 +483,7 @@
                 if ($scope.sampling) {
                     var page = $scope.sample.pages[pageToUpdate - 1];
                     if (page && page.digitalDocument) {
+                        page.checkNotes = $scope.data.checkNotes;
                         params = {
                             id: page.digitalDocument.identifier,
                             pageNumber: page.number,
@@ -590,6 +604,7 @@
             if ($scope.sampling) {
                 var page = $scope.sample.pages[pageToUpdate - 1];
                 if (page && page.digitalDocument) {
+                    page.checkNotes = $scope.data.checkNotes;
                     params = {
                         id: page.digitalDocument.identifier,
                         pageNumber: page.number,
@@ -763,6 +778,44 @@
                     }
                 });
             }
+        }
+
+        /* Enregistre les erreurs globales du doc/sample avev une promise */
+        function saveErrorsWithPromise() {
+            var params = {};
+            var body = {};
+            var promise;
+
+            if ($scope.sampling) {
+                params = { id: $scope.sample.identifier };
+                body = {
+                    failedChecks: _.pluck($scope.select.selectedErrors, 'key'),
+                    checkNotes: $scope.sample.delivery.controlNotes,
+                };
+                promise = PageCheckSrvc.setErrorsForSample(params, body, function (value) {
+                    if (value && value.minorErrorRateExceeded) {
+                        MessageSrvc.addWarn(gettextCatalog.getString("Taux d'erreurs mineures dépassé par rapport à la taille de l'échantillon"), {}, true);
+                    }
+                    if (value && value.majorErrorRateExceeded) {
+                        MessageSrvc.addWarn(gettextCatalog.getString("Taux d'erreurs majeures dépassé par rapport à la taille de l'échantillon"), {}, true);
+                    }
+                }).$promise;
+            } else {
+                params = { id: $routeParams.id };
+                body = {
+                    failedChecks: _.pluck($scope.select.selectedErrors, 'key'),
+                    checkNotes: $scope.digitalDocument.checkNotes,
+                };
+                promise = PageCheckSrvc.setErrors(params, body, function (value) {
+                    if (value && value.minorErrorRateExceeded) {
+                        MessageSrvc.addWarn(gettextCatalog.getString("Taux d'erreurs mineures dépassé"), {}, true);
+                    }
+                    if (value && value.majorErrorRateExceeded) {
+                        MessageSrvc.addWarn(gettextCatalog.getString("Taux d'erreurs majeures dépassé"), {}, true);
+                    }
+                }).$promise;
+            }
+            return promise;
         }
 
         /**

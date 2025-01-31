@@ -32,15 +32,8 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.FileUtils;
@@ -115,7 +108,9 @@ public class ViewerService {
 
         final List<String> ids = dps.stream().map(AbstractDomainObject::getIdentifier).collect(Collectors.toList());
         if (sampling) {
-            return binaryRepository.getAllWithDocByPageIdentifiersAndFileFormat(ids, format);
+            List<StoredFile> lst = binaryRepository.getAllWithDocByPageIdentifiersAndFileFormat(ids, format);
+            Collections.sort(lst, Comparator.comparing(StoredFile::getFilename));
+            return lst;
         } else {
             return binaryRepository.getAllByPageIdentifiersAndFileFormat(ids, format);
         }

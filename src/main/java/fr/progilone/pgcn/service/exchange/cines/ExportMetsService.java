@@ -49,6 +49,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.xml.XMLConstants;
+import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.SchemaFactory;
 import org.apache.commons.collections4.CollectionUtils;
@@ -150,7 +151,8 @@ public class ExportMetsService {
         final Marshaller m = context.createMarshaller();
         // Validation
         final SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        m.setSchema(sf.newSchema(new StreamSource(getClass().getClassLoader().getResourceAsStream("config/xsd/mets.xsd"))));
+        m.setSchema(sf.newSchema(new Source[] {new StreamSource(getClass().getClassLoader().getResourceAsStream("config/xsd/xlink.xsd")),
+                                               new StreamSource(getClass().getClassLoader().getResourceAsStream("config/xsd/mets.xsd"))}));
         m.setProperty(Marshaller.JAXB_ENCODING, StandardCharsets.UTF_8.name());
         m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         m.setProperty(Marshaller.JAXB_SCHEMA_LOCATION, METS_SCHEMA_LOCATION);

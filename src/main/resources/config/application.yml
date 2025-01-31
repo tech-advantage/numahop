@@ -115,6 +115,8 @@ spring:
         connection-timeout: 120s
         socket-timeout: 120s
 
+base-path: /opt/pgcn
+
 elasticsearch:
     bulk_size: 500
     index:
@@ -126,7 +128,7 @@ cache: # Cache configuration
         max-entries: 1000 # Number of objects in each cache entry
 
 storage:
-    binaries:
+    binaries: ${base-path}/dam
     digest: MD5
     depth: 3
 
@@ -134,14 +136,14 @@ export:
     rdf:
         default_uri: http://numahop.fr/
     ssh:
-        knownHosts:
+        knownHosts: ${base-path}/config/known_hosts
         strictHostKeyChecking: 'no'
     sftp:
-        privateKey: /opt/pgcn/config/id_rsa
+        privateKey: ${base-path}/config/id_rsa
 
 logging:
     file:
-        name: /opt/pgcn/logs/numahop
+        name: ${base-path}/logs/numahop
     pattern.file: '%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(%5p) %clr(${PID}){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n%wEx'
     warnDuration: 1500
 
@@ -151,7 +153,7 @@ sshForwarding:
     user:
     password:
     port: 22
-    knownHosts: /opt/pgcn/config/known_hosts
+    knownHosts: ${base-path}/config/known_hosts
     strictHostKeyChecking: yes
     database:
         remoteServer: localhost
@@ -175,11 +177,41 @@ images:
 report:
     imagePath: images
 
+uploadPath:
+    condition_report: ${base-path}/upload/condition_report
+    ead: ${base-path}/upload/ead
+    import: ${base-path}/upload/import
+    library: ${base-path}/upload/library
+    user: ${base-path}/upload/user
+    template: ${base-path}/upload/templates
+
 # Services externes
 services:
     cines:
         updating:
             cronenabled: false
+        aip: ${base-path}/cines/aip
+        cache: ${base-path}/cines/cache
+        facile: https://facile.cines.fr/xml
+        xsd:
+            sip: ${base-path}/xsd/sip.xsd
+    archive:
+        alto: ${base-path}/archive/alto
+        text: ${base-path}/archive/text
+    metaDatas:
+        path: ${base-path}/metadatas
+    deliveryreporting:
+        path: ${base-path}/deliveryReporting
+    omeka:
+        cache: ${base-path}/omeka/cache
+    ftpexport:
+        cache: ${base-path}/ftpexport/cache
+    digitalLibraryDiffusion:
+        cache: ${base-path}/digitalLibraryDiffusion/cache
+
+messaging:
+    template:
+        path: ${base-path}/Messaging/MessagingTemplate
 
 cron:
     removeOldTokens: 0 0 0 * * ?
