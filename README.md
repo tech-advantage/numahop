@@ -177,24 +177,17 @@ Si lors du build, une erreur sur le formatage du code est levée, vous pouvez la
 npm run format
 ```
 
-## Les acteurs du projet
+## Les acteurs du projets
 
-### Maîtrise d'ouvrage
+### Rédacteurs / Spécificateurs originels
+- Sainte-Geneviève Library
+- Science-Po Library
+- BULAC
 
--   Bibliothèque Sainte-Geneviève
--   Bibliothèque de Sciences Po
--   BULAC
-
-### Maîtrise d'oeuvre
-
--   **TECH'advantage** - https://www.tech-advantage.com/
-
-### Contribution
-
-TECH'advantage reste responsable de la version principale.
-Les issues et/ou merge requests doivent nous être adressées.
-
-TECH'advantage étudiera également toute demande d'évolution de l'application.
+### Contributeurs
+- **TECH'advantage** - https://www.tech-advantage.com/
+- **Persée** : https://www.persee.fr/
+- **BibLibre** : https://www.biblibre.com/
 
 ## Licence
 
