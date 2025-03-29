@@ -56,7 +56,7 @@
         "modernizr": "3.12.0",
         "moment": "2.29.4",
         "natural-sort": "1.0.0",
-        "pdfjs-dist": "1.10.100",
+        "pdfjs-dist": "4.2.67",
         "qtip2": "3.0.3",
         "sanitize-html": "1.11.4",
         "select2": "3.5.1",
